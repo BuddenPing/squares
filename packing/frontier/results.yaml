@@ -12851,8 +12851,15 @@ results:
     - packing/devtools/ryxu_arrangement_reports.py
     next_rung: C4 requires two distinct accepted confirming adversarial reviews and an actual human
       oversight record; neither drawing nor admission supplies them.
-    notes: Credit to ry-xu with disclosed LLM assistance. All 25 source inputs retained; no upstream
+    notes: >-
+      Credit to ry-xu with disclosed LLM assistance. All 25 source inputs retained; no upstream
       code executed. Exact finite feasibility only.
+
+      Evan Daniel's later regularized certificates (T-146) are smaller at 70, 102, 103, 123,
+      129, 146 and 295, by 7.90e-11 to 7.82e-10, and credit the packings there to ry-xu, at 70
+      as refined by Eric Deleeuw (T-137) and at 103 by Mishapolk (T-138). Pending that entry's
+      review, the house recommendation at those seven counts goes to it; the case records keep
+      these certificates until jlevy/squares#403 lands.
     controls:
     - packing/resources/web/ry-xu-new-packings-2026-10-08/receipts/exact-certification.json.xz
     - packing/tests/test_ryxu_house_links.py
@@ -13715,14 +13722,15 @@ results:
       At 237, 263, 270 and 303 the certificate is below the case's ceiling by 5.33e-06,
       7.03e-06, 1.09e-03 and 2.87e-03, and at 270 below T-130 by 2.99e-06, but issue 481's
       exact sides are smaller at all four, by 6.82e-04, 7.25e-03, 6.94e-03 and 4.38e-03,
-      and issue 488's at 237 and 270, by 7.21e-04 and 6.94e-03.
+      and issue 488's at 237 and 270, by 7.21e-04 and 6.94e-03. Evan Daniel's later
+      regularized certificates (T-146) are smaller again at 263 and 303.
 
       The review recommended this entry as the house at 132, crediting Mishapolk's packing
       as its start, and at 267. The later review of issues 488 and 489
       (docs/project/reviews/review-2026-10-10-upper-bound-imports-488-489.md) recommends
       T-141 at 132, so this entry is recommended as the house at 267 only; at 132 it stays
-      verified, third to T-141 and T-140, at 263 and 303 second to issue 481's, and at 237
-      and 270 third, to T-140 and issue 481's. No house moves until
+      verified, third to T-141 and T-140, at 263 and 303 third, to T-146 and issue 481's,
+      and at 237 and 270 third, to T-140 and issue 481's. No house moves until
       jlevy/squares#403, which rewrites every case record, lands and private-worker custody
       is on file (RI-5).
 
@@ -13955,8 +13963,9 @@ results:
 
       Each side is below the ceiling its case holds, and below every other report pending
       at its count except at 209, 237, 270 and 305, where Francisco Couzo's later
-      certificates of issue 488 (T-140) are smaller; the case records are unchanged until a
-      house is adopted, so each is pending adoption.
+      certificates of issue 488 (T-140) are smaller, and at 153, 236, 263, 269, 292, 302 and
+      303, where Evan Daniel's later regularized certificates (T-146) are smaller; the case
+      records are unchanged until a house is adopted, so each is pending adoption.
 
       Credit Nate Chaoweeraprasit (https://github.com/itsnaka/squish-certs), using SQUISH
       and its Mondrian composition method, after Francisco Couzo, Ryan Xu, Frits Göbel,
@@ -14049,9 +14058,13 @@ results:
       Each side is below its case's ceiling, by 1.68e-04 at 307 to 1.12e-02 at 259. It is
       also below T-128 at 131 by 1.45e-03, T-130 at 270 by 6.94e-03, issue 476's sides at
       237, 263, 270 and 303 by 6.82e-04 to 7.25e-03, and Mishapolk's issue 470 prints at
-      eleven counts. It is the smallest report known at thirteen counts; at 209, 237, 270
+      eleven counts. It was the smallest report known at thirteen counts; at 209, 237, 270
       and 305 the later exact sides of issue 488 (T-140) are smaller, by 4.28e-07, 3.96e-05,
-      4.77e-06 and 5.64e-05.
+      4.77e-06 and 5.64e-05. At 153, 236, 263, 269, 292, 302 and 303 the later certificates
+      of Evan Daniel's regularized lists (T-146), which the source calls the exact optima of
+      its store's best packings, are smaller still, by 8.48e-16, 3.29e-16, 5.05e-13,
+      6.73e-16, 2.03e-13, 2.21e-17 and 4.48e-16, so it is the smallest report known at 131,
+      154, 207, 232, 259 and 307.
 
       At 154, 207, 209, 236, 237, 263, 302 and 303 it replaces earlier SQUISH packings the
       cases hold directly or through Siddharth Gupta's refinements, and at 153 it is below
@@ -14064,7 +14077,11 @@ results:
       (docs/project/reviews/review-2026-10-10-upper-bound-imports-488-489.md) recommends
       T-140 at 209, 237, 270 and 305, so this entry is recommended as the house at the
       other thirteen, 131, 153, 154, 207, 232, 236, 259, 263, 269, 292, 302, 303 and 307,
-      and stays verified, second to T-140, at those four. No house moves until
+      and stays verified, second to T-140, at those four.
+
+      Pending the review of T-146, which credits these packings at 153, 236, 263, 269, 292,
+      302 and 303, the house recommendation at those seven goes to T-146, so this entry is
+      recommended at 131, 154, 207, 232, 259 and 307. No house moves until
       jlevy/squares#403, which rewrites every case record, lands and private-worker custody
       is on file (RI-5).
 
@@ -14075,9 +14092,10 @@ results:
       V4 and C4 need a second accepted adversarial review of this replay by a distinct
       reviewer and a retained human oversight record; the 10 October review is one, by an
       AI agent. Separately, once jlevy/squares#403 lands and private-worker custody is on
-      file (RI-5), adopt this entry as the house at 131, 153, 154, 207, 232, 236, 259, 263,
-      269, 292, 302, 303 and 307, the thirteen counts where it is the smallest, with each
-      earlier house kept as history.
+      file (RI-5), adopt this entry as the house at 131, 154, 207, 232, 259 and 307, the six
+      counts where it is the smallest, with each earlier house kept as history. At 153, 236,
+      263, 269, 292, 302 and 303 the house recommendation goes to T-146 pending its review,
+      and returns to this entry there should that review not support it.
     reviews:
       - path: docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
         kind: adversarial
@@ -14176,19 +14194,23 @@ results:
       kernel's controls are gross (RI-3).
 
       At n = 70 the certificate is below the case's ceiling (Ryan Xu, T-125) by exactly
-      14263000000014263/10^26, and no other pending report names that count. The review
-      recommends it as the house at 70, Ryan Xu's arrangement refined by Eric Deleeuw, with
-      Ryan Xu's certificate kept as history. No house moves until jlevy/squares#403, which
-      rewrites every case record, lands and private-worker custody is on file (RI-5).
+      14263000000014263/10^26, and no other pending report named that count when it was
+      registered. The review recommended it as the house at 70, Ryan Xu's arrangement refined
+      by Eric Deleeuw, with Ryan Xu's certificate kept as history. Evan Daniel's later
+      regularized certificate at 70 (T-146) is smaller, by 1.07e-11, and its poses lie nearer
+      Ryan Xu's than this refinement's; pending that entry's review, the house recommendation
+      at 70 goes to it. No house moves until jlevy/squares#403, which rewrites every case
+      record, lands and private-worker custody is on file (RI-5).
 
       The source's own checker was not run here. No two independent methods, human
       oversight or optimality is claimed.
     next_rung: >-
       V4 and C4 need a second accepted adversarial review of this replay by a distinct
       reviewer and a retained human oversight record; the 10 October review is one, by an
-      AI agent. Separately, once jlevy/squares#403 lands and private-worker custody is on
-      file (RI-5), adopt this entry as the house at 70, Ryan Xu's T-125 certificate kept as
-      history.
+      AI agent. No house move is due while the review of T-146, whose side at 70 is smaller,
+      is pending: the house recommendation at 70 goes to it. Should that review not support
+      it, once jlevy/squares#403 lands and private-worker custody is on file (RI-5), adopt
+      this entry as the house at 70, Ryan Xu's T-125 certificate kept as history.
     reviews:
       - path: docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
         kind: adversarial
@@ -14214,7 +14236,7 @@ results:
   - id: T-138
     kind: upper-bound
     registered: '2026-10-10'
-    headline: Exact witnesses at Mishapolk's printed ceilings, smallest known at 103 and 258
+    headline: Exact witnesses at Mishapolk's printed ceilings, the smallest known at 103 and 258 when registered
     claim: >-
       Exact rational witnesses derived here from Mishapolk's decimal centre-and-angle poses,
       reported on jlevy/squares#470, prove finite upper bounds at the sixteen counts where the
@@ -14248,10 +14270,12 @@ results:
       bounds.
 
       Each side is below the ceiling its case holds, and the case records are unchanged, so each
-      is pending adoption. It is the smallest side known only at 103 and 258, where the
+      is pending adoption. It was the smallest side known only at 103 and 258, where the
       witnesses are Ryan Xu's and SQUISH's packings refined; at 84, 86, 105, 108, 127, 131, 175,
       180, 270 and 306 an earlier certificate of Francisco Couzo's (T-128, T-130) is smaller,
       and at 131, 132, 175, 267, 270, 302 and 303 a later one (T-134, T-136, T-140, T-141).
+      Evan Daniel's later regularized certificates (T-146) are smaller at 103 and 258 as well,
+      by 6.94e-13 and 4.21e-12, and at 302 and 303.
 
       Credit Mishapolk
       ([square-packing-records](https://github.com/Mishapolk/square-packing-records/tree/dd3da5c753c5ded6cb3b89476193b7b801005415))
@@ -14339,9 +14363,12 @@ results:
       packet. Its 18 poses at 343 to 360 print sides above the grid's 19. At 132 and 267 the
       sides are the ones the release's README prints, which the issue does not name.
 
-      The review recommends this entry as the house at 103 and 258 only, crediting Ryan Xu's and
-      SQUISH's packings, each refined by Mishapolk. No house moves until jlevy/squares#403,
-      which rewrites every case record, lands and private-worker custody is on file (RK-10).
+      The review recommended this entry as the house at 103 and 258 only, crediting Ryan Xu's
+      and SQUISH's packings, each refined by Mishapolk. Evan Daniel's later regularized
+      certificates (T-146), which credit the same packings refined by Mishapolk, are smaller at
+      both; pending that entry's review, the house recommendation at 103 and 258 goes to it. No
+      house moves until jlevy/squares#403, which rewrites every case record, lands and
+      private-worker custody is on file (RK-10).
 
       No source program ran here. The two maintained routes, the sqpack rational witness
       verifier and the independent rational corner checker, share certificate parsing,
@@ -14350,9 +14377,11 @@ results:
     next_rung: >-
       V4 and C4 need a second accepted adversarial review of this replay by a distinct reviewer
       and a retained human oversight record; the 10 October review is one, by an AI agent.
-      Separately, once jlevy/squares#403 lands and private-worker custody is on file (RK-10),
-      adopt this entry as the house at 103 and 258 only, crediting Ryan Xu's and SQUISH's
-      packings, with each earlier house kept as history.
+      No house move is due while the review of T-146, whose sides at 103 and 258 are smaller,
+      is pending: the house recommendation there goes to it. Should that review not support
+      it, once jlevy/squares#403 lands and private-worker custody is on file (RK-10), adopt
+      this entry as the house at 103 and 258 only, crediting Ryan Xu's and SQUISH's packings,
+      with each earlier house kept as history.
     reviews:
       - path: docs/project/reviews/review-2026-10-10-upper-bound-imports-470-and-trio126.md
         kind: adversarial
@@ -15155,3 +15184,176 @@ results:
 
       n = 40's reported and verified lower bounds move from T-133's 335427/50000, which the case
       record keeps as history, to 1340000/199529. Ids are provisional until merged to main.
+
+  - id: T-146
+    kind: upper-bound
+    registered: '2026-10-10'
+    headline: Exact rational certificates at fifteen counts from Evan Daniel's regularized record lists
+    claim: >-
+      Fifteen complete rational certificates from Evan Daniel's display-regularized record
+      lists, which no issue reports, state finite upper bounds at their exact sides: s(70)
+      <= 8.880960371555579594785501178639, s(102) <= 10.605828696431578360490734944053,
+      s(103) <= 10.679232047361306442680936279997, s(123) <=
+      11.591378145497698159550863183468, s(129) <= 11.872029849081179973752429831968,
+      s(146) <= 12.583782277415076881948309755914, s(153) <=
+      12.872029849081179973762429831968, s(236) <= 15.863955747159267422617702706295,
+      s(258) <= 16.563448002133789379765816191273, s(263) <=
+      16.733166007899378970679613144039, s(269) <= 16.901513582189132198548012552701,
+      s(292) <= 17.591378145497698159610863183468, s(295) <=
+      17.704232790736030358056092972112, s(302) <= 17.872029849081179973812429831968 and
+      s(303) <= 17.913065462738532305839753791206.
+
+      Each is below every value the record held or had pending at its count when read, by
+      2.21e-17 at 302 to 7.82e-10 at 295; the source claims no record. Complete native
+      feasibility outcomes are retained separately; the selected standing cases are
+      unchanged pending independent review and record review.
+
+      REGULARIZE.md reports every one of the lists' 324 certificates VALID under the source's
+      two exact checkers, verify_cert.py and verify_cert2.py, and verified at 80 digits; the
+      checkers are byte-identical to the copies the issue-399 packet retains. It calls each
+      refreshed side the exact optimum of the store's best packing, and classes each of the
+      fifteen as level 2, same packing traversable without expansion, by a path test that
+      samples angle paths in 0.01 degree steps and that it says is not a continuous proof.
+      Those statements are the author's; no source program ran here.
+
+      Credit the packings to their finders, as the record holds them: Ryan Xu's (ry-xu,
+      https://github.com/ry-xu/square_packing, issue 432) at 70, 102, 123, 129, 146 and 295,
+      which at 70 Eric Deleeuw had refined (issue 483); Mishapolk's at 103 and 258 (issue
+      470), refinements of Ryan Xu's and of SQUISH's; and Nate Chaoweeraprasit's SQUISH
+      packings of issue 481 at 153, 236, 263, 269, 292, 302 and 303, composed from pieces of
+      Francisco Couzo's, Ryan Xu's and earlier packings. Evan Daniel
+      (https://github.com/evand/square-packing) refreshed each from his store, solved it to
+      the exact side stated, regularized it for display at that side and wrote the
+      certificate.
+
+      His lists name instead the finders of the arrangements the packings descend from: Joe
+      DeVincentis at 70, Francisco Couzo at 102, 103, 123, 236, 263, 269, 292, 302 and 303,
+      David Ellsworth at 129 and 153 and David W. Cantrell at 146, and no one at 258 and
+      295. The source claims no record, and its credits say the repository's work was
+      produced by Claude (Anthropic) under human direction.
+    scope:
+      n_values: [70, 102, 103, 123, 129, 146, 153, 236, 258, 263, 269, 292, 295, 302, 303]
+    verification: V0
+    confirmation: C0
+    significance:
+      score: 2
+      rationale: >-
+        Smaller finite construction sides at fifteen counts from 70 to 303, 2.21e-17 to
+        7.82e-10 below the least side the record held or had pending at each (5.36e-12 to
+        9.28e-03 below the case ceilings): the exact optima of packings the record already
+        credits, a citable detail of each case that moves no theorem, S2 as T-098 is; no
+        lower bound or optimum.
+      scored: '2026-10-10'
+      by: think-8k76 Evan Daniel import (draft)
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Daniel regularized lists 2026-10-10]']
+      published: '2026-10-10'
+    activity:
+      state: in-analysis
+      what: >-
+        The stage 4 review of the retained replay, the third route's reading and the credit
+        each certificate would take, run separately from the import lane.
+      since: '2026-10-10'
+      link: think-8k76
+    evidence:
+      - E-evand-regularized-certificate-report
+    artifacts:
+      - packing/resources/web/evand-regularized-2026-10-10/README.md
+      - packing/resources/web/evand-regularized-2026-10-10/acquisition/claims.json
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-070.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-102.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-103.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-123.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-129.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-146.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-153.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-236.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-258.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-263.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-269.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-292.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-295.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-302.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-303.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/receipts/exact-certification.json.xz
+      - packing/devtools/upper_bound_reports.py
+      - packing/devtools/check_half_angle_area.py
+    controls:
+      - packing/tests/test_upper_bound_reports.py
+      - packing/tests/test_upper_bound_reports_regularized.py
+      - packing/tests/test_check_half_angle_area.py
+    notes: >-
+      A separate complete repository replay is retained for n = 70, 102, 103, 123, 129, 146,
+      153, 236, 258, 263, 269, 292, 295, 302 and 303: 15 positives and 30 duplicate-square
+      and outside-container controls passed their required outcomes on both routes, 2155368
+      pair decisions; summed over the 45 jobs, the receipt records 413.8 route CPU seconds
+      and 566.29 job wall seconds, the longest job 39.16 seconds. Every positive clears every
+      wall by at least 5.00e-21 and every pair by at least 9.99e-21. A fresh serial check
+      --replay decided all 45 jobs again, equal to the retained rows.
+
+      The third exact route (devtools.check_half_angle_area decide-imports --imports
+      regularized) accepts all fifteen, reaches the required outcome on all 90 of its
+      controls, and finds the same least wall clearance, 5e-21, and a least Euclidean
+      distance between squares of 1.00e-20 at every count. Run with --upstream at the pin,
+      it holds each retained gzip to its upstream bytes and each offered side to the S_cert
+      its JSON prints: 30 checks, no disagreement.
+
+      At n = 70 the certificate is below the case's ceiling (Ryan Xu, T-125) by 1.53e-10 and
+      T-137 (issue 483, Eric Deleeuw) by 1.07e-11. At n = 102, 123, 129, 146 and 295 it is
+      below the case's ceiling (Ryan Xu, T-125) by 7.90e-11, 2.14e-10, 1.31e-10, 9.75e-11 and
+      7.82e-10, with no pending report. At n = 103 it is below the case's ceiling (Ryan Xu,
+      T-125) by 1.49e-10 and T-138 (issue 470, Mishapolk) by 6.94e-13; at n = 258 below the
+      case's (Nate Chaoweeraprasit, T-115) by 5.36e-12 and T-138 by 4.21e-12.
+
+      At n = 153 and 236 it is below the case's ceiling (Nate Chaoweeraprasit, improved by
+      Siddharth Gupta, T-127) by 7.65e-03 and 3.85e-03, and T-136 (issue 481, Nate
+      Chaoweeraprasit) by 8.48e-16 and 3.29e-16. At n = 263 it is below the case's ceiling
+      (Nate Chaoweeraprasit, T-116) by 7.25e-03, T-134 (issue 476, Francisco Couzo) by
+      7.25e-03 and T-136 by 5.05e-13. At n = 269 it is below the case's ceiling (Francisco
+      Couzo, improved by Evan Daniel, T-098) by 4.45e-03, issue 476's equal side by 4.45e-03
+      and T-136 by 6.73e-16. At n = 292 it is below the case's ceiling (Francisco Couzo,
+      improved by Seth Rehwaldt, T-117) by 5.87e-03 and T-136 by 2.03e-13.
+
+      At n = 302 it is below the case's ceiling (Nate Chaoweeraprasit, T-116) by 9.28e-03,
+      T-138 by 9.28e-03 and T-136 by 2.21e-17. At n = 303 it is below the case's ceiling
+      (Nate Chaoweeraprasit, T-113) by 7.25e-03, T-138 by 7.25e-03, T-134 by 4.38e-03, T-136
+      by 4.48e-16 and issue 488's uncited side by 4.30e-03. At every count it is the
+      smallest.
+
+      Measured pose by pose against the certificate credited (arrangement_gap), each
+      regularized view differs from it, as display regularization is meant to: under the
+      box symmetry the lists' orientation column names, 10 to 238 squares lie more than 1e-6
+      from their counterparts, and at 123, 129 and 292 nearest centres match one to one under
+      no symmetry. At 70 the view lies nearer Ryan Xu's poses than Eric Deleeuw's refinement
+      of them, 60 squares within 1e-9 of Xu's and 50 of Deleeuw's. That each view is the same
+      packing is the source's sampled path test, not verified here.
+
+      The author does not claim records. REGULARIZE.md says: "No refreshed side is below the
+      store's best beyond rounding (2e-12 .. 8e-10, the exact optimum of the same packing;
+      305 matched a pending Couzo packing that arrived mid-run, both certificate checkers
+      VALID)." Each certificate's JSON says: "regularized display view of a certified packing
+      at the same side; not a new bound". As for T-139 and T-137, each side is still a value
+      the register did not hold.
+
+      The credit at 70 names Ryan Xu, with Eric Deleeuw's refinement (T-137) noted, since the
+      view lies nearer Xu's poses; the owner may decide otherwise. Pending this entry's
+      review, the house recommendation at its fifteen counts goes to it, and the notes of
+      T-125 (at 70, 102, 103, 123, 129, 146 and 295), T-136 (at 153, 236, 263, 269, 292, 302
+      and 303), T-137 (at 70) and T-138 (at 103 and 258) say so. No house moves until
+      jlevy/squares#403, which rewrites every case record, lands.
+
+      The source's own checkers were not run here. The two maintained routes, the sqpack
+      rational witness verifier and the independent rational corner checker, share
+      certificate parsing, half-angle conversion, Fraction arithmetic and the separating-axis
+      method. No two independent methods, human oversight or optimality is claimed.
+    next_rung: >-
+      Independently review the retained replay and the third route's reading, then weigh
+      adoption count by count. Each side lies below every value the record holds or has
+      pending, by 2.2e-17 at 302 to 7.8e-10 at 295; the source calls each the exact optimum
+      of its store's best packing, and the credit takes that packing to be the one whose side
+      lies just above. The regularized views differ from those certificates pose by pose, and
+      that each is still the same packing is the source's sampled path test, not verified
+      here; the review should decide whether the credit may rest on it. Then, once
+      jlevy/squares#403 lands, record source-specific adoption and confirming evidence. Final
+      exact-head CI remains required.

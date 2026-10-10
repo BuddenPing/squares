@@ -432,15 +432,17 @@ repositories:
       retention policy. No record entry changes, and nothing else to import.
 
   # The closing sweep of 2026-10-10 (about 19:50 UTC) found evand/square-packing four
-  # commits past the 76a529b read, and six more followed by 20:32 UTC. 346c6ed's
-  # certificates hold new upper-bound values at 15 counts, owned by think-8k76 until a
-  # packet pins the commit.
+  # commits past the 76a529b read, and seven more followed by 20:37 UTC. 346c6ed's
+  # certificates hold new upper-bound values at 15 counts, which think-8k76 owned until the
+  # evand-regularized-2026-10-10 packet pinned ea1a2f2, the head at 21:42 UTC, and T-146
+  # registered them. The read stays although a packet pins the head: without it,
+  # devtools.intake_sweep.read_history reports all eleven as commits a pin contains whose
+  # changed paths no packet retains, and with it none.
   - url: https://github.com/evand/square-packing
-    read_through: baf914391b34e194c2eee0a745722e1b9a62a636
+    read_through: ea1a2f23678a13bd1d252f9f4c95ca5dd2ffd2b7
     read_on: '2026-10-10'
-    bead: think-8k76
     note: >-
-      The ten commits of 10 October from 4232bdd to baf9143 past the 76a529b read. 4232bdd
+      The eleven commits of 10 October from 4232bdd to ea1a2f2 past the 76a529b read. 4232bdd
       corrects PACKER.md's reading of Hunt 3: per processor-hour the shared chain did as well
       as the dedicated runs. 634eb8d adds search/packer/census_certify.py and PACKER.md's
       s(110) census, 718 distinct certified minima below 11 whose nearest second side solves
@@ -460,23 +462,32 @@ repositories:
       #432 ceilings by 7.90e-11 to 7.82e-10; at 103 and 258 below T-138 by 6.94e-13 and
       4.21e-12; and at 153, 236, 263, 269, 292, 302 and 303 below T-136 by 2.21e-17 to
       5.05e-13. The author claims none as a record (REGULARIZE.md: the exact optimum of the
-      same packing), but like T-139 each is a value the record does not hold, and the
-      coordinator's import bead owns them. The alternate at 302 has the list's side there; no
-      other list or alternate certificate is below the record's least side at its count. The
-      exactsolve optimum at 261, 16.6787798753429, is stated and not certified. 468e8a9
-      points the site's lower_bounds.json links at the merged wand125/square-packing
-      repository, with no value changed. 8c47162 commits the generated, kernel-checked Lean
-      proof lean/Sqpack/Exact/Batch/N17 that a root of a degree-18 polynomial in an interval
-      of width 2e-25 about 4.6755300936045509516 packs 17 squares: the case record's
-      degree-18 side, and the object the author's #375 comment of 20:31 UTC asks the record
-      to take in place of #375's rational n = 17 certificate, which #375's entry queues under
-      think-00e3. 74f373b and f6f918d record his sandboxed rerun of wand125's ValidTilt9
-      record check at records-tilt9-v1 (c561dbb), RECORD OK on all 28,350 roots in 7 minutes
-      on one core with a fresh seed: the source's own checker, so reported evidence on T-081,
-      whose full replay think-hwpr owns. 74f373b also adds a static review of wand125's
-      unmerged PR #6 to his repository (Valid7 in the Lean kernel) and a referee read of
-      squarepacker's v1.2 preprint that finds no gap in Proposition 4.5 or Lemmas 4.9 and
-      4.10. 4d03a03 marks c*(k) unbounded as claimed on that preprint's c*(k) >= 0.0353 log k
-      - 1, which the asymptotic register holds as reported, and baf9143 notes the replies
-      posted. WISHLIST.md, problems.html and sources.html restate registered results (#432
-      at 295, #481 at 232, #484 and #489 at 308). Nothing else to import.
+      same packing), but like T-139 each is a value the record did not hold: the
+      evand-regularized-2026-10-10 packet retains the fifteen at ea1a2f2 and T-146 registers
+      them. The alternate at 302 has the list's side there; no other list or alternate
+      certificate is below the record's least side at its count. The exactsolve optimum at
+      261, 16.6787798753429, is stated and not certified. 468e8a9 points the site's
+      lower_bounds.json links at the merged wand125/square-packing repository, with no value
+      changed. 8c47162 commits the generated, kernel-checked Lean proof
+      lean/Sqpack/Exact/Batch/N17 that a root of a degree-18 polynomial in an interval of
+      width 2e-25 about 4.6755300936045509516 packs 17 squares: the case record's degree-18
+      side, and the object the author's #375 comment of 20:31 UTC asks the record to take in
+      place of #375's rational n = 17 certificate, which result-requests.yaml queues as
+      n17-exact-form-2026-10-10 under think-x4v4, the n = 17 intake hold. 74f373b and
+      f6f918d record his sandboxed rerun of wand125's ValidTilt9 record check at
+      records-tilt9-v1 (c561dbb), RECORD OK on all 28,350 roots in 7 minutes on one core with
+      a fresh seed: the source's own checker, so reported evidence on T-081, whose full replay
+      think-hwpr owns. 74f373b also adds a static review of wand125's unmerged PR #6 to his
+      repository (Valid7 in the Lean kernel) and a referee read of squarepacker's v1.2
+      preprint that finds no gap in Proposition 4.5 or Lemmas 4.9 and 4.10. 4d03a03 marks
+      c*(k) unbounded as claimed on that preprint's c*(k) >= 0.0353 log k - 1, which the
+      asymptotic register holds as reported, and baf9143 notes the replies posted.
+      WISHLIST.md, problems.html and sources.html restate registered results (#432 at 295,
+      #481 at 232, #484 and #489 at 308). ea1a2f2 is n = 17 material, the #375 and #419
+      exact form held under think-x4v4: it points search/exact/lean_batch.py's generated
+      Lean modules at lean/Sqpack/Exact/Packs/, to be committed so that #419 can cite each
+      theorem at a commit, and its input at the committed exact forms of minpoly/data/; it
+      takes 8c47162's force-added Batch/N17 files out of the tree, for a Packs/N17 that no
+      commit adds yet, so the Lean file the #375 request names is at its pin and not at the
+      head; and TODO.md gains #419's custody plan and a count of 72 records without exact
+      forms. It states no value. Nothing else to import.
