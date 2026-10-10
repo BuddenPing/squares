@@ -3654,8 +3654,10 @@ issues:
       with tilted bands after H. D. Bui (arXiv:2508.04603v2). The author states the preprint is not
       refereed, was checked by AI reviews and by programs including independent re-implementations,
       and was developed with Claude. #486 announces version 1.1. Imported on 10 October 2026: v1.0
-      retained in the squarepacker-k2-minus-c-upper-2026-10-09 packet with its two largest Theorem 1.6
-      certificates hosted, the source's replays and independent checks run here, and the proofs
+      retained in the squarepacker-k2-minus-c-upper-2026-10-09 packet, its two largest Theorem 1.6
+      certificates pinned by digest and to be hosted in the release
+      data/squarepacker-k2-minus-c-upper-certificates-v1 once the owner publishes it, the source's
+      replays and independent checks run here, and the proofs
       reviewed the same day; every theorem is recorded as reported in the asymptotic waste register,
       since none settles a count of the case corpus.
     read_through: '2026-10-09T07:19:46Z'

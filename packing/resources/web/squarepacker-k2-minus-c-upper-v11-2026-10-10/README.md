@@ -36,7 +36,7 @@ Files table, so they are compared as stored and not decompressed.
 The two largest certificates are retained by neither packet and are bound by their
 digests to
 [`packing/hosted/squarepacker-k2-minus-c-upper-certificates.yaml`](../../../hosted/squarepacker-k2-minus-c-upper-certificates.yaml),
-which hosts them.
+whose release is to host them once the owner publishes it.
 
 Every member of the Zenodo archive was compared here with the tagged tree by Git blob:
 all 102 are equal, and all 99 entries of `SHA256SUMS` verify.
