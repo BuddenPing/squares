@@ -83,8 +83,18 @@ PAGE_BUDGET_EXCEPTIONS: dict[str, tuple[int, str]] = {
         "All 324 case rows and prepared exact bounds measure 1,536,618 bytes.",
     ),
     "all-results.html": (
-        800_000,
-        "The complete registered-result table with prepared math measures 717,328 bytes.",
+        900_000,
+        (
+            "The complete registered-result table with prepared math measures 794,521 bytes "
+            "at 139 results."
+        ),
+    ),
+    "index.html": (
+        700_000,
+        (
+            "The homepage's recent-result rows with prepared math measure 605,376 bytes "
+            "at 139 results."
+        ),
     ),
     "tutorial.html": (
         800_000,
