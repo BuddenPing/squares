@@ -1060,18 +1060,15 @@ def test_one_tile_a_case_is_drawn_from_its_regularized_view_where_it_has_one() -
     assert "data-atlas-layer" not in tiles
 
 
-def test_overview_tiles_keep_all_recent_stars_and_frontier_keeps_lower_recency(
-    rendered: Callable[[str], str],
+def test_overview_tiles_omit_stars_and_frontier_keeps_lower_recency(
+    atlas_page: str,
 ) -> None:
-    """Tile stars reflect any new displayed contribution; the survey marks lower proofs."""
+    """Tiles show only counts; the survey retains recent lower-proof markers."""
     from devtools import render_frontier_page as frontier  # noqa: PLC0415
 
     recent = {
         n: flags.any for n, flags in overview_sections.recent_contributions_by_case().items()
     }
-    star = overview_sections.atlas_star()
-    assert star == '<span class="site-star" aria-hidden="true" title="new result">★</span>'
-    assert overview_sections.STAR in star
     page = overview_sections.atlas_grid()
     tiles = _atlas_template(page, "first") + _atlas_template(page, "rest")
     found = re.findall(
@@ -1081,22 +1078,22 @@ def test_overview_tiles_keep_all_recent_stars_and_frontier_keeps_lower_recency(
     )
     assert [int(n) for n, _, _ in found] == list(range(1, 325))
     lower_recent = frontier.recent_lower_bounds()
-    frontier_page = rendered("atlas.html")
+    frontier_page = atlas_page
     rows = dict(re.findall(r'<tr id="n-(\d+)"[^>]*data-recent="(true|false)"', frontier_page))
     assert sorted(int(n) for n in rows) == list(range(1, 325))
     for n, name, number in found:
         starred = recent[int(n)]
         assert lower_recent[int(n)] == (rows[n] == "true"), n
         assert not lower_recent[int(n)] or starred, n
-        assert number == n + (star if starred else ""), n
-        assert (star in number) == starred, n
-        assert name.endswith(f", {overview_sections.NEW_RESULT}") == starred, n
+        assert number == n, n
+        assert overview_sections.STAR not in number, n
+        assert overview_sections.NEW_RESULT not in name, n
     assert sum(recent.values()) > 0
     assert not lower_recent[1]
     assert not lower_recent[25]
 
 
-def test_upper_only_recent_stars_are_shared_by_case_facts_and_overview_tiles(
+def test_upper_only_recent_stars_stay_in_case_facts_without_atlas_tile_marks(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     from devtools.result_status import RecentContributions  # noqa: PLC0415
@@ -1112,9 +1109,8 @@ def test_upper_only_recent_stars_are_shared_by_case_facts_and_overview_tiles(
     first = _atlas_template(page, "first")
     tile = re.search(r'<a class="site-atlas-cell" [^>]*data-atlas-n="1"[^>]*>.*?</a>', first)
     assert tile is not None
-    assert ', new result"' in tile.group()
-    assert overview_sections.atlas_star() in tile.group()
-    assert page.count(overview_sections.atlas_star()) == 1
+    assert ', new result"' not in tile.group()
+    assert overview_sections.STAR not in page
     facts = overview_sections.atlas_film_facts()
     assert facts[0]["star"] is True
     assert sum(bool(fact["star"]) for fact in facts) == 1
@@ -1133,7 +1129,7 @@ def test_the_atlas_key_explains_only_angle_colors_and_contact_shades() -> None:
         assert f'data-atlas-legend-key="{removed}"' not in key
     assert "colors indicate distinct tilt angles" in key
     assert "shade indicates number of full-side contacts" in key
-    assert overview_sections.atlas_star() not in key
+    assert overview_sections.STAR not in key
     assert re.search(r"\(\d+/\d+\)", key) is None
     swatches = re.findall(
         r'<span class="site-atlas-swatch" data-value="(\d+)"[^>]*>([^<]*)</span>', key
@@ -1245,29 +1241,6 @@ def test_the_regularized_set_is_the_layer_index_and_refuses_a_stale_drawing(
     copy.write_text(json.dumps({**index, "label": "tidied"}), encoding="utf-8")
     with pytest.raises(SystemExit, match="labels its drawings 'tidied'"):
         overview_sections.atlas_regularized()
-
-
-def test_overview_counts_are_centered_and_case_stars_keep_the_shared_color() -> None:
-    """Counts stay centered; applicable stars sit beside them in the shared accent."""
-    css = render_overview.SITE_CSS.read_text(encoding="utf-8")
-    assert "site-atlas-layer-mark" not in css
-    assert "color: var(--site-new-result);" in _rule(css, ".site-star")
-    number = _rule(css, ".site-atlas-n")
-    for declaration in (
-        "inline-size: fit-content;",
-        "margin-inline: auto;",
-        "position: relative;",
-    ):
-        assert declaration in number, declaration
-    star = _rule(css, ".site-atlas-n > .site-star")
-    for declaration in (
-        "position: absolute;",
-        "inset-inline-start: calc(100% + 0.12em);",
-        "inset-block-start: 50%;",
-        "translate: 0 -50%;",
-    ):
-        assert declaration in star, declaration
-    assert '[data-atlas-layer="regularized"]' not in css
 
 
 def test_the_view_tabs_are_the_section_tabs_strip() -> None:
@@ -4571,10 +4544,10 @@ ROW_STAR = re.compile(
 )
 
 
-def test_a_new_result_is_starred_in_both_tables_by_the_atlas_rule(
+def test_a_new_result_is_starred_in_both_tables_by_case_recency(
     page: str, results: str, overview: overview_data.Overview
 ) -> None:
-    """A row is starred where the atlas stars its case: the result holds a case's
+    """A row is starred where its case record is recent: the result holds a case's
     verified lower bound now, and that bound is recent (`starred_results`). The starred
     cases are the ones a case's visual summary and the film call a new result, each starred
     result is a current best in scope, and the star is read as well as seen: it has a
@@ -4590,7 +4563,7 @@ def test_a_new_result_is_starred_in_both_tables_by_the_atlas_rule(
         assert set(cases) <= set(scope_values(dict(result.record["scope"]))), result_id
     # T-060 settles n = 11 and T-093 holds n = 17 (T-043 until 2026-10-05). T-037 is as
     # new and is superseded, T-007 holds its cases and is from 2005, and T-057 is a new
-    # upper bound, which the atlas does not star.
+    # upper bound, which the lower-bound recency rule does not star.
     assert starred["T-060"] == (11,)
     assert starred["T-093"] == (17,)
     assert not {"T-037", "T-007", "T-057", "T-043"} & set(starred)
@@ -4631,7 +4604,7 @@ def test_a_new_result_is_starred_in_both_tables_by_the_atlas_rule(
     # Each page carries every row's star, and says in its prose what the star marks.
     legend = re.sub(r"<[^>]+>", "", overview_sections.star_legend())
     assert legend == (
-        "A star (\u2605) marks a new result, as the atlas does: the verified lower bound of a "
+        "A star (\u2605) marks a new result: the verified lower bound of a "
         "case rests on it now, and it was proved or published on or after 22 August 2026."
     )
     for served, expected in ((page, recent_starred), (results, starred)):

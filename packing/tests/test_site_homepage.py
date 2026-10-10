@@ -18,7 +18,6 @@ import pytest
 
 from devtools import overview_sections, render_overview, site_assets
 from devtools.render_n11_lower_bounds_explainer import COMPOSITE_ASSETS
-from devtools.result_status import recent_contributions_by_case
 from sqpack.probes import probe
 from tests import site_browser, site_renders
 
@@ -303,7 +302,6 @@ def test_keyboard_expansion_uses_the_shared_triangle_without_click_time_preparat
         assert center["page_overflow"] == 0, name
         if center["fits"]:
             assert abs(center["offset"]) <= 0.5, (name, center)
-    recent = recent_contributions_by_case()
     for name in ("initial", "expanded", "collapsed", "cached"):
         state = report[name]
         assert state["label_errors"] == [], name
@@ -311,9 +309,9 @@ def test_keyboard_expansion_uses_the_shared_triangle_without_click_time_preparat
         assert state["number_fonts"] == [state["sans_family"]], name
         for n in state["cases"]:
             assert state["case_names"][str(n)].startswith(f"n = {n}, "), name
-            assert (", new result" in state["case_names"][str(n)]) == recent[n].any, name
+            assert ", new result" not in state["case_names"][str(n)], name
         assert report[name]["raw_markup"] == 0, name
-        assert state["star_cases"] == [n for n in range(1, 325) if recent[n].any], name
+        assert state["star_cases"] == [], name
     assert report["atlas_requests"] == 0
     for name in ("initial", "expanded", "collapsed", "cached"):
         assert report[name]["toggle"]["arrow_hidden"] == "true"
@@ -372,7 +370,7 @@ def test_keyboard_expansion_uses_the_shared_triangle_without_click_time_preparat
     static = report["static"]["tiles"]
     assert report["static_labels"]["raw_markup"] == 0
     assert report["static_labels"]["label_errors"] == []
-    assert report["static_labels"]["star_cases"] == [n for n in range(1, 325) if recent[n].any]
+    assert report["static_labels"]["star_cases"] == []
     assert [tile["n"] for tile in static] == list(range(1, 101))
     for index, tile in enumerate(static):
         assert tile["left"] >= report["static"]["canvas"]["left"] - 0.5

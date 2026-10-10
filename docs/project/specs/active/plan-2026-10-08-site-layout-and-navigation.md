@@ -106,12 +106,13 @@ retains its compact label role.
 Apply the shared screen-only `--site-title-space-above` margin of 2.5rem to every
 visible `h1.site-title`, including homepage, About and other content pages.
 Print spacing keeps its existing rules.
-The homepage and dedicated Atlas share square legend swatches as tall as the explanatory
-text’s line box, using the note size times the common 1.4 leading token.
-Center angle numerals inside their squares and align swatch groups with the text
-baseline. Stack legend items in narrow containers so explanations wrap without clipping.
-Printable swatches use the same text-relative ratio without changing the packing
-diagrams or explanatory text size.
+The homepage and dedicated Atlas share square legend swatches at the explanatory text’s
+1em size, with medium-weight angle numerals at 0.65em. Center numerals inside their
+squares and align swatch groups with the text baseline.
+Stack legend items in narrow containers so explanations wrap without clipping.
+After web review, printable swatches use the adjacent text size (19 or 48 pixels), with
+bold labels at 0.6 of that size to preserve the print font’s inset.
+Packing diagrams and explanatory text keep their geometry.
 
 Keep the homepage in this order:
 
@@ -198,8 +199,8 @@ The register currently contains six qualifying entries; the twelve-row limit all
 preview to grow as results qualify.
 Each headline links to its canonical result page.
 The atlas preview preserves the per-case SVG drawings, colors, and case destinations.
-Web labels show only the case number and an applicable recent-result star; the PDF
-retains its additional labels.
+Web labels show only the case number; recency stars remain in case and result records,
+and the PDF retains its additional labels.
 Both pages use the same overview, controls, legend, tile markup, row and segment
 placement, Small/Fixed sizing, and shared Atlas layout and animation engine.
 Complete rows center when they fit and pan horizontally on narrow viewports.
@@ -218,8 +219,8 @@ Triangle is the default; Grid is explicitly selectable with `?atlas=grid`, and e
 Collapsed coverage is approximately 100 cases: Grid ends on a complete rectangular row
 for its current width and size; Triangle ends on a complete square-number group.
 Recompute the count on width, size, and view changes.
-Web Atlas tiles show only their case number and any recent-result star; bounds and
-evidence marks remain in the popover.
+Web Atlas tiles show only their case number; recency stars, bounds and evidence marks
+remain in case and result records or the popover.
 PDF labels retain their full metadata.
 The homepage uses the same **Show More** and **Show Less** controls as the Atlas page.
 

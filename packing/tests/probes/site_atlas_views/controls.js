@@ -24,7 +24,16 @@
         lineHeight: Number.parseFloat(getComputedStyle(item).lineHeight),
         swatches: [...item.querySelectorAll(".site-atlas-swatch")].map((swatch) => {
           const rect = swatch.getBoundingClientRect();
-          return { width: rect.width, height: rect.height, top: rect.top, bottom: rect.bottom };
+          const label = document.createRange();
+          label.selectNodeContents(swatch);
+          return {
+            width: rect.width,
+            height: rect.height,
+            top: rect.top,
+            bottom: rect.bottom,
+            labelFontSize: Number.parseFloat(getComputedStyle(swatch).fontSize),
+            labelWidth: label.getBoundingClientRect().width,
+          };
         }),
       })),
     })),

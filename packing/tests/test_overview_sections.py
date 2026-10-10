@@ -8,7 +8,6 @@ from dataclasses import replace
 from datetime import timedelta
 
 from devtools import overview_data, overview_sections
-from devtools.result_status import recent_contributions_by_case
 
 
 def test_homepage_legend_keeps_original_rungs_in_four_icon_and_label_rows() -> None:
@@ -144,13 +143,12 @@ def test_atlas_preview_reuses_canonical_split_rows_and_keeps_every_case() -> Non
     assert re.findall(r'data-atlas-row="(\d+)"', rest) == list(map(str, range(11, 19)))
     assert preview.count('data-atlas-segment="non-grid"') == 18
     assert preview.count('data-atlas-segment="grid"') == 18
-    recent = recent_contributions_by_case()
     for n, tile in enumerate(tiles, 1):
         assert f'id="atlas-n-{n}" href="cases/{n}.html" data-case="{n}"' in tile
         assert "<img " in tile
         assert 'loading="lazy"' in tile
-        assert tile.count('class="site-star"') == int(recent[n].any)
-        assert (", new result" in tile) == recent[n].any
+        assert 'class="site-star"' not in tile
+        assert ", new result" not in tile
         assert "evidence-badge" not in tile
     assert preview.count('id="pop-case"') == 1
     assert preview.count('role="tab"') == complete.count('role="tab"') == 8

@@ -18,6 +18,8 @@ interface SiteAtlasParts {
 /** A mounted block's two acts: arrange the triangle for the width, and change the
  * layout with every tile moved from where it was to where it then is. */
 interface SiteAtlasViews {
+  /** Font readiness captured during the initial layout read phase. */
+  fontsReady: Promise<FontFaceSet>;
   arrange(): void;
   change(mutate: () => void): void;
 }

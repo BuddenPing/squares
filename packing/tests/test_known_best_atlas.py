@@ -2404,13 +2404,15 @@ def test_both_pdf_legends_label_only_the_first_two_angle_swatches(index: int) ->
     labels = root.findall(".//svg:text[@data-swatch-label]", SVG)
     assert [node.text for node in labels] == ["90°", "45°", "4", "3", "2", "1", "0"]
     text_width = known_best_builder._text_width  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
-    expected_size = (
-        "11.5"
-        if index == 0
-        else known_best_builder.format_svg_number(
-            Decimal("11.5") * known_best_builder.POSTER_LEGEND_TYPE_SCALE
+    expected_size = known_best_builder.format_svg_number(
+        Decimal(
+            known_best_builder.POSTER_BODY_SIZE
+            if index
+            else known_best_builder.SUMMARY_FOOTER_SIZE
         )
+        * Decimal("0.6")
     )
+    ink_bounds = known_best_builder._print_ink_bounds  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
     for parent in root.iter():
         children = list(parent)
         for position, label in enumerate(children):
@@ -2426,6 +2428,10 @@ def test_both_pdf_legends_label_only_the_first_two_angle_swatches(index: int) ->
             extent = text_width(label.text or "", expected_size)
             assert center == left + width / 2
             assert left < center - extent / 2 < center + extent / 2 < left + width
+            top = Decimal(swatch.attrib["y"])
+            baseline = Decimal(label.attrib["y"])
+            ink_top, ink_bottom = ink_bounds(label.text or "", expected_size)
+            assert top < baseline + ink_top < baseline + ink_bottom < top + width
             if label.text in {"90°", "45°"}:
                 assert label.attrib["fill"] == "#000000"
             else:
@@ -2434,7 +2440,20 @@ def test_both_pdf_legends_label_only_the_first_two_angle_swatches(index: int) ->
                     known_best_builder.PAPER_THEME.ink,
                 }
             assert label.attrib["fill"] != swatch.attrib["fill"]
-    assert len(root.findall(".//svg:rect[@data-feature='legend-swatch']", SVG)) == 9
+    swatches = root.findall(".//svg:rect[@data-feature='legend-swatch']", SVG)
+    assert len(swatches) == 9
+    assert all(node.attrib["width"] == node.attrib["height"] for node in swatches)
+    angle_bottom = max(
+        Decimal(node.attrib["y"])
+        + Decimal(node.attrib["height"])
+        + Decimal(node.attrib["stroke-width"]) / 2
+        for node in swatches[:4]
+    )
+    shade_top = min(
+        Decimal(node.attrib["y"]) - Decimal(node.attrib["stroke-width"]) / 2
+        for node in swatches[4:]
+    )
+    assert shade_top > angle_bottom
     degree_labels = [
         node
         for node in root.iter(f"{{{SVG['svg']}}}text")

@@ -78,6 +78,7 @@ from sqpack.probes import probe
 
 PROBES = Path(__file__).resolve().parent / "probes"
 LAYOUT = probe(PROBES, "measure_atlas_views/layout")
+EXPANSION = probe(PROBES, "measure_atlas_views/expansion")
 MOVE = probe(PROBES, "measure_atlas_views/move")
 HOLD = probe(PROBES, "measure_atlas_views/hold")
 SETTLED = probe(PROBES, "measure_atlas_views/settled")
@@ -369,6 +370,11 @@ def summary(report: dict[str, Any]) -> dict[str, Any]:
 
 def launch(driver: Any) -> Any:
     return driver.chromium.launch(executable_path=os.environ.get(BROWSER_OVERRIDE))
+
+
+def expansion(page: Any, *, interrupt: bool = False) -> dict[str, Any]:
+    """Read real viewport heights through one expansion and optional interruption."""
+    return page.evaluate(EXPANSION, {"interrupt": interrupt})
 
 
 def settle(page: Any) -> None:

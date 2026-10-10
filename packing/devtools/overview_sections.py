@@ -683,7 +683,7 @@ def star_legend() -> str:
     article); the homepage's table keys the star in its legend alone (`rung_legend`)."""
     return (
         f'A star (<span class="site-star" aria-hidden="true">{STAR}</span>) marks a '
-        f"{NEW_RESULT}, as the atlas does: the verified lower bound of a case rests on it "
+        f"{NEW_RESULT}: the verified lower bound of a case rests on it "
         f"now, and it was proved or published on or after {_since()}."
     )
 
@@ -2725,15 +2725,6 @@ ATLAS_PANEL = "atlas-cells"
 ATLAS_REGULARIZED = "regularized"
 
 
-def atlas_star() -> str:
-    """The new-result star on a tile: the site's one star (`STAR`, `.site-star`), as the
-    frontier table's Recent column and the tables of results draw it, after the case's
-    number. It is hidden from assistive technology because the tile's name ends with
-    what it says, "new result" (`NEW_RESULT`), as a starred row's name does
-    (`result_row`); the same words provide its tooltip."""
-    return f'<span class="site-star" aria-hidden="true" title="{NEW_RESULT}">{STAR}</span>'
-
-
 def atlas_regularized() -> tuple[int, ...]:
     """The cases with a regularized drawing, read from the layer's index: each record it
     lists as regularized, whose view `devtools.render_regularized_atlas` has drawn.
@@ -2838,7 +2829,6 @@ def _atlas_cell(
     status: str,
     *,
     regularized: bool = False,
-    new: bool = False,
     side: float | None = None,
     grid_from: int | None = None,
     segment: PackingSegment | None = None,
@@ -2847,7 +2837,7 @@ def _atlas_cell(
 
     The first retained grid packing in a square-bound row identifies its grid
     suffix for layout and accessibility. Derived drawing provenance stays in the atlas
-    index. A star marks any recent displayed contribution to the case.
+    index. Recent-result markers belong in the case and result records.
     """
     from devtools import render_frontier_page as frontier  # noqa: PLC0415
     from devtools.render_case_pages import case_url  # noqa: PLC0415
@@ -2867,14 +2857,12 @@ def _atlas_cell(
     )
     drawing = frontier.drawing_img(n, regularized=regularized, size=ATLAS_UNITS)
     meaning = f", first grid packing in row {row}" if first_grid else ""
-    star = atlas_star() if new else ""
-    recent_name = f", {NEW_RESULT}" if new else ""
-    name = f"n = {n}, {_esc(status)}{meaning}{recent_name}"
+    name = f"n = {n}, {_esc(status)}{meaning}"
     return (
         f'<a class="site-atlas-cell" id="atlas-n-{n}" href="{case_url(n)}" data-case="{n}" '
         f'data-atlas-n="{n}" data-atlas-side="{side}"{square}{grid}{reference} '
         f'data-status="{_esc(status)}" aria-label="{name}"{position}>'
-        f'{drawing}<span class="site-atlas-n">{n}{star}</span></a>'
+        f'{drawing}<span class="site-atlas-n">{n}</span></a>'
     )
 
 
@@ -3036,7 +3024,6 @@ def _atlas_rows(first: int) -> tuple[list[str], str]:
     transitions = grid_transitions(manifest["atlas"]["entries"])
     sides = atlas_enclosing_sides()
     by_n = {case["n"]: case for case in cases}
-    recent = recent_contributions_by_case()
     rows: list[str] = []
     for transition in transitions:
         groups: list[str] = []
@@ -3046,7 +3033,6 @@ def _atlas_rows(first: int) -> tuple[list[str], str]:
                     n,
                     by_n[n]["status"],
                     regularized=n in regularized,
-                    new=recent[n].any,
                     side=sides[n],
                     grid_from=transition.grid.first_n,
                     segment=segment,

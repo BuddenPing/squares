@@ -24,8 +24,8 @@
 // again, and each tile is then animated from where it was to where it is with a
 // transform alone, which the compositor runs without laying anything out. One read, one
 // write, one read; a tile that neither starts nor ends in the window is not animated.
-// What follows the tiles on the page, which a change of their height carries up or down,
-// moves the same way, so nothing jumps under the tiles while they travel.
+// The viewport height reveals added rows with the same timing. Page flow moves what
+// follows it; changes without a height reveal move following elements with FLIP.
 // The tokens `--site-atlas-move-duration` and `--site-atlas-move-easing` time it, and the
 // duration is 0ms for a reader who asks for reduced motion, which switches at once.
 //
@@ -504,7 +504,7 @@
       for (const follower of followers()) {
         rest.set(follower, follower.getBoundingClientRect());
       }
-      return { tiles, rest, scroll: window.scrollY };
+      return { tiles, rest, height: cells.getBoundingClientRect().height, scroll: window.scrollY };
     };
 
     const stop = () => {
@@ -574,7 +574,20 @@
           ]);
         }
       }
-      for (const [follower, last] of now.rest) {
+      // The viewport reveals complete, already prepared rows as its height grows.
+      // Flow carries following content with this animation, so it needs no second FLIP.
+      const changesHeight = Math.abs(now.height - before.height) >= 0.5;
+      if (changesHeight) {
+        moves.push([
+          cells,
+          [
+            { height: `${before.height}px`, overflowY: "hidden", alignContent: "start" },
+            { height: `${now.height}px`, overflowY: "hidden", alignContent: "start" },
+          ],
+          timing,
+        ]);
+      }
+      for (const [follower, last] of changesHeight ? [] : now.rest) {
         const first = before.rest.get(follower);
         if (last.height === 0 || first === undefined) {
           continue;
@@ -699,6 +712,9 @@
     if (sizes !== null) {
       wire(sizes, (tab) => selectSize(asSize(tab.dataset.atlasSizeTab)));
     }
+    // The font-ready getter can flush style. Read it after startup attributes are
+    // settled, alongside arrangement reads and before any tile placement writes.
+    const fontsReady = document.fonts.ready;
     arrange();
 
     if (scales !== null) {
@@ -727,7 +743,7 @@
       }).observe(cells);
     }
 
-    return { arrange, change };
+    return { arrange, change, fontsReady };
   }
 
   globalThis.SiteAtlasView = {

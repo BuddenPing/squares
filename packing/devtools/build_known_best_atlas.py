@@ -261,8 +261,8 @@ SUMMARY_STAR_INSET = Decimal(6)
 SUMMARY_STAR_REFERENCE_SIZE = Decimal(14)
 SUMMARY_STAR_TEXT_INSET = Decimal(17)
 SUMMARY_BADGE_SIZE = Decimal(19)
-#: Color keys occupy a text line, matching the square web legend swatches.
-SUMMARY_LEGEND_SWATCH_LEADING = Decimal("1.4")
+#: Color keys match the adjacent font size, as the square web legend swatches do.
+SUMMARY_LEGEND_SWATCH_LEADING = Decimal(1)
 #: Air between the bottom of the grid and the first legend row's baseline.
 SUMMARY_LEGEND_GAP = Decimal(30)
 #: Air between the last legend row and the explainer, which opens the footer block.
@@ -2421,7 +2421,7 @@ def _legend_row(
                     },
                 )
                 if numeral:
-                    numeral_size = format_svg_number(Decimal("11.5") * type_scale)
+                    numeral_size = format_svg_number(Decimal(footer_size) * Decimal("0.6"))
                     if _text_width(numeral, numeral_size) > swatch_size - type_scale:
                         raise ValueError("a legend swatch label exceeds its square")
                     numeral_top, numeral_bottom = _print_ink_bounds(numeral, numeral_size)

@@ -920,6 +920,11 @@ it.
   neighbours. A headline’s box carries the room the looser line used to give it as margin
   (0.2rem above and 0.3rem below a card’s, 0.5rem and 1rem a popover’s).
 
+- **Detail labels and values.** Across standalone case and result records, tables and
+  popovers, `.site-detail dt` uses the muted support color and medium sans weight.
+  `.site-detail dd` uses the primary reading color, dark in the light theme and light in
+  the dark theme.
+
 - **Names.** The page at `atlas.html` and its navigation entry are **Atlas**. It
   contains the graphical grid, followed by **The Frontier Survey**: the complete record
   of every case with reported and verified bounds.
@@ -1453,9 +1458,11 @@ it.
   started in one batch for `--site-atlas-move-duration` (360ms) with
   `--site-atlas-move-easing` (an ease-out).
   A tile outside the window before and after is not animated; a tile the expander shows
-  for the first time fades in; and what follows the tiles moves with them, so nothing
-  jumps under them. Under `prefers-reduced-motion: reduce` the duration is 0ms and the
-  view switches at once.
+  for the first time fades in.
+  The tile viewport grows or shrinks over the same 360ms, revealing prepared rows
+  smoothly and moving following content through normal page flow.
+  Changes without a height reveal move following content with FLIP. Under
+  `prefers-reduced-motion: reduce` the duration is 0ms and the view switches at once.
   A second press mid-move reads the tiles where they have got to, cancels the first move
   and starts from there, with the focus kept on the tab pressed.
   The final layout is the stylesheet’s, correct with no animation at all, and nothing in
@@ -1511,9 +1518,8 @@ it.
   explanation of each choice.
   PDF drawing scales stay fixed.
 
-- **Atlas marks.** Overview tiles carry the centered case count and an applicable
-  recent-result star, derived from the same recent-contribution flags as the film.
-  The star also retains its tooltip and accessible wording.
+- **Atlas marks.** Homepage and dedicated Atlas tiles carry only the centered case
+  count. Recent-result stars remain in case records and result tables.
   Triangle’s grid segment starts with the ordinary count and its accessible name says
   “first grid packing in row”.
   Dimension and `GRID` captions belong to the print diagrams.
@@ -1527,14 +1533,14 @@ it.
   eight-item legend, including status counts, recency and algebraic degree, remains in
   the printable diagrams.
   The key uses the support colour at the note size (`atlas_legend`) and describes no
-  layout mechanics. The shared swatch is square and as tall as this text’s line box:
-  `--site-atlas-swatch-size` is the note size multiplied by
-  `--site-atlas-legend-leading` (1.4). Angle numerals are centered inside the square;
-  swatch groups and explanations share a baseline.
+  layout mechanics. The web swatch is a square at the legend text’s 1em size.
+  Angle numerals use 0.65em and medium sans weight, centered inside the square; swatch
+  groups and explanations share a baseline.
   On containers at most 52rem wide, the two legend items stack so wrapped explanations
   remain inside the viewport.
-  Printable swatches use the same 1.4 ratio against their existing explanatory text
-  size, preserving the text baseline and packing diagrams.
+  After web review, printable swatches use the adjacent text’s size (19 or 48 pixels),
+  with bold angle labels at 0.6 of that size (11.4 or 28.8 pixels) to preserve the print
+  font’s inset. Packing drawings and explanatory text keep their geometry.
   A case with a retained derived view in `atlas/known-best/regularized/` (X-049) uses
   that selected drawing directly, without a website layer badge, label or legend link.
   The index and atlas documentation keep the provenance.
@@ -1572,9 +1578,9 @@ it.
 - **Homepage Atlas preview.** Reuse the dedicated Atlas’s per-case SVG drawings,
   overview, view/size/scale controls, color legend, complete row and segment placement,
   and Small/Fixed default.
-  Preserve drawing geometry and colors with case-number and applicable-star labels
-  (`think-hyd6`, `think-ngcg`). Initially show 100 cases in Triangle; Grid completes the
-  preview’s rectangular rows for the chosen size and width, as on the dedicated page.
+  Preserve drawing geometry and colors with case-number labels (`think-hyd6`,
+  `think-ngcg`). Initially show 100 cases in Triangle; Grid completes the preview’s
+  rectangular rows for the chosen size and width, as on the dedicated page.
   Both pages use the same tile markup, `SiteAtlasView` layout and animation.
   Center the complete canvas when it fits; when it is wider than the viewport, preserve
   the complete rows and horizontal panning to either endpoint.
@@ -1700,9 +1706,10 @@ it.
   which every atlas cell opened until 2026-10-03, when the case popover took its place
   (the owner, `think-7aar`, `think-necq`).
 
-- **Web Atlas labels.** Tiles show only the case number and any recent-result star
-  (`think-ngcg`). Bounds, algebraic degrees, and evidence icons belong in the case
-  popover. The PDF graphics retain their full labels.
+- **Web Atlas labels.** Tiles show only the case number.
+  Recent-result stars remain in case and result records.
+  Bounds, algebraic degrees, and evidence icons belong in the case popover.
+  The PDF graphics retain their full labels.
   Homepage and dedicated Atlas expansion controls share **Show More**/**Show Less**
   labels and double chevrons.
 

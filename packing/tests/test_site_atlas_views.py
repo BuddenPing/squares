@@ -1546,25 +1546,20 @@ def test_a_linked_size_is_that_size_before_a_tile_is_drawn(seen: Readings) -> No
         "phone, small, every case",
     ],
 )
-def test_atlas_tiles_show_applicable_stars_and_omit_layer_indicators(
+def test_atlas_tiles_show_only_counts_and_omit_layer_indicators(
     seen: Readings, name: str
 ) -> None:
-    """Web Atlas drawings show counts and applicable stars, with details in popovers."""
-    from devtools.result_status import recent_contributions_by_case  # noqa: PLC0415
-
-    new = {n for n, recent in recent_contributions_by_case().items() if recent.any}
-    assert new
+    """Web Atlas drawings show counts, with recency and details in their records."""
     tiles = seen[name]["tiles"]
     for tile in tiles:
         n = tile["n"]
-        assert (tile["star"] is not None) == (n in new), n
-        assert tile["name"].endswith(", new result") == (n in new), n
+        assert tile["star"] is None, n
+        assert "new result" not in tile["name"], n
         assert tile["mark"] is None, n
         assert "regularized" not in tile["name"], n
         assert tile["grid_from"] == (n == FIRST_GRIDS[atlas.row_of(n)]), n
         assert not tile["grid_marker"], n
         assert tile["grid_label"] is None, n
-    assert {tile["n"] for tile in tiles} & new
 
 
 @pytest.mark.parametrize("name", ["default", "grid", "phone", "phone, small, every case"])
