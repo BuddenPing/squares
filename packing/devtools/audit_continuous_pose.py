@@ -34,7 +34,7 @@ Four subcommands, each reading the retained files only:
   receipts (`replay_report`).
 
 **What its author read** (its independence record, for the finite steps' evidence).
-Written on 2026-10-10 by an AI agent (Claude Opus 5.5, the records lane of the #485
+Written on 2026-10-10 by an AI agent (Claude, the records lane of the #485
 follow-up, ``think-xms6``) from the review named above, which states the argument, the
 input formats and every finite quantity, and from that review's scratch measurements
 (``exact_checks.py``, ``make_crate_inputs.py``, ``synthetic_tests*.py``,
