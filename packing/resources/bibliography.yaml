@@ -1714,6 +1714,21 @@ sources:
       rational witnesses derived here by a declared dilation; derived exact facts only, no
       upstream byte retained. Gemini assistance disclosed. No KKT, local or global
       optimality claim.
+  - key: '[Daniel trio126 2026-10-09]'
+    authors: [Daniel]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-09'
+    lineage: independent
+    credit: Daniel after Xu, Chaoweeraprasit
+    short_credit: Daniel after Xu et al.
+    note: >-
+      Three complete exact certificates at 268af529546176a25224ea3b2c7d29cef8d9e911 of
+      n = 126 packings reconstructed from a picture and polished to exact local minima: Ryan
+      Xu's arrangement, at 15/2 + 3 sqrt 2 rounded up to a rational side, and Nate
+      Chaoweeraprasit's SQUISH phases 14 and 10. MIT-licensed source bytes retained; Claude
+      co-authorship disclosed. The source makes no claim and no issue reports it; no local
+      or global optimality is admitted.
 credited_names:
   Nate Chaoweeraprasit (itsnaka): Chaoweeraprasit
   Siddharth Gupta: Gupta

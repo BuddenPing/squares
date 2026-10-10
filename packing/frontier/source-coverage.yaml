@@ -3367,6 +3367,32 @@ sources:
     237, 238, 239 and 263, have no entry, and the 18 poses at 343 to 360 print sides above the
     grid's 19. No selected override or superseded claim is created while house adoption waits
     for jlevy/squares#403; current cases and earlier source ownership remain unchanged.
+- id: evand-trio126-2026-10-09
+  title: Evan Daniel's n126 trio reconstructions at 268af52, no issue
+  role: source-repository
+  url: https://github.com/evand/square-packing/tree/268af529546176a25224ea3b2c7d29cef8d9e911
+  local: resources/web/evand-trio126-2026-10-09/
+  source_key: '[Daniel trio126 2026-10-09]'
+  scope:
+    n_values: [126]
+  reviewed: '2026-10-10'
+  source_date: '2026-10-09'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/results.yaml
+  - resources/web/evand-trio126-2026-10-09/acquisition/claims.json
+  evidence:
+  - E-evand-trio126-certificate-report
+  - E-evand-trio126-exact-feasibility
+  notes: >-
+    The three certificates of search/trio126/ are retained under the source's MIT licence;
+    n126_xu, the one below the case, is admitted at the exact side it states and replayed in all
+    3 native jobs. T-139 records it at V3/C3 on the review of 10 October, which decided it by a
+    third exact route and found 68 of its 126 squares displaced from T-125's, a more precise
+    certificate of the same arrangement. The two SQUISH reconstructions lie above the case and
+    were not replayed. No selected override or superseded claim is created while house adoption
+    waits for jlevy/squares#403; the current case and earlier source ownership remain unchanged.
 selected_overrides:
 - n: 51
   source_id: ry-xu-undilated-n51-2026

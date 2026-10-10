@@ -1045,6 +1045,15 @@ T-138 records the sixteen counts whose ceiling is below the case’s at V3/C3 on
 which derived every witness again from its pinned file; the other 14 in-horizon poses
 have no entry.
 
+**[Daniel trio126 2026-10-09]**: Evan Daniel’s exact rational certificates of three n =
+126 packings reconstructed from a picture, pinned at
+`268af529546176a25224ea3b2c7d29cef8d9e911` and retained under the source’s MIT licence;
+[packet](web/evand-trio126-2026-10-09/README.md).
+Both project exact routes accept `n126_xu.cert`, the one below the case, and refuse both
+controls, and a third exact route agrees.
+T-139 records its side at V3/C3, pending adoption: a more precise certificate of Ryan
+Xu’s arrangement, 68 of whose 126 squares sit elsewhere than in T-125’s.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->

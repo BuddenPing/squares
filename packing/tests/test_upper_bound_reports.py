@@ -26,7 +26,8 @@ from devtools import upper_bound_reports as reports
 
 COUZO = "couzo-exact-certificates-2026-10-09"
 FANG = "fang-two-wedge-certificates-2026-10-10"
-PACKETS = (COUZO, FANG)
+TRIO126 = "evand-trio126-2026-10-09"
+PACKETS = (COUZO, FANG, TRIO126)
 SQUISH_481 = "squish-481-third-request-2026-10-09"
 DELEEUW = "ebdeleeuw-n70-refinement-2026-10-10"
 DERIVED = (SQUISH_481, DELEEUW)
@@ -75,6 +76,10 @@ def test_custody_admits_every_declared_certificate_at_its_printed_side(name: str
     for row in declaration["certificates"]:
         certificate = certificates[row["n"]]
         assert len(certificate.poses) == row["n"]
+        if "/" in row["offered"]:
+            # Offered as the exact fraction the certificate states, as trio126's is.
+            assert certificate.side == Fraction(row["offered"])
+            continue
         places = len(row["offered"].partition(".")[2])
         assert legacy.ceiling_decimal(certificate.side, places) == row["offered"]
 
@@ -809,6 +814,7 @@ def test_the_register_plan_states_each_bound_as_check_standing_reads_it(name: st
         FANG: "2026-10-10",
         SQUISH_481: "2026-10-09",
         MISHAPOLK: "2026-10-09",
+        TRIO126: "2026-10-09",
     }
     assert result["attribution"]["published"] == published.get(name, "2026-10-10")
     evidence = plan["evidence.yaml"]

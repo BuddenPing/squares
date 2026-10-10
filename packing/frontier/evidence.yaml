@@ -30201,3 +30201,95 @@ evidence:
       above their cases are decided and cited by no entry. Finite feasibility only: no lower
       bound, optimum, local minimum, rigidity, novelty or human oversight.
     source_reviewed: '2026-10-10'
+
+  - id: E-evand-trio126-certificate-report
+    claim: upper-bound
+    scope:
+      n_values: [126]
+    assurance: reported
+    reported_method: exact-algebraic
+    performed_by: source-author
+    relationship_to_generator: same-implementation
+    origin: external
+    novelty: previously-published
+    source_key: '[Daniel trio126 2026-10-09]'
+    certificate: packing/resources/web/evand-trio126-2026-10-09/source/search/trio126/
+    replay_status: not-attempted
+    verifiers: []
+    external_review:
+      state: informally-verified
+      date: '2026-10-10'
+      reviewed_by: >-
+        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10 intake pass
+        under think-fvz4, prompted separately from the import lanes
+      note: >-
+        docs/project/reviews/review-2026-10-10-upper-bound-imports-470-and-trio126.md accepted
+        n126_xu.cert for finite feasibility only, with eleven findings (RK-1 to RK-11), none
+        blocking for this certificate; the replay it reproduced is
+        E-evand-trio126-exact-feasibility.
+    limitations: >-
+      This atom records the source's three exact rational certificates at 268af52, of n = 126
+      packings reconstructed from a picture, of which only n126_xu is below the case and cited:
+      Ryan Xu's arrangement, at 11742640687119285146522492579501/10^30, 1.17e-19 above the
+      closed form 15/2 + 3 sqrt 2 its exactsolve reports. The source reports that verify_cert.py
+      and verify_cert2.py accept all three and that each packing is a local minimum, strict
+      modulo exact flat motions; none of its programs ran here. Its README says it makes no
+      claim. The repository replay and its review are E-evand-trio126-exact-feasibility. No
+      local or global optimality is admitted.
+    source_reviewed: '2026-10-10'
+
+  - id: E-evand-trio126-exact-feasibility
+    claim: upper-bound
+    scope:
+      n_values: [126]
+    assurance: verified
+    method: exact-algebraic
+    performed_by: repository
+    relationship_to_generator: independent-implementation
+    origin: replayed-here
+    novelty: previously-published
+    source_key: '[Daniel trio126 2026-10-09]'
+    certificate: packing/resources/web/evand-trio126-2026-10-09/source/search/trio126/n126_xu.cert
+    replay: >-
+      From packing/ with the project interpreter: python -m devtools.upper_bound_reports
+      evand-trio126-2026-10-09 check --replay decides all three retained jobs again through both
+      maintained routes and holds each to its retained row (all equal, 11.8 s wall on
+      2026-10-10); check-claims rebuilds the frozen comparison (equal); python -m
+      devtools.check_half_angle_area decide-imports --workers 2 --imports trio126 decides the
+      certificate by the third route with six controls and holds its side, poses, margins and
+      frozen claim to the record (no disagreement).
+    replay_status: passed
+    verifiers:
+      - V-sqpack-verify
+      - V-check-rational-witness-independent
+      - V-evand-arrangement-receipts
+      - V-upper-bound-reports
+      - V-check-half-angle-area
+    independence_record: docs/project/reviews/review-2026-10-10-upper-bound-imports-470-and-trio126.md
+    external_review:
+      state: informally-verified
+      date: '2026-10-10'
+      reviewed_by: >-
+        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10 intake pass
+        under think-fvz4, prompted separately from the import lanes
+      note: >-
+        Accepted for finite feasibility only. All three retained jobs reproduced on both
+        maintained routes, the frozen comparison rebuilt equal, and the third route agreed with
+        them at the side, every pose, the wall clearance and the frozen claim; its six controls
+        reached their required outcomes. Findings RK-1 to RK-11, none blocking here.
+    limitations: >-
+      The certificate passes both maintained routes and the third route; both kernel controls
+      are refused by both maintained routes and the six third-route controls reach their
+      required outcomes. The receipt's three jobs hold 47250 pair decisions, 11.48 route CPU
+      seconds and 26.27 job wall seconds; the longest job took 10.76 s. The positive clears
+      every wall by exactly 1/(2*10^20) and every pair by a separating-axis gap of
+      9.99999999999999e-21. The retained file equals the upstream file at 268af52. Its poses
+      differ from T-125's at 68 of 126 squares, so it is a more precise certificate of the same
+      arrangement, not T-125's poses refined (RK-7). The kernel's controls are gross (RK-8). No
+      maintained route is the producer's checker; the maintained routes share one parse,
+      half-angle conversion and the separating-axis method, and all three share Fraction
+      arithmetic. The source's checkers, exactsolve and its local-minimum and closed-form
+      statements were not run or decided, no private-worker custody is on file (RK-10), and the
+      reviewer and the producer share a model family (RK-9). Finite feasibility only: no lower
+      bound, optimum, local minimum, rigidity, novelty or human oversight.
+    source_reviewed: '2026-10-10'
