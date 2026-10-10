@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import gzip
 import hashlib
 import json
 from fractions import Fraction
@@ -638,6 +639,105 @@ def test_the_488_and_489_rosters_are_the_counts_their_entries_cite() -> None:
         *(("#488", n) for n in (132, 175, 209, 237, 270, 305)),
         *(("#489", n) for n in (132, 308, 343, 344)),
     ]
+
+
+REGULARIZED = (70, 102, 103, 123, 129, 146, 153, 236, 258, 263, 269, 292, 295, 302, 303)
+
+
+def test_the_regularized_roster_is_its_fifteen_gzipped_certificates_read_alike() -> None:
+    """Each original gzip is decompressed here and read by this route's own parser."""
+    found = route.import_cases(("regularized",))
+    assert [(case.issue, case.n) for case in found] == [("regularized", n) for n in REGULARIZED]
+    admitted_sides = upper.read_facts(route.WEB / route.ALL_IMPORTS["regularized"])
+    for case in found:
+        assert case.read == f"source/search/regularize/lists/certs/n-{case.n:03d}.cert.gz"
+        assert case.side == admitted_sides[case.n].side
+        assert len(case.placements) == case.n
+    # Each count is measured against the side it lies just below, 70 against both.
+    assert {n: route.CREDITED["regularized", n] for n in (70, 103, 258, 303)} == {
+        70: ("T-137", "T-125"),
+        103: ("T-138",),
+        258: ("T-138",),
+        303: ("T-136",),
+    }
+
+
+def _gzip(text: str) -> bytes:
+    """Deterministic gzip of ``text``, as an upstream list might store a certificate."""
+    return gzip.compress(text.encode("utf-8"), mtime=0)
+
+
+def test_a_retained_upstream_gzip_is_held_to_its_stored_bytes_and_its_json_print(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(route, "REPO", tmp_path)
+    packet = tmp_path / "packet"
+    (packet / "acquisition").mkdir(parents=True)
+    (packet / "source/certs").mkdir(parents=True)
+    certificate = _gzip("2 2\n1/2 1/2 0\n3/2 1/2 0\n")
+    printed = _gzip(json.dumps({"n": 2, "S_cert": "2", "S_exact": "2"}))
+    (packet / "source/certs/n-002.cert.gz").write_bytes(certificate)
+    (packet / "source/certs/n-002.json.gz").write_bytes(printed)
+    pin = "2" * 40
+    source = {"source_commit": pin, "pinned_only": [], "archived_path": "packet/source"}
+    (packet / "acquisition/sources.json").write_text(
+        json.dumps({"sources": [source]}), encoding="utf-8"
+    )
+    row = {
+        "n": 2,
+        "path": "certs/n-002.cert.gz",
+        "format": "evand-cert",
+        "offered": "2",
+        "printed_in": f"https://github.com/a/b/blob/{pin}/certs/n-002.json.gz",
+    }
+    declaration = {"certificates": [row], "requested": [2]}
+    (packet / "acquisition/report.json").write_text(json.dumps(declaration), encoding="utf-8")
+    assert route.packet_bytes(packet / "source/certs/n-002.cert.gz").startswith(b"2 2\n")
+    upstream = tmp_path / "upstream"
+    (upstream / "certs").mkdir(parents=True)
+    (upstream / "certs/n-002.cert.gz").write_bytes(certificate)
+    (upstream / "certs/n-002.json.gz").write_bytes(printed)
+    assert route.upstream_problems(packet, upstream) == (2, [])
+    # The same content in another gzip header is other stored bytes.
+    other = gzip.compress(b"2 2\n1/2 1/2 0\n3/2 1/2 0\n", mtime=1)
+    (upstream / "certs/n-002.cert.gz").write_bytes(other)
+    assert route.upstream_problems(packet, upstream) == (
+        2,
+        ["packet n=2: the retained certs/n-002.cert.gz differs"],
+    )
+    (upstream / "certs/n-002.cert.gz").write_bytes(certificate)
+    elsewhere = _gzip(json.dumps({"n": 2, "S_cert": "21/10"}))
+    (packet / "source/certs/n-002.json.gz").write_bytes(elsewhere)
+    (upstream / "certs/n-002.json.gz").write_bytes(elsewhere)
+    assert route.upstream_problems(packet, upstream) == (
+        1,
+        ["packet n=2: certs/n-002.json.gz prints another side than the row offers"],
+    )
+    (upstream / "certs/n-002.json.gz").write_bytes(printed)
+    assert route.upstream_problems(packet, upstream) == (
+        1,
+        ["packet n=2: the retained certs/n-002.json.gz differs"],
+    )
+
+
+def test_a_regularized_slide_too_far_to_match_is_recorded_not_refused(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A gap no symmetry decides is kept with its side difference, and the run goes on."""
+    side = Fraction(2)
+    grid = tuple(placed(GRID))
+    case = route.Imported("regularized", "packet", 4, "certs/n-004.cert.gz", side, grid)
+    monkeypatch.setitem(route.CREDITED, ("regularized", 4), ("T-998", "T-999"))
+    monkeypatch.setitem(route.CREDITED_READERS, "T-998", lambda _n: (side, grid))
+    # Two squares stacked where the grid has two: nearest centres cannot be one to one.
+    stacked = (grid[0], grid[0], grid[2], grid[3])
+    monkeypatch.setitem(route.CREDITED_READERS, "T-999", lambda _n: (side + TINY, stacked))
+    gaps = route.credited_gaps([case])
+    assert gaps["regularized n=4 against T-998"]["moved_beyond"]["1e-9"] == 0
+    assert gaps["regularized n=4 against T-999"] == {
+        "unmatched": "no symmetry matches the two packings square for square",
+        "side_difference": "-1/1000000000000000000000000000000",
+    }
 
 
 @pytest.mark.slow
