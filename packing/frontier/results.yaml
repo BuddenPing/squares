@@ -14179,3 +14179,166 @@ results:
           trust boundary.
         verdict: accepted
         covers: [T-134, T-135, T-136, T-137]
+
+  - id: T-138
+    kind: upper-bound
+    registered: '2026-10-10'
+    headline: Exact witnesses at Mishapolk's printed ceilings, smallest known at 103 and 258
+    claim: >-
+      Exact rational witnesses derived here from Mishapolk's decimal centre-and-angle poses,
+      reported on jlevy/squares#470, prove finite upper bounds at the sixteen counts where the
+      side the source prints, rounded up at 12 decimals, is below the case's ceiling: s(84) <=
+      9.697934799017, s(86) <= 9.820535407499, s(103) <= 10.679232047362, s(105) <=
+      10.789303783751, s(108) <= 10.904821012324, s(127) <= 11.810878787590, s(131) <=
+      11.951105389418, s(132) <= 11.986956226066, s(175) <= 13.767155163551, s(180) <=
+      13.916993522482, s(258) <= 16.563448002138, s(267) <= 16.838828608296, s(270) <=
+      16.936723155038, s(302) <= 17.881306218091, s(303) <= 17.920312372919 and s(306) <=
+      17.963433717497.
+
+      The source's files are decimal poses, not certificates: the cosines and sines of their
+      angles are not rational and their digits are rounded, and at the printed sides 19 of the
+      30 poses in the case corpus are not packings, by up to about 1.3e-15. Each witness is this
+      repository's: the printed centres dilated about the box centre to the 12-decimal ceiling,
+      by the exact ratio the packet declares for each count, and each half-angle tangent rounded
+      down at 32 decimals. The dilation moves no centre by as much as 1e-12, and the rounding no
+      corner by as much as 1e-31.
+
+      The author reports that David Ellsworth's check_packing.py at 40 digits and an independent
+      60-digit separating-axis check, numerical at multiprecision, accept the poses; neither ran
+      here.
+
+      All 90 retained jobs, the 30 in-horizon witnesses with their duplicate-square and
+      outside-container controls, were decided again here on 10 October 2026 by both maintained
+      exact routes and equal their retained rows. A third exact route, half-extent containment
+      and exact intersection area, decided every witness with six controls and derived each
+      again from its pinned upstream file by separate arithmetic, square for square. The
+      witnesses are the project's derivation and no route is the source's code, so the replay is
+      independently re-implemented. The 10 October review found no blocking defect in the
+      bounds.
+
+      Each side is below the ceiling its case holds, and the case records are unchanged, so each
+      is pending adoption. It is the smallest side known only at 103 and 258, where the
+      witnesses are Ryan Xu's and SQUISH's packings refined; at 84, 86, 105, 108, 127, 131, 175,
+      180, 270 and 306 an earlier certificate of Francisco Couzo's (T-128, T-130) is smaller,
+      and at 131, 132, 267, 270, 302 and 303 a later one (T-134, T-136).
+
+      Credit Mishapolk
+      ([square-packing-records](https://github.com/Mishapolk/square-packing-records/tree/dd3da5c753c5ded6cb3b89476193b7b801005415))
+      and, as the issue asks, the discoverers of the packings each started from where it started
+      from the literature: Stenlund, Friedman, Ellsworth, SQUISH (Nate Chaoweeraprasit),
+      Francisco Couzo and Ryan Xu. The issue does not say which count started from which packing
+      and does not name Siddharth Gupta; the review measured 103 as Ryan Xu's packing and 258 as
+      SQUISH's. It discloses Gemini 3.8 assistance with solver scripting, precision checks and
+      formatting.
+    scope:
+      n_values: [84, 86, 103, 105, 108, 127, 131, 132, 175, 180, 258, 267, 270, 302, 303, 306]
+    verification: V3
+    confirmation: C3
+    significance:
+      score: 3
+      rationale: >-
+        Smaller finite construction sides at sixteen counts, 1.15e-12 (258) to 4.37e-03 (132)
+        below the case ceilings; the smallest known when published at 103, 132, 258, 267, 302
+        and 303, and still at 103 (1.49e-10 below the case) and 258 (1.15e-12), each an earlier
+        packing refined. No lower bound or optimum.
+      scored: '2026-10-10'
+      by: think-jpre Mishapolk import (draft; rationale after the 10 October review of issue 470)
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Mishapolk decimal poses 2026-10-09]']
+      published: '2026-10-09'
+    evidence:
+      - E-mishapolk-470-pose-report
+      - E-mishapolk-470-exact-feasibility
+    artifacts:
+      - packing/resources/web/mishapolk-decimal-poses-2026-10-09/README.md
+      - packing/resources/web/mishapolk-decimal-poses-2026-10-09/acquisition/claims.json
+      - packing/resources/web/mishapolk-decimal-poses-2026-10-09/facts/n-084.yaml.gz
+      - packing/resources/web/mishapolk-decimal-poses-2026-10-09/facts/n-086.yaml.gz
+      - packing/resources/web/mishapolk-decimal-poses-2026-10-09/facts/n-103.yaml.gz
+      - packing/resources/web/mishapolk-decimal-poses-2026-10-09/facts/n-105.yaml.gz
+      - packing/resources/web/mishapolk-decimal-poses-2026-10-09/facts/n-108.yaml.gz
+      - packing/resources/web/mishapolk-decimal-poses-2026-10-09/facts/n-127.yaml.gz
+      - packing/resources/web/mishapolk-decimal-poses-2026-10-09/facts/n-131.yaml.gz
+      - packing/resources/web/mishapolk-decimal-poses-2026-10-09/facts/n-132.yaml.gz
+      - packing/resources/web/mishapolk-decimal-poses-2026-10-09/facts/n-175.yaml.gz
+      - packing/resources/web/mishapolk-decimal-poses-2026-10-09/facts/n-180.yaml.gz
+      - packing/resources/web/mishapolk-decimal-poses-2026-10-09/facts/n-258.yaml.gz
+      - packing/resources/web/mishapolk-decimal-poses-2026-10-09/facts/n-267.yaml.gz
+      - packing/resources/web/mishapolk-decimal-poses-2026-10-09/facts/n-270.yaml.gz
+      - packing/resources/web/mishapolk-decimal-poses-2026-10-09/facts/n-302.yaml.gz
+      - packing/resources/web/mishapolk-decimal-poses-2026-10-09/facts/n-303.yaml.gz
+      - packing/resources/web/mishapolk-decimal-poses-2026-10-09/facts/n-306.yaml.gz
+      - packing/resources/web/mishapolk-decimal-poses-2026-10-09/receipts/decimal-pose-margins.json
+      - packing/resources/web/mishapolk-decimal-poses-2026-10-09/receipts/decimal-pose-margins-4e1a601-control.json
+      - packing/resources/web/mishapolk-decimal-poses-2026-10-09/receipts/exact-certification.json.xz
+      - packing/devtools/decimal_pose_margins.py
+      - packing/devtools/upper_bound_reports.py
+      - packing/devtools/check_half_angle_area.py
+      - docs/project/reviews/review-2026-10-10-upper-bound-imports-470-and-trio126.md
+    controls:
+      - packing/tests/test_upper_bound_reports.py
+      - packing/tests/test_decimal_pose_margins.py
+      - packing/tests/test_check_half_angle_area.py
+    notes: >-
+      A separate complete repository replay is retained for all 30 in-horizon witnesses: 30
+      positives and 60 duplicate-square and outside-container controls passed their required
+      outcomes on both routes, 3633654 pair decisions; summed over the 90 jobs, the receipt
+      records 1261.11 route CPU seconds and 3235.53 job wall seconds, the longest job 131.17
+      seconds. Every positive clears every wall by at least 4.73e-16 and every pair by at least
+      6.59e-16.
+
+      The interval receipt measures every pose at 60 working digits, bound to each pose file's
+      digest: at the printed sides 11 are proved packings and 19 are proved not to be; dilated
+      to the ceilings, all 30 are proved packings. Its control receipt proves the first upload's
+      files at 199 and 263, which the errata replaced, not to be packings, matching the overlaps
+      squarepacker reported on the issue.
+
+      V3 and C3 rest on the 10 October review
+      (docs/project/reviews/review-2026-10-10-upper-bound-imports-470-and-trio126.md) and the
+      replay it reproduced (E-mishapolk-470-exact-feasibility). Its findings here: the register
+      plan's text misstated the evidence, and this entry is written instead from the review's
+      proposed text (RK-1); the printed poses are not packings at 19 counts, so the bound rests
+      on the dilation (RK-2); no retained check binds a fact to its upstream bytes, which the
+      review closed once (RK-3); and the witness's generator is this repository (RK-4).
+
+      The release's other 14 in-horizon poses, at 88, 130, 153, 154, 179, 199, 207, 208, 209,
+      236, 237, 238, 239 and 263, print sides above their cases' verified ceilings, by 2.17e-14
+      (238) to 3.51e-09 (263), and have no entry; their witnesses and replays stay in the
+      packet. Its 18 poses at 343 to 360 print sides above the grid's 19. At 132 and 267 the
+      sides are the ones the release's README prints, which the issue does not name.
+
+      The review recommends this entry as the house at 103 and 258 only, crediting Ryan Xu's and
+      SQUISH's packings, each refined by Mishapolk. No house moves until jlevy/squares#403,
+      which rewrites every case record, lands and private-worker custody is on file (RK-10).
+
+      No source program ran here. The two maintained routes, the sqpack rational witness
+      verifier and the independent rational corner checker, share certificate parsing,
+      half-angle conversion, Fraction arithmetic and the separating-axis method. No KKT, local
+      or global optimality is claimed.
+    next_rung: >-
+      V4 and C4 need a second accepted adversarial review of this replay by a distinct reviewer
+      and a retained human oversight record; the 10 October review is one, by an AI agent.
+      Separately, once jlevy/squares#403 lands and private-worker custody is on file (RK-10),
+      adopt this entry as the house at 103 and 258 only, crediting Ryan Xu's and SQUISH's
+      packings, with each earlier house kept as history.
+    reviews:
+      - path: docs/project/reviews/review-2026-10-10-upper-bound-imports-470-and-trio126.md
+        kind: adversarial
+        reviewer: >-
+          AI agent (Claude, model Opus 5.5, claude-opus-5-5, at the reasoning setting its
+          harness gave it, which the agent cannot read), the stage 4 review lane (W2) of the
+          2026-10-10 intake pass under think-fvz4, prompted separately from the import lanes
+          that built the two packets, with no shared context
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-10'
+        scope: >-
+          The 30 exact witnesses derived from Mishapolk's decimal poses (issue 470) and Evan
+          Daniel's n126_xu.cert: both receipts replayed on both maintained routes, the third
+          exact route extended for these packets with sharp controls, every #470 witness derived
+          again from its pinned upstream file by separate arithmetic, the interval receipts
+          reproduced, the arrangements measured against the packings they would be credited to,
+          and the claim comparisons.
+        verdict: accepted
+        covers: [T-138]

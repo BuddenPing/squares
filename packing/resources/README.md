@@ -1032,6 +1032,19 @@ Both project exact routes accept the replayed certificate and refuse both contro
 a third exact route agrees and held the fact to its pinned upstream file.
 T-137 records the side at V3/C3, pending adoption.
 
+**[Mishapolk decimal poses 2026-10-09]**: Mishapolk’s decimal centre-and-angle poses at
+30 counts of the case corpus, pinned at `dd3da5c753c5ded6cb3b89476193b7b801005415`, kept
+as derived exact facts, no upstream byte retained;
+[packet](web/mishapolk-decimal-poses-2026-10-09/README.md).
+The exact rational witnesses are this repository’s: centres dilated about the box centre
+to each printed 12-decimal ceiling and half-angle tangents rounded down at 32 decimals.
+An interval measurement proves every dilated pose a packing at its ceiling, and both
+project exact routes accept all 30 witnesses and refuse all 60 controls.
+T-138 records the sixteen counts whose ceiling is below the case’s at V3/C3 on the
+[review of 10 October](../../docs/project/reviews/review-2026-10-10-upper-bound-imports-470-and-trio126.md),
+which derived every witness again from its pinned file; the other 14 in-horizon poses
+have no entry.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->

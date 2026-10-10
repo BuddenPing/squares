@@ -3542,7 +3542,7 @@ issues:
     opened: '2026-10-09'
     state: open
     kind: result-report
-    triage: pending
+    triage: done
     summary: >-
       Mishapolk reports upper bounds at 28 counts from n = 84 to 306, as 16-digit centre-angle pose
       files with SVGs in Mishapolk/square-packing-records, each side rounded up to 12 decimals and
@@ -3553,19 +3553,45 @@ issues:
       the two files, restate every ceiling, withdraw the fraction, and pin the corrected files at a
       commit given as dd3da5c7b39f3796d19e0970bc2350ef9ea14ad. That id has 39 hex digits; the
       repository's head on 10 October is dd3da5c753c5ded6cb3b89476193b7b801005415, which shares its
-      first seven.
+      first seven. Imported on 10 October 2026 in the mishapolk-decimal-poses-2026-10-09 packet, pinned
+      at dd3da5c by the issue's file digests: the poses are decimal, and 19 of the 30 in the case
+      corpus are not packings at their printed sides, so this repository derived exact rational
+      witnesses by dilating each pose about the box centre to its 12-decimal ceiling. All 30 were
+      replayed on both maintained exact routes, and the review of the same day derived each again
+      from its pinned file by a third exact route, with no blocking defect in the bounds. The
+      fourteen named counts below the case, with 132 and 267 from the release's README, are
+      registered as T-138; the other fourteen lie above their cases and have no entry. The case
+      records wait for jlevy/squares#403.
     read_through: '2026-10-09T09:05:13Z'
     results:
-    - key: twenty-eight-packings
-      claim: s(n) <= S_n at n = 84, 86, 88, 103, 105, 108, 127, 130, 131, 153, 154, 175, 179, 180, 199,
-        207, 208, 209, 236, 237, 238, 239, 258, 263, 270, 302, 303 and 306, each S_n the side of a 16-digit
-        decimal pose file rounded up to 12 decimals, checked by the author with Ellsworth's check_packing.py
-        at 40 digits and a 60-digit separating-axis test.
+    - key: fourteen-below-case
+      claim: s(n) <= S_n at n = 84, 86, 103, 105, 108, 127, 131, 175, 180, 258, 270, 302, 303 and 306,
+        the fourteen of the issue's twenty-eight counts where S_n, the side of a decimal pose file rounded
+        up to 12 decimals, is below the case's verified ceiling; checked by the author with Ellsworth's
+        check_packing.py at 40 digits and a 60-digit separating-axis test.
       source: body
-      not_registered: Triage pending under think-jpre. The certificates are decimal pose files, not rational
-        witnesses, and are not yet retained or checked here.
-      queued: true
-      bead: think-jpre
+      register:
+      - T-138
+      evidence:
+      - E-mishapolk-470-pose-report
+      - E-mishapolk-470-exact-feasibility
+    - key: fourteen-not-below-case
+      claim: s(n) <= S_n at n = 88, 130, 153, 154, 179, 199, 207, 208, 209, 236, 237, 238, 239 and 263,
+        the other fourteen named counts, where S_n lies above the case's verified ceiling by 2.17e-14 to
+        3.51e-09.
+      source: body
+      evidence:
+      - E-mishapolk-470-pose-report
+      - E-mishapolk-470-exact-feasibility
+    - key: readme-132-267
+      claim: s(132) <= 11.986956226066 and s(267) <= 16.838828608296, the 12-decimal ceilings the
+        release's README prints for two poses the issue does not name.
+      source: https://github.com/Mishapolk/square-packing-records/blob/dd3da5c753c5ded6cb3b89476193b7b801005415/README.md
+      register:
+      - T-138
+      evidence:
+      - E-mishapolk-470-pose-report
+      - E-mishapolk-470-exact-feasibility
     - key: n105-closed-form-withdrawn
       claim: A closed-form rational side for n = 105, which squarepacker found smaller than the side of
         square-105.txt.
@@ -3575,6 +3601,7 @@ issues:
       queued: false
     beads:
     - think-jpre
+    - think-fvz4
     answer_bead: think-jpre
     replies: []
     close_when: The import of the corrected certificates and its disposition are on main and the owner

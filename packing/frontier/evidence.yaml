@@ -30093,3 +30093,111 @@ evidence:
       private-worker custody is on file (RI-5). Finite feasibility only: no lower bound,
       optimum, local minimum, rigidity, novelty or human oversight.
     source_reviewed: '2026-10-10'
+
+  - id: E-mishapolk-470-pose-report
+    claim: upper-bound
+    scope:
+      n_values: [84, 86, 88, 103, 105, 108, 127, 130, 131, 132, 153, 154, 175, 179, 180, 199, 207, 208, 209, 236, 237, 238, 239, 258, 263, 267, 270, 302, 303, 306]
+    assurance: reported
+    reported_method: numerical-multiprecision
+    performed_by: source-author
+    relationship_to_generator: same-implementation
+    origin: external
+    novelty: previously-published
+    source_key: '[Mishapolk decimal poses 2026-10-09]'
+    certificate: packing/resources/web/mishapolk-decimal-poses-2026-10-09/acquisition/sources.json
+    precision: {decimal_digits: 40, rounding: source-defined}
+    tolerance: '1e-14'
+    replay_status: not-attempted
+    verifiers: []
+    external_review:
+      state: informally-verified
+      date: '2026-10-10'
+      reviewed_by: >-
+        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10 intake pass
+        under think-fvz4, prompted separately from the import lanes
+      note: >-
+        docs/project/reviews/review-2026-10-10-upper-bound-imports-470-and-trio126.md accepted
+        the derived witnesses for finite feasibility only, with eleven findings (RK-1 to RK-11),
+        RK-1 blocking the register plan's text and not the bounds; the replay it reproduced is
+        E-mishapolk-470-exact-feasibility.
+    limitations: >-
+      This atom records Mishapolk's report at dd3da5c, which the issue's errata pin by a
+      39-digit string that names no commit and the packet resolves by digest (RK-5): decimal
+      centre-and-angle poses, 16 decimals or 36 at 132, 199, 263 and 267, each printed side
+      rounded up at 12 decimals, accepted by David Ellsworth's check_packing.py at precision 40
+      and epsilon 1e-14 and by an unnamed 60-digit separating-axis check, numerical at
+      multiprecision; neither was run here. 132 and 267 are printed in the release's README and
+      not in the issue. No upstream byte is retained; the certificate field names the
+      acquisition record that pins each pose file by digest. At the printed side 19 of the 30
+      in-horizon poses are interval-certified here not to be packings, so the bound rests on the
+      separate confirming entry's derived witnesses, E-mishapolk-470-exact-feasibility. No KKT,
+      local or global optimality is claimed.
+    source_reviewed: '2026-10-10'
+
+  - id: E-mishapolk-470-exact-feasibility
+    claim: upper-bound
+    scope:
+      n_values: [84, 86, 88, 103, 105, 108, 127, 130, 131, 132, 153, 154, 175, 179, 180, 199, 207, 208, 209, 236, 237, 238, 239, 258, 263, 267, 270, 302, 303, 306]
+    assurance: verified
+    method: exact-algebraic
+    performed_by: repository
+    relationship_to_generator: independent-implementation
+    origin: replayed-here
+    novelty: previously-published
+    source_key: '[Mishapolk decimal poses 2026-10-09]'
+    certificate: packing/resources/web/mishapolk-decimal-poses-2026-10-09/facts/
+    replay: >-
+      From packing/ with the project interpreter, as two processes at once: python -m
+      devtools.upper_bound_reports mishapolk-decimal-poses-2026-10-09 check --n 84 88 103 105
+      127 132 175 180 199 208 237 238 270 303 306 --replay and the same with --n 86 108 130 131
+      153 154 179 207 209 236 239 258 263 267 302, which decide all 90 retained jobs again
+      through both maintained routes and hold each to its retained row (all equal, 644.9 s and
+      641.0 s wall on 2026-10-10); check-claims rebuilds the frozen comparison (equal); python
+      -m devtools.decimal_pose_margins check reproduces both interval receipts from the pinned
+      files; python -m devtools.check_half_angle_area decide-imports --workers 2 --imports
+      '#470' trio126 --upstream mishapolk-decimal-poses-2026-10-09 DIRECTORY decides every
+      witness by the third route with six controls each and derives each again from its file
+      fetched at the pin into DIRECTORY (no disagreement, 40.3 s).
+    replay_status: passed
+    verifiers:
+      - V-sqpack-verify
+      - V-check-rational-witness-independent
+      - V-evand-arrangement-receipts
+      - V-upper-bound-reports
+      - V-check-half-angle-area
+    independence_record: docs/project/reviews/review-2026-10-10-upper-bound-imports-470-and-trio126.md
+    external_review:
+      state: informally-verified
+      date: '2026-10-10'
+      reviewed_by: >-
+        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10 intake pass
+        under think-fvz4, prompted separately from the import lanes
+      note: >-
+        Accepted for finite feasibility only. All 90 retained jobs reproduced on both maintained
+        routes in full, the frozen comparison and both interval receipts rebuilt equal, and the
+        third route agreed with them at every side, pose, wall clearance and frozen claim,
+        derived every witness again from its pinned file and reached every one of its 180
+        controls' required outcomes. Findings RK-1 to RK-11; RK-1 blocks only the register
+        plan's text.
+    limitations: >-
+      The 30 witnesses are this repository's derivation from the source's decimal poses by
+      upper_bound_reports' decimal_dilation adapter: centres dilated about the box centre by the
+      declared exact ratio of the 12-decimal ceiling to the printed side, and half-angle
+      tangents rounded down at 32 decimals, so for this claim the generator of the exact witness
+      is this repository (RK-4) and the relation is to the source's code. All 30 positives pass
+      both maintained routes and the third route; all 60 kernel controls are refused by both
+      maintained routes and the 180 third-route controls reach their required outcomes. The
+      receipt's 90 jobs hold 3633654 pair decisions, 1261.11 route CPU seconds and 3235.53 job
+      wall seconds; the longest job took 131.17 s. No square touches a wall: the least wall
+      clearance is 4.74e-16 (84) and the least pair gap 6.59e-16 (238), against a corner
+      movement from the tangent rounding below 1.5e-32. Each fact was derived again from its
+      pinned upstream file by the third route's own parser, dilation and tangent floor in
+      decimal arithmetic on 2026-10-10, and all 5677 squares agree exactly; no retained check
+      binds a fact to those bytes (RK-3). The kernel's controls are gross (RK-8). The maintained
+      routes share one parse, half-angle conversion and the separating-axis method, and all
+      three share Fraction arithmetic. No source checker ran, and no private-worker custody is
+      on file (RK-10). 132 and 267 are decided and the register cites them; the 14 counts at or
+      above their cases are decided and cited by no entry. Finite feasibility only: no lower
+      bound, optimum, local minimum, rigidity, novelty or human oversight.
+    source_reviewed: '2026-10-10'

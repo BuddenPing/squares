@@ -3337,6 +3337,36 @@ sources:
     reproduced all 3 native jobs, decided it by a third exact route and held the fact to its upstream
     certificate fetched at the pin. No selected override or superseded claim is created while house
     adoption waits for jlevy/squares#403; the current case and earlier source ownership remain unchanged.
+- id: mishapolk-decimal-poses-2026-10-09
+  title: Mishapolk's decimal poses at dd3da5c, issue470
+  role: source-repository
+  url: https://github.com/Mishapolk/square-packing-records/tree/dd3da5c753c5ded6cb3b89476193b7b801005415
+  local: resources/web/mishapolk-decimal-poses-2026-10-09/
+  source_key: '[Mishapolk decimal poses 2026-10-09]'
+  scope:
+    n_values: [84, 86, 88, 103, 105, 108, 127, 130, 131, 132, 153, 154, 175, 179, 180, 199, 207, 208, 209, 236, 237, 238, 239, 258, 263, 267, 270, 302, 303, 306]
+  reviewed: '2026-10-10'
+  source_date: '2026-10-09'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/results.yaml
+  - resources/web/mishapolk-decimal-poses-2026-10-09/acquisition/claims.json
+  evidence:
+  - E-mishapolk-470-pose-report
+  - E-mishapolk-470-exact-feasibility
+  notes: >-
+    Decimal centre-and-angle poses, pinned only, with exact rational witnesses derived here by a
+    declared dilation of the centres about the box centre to each printed 12-decimal ceiling and
+    half-angle tangents rounded down at 32 decimals; derived exact facts only, no upstream byte
+    retained. All 30 in-horizon witnesses pass both maintained routes in 90 native jobs and the
+    third route of the 10 October review, which derived each again from its pinned file; the
+    interval receipt proves every dilated pose a packing at its ceiling and 19 printed poses not
+    to be packings. T-138 records the sixteen counts whose ceiling is below the case's at V3/C3;
+    the other fourteen in-horizon poses, at 88, 130, 153, 154, 179, 199, 207, 208, 209, 236,
+    237, 238, 239 and 263, have no entry, and the 18 poses at 343 to 360 print sides above the
+    grid's 19. No selected override or superseded claim is created while house adoption waits
+    for jlevy/squares#403; current cases and earlier source ownership remain unchanged.
 selected_overrides:
 - n: 51
   source_id: ry-xu-undilated-n51-2026

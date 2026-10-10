@@ -1697,6 +1697,23 @@ sources:
       rational centre and half-angle certificate compared against this project's register.
       Derived exact facts only; no upstream byte is retained. OpenAI Codex assistance
       disclosed. No local or global optimality claim.
+  - key: '[Mishapolk decimal poses 2026-10-09]'
+    authors: [Mishapolk]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-09'
+    lineage: builds-on-project
+    credit: Mishapolk after Stenlund, Friedman, Ellsworth, Chaoweeraprasit, Couzo, Xu, Levy
+    short_credit: Mishapolk after Stenlund et al.
+    note: >-
+      Decimal centre-angle poses at dd3da5c753c5ded6cb3b89476193b7b801005415, reported on
+      jlevy/squares#470: 30 within the case corpus and 18 at n = 343 to 360 above the grid
+      bound, from grain-boundary constructions, quasi-static SLSQP on active contact
+      manifolds and active-set KKT Newton refinement, compared against this project's
+      register and its pending submissions, which is the lineage recorded here. Exact
+      rational witnesses derived here by a declared dilation; derived exact facts only, no
+      upstream byte retained. Gemini assistance disclosed. No KKT, local or global
+      optimality claim.
 credited_names:
   Nate Chaoweeraprasit (itsnaka): Chaoweeraprasit
   Siddharth Gupta: Gupta

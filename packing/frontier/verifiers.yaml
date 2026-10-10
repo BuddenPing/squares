@@ -1221,7 +1221,10 @@ verifiers:
       SQUISH's JSON, the centred JSON of issue 483 and derived facts with readers of its
       own, runs six controls per certificate (two gross, and side and pair each at exact
       contact and 10^-40 or 10^-30 past it), and holds every side, pose, margin and
-      claimed side to the maintained routes' retained inputs and the record. Its
+      claimed side to the maintained routes' retained inputs and the record. For issue
+      470 it also derives each witness again from its pinned decimal pose file, with its
+      own parser, dilation and half-angle floor in decimal arithmetic, and measures each
+      arrangement against the packing it would be credited to, which decides nothing. Its
       replay-t128 command drives the kernel's own two-route replay of T-128's receipt.
     source:
       - packing/devtools/check_half_angle_area.py
@@ -1230,7 +1233,8 @@ verifiers:
     note: >-
       Written on 2026-10-10 by the review lane of T-128, T-130 and T-131 from the
       certificate formats and plane geometry, and extended the same day by the review
-      lane of issues 476, 481, 483 and 484. Its author had read both maintained routes,
+      lanes of issues 476, 481, 483 and 484 and of issue 470 and Evan Daniel's n = 126
+      certificate. Its author had read both maintained routes,
       their parser and the importer's adapters before writing it, so it is not
       clean-room; it imports none of their parsing or deciding code and shares Fraction
       with every exact checker here. It is a second pair-deciding procedure within one
@@ -1678,7 +1682,9 @@ verifiers:
     note: >-
       Written for the 2026-10-10 intake pass's upper-bound imports from the formats the
       sources state. sqpack.verify and the independent rational corner checker decide; the
-      10 October review of issues 476, 481, 483 and 484 read it in full.
+      10 October reviews of issues 476, 481, 483 and 484 and of issue 470 read it in full.
+      For issue 470 its decimal_dilation adapter generates the exact witnesses from the
+      source's decimal poses, so there this repository is the witness's generator.
 
   - id: V-rehwaldt-n68-verify
     program: verify.py
