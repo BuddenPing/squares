@@ -610,6 +610,31 @@ def test_writing_the_claims_refuses_a_declaration_the_case_records_no_longer_bea
     assert (packet / reports.CLAIMS).read_bytes() == before
 
 
+def test_a_packets_own_beyond_horizon_row_is_no_report_it_must_declare(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Writing the claims asks for every other source's current row, never the packet's own."""
+    rows = {343: "18.994903529220497", 344: "18.995489275430816"}
+
+    def held_by(source_id: str) -> None:
+        current = {n: {"n": n, "source_id": source_id, "value": v} for n, v in rows.items()}
+        monkeypatch.setattr(
+            reports.coverage_check, "current_beyond_horizon", lambda _coverage: current
+        )
+
+    def beyond(problems: list[str]) -> list[str]:
+        return [problem for problem in problems if "beyond-horizon" in problem]
+
+    held_by(FANG)
+    assert beyond(reports.live_problems(_packet(FANG))) == []
+    held_by("another-source-2026-10-10")
+    assert beyond(reports.live_problems(_packet(FANG))) == [
+        f"n={n}: declare the current beyond-horizon row of another-source-2026-10-10, "
+        f"{value}, as a pending report"
+        for n, value in rows.items()
+    ]
+
+
 def test_a_case_value_that_is_not_its_house_rounded_up_is_refused(
     private: Callable[[str], Path],
 ) -> None:

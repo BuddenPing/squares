@@ -1702,13 +1702,16 @@ sources:
     venue: GitHub
     dated: '2026-10-09'
     lineage: builds-on-project
-    credit: Chaoweeraprasit after Couzo, Xu, Ellsworth, Friedman, Levy
+    credit: Chaoweeraprasit after Couzo, Xu, Goebel, Schadt, Ellsworth, Hajba, Levy
     short_credit: Chaoweeraprasit after Couzo et al.
     note: >-
       Seventeen complete exact certificates at d45669b48cc97ad3aa17a6c847a8d06630f66eac,
       reported on jlevy/squares#481, from SQUISH's Mondrian composition of pieces of
       earlier packings, Couzo's, Xu's, the Kingbird catalogue's and SQUISH's own, compared
-      against this project's register. Derived exact facts only; no upstream byte is
+      against this project's register. The issue's credit line, as edited on 10 October
+      2026, credits Chaoweeraprasit after Francisco Couzo, Ryan Xu, Frits Göbel, Thomas
+      Schadt, David Ellsworth and Károly Hajba, whose packings supplied pieces; Goebel is
+      Göbel in the credit's ASCII. Derived exact facts only; no upstream byte is
       retained. Claude assistance disclosed. No KKT, interval, local or global optimality
       claim.
   - key: '[Deleeuw n70 refinement 2026-10-10]'
@@ -1757,6 +1760,93 @@ sources:
       Chaoweeraprasit's SQUISH phases 14 and 10. MIT-licensed source bytes retained; Claude
       co-authorship disclosed. The source makes no claim and no issue reports it; no local
       or global optimality is admitted.
+  - key: '[Couzo certificates 2026-10-10]'
+    authors: [Couzo]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-10'
+    lineage: builds-on-project
+    credit: Couzo after Chaoweeraprasit, Mishapolk, Xu, Daniel, Ellsworth, Levy
+    short_credit: Couzo after Chaoweeraprasit et al.
+    note: >-
+      Six complete exact certificates at 3ef76349025bf4bfa99c9c3600bcc273f4c33e02, exact
+      optima from Daniel's exact contact solver, refined from Chaoweeraprasit's SQUISH,
+      Mishapolk's and Xu's packings with Daniel's fq, Couzo's basin hopping and Ellsworth's
+      refine_packing. The source checks with Squares Project (Levy) verification code; this
+      project lineage is not independent. The certificates are retained as factual data;
+      the unlicensed prose is hash-pinned. No optimizer, local or global claim.
+  - key: '[Daniel record hunt 3 2026-10-10]'
+    authors: [Daniel]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-10'
+    lineage: builds-on-project
+    credit: Daniel after Fang, Arslanov, Mustafin, Shangitbayev, Couzo, Levy
+    short_credit: Daniel after Fang et al.
+    note: >-
+      Five complete exact certificates at 76a529bc6f36ed05827cae3d1412d6acb5be00fc from the
+      record hunt Hunt 3, unchanged from c013f43, the four reported in issue 489 and one at
+      305 its log drops for issue 488; 308, 343 and 344 grown from Fang's two-wedge packings
+      of issue 484, 132 from Daniel's own lineage of issue 465. MIT-licensed certificates and
+      solver reports retained; Claude assistance disclosed. KKT and jamming statements are
+      the author's numerical evidence; no local or global optimality claim.
+  - key: '[wand125 fine-net n28 n30 2026-10-10]'
+    authors:
+    - wand125
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-10'
+    credit: wand125 after Tokoharu and Levy
+    lineage: builds-on-project
+    note: The n28 and n30 finer-net measure lower-bound reports, s(28) >= 2297/400 at source
+      36b85b9f37efa7cc5d4464805cfb0f2d21576267 and s(30) >= 2357/400 at ff9f2692afe7d1e65a51bb079b61b3710b97fc82,
+      with their data in release square-lower-bounds-v1; the release assets are pinned by size and digest
+      and kept outside Git. Maintained measure, declared-net and full check2 premises accepted at both.
+      Native capture, controls and adoption pending. The enclosing MIT notice does not settle
+      redistribution of the nested verifier, which adapts this project's sqverify_fast, so a maintained
+      replay is not another independent implementation.
+  - key: '[wand125 linear n122 2026-10-10]'
+    authors: [wand125]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-10'
+    credit: wand125 after Tokoharu, Levy, Stromquist, Nagamochi, Burns, Massaccesi
+    short_credit: wand125 after Tokoharu, Levy et al.
+    lineage: builds-on-project
+    note: >-
+      The linear certificate for n = 122 that wand125/square-packing added on 2026-10-10
+      (problems/square-lower-bounds/certificates/mixed_n122_L1126, at a9f76c382d023b4095899c4eb7ea7483b8b87ecf):
+      a measure of point masses, uniform segments and uniform rectangles in D4 orbits, of mass
+      122 - 1/100000, on the 201-angle net of mixed_n101_L1028, checked by code/unified_linear_verify.cpp,
+      giving s(N) >= 563/50 for N >= 122 and raising n = 122 to 126. Its data are in release
+      square-lower-bounds-v1; the 31.8 MB asset is pinned by size and digest and kept outside Git. The
+      T-080 route's exact premises pass and a two-angle replay sample matched; the complete replay and
+      adoption are pending. The enclosing problems/square-lower-bounds notice is MIT.
+  - key: '[Guzhou0806 n40 continuous pose 2026-10-10]'
+    authors: [Guzhou0806]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-10'
+    credit: Guzhou0806 after wand125, Tokoharu, Levy, Stromquist, Burns, Massaccesi
+    short_credit: Guzhou0806 after wand125 et al.
+    lineage: builds-on-project
+    note: >-
+      Release n40-continuous-1340000-199529-20261010 of Guzhou0806/n40-square-packing at
+      71c97d07553d7d5ff5c5c82f0c9d1c75a150a4e3 (committed 2026-10-10T14:30:28Z), reported in a
+      follow-up comment on jlevy/squares#485: s(40) > 1340000/199529 by a continuous-pose
+      interval kernel over 43 slabs of the half-angle tangent and an exact near-axis
+      certificate, on wand125's rect_n40_L67 density, unchanged. Credit is read from its
+      SOURCES.md, which credits the density to wand125, the rectangle-density method and the
+      translation-derivative verification structure to Tokoharu, prior measure and
+      unavoidable-set work to Stromquist, Burns and Massaccesi, says the concave-section bound
+      is informed by the Rust implementation in Joshua Levy's Squares Project (sqverify_fast at
+      ef79288a4) and that the new C++ kernel is not an unchanged replay of it, and gives
+      Guzhou0806's contribution as the continuous-pose extension, the smaller-square coverage,
+      the near-axis patch, the exact composition and their implementation and tests, from
+      "AI-assisted research"; the comment says AI assisted the exploration, proof drafting,
+      implementation, regression tests, packaging and the update under the author's direction,
+      and asks that Joshua Levy / the Squares Project be credited for the concave-section
+      inspiration (web/guzhou-n40-continuous-pose-2026-10-10/README.md). Dated by that commit.
 credited_names:
   Nate Chaoweeraprasit (itsnaka): Chaoweeraprasit
   Siddharth Gupta: Gupta

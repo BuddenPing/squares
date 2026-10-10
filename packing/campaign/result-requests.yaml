@@ -3788,8 +3788,14 @@ issues:
       roundings of it; replayed in full on both maintained exact routes and decided again by a third
       exact route in the review of the same day, which held each fact to its pinned upstream file, with
       no blocking defect. All seventeen are registered together as T-136; squares touch the closed
-      box at every count. The case records wait for jlevy/squares#403.
-    read_through: '2026-10-09T21:59:29Z'
+      box at every count. The case records wait for jlevy/squares#403. The author edited the
+      body twice on 10 October, leaving the certificate commit and the title unchanged: a
+      per-count table of the pieces each packing was composed from, with a list by finder,
+      and a credit line after Francisco Couzo, Ryan Xu, Frits Göbel, Thomas Schadt, David
+      Ellsworth and Károly Hajba, whose packings supplied pieces, verified with David
+      Ellsworth's check_packing.py; T-136's credit and the source's bibliography credit
+      follow it.
+    read_through: '2026-10-10T18:33:00Z'
     results:
     - key: fifteen-new-packings
       claim: s(n) <= S_n at n = 131, 153, 207, 209, 232, 236, 259, 263, 269, 270, 292, 302, 303, 305 and
@@ -3918,8 +3924,16 @@ issues:
       code, with controls A to D; the transfer's finite steps decided again by a first-party exact audit
       sharing no code with the release's, with controls E to H; the mathematics reviewed the same day
       with no blocking defect. Both bounds are registered together as T-133, and n = 40's reported and
-      verified lower bounds move to 335427/50000.
-    read_through: '2026-10-10T07:53:18Z'
+      verified lower bounds moved to 335427/50000. A comment of 14:50 UTC the same day reports
+      s(40) > 1340000/199529 = 6.7158157460... by a new continuous-pose kernel on the same density, at
+      71c97d07553d7d5ff5c5c82f0c9d1c75a150a4e3 with release n40-continuous-1340000-199529-20261010;
+      wand125's review does not cover it. Imported the same day: the release retained in the
+      guzhou-n40-continuous-pose-2026-10-10 packet, both kernels rebuilt into the CI run's binaries and
+      replayed in full here, the producer's code, with their controls; the finite steps decided again
+      by a first-party exact audit and the near-axis statement by sqverify-fast; the mathematics
+      reviewed with no blocking defect. It is registered as T-145, and n = 40's reported and verified
+      lower bounds move to 1340000/199529.
+    read_through: '2026-10-10T14:50:00Z'
     results:
     - key: s40-clipped-corner
       claim: s(40) > 335427/50000 = 6.70854, by excluding a container of side exactly 335427/50000 and
@@ -3939,8 +3953,25 @@ issues:
       evidence:
       - E-n040-guzhou-clipped-corner-report
       - E-n040-guzhou-clipped-corner-sqverify-fast-replay
+    - key: s40-continuous-pose
+      claim: >-
+        s(40) > 1340000/199529 = 6.715815746082023..., by excluding a container of side exactly
+        1340000/199529 and compactness: wand125's rect_n40_L67 density, unchanged, captures at least
+        4999/5000 in every square of side 199529/200000 over the continuous pose domain (43 closed
+        slabs in t = tan(theta/2) over [10^-6, 83/200], and an axis certificate at side
+        997643/1000000 for t in [0, 10^-6]), and 40 * 4999/5000 - 3999/100 = 1/500 > 0. It is
+        72586117/9976450000 above T-133.
+      source: https://github.com/jlevy/squares/issues/485#issuecomment-6098734391
+      register:
+      - T-145
+      evidence:
+      - E-n040-guzhou-continuous-pose-report
+      - E-n040-guzhou-continuous-pose-kernel-replay
+      - E-n040-guzhou-continuous-pose-finite-audit
+      - E-n040-guzhou-continuous-pose-crate-axis
     beads:
     - think-3oi5
+    - think-xms6
     answer_bead: think-3oi5
     replies: []
     close_when: The import and its review disposition are on main and the owner has posted the resulting
@@ -3979,3 +4010,112 @@ issues:
     replies: []
     close_when: The reported import and its review disposition are on main and the owner has posted the
       resulting state.
+  - number: 488
+    title: '132-305: registration request'
+    author: franciscouzo
+    opened: '2026-10-10'
+    state: open
+    kind: result-report
+    triage: done
+    summary: >-
+      Francisco Couzo reports six exact rational certificates, at n = 132, 175, 209, 237, 270 and
+      305, in franciscouzo/square-packing certificates/ at 3ef76349025bf4bfa99c9c3600bcc273f4c33e02
+      in Evan Daniel's half-angle format, all exact optima from Evan Daniel's exact contact solver.
+      The commit adds n209 and changes eight certificates (132, 175, 237, 270, 303, 305, 338, 340);
+      the other 54 are byte-identical to the issue-476 packet's copies. Imported on 10 October 2026:
+      all nine added or changed certificates retained in the couzo-certificates-2026-10-10 packet
+      and passing both maintained exact routes, and the six requested decided again by the third
+      exact route. Each requested side is below its case ceiling; at 209, 237, 270 and 305 it is
+      below SQUISH's #481, and at 132 issue #489's exact side is smaller still. The review of the
+      same day reproduced the replay and found no blocking defect, and the six are registered
+      together as T-140 at V3/C3; the case records wait for jlevy/squares#403. Author checkers
+      and KKT statements were not run here; no optimality is claimed.
+    read_through: '2026-10-10T14:08:32Z'
+    results:
+    - key: six-exact-certificates
+      claim: s(n) <= S_n at n = 132 (11.986953587255), 175 (13.767120724693), 209 (14.946223226447),
+        237 (15.902949607678), 270 (16.929775353542) and 305 (17.951139772207), each S_n an exact
+        rational side rounded up to 12 decimals.
+      source: body
+      register:
+      - T-140
+      evidence:
+      - E-couzo-488-certificate-report
+      - E-couzo-488-exact-feasibility
+    - key: kkt-no-descent
+      claim: Each of the six lies within about 1e-19 of its KKT point, and the corner-corner MILP finds
+        no first-order descent in any branch.
+      source: body
+      not_registered: Numerical evidence of local optimality, not a bound on s(n); recorded as reported
+        in E-couzo-488-certificate-report and not checked here.
+      queued: false
+    - key: unnamed-303-338-340
+      claim: The same commit changes three certificates the issue does not name, s(303) <= 17.917365675353,
+        s(338) <= 18.907150436394 and s(340) <= 18.939701150684, as certificates/README.md prints them.
+      source: source
+      not_registered: Not requested. Compared in the packet's claim record; 303 is above issue 481's exact
+        side, and 338 and 340 lie beyond the case corpus below Couzo's own tracked rows. Each is an
+        import of its own.
+      queued: false
+    beads:
+    - think-6uv7
+    answer_bead: think-6uv7
+    replies: []
+    close_when: The import and its disposition are on main and the owner has posted the resulting state;
+      optimality and the credit for the starting packings' constructions stay with their sources.
+  - number: 489
+    title: 'New packings: s(132), s(308), s(343), s(344): registration request'
+    author: evand
+    opened: '2026-10-10'
+    state: open
+    kind: result-report
+    triage: done
+    summary: >-
+      Evan Daniel reports four exact rational certificates from the record hunt Hunt 3, at n = 132,
+      308, 343 and 344, in evand/square-packing search/packer/candidates at c013f43, built with his
+      quality-diversity basin explorer; 308, 343 and 344 build on Kevin Fang's #484 packings. No
+      optimality is claimed; the KKT and jamming statements are the author's numerical evidence.
+      Imported on 10 October 2026: retained at the branch head
+      76a529bc6f36ed05827cae3d1412d6acb5be00fc (byte-identical files) in the
+      evand-record-hunt3-2026-10-10 packet with their KKT points, inputs and solver reports; all four,
+      and the unnamed hunt3_n305 certificate, pass both maintained exact routes, and the third exact
+      route decides the four. 132 is below every case and pending side, issue #488's included, by
+      1.27e-3; 308 is below the grid and Kevin Fang's #484. The review of the same day reproduced the
+      replay and found no blocking defect, and both are registered together as T-141 at V3/C3; the
+      case records wait for jlevy/squares#403. 343 and 344 lie beyond the case corpus, below #484's
+      sides there, and are verified beyond-horizon rows that supersede #484's. The n305 side equals
+      #488's exactly; the author's log gives it to Couzo, and no entry cites it. Author checkers and
+      KKT evidence were not run here.
+    read_through: '2026-10-10T14:47:57Z'
+    results:
+    - key: hunt3-132-308
+      claim: s(132) <= 11.985680198845808811522231964102 and s(308) <= 17.998269879526255875387992744507,
+        each the exact rational side of a Hunt 3 certificate.
+      source: body
+      register:
+      - T-141
+      evidence:
+      - E-evand-489-hunt3-report
+      - E-evand-489-exact-feasibility
+    - key: hunt3-343-344
+      claim: s(343) <= 18.978232523635611279730512106023 and s(344) <= 18.994450514277401521114135796864,
+        beyond the 1..324 case corpus.
+      source: body
+      evidence:
+      - E-evand-489-hunt3-report
+      - E-evand-489-exact-feasibility
+    - key: kkt-local-minima
+      claim: Each exact point is an 80-digit KKT point with positive multipliers (least 1.8e-7), a reduced
+        Hessian positive semidefinite modulo exact flat motions (132 31, 308 52, 343 19, 344 71) and
+        jammed in every corner-corner branch by a first-order MILP; numerical evidence, not interval proofs.
+      source: body
+      not_registered: Numerical evidence of local optimality, not a bound on s(n); recorded as reported
+        in E-evand-489-hunt3-report and not checked here.
+      queued: false
+    beads:
+    - think-xm4h
+    answer_bead: think-xm4h
+    replies: []
+    close_when: The import and its disposition, including the beyond-horizon counts, are on main and the
+      owner has posted the resulting state; Kevin Fang's credit for the two-wedge constructions and
+      optimality stay with their sources.

@@ -575,6 +575,24 @@ adversarial kernel runs, the release’s oracle test and the 401-direction nodal
 statement; what the source reports and this review did not run is the complete 43-slab
 run, which its two receipts and its CI run report.
 
+## Note of 10 October 2026: the Register Id and Control H
+
+Added by records lane R3 of the same intake pass (`think-fvz4`); the review above is
+unchanged. The register entry this review calls `T-NNN`, to be assigned, is `T-145`,
+taken in the commit that registered it at `V3`/`C3`, which cites this review in its
+`reviews`; both lower-bound lanes of `n-040.md` moved to $1340000/199529$ in the same
+commit, with `T-133` kept as history.
+
+One line of the replay contract is corrected.
+Control H as written, $\tau = 1/2$ in the axis header, cannot give `AXIS_TEST_REFUSED`:
+$1/2$ is below the axis minimum, so the axis kernel proves it, `AXIS_COVERAGE_PROVED`,
+exit 0. The refusal the control intends is at a threshold just above the minimum: the
+replay ran $\tau = 999804/10^6$, which the kernel refused with `AXIS_TEST_REFUSED`, exit
+2, beside $\tau = 999803/10^6$, just below, which it proved; it also ran H as written
+and recorded its exit 0. The contract’s row H should read “$\tau = 999804/10^6$ in the
+axis header: `AXIS_TEST_REFUSED`, exit 2”. No finding or verdict changes.
+Ids are provisional until merged to `main`.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->

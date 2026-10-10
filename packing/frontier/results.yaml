@@ -13938,10 +13938,12 @@ results:
       pending adoption.
 
       Credit Nate Chaoweeraprasit (https://github.com/itsnaka/squish-certs), using SQUISH
-      and its Mondrian composition method, with the packings the pieces came from as the
-      source names them: the Kingbird catalogue's packing of 5 and former records at 11,
-      50, 152, 202 and 241, Francisco Couzo's packings of 182 and 180, Ryan Xu's of 123,
-      129 and 175, and SQUISH's own earlier packings. The source states that the solver,
+      and its Mondrian composition method, after Francisco Couzo, Ryan Xu, Frits Göbel,
+      Thomas Schadt, David Ellsworth and Károly Hajba, whose packings supplied pieces, as
+      the issue's credit line names them. Per count, the issue lists the pieces: the
+      Kingbird catalogue's packing of 5 and former records at 11, 50, 152, 202 and 241,
+      Francisco Couzo's packings of 182 and 180, Ryan Xu's of 123, 129 and 175, and
+      SQUISH's own earlier packings. The source states that the solver,
       its verification and the issue were written with Claude Opus 5.5 under the author's
       direction.
     scope:
@@ -14461,3 +14463,666 @@ results:
           and the claim comparisons.
         verdict: accepted
         covers: [T-138, T-139]
+
+  - id: T-140
+    kind: upper-bound
+    registered: '2026-10-10'
+    headline: Six more exact rational certificates from Francisco Couzo
+    claim: >-
+      Six complete rational source certificates by Francisco Couzo, reported on
+      jlevy/squares#488, prove finite upper bounds at the exact sides they state: s(132) <=
+      11.986953587254420950497823747297, s(175) <= 13.767120724692313217301436951952, s(209)
+      <= 14.946223226446451055256712327571, s(237) <= 15.90294960767783168971278840528,
+      s(270) <= 16.929775353541359582336028215624 and s(305) <=
+      17.951139772206997545942513172626.
+
+      Each certificate gives a rational side and, for each unit square, a rational centre
+      and the tangent of its half-angle, in Evan Daniel's format. The author reports that
+      all six pass Evan Daniel's verify_cert.py and a copy of this repository's sqpack
+      verifier in exact rational arithmetic, and that all six are exact optima from Evan
+      Daniel's exact contact solver at 80 digits, each within about 1e-19 of its KKT point,
+      with no first-order descent found by the corner-corner MILP in any branch; those
+      statements are the author's.
+
+      All 27 retained jobs of the release's nine-count replay, the six positives with their
+      duplicate-square and outside-container controls among them, were decided again here
+      on 10 October 2026 by both maintained exact routes and equal their retained rows, and
+      a third exact route, half-extent containment and exact intersection area, decided the
+      six with six controls each. One maintained route is the verifier the source ran; the
+      independent rational corner checker and the third route are independently
+      re-implemented. The 10 October review found no blocking defect.
+
+      Each side is below the ceiling its case holds; the case records are unchanged until a
+      house is adopted, so each is pending adoption.
+
+      Credit Francisco Couzo (https://github.com/franciscouzo/square-packing), with the
+      packings each started from, as the author asks: Nate Chaoweeraprasit's SQUISH
+      packings from issue 481 at 209, 237, 270 and 305, Mishapolk's at 132 (issue 470) and
+      Ryan Xu's at 175 (issue 432). They were improved by Evan Daniel's fq (132, 175, 209,
+      237 and 305), the author's basin hopping (175 and 270) and David Ellsworth's
+      refine_packing (132, 175 and 270), and Evan Daniel's exact contact solver wrote all
+      six. The search code and the request were written with Claude under the author's
+      direction.
+    scope:
+      n_values: [132, 175, 209, 237, 270, 305]
+    verification: V3
+    confirmation: C3
+    significance:
+      score: 3
+      rationale: >-
+        Smaller finite construction sides at n = 132, 175, 209, 237, 270 and 305, 7.27e-04
+        to 8.03e-03 below the case ceilings; no lower bound or optimum.
+      scored: '2026-10-10'
+      by: think-6uv7 Francisco Couzo import
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Couzo certificates 2026-10-10]']
+      published: '2026-10-10'
+    evidence:
+      - E-couzo-488-certificate-report
+      - E-couzo-488-exact-feasibility
+    artifacts:
+      - packing/resources/web/couzo-certificates-2026-10-10/README.md
+      - packing/resources/web/couzo-certificates-2026-10-10/acquisition/claims.json
+      - packing/resources/web/couzo-certificates-2026-10-10/source/certificates/n132.cert
+      - packing/resources/web/couzo-certificates-2026-10-10/source/certificates/n175.cert
+      - packing/resources/web/couzo-certificates-2026-10-10/source/certificates/n209.cert
+      - packing/resources/web/couzo-certificates-2026-10-10/source/certificates/n237.cert
+      - packing/resources/web/couzo-certificates-2026-10-10/source/certificates/n270.cert
+      - packing/resources/web/couzo-certificates-2026-10-10/source/certificates/n305.cert
+      - packing/resources/web/couzo-certificates-2026-10-10/receipts/exact-certification.json.xz
+      - packing/devtools/upper_bound_reports.py
+      - packing/devtools/check_half_angle_area.py
+      - docs/project/reviews/review-2026-10-10-upper-bound-imports-488-489.md
+    controls:
+      - packing/tests/test_upper_bound_reports.py
+      - packing/tests/test_upper_bound_reports_488_489.py
+      - packing/tests/test_check_half_angle_area.py
+    notes: >-
+      A separate complete repository replay is retained for n = 132, 175, 209, 237, 270,
+      303, 305, 338 and 340: 9 positives and 18 duplicate-square and outside-container
+      controls passed their required outcomes on both routes, 1899504 pair decisions; summed
+      over the 27 jobs, the receipt records 388.0 route CPU seconds and 393.15 job wall
+      seconds, the longest job 25.21 seconds. Every positive clears every wall by at least
+      5.00e-21 and every pair by at least 9.99e-21.
+
+      V3 and C3 rest on the 10 October review
+      (docs/project/reviews/review-2026-10-10-upper-bound-imports-488-489.md) and the replay
+      it reproduced (E-couzo-488-exact-feasibility). Its findings here are non-blocking: the
+      kernel's controls are gross (RL-4), sqpack.verify is the copy the source ran (RL-5),
+      and no private-worker custody is on file (RL-6). The claim record reads issue 481's
+      and issue 489's sides exactly from their packets, as the review proposed (RL-2).
+
+      At 175, 209, 237, 270 and 305 the certificate is the smallest known: below the case's
+      ceiling by 1.78e-03, 3.39e-03, 7.27e-04, 8.03e-03 and 1.82e-03; below issue 481's
+      exact sides (T-136) at 209, 237, 270 and 305 by 4.28e-07, 3.96e-05, 4.77e-06 and
+      5.64e-05; below T-130 and issue 476's one certificate at 175 by 3.44e-05; and below
+      issue 476's sides at 237 and 270 by 7.21e-04 and 6.94e-03, T-130's at 270 by 6.95e-03
+      and Mishapolk's issue 470 prints.
+
+      At 132 it is below the case's ceiling (Francisco Couzo, improved by Evan Daniel, T-098)
+      by 4.37e-03, below issue 476's side by 6.06e-07, T-131's by 1.46e-04 and Mishapolk's
+      print by 2.64e-06, but issue 489's exact side (T-141) is smaller by 1.27e-03. At 305
+      the Hunt 3 commit of issue 489 holds a certificate of exactly this side, the same
+      arrangement up to a quarter turn; the source's log gives it to Couzo, and no entry
+      cites it (RL-3).
+
+      The review recommends this entry as the house at 175, 209, 237, 270 and 305, crediting
+      the packings each started from; at 132 it stays verified, second to T-141. No house
+      moves until jlevy/squares#403, which rewrites every case record, lands and
+      private-worker custody is on file (RL-6).
+
+      The same commit changes 3 further certificates the issue does not name, at n = 303,
+      338 and 340, and leaves 54 byte-identical to the issue-476 certificates; the packet's
+      claim record compares the three, and each is an import of its own. Whether 338 and 340
+      replace the record's beyond-horizon rows is the owner's decision (RL-9).
+
+      The source's own checkers were not run here. No two independent methods, human
+      oversight or optimality is claimed.
+    next_rung: >-
+      V4 and C4 need a second accepted adversarial review of this replay by a distinct
+      reviewer and a retained human oversight record; the 10 October review is one, by an
+      AI agent. Separately, once jlevy/squares#403 lands and private-worker custody is on
+      file (RL-6), adopt this entry as the house at 175, 209, 237, 270 and 305, with each
+      earlier house kept as history.
+    reviews:
+      - path: docs/project/reviews/review-2026-10-10-upper-bound-imports-488-489.md
+        kind: adversarial
+        reviewer: >-
+          AI agent (Claude, at maximum reasoning effort), the stage 4 review lane (W2) of
+          the 2026-10-10 intake pass under think-fvz4, prompted separately from the import
+          lanes that built the two packets, with no shared context
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-10'
+        scope: >-
+          Finite feasibility of the ten certificates the two imports' entries cite: issue
+          488 at 132, 175, 209, 237, 270 and 305; issue 489 at 132 and 308, with 343 and 344
+          beyond the corpus. Both retained receipts replayed on both maintained routes, the
+          third exact route with its sharp controls, every retained and pinned file held to
+          its bytes fetched at the pin, admission against each print, the claim comparisons
+          and each route's trust boundary.
+        verdict: accepted
+        covers: [T-140, T-141]
+
+  - id: T-141
+    kind: upper-bound
+    registered: '2026-10-10'
+    headline: Exact rational certificates at 132 and 308 from Evan Daniel's third record hunt
+    claim: >-
+      Two complete rational source certificates by Evan Daniel, reported on
+      jlevy/squares#489, prove finite upper bounds at the exact sides they state: s(132) <=
+      11.985680198845808811522231964102 and s(308) <= 17.998269879526255875387992744507.
+
+      The same release states s(343) <= 18.978232523635611279730512106023 and s(344) <=
+      18.994450514277401521114135796864, beyond the case corpus; the source register tracks
+      those as beyond-horizon rows, proved by the same evidence.
+
+      Each certificate gives a rational side and, for each unit square, a rational centre
+      and the tangent of its half-angle, in Evan Daniel's format, each side printed in full.
+      The author reports that his two exact rational checkers, verify_cert.py and
+      verify_cert2.py, with different geometry, pass all four, with least certified
+      clearances of 1e-20 for pairs and 5e-21 for walls. Each side is an 80-digit KKT point
+      with positive multipliers on the load-bearing contacts, a reduced Hessian positive
+      semidefinite modulo exact flat motions and a jammed first-order MILP in every
+      corner-corner branch; those are numerical evidence, as the source says, not proofs.
+
+      All 15 retained jobs of the release's five-count replay, the four positives with
+      their duplicate-square and outside-container controls among them, were decided again
+      here on 10 October 2026 by both maintained exact routes and equal their retained rows,
+      and a third exact route, half-extent containment and exact intersection area, decided
+      the four with six controls each. No route here is the source's code, so the replay is
+      independently re-implemented. The 10 October review found no blocking defect.
+
+      Each side is below the ceiling its case holds, at 308 the grid's 18; the case records
+      are unchanged until a house is adopted, so each is pending adoption.
+
+      Credit Evan Daniel (https://github.com/evand/square-packing), whose quality-diversity
+      basin explorer with a two-parent crossover move found all four. The packings at 308,
+      343 and 344 build on Kevin Fang's packings from issue 484 in the
+      Arslanov-Mustafin-Shangitbayev two-wedge family, and the author asks that the
+      construction be credited to him: 344 is his packing polished and moved by a
+      corner-corner descent, 308 his packing polished and moved seven explorer steps, and 343
+      his 344 less one square, in a different basin from his 343. The packing at 132 is the
+      author's own lineage from issue 465. The search code and the request were written with
+      Claude under the author's direction.
+    scope:
+      n_values: [132, 308]
+    verification: V3
+    confirmation: C3
+    significance:
+      score: 3
+      rationale: >-
+        Smaller finite construction sides at n = 132 and 308, 1.73e-03 to 5.65e-03 below the
+        case ceilings; no lower bound or optimum.
+      scored: '2026-10-10'
+      by: think-xm4h Evan Daniel import
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Daniel record hunt 3 2026-10-10]']
+      published: '2026-10-10'
+    evidence:
+      - E-evand-489-hunt3-report
+      - E-evand-489-exact-feasibility
+    artifacts:
+      - packing/resources/web/evand-record-hunt3-2026-10-10/README.md
+      - packing/resources/web/evand-record-hunt3-2026-10-10/acquisition/claims.json
+      - packing/resources/web/evand-record-hunt3-2026-10-10/acquisition/beyond-horizon-claims.json
+      - packing/resources/web/evand-record-hunt3-2026-10-10/source/search/packer/candidates/hunt3_n132.cert
+      - packing/resources/web/evand-record-hunt3-2026-10-10/source/search/packer/candidates/hunt3_n308.cert
+      - packing/resources/web/evand-record-hunt3-2026-10-10/receipts/exact-certification.json.xz
+      - packing/devtools/upper_bound_reports.py
+      - packing/devtools/check_half_angle_area.py
+      - docs/project/reviews/review-2026-10-10-upper-bound-imports-488-489.md
+    controls:
+      - packing/tests/test_upper_bound_reports.py
+      - packing/tests/test_upper_bound_reports_488_489.py
+      - packing/tests/test_check_half_angle_area.py
+    notes: >-
+      A separate complete repository replay is retained for n = 132, 305, 308, 343 and 344:
+      5 positives and 10 duplicate-square and outside-container controls passed their
+      required outcomes on both routes, 1319598 pair decisions; summed over the 15 jobs, the
+      receipt records 308.35 route CPU seconds and 409.47 job wall seconds, the longest job
+      43.27 seconds. Every positive clears every wall by at least 5.00e-21 and every pair by
+      at least 9.99e-21.
+
+      V3 and C3 rest on the 10 October review
+      (docs/project/reviews/review-2026-10-10-upper-bound-imports-488-489.md) and the replay
+      it reproduced (E-evand-489-exact-feasibility). Its findings here are non-blocking: the
+      kernel's controls are gross (RL-4) and no private-worker custody is on file (RL-6).
+      The claim record reads issue 484's and issue 488's sides exactly from their packets,
+      as the review proposed (RL-2).
+
+      At n = 132 the certificate is the smallest known: below the case's ceiling (Francisco
+      Couzo, improved by Evan Daniel, T-098) by 5.65e-03, issue 488's exact side (T-140) by
+      1.27e-03, issue 476's by 1.27e-03, T-131's by 1.42e-03 and Mishapolk's issue 470 print
+      by 1.28e-03. At 308 it is below the grid's 18, which the case holds in both lanes, by
+      1.73e-03, and below Kevin Fang's issue 484 side (T-135) by 1.04e-03.
+
+      At 343 and 344 there is no case record: the sides are 2.18e-02 and 5.55e-03 below the
+      grid's 19 and 1.67e-02 and 1.04e-03 below issue 484's, and the source register keeps
+      them as dated beyond-horizon rows at assurance verified (RL-7), with issue 484's rows
+      there kept as superseded.
+
+      The review recommends this entry as the house at 132 and 308, crediting Kevin Fang's
+      construction at 308 as the author asks. No house moves until jlevy/squares#403, which
+      rewrites every case record, lands and private-worker custody is on file (RL-6).
+
+      The same commit holds 1 further certificate the issue does not name, at n = 305, whose
+      exact side equals issue 488's there; the source's log gives it to Couzo, and no entry
+      cites it (RL-3).
+
+      The source's own checkers were not run here. No two independent methods, human
+      oversight or optimality is claimed.
+    next_rung: >-
+      V4 and C4 need a second accepted adversarial review of this replay by a distinct
+      reviewer and a retained human oversight record; the 10 October review is one, by an
+      AI agent. Separately, once jlevy/squares#403 lands and private-worker custody is on
+      file (RL-6), adopt this entry as the house at 132 and 308, with each earlier house
+      kept as history.
+    reviews:
+      - path: docs/project/reviews/review-2026-10-10-upper-bound-imports-488-489.md
+        kind: adversarial
+        reviewer: >-
+          AI agent (Claude, at maximum reasoning effort), the stage 4 review lane (W2) of
+          the 2026-10-10 intake pass under think-fvz4, prompted separately from the import
+          lanes that built the two packets, with no shared context
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-10'
+        scope: >-
+          Finite feasibility of the ten certificates the two imports' entries cite: issue
+          488 at 132, 175, 209, 237, 270 and 305; issue 489 at 132 and 308, with 343 and 344
+          beyond the corpus. Both retained receipts replayed on both maintained routes, the
+          third exact route with its sharp controls, every retained and pinned file held to
+          its bytes fetched at the pin, admission against each print, the claim comparisons
+          and each route's trust boundary.
+        verdict: accepted
+        covers: [T-140, T-141]
+
+  - id: T-142
+    kind: lower-bound
+    registered: '2026-10-10'
+    headline: "Mixed rectangle-measure lower bound `s(28) ≥ 2297/400` reported, on a 2,073-direction declared net"
+    claim: >-
+      A rectangle measure of wand125/square-packing, published on 10 October 2026 and
+      reported on no issue, is reported to prove s(28) >= 2297/400 = 5.7425.
+
+      The certificate, mixed_n28_L57425, is a density of 631 uniform rectangles in D4 orbits,
+      and no point mass, of total mass 2799999/100000, on a net its candidate declares:
+      core side 4999/5000 and 2,073 half-angle tangents of step 1/5002, the net of T-102,
+      T-103 and T-132. Since 4999/5000 (1 + 1/5002) = 25009997/25010000 < 1, and the last
+      tangent 1036/2501 is past tan(pi/8), every unit square contains a concentric core at a
+      net angle strictly in its interior.
+
+      The source reports every such core capturing mass at least one at all 2,073
+      directions, by sqverify-proof-net, its copy of this repository's sqverify_fast
+      changed to read the declared net, and a control with every mass scaled by 197/200
+      refused at 32 sampled directions.
+
+      The value is above T-107's 1147/200 = 5.735, the verified and reported lower bound at
+      n = 28, by 3/400, and above the 287/50 that jlevy/squares#446 reported on 8 October,
+      never adopted, by 1/400.
+
+      Here the maintained readers accepted its exact mass, declared-net and check2 premises,
+      and sqverify-fast, this repository's clean-room measure verifier, verified it at eight
+      sampled directions with the source's node counts and least certified bounds: a
+      diagnostic, not a replay. No complete replay has run here, so the value stands as
+      reported.
+
+      wand125 after Tokoharu and Levy,
+      [square-packing](https://github.com/wand125/square-packing/tree/36b85b9f37efa7cc5d4464805cfb0f2d21576267/problems/square-lower-bounds/certificates/mixed_n28_L57425).
+      The source says parts of the work were produced with AI assistance under human
+      direction.
+    scope: {n_values: [28]}
+    verification: V0
+    confirmation: C0
+    significance:
+      score: 3
+      rationale: >-
+        Scored as a claim: if a complete replay passes, it is the strongest lower bound on
+        record at n = 28, 3/400 above T-107, by the certificate kind and declared net of
+        T-102, T-103 and T-132, with no new technique, at S3 as T-102 to T-111 and T-132 are.
+        V0/C0 says how far it stands, and the score gates nothing.
+      scored: '2026-10-10'
+      by: think-i85v (repository; draft)
+    novelty: previously-published
+    attribution:
+      source_keys: ['[wand125 fine-net n28 n30 2026-10-10]']
+      published: '2026-10-10'
+    composition: >-
+      One reported certificate on its reported entry. The source's check is a copy of this
+      repository's sqverify_fast crate with one change, so a sqverify-fast replay here
+      would be re-implemented sharing the producer's components, as T-104's is, and no
+      second implementation stands beside it.
+    evidence:
+      - E-wand125-fine-net-n28-57425-report
+    artifacts:
+      - packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/README.md
+      - packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/reported-n28-followup.json
+      - packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/source-manifest.json
+      - packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/receipts/premises-n28.json
+      - packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/receipts/sample-diagnostic-n28.json
+      - packing/devtools/fine_net_followup.py
+      - packing/devtools/audit_wand125_declared_net.py
+    next_rung: >-
+      C3 needs a complete sqverify-fast census run at all 2,073 directions from a retained
+      candidate, with its whole-net control receipt (the 99/100 mutant at every direction,
+      FC-1) and a review that reads this certificate, by the checklist of the 6 October
+      declared-net soundness review. The eight-direction sample prices the run and its
+      controls at about 3.3 CPU-hours, so it waits in think-i85v for a budget.
+    notes: >-
+      V0 because the cited entry is the source's public claim: assurance reported, replay
+      not attempted. C0 because no cited entry carries a qualifying external_review. The
+      case records' lanes are unchanged, so the entry is pending adoption at n = 28 while
+      T-107 holds both lanes; the issue-446 report of 287/50 stays where it is. The
+      pre-publication receipt repeats the source's check2 run, so one complete author run
+      is reported. The release asset is pinned by size and digest and kept outside Git.
+
+  - id: T-143
+    kind: lower-bound
+    registered: '2026-10-10'
+    headline: "Mixed rectangle-measure lower bound `s(30) ≥ 2357/400` reported, on a 2,073-direction declared net"
+    claim: >-
+      A rectangle measure of wand125/square-packing, published on 10 October 2026 and
+      reported on no issue, is reported to prove s(30) >= 2357/400 = 5.8925.
+
+      The certificate, mixed_n30_L58925, is a density of 463 uniform rectangles in D4 orbits,
+      and no point mass, of total mass 2999999/100000, on a net its candidate declares:
+      core side 4999/5000 and 2,073 half-angle tangents of step 1/5002, the net of T-102,
+      T-103 and T-132. Since 4999/5000 (1 + 1/5002) = 25009997/25010000 < 1, and the last
+      tangent 1036/2501 is past tan(pi/8), every unit square contains a concentric core at a
+      net angle strictly in its interior.
+
+      The source reports every such core capturing mass at least one at all 2,073
+      directions, by sqverify-proof-net, its copy of this repository's sqverify_fast
+      changed to read the declared net, and a control with every mass scaled by 197/200
+      refused at 32 sampled directions.
+
+      The value is above T-109's 11767/2000 = 5.8835, the verified and reported lower bound
+      at n = 30, by 9/1000.
+
+      Here the maintained readers accepted its exact mass, declared-net and check2
+      premises, and every listed file has the directory's digest.
+      sqverify-fast, this repository's clean-room measure verifier, verified it at eight
+      sampled directions with the source's node counts and least certified bounds: a
+      diagnostic, not a replay. No complete replay has run here, so the value stands as
+      reported.
+
+      wand125 after Tokoharu and Levy,
+      [square-packing](https://github.com/wand125/square-packing/tree/ff9f2692afe7d1e65a51bb079b61b3710b97fc82/problems/square-lower-bounds/certificates/mixed_n30_L58925).
+      The source says parts of the work were produced with AI assistance under human
+      direction.
+    scope: {n_values: [30]}
+    verification: V0
+    confirmation: C0
+    significance:
+      score: 3
+      rationale: >-
+        Scored as a claim: if a complete replay passes, it is the strongest lower bound on
+        record at n = 30, 9/1000 above T-109, by the certificate kind and declared net of
+        T-102, T-103 and T-132, with no new technique, at S3 as T-102 to T-111 and T-132 are.
+        V0/C0 says how far it stands, and the score gates nothing.
+      scored: '2026-10-10'
+      by: think-i85v (repository; draft)
+    novelty: previously-published
+    attribution:
+      source_keys: ['[wand125 fine-net n28 n30 2026-10-10]']
+      published: '2026-10-10'
+    composition: >-
+      One reported certificate on its reported entry. The source's check is a copy of this
+      repository's sqverify_fast crate with one change, so a sqverify-fast replay here
+      would be re-implemented sharing the producer's components, as T-104's is, and no
+      second implementation stands beside it.
+    evidence:
+      - E-wand125-fine-net-n30-58925-report
+    artifacts:
+      - packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/README.md
+      - packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/reported-n30-followup.json
+      - packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/source-manifest.json
+      - packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/receipts/premises-n30.json
+      - packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/receipts/sample-diagnostic-n30.json
+      - packing/devtools/fine_net_followup.py
+      - packing/devtools/audit_wand125_declared_net.py
+    next_rung: >-
+      C3 needs a complete sqverify-fast census run at all 2,073
+      directions from a retained candidate, with its whole-net control receipt (the 99/100
+      mutant at every direction, FC-1) and a review that reads this certificate. The
+      eight-direction sample prices the run and its controls at about 4.5 CPU-hours, so it
+      waits in think-i85v for a budget.
+    notes: >-
+      V0 because the cited entry is the source's public claim: assurance reported, replay
+      not attempted. C0 because no cited entry carries a qualifying external_review. The
+      case records' lanes are unchanged, so the entry is pending adoption at n = 30 while
+      T-109 holds both lanes. The pre-publication receipt is the very run record the
+      source's check2 receipt embeds, so one complete author run is reported. The release
+      asset is pinned by size and digest and kept outside Git.
+
+  - id: T-144
+    kind: lower-bound
+    registered: '2026-10-10'
+    headline: "Linear-measure lower bound `s(n) ≥ 563/50 = 11.26` for `n = 122…126`, reported"
+    claim: >-
+      A measure of points, segments and rectangles that wand125/square-packing published on
+      10 October 2026, reported on no issue, is reported to prove s(122) >= 563/50 = 11.26.
+      Its mass is below 122, and a packing of 123 to 126 squares contains one of 122, so it
+      also gives s(123), s(124), s(125), s(126) >= 563/50: five counts in all. At n = 127
+      and beyond the record already holds more.
+
+      The measure, mixed_n122_L1126, is 502 point, 1,268 segment and 3 rectangle orbits
+      under D4, with exact rational geometry, of total mass 12199999/100000, at core side
+      9977/10000 on 201 net half-angles of step 83/40000: the measure kind, net and checker
+      of T-080. The source reports it accepted at all 201 net angles, the axis included, by
+      code/unified_linear_verify.cpp, byte for byte T-080's checker, and a complete replay
+      of its tarball on a fresh machine.
+
+      The value exceeds Green's reported 11.2292808755... at n = 122 to 125, by more than
+      0.0307, and Nagamochi's 11.2469507659... at n = 126, and the verified Karakus strip
+      bounds at all five.
+
+      Here the T-080 route's readers accepted its exact premises: the measure, its D4
+      invariance, digest, net, centre domains, checker and code identity, the 201 records,
+      the source's audit, the proof bundle's 810 files and every angle's input. Two angles
+      replayed here by the source's replay function and unchanged checker, from this
+      repository's retained copies, returned the certificate's own records: a diagnostic,
+      not a replay. No complete replay has run here, so the value stands as reported.
+
+      wand125 after Tokoharu and Levy,
+      [square-packing](https://github.com/wand125/square-packing/tree/a9f76c382d023b4095899c4eb7ea7483b8b87ecf/problems/square-lower-bounds/certificates/mixed_n122_L1126).
+      The source says parts of the work were produced with AI assistance under human
+      direction.
+    scope: {n_values: [122, 123, 124, 125, 126]}
+    verification: V0
+    confirmation: C0
+    significance:
+      score: 3
+      rationale: >-
+        Scored as a claim: if a complete replay passes, it raises the reported and verified
+        lower bounds at five counts, n = 122 to 126, past Green's reported values and
+        Nagamochi's closed form, by T-080's certificate kind, net and checker at a new size,
+        with no new technique, at S3 as T-080 is. V0/C0 says how far it stands, and the
+        score gates nothing.
+      scored: '2026-10-10'
+      by: think-nd7g (repository; draft)
+    novelty: previously-published
+    attribution:
+      source_keys: ['[wand125 linear n122 2026-10-10]']
+      published: '2026-10-10'
+    composition: >-
+      One reported certificate on its reported entry. n = 123 to 126 take it directly, its
+      mass being below them, so no step is added. A replay here would run the source's
+      checker unchanged, as T-080's did: one interval-certified method, and no second
+      implementation stands beside it.
+    evidence:
+      - E-wand125-linear-n122-1126-report
+    artifacts:
+      - packing/resources/web/wand125-linear-n122-2026-10-10/README.md
+      - packing/resources/web/wand125-linear-n122-2026-10-10/reported-n122.json
+      - packing/resources/web/wand125-linear-n122-2026-10-10/source-manifest.json
+      - packing/resources/web/wand125-linear-n122-2026-10-10/receipts/linear-premises.json
+      - packing/resources/web/wand125-linear-n122-2026-10-10/receipts/linear-sample-diagnostic.json
+      - packing/devtools/fine_net_followup.py
+      - packing/devtools/audit_wand125_linear.py
+    next_rung: >-
+      C3 needs a complete replay of all 201 angles by the T-080 route, with the certificate
+      registered in devtools.audit_wand125_linear so that linear-replay writes resumable
+      receipts, the route's linear-control receipt and a review that reads this certificate,
+      as the 2 October review read T-080's. The two-angle sample prices the replay and
+      control at about 11.2 CPU-hours (the author's own replay suggests up to about 23), so
+      it waits in think-nd7g for a budget.
+    notes: >-
+      V0 because the cited entry is the source's public claim: assurance reported, replay
+      not attempted. C0 because no cited entry carries a qualifying external_review. One
+      entry carries the five counts the certificate raises, as T-080 carries n = 101 to 105:
+      the case records' lanes are unchanged, so the entry is pending adoption at n = 122 to
+      126 while Green's or Nagamochi's reported value and the Karakus strip bound hold
+      them. The release asset (31.8 MB) is pinned by size and digest and kept outside Git;
+      the release's SHA256SUMS does not list it.
+
+  - id: T-145
+    kind: lower-bound
+    registered: '2026-10-10'
+    headline: "`s(40) > 1340000/199529 = 6.7158157…`, by a continuous-pose interval kernel"
+    claim: >-
+      s(40) > 1340000/199529 = 6.715815746082023…, by Guzhou0806, published on 10 October 2026
+      as release n40-continuous-1340000-199529-20261010 of Guzhou0806/n40-square-packing and
+      reported on jlevy/squares#485. It raises T-133's 335427/50000 by 72586117/9976450000 =
+      0.0072757…, from the same certificate.
+
+      The certificate is wand125's rect_n40_L67 rectangle density of T-068, unchanged, of mass
+      3999/100. Every closed square of side 199529/200000 inside [0, 67/10]^2, at every angle and
+      every legal centre, captures mass at least 4999/5000, and 40 × 4999/5000 − 3999/100 = 1/500,
+      so no packing fits at side 1340000/199529; compactness makes the bound strict.
+
+      A new interval kernel covers the continuous pose domain, centre and half-angle tangent together, in 43
+      closed slabs of t = tan(θ/2) over [10^-6, 83/200], by outward-rounded binary64 branch and
+      bound with a concave-section integral bound and translation-derivative bounds; an exact
+      integer certificate for horizontal squares of side 997643/1000000, which lie inside every
+      side-B square at t ≤ 10^-6, covers the rest. No net, no transfer and no density peak are
+      needed.
+
+      The source decided both parts with its two C++ kernels, in a local run and a GitHub Actions
+      run.
+
+      Both were decided here on 10 October 2026: the two kernels, built from the retained
+      source into the CI run's binaries, ran the axis certificate and all 43 slabs, every output
+      equal to both release receipts apart from timing, and refused every synthetic density whose
+      least capture is below the threshold: confirmed, reproduced with the producer's code.
+
+      This repository's exact audit, which shares no code with the release's, regenerated both kernel
+      inputs and decided every finite step, and sqverify-fast decided the near-axis statement a
+      second way on the original density. The 10 October review re-derived the kernel's lemmas and
+      found no blocking defect. No second method decided the continuous cover.
+
+      Guzhou0806 after wand125, Tokoharu and Levy,
+      [n40-square-packing](https://github.com/Guzhou0806/n40-square-packing/tree/71c97d07553d7d5ff5c5c82f0c9d1c75a150a4e3).
+      The source credits the density to wand125, the rectangle-density method and the
+      translation-derivative structure to Tokoharu, says the concave-section bound is informed by
+      this repository's sqverify_fast, and gives Guzhou0806's contribution, the continuous-pose
+      extension, the smaller-square coverage, the near-axis patch and the composition, as
+      AI-assisted research; the comment says AI assisted the exploration, proof drafting,
+      implementation, tests, packaging and the update under the author's direction.
+    scope: {n_values: [40]}
+    verification: V3
+    confirmation: C3
+    significance:
+      score: 3
+      rationale: >-
+        The strongest lower bound on record at n = 40, 0.00728 above T-133 on the same
+        certificate. The technique, an interval cover of the continuous pose domain with the angle
+        as an interval dimension, is new to this record, dispenses with the net, the transfer and
+        the density peak, and applies as it stands to every format T certificate the record holds,
+        with the side and threshold as its parameters; it is one count and not yet a bound family.
+        S3 by the precedent of T-133, with the technique noted, as the 10 October review suggests.
+      scored: '2026-10-10'
+      by: 'think-xms6 import, registering lane (repository; draft, as the 10 October review suggests)'
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Guzhou0806 n40 continuous pose 2026-10-10]']
+      published: '2026-10-10'
+    composition: >-
+      One certificate, wand125's rect_n40_L67, and three load-bearing parts. The continuous cover
+      of the 43 slabs is decided by the release's continuous_pose.cpp, interval-certified, the
+      producer's code, rebuilt here from reviewed source and replayed in full. The near-axis
+      statement at side 997643/1000000 is decided by the release's axis_integer_grid.cpp, exact,
+      replayed here, and again by sqverify-fast's exact axis-vertex sweep on the original density,
+      which shares no code with it. The finite steps, both inputs' identity, the near-axis
+      containment, the slab partition, the threshold and the counting margin, are decided by this
+      repository's exact audit, independently re-implemented with respect to exact.py, and are
+      recorded as structure.
+
+      The result takes the part closest to the producer's code: confirmed, reproduced with the
+      producer's code. C3 rests on the complete replay of both kernels and its controls, and the
+      kernel's lemmas on the 10 October review. No second method decides the continuous cover; the
+      401-direction run of sqverify-fast at the new parameters is a necessary condition it passed.
+    evidence:
+      - E-n040-guzhou-continuous-pose-report
+      - E-n040-guzhou-continuous-pose-kernel-replay
+      - E-n040-guzhou-continuous-pose-finite-audit
+      - E-n040-guzhou-continuous-pose-crate-axis
+    reviews:
+      - path: docs/project/reviews/review-2026-10-10-guzhou-n40-continuous-pose-bound.md
+        kind: adversarial
+        reviewer: AI agent (Claude, at maximum reasoning effort), the mathematical lane of stage 4 of the issue 485 follow-up import (think-xms6), prompted separately from the records lane, before any complete replay here and before retention
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-10'
+        scope: >-
+          Guzhou0806's s(40) > 1340000/199529, pinned at 71c97d07: the argument from wand125's
+          rect_n40_L67 density to the bound, re-derived (the D4 reduction, the t-dependent centre
+          domain, the enclosures of cos, sin and their sum, whole-box containment and exclusion,
+          the concave-section integral bound, the translation-derivative extension, the dyadic
+          cover, the near-axis containment and dominated measure, the integer axis certificate,
+          the counting and the strict endpoint); the 195-line kernel read line by line; every
+          finite quantity recomputed in exact rationals with the reviewer's own code; the CI
+          binaries rebuilt; three of the 43 slabs replayed; 98 adversarial synthetic kernel runs;
+          the axis statements and the 401-direction nodal statement decided by sqverify-fast; the
+          replay contract; and the drafted significance.
+        verdict: accepted
+        covers: [T-145]
+    artifacts:
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/README.md
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/PROOF.md
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/certificate/parameters.json
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/verifier/continuous_pose.cpp
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/verifier/axis_integer_grid.cpp
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/results/verification.json
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/release-ci/results/verification.json
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/receipts/builds.json
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/receipts/axis-run.json
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/receipts/slabs.jsonl.gz
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/receipts/crate-runs.json.gz
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/receipts/replay-check.json
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/receipts/finite-audit.json
+      - packing/resources/web/wand125-rectangle-certificates-2026-10-01/wand125-rectangles/certificates/rect_n40_L67/certified_candidate.json.gz
+      - packing/devtools/audit_continuous_pose.py
+      - docs/project/reviews/review-2026-10-10-guzhou-n40-continuous-pose-bound.md
+    controls:
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/receipts/controls.jsonl.gz
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/receipts/control-G-release.json
+      - packing/tests/test_audit_continuous_pose.py
+    next_rung: >-
+      V4 and C4 need a second adversarial AI review of this result by a distinct reviewer and a
+      human oversight record; the 10 October review is one. A method-distinct decision of the
+      continuous cover would stand beside the rung: a first-party interval kernel with the angle
+      as an interval dimension (GC-4 of the review, its specification), a W7 slice and a budget
+      the owner sets.
+    notes: >-
+      Registered on 10 October 2026 by the records lane of the issue 485 follow-up (think-xms6),
+      after the complete replay of both kernels, the finite audit and the crate's two runs, whose
+      receipts are in the packet; the review lane was prompted separately, before any complete
+      replay here and before retention. Of the review's findings, GC-1 (the 3.6e-6 axis margin),
+      GC-2 (main has no return, undefined once the harnesses rename it) and GC-7 (NaN through
+      min_element) are notes for the author; the packet keeps both release receipts and names
+      them (GC-3); the composition and the claim say what decides the continuous cover (GC-4);
+      the replay kept the full 30,000,000-node budget per slab (GC-5); GC-6 and GC-8 record what
+      was checked.
+
+      The contract's control H as written (tau = 1/2 in the axis header) is accepted
+      by the axis kernel, not refused, since 1/2 is below the minimum: the replay ran it as written
+      and ran the intended refusal at tau = 999804/10^6, just above the minimum, which the kernel
+      refused (exit 2), beside 999803/10^6, just below, which it proved. The review's dated note
+      of 10 October records that one-line correction of its contract.
+
+      n = 40's reported and verified lower bounds move from T-133's 335427/50000, which the case
+      record keeps as history, to 1340000/199529. Ids are provisional until merged to main.

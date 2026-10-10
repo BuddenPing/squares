@@ -394,3 +394,60 @@ repositories:
     note: >-
       The single commit after the retained v1.1 pin fills the README citation DOI
       placeholder; nothing else changes. Nothing to import.
+
+  # The 16:40 UTC sweep of 2026-10-10 (think-0nkn) read these heads. Each commit that holds
+  # a result is pinned by a packet or a register source of this pass, so no read holds one
+  # back. Guzhou0806/n40-square-packing's head, 71c97d0, is the
+  # guzhou-n40-continuous-pose-2026-10-10 packet's pin and needs no read.
+  - url: https://github.com/wand125/square-packing
+    read_through: 27ed16885a3ac64c2a22c992f5375574ccf3ff16
+    read_on: '2026-10-10'
+    note: >-
+      Eight commits of 10 October (UTC) past the 22a23c8 read. a9f76c3 adds
+      problems/square-lower-bounds/certificates/mixed_n122_L1126/, the linear certificate
+      reporting s(122) >= 563/50; the register source wand125-linear-n122-1126-2026-10-10 pins
+      that path at a9f76c3 and the wand125-linear-n122-2026-10-10 packet retains its facts
+      (T-144, think-nd7g). 36b85b9 and ff9f269 add mixed_n28_L57425/ and mixed_n30_L58925/, the
+      check2 bundles reporting s(28) >= 2297/400 and s(30) >= 2357/400 on the 2,073-direction
+      net; the register sources wand125-fine-net-n28-57425-2026-10-10 and
+      wand125-fine-net-n30-58925-2026-10-10 pin those paths and the
+      wand125-fine-net-n28-n30-2026-10-10 packet retains their facts (T-142 and T-143,
+      think-i85v). Each of the three also changes problems/square-lower-bounds/INDEX.json and
+      that directory's README by its own index entries. ef5b584, 7f0b66e, 3f603a3, 96647d1 and
+      27ed168 change READMEs only: Nagamochi and Green as reference values in the root and
+      eight certificate READMEs, the claims and best-certificate tables regenerated from
+      INDEX.json, 'below' for certificates under others' values, and the archived n = 11
+      density certificate left out of the best-certificate table. Every value the regenerated
+      tables list is one the register holds, one below it, or one of #446's reports that
+      think-ndvg and think-r333 own; nothing else to import.
+  - url: https://github.com/evand/square-packing
+    read_through: 76a529bc6f36ed05827cae3d1412d6acb5be00fc
+    read_on: '2026-10-10'
+    note: >-
+      The nine commits of 10 October from 39dde93 to 76a529b past the 799be37 read; 76a529b is
+      the pin of the evand-record-hunt3-2026-10-10 packet. f7a2325 and c013f43 add
+      search/packer/candidates/hunt3_n132, n305, n308, n343 and n344 (cert, exact, input and
+      json files), the Hunt 3 certificates; c013f43 replaces f7a2325's first-hour 305, 308 and
+      343 (the 343 a dilation certificate) with the final values #489 reports at 132, 308, 343
+      and 344, which the packet retains (T-141, and beyond-horizon rows at 343 and 344). The
+      side of hunt3_n305.cert equals the side of Couzo's n305.cert of 3ef7634 (T-140) exactly;
+      the author dropped it in favour of #488, and the packet retains and compares it. 76a529b
+      records #489 and #488 in PACKER.md and pk/pending.yaml. The rest is packer tooling
+      (explore.py's cross2 and ashallow arms, lineage_reach.py, move_spread.py, dilate_cert.py),
+      the night log's s(110) lineage tests, PACKER.md's unclaimed n = 209 convergence of
+      itsnaka's file with no certificate committed, and pending.yaml's #484 line: nothing else
+      to import.
+  - url: https://github.com/franciscouzo/square-packing
+    read_through: 3ef76349025bf4bfa99c9c3600bcc273f4c33e02
+    read_on: '2026-10-10'
+    note: >-
+      One commit of 10 October past the 9bf90e7 read: 3ef7634, the pin of #488 and of the
+      couzo-certificates-2026-10-10 packet, which retains the nine certificates it adds or
+      changes and pins the other 54. It rewrites certificates/n132, n175, n237, n270 and
+      n305.cert and adds n209.cert, the six values #488 reports (T-140), and rewrites n303,
+      n338 and n340.cert, which #488 does not name; the packet's claim record compares those
+      three, and each is an import of its own, the outside-corpus updates at 338 and 340
+      think-1545's. The commit's pose files, SVGs and both README tables follow the same
+      certificates; the standing table now marks 131, 259, 263, 269, 292, 303 and 307 as
+      superseded by #481, and the certificates README marks n = 375, whose certificate is
+      unchanged, as tied with Evan Daniel's big1_n375. Nothing else to import.

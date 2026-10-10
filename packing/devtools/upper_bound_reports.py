@@ -791,14 +791,24 @@ def grid_side(n: int) -> Fraction:
     return Fraction(math.isqrt(n - 1) + 1)
 
 
-def _couzo_476(n: int) -> Fraction:
-    return read_facts(packet_path("couzo-exact-certificates-2026-10-09"))[n].side
-
-
 @functools.cache
 def _sides(loader: Callable[[], Mapping[int, legacy.Certificate]]) -> dict[int, Fraction]:
     """Every side of one retained house packet, read once: those packets never change."""
     return {n: certificate.side for n, certificate in loader().items()}
+
+
+@functools.cache
+def _import_sides(packet: Path) -> dict[int, Fraction]:
+    """Every exact side of one packet this module imports, read once after its custody check.
+
+    Keyed on the packet's path, so a private copy is read as itself.
+    """
+    return {n: certificate.side for n, certificate in read_facts(packet).items()}
+
+
+def _import(name: str) -> Callable[[int], Fraction]:
+    """The reader of one import packet's exact sides, by the packet's directory name."""
+    return lambda n: _import_sides(packet_path(name))[n]
 
 
 def _evand_optima(n: int) -> Fraction:
@@ -826,7 +836,13 @@ HOUSES: dict[str, Callable[[int], Fraction]] = {
     "[Daniel new arrangements 2026-10-07]": lambda n: _sides(kernel.read_facts)[n],
     "[Daniel record hunt 2026-10-09]": lambda n: _sides(evand_hunt.read_facts)[n],
     "[Couzo follow-up refinements 2026-10-08]": lambda n: _sides(couzo_followup.read_facts)[n],
-    "[Couzo exact certificates 2026-10-09]": _couzo_476,
+    "[Couzo exact certificates 2026-10-09]": _import("couzo-exact-certificates-2026-10-09"),
+    "[SQUISH third request 2026-10-09]": _import("squish-481-third-request-2026-10-09"),
+    "[Fang two-wedge certificates 2026-10-10]": _import(
+        "fang-two-wedge-certificates-2026-10-10"
+    ),
+    "[Couzo certificates 2026-10-10]": _import("couzo-certificates-2026-10-10"),
+    "[Daniel record hunt 3 2026-10-10]": _import("evand-record-hunt3-2026-10-10"),
 }
 
 
@@ -1053,7 +1069,12 @@ def live_problems(packet: Path) -> list[str]:
         if "result" in item and item["result"] not in entries
     )
     coverage = safe_load(coverage_check.COVERAGE.read_text(encoding="utf-8"))
-    current = coverage_check.current_beyond_horizon(coverage)
+    # A count's current row may be this packet's own, which is no other report to declare.
+    current = {
+        n: row
+        for n, row in coverage_check.current_beyond_horizon(coverage).items()
+        if row["source_id"] != packet.name
+    }
     declared = {(p["n"], p["report"]): p.get("printed") for p in declaration["pending"]}
     problems.extend(
         f"n={row['n']}: declare the current beyond-horizon row of "
@@ -1625,9 +1646,14 @@ def register_plan(packet: Path) -> dict[str, Any]:
             f"{replay}\n\n"
             + " ".join(comparison(row) for row in rows)
             + (
-                f"\n\nThe same commit holds {len(others)} further certificates the issue does "
-                f"not name, at n = {_and([str(n) for n in others])}; the packet's claim "
-                "record compares each with its case, and each is an import of its own."
+                f"\n\nThe same commit holds {_many(len(others), 'further certificate')} the "
+                f"issue does not name, at n = {_and([str(n) for n in others])}; the packet's "
+                "claim record compares "
+                + (
+                    "it with its case, and it is an import of its own."
+                    if len(others) == 1
+                    else "each with its case, and each is an import of its own."
+                )
                 if others
                 else ""
             )

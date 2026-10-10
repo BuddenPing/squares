@@ -103,23 +103,27 @@ No source program ran here.
 
 [acquisition/claims.json](acquisition/claims.json) freezes each certificate against the
 record as it stood when the issue was read (`main` at `af17208c0`, 10 October 2026).
-`check-claims` rebuilds it, the case ceilings and the issue-476 and T-131 sides from
-their own retained packets:
+`check-claims` rebuilds it, the case ceilings and the issue-476, T-131, issue-481,
+issue-484 and issue-488 sides from their own retained packets:
 
 | n | Case ceiling, holder | Below it by | Other pending reports at the count | Smallest |
 | --- | --- | --- | --- | --- |
-| 132 | 11.9913278876915015, Evan Daniel’s exact optimum of Francisco Couzo’s packing (T-098) | $5.65 \times 10^{-3}$ | #488 prints 11.986953587255, above by $1.27 \times 10^{-3}$; #476 above by $1.27 \times 10^{-3}$; #470 prints 11.986956226066, above by $1.28 \times 10^{-3}$; T-131 (#465) above by $1.42 \times 10^{-3}$ | this certificate |
-| 308 | 18, the grid, in both lanes | $1.73 \times 10^{-3}$ | #484 prints 17.999309855162748, above by $1.04 \times 10^{-3}$ | this certificate |
-| 343 | none: beyond the horizon; the grid’s 19 | $2.18 \times 10^{-2}$ | #484 prints 18.994903529220497, above by $1.67 \times 10^{-2}$; #470 prints 19.000000000007, above the grid | this certificate |
-| 344 | none: beyond the horizon; the grid’s 19 | $5.55 \times 10^{-3}$ | #484 prints 18.995489275430816, above by $1.04 \times 10^{-3}$; #470 prints 19.002369297056, above the grid | this certificate |
+| 132 | 11.9913278876915015, Evan Daniel’s exact optimum of Francisco Couzo’s packing (T-098) | $5.65 \times 10^{-3}$ | #488 above by $1.27 \times 10^{-3}$; #476 above by $1.27 \times 10^{-3}$; #470 prints 11.986956226066, above by $1.28 \times 10^{-3}$; T-131 (#465) above by $1.42 \times 10^{-3}$ | this certificate |
+| 308 | 18, the grid, in both lanes | $1.73 \times 10^{-3}$ | #484 above by $1.04 \times 10^{-3}$ | this certificate |
+| 343 | none: beyond the horizon; the grid’s 19 | $2.18 \times 10^{-2}$ | #484 above by $1.67 \times 10^{-2}$; #470 prints 19.000000000007, above the grid | this certificate |
+| 344 | none: beyond the horizon; the grid’s 19 | $5.55 \times 10^{-3}$ | #484 above by $1.04 \times 10^{-3}$; #470 prints 19.002369297056, above the grid | this certificate |
 
-A side a report prints, and does not retain here, is compared at its printed places.
+Issue #470’s sides, the only ones compared at a print here, are compared at the places
+Mishapolk’s README prints.
 Where the report says it rounded up, the side may be up to one unit in the last place
 below the print. Where it does not say, the side may be one unit either way.
 Issue #488’s six sides and issue #484’s three are retained in their own packets, the
 [issue-488 packet](../couzo-certificates-2026-10-10/README.md) and the
-[issue-484 packet](../fang-two-wedge-certificates-2026-10-10/README.md), and the frozen
-comparisons read their prints.
+[issue-484 packet](../fang-two-wedge-certificates-2026-10-10/README.md), and the
+comparisons read their exact sides, as they read issue #481’s from the
+[issue-481 packet](../squish-481-third-request-2026-10-09/README.md). The record first
+frozen here read those three reports’ prints; the exact reading leaves every relation
+and distance in the table as it was, and decides 305 (below).
 At 132 the certificate is below every report the record holds or has pending, by
 $1.27 \times 10^{-3}$ or more.
 None of #481, #483, T-128 and T-130 reports any of the four counts.
@@ -127,10 +131,12 @@ None of #481, #483, T-128 and T-130 reports any of the four counts.
 The certificate at 305, which the issue does not name, is an import of its own
 (`result-import.md`, stage 1), compared here and registered by no entry of this import.
 It is below the case ceiling, 17.9529594590155280 (T-098), by $1.82 \times 10^{-3}$, and
-below issue #481’s printed 17.951196144147385 by $5.64 \times 10^{-5}$. Its exact side,
+below issue #481’s exact side by $5.64 \times 10^{-5}$. Its exact side,
 `8975569886103498772971256586313/500000000000000000000000000000`, is the side of
-Francisco Couzo’s issue #488 certificate at 305. The frozen comparison reads #488’s
-12-place print, which cannot decide between them, so it names neither as the smaller.
+Francisco Couzo’s issue #488 certificate at 305. Read from the issue-488
+packet, the two are one exact side, so the comparison records a tie and names neither
+as the smaller; #488’s 12-place print, which the first frozen record read, could not
+decide between them.
 The two are the same arrangement up to a quarter turn of the box.
 Matched square by square by the third route’s `arrangement_gap`, 271 of the 305 lie
 within $10^{-9}$ of their counterparts and the other 34 within $1.77 \times 10^{-2}$;
@@ -143,13 +149,15 @@ Couzo’s. The issue does not report it.
 The record keeps 343 and 344 as dated beyond-horizon rows, the form Kevin Fang’s
 issue-484 sides take: one row each in `beyond_horizon_claims` of `source-coverage.yaml`,
 keyed on the count and this source, with the side the issue prints,
-`assurance: reported` and `disposition: tracked-outside-case-corpus`, and no case
+`assurance: verified`, from the replay and its review, and
+`disposition: tracked-outside-case-corpus`, and no case
 record, register row, selected bound or atlas entry.
 A row there must equal its source’s reparsed claim byte for byte, so
 [acquisition/beyond-horizon-claims.json](acquisition/beyond-horizon-claims.json) holds
 the two claims alone, and the source’s coverage entry names it as its `claims_record`.
-Both are smaller than the issue-484 rows at those counts, which these supersede once
-both are registered.
+Both are smaller than the issue-484 rows at those counts, which these supersede: the
+two issue-484 rows are kept as their source printed them, with
+`disposition: superseded` and `superseded_by` naming this source.
 
 ## What Is Not Established
 
@@ -161,8 +169,9 @@ semidefinite modulo exact flat motions: 31 at 132, 52 at 308, 19 at 343 and 71 a
 Third, a first-order MILP finds it jammed in every corner-to-corner branch.
 Those are numerical evidence, as the source itself says, and were not replayed here.
 So are its matching distances from the packings each started from.
-Novelty, local or global optimality and rigidity are not established, and no review of
-the replay has been made.
+Novelty, local or global optimality and rigidity are not established.
+The [review of 10 October](../../../../docs/project/reviews/review-2026-10-10-upper-bound-imports-488-489.md) reproduced the replay and accepted the certificates
+for finite feasibility only, with no blocking finding.
 The source expects further improvement at 343.
 
 ## Credit and Licence
