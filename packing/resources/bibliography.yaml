@@ -1757,6 +1757,21 @@ sources:
       Chaoweeraprasit's SQUISH phases 14 and 10. MIT-licensed source bytes retained; Claude
       co-authorship disclosed. The source makes no claim and no issue reports it; no local
       or global optimality is admitted.
+  - key: '[Couzo certificates 2026-10-10]'
+    authors: [Couzo]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-10'
+    lineage: builds-on-project
+    credit: Couzo after Chaoweeraprasit, Mishapolk, Xu, Daniel, Ellsworth, Levy
+    short_credit: Couzo after Chaoweeraprasit et al.
+    note: >-
+      Six complete exact certificates at 3ef76349025bf4bfa99c9c3600bcc273f4c33e02, exact
+      optima from Daniel's exact contact solver, refined from Chaoweeraprasit's SQUISH,
+      Mishapolk's and Xu's packings with Daniel's fq, Couzo's basin hopping and Ellsworth's
+      refine_packing. The source checks with Squares Project (Levy) verification code; this
+      project lineage is not independent. The certificates are retained as factual data;
+      the unlicensed prose is hash-pinned. No optimizer, local or global claim.
 credited_names:
   Nate Chaoweeraprasit (itsnaka): Chaoweeraprasit
   Siddharth Gupta: Gupta

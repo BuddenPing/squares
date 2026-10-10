@@ -1055,6 +1055,18 @@ controls, and a third exact route agrees.
 T-139 records its side at V3/C3, pending adoption: a more precise certificate of Ryan
 Xu’s arrangement, 68 of whose 126 squares sit elsewhere than in T-125’s.
 
+## Francisco Couzo’s exact certificates, 10 October 2026
+
+**[Couzo certificates 2026-10-10]**: Francisco Couzo’s exact rational certificates for n
+= 132, 175, 209, 237, 270 and 305, pinned at `3ef76349025bf4bfa99c9c3600bcc273f4c33e02`;
+the nine certificates the commit adds or changes are retained as factual data, and the
+other 54 are pinned against the issue-476 packet’s identical copies;
+[packet](web/couzo-certificates-2026-10-10/README.md).
+Both project exact routes accept all 9 replayed certificates and refuse all 18 controls,
+and the third route accepts the six requested ones.
+T-140 records the six sides at V0/C0, pending independent review and adoption; at n =
+132 issue #489’s side is smaller.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->

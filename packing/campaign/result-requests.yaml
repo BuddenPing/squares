@@ -3979,3 +3979,55 @@ issues:
     replies: []
     close_when: The reported import and its review disposition are on main and the owner has posted the
       resulting state.
+  - number: 488
+    title: '132-305: registration request'
+    author: franciscouzo
+    opened: '2026-10-10'
+    state: open
+    kind: result-report
+    triage: done
+    summary: >-
+      Francisco Couzo reports six exact rational certificates, at n = 132, 175, 209, 237, 270 and
+      305, in franciscouzo/square-packing certificates/ at 3ef76349025bf4bfa99c9c3600bcc273f4c33e02
+      in Evan Daniel's half-angle format, all exact optima from Evan Daniel's exact contact solver.
+      The commit adds n209 and changes eight certificates (132, 175, 237, 270, 303, 305, 338, 340);
+      the other 54 are byte-identical to the issue-476 packet's copies. Imported on 10 October 2026:
+      all nine added or changed certificates retained in the couzo-certificates-2026-10-10 packet
+      and passing both maintained exact routes, and the six requested decided again by the third
+      exact route. Each requested side is below its case ceiling; at 209, 237, 270 and 305 it is
+      below SQUISH's #481, and at 132 issue #489's exact side is smaller still. The six are
+      registered together as T-140 at V0/C0, pending review; the case records wait for
+      jlevy/squares#403. Author checkers and KKT statements were not run here; no optimality is
+      claimed.
+    read_through: '2026-10-10T14:08:32Z'
+    results:
+    - key: six-exact-certificates
+      claim: s(n) <= S_n at n = 132 (11.986953587255), 175 (13.767120724693), 209 (14.946223226447),
+        237 (15.902949607678), 270 (16.929775353542) and 305 (17.951139772207), each S_n an exact
+        rational side rounded up to 12 decimals.
+      source: body
+      register:
+      - T-140
+      evidence:
+      - E-couzo-488-certificate-report
+    - key: kkt-no-descent
+      claim: Each of the six lies within about 1e-19 of its KKT point, and the corner-corner MILP finds
+        no first-order descent in any branch.
+      source: body
+      not_registered: Numerical evidence of local optimality, not a bound on s(n); recorded as reported
+        in E-couzo-488-certificate-report and not checked here.
+      queued: false
+    - key: unnamed-303-338-340
+      claim: The same commit changes three certificates the issue does not name, s(303) <= 17.917365675353,
+        s(338) <= 18.907150436394 and s(340) <= 18.939701150684, as certificates/README.md prints them.
+      source: source
+      not_registered: Not requested. Compared in the packet's claim record; 303 is above issue 481's exact
+        side, and 338 and 340 lie beyond the case corpus below Couzo's own tracked rows. Each is an
+        import of its own.
+      queued: false
+    beads:
+    - think-6uv7
+    answer_bead: think-6uv7
+    replies: []
+    close_when: The import and its disposition are on main and the owner has posted the resulting state;
+      optimality and the credit for the starting packings' constructions stay with their sources.

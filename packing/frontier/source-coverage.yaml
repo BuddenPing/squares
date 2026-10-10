@@ -3393,6 +3393,31 @@ sources:
     certificate of the same arrangement. The two SQUISH reconstructions lie above the case and
     were not replayed. No selected override or superseded claim is created while house adoption
     waits for jlevy/squares#403; the current case and earlier source ownership remain unchanged.
+- id: couzo-certificates-2026-10-10
+  title: Francisco Couzo's six exact rational certificates at 3ef7634, issue488
+  role: source-repository
+  url: https://github.com/franciscouzo/square-packing/tree/3ef76349025bf4bfa99c9c3600bcc273f4c33e02
+  local: resources/web/couzo-certificates-2026-10-10/
+  source_key: '[Couzo certificates 2026-10-10]'
+  scope:
+    n_values: [132, 175, 209, 237, 270, 305]
+  reviewed: '2026-10-10'
+  source_date: '2026-10-10'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/results.yaml
+  - resources/web/couzo-certificates-2026-10-10/acquisition/claims.json
+  evidence:
+  - E-couzo-488-certificate-report
+  notes: >-
+    All 6 complete certificates are retained as the source wrote them, each admitted only where
+    its exact side equals, or rounds up to, the side its source prints. T-140 records the
+    in-horizon report at V0/C0. All 27 native jobs have full outcomes. The three further
+    certificates the commit changes, at 303, 338 and 340, are compared in the claim record and
+    registered by no entry, and the other 54 are pinned to the issue-476 packet's identical
+    copies. No selected override or superseded claim is created while house adoption waits for
+    jlevy/squares#403; current cases and earlier source ownership remain unchanged.
 selected_overrides:
 - n: 51
   source_id: ry-xu-undilated-n51-2026
