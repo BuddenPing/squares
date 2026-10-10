@@ -4,21 +4,14 @@
 
 </div>
 
-<!-- The title stood over a subtitle, "Papers and interactive explanations for specific
-     results", until 2026-10-02 (the owner, think-wz9d). -->
+The $n = 11$ series:
 
-<!-- The introduction named the optimality paper first and the explainer second until
-     2026-10-05, when the papers became one series on n = 11, read in order (the series
-     plan, docs/project/specs/active/plan-2026-10-05-n11-explainer-series.md). -->
-
-These are the project’s papers, each written to be read on its own.
-The first three are one series on $n = 11$, read in order:
-[Part I]({{LOWER_BOUNDS_PAPER}}) proves the project’s own lower bounds,
-[Part II]({{THRESHOLD_BOUND_PAPER}}) reviews Kleddamag’s certified bound $s(11) > 31/8$,
-[T-037](results.html#t-037), and [Part III]({{OPTIMALITY_PAPER}}) reviews the proof that
-settles the case. Trump’s 1979 packing of eleven squares has been proved optimal by
-Ahmed’s proof, [T-060](results.html#t-060), which is machine-checked and reviewed here
-with its review record pending (`V3/C3`). T-060 settles the case; Part III explains it.
+- [Part I]({{LOWER_BOUNDS_PAPER}}) proves the project’s lower bounds.
+- [Part II]({{THRESHOLD_BOUND_PAPER}}) reviews [Kleddamag](https://x.com/kleddamag)’s
+  certified bound $s(11) > 31/8$ ([T-037](results.html#t-037)).
+- [Part III]({{OPTIMALITY_PAPER}}) reviews [Mannaseh Ahmed](https://x.com/ManassehA06)’s
+  machine-checked proof that Trump’s 1979 packing of eleven squares is optimal
+  ([T-060](results.html#t-060), `V3/C3`); the review record is pending.
 
 The [square-packing tutorial](tutorial.html) introduces the problem and its mathematics.
 [How Record Square Packings Are Found](papers/square-packing-methods-survey.html)

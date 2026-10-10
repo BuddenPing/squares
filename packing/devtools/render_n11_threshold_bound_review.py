@@ -117,7 +117,9 @@ FRONT = paper_front.check(
         slug=SLUG,
         title=HERO_TITLE,
         source=paper_front.Source(
-            "Kleddamag", "https://github.com/Kleddamag/11-squares-certified-bound"
+            "Kleddamag",
+            "https://github.com/Kleddamag/11-squares-certified-bound",
+            author_url="https://x.com/kleddamag",
         ),
         oversight=(paper_front.Person("Joshua Levy", "https://x.com/ojoshe"),),
         agents=("Fable 5.1", "Opus 5.5"),

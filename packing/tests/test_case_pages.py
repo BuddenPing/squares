@@ -307,8 +307,8 @@ def test_the_popover_fetches_the_record_and_opens_its_address() -> None:
     assert "<iframe" not in markup
 
 
-def test_a_case_count_is_math_above_its_ordered_status_row() -> None:
-    """The common header keeps the count separate from icons, notes and status tags."""
+def test_a_case_diagram_precedes_its_count_and_ordered_status_row() -> None:
+    """The common header leads with one diagram, then the count and status tags."""
     case = dict(next(case for case in frontier_page.frontier_cases() if case["n"] == 15))
     case["reported_status"] = "open" if case["status"] != "open" else "proved"
     markup = render_case_pages.record_head(
@@ -319,13 +319,16 @@ def test_a_case_count_is_math_above_its_ordered_status_row() -> None:
         corrects={"result": "T-018", "credit": "Published result"},
     ).split("</header>", 1)[0]
     eyebrow = markup.index('class="site-card-label site-case-eyebrow"')
+    figure = markup.index('class="site-case-figure"')
     title = markup.index('class="site-case-title" data-math-face="serif"')
     badges = markup.index('class="site-case-badges"')
     star = markup.index('class="site-star"')
     correction = markup.index('class="site-corrects"')
     reported = markup.index('class="site-credit"')
     status = markup.index('class="site-chip"')
-    assert eyebrow < title < badges < star < correction < reported < status
+    assert eyebrow < figure < title < badges < star < correction < reported < status
+    assert markup.count('<figure class="site-case-figure"') == 1
+    assert 'class="site-case-interval" data-math-face="serif"' in markup
     assert math_html("n = 15") in markup
     assert 'data-case-step="14"' in markup
     assert 'data-case-step="16"' in markup
@@ -357,21 +360,26 @@ def test_the_page_fetches_only_the_shared_assets_and_is_under_its_ceiling(page: 
 def test_every_record_opens_with_its_visual_summary(
     records: dict[str, str], numbers: list[int]
 ) -> None:
-    """The visual summary comes first, under the record's head: the drawing, then the
-    number line of the bounds, then the bound as one statement; the record's further
-    data and the case file's prose follow it."""
+    """The eyebrow and diagram precede the count/icons, followed by the number line,
+    main bound, further data and original prose, without duplicating the drawing."""
     for n in numbers:
         record = _record(records, n)
         order = [
             record.index('<header class="site-case-head"'),
-            record.index('<section class="site-case-summary'),
+            record.index('class="site-card-label site-case-eyebrow"'),
             record.index('<figure class="site-case-figure'),
+            record.index('class="site-case-title"'),
+            record.index('<p class="site-case-status"'),
+            record.index('<section class="site-case-summary'),
             record.index('<div class="site-atlas-gap"'),
             record.index('<p class="site-atlas-pop-bound"'),
             record.index('<div class="site-case-data"'),
             record.index('<div class="site-case-prose"'),
         ]
         assert order == sorted(order), n
+        assert record.count('<figure class="site-case-figure') == 1, n
+        assert 'class="site-case-interval" data-math-face="serif"' in record, n
+        assert 'class="site-atlas-pop-bound" data-math-face="serif"' in record, n
         assert "<svg " in record, n
         assert f"s({n})" in html.unescape(re.sub(r"<[^>]+>", "", record)), n
         assert "data-kpress-math" in record, n
@@ -380,9 +388,15 @@ def test_every_record_opens_with_its_visual_summary(
 def test_a_result_about_one_case_shows_the_same_visual_summary(n11_result_page: str) -> None:
     body = n11_result_page
     assert '<section class="site-case-summary' in body
-    assert body.index('<figure class="site-case-figure') < body.index(
-        '<div class="site-atlas-gap"'
-    )
+    order = [
+        body.index('class="site-card-label site-case-eyebrow"'),
+        body.index('<figure class="site-case-figure'),
+        body.index('class="site-popover-value site-result-case-n"'),
+        body.index('<div class="site-atlas-gap"'),
+    ]
+    assert order == sorted(order)
+    assert body.count('<figure class="site-case-figure"') == 1
+    assert 'class="site-atlas-pop-bound" data-math-face="serif"' in body
 
 
 def _declarations(css: str, selector: str) -> str:

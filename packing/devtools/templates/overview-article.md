@@ -19,8 +19,6 @@ the enclosing square for the tightest packing ever discovered, such as
 $s(29) \le 5.934$) and a lower bound (a size below which it is proved that no packing
 can exist, such as the reported $s(29) \ge 5.81$).
 
-{{PROJECT_CARD}}
-
 <h2 id="the-atlas-of-square-packings" class="site-title">The Atlas of Square Packings<a id="the-atlas"></a></h2>
 
 {{ATLAS_GRID}}
@@ -31,7 +29,7 @@ can exist, such as the reported $s(29) \ge 5.81$).
 
 {{RECENT}}
 
-<p class="site-action-row site-more"><a class="site-action" href="results.html" {{RESULTS_LINK_ATTRIBUTES}}>View all results{{ARROW_RIGHT}}</a></p>
+<p class="site-action-row site-more"><a class="site-action" href="results.html#verification-ladders">About Result Verification{{ARROW_RIGHT}}</a><a class="site-action" href="results.html#all-results" {{RESULTS_LINK_ATTRIBUTES}}>All Results{{ARROW_RIGHT}}</a></p>
 
 <h2 id="papers" class="site-title">Papers<a id="learn-more"></a></h2>
 
@@ -40,19 +38,23 @@ optimality proof for eleven squares.
 
 {{PAPER_CARDS}}
 
-<h2 id="pdfs" class="site-title">PDFs<a id="pdfs-and-videos"></a></h2>
+<p class="site-action-row site-more"><a class="site-action" href="papers.html">View All Papers{{ARROW_RIGHT}}</a></p>
+
+<h1 id="visuals" class="site-title">Visuals<a id="pdfs"></a><a id="video"></a><a id="pdfs-and-videos"></a></h1>
 
 <div class="site-homepage-media">
 {{PDF_CARDS}}
 </div>
 
-<h2 id="video" class="site-title">Video</h2>
-
 {{VIDEO_PLAYER}}
+
+<p class="site-action-row site-more"><a class="site-action" href="papers.html#pdfs">View All PDFs{{ARROW_RIGHT}}</a><a class="site-action" href="visualize.html">View Visualizations{{ARROW_RIGHT}}</a></p>
 
 <h1 id="squares-project-documentation" class="site-title">Squares Project Documentation</h1>
 
 {{DOCUMENTATION_BLOCK}}
+
+<p class="site-action-row site-more"><a class="site-action" href="about.html">About the Project{{ARROW_RIGHT}}</a></p>
 
 <h1 id="more-resources" class="site-title">More Resources<a id="other-square-packing-projects"></a></h1>
 

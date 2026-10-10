@@ -92,7 +92,9 @@ FRONT = paper_front.check(
         slug=SLUG,
         title=TITLE,
         source=paper_front.Source(
-            "Mannaseh Ahmed", "https://github.com/Queuingtheorydotcom/11SquaresOptimal"
+            "Mannaseh Ahmed",
+            "https://github.com/Queuingtheorydotcom/11SquaresOptimal",
+            author_url="https://x.com/ManassehA06",
         ),
         oversight=(paper_front.Person("Joshua Levy", "https://x.com/ojoshe"),),
         agents=("GPT-6 Astra", "GPT-6 Sol"),

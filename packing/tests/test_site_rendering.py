@@ -7,6 +7,7 @@ import json
 import math
 import re
 from collections.abc import Callable, Iterator
+from contextlib import nullcontext
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
 from unittest.mock import Mock
@@ -791,6 +792,9 @@ def test_native_frontier_passes_the_unchanged_http_load_and_nojs_budgets(
     request: pytest.FixtureRequest,
     tmp_path: Path,
 ) -> None:
+    timing_mode = cast(
+        "check_site_rendering.TimingMode", request.config.getoption("site_timing_mode")
+    )
     for javascript in (True, False):
         report = check_site_rendering.measure(
             browser,
@@ -799,20 +803,44 @@ def test_native_frontier_passes_the_unchanged_http_load_and_nojs_budgets(
             scheme=scheme,
             javascript=javascript,
         )
+        junit = request.config.getoption("xmlpath")
+        directory = Path(junit).parent if junit else tmp_path
+        directory.mkdir(parents=True, exist_ok=True)
+        receipt = (
+            directory / f"native-frontier-{width}-{scheme}-{javascript}-{uuid4().hex}.json"
+        )
+        with receipt.open("x", encoding="utf-8") as output:
+            json.dump(
+                {
+                    "scenario": {"width": width, "scheme": scheme, "javascript": javascript},
+                    "timing_mode": timing_mode,
+                    "timing_budgets": check_site_rendering.TIMING_BUDGETS,
+                    "timing_exceedances": check_site_rendering.timing_problems(report)
+                    if javascript
+                    else [],
+                    "failures": check_site_rendering.problems(
+                        report, javascript=javascript, timing_mode=timing_mode
+                    ),
+                    "report": report,
+                },
+                output,
+                indent=2,
+            )
         try:
             assert report["shownMath"] == frontier_math_counts[1]
             assert report["unreadableMath"] == 0
-            assert check_site_rendering.problems(report, javascript=javascript) == [], (
-                native_frontier_failure(
-                    report, width=width, scheme=scheme, javascript=javascript
+            assert (
+                check_site_rendering.problems(
+                    report, javascript=javascript, timing_mode=timing_mode
                 )
+                == []
+            ), native_frontier_failure(
+                report, width=width, scheme=scheme, javascript=javascript
             )
         except AssertionError as error:
             # The first navigation alone decides the verdict. Trace one separate
             # navigation only after failure: tracing changes the measured workload.
             try:
-                junit = request.config.getoption("xmlpath")
-                directory = Path(junit).parent if junit else tmp_path
                 trace = directory / f"native-frontier-{width}-{scheme}-{uuid4().hex}.json"
                 error.add_note(
                     f"Separate instrumented navigation: {trace}. This is not a trace "
@@ -836,21 +864,24 @@ def test_native_frontier_passes_the_unchanged_http_load_and_nojs_budgets(
             raise
 
 
-@pytest.mark.parametrize("outcome", ["pass", "trace", "trace-error"])
+@pytest.mark.parametrize("outcome", ["pass", "report-only", "trace", "trace-error"])
 def test_native_frontier_diagnostic_never_replaces_the_original_verdict(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, outcome: str
 ) -> None:
     requests: list[dict[str, Any]] = []
     artifact_directory = tmp_path / "artifacts"
     request = Mock()
-    request.config.getoption.return_value = str(artifact_directory / "command.junit.xml")
+    mode = "report-only" if outcome == "report-only" else "enforce"
+    request.config.getoption.side_effect = lambda name: (
+        mode if name == "site_timing_mode" else str(artifact_directory / "command.junit.xml")
+    )
 
     def measure(_browser: Browser, _url: str, **options: Any) -> dict[str, Any]:
         requests.append(options)
         if trace := options.get("trace"):
             if outcome == "trace-error":
                 raise RuntimeError("capture unavailable")
-            trace.parent.mkdir(parents=True)
+            trace.parent.mkdir(parents=True, exist_ok=True)
             trace.write_text('{"traceEvents": []}')
         return {
             "heading": "The Atlas",
@@ -872,13 +903,20 @@ def test_native_frontier_diagnostic_never_replaces_the_original_verdict(
         390,
         "dark",
     )
-    if outcome == "pass":
+    if outcome in ("pass", "report-only"):
         test_native_frontier_passes_the_unchanged_http_load_and_nojs_budgets(
             *arguments, request=request, tmp_path=tmp_path
         )
         assert [options["javascript"] for options in requests] == [True, False]
         assert all("trace" not in options for options in requests)
-        assert not artifact_directory.exists()
+        receipts = list(artifact_directory.glob("native-frontier-*.json"))
+        assert len(receipts) == 2
+        retained = [json.loads(path.read_text()) for path in receipts]
+        assert all(row["timing_mode"] == mode for row in retained)
+        if outcome == "report-only":
+            native = next(row for row in retained if row["scenario"]["javascript"])
+            assert native["timing_exceedances"] == ["longestTaskMs 423.000 exceeds 300"]
+            assert native["report"]["longestTaskMs"] == 423
     else:
         with pytest.raises(AssertionError, match="423") as caught:
             test_native_frontier_passes_the_unchanged_http_load_and_nojs_budgets(
@@ -1685,3 +1723,75 @@ def test_font_diagnostic_cli_refuses_receipt_before_launch(
     assert error.value.code == 2
     launch.assert_not_called()
     assert destination.read_text() == "retained evidence"
+
+
+def test_report_only_timing_preserves_blocking_rendering_failures() -> None:
+    report = {
+        "heading": "The Atlas",
+        "contentChars": 100,
+        "supported": True,
+        "cls": 0,
+        "lcpMs": 5000,
+        "longestTaskMs": 423,
+        "blockingMs": 700,
+    }
+    timing = check_site_rendering.timing_problems(report)
+    assert timing == [
+        "lcpMs 5000.000 exceeds 4000",
+        "longestTaskMs 423.000 exceeds 300",
+        "blockingMs 700.000 exceeds 600",
+    ]
+    assert check_site_rendering.problems(report) == timing
+    assert check_site_rendering.problems(report, timing_mode="report-only") == []
+    broken = {
+        **report,
+        "cls": 0.2,
+        "unreadableMath": 1,
+        "unreservedImages": 1,
+        "errors": ["HTTP 404: missing.svg"],
+        "heading": "",
+        "supported": False,
+    }
+    assert check_site_rendering.problems(broken, timing_mode="report-only") == [
+        "primary heading/prose missing",
+        "visual mathematics missing",
+        "image dimensions are not reserved",
+        "HTTP 404: missing.svg",
+        "required native load timing is unavailable",
+        "cls 0.200 exceeds 0.1",
+    ]
+
+
+def test_report_only_cli_retains_samples_limits_and_exceedances(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    (tmp_path / "index.html").write_text("<main>Existing page</main>")
+    report = {
+        "heading": "The Atlas",
+        "contentChars": 100,
+        "supported": True,
+        "cls": 0,
+        "lcpMs": 100,
+        "longestTaskMs": 423,
+        "blockingMs": 0,
+    }
+    monkeypatch.setattr("playwright.sync_api.sync_playwright", lambda: nullcontext(Mock()))
+    monkeypatch.setattr(check_site_rendering, "measure", lambda *_a, **_kw: dict(report))
+    monkeypatch.setattr(preview_site, "launch_chromium", lambda _p: Mock())
+    arguments = [str(tmp_path), "--page", "index.html", "--runs", "2"]
+    assert check_site_rendering.main(arguments) == 1
+    enforced = json.loads(capsys.readouterr().out)
+    assert enforced["failures"] == enforced["timing_exceedances"]
+    assert check_site_rendering.main([*arguments, "--timing-mode", "report-only"]) == 0
+    advisory = json.loads(capsys.readouterr().out)
+    assert advisory["failures"] == []
+    assert advisory["timing_exceedances"] == enforced["timing_exceedances"]
+    assert advisory["protocol"]["budgets"] == enforced["protocol"]["budgets"]
+    assert advisory["protocol"]["timing_mode"] == "report-only"
+    assert len(advisory["pages"]) == 4
+    for row in advisory["pages"]:
+        assert row["longestTaskMs"] == 423
+        assert row["samples"] == [report, report]
+    report["cls"] = 0.2
+    assert check_site_rendering.main([*arguments, "--timing-mode", "report-only"]) == 1
+    assert all("cls " in failure for failure in json.loads(capsys.readouterr().out)["failures"])

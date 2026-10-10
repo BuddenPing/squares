@@ -186,12 +186,13 @@ def test_a_grid_is_held_to_order_and_room_and_not_to_the_triangle() -> None:
 
 
 def test_the_views_and_their_controls_are_named_one_way() -> None:
-    assert atlas.query_for("grid") == "?atlas=grid"
-    assert atlas.query_for("triangle") == ""
+    assert atlas.query_for("grid") == "?atlas=grid&size=small"
+    assert atlas.query_for("triangle") == "?size=small"
     assert atlas.query_for("grid", "large") == "?atlas=grid&size=large"
-    assert atlas.query_for("triangle", "small") == ""
+    assert atlas.query_for("triangle", "small") == "?size=small"
     assert atlas.query_for("triangle", "medium") == "?size=medium"
-    assert atlas.query_for("triangle", "small", "row") == "?scale=row"
+    assert atlas.query_for("triangle", "small", "row") == "?size=small"
+    assert atlas.query_for("triangle", "small", "fixed") == "?size=small&scale=fixed"
     assert atlas.query_for("grid", "large", "global") == "?atlas=grid&size=large&scale=global"
     with pytest.raises(ValueError, match="no scale"):
         atlas.query_for("grid", "small", "invalid")

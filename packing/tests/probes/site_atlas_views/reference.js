@@ -5,9 +5,12 @@
   if (!(cells instanceof HTMLElement)) {
     return null;
   }
-  const wanted = new Set([1, 2, 3, 4, 5, 6, 9, 11, 12, 16, 18, 25, 36, 100]);
+  const wanted = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 16, 18, 25, 36, 100]);
   return {
-    scale: document.documentElement.dataset.siteAtlasScale ?? "fixed",
+    scale:
+      document.documentElement.dataset.siteAtlasScale ??
+      cells.closest("[data-atlas-grid]")?.getAttribute("data-atlas-scale") ??
+      "row",
     frame: {
       inset: Number.parseFloat(
         getComputedStyle(cells).getPropertyValue("--site-atlas-frame-inset"),

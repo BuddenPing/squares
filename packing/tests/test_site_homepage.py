@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import mimetypes
 import os
+import re
 from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
@@ -39,7 +40,7 @@ GRAPHIC = "known-best-1-324.svg"
 STATUS = "[data-homepage-atlas-status]"
 EXPLORE = '.site-homepage-atlas-actions a[href="atlas.html"]'
 WIDTHS = (1280, 390)
-LEGEND_WIDTHS = (*WIDTHS, 320)
+NAV_WIDTHS = (*WIDTHS, 320)
 
 
 @pytest.fixture(scope="module")
@@ -111,12 +112,15 @@ def film_payloads() -> dict[str, bytes]:
 
 
 @pytest.mark.parametrize("width", WIDTHS)
-def test_native_homepage_film_waits_for_click_and_main_headings_gain_half_a_rem(
-    browser: Any, film_payloads: dict[str, bytes], width: int
+def test_native_homepage_film_waits_for_click_and_main_headings_share_spacing(
+    browser: Any, request: pytest.FixtureRequest, width: int
 ) -> None:
     requests = []
     page = browser.new_page(viewport={"width": width, "height": 900})
-    _serve(page, film_payloads)
+    live = os.environ.get("SQPACK_SITE_PREVIEW_URL")
+    origin = f"{live.rstrip('/')}/" if live else ORIGIN
+    if not live:
+        _serve(page, request.getfixturevalue("film_payloads"))
 
     def intercept(route: Any) -> None:
         requests.append(route.request.url)
@@ -124,7 +128,7 @@ def test_native_homepage_film_waits_for_click_and_main_headings_gain_half_a_rem(
 
     page.route(render_overview.FILM_URL, intercept)
     try:
-        page.goto(f"{ORIGIN}index.html", wait_until="networkidle")
+        page.goto(f"{origin}index.html", wait_until="load")
         film = page.locator(".site-homepage-film video")
         film.scroll_into_view_if_needed()
         state = page.evaluate(FILM)
@@ -146,15 +150,42 @@ def test_native_homepage_film_waits_for_click_and_main_headings_gain_half_a_rem(
         assert state["right"] <= width
         assert state["overflow"] <= 0
         assert state["width"] / state["height"] == pytest.approx(16 / 9, abs=0.01)
-        assert len(state["headings"]) == 8
+        assert len(state["headings"]) == 7
         for heading in state["headings"]:
-            assert heading["above"] - heading["before"] == pytest.approx(
-                state["extra_space"], abs=0.01
-            )
-        assert state["legend_above"] == 0
+            assert heading["above"] == pytest.approx(state["title_above"], abs=0.01)
+            assert heading["below"] == pytest.approx(state["title_below"], abs=0.01)
+        overlay = page.get_by_role("button", name="Play video", exact=True)
         with page.expect_request(render_overview.FILM_URL, timeout=5000):
-            film.click(position={"x": 24, "y": state["height"] - 48})
+            overlay.click()
         assert requests == [render_overview.FILM_URL]
+        state = page.evaluate(FILM, {"mockPlayback": True})
+        assert state["overlay_visible"]
+        button_box = overlay.bounding_box()
+        video_box = film.bounding_box()
+        assert button_box is not None
+        assert video_box is not None
+        assert (
+            video_box["y"] + video_box["height"] - button_box["y"] - button_box["height"] >= 47
+        )
+        overlay.click(position={"x": 24, "y": 24})
+        state = page.evaluate(FILM)
+        assert state["mock_play_calls"] == 1
+        assert not state["paused"]
+        assert not state["overlay_visible"]
+        assert page.evaluate(FILM, {"mediaEvent": "pause"})["overlay_visible"]
+        overlay.focus()
+        page.keyboard.press("Enter")
+        state = page.evaluate(FILM)
+        assert state["mock_play_calls"] == 2
+        assert not state["overlay_visible"]
+        assert page.evaluate(FILM, {"mediaEvent": "ended"})["overlay_visible"]
+        overlay.focus()
+        page.keyboard.press("Space")
+        state = page.evaluate(FILM)
+        assert state["mock_play_calls"] == 3
+        assert not state["overlay_visible"]
+        assert page.evaluate(FILM, {"mediaEvent": "pause"})["overlay_visible"]
+        assert requests == [render_overview.FILM_URL], "mocked controls must not download media"
     finally:
         page.close()
 
@@ -228,12 +259,7 @@ def test_keyboard_expansion_uses_the_shared_triangle_without_click_time_preparat
         assert heading["above"] == pytest.approx(h1_space, abs=0.01)
     hero = report["hero"]
     assert [drawing["n"] for drawing in hero["drawings"]] == [53]
-    assert hero["captions"] == [
-        (
-            "Best known packing for 53 identical squares. Colors indicate angle. "
-            "Darker colors mean more common shared faces."
-        )
-    ]
+    assert hero["captions"] == ["Best known packing for 53 identical squares"]
     assert hero["drawings"][0]["href"] == "cases/53.html"
     assert hero["drawings"][0]["width"] == pytest.approx(hero["drawings"][0]["height"], abs=0.5)
     assert hero["width"] <= 288.5
@@ -255,8 +281,8 @@ def test_keyboard_expansion_uses_the_shared_triangle_without_click_time_preparat
     assert initial["visible_cases"] == 100
     assert initial["drawings"]["cards"] == 100
     assert initial["drawings"]["rows"] == list(range(1, 11))
-    assert initial["drawings"]["size"] == "small"
-    assert initial["drawings"]["scale"] == "fixed"
+    assert initial["drawings"]["size"] == ("medium" if width >= 1200 else "small")
+    assert initial["drawings"]["scale"] == "row"
     assert initial["stage"] == 100
     assert initial["view"] == "triangle"
     assert initial["toggle"]["name"] == "Show more: all 324 cases"
@@ -425,26 +451,30 @@ def toggle_seen(browser: Any, request: pytest.FixtureRequest) -> dict[int, dict[
             report = {"initial": page.evaluate(STATE)}
             report["origin"] = origin
             report["download"] = page.evaluate(DOWNLOAD_ACTION)
-            legend_screenshot = os.environ.get("SQPACK_HOMEPAGE_LEGEND_SCREENSHOT")
-            if width == WIDTHS[0] and legend_screenshot:
+            results_screenshot = os.environ.get("SQPACK_HOMEPAGE_RESULTS_SCREENSHOT")
+            if width == WIDTHS[0] and results_screenshot:
                 recent = page.locator('h2[id="recent-results"]').bounding_box()
-                legend = page.locator(".site-rung-legend").bounding_box()
+                actions = (
+                    page.locator(".site-action-row")
+                    .filter(has=page.locator("a[data-all-results]"))
+                    .bounding_box()
+                )
                 assert recent is not None
-                assert legend is not None
+                assert actions is not None
                 page.screenshot(
-                    path=legend_screenshot,
+                    path=results_screenshot,
                     full_page=True,
                     clip={
                         "x": 0,
                         "y": recent["y"] - 12,
                         "width": width,
-                        "height": legend["y"] + legend["height"] - recent["y"] + 36,
+                        "height": actions["y"] + actions["height"] - recent["y"] + 36,
                     },
                 )
             screenshot = os.environ.get("SQPACK_HOMEPAGE_MEDIA_SCREENSHOT")
             if width == WIDTHS[0] and screenshot:
                 scroll_y = page.evaluate(MEDIA_IMAGES)
-                pdfs = page.locator('h2[id="pdfs"]').bounding_box()
+                pdfs = page.locator('h1[id="visuals"]').bounding_box()
                 video = page.locator(".site-homepage-film").bounding_box()
                 assert pdfs is not None
                 assert video is not None
@@ -647,21 +677,19 @@ def test_homepage_order_chrome_and_single_card_rows_keep_the_shared_design(
         "the-atlas-of-square-packings",
         "recent-results",
         "papers",
-        "pdfs",
-        "video",
     ]
     assert home["main_titles"] == [
         "the-problem",
+        "visuals",
         "squares-project-documentation",
         "more-resources",
     ]
-    assert len(home["section_title_styles"]) == 7
+    assert len(home["section_title_styles"]) == 6
     assert home["lower_headings"] == 0
     assert all(style == home["main_title_style"] for style in home["section_title_styles"])
     assert home["recent_title"] == "Recent Major Results"
     assert home["media"] == {
-        "pdfs": ["square-packings-100-20261008.pdf", "square-packings-324-20261008.pdf"],
-        "video": [],
+        "visuals": ["square-packings-324-20261008.pdf"],
     }
     assert home["legacy_pdf_anchor"]
     assert not home["scope_present"]
@@ -678,109 +706,65 @@ def test_homepage_order_chrome_and_single_card_rows_keep_the_shared_design(
     assert download["left"] >= 0
     assert download["right"] <= width
     assert home["solo_cards"]
-    assert any("The Squares Project" in card["label"] for card in home["solo_cards"])
     for card in home["solo_cards"]:
         assert abs(card["center_offset"]) <= 1, card
     assert "squares-project-documentation" in seen[width]["about"]["main_titles"]
 
 
-@pytest.mark.parametrize("width", LEGEND_WIDTHS)
-def test_homepage_legend_is_centered_compact_and_keeps_every_rung(
-    legend_seen: dict[int, dict[str, Any]], width: int
-) -> None:
-    home = legend_seen[width]["initial"]
-    legend = home["legend"]
-    assert legend is not None
-    assert legend["title"] == "Legend"
-    assert legend["transform"] == "uppercase"
-    assert legend["style"] == "normal"
-    assert legend["family"] == home["actions"][0]["family"]
-    assert legend["size"] == legend["card_label_size"]
-    assert legend["entries"] == [
-        *(f"S{level}" for level in range(1, 6)),
-        *(f"V{level}" for level in range(6)),
-        *(f"C{level}" for level in range(6)),
-    ]
-    assert legend["paragraphs"] == 4
-    assert legend["lines"] == [
-        ["Significance"],
-        ["Verification"],
-        ["Confirmation"],
-        ["new result"],
-    ]
-    assert not legend["helper_text"]
-    rows = legend["rows"]
-    assert max(row["icon_left"] for row in rows) - min(row["icon_left"] for row in rows) <= 0.5
-    assert (
-        max(row["label_left"] for row in rows) - min(row["label_left"] for row in rows) <= 0.5
-    )
-    for row in rows:
-        assert row["label_left"] >= row["icon_right"] + 15
-        assert abs(row["center_offset"]) <= 1
-    assert legend["title_align"] == "center"
-    assert abs(legend["title_center_offset"]) <= 1
-    assert legend["star"]
-    assert legend["detail"] == "results.html#verification-ladders"
-    assert legend["shared_card"]
-    assert legend["destination_kind"] == "page"
-    assert legend["nested_links"] == 0
-    assert legend["accessible_name"] == (
-        "Legend: what the significance, verification and confirmation ratings mean"
-    )
-    assert abs(legend["center_offset"]) <= 1
-    assert legend["width"] <= 52 * legend["rem"] + 1
-    if width == WIDTHS[0]:
-        assert legend["width"] < legend["table_width"]
-    else:
-        assert legend["left"] >= 0
-        assert legend["right"] <= width
-        assert legend["scroll_width"] <= legend["client_width"]
-
-
 @pytest.fixture(scope="module")
-def legend_seen(browser: Any, request: pytest.FixtureRequest) -> dict[int, dict[str, Any]]:
-    """Measure the linked legend without repeating the Atlas/theme interaction matrix."""
+def results_navigation_seen(browser: Any) -> dict[int, dict[str, Any]]:
+    """Use the two real Results actions without repeating Atlas interactions."""
     sync_api = site_browser.api()
     readings = {}
     live = os.environ.get("SQPACK_SITE_PREVIEW_URL")
     origin = f"{live.rstrip('/')}/" if live else ORIGIN
-    payloads = request.getfixturevalue("payloads") if not live else None
-    for width in LEGEND_WIDTHS:
+    files = None
+    if not live:
+        documents = {name: site_renders.html(name) for name in ("index.html", "results.html")}
+        files = {
+            **{name: html.encode() for name, html in documents.items()},
+            **{
+                f"assets/{name}": data
+                for name, data in site_assets.shared()
+                .assets.referenced(documents.values())
+                .items()
+            },
+            **render_overview.support_files(),
+        }
+    for width in NAV_WIDTHS:
         page = browser.new_page(viewport={"width": width, "height": 900})
-        if payloads is not None:
-            _serve(page, payloads)
+        if files is not None:
+            _serve(page, files)
         try:
-            page.goto(f"{origin}index.html", wait_until="load")
+            page.goto(f"{origin}index.html?s=4", wait_until="load")
             initial = page.evaluate(STATE)
-            screenshot = os.environ.get("SQPACK_HOME_LEGEND_SCREENSHOT_DIR")
-            if screenshot:
-                page.locator("a.site-rung-legend").screenshot(
-                    path=str(Path(screenshot) / f"homepage-legend-{width}.png")
-                )
-            card = page.get_by_role(
-                "link",
-                name=(
-                    "Legend: what the significance, verification and confirmation ratings mean"
-                ),
-                exact=True,
+            verification = page.get_by_role(
+                "link", name=re.compile("^About Result Verification$", re.IGNORECASE)
             )
-            card.focus()
-            sync_api.expect(card).to_be_focused()
+            bounds = verification.bounding_box()
+            assert bounds is not None
+            assert bounds["x"] >= 0
+            assert bounds["x"] + bounds["width"] <= width
+            verification.focus()
             with page.expect_navigation(wait_until="load"):
                 page.keyboard.press("Enter")
             destination = f"{origin}results.html#verification-ladders"
             sync_api.expect(page).to_have_url(destination)
-            target = page.locator("#verification-ladders")
-            sync_api.expect(target).to_have_text("Verification Ladders")
-            sync_api.expect(target).to_be_in_viewport()
-            sync_api.expect(page.locator("div.site-rung-legend[role=note]")).to_have_count(1)
-            sync_api.expect(page.locator(".site-rung-legend-heading")).to_have_count(0)
-            keyboard_destination = page.url
-            page.goto(f"{origin}index.html", wait_until="load")
-            with page.expect_navigation(wait_until="load"):
-                page.locator("a.site-rung-legend > p").last.click()
-            sync_api.expect(page).to_have_url(destination)
             sync_api.expect(page.locator("#verification-ladders")).to_be_in_viewport()
+            sync_api.expect(page.locator("div.site-rung-legend[role=note]")).to_have_count(1)
+            keyboard_destination = page.url
+            page.goto(f"{origin}index.html?s=4", wait_until="load")
+            all_results = page.get_by_role(
+                "link", name=re.compile("^All Results$", re.IGNORECASE)
+            )
+            bounds = all_results.bounding_box()
+            assert bounds is not None
+            assert bounds["x"] >= 0
+            assert bounds["x"] + bounds["width"] <= width
+            with page.expect_navigation(wait_until="load"):
+                all_results.click()
+            sync_api.expect(page).to_have_url(f"{origin}results.html?s=4#all-results")
+            sync_api.expect(page.locator("#all-results")).to_be_in_viewport()
             readings[width] = {
                 "initial": initial,
                 "keyboard_destination": keyboard_destination,
@@ -792,15 +776,18 @@ def legend_seen(browser: Any, request: pytest.FixtureRequest) -> dict[int, dict[
     return readings
 
 
-@pytest.mark.parametrize("width", LEGEND_WIDTHS)
-def test_whole_legend_card_reaches_the_existing_ladders_with_keyboard_and_pointer(
-    legend_seen: dict[int, dict[str, Any]], width: int
+@pytest.mark.parametrize("width", NAV_WIDTHS)
+def test_results_actions_reach_verification_and_the_complete_table(
+    results_navigation_seen: dict[int, dict[str, Any]], width: int
 ) -> None:
-    reading = legend_seen[width]
+    reading = results_navigation_seen[width]
     assert not reading["initial"]["scope_present"]
-    destination = reading["destination"]
-    assert reading["keyboard_destination"] == destination
-    assert reading["pointer_destination"] == destination
+    assert not reading["initial"]["legend_present"]
+    assert reading["keyboard_destination"] == reading["destination"]
+    parsed = urlsplit(reading["pointer_destination"])
+    assert parsed.path == "/results.html"
+    assert parsed.query == "s=4"
+    assert parsed.fragment == "all-results"
 
 
 @pytest.mark.parametrize("width", WIDTHS)

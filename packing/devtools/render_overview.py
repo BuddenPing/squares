@@ -1157,12 +1157,11 @@ def overview_page() -> Page:
 
     overview = overview_data.load()
     values = {
-        "PROJECT_CARD": overview_sections.project_card(),
         "HERO": overview_sections.hero(),
         "ATLAS_GRID": overview_sections.atlas_preview(),
         "PAPER_CARDS": overview_sections.paper_cards(),
         "DOCUMENTATION_BLOCK": overview_sections.documentation_block(),
-        "PDF_CARDS": overview_sections.pdf_cards(),
+        "PDF_CARDS": overview_sections.homepage_pdf_card(),
         "VIDEO_PLAYER": overview_sections.homepage_video(FILM_URL),
         "RECENT": overview_sections.recent_table(overview),
         "RESULTS_LINK_ATTRIBUTES": overview_sections.all_results_link_attributes(overview),
@@ -1181,6 +1180,7 @@ def overview_page() -> Page:
         rewrite_body=_case_links,
         page_styles=(HOMEPAGE_CSS,),
         page_scripts=(
+            FILM_SCRIPT,
             FORWARD_SCRIPT,
             TABLE_SCRIPT,
             POPOVER_SCRIPT,

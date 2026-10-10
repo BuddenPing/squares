@@ -11,12 +11,17 @@ author: Codex, for the repository owner
 
 **Status:** Implemented and focused-verified in draft PR #462, including canonical
 Results URL (`think-3ci0`), shared homepage Atlas controls and centering, and shared
-H1/control-label refinements.
+main-heading/control-label refinements.
 Shared Atlas legend swatch alignment is tracked by `think-w51o` and focused-verified on
 both pages at desktop and mobile widths.
 Final Astra review approved the frozen changes; the next pushed-head CI is pending.
 The full checkpoint (`think-xio5`) remains separate and open.
 The earlier upstream geometry reconciliation (`think-p7c4`) is complete.
+The complete Triangle PNG preview (`think-t2yf`) and print legend (`think-rxkc`) are
+verified and published locally.
+The full 7497 × 5361 preview uses a content-versioned asset; both poster families passed
+export checks and visual legend review.
+PDF drawing scale remains unchanged while the separate Row comparison is reviewed.
 
 **Tracking:** `think-2u4x` (epic), `think-s54c` (planning)
 
@@ -25,11 +30,11 @@ The earlier upstream geometry reconciliation (`think-p7c4`) is complete.
 ## Overview
 
 Make the Square Packing website easier to scan and navigate.
-The homepage starts with a short problem introduction and a **The Squares Project** card
-linking to `about.html`. The atlas preview comes next, followed by **Recent Major
-Results**, then **Papers**, **PDFs**, **Video**, **Squares Project Documentation**, and
-**More Resources**. Papers and documentation reuse the dedicated pages’ cards; PDF
-downloads and the inline video remain separate sections.
+The homepage starts with a short problem introduction.
+The atlas preview comes next, followed by **Recent Major Results**, then **Papers**,
+**Visuals**, **Squares Project Documentation**, and **More Resources**. Papers and
+documentation reuse the dedicated pages’ cards.
+Visuals groups one full 324-case poster card with the inline video beneath it.
 The Atlas has **Show More** and **Explore** buttons; the results preview links to the
 complete Results page.
 Buttons, tabs and toggles use uppercase labels at 90% of their existing contextual sans
@@ -52,11 +57,11 @@ This spec lists the fixes and their acceptance criteria.
 - Prominent buttons from those previews to dedicated pages containing the complete atlas
   and results table.
 - The atlas directly after the problem introduction, followed by **Recent Major
-  Results**, then **Papers**, **PDFs**, **Video**, **Squares Project Documentation**,
-  and **More Resources**.
-- A dedicated About page for the full **The Squares Project** section, a compact project
-  card beneath the homepage intro text, and **About** immediately before **GitHub** in
-  the top navigation.
+  Results**, then **Papers**, **Visuals**, **Squares Project Documentation**, and **More
+  Resources**.
+- A dedicated About page for the full **The Squares Project** section, reached by the
+  homepage Docs action, and **About** immediately before **GitHub** in the top
+  navigation.
 - Consistent case-page and popover layouts, with readable mathematics, starting with the
   reported rendering problem for $n = 291$.
 - Navigation that remains easy to reach while scrolling on desktop and mobile.
@@ -103,9 +108,12 @@ preserves the static pages, canonical addresses, and published-link guarantees o
 Use only H1 and H2 headings on the homepage.
 Main section headings share the introduction’s sans, uppercase title styling; the legend
 retains its compact label role.
-Apply the shared screen-only `--site-title-space-above` margin of 2.5rem to every
-visible `h1.site-title`, including homepage, About and other content pages.
-Print spacing keeps its existing rules.
+Ordinary page H1s inherit the shared title face and caps without an extra class.
+Apply shared screen-only spacing to page H1s and visible `h2.site-title` headings,
+including homepage, About and other content pages: 3.5rem above
+(`--site-title-space-above`) and 2rem below (`--site-title-space-below`).
+Introduction-card and compact Legend headings keep their own spacing; print spacing
+keeps its existing rules.
 The homepage and dedicated Atlas share square legend swatches at the explanatory text’s
 1em size, with medium-weight angle numerals at 0.65em. Center numerals inside their
 squares and align swatch groups with the text baseline.
@@ -113,14 +121,25 @@ Stack legend items in narrow containers so explanations wrap without clipping.
 After web review, printable swatches use the adjacent text size (19 or 48 pixels), with
 bold labels at 0.6 of that size to preserve the print font’s inset.
 Packing diagrams and explanatory text keep their geometry.
+In both poster sizes, place “recent result (since August, 2026)” after the degree key,
+color only “recent result” red and the suffix black, and omit the count.
+Keep the same legend in SVG, PNG and PDF exports (`think-rxkc`); the web legend is
+unchanged.
+
+Atlas layout, size and scale use the shared compact chooser role: Results control text,
+1.35 leading, medium weight, and 0.15rem by 0.65rem padding.
+Shared action rows wrap with 0.7rem gaps.
+Row reference frames use a 1px gray stroke, and web case-number labels use medium weight
+with bold perfect-square endpoints (`think-ju2n`, `think-ticj`). A separate 324-case Row
+comparison SVG uses bottom-left packing alignment and gray reference frames; it does not
+replace canonical SVG or PDF exports (`think-24se`).
 
 Keep the homepage in this order:
 
 1. Show the single native hero packing for 53 squares above the introduction.
    Center it at a compact width and retain its case popover.
-   Use the caption: “Best known packing for 53 identical squares.
-   Colors indicate angle.
-   Darker colors mean more common shared faces.”
+   Use the caption: “Best known packing for 53 identical squares” without a final
+   period. Keep color explanations in the shared Atlas legend.
    Restore the two explanatory introductory paragraphs: first describe the long-standing
    geometry question and define $s(n)$, then explain upper and lower bounds with the
    owner’s $s(29) \le 5.934$ and reported $s(29) \ge 5.81$ examples.
@@ -130,11 +149,12 @@ Keep the homepage in this order:
    distinct target for each table row and graphical tile.
    An Atlas tile link fully expands the grid before scrolling to and highlighting the
    requested tile, including cases beyond the initial hundred.
-   Follow it with a centered **The Squares Project** card linking to `about.html`.
+   Keep the introduction compact; link to About from the documentation action row.
 2. Reuse the dedicated Atlas’s overview, toggles, color legend, per-case SVG drawings
    and complete row and segment placement.
-   Start at 100 cases in Triangle with Small/Fixed defaults; Grid completes preview rows
-   for the current size and width.
+   Start at 100 cases in Triangle with Row drawing scale; use Small on narrow screens
+   and Medium from 75rem upward unless the reader chooses a size.
+   Grid completes preview rows for the current size and width.
    Center the canvas when it fits and retain horizontal panning when it overflows.
    Shared FLIP animates its actual positions.
    Prepare hidden SVG drawings during startup for smooth in-place expansion to 324, then
@@ -149,17 +169,20 @@ Keep the homepage in this order:
    dedicated Atlas shows all 324. Layout and animation are ready independently of later
    immutable image requests.
 3. **Recent Major Results** immediately below the atlas: up to twelve S4-or-higher
-   results and a prominent **View all results** button.
-   Omit the count and scope sentence.
-   Omit an introductory sentence that only explains the links.
-   Center the legend card at a medium width, with a centered small-caps **LEGEND**
-   heading. Make the whole card link to `results.html#verification-ladders`.
-   Significance, Verification and Confirmation each occupy their own line, with icons
-   and chips in one column and labels aligned to their right.
-   Remove the “What each rung means” text from the homepage card.
+   results, followed by **About Result Verification** linking to
+   `results.html#verification-ladders` and **All Results** linking to
+   `results.html#all-results`. Omit the homepage verification legend, count and scope
+   sentence, and introductory sentence that only explains the links.
+   Keep the complete verification legend on the Results page.
 4. **Papers** mirrors all reading cards on the Papers page, using shared content and
-   destinations. **PDFs** holds the poster downloads, followed by **Video** with its
-   native click-to-play player.
+   destinations. **Visuals** is an H1 grouping one centered 324-case PDF card, limited to
+   42rem and showing the complete uncropped triangle poster, followed by the native
+   video player. Use the canonical builder’s high-resolution PNG and publish it through
+   `SiteAssets.image_file` so refreshed bytes receive a new immutable fingerprint
+   (`think-t2yf`). Its shared action row links to **View All PDFs** at
+   `papers.html#pdfs` and **View Visualizations** at `visualize.html`. Keep the
+   historical `#pdfs`, `#video` and `#pdfs-and-videos` anchors.
+   Papers keeps both poster downloads.
    **Squares Project Documentation** mirrors About’s introductory text and documentation
    cards through shared rendering.
 5. **More Resources** as an H1 above the related-project cards.
@@ -169,45 +192,54 @@ Keep the homepage in this order:
 
 Move paper cards out of the introduction or atlas area into **Papers**. Keep every paper
 reachable through that group and use concise card copy.
-Keep PDF cards on the homepage and Papers page.
-Keep the video on the homepage and Visualize page, in a separate group from PDFs.
+Keep the full 324-case poster card on the homepage and both PDF cards on Papers.
+Keep the native video below the homepage poster and on the Visualize page.
 Remove media from the dedicated Atlas page.
 Remove the shorter-film/release/receipt paragraph from the homepage; media card eyebrows
-are simply **PDF** and **Video**. Center every card group that contains one card,
-including the project card beneath the introduction.
+are simply **PDF** and **Video**. Center every card group that contains one card.
 
 Move the full **The Squares Project** section’s project narrative, approach,
-attribution, and contextual links to `about.html`. Its homepage card has a brief
-description and opens that page.
-Keeping the card within the intro area leaves Atlas as the second section.
+attribution, and contextual links to `about.html`. The homepage Docs action opens that
+page, leaving Atlas as the second section without a separate project card.
 Add **About** to the shared top navigation immediately before **GitHub**, on desktop and
-mobile. Break the About narrative into short paragraphs, including before “Now several
-others”. Use only H1 section headings on About, all with the same title styling as The
+mobile. Keep About’s project lead concise and use three linked-author bullets for its
+original work, including the explicit independent-work attribution.
+Use the full name Mannaseh Ahmed and a linked author profile on About, Papers and the
+optimality review; retain Kleddamag’s author profile and every original repository
+address. Use only H1 section headings on About, all with the same title styling as The
 Squares Project. Add the H1 **Contribute Your Results!** above the reporting invitation.
 Keep **Squares Project Documentation** on both the homepage and About.
 Remove **Reading and Research** from About.
 Papers retains its paper, tutorial, and PDF cards; omit redundant Frontier Survey and
 Workbench cards from both pages.
 Use the shared header for the About page and retain the source material’s meaning and
-links. Preserve the existing homepage `#the-squares-project` destination on the project
-card or forward it to the About page.
+links. Forward the historical homepage `#the-squares-project` destination to the About
+page while preserving the query and fragment.
 
 Initially show 100 cases in Triangle and up to twelve recent results.
 Recent results must be S4 or higher, dated within the last 180 days, and not superseded.
 Keep the complete results page’s filters unchanged.
-The register currently contains six qualifying entries; the twelve-row limit allows the
-preview to grow as results qualify.
+Order the Results page around its substantive overview, verification ladders, status and
+supersession explanation, and complete table; remove obvious table-use instructions and
+duplicated prose while retaining technical examples.
+Use light red chips for lower bounds and incomplete results, light green chips for upper
+bounds and optimality, yellow for recorded results, and neutral gray for superseded
+standings, with theme-appropriate text and fills.
+Cards keep long resource addresses inside their width, wrapping unbroken names as
+needed. The register currently contains six qualifying entries; the twelve-row limit
+allows the preview to grow as results qualify.
 Each headline links to its canonical result page.
 The atlas preview preserves the per-case SVG drawings, colors, and case destinations.
 Web labels show only the case number; recency stars remain in case and result records,
 and the PDF retains its additional labels.
 Both pages use the same overview, controls, legend, tile markup, row and segment
-placement, Small/Fixed sizing, and shared Atlas layout and animation engine.
-Complete rows center when they fit and pan horizontally on narrow viewports.
-All 324 case links and image references ship in the homepage; Show More immediately
-updates layout and animates to all 324, and Show Less restores the complete preview
-around 100 cases. Hidden drawings are prepared in the background; image transport is
-separate from the synchronous layout change.
+placement, responsive default sizing, Row drawing scale, and shared Atlas layout and
+animation engine. Complete rows center when they fit and pan horizontally on narrow
+viewports. All 324 case links and image references ship in the homepage; Show More
+immediately updates layout and animates to all 324, and Show Less restores the complete
+preview around 100 cases.
+Hidden drawings are prepared in the background; image transport is separate from the
+synchronous layout change.
 Explore remains a direct link to the dedicated Atlas page.
 Without JavaScript, retain the first 100 homepage cases and Explore link; the dedicated
 Atlas exposes all 324 cases.
@@ -255,8 +287,11 @@ treatment applies to icons in fetched popovers and tables.
 
 Shared screen scrollbars are thin, with transparent tracks and theme-aware thumbs,
 including popovers and horizontal diagrams (`think-7y0v`). Stack the centered case
-packing diagram above the number line at every width.
-Give the sticky destination-button footer equal padding above and below its buttons.
+packing diagram directly below the Case Record eyebrow, then the large count heading and
+status icons. The number line and supporting facts follow at every width.
+Main case intervals and bound statements use the serif math face.
+Result pages and popovers share this ordering (`think-jl9q`, `think-pfbo`). Give the
+sticky destination-button footer equal padding above and below its buttons.
 
 Center the compact **Case Record** label above a prominent typeset $n = N$ count.
 Place case icons first, followed by any recent-result star and notes, then status tags.
@@ -389,16 +424,17 @@ math.
 Header checks include top, down, immediate up, focus, an open theme menu, resize, anchor
 navigation, a paper page, a generated case/result page, and the Workbench.
 Homepage checks assert the section order, all paper cards grouped under **Papers**, the
-project card’s About target, actual preview limits, and both primary buttons.
+documentation action’s About target, actual preview limits, and both Results buttons.
 About checks assert the retained project content and links, and **About** immediately
 before **GitHub** in the shared top navigation.
 Atlas checks assert complete case coverage, old-link forwarding, reversible homepage
 stages 100 → 324 → 100, immediate layout and animation with authored case links,
-repeated expansion/collapse, reduced motion, SVG colors and labels, shared Small/Fixed
-row geometry, and horizontal panning on narrow viewports.
+repeated expansion/collapse, reduced motion, SVG colors and labels, shared responsive
+row geometry and the Row default with explicit Fixed/Global choices, and horizontal
+panning on narrow viewports.
 Immutable lazy image requests may occur as newly visible rows load.
 Measure the homepage against the existing 1.3-megabyte page ceiling.
-Check uppercase computed button styles, the legend card’s destination and keyboard
+Check uppercase computed button styles, both Results actions’ destinations and keyboard
 activation, hero popover actions, expanded Atlas targets for n=53/291/324, centered solo
 cards, and the loaded T-115 result popover’s single title and accessible name.
 Reuse `preview_site.py` for the visual review and the existing site-page measurement
@@ -434,6 +470,17 @@ Planning completion leaves the implementation issues open.
 - [Case page renderer](../../../../packing/devtools/render_case_pages.py)
 - [Shared navigation](../../../../packing/devtools/templates/site-nav.html)
 - [Validation and development](../../../../development.md#validation-tiers)
+
+The homepage and Visualize film posters provide a large keyboard-accessible
+click-to-play overlay while paused.
+Native controls remain available below the target, no-JS playback uses those controls,
+and homepage playback starts only on request (`think-34tf`).
+
+The homepage’s Recent Major Results preview has no verification legend card.
+Two right-arrow buttons lead to `results.html#verification-ladders` (About Result
+Verification) and `results.html#all-results` (All Results).
+The Results page uses only H1 and H2 main headings; its full table is under the All
+Results H1 (`think-k95x`).
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.

@@ -9,12 +9,7 @@ async () => {
   const allTiles = [...(cells?.querySelectorAll("a.site-atlas-cell") ?? [])];
   const tiles = allTiles.filter((tile) => tile.getClientRects().length > 0);
   const legend = document.querySelector(".site-rung-legend");
-  const heading = legend?.querySelector(".site-rung-legend-heading");
-  const table = document.querySelector("table.site-results");
   const cardLabel = document.querySelector(".site-card-label");
-  const box = legend?.getBoundingClientRect();
-  const parent = legend?.parentElement?.getBoundingClientRect();
-  const headingStyle = heading ? getComputedStyle(heading) : null;
   /** @param {Element} element */
   const titleStyle = (element) => {
     const style = getComputedStyle(element);
@@ -27,11 +22,6 @@ async () => {
     };
   };
   const mainTitle = document.getElementById("the-problem");
-  const headingRange = document.createRange();
-  if (heading) {
-    headingRange.selectNodeContents(heading);
-  }
-  const titleBox = heading ? headingRange.getBoundingClientRect() : null;
   /** @param {string} id */
   const mediaLinks = (id) => {
     const links = [];
@@ -199,63 +189,10 @@ async () => {
       .filter((heading) => heading !== mainTitle)
       .map(titleStyle),
     recent_title: document.getElementById("recent-results")?.textContent?.trim(),
-    media: { pdfs: mediaLinks("pdfs"), video: mediaLinks("video") },
+    media: { visuals: mediaLinks("visuals") },
     legacy_pdf_anchor: document.getElementById("pdfs-and-videos") !== null,
     scope_present: scope !== null,
-    legend:
-      legend instanceof HTMLElement && box && parent && headingStyle
-        ? {
-            title: heading?.textContent?.trim(),
-            transform: headingStyle.textTransform,
-            style: headingStyle.fontStyle,
-            family: headingStyle.fontFamily,
-            size: headingStyle.fontSize,
-            card_label_size: cardLabel ? getComputedStyle(cardLabel).fontSize : null,
-            entries: [...legend.querySelectorAll(".site-significance-label, .site-chip")].map(
-              (entry) => entry.textContent?.trim(),
-            ),
-            paragraphs: legend.querySelectorAll("p").length,
-            helper_text: legend.textContent?.includes("What each rung means"),
-            rows: [...legend.querySelectorAll(":scope > p")].map((line) => {
-              const icons = line.querySelector(".site-rung-legend-icons");
-              const name = line.querySelector(".site-rung-legend-name");
-              const iconBox = icons?.getBoundingClientRect();
-              const nameBox = name?.getBoundingClientRect();
-              return {
-                icon_left: iconBox?.left,
-                icon_right: iconBox?.right,
-                label_left: nameBox?.left,
-                center_offset:
-                  iconBox && nameBox
-                    ? (iconBox.top + iconBox.bottom - nameBox.top - nameBox.bottom) / 2
-                    : null,
-              };
-            }),
-            lines: [...legend.querySelectorAll(":scope > p")].map((line) =>
-              [...line.querySelectorAll(".site-rung-legend-name")].map((name) =>
-                name.textContent?.trim(),
-              ),
-            ),
-            title_align: headingStyle.textAlign,
-            title_center_offset: titleBox
-              ? (titleBox.left + titleBox.right - box.left - box.right) / 2
-              : null,
-            star: legend.querySelector(".site-star") !== null,
-            detail: legend.getAttribute("href"),
-            shared_card: legend.matches("a.site-card.site-card-link"),
-            destination_kind: legend.getAttribute("data-go"),
-            nested_links: legend.querySelectorAll("a").length,
-            accessible_name: legend.getAttribute("aria-label"),
-            center_offset: (box.left + box.right - parent.left - parent.right) / 2,
-            width: box.width,
-            left: box.left,
-            right: box.right,
-            rem: Number.parseFloat(getComputedStyle(document.documentElement).fontSize),
-            table_width: table?.getBoundingClientRect().width,
-            scroll_width: legend.scrollWidth,
-            client_width: legend.clientWidth,
-          }
-        : null,
+    legend_present: legend !== null,
     actions: [...document.querySelectorAll(".site-action")].map((action) => {
       const style = getComputedStyle(action);
       return {

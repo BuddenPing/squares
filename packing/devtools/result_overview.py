@@ -369,6 +369,8 @@ def film_bound(fact: dict[str, Any]) -> str:
     """The bound as one statement, as the film writes it (`drawBound`): the proved lower
     bound and the best known side in their colours, or the exact value, after the star a
     recent lower bound earns."""
+    from devtools.overview_sections import SERIF_MATH  # noqa: PLC0415
+
     n = int(fact["n"])
     star = "\u2605" if fact["star"] else ""
     parts = [f'<span class="site-atlas-pop-star" aria-hidden="true">{star}</span>']
@@ -390,7 +392,7 @@ def film_bound(fact: dict[str, Any]) -> str:
             f'<span class="{contribution_class(n, "upper")}">'
             f"{math_html(str(fact['upper']))}</span>"
         )
-    return f'<p class="site-atlas-pop-bound">{"".join(parts)}</p>'
+    return f'<p class="site-atlas-pop-bound" {SERIF_MATH}>{"".join(parts)}</p>'
 
 
 def badge_glyph(
@@ -548,12 +550,12 @@ def bounds_table(case: dict[str, Any]) -> str:
     )
 
 
-def case_panel(n: int, overview: Overview, *, label: bool) -> str:
+def case_panel(n: int, overview: Overview) -> str:
     """One case as its record opens, the visual summary (`render_case_pages.
     visual_summary`, the drawing at the atlas's size), with the record's bounds under it
     and its own link to the record among the overview's links."""
     from devtools.overview_sections import ATLAS_UNITS  # noqa: PLC0415
-    from devtools.render_case_pages import visual_summary  # noqa: PLC0415
+    from devtools.render_case_pages import packing_figure, visual_summary  # noqa: PLC0415
 
     case = overview.cases[n]
     # The case's n heads its panel as a case record's title does: a caps label would
@@ -561,12 +563,12 @@ def case_panel(n: int, overview: Overview, *, label: bool) -> str:
     head = (
         '<p class="site-popover-value site-result-case-n" data-math-face="serif">'
         f"{math_html(f'n = {n}')}</p>"
-        if label
-        else ""
     )
     return (
-        f'<div class="site-atlas-pop site-result-film" data-overview-case="{n}">{head}'
-        f"{visual_summary(n, units=ATLAS_UNITS)}"
+        f'<div class="site-atlas-pop site-result-film" data-overview-case="{n}">'
+        '<span class="site-card-label site-case-eyebrow">Case record</span>'
+        f"{packing_figure(n, units=ATLAS_UNITS)}{head}"
+        f"{visual_summary(n, drawing=False)}"
         f'<p class="site-atlas-pop-head">The case record</p>{bounds_table(case)}</div>'
     )
 
@@ -745,7 +747,7 @@ def case_section(result: Result, overview: Overview, cases: Sequence[int]) -> st
         body = case_list(cases, overview)
         title = "The cases"
     else:
-        body = "".join(case_panel(n, overview, label=len(cases) > 1) for n in cases)
+        body = "".join(case_panel(n, overview) for n in cases)
         title = "The case" if len(cases) == 1 else "The cases"
     return (
         f'<section class="site-result-section"><h3 class="site-result-heading">{title}</h3>'

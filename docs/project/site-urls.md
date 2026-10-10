@@ -952,7 +952,7 @@ Patterns admit declared namespaces, file types and sixteen-digit asset names.
 | cases/11.html | 500,000 | Complete n=11 proof/certificate record and prepared bounds measure 416,870 bytes. |
 | cases/17.html | 500,000 | Complete n=17 proof/certificate record and prepared bounds measure 443,761 bytes. |
 | cases/18.html | 350,000 | Complete n=18 certificate record; prepared HTML measures 326,548 bytes. |
-| index.html | 1,300,000 | The native 324-case Atlas payload, six-row preview and shared reading and documentation cards measure 1,172,462 bytes. Three-run loopback load medians are 274 ms at 1280 px and 261 ms at 390 px; retained staged expansion checks cover the embedded preview. The page-specific ceiling remains below the global two-megabyte limit. |
+| index.html | 1,300,000 | The shared 100-case Atlas preview includes all 324 canonical case links and per-case SVG references, with common controls, reading and documentation cards. Retained desktop/mobile expansion checks cover the prepared shared row layout. The page-specific ceiling remains below the global two-megabyte limit. |
 | papers/n11-lower-bounds-explainer.html | 1,500,000 | Four prepared font preferences and the authored paper content measure 1,417,498 bytes. |
 | papers/n11-threshold-bound-review.html | 900,000 | The 401-formula review measures 823,322 bytes after sharing font geometry. Its 842,245-byte edition passed three-run desktop/mobile, light/dark and no-JS checks with CLS ≤0.050 and LCP ≤836 ms. The ceiling leaves headroom above the measured edition. |
 | result/t-007.html | 800,000 | Complete broad scope history and prepared exact bounds measure 711,115 bytes. |

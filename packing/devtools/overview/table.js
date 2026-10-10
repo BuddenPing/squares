@@ -432,7 +432,6 @@
           }
         }
         const known = (all.getAttribute("data-result-ids") ?? "").split(/\s+/);
-        target.hash = "";
         if (fragment && (retired || known.includes(fragment))) {
           target.hash = location.hash;
         }

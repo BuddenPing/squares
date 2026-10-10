@@ -91,10 +91,10 @@ VIEWS = ("grid", "triangle")
 #: tabs, House and Regularized, that stood here as `LAYERS` went on 2026-10-04
 #: (think-k8x9).
 SIZES = ("small", "medium", "large")
-#: The size a plain address opens at, which `?size=` does not name.
+#: The explicit baseline size used by measurements; wide-screen defaults vary.
 DEFAULT_SIZE = "small"
 SCALES = ("fixed", "row", "global")
-DEFAULT_SCALE = "fixed"
+DEFAULT_SCALE = "row"
 WIDTHS = (1280, 1024, 768, 390)
 SCHEMES = ("light", "dark")
 #: The points of a move a picture is taken at, as shares of its duration.
@@ -383,8 +383,7 @@ def settle(page: Any) -> None:
 
 
 def query_for(view: str, size: str = DEFAULT_SIZE, scale: str = DEFAULT_SCALE) -> str:
-    """The query string that asks for `view` and `size`: nothing for Triangle at Small,
-    the defaults."""
+    """Ask for the measured size explicitly, including Small on wide screens."""
     if view not in VIEWS:
         raise ValueError(f"the atlas has no view {view!r}")
     if size not in SIZES:
@@ -393,7 +392,7 @@ def query_for(view: str, size: str = DEFAULT_SIZE, scale: str = DEFAULT_SCALE) -
         raise ValueError(f"the atlas has no scale {scale!r}")
     params = [
         *(["atlas=grid"] if view == "grid" else []),
-        *([f"size={size}"] if size != DEFAULT_SIZE else []),
+        f"size={size}",
         *([f"scale={scale}"] if scale != DEFAULT_SCALE else []),
     ]
     return f"?{'&'.join(params)}" if params else ""

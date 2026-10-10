@@ -287,7 +287,7 @@ void test("writing the view keeps every other parameter, and round-trips", () =>
   }
 });
 
-void test("the address names Medium and Large and says nothing for Small", () => {
+void test("the address preserves an explicit size, including Small on a wide-screen reload", () => {
   assert.equal(atlas.sizeOf(""), "small");
   assert.equal(atlas.sizeOf("?size=small"), "small");
   assert.equal(atlas.sizeOf("?size=large"), "large");
@@ -297,7 +297,8 @@ void test("the address names Medium and Large and says nothing for Small", () =>
   assert.equal(atlas.sizeOf("?atlas=triangle&size=large&age=180"), "large");
   assert.equal(atlas.searchForSize("", "large"), "?size=large");
   assert.equal(atlas.searchForSize("?size=large", "medium"), "?size=medium");
-  assert.equal(atlas.searchForSize("?size=large", "small"), "");
+  assert.equal(atlas.searchForSize("?size=large", "small"), "?size=small");
+  assert.equal(atlas.searchForSize("?age=180", "small"), "?age=180&size=small");
   assert.equal(atlas.searchForSize("", "medium"), "?size=medium");
   for (const search of ["", "?age=180", "?size=small", "?x=1&size=medium"]) {
     for (const size of /** @type {AtlasSize[]} */ (["small", "medium", "large"])) {
@@ -382,17 +383,20 @@ void test("a move sets the drawing back on its old box, scaled about the tile's 
   assert.deepEqual(drawn, first);
 });
 
-void test("drawing scale URLs default to Fixed, validate values, and retain layout and size", () => {
-  for (const search of ["", "?scale=fixed", "?scale=unknown", "?scale=ROW"]) {
-    assert.equal(atlas.scaleOf(search), "fixed");
+void test("drawing scale URLs default to Row, preserve explicit Fixed, and retain layout and size", () => {
+  for (const search of ["", "?scale=row", "?scale=unknown", "?scale=ROW"]) {
+    assert.equal(atlas.scaleOf(search), "row");
   }
-  assert.equal(atlas.scaleOf("?atlas=grid&scale=row&size=large"), "row");
+  assert.equal(atlas.scaleOf("?atlas=grid&scale=fixed&size=large"), "fixed");
   assert.equal(atlas.scaleOf("?scale=global"), "global");
   assert.equal(
     atlas.searchForScale("?x=1&atlas=grid&size=large", "row"),
-    "?x=1&atlas=grid&size=large&scale=row",
+    "?x=1&atlas=grid&size=large",
   );
-  assert.equal(atlas.searchForScale("?x=1&scale=global&size=medium", "fixed"), "?x=1&size=medium");
+  assert.equal(
+    atlas.searchForScale("?x=1&scale=global&size=medium", "fixed"),
+    "?x=1&scale=fixed&size=medium",
+  );
   assert.equal(
     atlas.searchForSize("?scale=row&atlas=grid", "large"),
     "?scale=row&atlas=grid&size=large",

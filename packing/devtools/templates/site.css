@@ -244,8 +244,10 @@ body {
 }
 /* The page title: the sans face in upright caps (never KPress's italic h2) at 1.5 times
    the sans base, centred. A page's `h1` in its hero takes it, and so does any heading
-   given `site-title`, including the homepage and About sections. */
+   given `site-title`, including the homepage and About sections. Ordinary page H1s
+   use this style without requiring a class. */
 .site-hero h1,
+.kpress :where(.site-page) h1,
 .kpress .site-title {
   font-family: var(--kpress-font-sans);
   font-size: calc(var(--site-font-size-sans-base) * var(--paper-title-scale));
@@ -258,10 +260,12 @@ body {
 /* Main section titles share the homepage's breathing room on every web page. */
 @media screen {
   .kpress {
-    --site-title-space-above: 2.5rem;
+    --site-title-space-above: 3.5rem;
+    --site-title-space-below: 2rem;
   }
-  .kpress h1.site-title {
-    margin-block-start: var(--site-title-space-above);
+  .kpress :where(.site-page) h1,
+  .kpress :is(h1, h2).site-title {
+    margin-block: var(--site-title-space-above) var(--site-title-space-below);
   }
 }
 /* A page's subtitle, such as "A survey of all reviewed results": the sans face a small
@@ -275,13 +279,6 @@ body {
   font-weight: var(--site-font-weight-sans-light);
   line-height: var(--paper-heading-leading);
   margin-block: var(--site-subtitle-space);
-}
-/* A title with no subtitle, a document's own `h1` among them, stands the same space
-   above its first paragraph, on screen. */
-@media screen {
-  .site-page h1 {
-    margin-block-end: var(--site-subtitle-space);
-  }
 }
 .kpress .site-hero:has(.subtitle) h1 {
   margin-block-end: 0;
@@ -791,7 +788,7 @@ body {
   align-items: baseline;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem 1rem;
+  gap: var(--site-action-row-gap);
   justify-content: center;
   margin-block: 0.8rem 0;
 }
@@ -864,6 +861,11 @@ body {
    `.kpress-prose p`, whose 0.75rem stood in for both margins until then. */
 .kpress .site-action-row {
   --site-action-space: 1.2rem;
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--site-action-row-gap);
+  justify-content: center;
   font-family: var(--kpress-font-sans);
   font-size: var(--site-font-size-note);
   font-weight: var(--site-font-weight-sans-medium);
@@ -919,7 +921,7 @@ body {
 
 /* A link card's address, under its note: the host's mark in the support gray, level with
    the address's first line, then the address, which wraps after a slash (and only
-   inside a name too long for a line) rather than widen the card. */
+   inside any unbroken name too long for a line) rather than widen the card. */
 .kpress .site-card .site-card-url {
   align-items: first baseline;
   color: var(--site-support-color);
@@ -929,7 +931,10 @@ body {
   font-weight: var(--site-font-weight-sans-light);
   gap: 0.4rem;
   margin-block-start: 0.35rem;
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+.kpress .site-card .site-card-url > :where(span) {
+  min-inline-size: 0;
 }
 .kpress .site-card .site-link-icon {
   block-size: 1em;
@@ -1210,8 +1215,8 @@ body {
    drawn (the owner, 2026-10-02, `think-c19o`): a case's `proved` is green and its `open`
    yellow, on the frontier table, a case record and a result's list of cases; a result's
    `confirmed` is the green of the confirmation rungs, at C3's strength, and its
-   `reviewed` the verification rungs' blue. The other statuses, the kinds and the
-   standings keep the plain chip. `devtools.rung_scale` measures these fills too. */
+   `reviewed` the verification rungs' blue. Bound kinds use the bound colours, recorded is yellow, and
+   superseded standings keep the plain gray chip. `devtools.rung_scale` measures these fills too. */
 .site-chip:is([data-case-status], [data-status="confirmed"], [data-status="reviewed"]) {
   --rung-chroma-boost: 0;
   background: oklch(
@@ -1243,6 +1248,30 @@ body {
   --rung-chroma-boost: 0.02;
 }
 
+/* Bound chips share the plotted bound hues, diluted into the current page background. */
+.site-chip:is([data-kind="lower-bound"], [data-status="incomplete"]) {
+  background: color-mix(
+    in oklab,
+    var(--site-bound-lower) var(--site-chip-tint),
+    var(--kpress-doc-bg)
+  );
+}
+.site-chip:is([data-kind="upper-bound"], [data-kind="optimality"]) {
+  background: color-mix(
+    in oklab,
+    var(--site-bound-upper) var(--site-chip-tint),
+    var(--kpress-doc-bg)
+  );
+}
+.site-chip[data-status="recorded"] {
+  --rung-level: 2;
+  --rung-hue: 95;
+  background: oklch(
+    calc(var(--site-rung-base) + var(--rung-level) * var(--site-rung-step))
+      calc(var(--site-rung-chroma-base) + var(--rung-level) * var(--site-rung-chroma-step))
+      var(--rung-hue)
+  );
+}
 /* A rung's fill moves with its level on its own scale, always behind the page's text
    colour: level 0 is nearly the page background, and each level above it is stronger
    (darker in light mode, lighter in dark) and more saturated. Verification is the blue
@@ -2086,19 +2115,30 @@ body:has([data-atlas-preview]) {
 /* Small is the default; Medium restores the original scale of 1. Root attributes
    select explicit URL sizes before the atlas programs run. */
 .site-page .site-atlas-grid[data-atlas-size="small"],
-html[data-site-atlas-size="small"] .site-page .site-atlas-grid:where([data-atlas-grid]) {
+html[data-site-atlas-size="small"]
+  .site-page
+  .site-atlas-grid:where([data-atlas-grid]):not([data-atlas-size-explicit]) {
   --site-atlas-scale: 0.667;
 }
 .site-page .site-atlas-grid[data-atlas-size="medium"],
-html[data-site-atlas-size="medium"] .site-page .site-atlas-grid:where([data-atlas-grid]) {
+html[data-site-atlas-size="medium"]
+  .site-page
+  .site-atlas-grid:where([data-atlas-grid]):not([data-atlas-size-explicit]) {
   --site-atlas-scale: 1;
 }
 .site-page .site-atlas-grid[data-atlas-size="large"],
-html[data-site-atlas-size="large"] .site-page .site-atlas-grid:where([data-atlas-grid]) {
+html[data-site-atlas-size="large"]
+  .site-page
+  .site-atlas-grid:where([data-atlas-grid]):not([data-atlas-size-explicit]) {
   --site-atlas-scale: 1.5;
 }
-/* Layout, Size and Scale use the section tabs' strip (site-nav.css), on
-   the bar's line, so each is as tall here as under the bar. Each chooser line is
+/* Untouched wide-screen defaults match the first CSS paint, before JS placement. */
+@media (min-width: 75rem) {
+  html:not([data-site-atlas-size]) .site-page .site-atlas-grid:not([data-atlas-size-explicit]) {
+    --site-atlas-scale: 1;
+  }
+}
+/* Layout, Size and Scale use the shared small chooser strip. Each line is
    centered over the tiles, with the compact two-column key centered beneath it;
    on a narrow block the controls wrap beneath one another. */
 .site-atlas-grid .site-atlas-controls {
@@ -2111,7 +2151,6 @@ html[data-site-atlas-size="large"] .site-page .site-atlas-grid:where([data-atlas
 .site-atlas-grid .site-atlas-views,
 .site-atlas-grid .site-atlas-sizes,
 .site-atlas-grid .site-atlas-scales {
-  line-height: var(--site-nav-line);
   margin: 0;
 }
 .site-atlas-grid .site-atlas-views[hidden],
@@ -2216,7 +2255,7 @@ html[data-site-atlas-size="large"] .site-page .site-atlas-grid:where([data-atlas
     var(--site-atlas-outline-air) *
     0.2
   );
-  --site-atlas-number-ink-size: 0.8rem;
+  --site-atlas-number-ink-size: 1rem;
   --site-atlas-number-leading: var(--kpress-line-height-normal);
   /* Source Sans 3: ascent 1.024em, descent 0.4em; digits descend 0.012em.
      Half the leading minus 0.324em is the air below the deepest digit ink. */
@@ -2237,7 +2276,7 @@ html[data-site-atlas-size="large"] .site-page .site-atlas-grid:where([data-atlas
     0.25
   );
   --site-atlas-grid-space: calc((var(--site-atlas-tile) - 2 * var(--site-atlas-cell-padding)) / 2);
-  --site-atlas-number-size: clamp(0.5rem, calc(var(--site-atlas-tile) * 0.25), 0.8rem);
+  --site-atlas-number-size: clamp(0.65rem, calc(var(--site-atlas-tile) * 0.28), 1rem);
   /* Every Triangle line reserves its drawing and padding, the count margin and
      count leading. Atlas drawings have no document image margins. */
   --site-atlas-line-height: calc(
@@ -2317,7 +2356,7 @@ html[data-site-atlas-scale="row"]
     var(--site-atlas-frame-inset)
   );
   aspect-ratio: 1;
-  border: 0.5px solid var(--kpress-doc-border);
+  border: 1px solid var(--kpress-doc-muted);
   box-sizing: border-box;
   content: "";
   inline-size: calc(
@@ -2328,6 +2367,18 @@ html[data-site-atlas-scale="row"]
   inset-inline-start: calc(var(--site-atlas-cell-padding) + var(--site-atlas-reference-margin));
   pointer-events: none;
   position: absolute;
+}
+/* Anchor Row scaling at the actual enclosing frame's bottom-left corner. */
+html:not([data-site-atlas-scale])
+  .site-atlas-grid:where([data-atlas-grid]):where([data-atlas-scale="row"])
+  .site-atlas-cell
+  :is(svg, img),
+html[data-site-atlas-scale="row"]
+  .site-atlas-grid:where([data-atlas-grid])
+  .site-atlas-cell
+  :is(svg, img) {
+  transform-origin: calc(var(--site-atlas-frame-inset) * 100%)
+    calc((1 - var(--site-atlas-frame-inset)) * 100%);
 }
 .site-atlas-cell :is(svg, img) {
   transform: scale(var(--site-atlas-drawing-ratio));
@@ -2344,9 +2395,9 @@ html[data-site-atlas-scale="row"]
   color: var(--kpress-doc-muted);
   display: block;
   font-family: var(--kpress-font-sans);
-  font-size: 0.8rem;
+  font-size: 1rem;
   font-variant-numeric: tabular-nums;
-  font-weight: var(--site-font-weight-sans-light);
+  font-weight: var(--site-font-weight-sans-medium);
   inline-size: fit-content;
   margin-block-start: 0.2rem;
   margin-inline: auto;
@@ -2475,8 +2526,7 @@ html[data-site-atlas-view="triangle"] .site-atlas-grid:where([data-atlas-grid]) 
   line-height: 1.15;
   margin-block-start: calc(var(--site-atlas-tile) * 0.04);
 }
-/* The perfect squares that end each row are numbered in the text's own colour and
-   the medium weight. */
+/* Perfect-square endpoints use the text color and bold weight. */
 html:not([data-site-atlas-view="grid"])
   .site-atlas-grid:where([data-atlas-grid]):where([data-atlas-view="triangle"])
   [data-atlas-square]
@@ -2486,7 +2536,7 @@ html[data-site-atlas-view="triangle"]
   [data-atlas-square]
   .site-atlas-n {
   color: var(--kpress-doc-text);
-  font-weight: var(--site-font-weight-sans-medium);
+  font-weight: var(--site-font-weight-sans-bold);
 }
 /* The grid shows n = 1 to 100 until its button, centred under it, places the rest. The
    rest sit in one box the grid lays out as its own cells, so hiding them again is the
@@ -2891,6 +2941,7 @@ html[data-site-atlas-view="triangle"]
   margin: 0;
 }
 .kpress .site-case-interval {
+  font-family: var(--kpress-font-prose);
   font-size: calc(var(--site-font-size-sans-base) * 1.25);
   margin-block: 0 1rem;
   overflow-x: auto;
@@ -2918,7 +2969,7 @@ html[data-site-atlas-view="triangle"]
 }
 .site-case-figure {
   inline-size: min(20rem, 100%);
-  margin: 0;
+  margin: 0 auto;
   min-inline-size: 0;
 }
 @container (max-width: 41.999rem) {
@@ -2940,6 +2991,9 @@ html[data-site-atlas-view="triangle"]
   .site-case .site-atlas-gap-values .is-lower + .is-upper {
     inset-block-start: 1.45em;
   }
+}
+.kpress .site-case-summary .site-atlas-pop-bound {
+  font-family: var(--kpress-font-prose);
 }
 .site-case-summary-facts {
   font-family: var(--kpress-font-sans);
@@ -3235,6 +3289,41 @@ html[data-site-atlas-view="triangle"]
   display: block;
   height: auto;
   width: 100%;
+}
+/* The paused poster is a large play target, with room for native controls below. */
+.site-film-picture {
+  position: relative;
+}
+.kpress .site-film-play {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  display: flex;
+  inset: 0 0 3rem;
+  justify-content: center;
+  padding: 0;
+  position: absolute;
+}
+.kpress .site-film-play[hidden] {
+  display: none;
+}
+.site-film-play-icon {
+  align-items: center;
+  background: var(--kpress-doc-bg);
+  border: 1px solid var(--kpress-doc-border);
+  border-radius: 50%;
+  color: var(--kpress-doc-text);
+  display: flex;
+  font-size: 2rem;
+  inline-size: 4rem;
+  block-size: 4rem;
+  justify-content: center;
+  padding-inline-start: 0.15rem;
+  transition: transform var(--site-hover-duration) var(--site-hover-easing);
+}
+.site-film-play:is(:hover, :focus-visible) .site-film-play-icon {
+  transform: scale(1.08);
 }
 .site-page .site-film-frame figcaption,
 .site-page .site-film-note {

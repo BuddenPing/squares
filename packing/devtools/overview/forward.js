@@ -150,7 +150,10 @@
       forward("atlas.html");
       return;
     }
-    if (id === "squares-project-documentation" && !document.getElementById(id)) {
+    if (
+      ["the-squares-project", "squares-project-documentation"].includes(id) &&
+      !document.getElementById(id)
+    ) {
       forward("about.html");
       return;
     }

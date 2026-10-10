@@ -7,15 +7,18 @@ with some initial explorations that obtained
 [new lower bounds](papers/n11-lower-bounds-explainer.html) for $n = 11, 17, 18, 19, 20$
 and other low values.
 
-Now several others have obtained results building on this work, including Kleddamag’s
-[certified lower bound of 31/8](papers/n11-threshold-bound-review.html) and a
-[landmark new proof](papers/n11-optimality-review.html) by Queuingtheorydotcom of the
-optimality of the famous [case of 11 squares](cases/11.html).
+Now several others have obtained results building on this work, including:
 
-Separately, Evan Daniel has proved the optimality of
-[a whole infinite family](results.html#t-064), $s(k^2 - 3) = k$ for every $k \ge 6$,
-along with exact values at [21](cases/21.html), [32](cases/32.html) and
-[45](cases/45.html) squares.
+- [Kleddamag](https://x.com/kleddamag)’s
+  [certified lower bound of 31/8](papers/n11-threshold-bound-review.html) for eleven
+  squares.
+- [Mannaseh Ahmed](https://x.com/ManassehA06)’s
+  [proof of optimality](papers/n11-optimality-review.html) for
+  [eleven squares](cases/11.html).
+- Independently, [Evan Daniel](https://x.com/evanbd) has proved the optimality of
+  [an infinite family](results.html#t-064), $s(k^2 - 3) = k$ for every $k \ge 6$, along
+  with exact values at [21](cases/21.html), [32](cases/32.html) and [45](cases/45.html)
+  squares.
 
 This project now independently tabulates all known new results and does
 [AI-assisted verification](results.html#verification-ladders) of the proofs and
@@ -45,9 +48,9 @@ Contact [ojoshe](https://x.com/ojoshe) if you wish to join.
      s(45) = 7 are T-052, T-051 and T-053, all four credited to Daniel after Burns,
      Massaccesi and all at V3/C3, T-064 by the full replay of the source's Valid7
      checker and the Lean reduction built here. The bibliography files their sources as
-     independent of this project, so they stand in a sentence of their own and not
-     among the results building on this work, and the sentence gives no significance
-     score, since only n = 11's results are S5 and these are S4. "AI-assisted
+     independent of this project, so the contributor list explicitly labels Daniel's
+     results independent; it gives no significance score, since only n = 11's results
+     are S5 and these are S4. "AI-assisted
      verification" links the ladders, which say how far each result is checked; the
      sentence does not say every result is checked, since some are recorded and not
      yet replayed here. -->

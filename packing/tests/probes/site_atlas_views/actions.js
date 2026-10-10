@@ -34,6 +34,7 @@
         width: round(box.width),
         height: round(box.height),
       },
+      row_gap: element.parentElement ? getComputedStyle(element.parentElement).columnGap : null,
       centred: row === null ? null : round((box.left + box.right) / 2 - (row.left + row.right) / 2),
       color: style.color,
       background: style.backgroundColor,

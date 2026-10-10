@@ -125,8 +125,8 @@ def standing_chip(standing: str, words: str | None = None) -> str:
     """A result's standing as a chip, the plain gray one, lettered with the standing or
     with `words`. A table draws one word, `superseded`, for both its marks: the
     `superseded in part` mark's chip says `superseded` and keeps its own standing in
-    `data-standing` (`supersession_marks`). It is the kind's and the status's own chip
-    and differs from them only in its word."""
+    `data-standing` (`supersession_marks`). Superseded marks keep the neutral gray
+    fill; kind and status chips use their own semantic colors."""
     return (
         f'<span class="site-chip" data-standing="{_esc(standing_key(standing))}">'
         f"{_esc(standing if words is None else words)}</span>"
@@ -135,8 +135,8 @@ def standing_chip(standing: str, words: str | None = None) -> str:
 
 def kind_chip(result: Result) -> str:
     """What a result is, as a chip: its `kind` in the rubric's words, `lower bound` or
-    `case exclusion` (epistemics.md, Result Kinds). The plain gray chip, the standing
-    chips' own, and every result has one."""
+    `case exclusion` (epistemics.md, Result Kinds). Every result has one; bound kinds
+    use the same semantic hues as the corresponding bounds."""
     kind = str(result.record["kind"])
     return f'<span class="site-chip" data-kind="{_esc(kind)}">{_esc(kind_label(kind))}</span>'
 
@@ -144,7 +144,7 @@ def kind_chip(result: Result) -> str:
 def status_chip(status: str) -> str:
     """A result's status as its chip: `recorded`, `reviewed`, `confirmed` or
     `incomplete` (`devtools.result_status`), the one word for how far this project's
-    workflow has taken the result. The plain gray chip, like the kind's."""
+    workflow has taken the result. Recorded results use the warning yellow fill."""
     return f'<span class="site-chip" data-status="{_esc(status)}">{_esc(status)}</span>'
 
 
@@ -209,10 +209,11 @@ def embed_url(href: str) -> str:
 def card_hero(src: str) -> str:
     """A card's optional hero: a small picture at its head, in a fixed 16:9 box the
     picture covers from its top edge. It is decorative (`alt=""`), since the card's own
-    label and value say what it shows, and loads lazily. `src` is a file served beside
-    the page, never an address off the site."""
+    label and value say what it shows, and loads lazily. `src` is a published atlas image,
+    served unchanged under its content-hashed asset name, never an address off the site."""
     from devtools.render_n11_lower_bounds_explainer import COMPOSITE_ASSETS  # noqa: PLC0415
     from devtools.render_overview import image_dimensions  # noqa: PLC0415
+    from devtools.site_assets import asset_href, shared  # noqa: PLC0415
 
     if "://" in src or src.startswith("//"):
         raise SystemExit(f"{src}: a card's hero is served beside the page, never fetched")
@@ -220,9 +221,11 @@ def card_hero(src: str) -> str:
     if source is None:
         raise SystemExit(f"{src}: a card's hero must be a published atlas image")
     width, height = image_dimensions(source)
+    image = shared().assets.image_file(source)
+    href = asset_href(image, "index.html")
     return (
         '<span class="site-card-hero">'
-        f'<img src="{_esc(src)}" alt="" width="{width}" height="{height}" '
+        f'<img src="{_esc(href)}" alt="" width="{width}" height="{height}" '
         'loading="lazy" decoding="async"></span>'
     )
 
@@ -1013,7 +1016,13 @@ def date_cell(result: Result) -> str:
     return f'{_esc(dated)} <span class="site-date-kind">{_esc(kind)}</span>'
 
 
-def result_cells(result: Result, overview: Overview, detail: RowDetail) -> str:
+def result_cells(
+    result: Result,
+    overview: Overview,
+    detail: RowDetail,
+    *,
+    replacement_dates: Mapping[str, str],
+) -> str:
     """A result's cells, one for each column of `result_head`, the same on both tables:
     its date (`date_cell`), its significance with the star a new result earns
     (`significance_cell`), its summary (`result_text`), its cases (`case_list`), its
@@ -1022,7 +1031,10 @@ def result_cells(result: Result, overview: Overview, detail: RowDetail) -> str:
     its id (`id_cell`). Its records are in the popover the row opens (`_detail`). The
     status cell sorts on the status word alone."""
     record = result.record
-    standing = f'<span class="site-standing">{status_marks(result)}</span>'
+    standing = (
+        '<span class="site-standing">'
+        f"{status_marks(result, replacement_dates=replacement_dates)}</span>"
+    )
     return (
         f'<td class="site-col-date" data-value="{_esc(result.dated[1])}">'
         f"{date_cell(result)}</td>"
@@ -1041,7 +1053,12 @@ def result_cells(result: Result, overview: Overview, detail: RowDetail) -> str:
 
 
 def result_table_row(
-    result: Result, overview: Overview, *, here: bool, shown: bool
+    result: Result,
+    overview: Overview,
+    *,
+    here: bool,
+    shown: bool,
+    replacement_dates: Mapping[str, str] | None = None,
 ) -> tuple[str, str]:
     """One result's row in a table of results, and the popover the row opens: the one
     row both tables write, the same cells and the same popover. On the results page
@@ -1049,13 +1066,15 @@ def result_table_row(
     the result as `data-result`, since that address is the results page's. A row that is
     not `shown`, one outside its table's defaults, is `hidden` in the HTML. Those two
     attributes are all a row differs in between the tables."""
+    if replacement_dates is None:
+        replacement_dates = {other.id: first_day(other.dated[1]) for other in overview.results}
     starred = bool(new_result_label(result, overview))
     detail = result_row(result, trigger=_esc(result.id), starred=starred)
     key = "id" if here else "data-result"
     row = (
         f'<tr {key}="{_esc(result.id.lower())}" {result_facets(result)} '
         f"{detail.attributes}{'' if shown else ' hidden'}>"
-        f"{result_cells(result, overview, detail)}</tr>"
+        f"{result_cells(result, overview, detail, replacement_dates=replacement_dates)}</tr>"
     )
     return row, detail.popover
 
@@ -1117,9 +1136,14 @@ def table_of_results(overview: Overview, defaults: FilterDefaults, *, here: bool
     )
     body = []
     popovers = []
+    replacement_dates = {other.id: first_day(other.dated[1]) for other in overview.results}
     for result in results:
         row, popover = result_table_row(
-            result, overview, here=here, shown=shown_by_default(result, defaults, reference)
+            result,
+            overview,
+            here=here,
+            shown=shown_by_default(result, defaults, reference),
+            replacement_dates=replacement_dates,
         )
         body.append(row)
         popovers.append(popover)
@@ -1130,7 +1154,7 @@ def table_of_results(overview: Overview, defaults: FilterDefaults, *, here: bool
         '<table class="kpress-table site-table site-results" data-site-table>'
         f"{result_head()}"
         f"<tbody>{''.join(body)}</tbody></table></div>"
-        f"{rung_legend(here=here, heading='Legend' if not here else '')}"
+        f"{rung_legend(here=True) if here else ''}"
         f"{notices}{''.join(popovers)}</div>"
     )
 
@@ -1461,7 +1485,9 @@ def superseder_link(other: str, reported: Collection[str]) -> str:
     return f"{link} {REPORTED_MARK}" if other in reported else link
 
 
-def supersession_marks(result: Result) -> str:
+def supersession_marks(
+    result: Result, *, replacement_dates: Mapping[str, str] | None = None
+) -> str:
     """Whether a result is superseded, and by what, as its status line ends: `superseded`
     where it is (`is_superseded`), then `superseded in part` where a later result implies
     some of it, each followed by the results that supersede it as links to their rows
@@ -1474,23 +1500,37 @@ def supersession_marks(result: Result) -> str:
     a chip never wraps, the status column is as wide as its widest chip, and the four
     words as one chip, 150 pixels, set the column 52 pixels wider than `superseded` does,
     which the n column paid for (`think-kmi4`). The partial mark's chip keeps its own
-    standing, `data-standing="superseded-in-part"`, and its row stays current."""
+    standing, `data-standing="superseded-in-part"`, and its row stays current.
+
+    Tables pass `replacement_dates` to name only the newest replacement, ordered by
+    the normalized display date and then its id, with `and others` for further
+    replacements. Without that lookup, records and popovers retain every link."""
     marks = []
     for mark in result.supersessions:
-        links = [superseder_link(other, mark.reported) for other in mark.by]
+        if replacement_dates is not None and mark.by:
+            newest = max(mark.by, key=lambda other: (replacement_dates[other], other))
+            links = superseder_link(newest, mark.reported)
+            if len(mark.by) > 1:
+                links += " and others"
+        else:
+            links = listed([superseder_link(other, mark.reported) for other in mark.by])
         extent = _esc(mark.mark.removeprefix(SUPERSEDED).strip())
-        after = " ".join(filter(None, (extent, f"by {listed(links)}" if links else "")))
+        after = " ".join(filter(None, (extent, f"by {links}" if links else "")))
         quiet = f' <span class="site-cell-quiet">{after}</span>' if after else ""
         chip = standing_chip(mark.mark, SUPERSEDED)
         marks.append(f'<span class="site-superseded">{chip}{quiet}</span>')
     return " ".join(marks)
 
 
-def status_marks(result: Result) -> str:
+def status_marks(result: Result, *, replacement_dates: Mapping[str, str] | None = None) -> str:
     """A result's status line: its status chip, always; who has the next move, where
     the register records it (`activity_chip`); and whether it is superseded, with the
     results that supersede it (`supersession_marks`)."""
-    marks = (status_chip(result.status), activity_chip(result), supersession_marks(result))
+    marks = (
+        status_chip(result.status),
+        activity_chip(result),
+        supersession_marks(result, replacement_dates=replacement_dates),
+    )
     return " ".join(filter(None, marks))
 
 
@@ -1639,7 +1679,7 @@ SERIES_CARDS: dict[str, tuple[str, str]] = {
     N11_OPTIMALITY_REVIEW: (
         "A Review of the Optimality Proof of the Trump Packing of 11 Squares",
         (
-            "Explains Ahmed\u2019s proof that Trump\u2019s packing is optimal, "
+            "Explains Mannaseh Ahmed\u2019s proof that Trump\u2019s packing is optimal, "
             "s(11) = 3.8770835\u2026 (T-060): construction, case exclusions, capture and "
             "local isolation."
         ),
@@ -1717,22 +1757,6 @@ def paper_cards() -> str:
     )
 
 
-def project_card() -> str:
-    """The compact project introduction and its retained homepage fragment."""
-    return (
-        '<div class="site-project-card" id="the-squares-project">'
-        + link_card(
-            "about.html",
-            "About",
-            "The Squares Project",
-            "New bounds, independent verification, and open collaboration on square packing.",
-            size="small",
-            new_tab=False,
-        )
-        + "</div>"
-    )
-
-
 #: The site's reading and working pages, as the overview's cards under The Squares
 #: Project show them: the page, a label, its title, and one line on what a reader finds
 #: there. Both are register prose, so a bound in either is written in ASCII
@@ -1807,8 +1831,7 @@ def hero() -> str:
     return (
         '<figure class="site-hero-figure"><div class="site-hero-packings">'
         f"{links}</div>"
-        "<figcaption>Best known packing for 53 identical squares. "
-        "Colors indicate angle. Darker colors mean more common shared faces.</figcaption>"
+        "<figcaption>Best known packing for 53 identical squares</figcaption>"
         "</figure>"
     )
 
@@ -1920,12 +1943,12 @@ OTHER_PROJECTS: tuple[tuple[str, str, str], ...] = (
     ),
     (
         "https://github.com/Queuingtheorydotcom/11SquaresOptimal",
-        "Ahmed",
+        "Mannaseh Ahmed",
         "A computer-assisted proof that Trump's packing of eleven squares is optimal.",
     ),
     (
         "https://github.com/Queuingtheorydotcom/11SquaresFormalized",
-        "Ahmed et al.",
+        "Mannaseh Ahmed et al.",
         "A Lean 4 formalization of that proof, trusting Lean's compiler for its certificates.",
     ),
     (
@@ -2518,8 +2541,16 @@ def _media_cards(specs: Sequence[tuple[str, str, str, str, str]]) -> str:
 
 
 def pdf_cards() -> str:
-    """Both poster PDFs, shared by the homepage and Papers."""
+    """Both poster PDFs on Papers."""
     return _media_cards(PDF_CARD_SPECS)
+
+
+def homepage_pdf_card() -> str:
+    """The complete 324-case poster as the homepage's featured PDF."""
+    href, hero, label, value, note = PDF_CARD_SPECS[1]
+    return _cards(
+        [link_card(href, label, tex_bounds(value), tex_bounds(note), hero=hero, size="large")]
+    )
 
 
 def homepage_video(film_url: str) -> str:
@@ -2705,7 +2736,7 @@ ATLAS_SCALES: tuple[tuple[str, str], ...] = (
     ("row", "Row"),
     ("global", "Global"),
 )
-ATLAS_SCALE = "fixed"
+ATLAS_SCALE = "row"
 ATLAS_SCALE_DESCRIPTIONS = {
     "fixed": "Every enclosing square has the same display size.",
     "row": (
@@ -2897,7 +2928,8 @@ def _atlas_tablist(
         for key, label in choices
     )
     return (
-        f'<div class="site-tabs {classes}" role="tablist" aria-label="{_esc(name)}" '
+        f'<div class="site-tabs site-chooser-small {classes}" role="tablist" '
+        f'aria-label="{_esc(name)}" '
         f"{extra.rstrip()}>{tabs}</div>"
     )
 
@@ -3079,9 +3111,10 @@ def atlas_grid(*, homepage: bool = False) -> str:
     triangle, and the triangle numbers it in the text's colour. The
     block is rendered at the small size (`data-atlas-size`), under tabs beside the view
     tabs that make every tile smaller or larger (`atlas_size_tabs`), in either view.
-    Scale changes the drawing within each tile: Fixed (the default), its actual side
-    relative to its logical row's grid side, or relative to the largest currently shown
-    actual enclosing side. Slots, number type and the grid separator stay fixed.
+    Scale changes only the drawing within each tile: Fixed gives every frame the
+    same size; Row (the default) scales its actual side relative to its logical row's
+    grid side; Global uses the largest currently shown actual enclosing side.
+    Slots, number type and the grid separator stay fixed.
 
     The first `ATLAS_FIRST` cells arrive as static markup with reserved, lazy-loaded
     SVG images; the rest are already present in a hidden container. The script shows

@@ -13,6 +13,10 @@
   --site-wash: var(--kpress-doc-surface-hover);
   --site-shadow: oklch(0% 0 0 / 0.15);
   --site-tab-current-tint: 16%;
+  --site-action-row-gap: 0.7rem;
+  --site-chooser-small-size: var(--site-font-size-control, 0.8rem);
+  --site-chooser-small-leading: 1.35;
+  --site-chooser-small-padding: 0.15rem 0.65rem;
   --site-header-duration: 180ms;
   --site-header-layer: 5;
 }
@@ -507,4 +511,14 @@ nav.site-tabs a[aria-current="page"],
 }
 :root[data-site-view="embed"] .kpress-page-main > .kpress-doc {
   padding-block-start: 0.5rem;
+}
+
+/* Compact in-place choosers share the Results widget type scale. */
+.site-tabs.site-chooser-small {
+  font-size: var(--site-chooser-small-size);
+  line-height: var(--site-chooser-small-leading);
+}
+.site-tabs.site-chooser-small [role="tab"] {
+  font-weight: var(--site-font-weight-sans-medium, 500);
+  padding: var(--site-chooser-small-padding);
 }

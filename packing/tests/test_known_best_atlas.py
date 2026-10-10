@@ -161,7 +161,9 @@ def _assert_print_body_ink(nodes: Sequence[ET.Element]) -> None:
         and (node.text or "").startswith("recent result")
     ]
     assert len(recent) == 1
-    assert len(recent[0]) == 0
+    assert len(recent[0]) == 1
+    assert recent[0][0].text == " (since August, 2026)"
+    assert recent[0][0].attrib["fill"] == "#000000"
     assert all(
         node.attrib["fill"] == (FIRST_PARTY_ACCENT_COLOR if node is recent[0] else "#000000")
         for node in nodes
@@ -1289,6 +1291,60 @@ def test_poster_grid_transition_gap_uses_the_retained_group_and_preserves_card_s
         assert label.attrib["font-size"] == "29"
 
 
+def test_row_comparison_keeps_bottom_left_anchor_and_original_square_geometry() -> None:
+    canvas = known_best_builder.resolved_composites()[1]
+    append = known_best_builder._append_summary_card  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+    for case in known_best_builder.retained_cases((5, 6, 7, 8, 9, 11)):
+        original, comparison = ET.Element("svg"), ET.Element("svg")
+        spec = RenderSpec(overlays=frozenset())
+        append(original, case, spec=spec, canvas=canvas)
+        append(comparison, case, spec=spec, canvas=canvas, row_sizing=True)
+        fixed = original[0].find("svg:rect[@data-feature='container-outline']", SVG)
+        scaled = comparison[0].find("svg:rect[@data-feature='container-outline']", SVG)
+        assert fixed is not None
+        assert scaled is not None
+        x, y, size = (Decimal(fixed.attrib[key]) for key in ("x", "y", "width"))
+        draw_x, draw_y, draw_size = (Decimal(scaled.attrib[key]) for key in ("x", "y", "width"))
+        assert draw_x == x
+        assert draw_y + draw_size == pytest.approx(y + size, abs=Decimal("0.000001"))
+        side = known_best_builder.frame_from_witness(case.witness).container_side.projected
+        row = canvas.spec.card_position(case.frontier.n)[0] + 1
+        ratio = side / row
+        assert draw_size == pytest.approx(size * ratio, abs=Decimal("0.000001"))
+        reference = comparison[0].find("svg:rect[@data-feature='row-reference-frame']", SVG)
+        if ratio == 1:
+            assert reference is None
+        else:
+            assert reference is not None
+            assert {key: reference.attrib[key] for key in ("x", "y", "width", "height")} == {
+                key: fixed.attrib[key] for key in ("x", "y", "width", "height")
+            }
+            assert Decimal(reference.attrib["stroke-width"]) > Decimal(
+                fixed.attrib["stroke-width"]
+            )
+        before = known_best_builder.summary_square_polygons(original)
+        after = known_best_builder.summary_square_polygons(comparison)
+        assert len(before) == len(after) == case.frontier.n
+        for old, new in zip(before, after, strict=True):
+            assert old.attrib["fill"] == new.attrib["fill"]
+            old_points = [
+                tuple(map(Decimal, pair.split(","))) for pair in old.attrib["points"].split()
+            ]
+            new_points = [
+                tuple(map(Decimal, pair.split(","))) for pair in new.attrib["points"].split()
+            ]
+            for (px, py), (qx, qy) in zip(old_points, new_points, strict=True):
+                assert qx == pytest.approx(x + (px - x) * ratio, abs=Decimal("0.001"))
+                assert qy == pytest.approx(
+                    y + size + (py - y - size) * ratio, abs=Decimal("0.001")
+                )
+        old_labels = original[0].findall("svg:text", SVG)
+        new_labels = comparison[0].findall("svg:text", SVG)
+        assert [ET.tostring(node) for node in old_labels] == [
+            ET.tostring(node) for node in new_labels
+        ]
+
+
 def test_poster_grid_markers_fit_the_separator_or_the_all_grid_margin() -> None:
     canvas = known_best_builder.resolved_composites()[1]
     resolve = known_best_builder._poster_grid_transitions  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
@@ -1689,6 +1745,8 @@ def test_poster_enlarges_information_type_without_changing_card_geometry() -> No
         elif feature in baseline_sizes:
             assert size == 48
             assert size >= baseline_sizes[feature] * 2
+        elif "data-swatch-label" in node.attrib:
+            assert size == Decimal(body_lines[0].attrib["font-size"]) * Decimal("0.6")
         else:
             assert Decimal(29) < size < Decimal(38)
     problem = [
@@ -1745,7 +1803,7 @@ def test_poster_enlarges_information_type_without_changing_card_geometry() -> No
             assert (badge.attrib["width"], badge.attrib["height"]) == ("19", "19")
 
 
-def test_poster_math_variables_are_italic_above_its_legend_and_degree_ends_the_legend() -> None:
+def test_poster_math_variables_are_italic_above_its_legend_and_degree_precedes_recent() -> None:
     root = ET.Element(f"{{{SVG['svg']}}}svg", {"width": "7497", "height": "5361"})
     append = known_best_builder._append_composite_information  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
     append(
@@ -1761,7 +1819,7 @@ def test_poster_math_variables_are_italic_above_its_legend_and_degree_ends_the_l
     assert block.find("svg:text[@data-feature='degree-explainer']", SVG) is None
     column = block.find("svg:g/svg:g[@data-column='right']", SVG)
     assert column is not None
-    second = column.findall("svg:text[@data-feature='legend-label']", SVG)[-1]
+    second = column.findall("svg:text[@data-feature='legend-label']", SVG)[-2]
     continuation = block.find("svg:text[@data-feature='problem-explainer']", SVG)
     assert continuation is not None
     assert " ".join("".join(line.itertext()) for line in (first, continuation)) == (
@@ -1796,7 +1854,7 @@ def test_poster_math_variables_are_italic_above_its_legend_and_degree_ends_the_l
     assert Decimal(second.attrib["x"]) == Decimal(column.attrib["data-left"])
     assert (
         Decimal(second.attrib["y"])
-        == known_best_builder.resolved_composites()[1].legend_baseline + 3 * 72
+        == known_best_builder.resolved_composites()[1].legend_baseline + 2 * 72
     )
     features = (
         "explainer",
@@ -2197,7 +2255,6 @@ def test_primary_composite_routes_contributions_to_cards_and_legend(
             )
             is expected_accent
         )
-    expected_recent = sum(flags.any for flags in contributions.values())
     starred = {
         int(item.attrib["data-n"])
         for item in root.findall("svg:g[@data-feature='packing-card']", SVG)
@@ -2206,8 +2263,9 @@ def test_primary_composite_routes_contributions_to_cards_and_legend(
     assert starred == set()
     legend = root.find(".//svg:g[@data-feature='evidence-legend']", SVG)
     assert legend is not None
-    assert f"recent result, since August, 2026 ({expected_recent} of 100)" in [
-        node.text for node in legend.findall(".//svg:text[@data-feature='legend-label']", SVG)
+    assert "recent result (since August, 2026)" in [
+        "".join(node.itertext())
+        for node in legend.findall(".//svg:text[@data-feature='legend-label']", SVG)
     ]
 
 
@@ -2296,7 +2354,7 @@ def test_shared_atlas_legend_has_the_same_eight_items_in_four_and_four_rows() ->
     assert descriptor.right[2].marker_labels == ()
 
 
-def test_poster_legend_columns_align_left_and_count_upper_only_recent_results(
+def test_poster_legend_columns_align_left_and_end_with_the_recent_result_key(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     canvas = known_best_builder.resolved_composites()[1]
@@ -2334,8 +2392,16 @@ def test_poster_legend_columns_align_left_and_count_upper_only_recent_results(
         column.findall("svg:text[@data-feature='legend-label']", SVG) for column in columns
     ]
     assert [len(column) for column in labels] == [4, 4]
-    assert labels[1][0].text == "recent result, since August, 2026 (1 of 324)"
-    assert labels[1][0].attrib["fill"] == FIRST_PARTY_ACCENT_COLOR
+    assert ["".join(node.itertext()) for node in labels[1]] == [
+        "colors indicate distinct tilt angles",
+        "shade indicates number of full-side contacts",
+        "deg is the algebraic degree of that side length",
+        "recent result (since August, 2026)",
+    ]
+    assert labels[1][-1].text == "recent result"
+    assert labels[1][-1].attrib["fill"] == FIRST_PARTY_ACCENT_COLOR
+    assert labels[1][-1][0].text == " (since August, 2026)"
+    assert labels[1][-1][0].attrib["fill"] == "#000000"
     assert not root.findall(".//svg:polygon[@data-feature='legend-star']", SVG)
     description = known_best_builder.SUMMARY_PROSE[canvas.spec.stem][1]
     assert all(
@@ -2381,8 +2447,8 @@ def test_poster_legend_columns_align_left_and_count_upper_only_recent_results(
             assert node.attrib["font-size"] == "48"
             x = Decimal(node.attrib["x"])
             assert start <= x
-            assert (x == start) == (node in (nodes[0], nodes[-1]) and column is columns[1])
-            assert x + text_width(node.text or "", "48") <= right
+            assert (x == start) == (node in (nodes[-2], nodes[-1]) and column is columns[1])
+            assert x + text_width("".join(node.itertext()), "48") <= right
     assert (
         Decimal(columns[1].attrib["data-left"])
         - Decimal(columns[0].attrib["data-left"])
@@ -2463,10 +2529,17 @@ def test_both_pdf_legends_label_only_the_first_two_angle_swatches(index: int) ->
     for column in root.findall("svg:g/svg:g[@data-feature='legend-column']", SVG):
         for node in column.findall("svg:text[@data-feature='legend-label']", SVG):
             left = Decimal(node.attrib["x"])
-            right = left + text_width(node.text or "", node.attrib["font-size"])
+            right = left + text_width("".join(node.itertext()), node.attrib["font-size"])
             assert 0 < left < right < canvas.width
     pitch = 72 if index else Decimal("28.5")
-    assert Decimal(degree_labels[0].attrib["y"]) == canvas.legend_baseline + 3 * pitch
+    assert Decimal(degree_labels[0].attrib["y"]) == canvas.legend_baseline + 2 * pitch
+
+    recent = root.findall(".//svg:text[@data-feature='legend-label']", SVG)[-1]
+    assert Decimal(recent.attrib["y"]) == canvas.legend_baseline + 3 * pitch
+    assert "".join(recent.itertext()) == "recent result (since August, 2026)"
+    assert recent.text == "recent result"
+    assert recent.attrib["fill"] == FIRST_PARTY_ACCENT_COLOR
+    assert recent[0].attrib["fill"] == "#000000"
 
 
 def test_poster_documentation_refuses_overlapping_lines(
@@ -2556,7 +2629,7 @@ def test_poster_information_is_complete_left_aligned_and_clear_of_cards() -> Non
         "exact value known",
         "only known numerically",
         "rigid",
-        known_best_builder.RECENT_LABEL,
+        "recent result",
         "colors indicate distinct tilt angles",
         "shade indicates number of full-side contacts",
         "deg is the algebraic degree of that side length",
@@ -2822,17 +2895,18 @@ def test_the_poster_badges_every_perfect_square_and_counts_them_in_its_legend() 
     legend = root.find(".//svg:g[@data-feature='evidence-legend']", SVG)
     assert legend is not None
     labels = [
-        node.text for node in legend.findall(".//svg:text[@data-feature='legend-label']", SVG)
+        "".join(node.itertext())
+        for node in legend.findall(".//svg:text[@data-feature='legend-label']", SVG)
     ]
     assert labels == [
         "proved optimal (77 of 324)",
         "exact value known (295 of 324)",
         "only known numerically (29 of 324)",
         "rigid (22 of 324)",
-        "recent result, since August, 2026 (297 of 324)",
         "colors indicate distinct tilt angles",
         "shade indicates number of full-side contacts",
         "deg is the algebraic degree of that side length",
+        "recent result (since August, 2026)",
     ]
     # The grid figure uses the same label construction and counts its own hundred cases.
     figure_legend = ET.fromstring(_committed_composite_svg()).find(
@@ -2840,14 +2914,14 @@ def test_the_poster_badges_every_perfect_square_and_counts_them_in_its_legend() 
     )
     assert figure_legend is not None
     assert [
-        node.text
+        "".join(node.itertext())
         for node in figure_legend.findall(".//svg:text[@data-feature='legend-label']", SVG)
     ][:5] == [
         "proved optimal (45 of 100)",
         "exact value known (97 of 100)",
         "only known numerically (3 of 100)",
         "rigid (14 of 100)",
-        "recent result, since August, 2026 (81 of 100)",
+        "colors indicate distinct tilt angles",
     ]
 
 

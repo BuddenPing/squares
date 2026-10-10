@@ -9,6 +9,7 @@ Usage:
     uv run --frozen python -m devtools.build_known_best_atlas --check --jobs 4
     uv run --frozen python -m devtools.build_known_best_atlas --check --sample
     uv run --frozen python -m devtools.build_known_best_atlas --check-composites
+    uv run --frozen python -m devtools.build_known_best_atlas --row-comparison-svg PATH
 
 Two layers, updated apart. `--update` rewrites the data: the witnesses, the house
 renderings, the manifest and the frontier links, all text. `--update-composites` redraws
@@ -44,6 +45,7 @@ from fractions import Fraction
 from functools import cache
 from io import BytesIO
 from itertools import combinations, pairwise
+from math import isqrt
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any, Literal
@@ -1887,6 +1889,7 @@ def _append_summary_card(
     canvas: CompositeCanvas,
     grid_transition: GridTransition | None = None,
     recent: RecentContributions | None = None,
+    row_sizing: bool = False,
 ) -> None:
     n = built.frontier.n
     position = canvas.card_position(n, grid_transition)
@@ -1896,7 +1899,13 @@ def _append_summary_card(
     packing_y = card_y + SUMMARY_PACKING_INSET_Y
     frame = frame_from_witness(built.witness)
     side = frame.container_side.projected
-    scale = SUMMARY_PACKING_SIZE / side
+    reference_side = Decimal(isqrt(n - 1) + 1) if row_sizing else side
+    scale = SUMMARY_PACKING_SIZE / reference_side
+    drawing_size = side * scale if row_sizing else SUMMARY_PACKING_SIZE
+    ratio = side / reference_side
+    square_stroke = format_svg_number(Decimal("0.42") * ratio) if row_sizing else "0.42"
+    reference_y = packing_y
+    packing_y += SUMMARY_PACKING_SIZE - drawing_size
     colors = assign_square_colors(frame, spec)
 
     card = sub(
@@ -1922,6 +1931,21 @@ def _append_summary_card(
             ),
         },
     )
+    if row_sizing and drawing_size < SUMMARY_PACKING_SIZE:
+        sub(
+            card,
+            "rect",
+            {
+                "data-feature": "row-reference-frame",
+                "x": format_svg_number(packing_x),
+                "y": format_svg_number(reference_y),
+                "width": format_svg_number(SUMMARY_PACKING_SIZE),
+                "height": format_svg_number(SUMMARY_PACKING_SIZE),
+                "fill": "none",
+                "stroke": PAPER_THEME.muted,
+                "stroke-width": format_svg_number(SUMMARY_CONTAINER_STROKE * 2),
+            },
+        )
     sub(
         card,
         "rect",
@@ -1929,8 +1953,8 @@ def _append_summary_card(
             "data-feature": "container-outline",
             "x": format_svg_number(packing_x),
             "y": format_svg_number(packing_y),
-            "width": format_svg_number(SUMMARY_PACKING_SIZE),
-            "height": format_svg_number(SUMMARY_PACKING_SIZE),
+            "width": format_svg_number(drawing_size),
+            "height": format_svg_number(drawing_size),
             "fill": PAPER_THEME.background,
             # Stroke widths here are in user units and scale with the drawing, deliberately.
             # `vector-effect="non-scaling-stroke"` used to be set on both this outline and the
@@ -1945,7 +1969,7 @@ def _append_summary_card(
             # the same file rendered standalone. One artifact, two line weights, depending on
             # who drew it.
             "stroke": PAPER_THEME.container,
-            "stroke-width": format_svg_number(SUMMARY_CONTAINER_STROKE),
+            "stroke-width": format_svg_number(SUMMARY_CONTAINER_STROKE * ratio),
         },
     )
     encoding = canvas.spec
@@ -1961,7 +1985,7 @@ def _append_summary_card(
             {
                 "data-feature": "square-fills",
                 "stroke": PAPER_THEME.container,
-                "stroke-width": "0.42",
+                "stroke-width": square_stroke,
                 "stroke-linejoin": "round",
             },
         )
@@ -1989,7 +2013,7 @@ def _append_summary_card(
         if not encoding.square_stroke_shared:
             attributes |= {
                 "stroke": PAPER_THEME.container,
-                "stroke-width": "0.42",
+                "stroke-width": square_stroke,
                 "stroke-linejoin": "round",
             }
         polygon = sub(squares, "polygon", attributes)
@@ -2508,6 +2532,15 @@ def _append_summary_legend(
     )
     middle = spec.shades_per_hue // 2
 
+    # Print puts recency after the degree definition and omits its count; the
+    # shared semantic descriptor retains the web order, wording and counts.
+    columns = (descriptor.left, (*descriptor.right[1:], descriptor.right[0]))
+
+    def label(item: LegendItem) -> str:
+        if item.key == "recent":
+            return f"recent result ({item.label.removeprefix('recent result, ')})"
+        return item.formatted_text(count_style="words")
+
     def entry(item: LegendItem) -> tuple[object, str]:
         mark: object
         if item.marker is None or item.key == "recent":
@@ -2529,7 +2562,7 @@ def _append_summary_legend(
                 "star" if item.marker == "star" else "muted" if item.marker == "≈" else "solid",
                 item.label,
             )
-        return mark, item.formatted_text(count_style="words")
+        return mark, label(item)
 
     layout = _information_layout(canvas)
     body_size = POSTER_BODY_SIZE if canvas.information_in_corner else SUMMARY_FOOTER_SIZE
@@ -2539,7 +2572,7 @@ def _append_summary_legend(
 
     def row_width(item: LegendItem) -> Decimal:
         if item.marker is None or item.key == "recent":
-            return _text_width(item.formatted_text(count_style="words"), body_size)
+            return _text_width(label(item), body_size)
         return (
             (
                 Decimal(body_size) * SUMMARY_LEGEND_SWATCH_LEADING * len(item.marker_values)
@@ -2547,21 +2580,16 @@ def _append_summary_legend(
                 else badge_size
             )
             + mark_gap
-            + _text_width(item.formatted_text(count_style="words"), body_size)
+            + _text_width(label(item), body_size)
         )
 
-    widths = [
-        max(row_width(item) for item in column)
-        for column in (descriptor.left, descriptor.right)
-    ]
+    widths = [max(row_width(item) for item in column) for column in columns]
     gap = POSTER_LEGEND_COLUMN_GAP * layout.scale
     if sum(widths, Decimal(0)) + gap > layout.right - layout.left:
         raise ValueError("the poster legend columns exceed their information block")
     legend = sub(root, "g", {"data-feature": "evidence-legend"})
     cursor = layout.left
-    for name, items, width in zip(
-        ("left", "right"), (descriptor.left, descriptor.right), widths, strict=True
-    ):
+    for name, items, width in zip(("left", "right"), columns, widths, strict=True):
         column = sub(
             legend,
             "g",
@@ -2588,6 +2616,12 @@ def _append_summary_legend(
                 if item.key == "recent"
                 else SUMMARY_SMALL_FILL,
             )
+            if item.key == "recent":
+                recent = column[-1]
+                recent.text = "recent result"
+                sub(recent, "tspan", {"fill": SUMMARY_SMALL_FILL}).text = label(item)[
+                    len(recent.text) :
+                ]
         cursor += width + gap
 
 
@@ -3185,7 +3219,11 @@ def _append_composite_information(
 
 @emission_precision()
 def render_known_best_summary_svg(
-    built: Sequence[BuiltCase], canvas: CompositeCanvas, identity: CompositeIdentity
+    built: Sequence[BuiltCase],
+    canvas: CompositeCanvas,
+    identity: CompositeIdentity,
+    *,
+    row_sizing: bool = False,
 ) -> str:
     """Render a complete, zoomable overview of one composite's range of cases.
 
@@ -3207,6 +3245,16 @@ def render_known_best_summary_svg(
     if canvas.information_in_corner:
         canvas = canvas.with_transitions(transitions)
     accessible_title, accessible_description = SUMMARY_PROSE[composite.stem]
+    if row_sizing:
+        accessible_title += ": Row-sized bottom-left comparison"
+        accessible_description = (
+            f"An Atlas comparison of cases {composite.first_n} through {composite.last_n}. "
+            "In mathematical row k, packing geometry is scaled to the k-by-k reference "
+            "square. Each packing shares that frame's bottom-left corner; smaller "
+            "packings leave the gray reference outline above and to the right. "
+            "Original angle colors, contact shades, case counts, bounds, evidence "
+            "marks and source credits are retained."
+        )
     width, height = canvas.width, canvas.height
     spec = RenderSpec(overlays=frozenset())
     root = element(
@@ -3264,6 +3312,11 @@ def render_known_best_summary_svg(
                 if composite.placement == CompositePlacement.square_bound_triangle
                 else {}
             ),
+            **(
+                {"packing-sizing": "row", "packing-alignment": "bottom-left"}
+                if row_sizing
+                else {}
+            ),
             **_encoding_metadata(composite),
         },
     )
@@ -3290,6 +3343,7 @@ def render_known_best_summary_svg(
             canvas=canvas,
             grid_transition=by_row.get(row + 1),
             recent=contributions.get(item.frontier.n),
+            row_sizing=row_sizing,
         )
     for transition in transitions:
         if transition.grid.first_n in composite.numbers:
@@ -3297,6 +3351,23 @@ def render_known_best_summary_svg(
     return serialize_svg(
         root, embedded_print_fonts=atlas_print_font.embedded_css(), compact=True
     )
+
+
+def write_row_comparison_svg(destination: Path) -> None:
+    """Draw a separate full Atlas with Row sizing, leaving publication files alone."""
+    if destination.suffix.lower() != ".svg":
+        raise ValueError("a Row comparison requires an .svg destination")
+    canvases = resolved_composites()
+    canvas = next(item for item in canvases if item.spec.last_n == CORPUS.last_n)
+    if destination.resolve() in {item.svg_path.resolve() for item in canvases}:
+        raise ValueError("a Row comparison must not overwrite a published composite")
+    identity = drawable_identity()
+    drawing = render_known_best_summary_svg(
+        retained_cases(tuple(canvas.spec.numbers)), canvas, identity, row_sizing=True
+    )
+    with atomic_output_file(destination, make_parents=True) as temporary:
+        temporary.write_text(drawing, encoding="utf-8")
+    print(f"Row-sized bottom-left comparison: {canvas.spec.cases.label} → {destination}")
 
 
 def _png_chunks(content: bytes) -> list[tuple[bytes, bytes]]:
@@ -4766,6 +4837,13 @@ def parser() -> argparse.ArgumentParser:
         action="store_true",
         help="measure each retained composite: bytes, squares, bytes per square",
     )
+    mode.add_argument(
+        "--row-comparison-svg",
+        type=Path,
+        metavar="PATH",
+        help="write a separate 324-case SVG with bottom-left Row sizing; "
+        "leave published SVG, PNG and PDF outputs unchanged",
+    )
     command.add_argument(
         "--refresh",
         action="store_true",
@@ -4827,6 +4905,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         check_sample(workers=workers) if args.sample else check(workers)
     elif args.report:
         report()
+    elif args.row_comparison_svg:
+        write_row_comparison_svg(args.row_comparison_svg)
     else:
         smoke_in_temporary_directory()
     return 0

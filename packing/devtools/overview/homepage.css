@@ -3,12 +3,6 @@
   overflow-anchor: none;
 }
 
-@media screen {
-  .kpress h2.site-title {
-    margin-block-start: calc(var(--paper-section-space) + 0.5rem);
-  }
-}
-
 .site-homepage-hero .site-hero-figure {
   inline-size: calc(100% - 1rem);
   max-inline-size: 18rem;
@@ -19,23 +13,9 @@
   grid-template-columns: minmax(0, 1fr);
 }
 
-.site-project-card {
-  display: grid;
-  margin-block: 1.2rem;
-  margin-inline: auto;
-  max-inline-size: 30rem;
-}
-
 .site-homepage-atlas .site-atlas-cell:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: -2px;
-}
-
-.kpress .site-homepage-atlas-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.7rem;
-  justify-content: center;
 }
 
 .kpress .site-homepage-atlas-status {
@@ -97,10 +77,19 @@
 }
 
 .kpress .site-homepage-media .site-card-hero {
-  aspect-ratio: 3 / 1;
+  aspect-ratio: auto;
   margin-block-end: 0.4rem;
 }
 
 .site-page .site-film-frame.site-homepage-film {
   --site-film-width: min(52rem, 100cqw - 2 * var(--site-wide-gutter), (100svh - 5rem) * 16 / 9);
+}
+
+/* The featured print shows the entire poster at a readable centered card width. */
+.kpress .site-homepage-media .site-card {
+  flex-basis: min(42rem, 100%);
+}
+.kpress .site-homepage-media .site-card-hero img {
+  block-size: auto;
+  object-fit: contain;
 }

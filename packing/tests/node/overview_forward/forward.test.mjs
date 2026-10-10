@@ -178,8 +178,12 @@ void test("the compact homepage forwards full atlas state and moved resource fra
     forwarded("", { preview: true, search: "?atlas=triangle&size=small" }),
     "atlas.html?atlas=triangle&size=small",
   );
-  for (const hash of ["#squares-project-documentation"]) {
+  for (const hash of ["#the-squares-project", "#squares-project-documentation"]) {
     assert.equal(forwarded(hash, { preview: true }), `about.html${hash}`);
+    assert.equal(
+      forwarded(hash, { preview: true, search: "?review=links" }),
+      `about.html?review=links${hash}`,
+    );
   }
   for (const id of ["squares-project-documentation", "learn-more"]) {
     assert.equal(forwarded(`#${id}`, { preview: true, ids: [id] }), null);
@@ -291,40 +295,49 @@ void test("layout queries establish only whitelisted root attributes before pain
   assert.deepEqual(bootstrapped("?atlas=triangle&size=large&view=embed"), {
     "data-site-atlas-view": "triangle",
     "data-site-atlas-size": "large",
-    "data-site-atlas-scale": "fixed",
+    "data-site-atlas-scale": "row",
     "data-site-view": "embed",
   });
   assert.deepEqual(bootstrapped("?atlas=grid&size=small&view=embed"), {
     "data-site-atlas-view": "grid",
     "data-site-atlas-size": "small",
-    "data-site-atlas-scale": "fixed",
+    "data-site-atlas-scale": "row",
     "data-site-view": "embed",
   });
   assert.deepEqual(bootstrapped("?atlas=unknown&size=invalid&view=unknown"), {
     "data-site-atlas-view": "triangle",
-    "data-site-atlas-size": "small",
-    "data-site-atlas-scale": "fixed",
+    "data-site-atlas-scale": "row",
   });
   assert.deepEqual(bootstrapped("?size=medium"), {
     "data-site-atlas-view": "triangle",
     "data-site-atlas-size": "medium",
-    "data-site-atlas-scale": "fixed",
+    "data-site-atlas-scale": "row",
   });
-  for (const scale of ["row", "global"]) {
+  for (const scale of ["fixed", "row", "global"]) {
     assert.deepEqual(bootstrapped(`?atlas=grid&size=large&scale=${scale}`), {
       "data-site-atlas-view": "grid",
       "data-site-atlas-size": "large",
       "data-site-atlas-scale": scale,
     });
   }
-  assert.equal(bootstrapped("?scale=invalid")["data-site-atlas-scale"], "fixed");
+  assert.equal(bootstrapped("?scale=invalid")["data-site-atlas-scale"], "row");
   assert.deepEqual(bootstrapped(""), {
     "data-site-atlas-view": "triangle",
-    "data-site-atlas-size": "small",
-    "data-site-atlas-scale": "fixed",
+    "data-site-atlas-scale": "row",
   });
   assert.deepEqual(bootstrapped("", "/index.html"), {});
-  assert.deepEqual(bootstrapped("?atlas=triangle&size=large&scale=row", "/index.html"), {});
+  assert.deepEqual(bootstrapped("?atlas=triangle&size=large&scale=row", "/index.html"), {
+    "data-site-atlas-size": "large",
+  });
+  for (const pathname of ["/atlas.html", "/index.html"]) {
+    for (const word of ["", "small", "medium", "large", "huge", "Small"]) {
+      assert.equal(
+        bootstrapped(word ? `?size=${word}` : "", pathname)["data-site-atlas-size"],
+        ["small", "medium", "large"].includes(word) ? word : undefined,
+        `${pathname}: ${word}`,
+      );
+    }
+  }
 });
 
 void test("case directory migration uses the same Atlas destination for HTTP and files", () => {

@@ -12,16 +12,17 @@
       "data-site-atlas-view",
       query.get("atlas") === "grid" ? "grid" : "triangle",
     );
-    const size = query.get("size");
-    document.documentElement.setAttribute(
-      "data-site-atlas-size",
-      size === "medium" || size === "large" ? size : "small",
-    );
     const scale = query.get("scale");
     document.documentElement.setAttribute(
       "data-site-atlas-scale",
-      scale === "row" || scale === "global" ? scale : "fixed",
+      scale === "fixed" || scale === "global" ? scale : "row",
     );
+  }
+  // Both the dedicated Atlas and the homepage preview honor an explicit size.
+  // An absent or invalid choice leaves the CSS viewport default in control.
+  const size = query.get("size");
+  if (size === "small" || size === "medium" || size === "large") {
+    document.documentElement.setAttribute("data-site-atlas-size", size);
   }
   if (query.get("view") !== "embed") {
     return;

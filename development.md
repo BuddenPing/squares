@@ -830,9 +830,23 @@ contracts seed the same import, text and walker closure.
 A scheduling edit does not mark every module in an unchanged library directory as
 changed. Unreadable or unknown first-party entrypoints select the whole suite.
 
+Configuration-only pushes still select every test file.
+If every changed path belongs to `SUITE_WIDE` in `devtools.reachable_tests` or is
+`packing-validation.yml` or `deep-gate.yml`, local execution runs the complete quick
+lane and reports the slow lane as deferred (`think-xyub`). Before merge, passing PR fast
+and Deferred checkpoint runs must cover the same source/base; their existing complement
+contract supplies all slow and exhaustive tests.
+This avoids repeating the complete slow lane locally for a configuration-only edit.
+Any mixed change, including source, renderer, test or record edits, keeps the original
+local slow coverage.
+Unknown workflows and empty, unmapped or otherwise unresolved selections also retain the
+original execution policy.
+Narrow reachable selections still include directly reached slow tests.
+
 **Large implicit push selections receive a separate pytest phase.** Other changed
-workflow files or suite configuration expand the selector to everything: the quick and
-slow lanes together, against `FAST_SUITE_BUDGET_SECONDS`. A large proper subset can also
+workflow files or suite configuration expand the selector to everything.
+Except for the configuration-only execution policy above, this runs the quick and slow
+lanes together, against `FAST_SUITE_BUDGET_SECONDS`. A large proper subset can also
 dominate the run. When resource settings are implicit, the edit checks run with their
 normal concurrency, then the reachable tests use the available pytest workers after the
 edit pool has drained.
@@ -1269,7 +1283,17 @@ Limits are CLS 0.1, LCP 4,000 ms, longest task 300 ms and cumulative blocking be
 ms of 600 ms.
 Missing native timing, page errors, failed requests, hidden primary content
 and missing visual math fail the check.
-Every structural sample must pass; `--runs 3` reports the median of each timing metric.
+Every structural sample must pass; `--runs 3` retains all samples and reports the median
+of each timing metric.
+The default `--timing-mode enforce` makes timing exceedances fail controlled runs.
+Ordinary shared CI explicitly selects `--timing-mode report-only` for producer checks
+and `--site-timing-mode=report-only` for the native HTTP browser contract.
+It retains the same limits, measurements and exceedances in JSON artifacts; CLS,
+readability, reserved dimensions, missing native timing, errors and failed requests
+still fail, as does the separate attributable startup-restyle trace guard.
+Shared-CI timing enforcement is tracked as **think-9dhb**, owned by jlevy: re-enable it
+when a controlled runner or repeated same-run comparison against a fixed baseline
+defines a regression margin above the measured noise envelope.
 The early-shift and hidden-content negative fixtures prove that the gate observes
 failures.
 

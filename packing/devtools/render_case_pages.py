@@ -799,24 +799,8 @@ def _sources(case: dict[str, Any]) -> str:
     return f'<ul class="site-case-list site-case-sources">{"".join(items)}</ul>'
 
 
-def visual_summary(n: int, *, units: int = 1000, upper: dict[str, Any] | None = None) -> str:
-    """The case's visual summary, the one view of a case wherever it is shown: the
-    known-best packing drawn large, then the number line of its lower and upper bounds
-    (the film's gap bar), then the bound as one statement, the badges, where each bound
-    comes from and what is open. It is the ascent film's panel for the case
-    (`result_overview.film_facts`), laid out for a page: the drawing above the facts
-    rather than beside them. The record opens with it, and a result about the case
-    shows it too (`result_overview.case_panel`), its drawing drawn at `units`. Given the
-    case's best known packing, `upper`, the drawing is captioned with its side and its
-    credit."""
-    from devtools.result_overview import (  # noqa: PLC0415
-        film_bound,
-        film_facts,
-        film_facts_html,
-        gap_bar,
-    )
-
-    fact = film_facts()[n]
+def packing_figure(n: int, *, units: int = 1000, upper: dict[str, Any] | None = None) -> str:
+    """The original packing drawing and optional best-known side/source caption."""
     figcaption = ""
     if upper is not None:
         figcaption = (
@@ -826,10 +810,31 @@ def visual_summary(n: int, *, units: int = 1000, upper: dict[str, Any] | None = 
             "</figcaption>"
         )
     return (
-        '<section class="site-case-summary site-atlas-pop" aria-label="Visual summary" '
-        'data-kpress-prose-font="sans">'
         f'<figure class="site-case-figure">{frontier.packing_svg(n, units=units)}'
         f"{figcaption}</figure>"
+    )
+
+
+def visual_summary(n: int, *, drawing: bool = True) -> str:
+    """The shared number line, main bound statement, badges and source facts.
+
+    A standalone summary includes the packing figure. Case and result records place
+    that same figure before their count heading and pass `drawing=False`, retaining
+    the number line and all facts below it.
+    """
+    from devtools.result_overview import (  # noqa: PLC0415
+        film_bound,
+        film_facts,
+        film_facts_html,
+        gap_bar,
+    )
+
+    fact = film_facts()[n]
+    figure = packing_figure(n) if drawing else ""
+    return (
+        '<section class="site-case-summary site-atlas-pop" aria-label="Visual summary" '
+        'data-kpress-prose-font="sans">'
+        f"{figure}"
         f'<div class="site-case-summary-facts">{gap_bar(fact)}'
         f'<p class="site-atlas-pop-head">Proven</p>{film_bound(fact)}'
         f"{film_facts_html(fact)}</div></section>"
@@ -887,10 +892,11 @@ def record_head(
         f'<header class="site-case-head" data-kpress-prose-font="sans">'
         f'<nav class="site-case-steps" aria-label="Cases">{previous}{following}</nav>'
         '<span class="site-card-label site-case-eyebrow">Case record</span>'
+        f"{packing_figure(n, upper=upper)}"
         f'<p class="site-case-title" {SERIF_MATH}>{_math(f"n = {n}")}</p>'
         f'<p class="site-case-status">{case_badges(n)}{star}{reported}{chip}</p>'
-        f'<p class="site-case-interval">{_math(interval_tex(case))}</p></header>'
-        f"{visual_summary(n, upper=upper)}"
+        f'<p class="site-case-interval" {SERIF_MATH}>{_math(interval_tex(case))}</p></header>'
+        f"{visual_summary(n, drawing=False)}"
         '<div class="site-case-data" data-kpress-prose-font="sans">'
         '<h3 class="site-case-heading">Bounds</h3>'
         '<div class="site-case-bounds">'

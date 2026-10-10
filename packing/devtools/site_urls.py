@@ -40,10 +40,10 @@ PAGE_BUDGET_EXCEPTIONS: dict[str, tuple[int, str]] = {
     "index.html": (
         1_300_000,
         (
-            "The native 324-case Atlas payload, six-row preview and shared reading "
-            "and documentation cards measure 1,172,462 bytes. Three-run loopback load "
-            "medians are 274 ms at 1280 px and 261 ms at 390 px; retained staged "
-            "expansion checks cover the embedded preview. "
+            "The shared 100-case Atlas preview includes all 324 canonical case links "
+            "and per-case SVG references, with common controls, reading and "
+            "documentation cards. Retained desktop/mobile expansion checks cover "
+            "the prepared shared row layout. "
             "The page-specific ceiling remains below the global two-megabyte limit."
         ),
     ),
