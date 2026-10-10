@@ -3295,7 +3295,8 @@ issues:
     triage: done
     summary: All eight complete source certificates and decimal context poses are retained. The complete
       24-job native finite-feasibility replay passed; actual private-worker custody passed without geometric
-      deciders. Historical source-house integration and confirmation remain pending.
+      deciders. The review of 10 October reproduced every job and a third exact route agreed; house adoption
+      waits for jlevy/squares#403.
     read_through: '2026-10-08T15:53:07Z'
     results:
     - key: eight-rational-refinements
@@ -3494,8 +3495,8 @@ issues:
     triage: done
     summary: Evan Daniel reports rational certificates at n=132 and n=155 below the case ceilings, in
       evand/square-packing at e008180, retained with their KKT points, inputs and solver reports. Both
-      pass both maintained exact routes. The n132 side is new and recorded as T-131 at V0/C0, pending
-      independent review and adoption. The n155 side equals Couzo's earlier issue451 certificate (T-128),
+      pass both maintained exact routes. The n132 side is new and recorded as T-131, whose replay the
+      review of 10 October reproduced; issue 476's n132 side is smaller. The n155 side equals Couzo's earlier issue451 certificate (T-128),
       with which it shares 152 of 155 exact poses, differing only in its free and flat-motion squares,
       so it maps to T-128 as an evidence update. Author checkers and KKT evidence
       were not run here; no optimality is claimed.
@@ -3509,6 +3510,7 @@ issues:
       - T-131
       evidence:
       - E-evand-465-record-hunt-report
+      - E-evand-465-record-hunt-exact-feasibility
     - key: s155-record-hunt
       claim: s(155) <= 12.952498944014007381965850566940 by an exact rational certificate from the hunt1
         record hunt, 4.26e-6 below the register's 12.9525032026045129. Its exact side is the n155 side
@@ -3518,6 +3520,7 @@ issues:
       - T-128
       evidence:
       - E-evand-465-record-hunt-report
+      - E-evand-465-record-hunt-exact-feasibility
     - key: kkt-local-minima
       claim: Each exact point is an 80-digit KKT point with positive multipliers on its load-bearing
         contacts, a reduced Hessian positive semidefinite modulo exact flat motions (132 33, 155 2) and
@@ -3539,7 +3542,7 @@ issues:
     opened: '2026-10-09'
     state: open
     kind: result-report
-    triage: pending
+    triage: done
     summary: >-
       Mishapolk reports upper bounds at 28 counts from n = 84 to 306, as 16-digit centre-angle pose
       files with SVGs in Mishapolk/square-packing-records, each side rounded up to 12 decimals and
@@ -3550,19 +3553,45 @@ issues:
       the two files, restate every ceiling, withdraw the fraction, and pin the corrected files at a
       commit given as dd3da5c7b39f3796d19e0970bc2350ef9ea14ad. That id has 39 hex digits; the
       repository's head on 10 October is dd3da5c753c5ded6cb3b89476193b7b801005415, which shares its
-      first seven.
+      first seven. Imported on 10 October 2026 in the mishapolk-decimal-poses-2026-10-09 packet, pinned
+      at dd3da5c by the issue's file digests: the poses are decimal, and 19 of the 30 in the case
+      corpus are not packings at their printed sides, so this repository derived exact rational
+      witnesses by dilating each pose about the box centre to its 12-decimal ceiling. All 30 were
+      replayed on both maintained exact routes, and the review of the same day derived each again
+      from its pinned file by a third exact route, with no blocking defect in the bounds. The
+      fourteen named counts below the case, with 132 and 267 from the release's README, are
+      registered as T-138; the other fourteen lie above their cases and have no entry. The case
+      records wait for jlevy/squares#403.
     read_through: '2026-10-09T09:05:13Z'
     results:
-    - key: twenty-eight-packings
-      claim: s(n) <= S_n at n = 84, 86, 88, 103, 105, 108, 127, 130, 131, 153, 154, 175, 179, 180, 199,
-        207, 208, 209, 236, 237, 238, 239, 258, 263, 270, 302, 303 and 306, each S_n the side of a 16-digit
-        decimal pose file rounded up to 12 decimals, checked by the author with Ellsworth's check_packing.py
-        at 40 digits and a 60-digit separating-axis test.
+    - key: fourteen-below-case
+      claim: s(n) <= S_n at n = 84, 86, 103, 105, 108, 127, 131, 175, 180, 258, 270, 302, 303 and 306,
+        the fourteen of the issue's twenty-eight counts where S_n, the side of a decimal pose file rounded
+        up to 12 decimals, is below the case's verified ceiling; checked by the author with Ellsworth's
+        check_packing.py at 40 digits and a 60-digit separating-axis test.
       source: body
-      not_registered: Triage pending under think-jpre. The certificates are decimal pose files, not rational
-        witnesses, and are not yet retained or checked here.
-      queued: true
-      bead: think-jpre
+      register:
+      - T-138
+      evidence:
+      - E-mishapolk-470-pose-report
+      - E-mishapolk-470-exact-feasibility
+    - key: fourteen-not-below-case
+      claim: s(n) <= S_n at n = 88, 130, 153, 154, 179, 199, 207, 208, 209, 236, 237, 238, 239 and 263,
+        the other fourteen named counts, where S_n lies above the case's verified ceiling by 2.17e-14 to
+        3.51e-09.
+      source: body
+      evidence:
+      - E-mishapolk-470-pose-report
+      - E-mishapolk-470-exact-feasibility
+    - key: readme-132-267
+      claim: s(132) <= 11.986956226066 and s(267) <= 16.838828608296, the 12-decimal ceilings the
+        release's README prints for two poses the issue does not name.
+      source: https://github.com/Mishapolk/square-packing-records/blob/dd3da5c753c5ded6cb3b89476193b7b801005415/README.md
+      register:
+      - T-138
+      evidence:
+      - E-mishapolk-470-pose-report
+      - E-mishapolk-470-exact-feasibility
     - key: n105-closed-form-withdrawn
       claim: A closed-form rational side for n = 105, which squarepacker found smaller than the side of
         square-105.txt.
@@ -3572,6 +3601,7 @@ issues:
       queued: false
     beads:
     - think-jpre
+    - think-fvz4
     answer_bead: think-jpre
     replies: []
     close_when: The import of the corrected certificates and its disposition are on main and the owner
@@ -3583,7 +3613,7 @@ issues:
     opened: '2026-10-09'
     state: open
     kind: result-report
-    triage: pending
+    triage: done
     summary: >-
       squarepacker reports a preprint, v1.0 at Zenodo 10.5281/zenodo.23256655 with programs and data
       in squarepacker/k2-minus-c-upper, bounding c*(k), the largest c with s(k^2 - c) = k, from above:
@@ -3591,36 +3621,51 @@ issues:
       for k >= 6, and at five values of k from 10^5 to 10^8. The constructions are L-shaped packings
       with tilted bands after H. D. Bui (arXiv:2508.04603v2). The author states the preprint is not
       refereed, was checked by AI reviews and by programs including independent re-implementations,
-      and was developed with Claude. #486 announces version 1.1.
+      and was developed with Claude. #486 announces version 1.1. Imported on 10 October 2026: v1.0
+      retained in the squarepacker-k2-minus-c-upper-2026-10-09 packet with its two largest Theorem 1.6
+      certificates hosted, the source's replays and independent checks run here, and the proofs
+      reviewed the same day; every theorem is recorded as reported in the asymptotic waste register,
+      since none settles a count of the case corpus.
     read_through: '2026-10-09T07:19:46Z'
     results:
     - key: theorem-1.1
       claim: c*(k) < 43.06 k^{3/8} + 2*10^-5 for every integer k >= 4*10^26, with computer-assisted constants
-        certified in interval arithmetic by three independent coverings of the range.
+        certified in interval arithmetic by what the source reports as three independent coverings of the
+        range; the release contains one covering, cert3e.py, which was replayed here.
       source: body
-      not_registered: Triage pending under think-rd8u; not yet retained or reviewed here.
-      queued: true
-      bead: think-rd8u
+      not_registered: >-
+        Recorded as reported in frontier/asymptotic-waste-bounds.yaml (deficiency_upper_bounds); it
+        settles no count n <= 324, so the result register has no applicable scope.
+      queued: false
     - key: theorem-1.2
       claim: c*(k) < 20.668 k^{2/5} + 0.623 for every integer k >= 1.6*10^7.
       source: body
-      not_registered: Triage pending under think-rd8u; not yet retained or reviewed here.
-      queued: true
-      bead: think-rd8u
+      not_registered: >-
+        Recorded as reported in frontier/asymptotic-waste-bounds.yaml (deficiency_upper_bounds); it
+        settles no count n <= 324, so the result register has no applicable scope.
+      queued: false
     - key: theorem-1.4
       claim: c*(k) <= 8 ceil(sqrt(k - 4)) - 1 for every integer k >= 6.
       source: body
-      not_registered: Triage pending under think-rd8u; not yet retained or reviewed here.
-      queued: true
-      bead: think-rd8u
+      not_registered: >-
+        Recorded as reported in frontier/asymptotic-waste-bounds.yaml (deficiency_upper_bounds); it
+        settles no count n <= 324, so the result register has no applicable scope.
+      queued: false
     - key: theorem-1.6
       claim: c*(10^5) <= 1583, c*(10^6) <= 3972, c*(10^7) <= 10039, c*(3.825*10^7) <= 16988 and c*(10^8)
         <= 24790, by packings included as data and checked in exact rational arithmetic, among others
         by a checker written independently of the generator.
       source: body
-      not_registered: Triage pending under think-rd8u; not yet retained or reviewed here.
-      queued: true
+      not_registered: >-
+        Recorded as reported in frontier/asymptotic-waste-bounds.yaml (deficiency_upper_bounds); it
+        settles no count n <= 324, so the result register has no applicable scope.
+      queued: false
+    asks:
+    - what: Review the proofs; replay the coverings and certificates.
+      state: done
       bead: think-rd8u
+      note: Review of 2026-10-10 accepted; 70 replay jobs match; Theorem 1.6 decided by an independent
+        checker.
     beads:
     - think-rd8u
     answer_bead: think-rd8u
@@ -3688,7 +3733,7 @@ issues:
     opened: '2026-10-09'
     state: open
     kind: result-report
-    triage: pending
+    triage: done
     summary: >-
       Francisco Couzo reports six exact rational certificates, at n = 132, 237, 263, 267, 270 and 303,
       following #451 and its update in #460, in franciscouzo/square-packing certificates/ at
@@ -3697,7 +3742,11 @@ issues:
       with the best value known to the author, at 132 and 267 a pending #470 packing. All six are valid
       under Evan Daniel's verify_cert.py and this repository's verify.py. The starting packings are
       Mishapolk's (132), SQUISH's (237, 263, 303), Ryan Xu's (267) and Evan Daniel's (270). No optimality
-      is claimed.
+      is claimed. Imported on 10 October 2026: all 65 certificates of the commit retained in the
+      couzo-exact-certificates-2026-10-09 packet, the six the issue names and eleven others replayed on
+      both maintained exact routes, and the six decided again by a third exact route in the review of
+      the same day, with no blocking defect. The six are registered together as T-134; the case records
+      wait for jlevy/squares#403, and at 237, 263, 270 and 303 issue 481's sides are smaller.
     read_through: '2026-10-09T20:38:53Z'
     results:
     - key: six-exact-certificates
@@ -3705,12 +3754,14 @@ issues:
         (16.838815269949), 270 (16.936720031122) and 303 (17.917443925495), each S_n an exact rational
         side rounded up to 12 decimals.
       source: body
-      not_registered: Triage pending under think-m8ck; the certificates are not yet retained or replayed
-        here.
-      queued: true
-      bead: think-m8ck
+      register:
+      - T-134
+      evidence:
+      - E-couzo-476-certificate-report
+      - E-couzo-476-exact-feasibility
     beads:
     - think-m8ck
+    - think-fvz4
     answer_bead: think-m8ck
     replies: []
     close_when: The import and its disposition are on main and the owner has posted the resulting state;
@@ -3722,7 +3773,7 @@ issues:
     opened: '2026-10-09'
     state: open
     kind: result-report
-    triage: pending
+    triage: done
     summary: >-
       Nate Chaoweeraprasit (SQUISH) reports exact rational certificates for 15 new packings, at n = 131,
       153, 207, 209, 232, 236, 259, 263, 269, 270, 292, 302, 303, 305 and 307, composed from sub-packings
@@ -3731,7 +3782,13 @@ issues:
       squish-submission-2026-10-09, with 50-digit text exports; a sources/ folder holds three unfiled
       packings at 155, 240 and 306 used as pieces. The author gives each side's difference from the
       register's and checks all 17 with SQUISH's exact checker and Ellsworth's check_packing.py. No
-      KKT or local-optimality evidence is given.
+      KKT or local-optimality evidence is given. Imported on 10 October 2026: the seventeen certificates
+      kept as derived exact facts in the squish-481-third-request-2026-10-09 packet, each admitted by
+      the exact fraction summary.csv prints rather than the issue's 15-digit displays, which are not
+      roundings of it; replayed in full on both maintained exact routes and decided again by a third
+      exact route in the review of the same day, which held each fact to its pinned upstream file, with
+      no blocking defect. All seventeen are registered together as T-136; squares touch the closed
+      box at every count. The case records wait for jlevy/squares#403.
     read_through: '2026-10-09T21:59:29Z'
     results:
     - key: fifteen-new-packings
@@ -3739,20 +3796,23 @@ issues:
         307, each S_n an exact rational side, 1.678e-4 to 1.119e-2 below the register's side as the issue
         lists it.
       source: body
-      not_registered: Triage pending under think-ac4h; the certificates are not yet retained or replayed
-        here.
-      queued: true
-      bead: think-ac4h
+      register:
+      - T-136
+      evidence:
+      - E-squish-481-certificate-report
+      - E-squish-481-exact-feasibility
     - key: smaller-154-237
       claim: s(154) <= 12.923070202301140 and s(237) <= 15.902989220874966, to 15 digits, by nearby searches
         from SQUISH's own packings of issue 401.
       source: body
-      not_registered: Triage pending under think-ac4h; the certificates are not yet retained or replayed
-        here.
-      queued: true
-      bead: think-ac4h
+      register:
+      - T-136
+      evidence:
+      - E-squish-481-certificate-report
+      - E-squish-481-exact-feasibility
     beads:
     - think-ac4h
+    - think-fvz4
     answer_bead: think-ac4h
     replies: []
     close_when: The import and its disposition are on main and the owner has posted the resulting state;
@@ -3763,13 +3823,18 @@ issues:
     opened: '2026-10-10'
     state: open
     kind: result-report
-    triage: pending
+    triage: done
     summary: >-
       Eric Deleeuw reports an exact rational precision refinement of Ryan Xu's n = 70 packing, 1.4263e-10
       below Ryan Xu's exact certificate side, in ebdeleeuw/square-packing-n70 at
       24221d5e51244ca5290d5b1c43f1fbe36f9749e0, with an exact Fraction checker, its verification record,
       a 60-digit pose export and a log of Ellsworth's checker. The arrangement is Ryan Xu's, credited
-      to him; no optimality or lower-bound change is claimed. OpenAI's Codex assisted.
+      to him; no optimality or lower-bound change is claimed. OpenAI's Codex assisted. Imported on 10
+      October 2026: the certificate kept as a derived exact fact in the
+      ebdeleeuw-n70-refinement-2026-10-10 packet, replayed on both maintained exact routes and decided
+      again by a third exact route in the review of the same day, which held the fact to its pinned
+      upstream file, with no blocking defect. Registered as T-137; the case record waits for
+      jlevy/squares#403.
     read_through: '2026-10-10T02:22:35Z'
     results:
     - key: n70-exact-refinement
@@ -3777,12 +3842,14 @@ issues:
         (SHA-256 eeebf55cf3c1614a96f51339695f28443e35f33b0195bfc24ef0549b50550cb1), valid under the author's
         exact checker and Ellsworth's check_packing.py at 40 digits.
       source: body
-      not_registered: Triage pending under think-8m3u; the certificate is not yet retained or replayed
-        here.
-      queued: true
-      bead: think-8m3u
+      register:
+      - T-137
+      evidence:
+      - E-deleeuw-483-certificate-report
+      - E-deleeuw-483-exact-feasibility
     beads:
     - think-8m3u
+    - think-fvz4
     answer_bead: think-8m3u
     replies: []
     close_when: The import and its disposition are on main and the owner has posted the resulting state;
@@ -3794,33 +3861,38 @@ issues:
     opened: '2026-10-10'
     state: open
     kind: result-report
-    triage: pending
+    triage: done
     summary: >-
       Kevin Fang reports three packings by the two-wedge construction of Arslanov, Mustafin and
       Shangitbayev taken one k up, and one square past it at k = 18 and 19, with exact rational sides,
       in TheSnakeFang/squarepack-certs at c75bebd87933416d3e1c7aba35ec733ea8ac7da0 in Evan Daniel's
       .cert format. n = 308 is below the 18 x 18 grid; n = 343 and 344 lie beyond the 1..324 case corpus.
       Evan Daniel's verify_cert.py, Ellsworth's check_packing.py and the author's verify.py accept all
-      three. No exact form, local minimality or optimality is claimed.
+      three. No exact form, local minimality or optimality is claimed. Imported on 10 October 2026:
+      the three certificates retained in the fang-two-wedge-certificates-2026-10-10 packet, replayed
+      on both maintained exact routes and decided again by a third exact route in the review of the
+      same day, with no blocking defect. n = 308 is registered as T-135; n = 343 and 344 are verified
+      beyond-horizon rows in the source register. The case record waits for jlevy/squares#403.
     read_through: '2026-10-10T04:48:40Z'
     results:
     - key: s308-two-wedge
       claim: s(308) <= 17.999309855162748, rounded up to 15 decimals from the exact rational side of n0308.cert.
       source: body
-      not_registered: Triage pending under think-ar8g; the certificate is not yet retained or replayed
-        here.
-      queued: true
-      bead: think-ar8g
+      register:
+      - T-135
+      evidence:
+      - E-fang-484-certificate-report
+      - E-fang-484-exact-feasibility
     - key: s343-s344-two-wedge
       claim: s(343) <= 18.994903529220497 and s(344) <= 18.995489275430816, rounded up to 15 decimals from
         the exact rational sides of n0343.cert and n0344.cert.
       source: body
-      not_registered: Triage pending under think-ar8g. Both counts lie beyond the 1..324 case corpus,
-        where the record keeps dated beyond-horizon reports.
-      queued: true
-      bead: think-ar8g
+      evidence:
+      - E-fang-484-certificate-report
+      - E-fang-484-exact-feasibility
     beads:
     - think-ar8g
+    - think-fvz4
     answer_bead: think-ar8g
     replies: []
     close_when: The import and its disposition, including the beyond-horizon counts, are on main and the
@@ -3880,13 +3952,15 @@ issues:
     opened: '2026-10-10'
     state: open
     kind: result-report
-    triage: pending
+    triage: done
     summary: >-
       squarepacker announces version 1.1 of the #471 preprint (Zenodo 10.5281/zenodo.23278927, release
       v1.1 of squarepacker/k2-minus-c-upper). Theorem 1.1 becomes twelve tiers c*(k) < C_i k^{3/8} + a_i
       for k >= k_i with interval-certified constants, below the k^{2/5} bound for every k >= 2.48*10^12;
       Theorems 1.2, 1.4 and 1.6 are reported unchanged. Not refereed; the source says its reviews and
-      checks are by AI systems.
+      checks are by AI systems. Imported on 10 October 2026: v1.1 retained in the
+      squarepacker-k2-minus-c-upper-v11-2026-10-10 packet with its 28 unchanged files bound to v1.0,
+      and reviewed with #471's.
     read_through: '2026-10-10T09:46:30Z'
     results:
     - key: theorem-1.1-v1.1-tiers
@@ -3894,10 +3968,11 @@ issues:
         k >= 2.48*10^12, < 41.19 k^{3/8} + 0.04 for k >= 5.22*10^12 and < 40.62 k^{3/8} + 1.4*10^-5 for
         k >= 3.4*10^26, superseding v1.0's 43.06 k^{3/8} + 2*10^-5.
       source: body
-      not_registered: Triage pending under think-7lpw; not yet retained or reviewed here. The mathematical
-        review runs with #471's under think-rd8u.
-      queued: true
-      bead: think-7lpw
+      not_registered: >-
+        Recorded as reported in a row of its own in frontier/asymptotic-waste-bounds.yaml
+        (deficiency_upper_bounds), and the v1.0 row keeps its claim; it settles no count n <= 324, so
+        the result register has no applicable scope.
+      queued: false
     beads:
     - think-7lpw
     answer_bead: think-7lpw

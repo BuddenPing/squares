@@ -26,7 +26,8 @@ from devtools import upper_bound_reports as reports
 
 COUZO = "couzo-exact-certificates-2026-10-09"
 FANG = "fang-two-wedge-certificates-2026-10-10"
-PACKETS = (COUZO, FANG)
+TRIO126 = "evand-trio126-2026-10-09"
+PACKETS = (COUZO, FANG, TRIO126)
 SQUISH_481 = "squish-481-third-request-2026-10-09"
 DELEEUW = "ebdeleeuw-n70-refinement-2026-10-10"
 DERIVED = (SQUISH_481, DELEEUW)
@@ -78,6 +79,10 @@ def test_custody_admits_every_declared_certificate_at_its_printed_side(name: str
     for row in declaration["certificates"]:
         certificate = certificates[row["n"]]
         assert len(certificate.poses) == row["n"]
+        if "/" in row["offered"]:
+            # Offered as the exact fraction the certificate states, as trio126's is.
+            assert certificate.side == Fraction(row["offered"])
+            continue
         places = len(row["offered"].partition(".")[2])
         assert legacy.ceiling_decimal(certificate.side, places) == row["offered"]
 
@@ -445,6 +450,45 @@ def test_smallest_names_one_report_only_when_it_is_decidably_below_every_other()
     ) == {"smallest": None, "tied": ["a", "b"]}
 
 
+def test_a_tie_reads_as_one_exact_side_and_not_as_undecided() -> None:
+    """`smallest` reports equal exact sides as `tied`, with no `undecided_among`.
+
+    The notes' sentence read `undecided_among` whatever `smallest` returned, so a count
+    where the certificate ties another report's exact side raised a KeyError.
+    """
+    side = Fraction(37, 2)
+    row: dict[str, Any] = {
+        "n": 400,
+        "case": None,
+        "grid_side": "20",
+        "exact_side": legacy.literal(side),
+        "pending": [{"report": "#1", "holders": "A", "relation": "equal", "difference": "0"}],
+        **reports.smallest(
+            [(reports.THIS, reports.exact_span(side)), ("#1", reports.exact_span(side))]
+        ),
+    }
+    assert "undecided_among" not in row
+    assert reports.comparison(row) == (
+        "At n = 400 the certificate is beyond the horizon, with no case record, and "
+        "1.50e+00 below the grid; equal #1 (A); no report is smallest, since this "
+        "certificate and #1 are one exact side."
+    )
+
+
+def test_a_comparison_prints_a_distance_whichever_side_is_larger() -> None:
+    """A certificate above its case's ceiling is above it by a positive distance."""
+    row = {
+        "n": 88,
+        "case": {"holders": "B", "relation": "above", "difference": "-753/1000000000000000"},
+        "pending": [],
+        "smallest": "case: B",
+    }
+    assert reports.comparison(row) == (
+        "At n = 88 the certificate is above the case's ceiling (B) by 7.53e-13; "
+        "smallest: case: B."
+    )
+
+
 @functools.cache
 def _rows(name: str) -> dict[int, dict[str, Any]]:
     """A retained packet's frozen comparison, rebuilt once: the tests only read it."""
@@ -773,6 +817,7 @@ def test_the_register_plan_states_each_bound_as_check_standing_reads_it(name: st
         FANG: "2026-10-10",
         SQUISH_481: "2026-10-09",
         MISHAPOLK: "2026-10-09",
+        TRIO126: "2026-10-09",
     }
     assert result["attribution"]["published"] == published.get(name, "2026-10-10")
     evidence = plan["evidence.yaml"]

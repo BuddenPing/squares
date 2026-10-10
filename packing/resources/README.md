@@ -575,6 +575,7 @@ key remain bound to the bytes they originally named.
 | [squarepacker/k2-minus-c v1.2](https://github.com/squarepacker/k2-minus-c/tree/e16a5cfa7eed489ea8d84b500e590bf6855a5f2f) | Ryu’s revised closed-packing deficiency constants; issue #368, DOI 10.5281/zenodo.23194031 | **[squarepacker k2-minus-c v1.2 2026]**; [version 1.2 packet](web/squarepacker-k2-minus-c-v12-2026-10-06/README.md), all 78 source files bound; arithmetic reviewed, independent labelling remains open |
 | [squarepacker/k2-minus-c-quarter](https://github.com/squarepacker/k2-minus-c-quarter) | Ryu’s reported quarter-power deficiency theorem, with its separate analytic variant; issue #414, DOI 10.5281/zenodo.23211207 | **[squarepacker quarter-power 2026]**; [7 October packet](web/squarepacker-k2-minus-c-quarter-2026-10-07/README.md), pinned `abbedcf4bba2e4053f0278e669d84966a89c8b73`; scoped proof review and conditional interval arithmetic retained; independent box labelling remains open |
 | [squarepacker/k2-minus-c-cube-root](https://github.com/squarepacker/k2-minus-c-cube-root) | Ryu’s reported cube-root deficiency theorem and intermediate square-root regimes; issue #414, DOI 10.5281/zenodo.23212059 | **[squarepacker cube-root 2026]**; [7 October packet](web/squarepacker-k2-minus-c-cube-root-2026-10-07/README.md), pinned `15045f9c6b74bd52f60394b9be593ebe4fb3debc`; scoped proof review and conditional interval arithmetic retained; independent box labelling remains open |
+| [squarepacker/k2-minus-c-upper](https://github.com/squarepacker/k2-minus-c-upper) | Ryu’s reported upper bounds on the deficiency c*(k) just below integer sides: 8⌈√(k−4)⌉ − 1 (k ≥ 6), 20.668 k^{2/5} + 0.623 (k ≥ 1.6·10⁷), O(k^{3/8}) (v1.0 from 4·10²⁶; v1.1 twelve tiers from 2.48·10¹²) and five certified values c*(10⁵) ≤ 1583 to c*(10⁸) ≤ 24790; issues #471 and #486, DOIs 10.5281/zenodo.23256655 and 10.5281/zenodo.23278927 | **[squarepacker k2-minus-c-upper 2026]**; [9 October packet](web/squarepacker-k2-minus-c-upper-2026-10-09/README.md), pinned `700668795e6b95f0bf2a2c6de104adaf3a3ebce0`, two certificates hosted; **[squarepacker k2-minus-c-upper v1.1 2026]**; [10 October packet](web/squarepacker-k2-minus-c-upper-v11-2026-10-10/README.md), pinned `5742311db220b4bd8e825167aeae689a1bd65ce9`; source replays and independent checks in both; [review](../../docs/project/reviews/review-2026-10-10-squarepacker-k2-minus-c-upper.md) |
 | [Kleddamag/11-squares-certified-bound](https://github.com/Kleddamag/11-squares-certified-bound) | The `s(11) > 31/8` certificate and its two source checkers | **[Kleddamag n11 2026]**; [retained source](web/external-square-certificates-2026-09-22/kleddamag-11/README.md) |
 | [Kleddamag/17-squares-certified-bound](https://github.com/Kleddamag/17-squares-certified-bound) | The `n = 17` mixed-charge certificate line through `466001/100000` | **[Kleddamag n17 4.66001]**; [27 September packet](web/n17-kleddamag-466001-2026-09-27/README.md) |
 | [Guzhou0806/n17-square-packing](https://github.com/Guzhou0806/n17-square-packing) | Parent-angle and mixed-charge certificates for `n = 17`, including R068 and R071 | **[Guzhou0806 n17 R068]**; [28 September packet](web/n17-guzhou-r068-2026-09-28/README.md); **[Guzhou0806 n17 R071]**; [30 September packet](web/n17-guzhou-r071-2026-09-30/README.md), pinned `8c11f6962506940c5de67a9fa73b3d1e2e151196` |
@@ -917,11 +918,13 @@ and a diagnostic eight-direction sample.
 A complete replay and whole-net controls remain pending.
 
 - **[Couzo exact refinements 2026-10-08]** — Francisco Couzo’s eight complete rational
-  certificates and separate decimal context poses; T-128 remains V0/C0 pending
-  historical source-house integration and confirmation.
-  All 24 native jobs completed their finite-feasibility and control outcomes in 6.64
-  wall minutes; actual private-worker custody passed complete stored-input and
-  mutation-restoration checks.
+  certificates and separate decimal context poses.
+  T-128 is at V3/C3 on the
+  [review of 10 October](../../docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md),
+  which reproduced every job and decided all eight by a third exact route; house
+  adoption waits for jlevy/squares#403. All 24 native jobs completed their
+  finite-feasibility and control outcomes in 6.64 wall minutes; actual private-worker
+  custody passed complete stored-input and mutation-restoration checks.
   [Factual packet](web/couzo-exact-refinements-2026-10-08/README.md).
   Ryan Xu, Nate Chaoweeraprasit, Siddharth Gupta, David Ellsworth and Evan Daniel
   receive the source’s construction/refinement credits; no optimality is asserted.
@@ -964,11 +967,11 @@ A complete replay and whole-net controls remain pending.
   rational certificates at 84, 86, 105, 175 and 270, pinned at 2d32a6e and kept as
   derived exact facts with the complete pinned tree; no upstream byte is retained.
   [Derived packet](web/couzo-followup-refinements-2026-10-08/README.md).
-  T-130 remains V0/C0: all five positives passed both maintained exact routes and both
-  routes refused all ten controls, while independent review, historical source-house
-  integration and confirmation remain pending.
-  Ryan Xu, Evan Daniel and David Ellsworth receive the source’s seed and refinement
-  credits; no optimality is asserted.
+  All five positives passed both maintained exact routes and both routes refused all ten
+  controls; T-130 is at V3/C3 on the
+  [review of 10 October](../../docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md),
+  and house adoption waits for jlevy/squares#403. Ryan Xu, Evan Daniel and David
+  Ellsworth receive the source’s seed and refinement credits; no optimality is asserted.
 
 ## Evan Daniel’s record-hunt certificates, 9 October 2026
 
@@ -978,12 +981,79 @@ A complete replay and whole-net controls remain pending.
 with their KKT points, inputs and solver reports;
 [packet](web/evand-record-hunt-2026-10-09/README.md).
 Both project exact routes accept both certificates and refuse all four controls.
-T-131 records the n = 132 side at V0/C0, pending independent review and adoption.
+T-131 records the n = 132 side at V3/C3 on the
+[review of 10 October](../../docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md);
+issue 476’s smaller n = 132 side is the house that review recommends.
 The n = 155 side equals Couzo’s earlier issue451 certificate (T-128), with which it
 shares 152 of 155 exact poses, differing only in the free and flat-motion squares the
 source’s report lists; it is recorded as an evidence update to T-128. The source credits
 Couzo’s and Chaoweeraprasit’s packings as starting points and discloses Claude
 assistance under Daniel’s direction.
+
+## Upper-bound imports of 9 and 10 October 2026
+
+The intake pass of 10 October 2026 imported these releases through
+`devtools.upper_bound_reports`; the
+[review of 10 October](../../docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md)
+replayed the four that issues #476, #481, #483 and #484 report.
+No case record changes until house adoption, which waits for jlevy/squares#403.
+
+**[Couzo exact certificates 2026-10-09]**: Francisco Couzo’s exact rational certificates
+for n = 132, 237, 263, 267, 270 and 303, pinned at
+`02f969075f79d5e13fa21e09e381a44e8647b452`, retained as the source wrote them;
+[packet](web/couzo-exact-certificates-2026-10-09/README.md).
+Both project exact routes accept all 17 replayed certificates and refuse all 34
+controls, and a third exact route agrees on the six.
+T-134 records the six sides at V3/C3, pending adoption; the other 59 certificates of the
+commit are compared in the packet’s claim record and registered by no entry.
+
+**[Fang two-wedge certificates 2026-10-10]**: Kevin Fang’s exact rational certificates
+for n = 308, 343 and 344, pinned at `c75bebd87933416d3e1c7aba35ec733ea8ac7da0`, retained
+as the source wrote them;
+[packet](web/fang-two-wedge-certificates-2026-10-10/README.md).
+Both project exact routes accept all 3 replayed certificates and refuse all 6 controls,
+and a third exact route agrees.
+T-135 records the n = 308 side at V3/C3, pending adoption; the n = 343 and 344 sides lie
+beyond the case corpus and are verified beyond-horizon rows.
+
+**[SQUISH third request 2026-10-09]**: Nate Chaoweeraprasit’s exact rational
+certificates for n = 131, 153, 154, 207, 209, 232, 236, 237, 259, 263, 269, 270, 292,
+302, 303, 305 and 307, pinned at `d45669b48cc97ad3aa17a6c847a8d06630f66eac`, kept as
+derived exact facts, no upstream byte retained;
+[packet](web/squish-481-third-request-2026-10-09/README.md).
+Both project exact routes accept all 17 replayed certificates and refuse all 34
+controls, and a third exact route agrees and held each fact to its pinned upstream file.
+T-136 records the seventeen sides at V3/C3, pending adoption.
+
+**[Deleeuw n70 refinement 2026-10-10]**: Eric Deleeuw’s exact rational certificate for n
+= 70, a refinement of Ryan Xu’s packing, pinned at
+`24221d5e51244ca5290d5b1c43f1fbe36f9749e0`, kept as a derived exact fact, no upstream
+byte retained; [packet](web/ebdeleeuw-n70-refinement-2026-10-10/README.md).
+Both project exact routes accept the replayed certificate and refuse both controls, and
+a third exact route agrees and held the fact to its pinned upstream file.
+T-137 records the side at V3/C3, pending adoption.
+
+**[Mishapolk decimal poses 2026-10-09]**: Mishapolk’s decimal centre-and-angle poses at
+30 counts of the case corpus, pinned at `dd3da5c753c5ded6cb3b89476193b7b801005415`, kept
+as derived exact facts, no upstream byte retained;
+[packet](web/mishapolk-decimal-poses-2026-10-09/README.md).
+The exact rational witnesses are this repository’s: centres dilated about the box centre
+to each printed 12-decimal ceiling and half-angle tangents rounded down at 32 decimals.
+An interval measurement proves every dilated pose a packing at its ceiling, and both
+project exact routes accept all 30 witnesses and refuse all 60 controls.
+T-138 records the sixteen counts whose ceiling is below the case’s at V3/C3 on the
+[review of 10 October](../../docs/project/reviews/review-2026-10-10-upper-bound-imports-470-and-trio126.md),
+which derived every witness again from its pinned file; the other 14 in-horizon poses
+have no entry.
+
+**[Daniel trio126 2026-10-09]**: Evan Daniel’s exact rational certificates of three n =
+126 packings reconstructed from a picture, pinned at
+`268af529546176a25224ea3b2c7d29cef8d9e911` and retained under the source’s MIT licence;
+[packet](web/evand-trio126-2026-10-09/README.md).
+Both project exact routes accept `n126_xu.cert`, the one below the case, and refuse both
+controls, and a third exact route agrees.
+T-139 records its side at V3/C3, pending adoption: a more precise certificate of Ryan
+Xu’s arrangement, 68 of whose 126 squares sit elsewhere than in T-125’s.
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.

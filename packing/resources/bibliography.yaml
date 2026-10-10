@@ -548,6 +548,34 @@ sources:
       independently, separately for nine- and thirteen-overlap routes. The
       independent per-box labelling obligation remains think-k3tk; source custody
       and arithmetic do not discharge it. No small-count bound is imported.
+  - key: '[squarepacker k2-minus-c-upper 2026]'
+    authors: [Ryu]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-09'
+    credit: Ryu after Bui
+    lineage: independent
+    note: >-
+      Sungjoon Ryu, "Packing k^2-c unit squares: an upper bound of order k^{3/8} for the
+      deficiency", v1.0, 700668795e6b95f0bf2a2c6de104adaf3a3ebce0, DOI
+      10.5281/zenodo.23256655, reported on jlevy/squares#471. Retained in
+      web/squarepacker-k2-minus-c-upper-2026-10-09/ (two certificates hosted). The source
+      credits the staircase and chained wall stairs to H. D. Bui (arXiv:2508.04603v2,
+      Sections 3-4), states extensive Claude (Anthropic) assistance and no human review,
+      and cites this repository only as a problem collection. CC BY 4.0 paper, MIT code and
+      data.
+  - key: '[squarepacker k2-minus-c-upper v1.1 2026]'
+    authors: [Ryu]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-10'
+    credit: Ryu after Bui
+    lineage: independent
+    note: >-
+      Version 1.1, 5742311db220b4bd8e825167aeae689a1bd65ce9, DOI 10.5281/zenodo.23278927,
+      reported on jlevy/squares#486; retained in
+      web/squarepacker-k2-minus-c-upper-v11-2026-10-10/ with 28 unchanged files bound to
+      v1.0. Same licences and statements.
   - key: '[squarepacker s12 2026-10-05]'
     authors: [Ryu]
     year: 2026
@@ -1637,6 +1665,98 @@ sources:
       "AI-assisted research"; the issue says AI assisted the exploration, proof drafting,
       implementation, testing, packaging and submission under the author's direction
       (web/guzhou-n40-clipped-corner-2026-10-10/README.md). Dated by that commit.
+  - key: '[Couzo exact certificates 2026-10-09]'
+    authors: [Couzo]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-09'
+    lineage: builds-on-project
+    credit: Couzo after Mishapolk, Chaoweeraprasit, Gupta, Xu, Daniel, Ellsworth, Levy
+    short_credit: Couzo after Mishapolk et al.
+    note: >-
+      Six complete exact certificates at 02f969075f79d5e13fa21e09e381a44e8647b452, reported
+      on jlevy/squares#476: five exact optima from Daniel's exact contact solver and a
+      rational witness at 263, refined from Mishapolk's, Chaoweeraprasit's, Xu's and
+      Daniel's packings with Ellsworth's refine_packing and Daniel's fq. The source checks
+      with Squares Project (Levy) verification code; this project lineage is not
+      independent. The certificates are retained as factual data; the unlicensed prose is
+      hash-pinned. No optimizer, local or global claim.
+  - key: '[Fang two-wedge certificates 2026-10-10]'
+    authors: [Fang]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-10'
+    lineage: independent
+    credit: Fang after Arslanov, Mustafin, Shangitbayev, Ellsworth, Stead
+    short_credit: Fang after Arslanov et al.
+    note: >-
+      Three complete exact certificates at c75bebd87933416d3e1c7aba35ec733ea8ac7da0,
+      reported on jlevy/squares#484, in the k^2 - k + 1 two-wedge family of Arslanov,
+      Mustafin and Shangitbayev, grown from Ellsworth's and Stead's Kingbird packings of 273
+      and 307 squares; Daniel's certificate format and SQUISH's JSON layout. MIT verifier
+      and CC0 certificates retained; Claude assistance disclosed. No exact form, local or
+      global optimality claim.
+  - key: '[SQUISH third request 2026-10-09]'
+    authors: [Chaoweeraprasit]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-09'
+    lineage: builds-on-project
+    credit: Chaoweeraprasit after Couzo, Xu, Ellsworth, Friedman, Levy
+    short_credit: Chaoweeraprasit after Couzo et al.
+    note: >-
+      Seventeen complete exact certificates at d45669b48cc97ad3aa17a6c847a8d06630f66eac,
+      reported on jlevy/squares#481, from SQUISH's Mondrian composition of pieces of
+      earlier packings, Couzo's, Xu's, the Kingbird catalogue's and SQUISH's own, compared
+      against this project's register. Derived exact facts only; no upstream byte is
+      retained. Claude assistance disclosed. No KKT, interval, local or global optimality
+      claim.
+  - key: '[Deleeuw n70 refinement 2026-10-10]'
+    authors: [Deleeuw]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-10'
+    lineage: builds-on-project
+    credit: Deleeuw after Xu, Levy
+    short_credit: Deleeuw after Xu et al.
+    note: >-
+      One complete exact certificate at 24221d5e51244ca5290d5b1c43f1fbe36f9749e0, reported
+      on jlevy/squares#483, refining Ryan Xu's #432 packing of 70 squares: a centred
+      rational centre and half-angle certificate compared against this project's register.
+      Derived exact facts only; no upstream byte is retained. OpenAI Codex assistance
+      disclosed. No local or global optimality claim.
+  - key: '[Mishapolk decimal poses 2026-10-09]'
+    authors: [Mishapolk]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-09'
+    lineage: builds-on-project
+    credit: Mishapolk after Stenlund, Friedman, Ellsworth, Chaoweeraprasit, Couzo, Xu, Levy
+    short_credit: Mishapolk after Stenlund et al.
+    note: >-
+      Decimal centre-angle poses at dd3da5c753c5ded6cb3b89476193b7b801005415, reported on
+      jlevy/squares#470: 30 within the case corpus and 18 at n = 343 to 360 above the grid
+      bound, from grain-boundary constructions, quasi-static SLSQP on active contact
+      manifolds and active-set KKT Newton refinement, compared against this project's
+      register and its pending submissions, which is the lineage recorded here. Exact
+      rational witnesses derived here by a declared dilation; derived exact facts only, no
+      upstream byte retained. Gemini assistance disclosed. No KKT, local or global
+      optimality claim.
+  - key: '[Daniel trio126 2026-10-09]'
+    authors: [Daniel]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-09'
+    lineage: independent
+    credit: Daniel after Xu, Chaoweeraprasit
+    short_credit: Daniel after Xu et al.
+    note: >-
+      Three complete exact certificates at 268af529546176a25224ea3b2c7d29cef8d9e911 of
+      n = 126 packings reconstructed from a picture and polished to exact local minima: Ryan
+      Xu's arrangement, at 15/2 + 3 sqrt 2 rounded up to a rational side, and Nate
+      Chaoweeraprasit's SQUISH phases 14 and 10. MIT-licensed source bytes retained; Claude
+      co-authorship disclosed. The source makes no claim and no issue reports it; no local
+      or global optimality is admitted.
 credited_names:
   Nate Chaoweeraprasit (itsnaka): Chaoweeraprasit
   Siddharth Gupta: Gupta

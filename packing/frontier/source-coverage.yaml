@@ -3237,6 +3237,162 @@ sources:
     mathematics was reviewed on the same day with no blocking defect. Both lanes of n-040.md move to
     335427/50000 (T-133); T-068's 67/10 on the same density stays as history. The repository's earlier
     commit 485dd8f, with s(40) > 33509/5000 on the standard net, is pinned by history and not retained.
+- id: couzo-exact-certificates-2026-10-09
+  title: Francisco Couzo's six exact rational certificates at 02f9690, issue476
+  role: source-repository
+  url: https://github.com/franciscouzo/square-packing/tree/02f969075f79d5e13fa21e09e381a44e8647b452
+  local: resources/web/couzo-exact-certificates-2026-10-09/
+  source_key: '[Couzo exact certificates 2026-10-09]'
+  scope:
+    n_values: [132, 237, 263, 267, 270, 303]
+  reviewed: '2026-10-10'
+  source_date: '2026-10-09'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/results.yaml
+  - resources/web/couzo-exact-certificates-2026-10-09/acquisition/claims.json
+  evidence:
+  - E-couzo-476-certificate-report
+  - E-couzo-476-exact-feasibility
+  notes: All 6 complete certificates are retained as the source wrote them, each admitted only where
+    its exact side equals, or rounds up to, the side its source prints. T-134 records the in-horizon
+    report at V3/C3 on the review of 10 October, which reproduced all 51 native jobs and decided the six
+    by a third exact route. No selected override or superseded claim is created while house adoption
+    waits for jlevy/squares#403; current cases and earlier source ownership remain unchanged. The 59
+    further certificates of the commit are compared in the claim record and registered by no entry.
+- id: fang-two-wedge-certificates-2026-10-10
+  title: Kevin Fang's three two-wedge certificates at c75bebd, issue484
+  role: source-repository
+  url: https://github.com/TheSnakeFang/squarepack-certs/tree/c75bebd87933416d3e1c7aba35ec733ea8ac7da0
+  local: resources/web/fang-two-wedge-certificates-2026-10-10/
+  source_key: '[Fang two-wedge certificates 2026-10-10]'
+  scope:
+    n_values: [308, 343, 344]
+  reviewed: '2026-10-10'
+  source_date: '2026-10-10'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/results.yaml
+  - resources/web/fang-two-wedge-certificates-2026-10-10/acquisition/claims.json
+  evidence:
+  - E-fang-484-certificate-report
+  - E-fang-484-exact-feasibility
+  notes: All 3 complete certificates are retained as the source wrote them, each admitted only where
+    its exact side equals, or rounds up to, the side its source prints. T-135 records the in-horizon
+    report at V3/C3 on the review of 10 October, which reproduced all 9 native jobs and decided the three
+    by a third exact route; the n343 and n344 sides are beyond-horizon rows at assurance verified from
+    the same evidence, each the issue's 15-place print, the exact side rounded up. No selected override
+    or superseded claim is created while house adoption waits for jlevy/squares#403; current cases and
+    earlier source ownership remain unchanged.
+  claims_record: resources/web/fang-two-wedge-certificates-2026-10-10/acquisition/beyond-horizon-claims.json
+- id: squish-481-third-request-2026-10-09
+  title: Nate Chaoweeraprasit's SQUISH third request at d45669b, issue481
+  role: source-repository
+  url: https://github.com/itsnaka/squish-certs/tree/d45669b48cc97ad3aa17a6c847a8d06630f66eac
+  local: resources/web/squish-481-third-request-2026-10-09/
+  source_key: '[SQUISH third request 2026-10-09]'
+  scope:
+    n_values: [131, 153, 154, 207, 209, 232, 236, 237, 259, 263, 269, 270, 292, 302, 303, 305, 307]
+  reviewed: '2026-10-10'
+  source_date: '2026-10-09'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/results.yaml
+  - resources/web/squish-481-third-request-2026-10-09/acquisition/claims.json
+  evidence:
+  - E-squish-481-certificate-report
+  - E-squish-481-exact-feasibility
+  notes: All 17 complete certificates are kept as derived exact facts, no upstream byte retained, each
+    admitted only where its exact side equals the exact fraction the source's summary.csv prints; the
+    issue's 15-digit displays are quotations. T-136 records them at V3/C3 on the review of 10 October,
+    which reproduced all 51 native jobs, decided the seventeen by a third exact route and held each fact
+    to its upstream certificate fetched at the pin. Squares touch the closed box at every count. No
+    selected override or superseded claim is created while house adoption waits for jlevy/squares#403;
+    current cases and earlier source ownership remain unchanged. The three sources/ certificates at 155,
+    240 and 306 are above their cases and not imported.
+- id: ebdeleeuw-n70-refinement-2026-10-10
+  title: Eric Deleeuw's n70 refinement at 24221d5, issue483
+  role: source-repository
+  url: https://github.com/ebdeleeuw/square-packing-n70/tree/24221d5e51244ca5290d5b1c43f1fbe36f9749e0
+  local: resources/web/ebdeleeuw-n70-refinement-2026-10-10/
+  source_key: '[Deleeuw n70 refinement 2026-10-10]'
+  scope:
+    n_values: [70]
+  reviewed: '2026-10-10'
+  source_date: '2026-10-10'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/results.yaml
+  - resources/web/ebdeleeuw-n70-refinement-2026-10-10/acquisition/claims.json
+  evidence:
+  - E-deleeuw-483-certificate-report
+  - E-deleeuw-483-exact-feasibility
+  notes: The complete certificate is kept as a derived exact fact, no upstream byte retained, admitted
+    because its exact side equals the side the issue prints, with every centre moved by half the side
+    out of the source's centred box. T-137 records it at V3/C3 on the review of 10 October, which
+    reproduced all 3 native jobs, decided it by a third exact route and held the fact to its upstream
+    certificate fetched at the pin. No selected override or superseded claim is created while house
+    adoption waits for jlevy/squares#403; the current case and earlier source ownership remain unchanged.
+- id: mishapolk-decimal-poses-2026-10-09
+  title: Mishapolk's decimal poses at dd3da5c, issue470
+  role: source-repository
+  url: https://github.com/Mishapolk/square-packing-records/tree/dd3da5c753c5ded6cb3b89476193b7b801005415
+  local: resources/web/mishapolk-decimal-poses-2026-10-09/
+  source_key: '[Mishapolk decimal poses 2026-10-09]'
+  scope:
+    n_values: [84, 86, 88, 103, 105, 108, 127, 130, 131, 132, 153, 154, 175, 179, 180, 199, 207, 208, 209, 236, 237, 238, 239, 258, 263, 267, 270, 302, 303, 306]
+  reviewed: '2026-10-10'
+  source_date: '2026-10-09'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/results.yaml
+  - resources/web/mishapolk-decimal-poses-2026-10-09/acquisition/claims.json
+  evidence:
+  - E-mishapolk-470-pose-report
+  - E-mishapolk-470-exact-feasibility
+  notes: >-
+    Decimal centre-and-angle poses, pinned only, with exact rational witnesses derived here by a
+    declared dilation of the centres about the box centre to each printed 12-decimal ceiling and
+    half-angle tangents rounded down at 32 decimals; derived exact facts only, no upstream byte
+    retained. All 30 in-horizon witnesses pass both maintained routes in 90 native jobs and the
+    third route of the 10 October review, which derived each again from its pinned file; the
+    interval receipt proves every dilated pose a packing at its ceiling and 19 printed poses not
+    to be packings. T-138 records the sixteen counts whose ceiling is below the case's at V3/C3;
+    the other fourteen in-horizon poses, at 88, 130, 153, 154, 179, 199, 207, 208, 209, 236,
+    237, 238, 239 and 263, have no entry, and the 18 poses at 343 to 360 print sides above the
+    grid's 19. No selected override or superseded claim is created while house adoption waits
+    for jlevy/squares#403; current cases and earlier source ownership remain unchanged.
+- id: evand-trio126-2026-10-09
+  title: Evan Daniel's n126 trio reconstructions at 268af52, no issue
+  role: source-repository
+  url: https://github.com/evand/square-packing/tree/268af529546176a25224ea3b2c7d29cef8d9e911
+  local: resources/web/evand-trio126-2026-10-09/
+  source_key: '[Daniel trio126 2026-10-09]'
+  scope:
+    n_values: [126]
+  reviewed: '2026-10-10'
+  source_date: '2026-10-09'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/results.yaml
+  - resources/web/evand-trio126-2026-10-09/acquisition/claims.json
+  evidence:
+  - E-evand-trio126-certificate-report
+  - E-evand-trio126-exact-feasibility
+  notes: >-
+    The three certificates of search/trio126/ are retained under the source's MIT licence;
+    n126_xu, the one below the case, is admitted at the exact side it states and replayed in all
+    3 native jobs. T-139 records it at V3/C3 on the review of 10 October, which decided it by a
+    third exact route and found 68 of its 126 squares displaced from T-125's, a more precise
+    certificate of the same arrangement. The two SQUISH reconstructions lie above the case and
+    were not replayed. No selected override or superseded claim is created while house adoption
+    waits for jlevy/squares#403; the current case and earlier source ownership remain unchanged.
 selected_overrides:
 - n: 51
   source_id: ry-xu-undilated-n51-2026
@@ -5214,6 +5370,20 @@ beyond_horizon_claims:
   assurance: reported
   disposition: tracked-outside-case-corpus
   bead: think-1545
+- n: 343
+  source_id: fang-two-wedge-certificates-2026-10-10
+  claim: upper-bound
+  value: '18.994903529220497'
+  assurance: verified
+  disposition: tracked-outside-case-corpus
+  bead: think-ar8g
+- n: 344
+  source_id: fang-two-wedge-certificates-2026-10-10
+  claim: upper-bound
+  value: '18.995489275430816'
+  assurance: verified
+  disposition: tracked-outside-case-corpus
+  bead: think-ar8g
 - n: 364
   source_id: couzo-extended-range-reports-2026-10-08
   claim: upper-bound

@@ -639,6 +639,17 @@ No review of #470’s 18 poses beyond the corpus or of trio126’s two SQUISH
 reconstructions. No `derive --check` from a Git checkout.
 No house adoption, case-record change or private-worker custody.
 
+## Note of 10 October 2026: the Register Ids
+
+Added by the records lane of the same intake pass (`think-fvz4`); the review above is
+unchanged. #470 was registered as `T-138` and trio126 as `T-139`, both at `V3`/`C3` with
+the confirming evidence this review proposes, and #470’s text from RK-1’s rewrite.
+At the coordinator’s direction `T-138` cites the sixteen counts whose ceiling is below
+the case’s, the fourteen issue counts and the README’s 132 and 267, rather than the 28
+issue counts this review lists; the fourteen counts above their cases are mapped to the
+evidence only. No case record changed: house adoption waits for jlevy/squares#403. Ids
+are provisional until merged to `main`.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->

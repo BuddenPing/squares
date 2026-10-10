@@ -25,8 +25,8 @@ second implementation agrees.
 
 ## The Short Version
 
-- **105** programs: **38** external and **67** first-party; **76** decide claims and **29** check premises.
-- **422** of **475** evidence entries name the programs that verified them: 230 reproduced with the producer’s code, 165 independently re-implemented, 17 re-implemented, sharing the producer’s components, 10 no relation: a proof, a derivation or a report.
+- **107** programs: **38** external and **69** first-party; **77** decide claims and **30** check premises.
+- **431** of **490** evidence entries name the programs that verified them: 230 reproduced with the producer’s code, 174 independently re-implemented, 17 re-implemented, sharing the producer’s components, 10 no relation: a proof, a derivation or a report.
 
 ## Programs
 
@@ -70,8 +70,8 @@ second implementation agrees.
 | [`V-anabologyco-n17-checker`](#v-anabologyco-n17-checker) | scripts/check_certificate.py and its event pipeline | anabologyco-maker | external | decides | 1 | 0 |
 | [`V-check-basic-bounds`](#v-check-basic-bounds) | devtools.check_basic_bounds | Squares Project (Levy) | first-party | decides | 3 | 14 |
 | [`V-optimal-moduli`](#v-optimal-moduli) | cases.small_n.optimal_moduli | Squares Project (Levy) | first-party | decides | 1 | 0 |
-| [`V-sqpack-verify`](#v-sqpack-verify) | sqpack.verify | Squares Project (Levy) | first-party | decides | 23 | 13 |
-| [`V-check-rational-witness-independent`](#v-check-rational-witness-independent) | devtools.check_rational_witness_independent | Squares Project (Levy) | first-party | decides | 18 | 16 |
+| [`V-sqpack-verify`](#v-sqpack-verify) | sqpack.verify | Squares Project (Levy) | first-party | decides | 32 | 22 |
+| [`V-check-rational-witness-independent`](#v-check-rational-witness-independent) | devtools.check_rational_witness_independent | Squares Project (Levy) | first-party | decides | 27 | 25 |
 | [`V-check-nagamochi-lemma1-counterexample`](#v-check-nagamochi-lemma1-counterexample) | devtools.check_nagamochi_lemma1_counterexample | Squares Project (Levy) | first-party | decides | 1 | 1 |
 | [`V-check-karakus-strip-measure`](#v-check-karakus-strip-measure) | devtools.check_karakus_strip_measure | Squares Project (Levy) | first-party | decides | 1 | 2 |
 | [`V-upper-bound-promotion`](#v-upper-bound-promotion) | devtools.upper_bound_packets | Squares Project (Levy) | first-party | decides | 6 | 5 |
@@ -105,6 +105,7 @@ second implementation agrees.
 | [`V-n17-catalogue-polynomial`](#v-n17-catalogue-polynomial) | devtools.check_n17_catalogue_polynomial | Squares Project (Levy) | first-party | decides | 1 | 0 |
 | [`V-n11-optimality-checkers`](#v-n11-optimality-checkers) | The devtools.check_n11_optimality | Squares Project (Levy) | first-party | decides | 2 | 2 |
 | [`V-audit-clipped-corner-transfer`](#v-audit-clipped-corner-transfer) | devtools.audit_clipped_corner_transfer | Squares Project (Levy) | first-party | decides | 2 | 1 |
+| [`V-check-half-angle-area`](#v-check-half-angle-area) | devtools.check_half_angle_area | Squares Project (Levy) | first-party | decides | 9 | 9 |
 | [`V-evand-exact-certificates`](#v-evand-exact-certificates) | devtools.evand_exact_certificates | Squares Project (Levy) | first-party | premises | 4 | 2 |
 | [`V-check-n11-final-composition`](#v-check-n11-final-composition) | devtools.check_n11_final_composition | Squares Project (Levy) | first-party | premises | 2 | 2 |
 | [`V-audit-n11-lean`](#v-audit-n11-lean) | devtools.audit_n11_lean | Squares Project (Levy) | first-party | premises | 2 | 1 |
@@ -130,7 +131,8 @@ second implementation agrees.
 | [`V-squish-upper-bound-packets`](#v-squish-upper-bound-packets) | devtools.squish_upper_bound_packets | Squares Project (Levy) | first-party | premises | 2 | 2 |
 | [`V-squish-followup-packets`](#v-squish-followup-packets) | devtools.squish_followup_packets | Squares Project (Levy) | first-party | premises | 1 | 1 |
 | [`V-squish-second-update-confirmation`](#v-squish-second-update-confirmation) | devtools.squish_second_update_confirmation | Squares Project (Levy) | first-party | premises | 1 | 1 |
-| [`V-evand-arrangement-receipts`](#v-evand-arrangement-receipts) | devtools.evand_arrangement_reports | Squares Project (Levy) | first-party | premises | 1 | 1 |
+| [`V-evand-arrangement-receipts`](#v-evand-arrangement-receipts) | devtools.evand_arrangement_reports | Squares Project (Levy) | first-party | premises | 7 | 7 |
+| [`V-upper-bound-reports`](#v-upper-bound-reports) | devtools.upper_bound_reports | Squares Project (Levy) | first-party | premises | 6 | 6 |
 | [`V-rehwaldt-n68-verify`](#v-rehwaldt-n68-verify) | verify.py | Seth Rehwaldt | external | decides | 1 | 1 |
 | [`V-rehwaldt-n68-independent-support-check`](#v-rehwaldt-n68-independent-support-check) | independent_support_check.py | Seth Rehwaldt | external | decides | 1 | 1 |
 | [`V-refinement-custody`](#v-refinement-custody) | devtools.refinement_custody | Squares Project (Levy) | first-party | premises | 2 | 2 |
@@ -951,6 +953,15 @@ Decides a packing pair by pair and wall by wall: by exact sign in a number field
 | `E-ryxu-432-rational-feasibility` | replayed here | independent | T-125 |
 | `E-ryxu-432-radical-n51-feasibility` | replayed here | independent | T-126 |
 | `E-gupta-438-exact-feasibility` | replayed here | independent | T-127 |
+| `E-couzo-451-exact-feasibility` | replayed here | independent | T-128 |
+| `E-couzo-460-followup-exact-feasibility` | replayed here | independent | T-130 |
+| `E-evand-465-record-hunt-exact-feasibility` | replayed here | independent | T-128, T-131 |
+| `E-couzo-476-exact-feasibility` | replayed here | independent | T-134 |
+| `E-fang-484-exact-feasibility` | replayed here | independent | T-135 |
+| `E-squish-481-exact-feasibility` | replayed here | independent | T-136 |
+| `E-deleeuw-483-exact-feasibility` | replayed here | independent | T-137 |
+| `E-mishapolk-470-exact-feasibility` | replayed here | independent | T-138 |
+| `E-evand-trio126-exact-feasibility` | replayed here | independent | T-139 |
 
 ### `V-check-rational-witness-independent`
 
@@ -983,6 +994,15 @@ Decides a rational-corner witness pair by pair and wall by wall in Fraction arit
 | `E-rehwaldt-couzo-refinements-2026-10-07-exact-replay` | replayed here | independent | T-117 |
 | `E-ryxu-432-rational-feasibility` | replayed here | independent | T-125 |
 | `E-gupta-438-exact-feasibility` | replayed here | independent | T-127 |
+| `E-couzo-451-exact-feasibility` | replayed here | independent | T-128 |
+| `E-couzo-460-followup-exact-feasibility` | replayed here | independent | T-130 |
+| `E-evand-465-record-hunt-exact-feasibility` | replayed here | independent | T-128, T-131 |
+| `E-couzo-476-exact-feasibility` | replayed here | independent | T-134 |
+| `E-fang-484-exact-feasibility` | replayed here | independent | T-135 |
+| `E-squish-481-exact-feasibility` | replayed here | independent | T-136 |
+| `E-deleeuw-483-exact-feasibility` | replayed here | independent | T-137 |
+| `E-mishapolk-470-exact-feasibility` | replayed here | independent | T-138 |
+| `E-evand-trio126-exact-feasibility` | replayed here | independent | T-139 |
 
 ### `V-check-nagamochi-lemma1-counterexample`
 
@@ -1487,6 +1507,29 @@ Decides in exact rationals the finite steps of Guzhou0806's clipped-corner trans
 | `E-n040-guzhou-clipped-corner-sqverify-fast-replay` | replayed here | producer’s code | T-133 |
 | `E-n040-guzhou-clipped-corner-finite-audit` | audited here | independent | T-133 |
 
+### `V-check-half-angle-area`
+
+**devtools.check_half_angle_area** · Squares Project (Levy) · first-party · decides · Python · exact-algebraic
+
+Decides a rational centre and half-angle certificate, or a rational centre-basis witness, in Fraction arithmetic: every rotation on the unit circle, containment in the closed box by each square's half-extent with no corner formed, and disjoint interiors by the circumscribed-disc rule, else by the exact area of one square clipped by the other's four closed half-planes. It reads Evan Daniel's text format, SQUISH's JSON, the centred JSON of issue 483 and derived facts with readers of its own, runs six controls per certificate (two gross, and side and pair each at exact contact and 10^-40 or 10^-30 past it), and holds every side, pose, margin and claimed side to the maintained routes' retained inputs and the record. For issue 470 it also derives each witness again from its pinned decimal pose file, with its own parser, dilation and half-angle floor in decimal arithmetic, and measures each arrangement against the packing it would be credited to, which decides nothing. Its replay-t128 command drives the kernel's own two-route replay of T-128's receipt.
+
+- Source: [`packing/devtools/check_half_angle_area.py`](../../packing/devtools/check_half_angle_area.py), [`packing/tests/test_check_half_angle_area.py`](../../packing/tests/test_check_half_angle_area.py)
+- Versions run: this repository's commits, which Git holds
+- What its authors read and used: [`packing/devtools/check_half_angle_area.py`](../../packing/devtools/check_half_angle_area.py)
+- Note: Written on 2026-10-10 by the review lane of T-128, T-130 and T-131 from the certificate formats and plane geometry, and extended the same day by the review lanes of issues 476, 481, 483 and 484 and of issue 470 and Evan Daniel's n = 126 certificate. Its author had read both maintained routes, their parser and the importer's adapters before writing it, so it is not clean-room; it imports none of their parsing or deciding code and shares Fraction with every exact checker here. It is a second pair-deciding procedure within one method, exact-algebraic, not a second method.
+
+| evidence | run | code | results |
+| --- | --- | --- | --- |
+| `E-couzo-451-exact-feasibility` | replayed here | independent | T-128 |
+| `E-couzo-460-followup-exact-feasibility` | replayed here | independent | T-130 |
+| `E-evand-465-record-hunt-exact-feasibility` | replayed here | independent | T-128, T-131 |
+| `E-couzo-476-exact-feasibility` | replayed here | independent | T-134 |
+| `E-fang-484-exact-feasibility` | replayed here | independent | T-135 |
+| `E-squish-481-exact-feasibility` | replayed here | independent | T-136 |
+| `E-deleeuw-483-exact-feasibility` | replayed here | independent | T-137 |
+| `E-mishapolk-470-exact-feasibility` | replayed here | independent | T-138 |
+| `E-evand-trio126-exact-feasibility` | replayed here | independent | T-139 |
+
 ### `V-evand-exact-certificates`
 
 **devtools.evand_exact_certificates** · Squares Project (Levy) · first-party · checks premises · Python · exact-algebraic
@@ -1986,6 +2029,31 @@ Binds all three complete source certificates and all nine full deciding inputs/n
 | evidence | run | code | results |
 | --- | --- | --- | --- |
 | `E-evand-399-exact-feasibility` | audited here | independent | T-119 |
+| `E-couzo-476-exact-feasibility` | replayed here | independent | T-134 |
+| `E-fang-484-exact-feasibility` | replayed here | independent | T-135 |
+| `E-squish-481-exact-feasibility` | replayed here | independent | T-136 |
+| `E-deleeuw-483-exact-feasibility` | replayed here | independent | T-137 |
+| `E-mishapolk-470-exact-feasibility` | replayed here | independent | T-138 |
+| `E-evand-trio126-exact-feasibility` | replayed here | independent | T-139 |
+
+### `V-upper-bound-reports`
+
+**devtools.upper_bound_reports** · Squares Project (Levy) · first-party · checks premises · Python · exact-algebraic
+
+Imports a report of rational upper-bound certificates by another author from its packet's declaration: admits custody through acquire_source, reads each retained file or derived fact by its declared adapter (Evan Daniel's text format, SQUISH's JSON, centred JSON, decimal poses by a declared dilation), admits each side only where it equals or rounds up to its print, rebuilds the frozen claim comparison and the register plan, and drives the arrangement kernel's two exact routes and two controls per count. It decides no geometry itself.
+
+- Source: [`packing/devtools/upper_bound_reports.py`](../../packing/devtools/upper_bound_reports.py), [`packing/devtools/evand_arrangement_reports.py`](../../packing/devtools/evand_arrangement_reports.py), [`packing/tests/test_upper_bound_reports.py`](../../packing/tests/test_upper_bound_reports.py)
+- Versions run: this repository's commits, which Git holds
+- Note: Written for the 2026-10-10 intake pass's upper-bound imports from the formats the sources state. sqpack.verify and the independent rational corner checker decide; the 10 October reviews of issues 476, 481, 483 and 484 and of issue 470 read it in full. For issue 470 its decimal_dilation adapter generates the exact witnesses from the source's decimal poses, so there this repository is the witness's generator.
+
+| evidence | run | code | results |
+| --- | --- | --- | --- |
+| `E-couzo-476-exact-feasibility` | replayed here | independent | T-134 |
+| `E-fang-484-exact-feasibility` | replayed here | independent | T-135 |
+| `E-squish-481-exact-feasibility` | replayed here | independent | T-136 |
+| `E-deleeuw-483-exact-feasibility` | replayed here | independent | T-137 |
+| `E-mishapolk-470-exact-feasibility` | replayed here | independent | T-138 |
+| `E-evand-trio126-exact-feasibility` | replayed here | independent | T-139 |
 
 ### `V-rehwaldt-n68-verify`
 
