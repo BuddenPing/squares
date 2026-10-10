@@ -1653,6 +1653,21 @@ sources:
       with Squares Project (Levy) verification code; this project lineage is not
       independent. The certificates are retained as factual data; the unlicensed prose is
       hash-pinned. No optimizer, local or global claim.
+  - key: '[Fang two-wedge certificates 2026-10-10]'
+    authors: [Fang]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-10'
+    lineage: independent
+    credit: Fang after Arslanov, Mustafin, Shangitbayev, Ellsworth, Stead
+    short_credit: Fang after Arslanov et al.
+    note: >-
+      Three complete exact certificates at c75bebd87933416d3e1c7aba35ec733ea8ac7da0,
+      reported on jlevy/squares#484, in the k^2 - k + 1 two-wedge family of Arslanov,
+      Mustafin and Shangitbayev, grown from Ellsworth's and Stead's Kingbird packings of 273
+      and 307 squares; Daniel's certificate format and SQUISH's JSON layout. MIT verifier
+      and CC0 certificates retained; Claude assistance disclosed. No exact form, local or
+      global optimality claim.
 credited_names:
   Nate Chaoweeraprasit (itsnaka): Chaoweeraprasit
   Siddharth Gupta: Gupta

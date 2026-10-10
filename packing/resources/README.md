@@ -1006,6 +1006,15 @@ controls, and a third exact route agrees on the six.
 T-134 records the six sides at V3/C3, pending adoption; the other 59 certificates of the
 commit are compared in the packet’s claim record and registered by no entry.
 
+**[Fang two-wedge certificates 2026-10-10]**: Kevin Fang’s exact rational certificates
+for n = 308, 343 and 344, pinned at `c75bebd87933416d3e1c7aba35ec733ea8ac7da0`, retained
+as the source wrote them;
+[packet](web/fang-two-wedge-certificates-2026-10-10/README.md).
+Both project exact routes accept all 3 replayed certificates and refuse all 6 controls,
+and a third exact route agrees.
+T-135 records the n = 308 side at V3/C3, pending adoption; the n = 343 and 344 sides lie
+beyond the case corpus and are verified beyond-horizon rows.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->

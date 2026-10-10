@@ -13747,4 +13747,125 @@ results:
           files, admission against each print, the claim comparisons and each route's
           trust boundary.
         verdict: accepted
-        covers: [T-134]
+        covers: [T-134, T-135]
+
+  - id: T-135
+    kind: upper-bound
+    registered: '2026-10-10'
+    headline: A packing of 308 squares below the grid, from Kevin Fang
+    claim: >-
+      One complete rational source certificate by Kevin Fang, reported on
+      jlevy/squares#484, proves a finite upper bound at the exact side it states: s(308) <=
+      496906684150483564257053639569689586211617178631487101147707692165192097/27606985387162255916575391130373464080218179016903156277167119960899584.
+
+      The same release states s(343) <= 789017423383549575129979982295456201/41538374868278621028243970633760768
+      and s(344) <=
+      262204097424407923560664994905454377606094204426897481135606818230728643/13803492693581127593573619627880932674597656005283617050019749892718592,
+      beyond the case corpus; the source register tracks those as beyond-horizon rows.
+
+      Each certificate gives a rational side and, for each unit square, a rational centre
+      and the tangent of its half-angle, in Evan Daniel's format, with the same packing in
+      SQUISH's JSON layout. The author reports that Evan Daniel's verify_cert.py, David
+      Ellsworth's check_packing.py on 40-digit exports and the author's own verify.py accept
+      all three; their outputs are retained.
+
+      All nine retained jobs, the three positives with their duplicate-square and
+      outside-container controls, were decided again here on 10 October 2026 by both
+      maintained exact routes and equal their retained rows, and a third exact route,
+      half-extent containment and exact intersection area, decided the three with six
+      controls each and found each text certificate equal to its JSON copy. No route here
+      is the source's code, so the replay is independently re-implemented. The 10 October
+      review found no blocking defect.
+
+      The side at 308 is below the 18 the case holds in both lanes, the grid's; the case
+      record is unchanged, so it is pending adoption.
+
+      Credit Kevin Fang (https://github.com/TheSnakeFang/squarepack-certs). The packings
+      extend the k^2 - k + 1 two-wedge family of Arslanov, Mustafin and Shangitbayev
+      (Electronic Journal of Combinatorics 28(4), P4.22, 2021) one k up and one square past
+      it, grown from David Ellsworth's and Tej Stead's packings of 273 and 307 squares on
+      the Kingbird table; the certificate format is Evan Daniel's and the JSON layout
+      SQUISH's. The search, the verifier and the bundle were written with Claude under the
+      author's direction.
+    scope:
+      n_values: [308]
+    verification: V3
+    confirmation: C3
+    significance:
+      score: 3
+      rationale: >-
+        A smaller finite construction side at n = 308, 6.90e-04 below the case ceiling; no
+        lower bound or optimum.
+      scored: '2026-10-10'
+      by: think-ar8g Kevin Fang import
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Fang two-wedge certificates 2026-10-10]']
+      published: '2026-10-10'
+    evidence:
+      - E-fang-484-certificate-report
+      - E-fang-484-exact-feasibility
+    artifacts:
+      - packing/resources/web/fang-two-wedge-certificates-2026-10-10/README.md
+      - packing/resources/web/fang-two-wedge-certificates-2026-10-10/acquisition/claims.json
+      - packing/resources/web/fang-two-wedge-certificates-2026-10-10/acquisition/beyond-horizon-claims.json
+      - packing/resources/web/fang-two-wedge-certificates-2026-10-10/source/n0308/n0308.cert
+      - packing/resources/web/fang-two-wedge-certificates-2026-10-10/receipts/exact-certification.json.xz
+      - packing/devtools/upper_bound_reports.py
+      - packing/devtools/check_half_angle_area.py
+      - docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
+    controls:
+      - packing/tests/test_upper_bound_reports.py
+      - packing/tests/test_check_half_angle_area.py
+    notes: >-
+      A separate complete repository replay is retained for n = 308, 343 and 344: 3
+      positives and 6 duplicate-square and outside-container controls passed their required
+      outcomes on both routes, 989562 pair decisions; summed over the 9 jobs, the receipt
+      records 307.82 route CPU seconds and 680.92 job wall seconds, the longest job 87.93
+      seconds. Every positive clears every wall by at least 2.71e-20 and every pair by at
+      least 1.64e-20.
+
+      V3 and C3 rest on the 10 October review
+      (docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md) and the
+      replay it reproduced (E-fang-484-exact-feasibility). Its findings here are
+      non-blocking: the kernel's controls are gross (RI-3), no private-worker custody is on
+      file (RI-5), and the reviewer and the producer share a model family (RI-7).
+
+      At n = 308 the certificate is below the case's ceiling, the grid's 18, by 6.90e-04,
+      and no other pending report names that count. At 343 and 344 there is no case record:
+      the sides are 5.10e-03 and 4.51e-03 below the grid's 19 and below Mishapolk's issue
+      470 README prints, and the source register keeps them as dated beyond-horizon rows at
+      assurance verified (RI-6).
+
+      The review recommends this entry as the house at 308. No house moves until
+      jlevy/squares#403, which rewrites every case record, lands and private-worker custody
+      is on file.
+
+      The source's own checkers were not run here. No two independent methods, human
+      oversight or optimality is claimed.
+    next_rung: >-
+      V4 and C4 need a second accepted adversarial review of this replay by a distinct
+      reviewer and a retained human oversight record; the 10 October review is one, by an
+      AI agent. Separately, once jlevy/squares#403 lands and private-worker custody is on
+      file (RI-5), adopt this entry as the house at 308, the grid kept as history.
+    reviews:
+      - path: docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
+        kind: adversarial
+        reviewer: >-
+          AI agent (Claude, model Opus 5.5, claude-opus-5-5, at the reasoning setting its
+          harness gave it, which the agent cannot read), the stage 4 review lane (W2) of the
+          2026-10-10 intake pass under think-fvz4, prompted separately from the import
+          lanes that built the four packets, with no shared context
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-10'
+        scope: >-
+          Finite feasibility of the 27 certificates the four imports' entries cite: issue
+          476 at 132, 237, 263, 267, 270 and 303; issue 481 at its seventeen counts; issue
+          483 at 70; issue 484 at 308, with 343 and 344 beyond the corpus. Every retained
+          receipt replayed on both maintained routes, the third exact route extended for
+          these formats with sharp controls, the derived facts held to their upstream
+          files, admission against each print, the claim comparisons and each route's
+          trust boundary.
+        verdict: accepted
+        covers: [T-134, T-135]

@@ -3261,6 +3261,32 @@ sources:
     by a third exact route. No selected override or superseded claim is created while house adoption
     waits for jlevy/squares#403; current cases and earlier source ownership remain unchanged. The 59
     further certificates of the commit are compared in the claim record and registered by no entry.
+- id: fang-two-wedge-certificates-2026-10-10
+  title: Kevin Fang's three two-wedge certificates at c75bebd, issue484
+  role: source-repository
+  url: https://github.com/TheSnakeFang/squarepack-certs/tree/c75bebd87933416d3e1c7aba35ec733ea8ac7da0
+  local: resources/web/fang-two-wedge-certificates-2026-10-10/
+  source_key: '[Fang two-wedge certificates 2026-10-10]'
+  scope:
+    n_values: [308, 343, 344]
+  reviewed: '2026-10-10'
+  source_date: '2026-10-10'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/results.yaml
+  - resources/web/fang-two-wedge-certificates-2026-10-10/acquisition/claims.json
+  evidence:
+  - E-fang-484-certificate-report
+  - E-fang-484-exact-feasibility
+  notes: All 3 complete certificates are retained as the source wrote them, each admitted only where
+    its exact side equals, or rounds up to, the side its source prints. T-135 records the in-horizon
+    report at V3/C3 on the review of 10 October, which reproduced all 9 native jobs and decided the three
+    by a third exact route; the n343 and n344 sides are beyond-horizon rows at assurance verified from
+    the same evidence, each the issue's 15-place print, the exact side rounded up. No selected override
+    or superseded claim is created while house adoption waits for jlevy/squares#403; current cases and
+    earlier source ownership remain unchanged.
+  claims_record: resources/web/fang-two-wedge-certificates-2026-10-10/acquisition/beyond-horizon-claims.json
 selected_overrides:
 - n: 51
   source_id: ry-xu-undilated-n51-2026
@@ -5238,6 +5264,20 @@ beyond_horizon_claims:
   assurance: reported
   disposition: tracked-outside-case-corpus
   bead: think-1545
+- n: 343
+  source_id: fang-two-wedge-certificates-2026-10-10
+  claim: upper-bound
+  value: '18.994903529220497'
+  assurance: verified
+  disposition: tracked-outside-case-corpus
+  bead: think-ar8g
+- n: 344
+  source_id: fang-two-wedge-certificates-2026-10-10
+  claim: upper-bound
+  value: '18.995489275430816'
+  assurance: verified
+  disposition: tracked-outside-case-corpus
+  bead: think-ar8g
 - n: 364
   source_id: couzo-extended-range-reports-2026-10-08
   claim: upper-bound

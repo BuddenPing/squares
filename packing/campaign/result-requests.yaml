@@ -3803,33 +3803,38 @@ issues:
     opened: '2026-10-10'
     state: open
     kind: result-report
-    triage: pending
+    triage: done
     summary: >-
       Kevin Fang reports three packings by the two-wedge construction of Arslanov, Mustafin and
       Shangitbayev taken one k up, and one square past it at k = 18 and 19, with exact rational sides,
       in TheSnakeFang/squarepack-certs at c75bebd87933416d3e1c7aba35ec733ea8ac7da0 in Evan Daniel's
       .cert format. n = 308 is below the 18 x 18 grid; n = 343 and 344 lie beyond the 1..324 case corpus.
       Evan Daniel's verify_cert.py, Ellsworth's check_packing.py and the author's verify.py accept all
-      three. No exact form, local minimality or optimality is claimed.
+      three. No exact form, local minimality or optimality is claimed. Imported on 10 October 2026:
+      the three certificates retained in the fang-two-wedge-certificates-2026-10-10 packet, replayed
+      on both maintained exact routes and decided again by a third exact route in the review of the
+      same day, with no blocking defect. n = 308 is registered as T-135; n = 343 and 344 are verified
+      beyond-horizon rows in the source register. The case record waits for jlevy/squares#403.
     read_through: '2026-10-10T04:48:40Z'
     results:
     - key: s308-two-wedge
       claim: s(308) <= 17.999309855162748, rounded up to 15 decimals from the exact rational side of n0308.cert.
       source: body
-      not_registered: Triage pending under think-ar8g; the certificate is not yet retained or replayed
-        here.
-      queued: true
-      bead: think-ar8g
+      register:
+      - T-135
+      evidence:
+      - E-fang-484-certificate-report
+      - E-fang-484-exact-feasibility
     - key: s343-s344-two-wedge
       claim: s(343) <= 18.994903529220497 and s(344) <= 18.995489275430816, rounded up to 15 decimals from
         the exact rational sides of n0343.cert and n0344.cert.
       source: body
-      not_registered: Triage pending under think-ar8g. Both counts lie beyond the 1..324 case corpus,
-        where the record keeps dated beyond-horizon reports.
-      queued: true
-      bead: think-ar8g
+      evidence:
+      - E-fang-484-certificate-report
+      - E-fang-484-exact-feasibility
     beads:
     - think-ar8g
+    - think-fvz4
     answer_bead: think-ar8g
     replies: []
     close_when: The import and its disposition, including the beyond-horizon counts, are on main and the
