@@ -111,21 +111,25 @@ entry cites. No source program ran here.
 [acquisition/claims.json](acquisition/claims.json) freezes every certificate against the
 record as it stood when the issue was read (`main` at `af17208c0`, 10 October 2026).
 `check-claims` rebuilds it, each case ceiling from its holder’s own retained packet and
-each issue-476, T-130 and T-131 side from its own packet.
+each issue-476, T-130, T-131, issue-481 and issue-489 side from its own packet.
 The six the issue reports:
 
 | n | Case ceiling, holder | Below it by | Other pending reports at the count | Smallest |
 | --- | --- | --- | --- | --- |
-| 132 | 11.9913278876915015, Evan Daniel’s exact optimum of Couzo’s packing (T-098) | $4.37 \times 10^{-3}$ | #476 above by $6.06 \times 10^{-7}$; #470 prints 11.986956226066, above by $2.64 \times 10^{-6}$; T-131 (#465) above by $1.46 \times 10^{-4}$; #489 prints 11.985680198845808811522231964102, below by $1.27 \times 10^{-3}$ | #489 |
+| 132 | 11.9913278876915015, Evan Daniel’s exact optimum of Couzo’s packing (T-098) | $4.37 \times 10^{-3}$ | #476 above by $6.06 \times 10^{-7}$; #470 prints 11.986956226066, above by $2.64 \times 10^{-6}$; T-131 (#465) above by $1.46 \times 10^{-4}$; #489 below by $1.27 \times 10^{-3}$ | #489 |
 | 175 | 13.7688992766137689, Ryan Xu (T-125) | $1.78 \times 10^{-3}$ | T-130 (#460) and #476, the same certificate, above by $3.44 \times 10^{-5}$; #470 prints 13.767155163551, above by $3.44 \times 10^{-5}$ | this certificate |
-| 209 | 14.9496179522003981, Gupta’s refinement of SQUISH (T-127) | $3.39 \times 10^{-3}$ | #481 prints 14.946223654487920, above by $4.28 \times 10^{-7}$; #470 above | this certificate |
-| 237 | 15.9036762351891381, Gupta’s refinement of SQUISH (T-127) | $7.27 \times 10^{-4}$ | #481 prints 15.902989220874966, above by $3.96 \times 10^{-5}$; #476 above by $7.21 \times 10^{-4}$; #470 above | this certificate |
-| 270 | 16.9378072284460292, Evan Daniel (T-119) | $8.03 \times 10^{-3}$ | #481 prints 16.929780126241173, above by $4.77 \times 10^{-6}$; #476 and T-130 (#460) above by $6.94 \times 10^{-3}$ and $6.95 \times 10^{-3}$; #470 above | this certificate |
-| 305 | 17.9529594590155280, Evan Daniel’s exact optimum of Couzo’s packing (T-098) | $1.82 \times 10^{-3}$ | #481 prints 17.951196144147385, above by $5.64 \times 10^{-5}$; #476 equals the case ceiling | this certificate |
+| 209 | 14.9496179522003981, Gupta’s refinement of SQUISH (T-127) | $3.39 \times 10^{-3}$ | #481 above by $4.28 \times 10^{-7}$; #470 above | this certificate |
+| 237 | 15.9036762351891381, Gupta’s refinement of SQUISH (T-127) | $7.27 \times 10^{-4}$ | #481 above by $3.96 \times 10^{-5}$; #476 above by $7.21 \times 10^{-4}$; #470 above | this certificate |
+| 270 | 16.9378072284460292, Evan Daniel (T-119) | $8.03 \times 10^{-3}$ | #481 above by $4.77 \times 10^{-6}$; #476 and T-130 (#460) above by $6.94 \times 10^{-3}$ and $6.95 \times 10^{-3}$; #470 above | this certificate |
+| 305 | 17.9529594590155280, Evan Daniel’s exact optimum of Couzo’s packing (T-098) | $1.82 \times 10^{-3}$ | #481 above by $5.64 \times 10^{-5}$; #476 equals the case ceiling | this certificate |
 
-A side a report prints, and does not retain here, is compared at its printed places.
-Where the report says it rounded up, the side may be up to one unit in the last place
-below the print. Where it does not say, the side may be one unit either way.
+Issue #470’s sides are compared at the places Mishapolk’s README prints them, rounded
+up: each side may be up to one unit in the last place below the print.
+Issue #481’s and issue #489’s sides are compared exactly, from the
+[issue-481 packet](../squish-481-third-request-2026-10-09/README.md) and the
+[Hunt 3 packet](../evand-record-hunt3-2026-10-10/README.md); the record first frozen
+here compared their printed decimals, and every relation and distance above is
+unchanged by the exact reading.
 Three other pending reports share no count with this release: #483 is at n = 70 alone,
 #484 at 308, 343 and 344, and T-128 at eight counts from 105 to 306, none of them here.
 
@@ -153,7 +157,7 @@ them:
 
 - **303.** Below the case ceiling, 17.9203123729203498 (SQUISH, T-113), by
   $2.95 \times 10^{-3}$, and below the issue-476 certificate by $7.83 \times 10^{-5}$.
-  Issue #481’s printed 17.913065462738533 is smaller by $4.30 \times 10^{-3}$, and the
+  Issue #481’s exact side is smaller by $4.30 \times 10^{-3}$, and the
   source marks this one superseded.
 - **338 and 340, beyond the horizon.** Below the current tracked beyond-horizon rows,
   Couzo’s own decimal reports of 18.908632939046573 and 18.939879629586962, by

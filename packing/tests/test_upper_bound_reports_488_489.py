@@ -20,6 +20,7 @@ from devtools import upper_bound_reports as reports
 COUZO_488 = "couzo-certificates-2026-10-10"
 HUNT3 = "evand-record-hunt3-2026-10-10"
 COUZO_476 = "couzo-exact-certificates-2026-10-09"
+HUNT3_KEY = "[Daniel record hunt 3 2026-10-10]"
 #: The certificates commit 3ef7634 adds (209) or changes; every other one is unchanged.
 CHANGED = (132, 175, 209, 237, 270, 303, 305, 338, 340)
 
@@ -64,6 +65,24 @@ def test_the_488_claims_find_489_smaller_at_132_and_481_smaller_only_at_303() ->
         338: reports.THIS,
         340: reports.THIS,
     }
+
+
+def test_the_488_claims_read_481_and_489_at_their_exact_sides() -> None:
+    """Both later reports are retained, so neither is compared at its printed decimals."""
+    rows = reports.check_claims(reports.packet_path(COUZO_488))["results"]
+    readers = {"#481": "[SQUISH third request 2026-10-09]", "#489": HUNT3_KEY}
+    read = {
+        (row["n"], other["report"]): other["exact_side"]
+        for row in rows
+        for other in row["pending"]
+        if other["report"] in readers
+    }
+    assert sorted(read) == [
+        (132, "#489"),
+        *((n, "#481") for n in (209, 237, 270, 303, 305)),
+    ]
+    for (n, report), side in read.items():
+        assert Fraction(side) == reports.house_side(readers[report], n)
 
 
 def test_the_489_claims_leave_305_undecided_against_488_at_its_printed_side() -> None:
