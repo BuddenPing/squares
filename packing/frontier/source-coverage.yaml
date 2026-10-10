@@ -3284,9 +3284,10 @@ sources:
     its exact side equals, or rounds up to, the side its source prints. T-135 records the in-horizon
     report at V3/C3 on the review of 10 October, which reproduced all 9 native jobs and decided the three
     by a third exact route; the n343 and n344 sides are beyond-horizon rows at assurance verified from
-    the same evidence, each the issue's 15-place print, the exact side rounded up. No selected override
-    or superseded claim is created while house adoption waits for jlevy/squares#403; current cases and
-    earlier source ownership remain unchanged.
+    the same evidence, each the issue's 15-place print, the exact side rounded up, and both are superseded
+    by issue 489's smaller sides there (evand-record-hunt3-2026-10-10). No selected override is created
+    while house adoption waits for jlevy/squares#403; current cases and earlier source ownership remain
+    unchanged.
   claims_record: resources/web/fang-two-wedge-certificates-2026-10-10/acquisition/beyond-horizon-claims.json
 - id: squish-481-third-request-2026-10-09
   title: Nate Chaoweeraprasit's SQUISH third request at d45669b, issue481
