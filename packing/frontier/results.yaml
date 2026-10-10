@@ -13747,7 +13747,7 @@ results:
           files, admission against each print, the claim comparisons and each route's
           trust boundary.
         verdict: accepted
-        covers: [T-134, T-135]
+        covers: [T-134, T-135, T-136]
 
   - id: T-135
     kind: upper-bound
@@ -13868,4 +13868,203 @@ results:
           files, admission against each print, the claim comparisons and each route's
           trust boundary.
         verdict: accepted
-        covers: [T-134, T-135]
+        covers: [T-134, T-135, T-136]
+
+  - id: T-136
+    kind: upper-bound
+    registered: '2026-10-10'
+    headline: Seventeen exact rational packings from SQUISH's third request
+    claim: >-
+      Seventeen complete rational source certificates by Nate Chaoweeraprasit, using
+      SQUISH, reported on jlevy/squares#481, prove finite upper bounds at the exact sides
+      they state: s(131) <=
+      546262522801617822590053861036247525257980632054448711125685429647597444905863823/45713647219586261662645849733884420493261937951141483500332220381589307940237228,
+      s(153) <=
+      123797999524180008078530976954463155877532124256188212074430292658566758958161323/9617597300166052747813209874613658336103061290746859396882208758750786210512186,
+      s(154) <=
+      784162558492446266593660385683137819091796768322490163735346888314210507575675725/60679277154496515024381071712664165344389803410694160363187109568787250164584599,
+      s(207) <=
+      735531374822863515605402999283143325118010869312518967079087271050773613271161277/49412586952851805135714733794522095254473298746909591292001747563872946931057236,
+      s(209) <=
+      352086775394428731924221642717430604621536094874634535695725650032320439933977965/23556905311577298619235189039173243928057287546251527278924911938419541052151072,
+      s(232) <=
+      1114406289130974410117782886660181901248480109604626847722783024235385594726280057/70677745564963034331738560467960182867819656746924792855394670571264398270484380,
+      s(236) <=
+      50320092412194411351092950431375593124874735166028004482989966459031138777005556/3171976347778525974082487945502584792871670535146640434897907865344648863834385,
+      s(237) <=
+      985175957045048952983043545219609058238043896611796404750765221827457100311536267/61949105502245043847087036993442184322886619069992659024865961513616685288782651,
+      s(259) <=
+      341518036803803444006790647841670042984586128471540050420967157601697370040453146/20584066845374091244555983652288807088661645599927706951717180608041569765032899,
+      s(263) <=
+      432047778146841439029580692611188349728625751403534114235890133210701007973167612458309659642793497978693924904370413739637576535113305805473258454023835719181271711048486015594317660810620737576607410036454490449350514789375965798922408137/25819846521744160772224038706040075666707832377280732314567257517966255239622299571357684220252697011172510448203687628392777898509200720976473115105878476541217151532309155922966611211236819896892204567384190375033297252622850484642835750,
+      s(269) <=
+      564564911646728951775552019108871435401015878808547246372660532154424222542885997/33403216161756613117962569049021857533205635354720854135770446125559372407730671,
+      s(270) <=
+      161730688683764189720413661089911172609666557649301664556207086991163746546642589/9553029482827216570142998318928918813620116649281833748281870132253732451342836,
+      s(292) <=
+      3761323845345218139515171916971344444825061926100378742572376994966931648579540403209467016041816040337818900346425264425539321771370681685330920067362079436395820610782571906200300814877227551992417206915107675733654665670276860831914801/213816326056741634814067355276646187722839206218411265487734233051189296444092664982158379275294035512776959997090425431151515816435932969086410258658043702048010698581133434199424606616799121971830257866615621151317801149797139930258434,
+      s(302) <=
+      820999445009309740922029456921019877028889439831661589361637087272075109744743203/45937671990376526418357407123080370268809104789707150587775569201223938448317194,
+      s(303) <=
+      162263195772134120155792974649693427899481189466645405582211912387896660025441601/9058371171012706945350582640902165821875350160207702968863672420698760940328800,
+      s(305) <=
+      20660996865663684228769265396330188251261172861603842154544163047966189801381587/1150953769306329632110500736581956206891780101292689658665490428813909216741750
+      and s(307) <=
+      60196283485579249701801076299725636673865869456384222766836544824201358530035066/3347797278057252711799171413359076616946062908168377655562490378685987266056665.
+
+      Each certificate gives a rational side and, for each unit square, a rational centre
+      and the tangent of its half-angle, in SQUISH's JSON; each side is the exact fraction
+      the source's summary.csv prints, and the issue's 15-digit displays are not roundings
+      of it. The author reports that SQUISH's exact Fraction checker accepts all seventeen
+      and David Ellsworth's check_packing.py each 50-digit export, and that each
+      certificate was drawn from a 60-digit contact solution with clearance 1e-32, about
+      1e-14 at 263 and 292.
+
+      At every count squares touch the closed box, a least wall clearance of exactly 0,
+      which the record's closed-box convention admits; no two squares meet, and the bound
+      also holds if s(n) is read as an open-box infimum.
+
+      All 51 retained jobs, the seventeen positives with their duplicate-square and
+      outside-container controls, were decided again here on 10 October 2026 by both
+      maintained exact routes, from exact facts derived from the pinned certificates, and
+      equal their retained rows. A third exact route, half-extent containment and exact
+      intersection area, decided the seventeen with six controls each and found each fact
+      to be the packing its pinned upstream file states. No route here is the source's
+      code, so the replay is independently re-implemented. The 10 October review found no
+      blocking defect.
+
+      Each side is below the ceiling its case holds and below every other report pending
+      at its count; the case records are unchanged until a house is adopted, so each is
+      pending adoption.
+
+      Credit Nate Chaoweeraprasit (https://github.com/itsnaka/squish-certs), using SQUISH
+      and its Mondrian composition method, with the packings the pieces came from as the
+      source names them: the Kingbird catalogue's packing of 5 and former records at 11,
+      50, 152, 202 and 241, Francisco Couzo's packings of 182 and 180, Ryan Xu's of 123,
+      129 and 175, and SQUISH's own earlier packings. The source states that the solver,
+      its verification and the issue were written with Claude Opus 5.5 under the author's
+      direction.
+    scope:
+      n_values: [131, 153, 154, 207, 209, 232, 236, 237, 259, 263, 269, 270, 292, 302, 303, 305, 307]
+    verification: V3
+    confirmation: C3
+    significance:
+      score: 3
+      rationale: >-
+        Smaller finite construction sides at n = 131, 153, 154, 207, 209, 232, 236, 237,
+        259, 263, 269, 270, 292, 302, 303, 305 and 307, 1.68e-04 to 1.12e-02 below the case
+        ceilings; no lower bound or optimum.
+      scored: '2026-10-10'
+      by: think-ac4h Nate Chaoweeraprasit import
+    novelty: previously-published
+    attribution:
+      source_keys: ['[SQUISH third request 2026-10-09]']
+      published: '2026-10-09'
+    evidence:
+      - E-squish-481-certificate-report
+      - E-squish-481-exact-feasibility
+    artifacts:
+      - packing/resources/web/squish-481-third-request-2026-10-09/README.md
+      - packing/resources/web/squish-481-third-request-2026-10-09/acquisition/claims.json
+      - packing/resources/web/squish-481-third-request-2026-10-09/facts/n-131.yaml.gz
+      - packing/resources/web/squish-481-third-request-2026-10-09/facts/n-153.yaml.gz
+      - packing/resources/web/squish-481-third-request-2026-10-09/facts/n-154.yaml.gz
+      - packing/resources/web/squish-481-third-request-2026-10-09/facts/n-207.yaml.gz
+      - packing/resources/web/squish-481-third-request-2026-10-09/facts/n-209.yaml.gz
+      - packing/resources/web/squish-481-third-request-2026-10-09/facts/n-232.yaml.gz
+      - packing/resources/web/squish-481-third-request-2026-10-09/facts/n-236.yaml.gz
+      - packing/resources/web/squish-481-third-request-2026-10-09/facts/n-237.yaml.gz
+      - packing/resources/web/squish-481-third-request-2026-10-09/facts/n-259.yaml.gz
+      - packing/resources/web/squish-481-third-request-2026-10-09/facts/n-263.yaml.gz
+      - packing/resources/web/squish-481-third-request-2026-10-09/facts/n-269.yaml.gz
+      - packing/resources/web/squish-481-third-request-2026-10-09/facts/n-270.yaml.gz
+      - packing/resources/web/squish-481-third-request-2026-10-09/facts/n-292.yaml.gz
+      - packing/resources/web/squish-481-third-request-2026-10-09/facts/n-302.yaml.gz
+      - packing/resources/web/squish-481-third-request-2026-10-09/facts/n-303.yaml.gz
+      - packing/resources/web/squish-481-third-request-2026-10-09/facts/n-305.yaml.gz
+      - packing/resources/web/squish-481-third-request-2026-10-09/facts/n-307.yaml.gz
+      - packing/resources/web/squish-481-third-request-2026-10-09/receipts/exact-certification-n131.json.xz
+      - packing/resources/web/squish-481-third-request-2026-10-09/receipts/exact-certification-n153.json.xz
+      - packing/resources/web/squish-481-third-request-2026-10-09/receipts/exact-certification-n154.json.xz
+      - packing/resources/web/squish-481-third-request-2026-10-09/receipts/exact-certification-n207.json.xz
+      - packing/resources/web/squish-481-third-request-2026-10-09/receipts/exact-certification-n209.json.xz
+      - packing/resources/web/squish-481-third-request-2026-10-09/receipts/exact-certification-n232.json.xz
+      - packing/resources/web/squish-481-third-request-2026-10-09/receipts/exact-certification-n236.json.xz
+      - packing/resources/web/squish-481-third-request-2026-10-09/receipts/exact-certification-n237.json.xz
+      - packing/resources/web/squish-481-third-request-2026-10-09/receipts/exact-certification-n259.json.xz
+      - packing/resources/web/squish-481-third-request-2026-10-09/receipts/exact-certification-n263.json.xz
+      - packing/resources/web/squish-481-third-request-2026-10-09/receipts/exact-certification-n269.json.xz
+      - packing/resources/web/squish-481-third-request-2026-10-09/receipts/exact-certification-n270.json.xz
+      - packing/resources/web/squish-481-third-request-2026-10-09/receipts/exact-certification-n292.json.xz
+      - packing/resources/web/squish-481-third-request-2026-10-09/receipts/exact-certification-n302.json.xz
+      - packing/resources/web/squish-481-third-request-2026-10-09/receipts/exact-certification-n303.json.xz
+      - packing/resources/web/squish-481-third-request-2026-10-09/receipts/exact-certification-n305.json.xz
+      - packing/resources/web/squish-481-third-request-2026-10-09/receipts/exact-certification-n307.json.xz
+      - packing/devtools/upper_bound_reports.py
+      - packing/devtools/check_half_angle_area.py
+      - docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
+    controls:
+      - packing/tests/test_upper_bound_reports.py
+      - packing/tests/test_check_half_angle_area.py
+    notes: >-
+      A separate complete repository replay is retained for n = 131, 153, 154, 207, 209,
+      232, 236, 237, 259, 263, 269, 270, 292, 302, 303, 305 and 307: 17 positives and 34
+      duplicate-square and outside-container controls passed their required outcomes on
+      both routes, 3148314 pair decisions; summed over the 51 jobs, the receipt records
+      1340.82 route CPU seconds and 2487.87 job wall seconds, the longest job 208.94
+      seconds. In every positive squares touch the box, a least wall clearance of exactly
+      0, and every pair clears by at least 1.00e-32.
+
+      V3 and C3 rest on the 10 October review
+      (docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md) and
+      the replay it reproduced (E-squish-481-exact-feasibility). Its findings here are
+      non-blocking: no retained check binds a derived fact to its upstream bytes, which
+      the review closed once by fetching each certificate at the pin (RI-2); the kernel's
+      controls are gross (RI-3); and the reviewer and the producer share a model family
+      (RI-7).
+
+      Each side is below its case's ceiling, by 1.68e-04 at 307 to 1.12e-02 at 259. It is
+      also below T-128 at 131 by 1.45e-03, T-130 at 270 by 6.94e-03, issue 476's sides at
+      237, 263, 270 and 303 by 6.82e-04 to 7.25e-03, and Mishapolk's issue 470 prints at
+      eleven counts, so at every count it is the smallest report known.
+
+      At 154, 207, 209, 236, 237, 263, 302 and 303 it replaces earlier SQUISH packings the
+      cases hold directly or through Siddharth Gupta's refinements, and at 153 it is below
+      SQUISH's own n153 report of 7 October as well. At 232 it is below both the Kingbird
+      print the case reports and Evan Daniel's rational ceiling it verifies (T-101).
+
+      The review recommends this entry as the house at all seventeen counts, with T-128's
+      side at 131 and issue 476's and T-130's at 270 kept verified and not selected. No
+      house moves until jlevy/squares#403, which rewrites every case record, lands and
+      private-worker custody is on file (RI-5).
+
+      The three sources/ certificates at 155, 240 and 306 are above their cases and are
+      not imported. The source's own checkers were not run here. No two independent
+      methods, human oversight or optimality is claimed.
+    next_rung: >-
+      V4 and C4 need a second accepted adversarial review of this replay by a distinct
+      reviewer and a retained human oversight record; the 10 October review is one, by an
+      AI agent. Separately, once jlevy/squares#403 lands and private-worker custody is on
+      file (RI-5), adopt this entry as the house at all seventeen counts, with each
+      earlier house kept as history.
+    reviews:
+      - path: docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
+        kind: adversarial
+        reviewer: >-
+          AI agent (Claude, model Opus 5.5, claude-opus-5-5, at the reasoning setting its
+          harness gave it, which the agent cannot read), the stage 4 review lane (W2) of the
+          2026-10-10 intake pass under think-fvz4, prompted separately from the import
+          lanes that built the four packets, with no shared context
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-10'
+        scope: >-
+          Finite feasibility of the 27 certificates the four imports' entries cite: issue
+          476 at 132, 237, 263, 267, 270 and 303; issue 481 at its seventeen counts; issue
+          483 at 70; issue 484 at 308, with 343 and 344 beyond the corpus. Every retained
+          receipt replayed on both maintained routes, the third exact route extended for
+          these formats with sharp controls, the derived facts held to their upstream
+          files, admission against each print, the claim comparisons and each route's
+          trust boundary.
+        verdict: accepted
+        covers: [T-134, T-135, T-136]

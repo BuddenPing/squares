@@ -1015,6 +1015,15 @@ and a third exact route agrees.
 T-135 records the n = 308 side at V3/C3, pending adoption; the n = 343 and 344 sides lie
 beyond the case corpus and are verified beyond-horizon rows.
 
+**[SQUISH third request 2026-10-09]**: Nate Chaoweeraprasit’s exact rational
+certificates for n = 131, 153, 154, 207, 209, 232, 236, 237, 259, 263, 269, 270, 292,
+302, 303, 305 and 307, pinned at `d45669b48cc97ad3aa17a6c847a8d06630f66eac`, kept as
+derived exact facts, no upstream byte retained;
+[packet](web/squish-481-third-request-2026-10-09/README.md).
+Both project exact routes accept all 17 replayed certificates and refuse all 34
+controls, and a third exact route agrees and held each fact to its pinned upstream file.
+T-136 records the seventeen sides at V3/C3, pending adoption.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->

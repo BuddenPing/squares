@@ -359,19 +359,6 @@ repositories:
       9973230520053043026984980967643/(5*10^29) = 19.946461040106..., 4.0e-4 below
       19.946861170999796; n = 376, 377 and 379 move by 2.3e-8 or less. think-1545 owns these
       outside-corpus updates; 9bf90e7 touches none of them.
-  - url: https://github.com/itsnaka/squish-certs
-    read_through: d45669b48cc97ad3aa17a6c847a8d06630f66eac
-    read_on: '2026-10-10'
-    bead: think-ac4h
-    note: >-
-      One commit of 9 October past the e63e4e5 read, the pin of #481 (think-ac4h). It adds
-      squish-submission-2026-10-09/: one folder per n for the 15 new packings (131, 153, 207,
-      209, 232, 236, 259, 263, 269, 270, 292, 302, 303, 305, 307) and the smaller 154 and 237,
-      each with nNNN.cert.json, two 50-digit text exports, an SVG, a comparison PNG and
-      check_packing_output.txt; summary.csv; a README; and sources/, the exact certificates of
-      three unfiled packings at n = 155, 240 and 306 used as pieces. The root README index is
-      updated. Its n = 153 certificate is a later release of the SQUISH n153 source the register
-      reviews by hand.
   - url: https://github.com/wand125/square-packing
     read_through: 22a23c8a99aa4e9616d596bc2f28555bacbee3dd
     read_on: '2026-10-10'

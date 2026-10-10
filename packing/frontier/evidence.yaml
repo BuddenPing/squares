@@ -29896,3 +29896,106 @@ evidence:
       model family (RI-7). Finite feasibility only: no lower bound, optimum, local minimum,
       rigidity, novelty or human oversight.
     source_reviewed: '2026-10-10'
+
+  - id: E-squish-481-certificate-report
+    claim: upper-bound
+    scope:
+      n_values: [131, 153, 154, 207, 209, 232, 236, 237, 259, 263, 269, 270, 292, 302, 303, 305, 307]
+    assurance: reported
+    reported_method: exact-algebraic
+    performed_by: source-author
+    relationship_to_generator: same-implementation
+    origin: external
+    novelty: previously-published
+    source_key: '[SQUISH third request 2026-10-09]'
+    certificate: packing/resources/web/squish-481-third-request-2026-10-09/facts/
+    replay_status: not-attempted
+    verifiers: []
+    external_review:
+      state: informally-verified
+      date: '2026-10-10'
+      reviewed_by: >-
+        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        intake pass under think-fvz4, prompted separately from the import lanes
+      note: >-
+        docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
+        accepted all seventeen certificates for finite feasibility only, admitted by their
+        exact summary.csv fractions and not by the issue's displays, with seven non-blocking
+        findings (RI-1 to RI-7); the replay it reproduced is E-squish-481-exact-feasibility.
+    limitations: >-
+      This atom records the source author's report of 17 exact rational certificates at
+      d45669b, kept as derived exact facts with no upstream byte retained. Each side is
+      admitted by equality to the exact fraction the source's summary.csv prints; the
+      issue's 15-digit displays and each certificate's s_decimal are not roundings of it
+      and lie below it at eight counts. The author reports that SQUISH's exact Fraction
+      checker and David Ellsworth's check_packing.py accept all seventeen; neither was run
+      here. The three sources/ certificates at 155, 240 and 306 are above their cases and
+      not imported. The repository replay and its review are
+      E-squish-481-exact-feasibility. No KKT, interval, local or global optimality claim.
+    source_reviewed: '2026-10-10'
+
+  - id: E-squish-481-exact-feasibility
+    claim: upper-bound
+    scope:
+      n_values: [131, 153, 154, 207, 209, 232, 236, 237, 259, 263, 269, 270, 292, 302, 303, 305, 307]
+    assurance: verified
+    method: exact-algebraic
+    performed_by: repository
+    relationship_to_generator: independent-implementation
+    origin: replayed-here
+    novelty: previously-published
+    source_key: '[SQUISH third request 2026-10-09]'
+    certificate: packing/resources/web/squish-481-third-request-2026-10-09/facts/
+    replay: >-
+      From packing/ with the project interpreter, as two processes at once: python -m
+      devtools.upper_bound_reports squish-481-third-request-2026-10-09 check --n 154 207 232
+      237 259 292 302 303 --replay and the same with --n 131 153 209 236 263 269 270 305
+      307, which decide all 51 retained jobs again through both maintained routes and hold
+      each to its retained row (all equal, 1084.4 s and 1085.4 s wall on 2026-10-10);
+      check-claims rebuilds the frozen comparison (equal); python -m
+      devtools.check_half_angle_area decide-imports --workers 2 --upstream
+      squish-481-third-request-2026-10-09 DIRECTORY decides the seventeen by the third
+      route with six controls each and holds each fact to its certificate and summary.csv
+      row fetched at the pin into DIRECTORY (no disagreement, 101.5 s for the review's 27
+      certificates).
+    replay_status: passed
+    verifiers:
+      - V-sqpack-verify
+      - V-check-rational-witness-independent
+      - V-evand-arrangement-receipts
+      - V-upper-bound-reports
+      - V-check-half-angle-area
+    independence_record: docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
+    external_review:
+      state: informally-verified
+      date: '2026-10-10'
+      reviewed_by: >-
+        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        intake pass under think-fvz4, prompted separately from the import lanes
+      note: >-
+        Accepted for finite feasibility only. All 51 retained jobs reproduced on both
+        maintained routes in full, the frozen comparison rebuilt equal, and the third route
+        agreed with them at every side, pose, wall clearance, frozen claim and exact
+        summary.csv fraction; its 102 controls reached their required outcomes, and the 17
+        facts are the packings their pinned upstream files state. Findings RI-1 to RI-7,
+        none blocking.
+    limitations: >-
+      All seventeen certificates pass both maintained routes and the third route; the 34
+      kernel controls are refused by both maintained routes and the 102 third-route
+      controls reach their required outcomes. The receipts' 51 jobs hold 3148314 pair
+      decisions, 1340.82 route CPU seconds and 2487.87 job wall seconds; the longest job
+      took 208.94 s. At every count squares touch the closed box: the least wall clearance
+      is exactly 0 on all three routes, with 457 zero square-to-wall clearances and the far
+      wall touched at every count, and none negative; the record's closed-box convention
+      admits that contact, and the bound also holds if s(n) is read as an open-box
+      infimum. No two squares meet: the least pair gap is exactly 1e-32, and 3.16e-14 and
+      1.21e-14 at 263 and 292. Nothing retained binds a derived fact to the bytes it was
+      derived from (RI-2): the review held each fact to its upstream certificate, fetched
+      at the pin with the SHA-256 the packet pins, once on 2026-10-10. The kernel's
+      controls are gross (RI-3). No maintained route is the producer's checker; the
+      maintained routes share one parse, half-angle conversion and the separating-axis
+      method, and all three share Fraction arithmetic. No private-worker custody is on file
+      (RI-5), and the reviewer and the producer share a model family (RI-7). Finite
+      feasibility only: no lower bound, optimum, local minimum, rigidity, novelty or human
+      oversight.
+    source_reviewed: '2026-10-10'

@@ -1668,6 +1668,21 @@ sources:
       and 307 squares; Daniel's certificate format and SQUISH's JSON layout. MIT verifier
       and CC0 certificates retained; Claude assistance disclosed. No exact form, local or
       global optimality claim.
+  - key: '[SQUISH third request 2026-10-09]'
+    authors: [Chaoweeraprasit]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-09'
+    lineage: builds-on-project
+    credit: Chaoweeraprasit after Couzo, Xu, Ellsworth, Friedman, Levy
+    short_credit: Chaoweeraprasit after Couzo et al.
+    note: >-
+      Seventeen complete exact certificates at d45669b48cc97ad3aa17a6c847a8d06630f66eac,
+      reported on jlevy/squares#481, from SQUISH's Mondrian composition of pieces of
+      earlier packings, Couzo's, Xu's, the Kingbird catalogue's and SQUISH's own, compared
+      against this project's register. Derived exact facts only; no upstream byte is
+      retained. Claude assistance disclosed. No KKT, interval, local or global optimality
+      claim.
 credited_names:
   Nate Chaoweeraprasit (itsnaka): Chaoweeraprasit
   Siddharth Gupta: Gupta

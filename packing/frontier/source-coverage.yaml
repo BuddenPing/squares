@@ -3287,6 +3287,32 @@ sources:
     or superseded claim is created while house adoption waits for jlevy/squares#403; current cases and
     earlier source ownership remain unchanged.
   claims_record: resources/web/fang-two-wedge-certificates-2026-10-10/acquisition/beyond-horizon-claims.json
+- id: squish-481-third-request-2026-10-09
+  title: Nate Chaoweeraprasit's SQUISH third request at d45669b, issue481
+  role: source-repository
+  url: https://github.com/itsnaka/squish-certs/tree/d45669b48cc97ad3aa17a6c847a8d06630f66eac
+  local: resources/web/squish-481-third-request-2026-10-09/
+  source_key: '[SQUISH third request 2026-10-09]'
+  scope:
+    n_values: [131, 153, 154, 207, 209, 232, 236, 237, 259, 263, 269, 270, 292, 302, 303, 305, 307]
+  reviewed: '2026-10-10'
+  source_date: '2026-10-09'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/results.yaml
+  - resources/web/squish-481-third-request-2026-10-09/acquisition/claims.json
+  evidence:
+  - E-squish-481-certificate-report
+  - E-squish-481-exact-feasibility
+  notes: All 17 complete certificates are kept as derived exact facts, no upstream byte retained, each
+    admitted only where its exact side equals the exact fraction the source's summary.csv prints; the
+    issue's 15-digit displays are quotations. T-136 records them at V3/C3 on the review of 10 October,
+    which reproduced all 51 native jobs, decided the seventeen by a third exact route and held each fact
+    to its upstream certificate fetched at the pin. Squares touch the closed box at every count. No
+    selected override or superseded claim is created while house adoption waits for jlevy/squares#403;
+    current cases and earlier source ownership remain unchanged. The three sources/ certificates at 155,
+    240 and 306 are above their cases and not imported.
 selected_overrides:
 - n: 51
   source_id: ry-xu-undilated-n51-2026

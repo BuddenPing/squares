@@ -3731,7 +3731,7 @@ issues:
     opened: '2026-10-09'
     state: open
     kind: result-report
-    triage: pending
+    triage: done
     summary: >-
       Nate Chaoweeraprasit (SQUISH) reports exact rational certificates for 15 new packings, at n = 131,
       153, 207, 209, 232, 236, 259, 263, 269, 270, 292, 302, 303, 305 and 307, composed from sub-packings
@@ -3740,7 +3740,13 @@ issues:
       squish-submission-2026-10-09, with 50-digit text exports; a sources/ folder holds three unfiled
       packings at 155, 240 and 306 used as pieces. The author gives each side's difference from the
       register's and checks all 17 with SQUISH's exact checker and Ellsworth's check_packing.py. No
-      KKT or local-optimality evidence is given.
+      KKT or local-optimality evidence is given. Imported on 10 October 2026: the seventeen certificates
+      kept as derived exact facts in the squish-481-third-request-2026-10-09 packet, each admitted by
+      the exact fraction summary.csv prints rather than the issue's 15-digit displays, which are not
+      roundings of it; replayed in full on both maintained exact routes and decided again by a third
+      exact route in the review of the same day, which held each fact to its pinned upstream file, with
+      no blocking defect. All seventeen are registered together as T-136; squares touch the closed
+      box at every count. The case records wait for jlevy/squares#403.
     read_through: '2026-10-09T21:59:29Z'
     results:
     - key: fifteen-new-packings
@@ -3748,20 +3754,23 @@ issues:
         307, each S_n an exact rational side, 1.678e-4 to 1.119e-2 below the register's side as the issue
         lists it.
       source: body
-      not_registered: Triage pending under think-ac4h; the certificates are not yet retained or replayed
-        here.
-      queued: true
-      bead: think-ac4h
+      register:
+      - T-136
+      evidence:
+      - E-squish-481-certificate-report
+      - E-squish-481-exact-feasibility
     - key: smaller-154-237
       claim: s(154) <= 12.923070202301140 and s(237) <= 15.902989220874966, to 15 digits, by nearby searches
         from SQUISH's own packings of issue 401.
       source: body
-      not_registered: Triage pending under think-ac4h; the certificates are not yet retained or replayed
-        here.
-      queued: true
-      bead: think-ac4h
+      register:
+      - T-136
+      evidence:
+      - E-squish-481-certificate-report
+      - E-squish-481-exact-feasibility
     beads:
     - think-ac4h
+    - think-fvz4
     answer_bead: think-ac4h
     replies: []
     close_when: The import and its disposition are on main and the owner has posted the resulting state;
