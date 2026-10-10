@@ -433,11 +433,12 @@ repositories:
 
   # The closing sweep of 2026-10-10 (about 19:50 UTC) found evand/square-packing four
   # commits past the 76a529b read, and six more followed by 20:32 UTC. 346c6ed's
-  # certificates hold new upper-bound values for an import bead the intake coordinator
-  # adds; until then this read names none.
+  # certificates hold new upper-bound values at 15 counts, owned by think-8k76 until a
+  # packet pins the commit.
   - url: https://github.com/evand/square-packing
     read_through: baf914391b34e194c2eee0a745722e1b9a62a636
     read_on: '2026-10-10'
+    bead: think-8k76
     note: >-
       The ten commits of 10 October from 4232bdd to baf9143 past the 76a529b read. 4232bdd
       corrects PACKER.md's reading of Hunt 3: per processor-hour the shared chain did as well
