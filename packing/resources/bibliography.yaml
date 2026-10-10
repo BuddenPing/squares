@@ -559,7 +559,8 @@ sources:
       Sungjoon Ryu, "Packing k^2-c unit squares: an upper bound of order k^{3/8} for the
       deficiency", v1.0, 700668795e6b95f0bf2a2c6de104adaf3a3ebce0, DOI
       10.5281/zenodo.23256655, reported on jlevy/squares#471. Retained in
-      web/squarepacker-k2-minus-c-upper-2026-10-09/ (two certificates hosted). The source
+      web/squarepacker-k2-minus-c-upper-2026-10-09/ (two certificates pinned by digest, to be
+      hosted once the owner publishes their release). The source
       credits the staircase and chained wall stairs to H. D. Bui (arXiv:2508.04603v2,
       Sections 3-4), states extensive Claude (Anthropic) assistance and no human review,
       and cites this repository only as a problem collection. CC BY 4.0 paper, MIT code and

@@ -13245,16 +13245,21 @@ results:
 
       The earlier issue451 n105 certificate (T-128) stays retained with its own replay
       outcomes; the new n105 side is smaller by exactly
-      262896871797134956129927589/200000000000000000000000000000. The review recommends
-      T-130 as the house at 84, 86, 105 and 175, Ryan Xu's T-125 certificates kept as
-      history. At 270 issue 481's and issue 476's sides are smaller, so T-130's stays
-      verified there and is not selected, and Evan Daniel's T-119 certificate stays the
-      case's ceiling until then. No house moves until jlevy/squares#403 lands.
+      262896871797134956129927589/200000000000000000000000000000.
+
+      The review recommended T-130 as the house at 84, 86, 105 and 175, Ryan Xu's T-125
+      certificates kept as history. At 175 the later exact side of issue 488 (T-140) is smaller, by 3.44e-05,
+      and the review of issues 488 and 489
+      (docs/project/reviews/review-2026-10-10-upper-bound-imports-488-489.md) recommends it
+      there, so T-130 is recommended at 84, 86 and 105 and stays verified at 175. At 270
+      issue 488's, issue 481's and issue 476's sides are smaller, so T-130's stays verified
+      there and is not selected, and Evan Daniel's T-119 certificate stays the case's
+      ceiling until then. No house moves until jlevy/squares#403 lands.
     next_rung: >-
       V4 and C4 need a second accepted adversarial review of this replay by a distinct
       reviewer and a retained human oversight record; the 10 October review is one, by an
       AI agent. Separately, once jlevy/squares#403 lands and this packet's private-worker
-      custody is on file (RD-5), adopt T-130 as the house at 84, 86, 105 and 175 with each
+      custody is on file (RD-5), adopt T-130 as the house at 84, 86 and 105 with each
       earlier house kept as history.
     reviews:
     - path: docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md
@@ -13351,8 +13356,11 @@ results:
 
       The exact side lies 84571108928763690161985083/20000000000000000000000000000 below the
       case's selected and verified ceiling, T-098, which stays retained with its own replay.
-      Issue 476's exact side at 132 is smaller still, so the review recommends #476 as the
-      house there, with T-131 verified and not selected and T-098 kept as history.
+      Issue 476's exact side at 132 is smaller still, so the review recommended #476 as the
+      house there, with T-131 verified and not selected and T-098 kept as history. The later
+      exact sides of issues 488 and 489 (T-140, T-141) are smaller again, and the review of
+      those two (docs/project/reviews/review-2026-10-10-upper-bound-imports-488-489.md)
+      recommends T-141 at 132.
 
       The same release's n155 certificate states exactly the n155 side of Couzo's issue451
       certificate (T-128) and shares 152 of its 155 exact poses; the three differing indices
@@ -13366,8 +13374,8 @@ results:
     next_rung: >-
       V4 and C4 need a second accepted adversarial review of this replay by a distinct
       reviewer and a retained human oversight record; the 10 October review is one, by an
-      AI agent. No house move is due: at 132 issue 476's smaller side is the one the review
-      recommends adopting.
+      AI agent. No house move is due: at 132 issue 489's smaller side (T-141) is the one the
+      later review of issues 488 and 489 recommends adopting.
     reviews:
     - path: docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md
       kind: adversarial
@@ -13699,18 +13707,24 @@ results:
 
       At n = 132 the certificate is below the case's ceiling (Francisco Couzo, improved by
       Evan Daniel, T-098) by 4.37e-03, below T-131 by 1.45e-04 and below Mishapolk's issue
-      470 print by 2.03e-06, so it is the smallest known; at 267 it is below the case's
-      ceiling (Ryan Xu, T-125) by 1.67e-05 and below Mishapolk's print by 1.33e-05, the
-      smallest known.
+      470 print by 2.03e-06, but the later exact sides of issue 488 (T-140) and issue 489
+      (T-141) are smaller, by 6.06e-07 and 1.27e-03. At 267 it is below the case's ceiling
+      (Ryan Xu, T-125) by 1.67e-05 and below Mishapolk's print by 1.33e-05, the smallest
+      known.
 
       At 237, 263, 270 and 303 the certificate is below the case's ceiling by 5.33e-06,
       7.03e-06, 1.09e-03 and 2.87e-03, and at 270 below T-130 by 2.99e-06, but issue 481's
-      exact sides are smaller at all four, by 6.82e-04, 7.25e-03, 6.94e-03 and 4.38e-03.
+      exact sides are smaller at all four, by 6.82e-04, 7.25e-03, 6.94e-03 and 4.38e-03,
+      and issue 488's at 237 and 270, by 7.21e-04 and 6.94e-03.
 
-      The review recommends this entry as the house at 132, crediting Mishapolk's packing as
-      its start, and at 267; at 237, 263, 270 and 303 it stays verified, second to issue
-      481's. No house moves until jlevy/squares#403, which rewrites every case record,
-      lands and private-worker custody is on file (RI-5).
+      The review recommended this entry as the house at 132, crediting Mishapolk's packing
+      as its start, and at 267. The later review of issues 488 and 489
+      (docs/project/reviews/review-2026-10-10-upper-bound-imports-488-489.md) recommends
+      T-141 at 132, so this entry is recommended as the house at 267 only; at 132 it stays
+      verified, third to T-141 and T-140, at 263 and 303 second to issue 481's, and at 237
+      and 270 third, to T-140 and issue 481's. No house moves until
+      jlevy/squares#403, which rewrites every case record, lands and private-worker custody
+      is on file (RI-5).
 
       The same commit holds 59 further certificates the issue does not name, at n = 68, 84,
       86, 102, 103, 105, 106, 108, 110, 127, 131, 152, 155, 156, 172, 175, 177, 180, 181,
@@ -13725,8 +13739,8 @@ results:
       V4 and C4 need a second accepted adversarial review of this replay by a distinct
       reviewer and a retained human oversight record; the 10 October review is one, by an
       AI agent. Separately, once jlevy/squares#403 lands and private-worker custody is on
-      file (RI-5), adopt this entry as the house at 132 and 267, with each earlier house
-      kept as history.
+      file (RI-5), adopt this entry as the house at 267, with the earlier house kept as
+      history.
     reviews:
       - path: docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
         kind: adversarial
@@ -13832,12 +13846,18 @@ results:
       file (RI-5), and the reviewer and the producer share a model family (RI-7).
 
       At n = 308 the certificate is below the case's ceiling, the grid's 18, by 6.90e-04,
-      and no other pending report names that count. At 343 and 344 there is no case record:
-      the sides are 5.10e-03 and 4.51e-03 below the grid's 19 and below Mishapolk's issue
-      470 README prints, and the source register keeps them as dated beyond-horizon rows at
-      assurance verified (RI-6).
+      but the later exact side of issue 489 (T-141), Evan Daniel's packing built on this
+      one, is smaller by 1.04e-03. At 343 and 344 there is no case record: the sides are
+      5.10e-03 and 4.51e-03 below the grid's 19 and below Mishapolk's issue 470 README
+      prints, and the source register keeps them as dated beyond-horizon rows at assurance
+      verified (RI-6), marked superseded by issue 489's rows
+      (evand-record-hunt3-2026-10-10), whose sides there are smaller by 1.67e-02 and
+      1.04e-03.
 
-      The review recommends this entry as the house at 308. No house moves until
+      The review recommended this entry as the house at 308. The later review of issues 488
+      and 489 (docs/project/reviews/review-2026-10-10-upper-bound-imports-488-489.md)
+      recommends T-141 there, crediting Kevin Fang's construction as its author asks, so
+      this entry stays verified and is not selected. No house moves until
       jlevy/squares#403, which rewrites every case record, lands and private-worker custody
       is on file.
 
@@ -13846,8 +13866,8 @@ results:
     next_rung: >-
       V4 and C4 need a second accepted adversarial review of this replay by a distinct
       reviewer and a retained human oversight record; the 10 October review is one, by an
-      AI agent. Separately, once jlevy/squares#403 lands and private-worker custody is on
-      file (RI-5), adopt this entry as the house at 308, the grid kept as history.
+      AI agent. No house move is due: at 308 issue 489's smaller side (T-141) is the one the
+      later review of issues 488 and 489 recommends adopting.
     reviews:
       - path: docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
         kind: adversarial
@@ -13933,9 +13953,10 @@ results:
       code, so the replay is independently re-implemented. The 10 October review found no
       blocking defect.
 
-      Each side is below the ceiling its case holds and below every other report pending
-      at its count; the case records are unchanged until a house is adopted, so each is
-      pending adoption.
+      Each side is below the ceiling its case holds, and below every other report pending
+      at its count except at 209, 237, 270 and 305, where Francisco Couzo's later
+      certificates of issue 488 (T-140) are smaller; the case records are unchanged until a
+      house is adopted, so each is pending adoption.
 
       Credit Nate Chaoweeraprasit (https://github.com/itsnaka/squish-certs), using SQUISH
       and its Mondrian composition method, after Francisco Couzo, Ryan Xu, Frits Göbel,
@@ -14028,17 +14049,24 @@ results:
       Each side is below its case's ceiling, by 1.68e-04 at 307 to 1.12e-02 at 259. It is
       also below T-128 at 131 by 1.45e-03, T-130 at 270 by 6.94e-03, issue 476's sides at
       237, 263, 270 and 303 by 6.82e-04 to 7.25e-03, and Mishapolk's issue 470 prints at
-      eleven counts, so at every count it is the smallest report known.
+      eleven counts. It is the smallest report known at thirteen counts; at 209, 237, 270
+      and 305 the later exact sides of issue 488 (T-140) are smaller, by 4.28e-07, 3.96e-05,
+      4.77e-06 and 5.64e-05.
 
       At 154, 207, 209, 236, 237, 263, 302 and 303 it replaces earlier SQUISH packings the
       cases hold directly or through Siddharth Gupta's refinements, and at 153 it is below
       SQUISH's own n153 report of 7 October as well. At 232 it is below both the Kingbird
       print the case reports and Evan Daniel's rational ceiling it verifies (T-101).
 
-      The review recommends this entry as the house at all seventeen counts, with T-128's
-      side at 131 and issue 476's and T-130's at 270 kept verified and not selected. No
-      house moves until jlevy/squares#403, which rewrites every case record, lands and
-      private-worker custody is on file (RI-5).
+      The review recommended this entry as the house at all seventeen counts, with T-128's
+      side at 131 and issue 476's and T-130's at 270 kept verified and not selected. The
+      later review of issues 488 and 489
+      (docs/project/reviews/review-2026-10-10-upper-bound-imports-488-489.md) recommends
+      T-140 at 209, 237, 270 and 305, so this entry is recommended as the house at the
+      other thirteen, 131, 153, 154, 207, 232, 236, 259, 263, 269, 292, 302, 303 and 307,
+      and stays verified, second to T-140, at those four. No house moves until
+      jlevy/squares#403, which rewrites every case record, lands and private-worker custody
+      is on file (RI-5).
 
       The three sources/ certificates at 155, 240 and 306 are above their cases and are
       not imported. The source's own checkers were not run here. No two independent
@@ -14047,7 +14075,8 @@ results:
       V4 and C4 need a second accepted adversarial review of this replay by a distinct
       reviewer and a retained human oversight record; the 10 October review is one, by an
       AI agent. Separately, once jlevy/squares#403 lands and private-worker custody is on
-      file (RI-5), adopt this entry as the house at all seventeen counts, with each
+      file (RI-5), adopt this entry as the house at 131, 153, 154, 207, 232, 236, 259, 263,
+      269, 292, 302, 303 and 307, the thirteen counts where it is the smallest, with each
       earlier house kept as history.
     reviews:
       - path: docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
@@ -14222,7 +14251,7 @@ results:
       is pending adoption. It is the smallest side known only at 103 and 258, where the
       witnesses are Ryan Xu's and SQUISH's packings refined; at 84, 86, 105, 108, 127, 131, 175,
       180, 270 and 306 an earlier certificate of Francisco Couzo's (T-128, T-130) is smaller,
-      and at 131, 132, 267, 270, 302 and 303 a later one (T-134, T-136).
+      and at 131, 132, 175, 267, 270, 302 and 303 a later one (T-134, T-136, T-140, T-141).
 
       Credit Mishapolk
       ([square-packing-records](https://github.com/Mishapolk/square-packing-records/tree/dd3da5c753c5ded6cb3b89476193b7b801005415))

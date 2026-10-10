@@ -98,6 +98,32 @@ the two claims alone, and the source’s coverage entry names it as its `claims_
 The 308 claim is not in that record: until its case takes it in, no selected override
 accounts for it.
 
+## Note of 10 October 2026: Later Records
+
+Added by records lane R4 of the same intake pass; the account above is unchanged.
+Three of its statements no longer describe the record, and a question of credit is
+settled:
+
+- **The review.** The
+  [10 October review](../../../../docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md)
+  reproduced all nine jobs and found no blocking defect, and T-135 registers the 308
+  certificate at `V3`/`C3`.
+- **343 and 344.** The register took both rows at `assurance: verified`, from the same
+  evidence, rather than `reported` (RI-6 of that review).
+  Evan Daniel’s issue #489 certificates at those counts (`evand-record-hunt3-2026-10-10`)
+  are smaller by $1.67 \times 10^{-2}$ and $1.04 \times 10^{-3}$, so
+  `source-coverage.yaml` keeps this source’s two rows as `disposition: superseded`, with
+  `superseded_by: evand-record-hunt3-2026-10-10`.
+- **308.** Another report now names that count: issue #489’s certificate (T-141), Evan
+  Daniel’s packing built on this one, is smaller by $1.04 \times 10^{-3}$, and the
+  [review of issues #488 and #489](../../../../docs/project/reviews/review-2026-10-10-upper-bound-imports-488-489.md)
+  recommends it as the house at 308, with T-135 verified and not selected.
+- **The seeds.** Issue #484 and `ATTRIBUTION.md` name David Ellsworth’s and Tej Stead’s
+  packings of 241, 273 and 307 squares as seeds.
+  The source’s `README.md` and each folder’s `NOTES.md` say that 308 was grown from the
+  packing of 273 and 343 and 344 from that of 307, so none of the three retained here
+  comes from 241, and the credit above stands.
+
 ## What Is Not Established
 
 The certificates establish finite upper bounds at their exact sides, nothing more.

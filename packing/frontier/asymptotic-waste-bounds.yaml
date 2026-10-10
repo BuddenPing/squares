@@ -376,8 +376,11 @@ deficiency_upper_bounds:
     note: >-
       W1 intake of issue #471 (v1.0, tag 700668795e6b95f0bf2a2c6de104adaf3a3ebce0, DOI
       10.5281/zenodo.23256655) and #486 (v1.1, 5742311db220b4bd8e825167aeae689a1bd65ce9,
-      DOI 10.5281/zenodo.23278927), where the theorem is unchanged; both retained, the
-      certificates partly hosted (packing/hosted/squarepacker-k2-minus-c-upper-certificates.yaml).
+      DOI 10.5281/zenodo.23278927), where the theorem is unchanged; both retained, apart
+      from the two largest Theorem 1.6 certificates, which are pinned by digest in
+      packing/hosted/squarepacker-k2-minus-c-upper-certificates.yaml and are to be hosted
+      in its release, data/squarepacker-k2-minus-c-upper-certificates-v1, once the owner
+      publishes it.
       The proof was re-derived in one AI review,
       docs/project/reviews/review-2026-10-10-squarepacker-k2-minus-c-upper.md (accepted,
       no blocking finding). CHECKED BY COMPUTATION HERE: the maintained

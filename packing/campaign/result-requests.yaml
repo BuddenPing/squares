@@ -125,11 +125,16 @@ issues:
       - result: remaining-catalogue
     close_when: The reported import and its disposition are on main and the owner has posted the resulting
       state; unresolved proof replays remain explicitly owned.
-    notes: The two owner checkpoints of 9 October report the catalogue sources in open PR403 and PR435.
+    notes: >-
+      The two owner checkpoints of 9 October report the catalogue sources in open PR403 and PR435.
       At 910a7a4 and 4789e36 Packing and complete validation pass and PR403's Pages fails its frontier
       layout-shift budget; at c1d3aab and 10ce357 Packing, Pages and mergeability pass. They change
       no certificate verdict and register no claim of this issue; whole-configuration feasibility,
-      Lean statement binding and optimality stay with think-8sm2.
+      Lean statement binding and optimality stay with think-8sm2. On 10 October the author asked on
+      #375 (https://github.com/jlevy/squares/issues/375#issuecomment-6101883016) that this issue's
+      exact form at n = 17, at evand/square-packing 8c47162 rather than the f58a017 retained here, be
+      the n = 17 object, and that its bookkeeping sit here and on #405; it is held on #375 with the
+      n = 17 intake under think-x4v4, and nothing at 8c47162 is retained.
   - number: 399
     title: 'New packings: s(266) ≤ 16.82302875075648, s(270) ≤ 16.93780722844603, s(272) ≤ 16.96811014576960'
     author: evand
@@ -498,10 +503,12 @@ issues:
       and the triple weighted-vertex and SOS screens exclude nothing; the X-052 status survey; and PR475''s
       merge as 0f16c033a, by which exp-317 admitted the twelve #472 kernel certificates (60 to 72 entries,
       3,636 orbits / 28,528 states, 94 distance-two orbits). Each keeps the bracket above, adds no T
-      item and claims no global optimality.'
+      item and claims no global optimality. On 10 October Evan Daniel asked on #375
+      (https://github.com/jlevy/squares/issues/375#issuecomment-6101883016) that the n = 17 object be
+      the exact form of #419 at evand/square-packing 8c47162, an upper bound only, and that its bookkeeping
+      sit on #419 and here; it is held on #375 with the n = 17 intake under think-x4v4.'
   - number: 413
-    title: 'n17: work status of 27 sub-pattern exclusions (branch-and-bound certificates), to avoid
-      duplicate work'
+    title: 'n17: work status of 38 sub-pattern exclusions, to avoid duplicate work'
     author: wand125
     opened: '2026-10-07'
     state: open
@@ -789,7 +796,7 @@ issues:
       points are KKT local minima is his numerical evidence. The source states AI assistance (Claude).
       Issue399 separately supplies changed arrangements at 266, 270 and 272, now certified in T-119;
       this request retains its original source13ee36e poses and scope.
-    read_through: '2026-10-08T17:57:19Z'
+    read_through: '2026-10-10T20:31:42Z'
     results:
     - key: exact-optima-48
       claim: s(n) <= S' at n = 68, 102, 103, 106, 110, 123, 126, 131, 132, 152, 154, 155, 156, 172,
@@ -842,9 +849,9 @@ issues:
       claim: The exact certificate at n = 17, one of the 273
       source: body
       not_registered: 'Held by the owner for the n = 17 work on other branches: not retained, pinned,
-        replayed or recorded here.'
-      queued: true
-      bead: think-00e3
+        replayed or recorded here. Withdrawn by the author on 10 October 2026 as a separate submission,
+        in favour of the exact form of #419 (n17-exact-form-2026-10-10).'
+      queued: false
     - key: certificates-105-130-status-2026-10-07
       claim: The author reports complete exact certificates at105 and130 at7eef24f, bringing the batch
         to323/324, with both source checkers accepting.
@@ -872,6 +879,26 @@ issues:
         rerun remains attributed; no author program or geometric replay was executed here. Older scripts
         and complete source-specific receipts remain unchanged.
       queued: false
+    - key: n17-exact-form-2026-10-10
+      claim: >-
+        For n = 17 the author asks that the exact form from #419 be taken as the object in place of
+        this issue's rational certificate, which it implies, and withdraws S' at n = 17 as a separate
+        submission. At evand/square-packing 8c47162cec22f02791abfbf7dedb8094de91189a he names
+        search/exact/minpoly/data/n-17.minpoly.json.gz, John Bidwell's 1997 packing, the register's
+        record, at a side S* that is the unique root of an irreducible integer polynomial of degree 18
+        in a rational interval of width 2e-37; the standard-library verify_exact.py, which he reports
+        prints VALID; and the theorem packs of lean/Sqpack/Exact/Batch/N17.lean. S' lies about 5e-20
+        above the interval's upper end and follows by monotonicity. Neither side improves the
+        register's 4.67553009360455. He claims the upper bound only, no optimality, and puts the
+        n = 17 bookkeeping on #419 and #405.
+      source: https://github.com/jlevy/squares/issues/375#issuecomment-6101883016
+      not_registered: >-
+        No new bound: it is the register's packing at n = 17. Held with the n = 17 intake for
+        integration with the n17 branches; the #419 and #405 entries note where the author points it.
+        The pin 8c47162 and the files it names are new to the record and are not retained, replayed
+        or recorded here.
+      queued: true
+      bead: think-x4v4
     beads:
     - think-t6ok
     - think-70bh
@@ -941,13 +968,17 @@ issues:
       reported:
       - result: n17-certificate
         status: incomplete
-    close_when: T-098 is merged and the reply from main says what was registered, replayed and reviewed;
-      the n = 17 certificate is taken up or declined with the n = 17 work.
+    close_when: >-
+      T-098 is merged and the reply from main says what was registered, replayed and reviewed; the
+      n = 17 object, since 10 October the exact form of #419, is taken up or declined with the n = 17
+      work.
     notes: 'Dated 7–8 October follow-up: n105/n130/n292 certification and the VALID/INVALID wrapper
       correction are attributed source updates, separately owned until complete named input custody
       is established. Original13ee36e T-098/T-101 claims, poses and receipts remain historical and unchanged.
       The held n17 object is still unimported/unreplayed under active think-00e3; the later324/324 source
-      report does not discharge that hold.'
+      report does not discharge that hold. On 10 October the author withdrew that certificate as a separate
+      submission in favour of the exact form of #419 at evand/square-packing 8c47162 (n17-exact-form-2026-10-10),
+      which stays held with the n = 17 intake under think-x4v4.'
   - number: 368
     title: 'Preprint: for every fixed c, s(k^2-c)=k for all large k (explicit constant 0.033)'
     author: squarepacker
@@ -2853,7 +2884,8 @@ issues:
       keeps it closed.
 
   - number: 401
-    title: '18 new packings below record for n = 108–303: registration request (updated 2026-10-07)'
+    title: '18 new packings below record for n = 108–303 (s(n) bounds 4.8e-4 to 7.6e-3 below the reported
+      side; updated 2026-10-07): registration request'
     author: itsnaka
     opened: '2026-10-07'
     state: closed
@@ -3622,8 +3654,10 @@ issues:
       with tilted bands after H. D. Bui (arXiv:2508.04603v2). The author states the preprint is not
       refereed, was checked by AI reviews and by programs including independent re-implementations,
       and was developed with Claude. #486 announces version 1.1. Imported on 10 October 2026: v1.0
-      retained in the squarepacker-k2-minus-c-upper-2026-10-09 packet with its two largest Theorem 1.6
-      certificates hosted, the source's replays and independent checks run here, and the proofs
+      retained in the squarepacker-k2-minus-c-upper-2026-10-09 packet, its two largest Theorem 1.6
+      certificates pinned by digest and to be hosted in the release
+      data/squarepacker-k2-minus-c-upper-certificates-v1 once the owner publishes it, the source's
+      replays and independent checks run here, and the proofs
       reviewed the same day; every theorem is recorded as reported in the asymptotic waste register,
       since none settles a count of the case corpus.
     read_through: '2026-10-09T07:19:46Z'
@@ -3904,7 +3938,7 @@ issues:
     close_when: The import and its disposition, including the beyond-horizon counts, are on main and the
       owner has posted the resulting state; optimality is outside this request.
   - number: 485
-    title: 's(40) > 335427/50000 = 6.70854: registration request'
+    title: 's(40) > 1340000/199529 (approximately 6.715815746082023): updated registration request'
     author: Guzhou0806
     opened: '2026-10-10'
     state: open
