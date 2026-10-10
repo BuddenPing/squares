@@ -843,6 +843,9 @@ HOUSES: dict[str, Callable[[int], Fraction]] = {
     ),
     "[Couzo certificates 2026-10-10]": _import("couzo-certificates-2026-10-10"),
     "[Daniel record hunt 3 2026-10-10]": _import("evand-record-hunt3-2026-10-10"),
+    "[Deleeuw n70 refinement 2026-10-10]": _import("ebdeleeuw-n70-refinement-2026-10-10"),
+    "[Mishapolk decimal poses 2026-10-09]": _import("mishapolk-decimal-poses-2026-10-09"),
+    "[Daniel regularized lists 2026-10-10]": _import("evand-regularized-2026-10-10"),
 }
 
 

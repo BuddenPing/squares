@@ -35,7 +35,9 @@ MISHAPOLK = "mishapolk-decimal-poses-2026-10-09"
 #: Issues #488 and #489, two retained Evan Daniel format releases of the same afternoon.
 COUZO_488 = "couzo-certificates-2026-10-10"
 HUNT3 = "evand-record-hunt3-2026-10-10"
-EVERY = (*PACKETS, *DERIVED, MISHAPOLK, COUZO_488, HUNT3)
+#: Evan Daniel's regularized record lists: fifteen upstream gzip certificates, no issue.
+REGULARIZED = "evand-regularized-2026-10-10"
+EVERY = (*PACKETS, *DERIVED, MISHAPOLK, COUZO_488, HUNT3, REGULARIZED)
 
 
 def _packet(name: str) -> Path:

@@ -30,6 +30,13 @@ side is the smallest known, against Ryan Xu's and SQUISH's.
 It reads the two issues filed after that sweep too, #488 and #489 (``decide-imports
 --imports '#488' '#489'``): Francisco Couzo's and Evan Daniel's retained certificates in
 Evan Daniel's text format, read by the same text reader at the counts each entry cites.
+And it reads the fifteen certificates of Evan Daniel's display-regularized record lists,
+which no issue reports (``decide-imports --imports regularized``): the same text format,
+each retained as its upstream gzip and decompressed here. ``--upstream`` holds each
+retained gzip to its fetched bytes as stored, and each offered side to the ``S_cert``
+that the certificate's own JSON prints (`printed_json_side`). Each is measured pose by
+pose against the side it lies just below (`CREDITED`): Ryan Xu's, Eric Deleeuw's at 70,
+Mishapolk's at 103 and 258, and SQUISH's third request.
 
 The register's two maintained routes (``devtools.evand_arrangement_reports``) share one
 parse and one half-angle conversion (``devtools.evand_exact_certificates``) and both decide
@@ -81,8 +88,8 @@ positive inputs and margins, to the side its packet's frozen claim record and re
 plan state, and to its printed side: equal to it, or rounding up to it at its places. A
 decided count the entry does not cite (#470's 132 and 267) must be absent from the plan's
 claim. ``--imports`` selects by key (``#476``, ``#481``, ``#483``, ``#484``, ``#470``,
-``trio126``, ``#488``, ``#489``); it defaults to the first four, the roster of the first
-imports review.
+``trio126``, ``#488``, ``#489``, ``regularized``); it defaults to the first four, the
+roster of the first imports review.
 
 ``replay-t128`` is the maintained two-route replay of T-128's retained receipt, which
 ``devtools.couzo_refinement_reports`` has no command for: every job decided again by the
@@ -101,7 +108,7 @@ import json
 import math
 import re
 import time
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass
 from decimal import Decimal, localcontext
@@ -655,17 +662,28 @@ IMPORTS_488_489 = {
     "#488": "couzo-certificates-2026-10-10",
     "#489": "evand-record-hunt3-2026-10-10",
 }
-ALL_IMPORTS = {**IMPORTS, **LATER_IMPORTS, **IMPORTS_488_489}
+#: Evan Daniel's display-regularized record lists, which no issue reports: fifteen
+#: certificates in his text format, each retained as its original gzip.
+IMPORTS_REGULARIZED = {"regularized": "evand-regularized-2026-10-10"}
+ALL_IMPORTS = {**IMPORTS, **LATER_IMPORTS, **IMPORTS_488_489, **IMPORTS_REGULARIZED}
 #: Imports decided over their whole replayed roster rather than the counts the entry
 #: cites: #470's README-printed 132 and 267 are certified beside the issue's 28.
 WHOLE_ROSTER = frozenset({"#470"})
-#: The imported certificates measured against the certificate whose arrangement they
+#: The imported certificates measured against the certificates whose arrangements they
 #: would be credited to: n126_xu against Ryan Xu's (T-125), and #470 at the two counts
 #: where it is the smallest side, 103 against Ryan Xu's and 258 against SQUISH's (T-115).
-CREDITED = {
-    ("trio126", 126): "T-125",
-    ("#470", 103): "T-125",
-    ("#470", 258): "T-115",
+#: Each regularized certificate is measured against the side it lies just below: Ryan
+#: Xu's, Eric Deleeuw's refinement of it at 70 (T-137), Mishapolk's at 103 and 258
+#: (T-138) and SQUISH's third request (T-136).
+CREDITED: dict[tuple[str, int], tuple[str, ...]] = {
+    ("trio126", 126): ("T-125",),
+    ("#470", 103): ("T-125",),
+    ("#470", 258): ("T-115",),
+    ("regularized", 70): ("T-137", "T-125"),
+    **{("regularized", n): ("T-125",) for n in (102, 123, 129, 146, 295)},
+    ("regularized", 103): ("T-138",),
+    ("regularized", 258): ("T-138",),
+    **{("regularized", n): ("T-136",) for n in (153, 236, 263, 269, 292, 302, 303)},
 }
 WEB = ROOT / "resources/web"
 REPO = ROOT.parent
@@ -925,13 +943,22 @@ def derive_decimal_pose(raw: bytes, row: dict[str, Any]) -> tuple[Fraction, tupl
     return side, placements
 
 
-def packet_bytes(path: Path) -> bytes:
-    """A packet file, or the deterministic gzip copy it is stored as, decompressed here."""
-    stored = path if path.is_file() else path.with_name(path.name + ".gz")
-    if stored.is_symlink() or not stored.resolve().is_relative_to(REPO.resolve()):
+def stored_bytes(path: Path) -> bytes:
+    """A packet file's bytes as stored, gzip or not: what an upstream copy must equal."""
+    if path.is_symlink() or not path.resolve().is_relative_to(REPO.resolve()):
         raise AreaRouteError(f"{path}: not a private repository file")
-    raw = stored.read_bytes()
-    return raw if stored == path else gzip.decompress(raw)
+    return path.read_bytes()
+
+
+def packet_bytes(path: Path) -> bytes:
+    """A packet file's content, decompressed here where it is stored as gzip.
+
+    That is the deterministic copy ``X.gz`` a packet keeps of ``X``, or an upstream file
+    whose own name ends in ``.gz``, retained as its original gzip.
+    """
+    stored = path if path.is_file() else path.with_name(path.name + ".gz")
+    raw = stored_bytes(stored)
+    return gzip.decompress(raw) if stored.name.endswith(".gz") else raw
 
 
 def _declaration(packet: Path) -> dict[str, Any]:
@@ -953,36 +980,57 @@ def import_cases(keys: Sequence[str] = tuple(IMPORTS)) -> list[Imported]:
     """
     found: list[Imported] = []
     for issue in keys:
-        name = ALL_IMPORTS[issue]
-        packet = WEB / name
-        upper.read_facts(packet)
-        declaration = _declaration(packet)
-        record = json.loads((packet / "acquisition/sources.json").read_text(encoding="utf-8"))
-        source = REPO / record["sources"][0]["archived_path"]
+        declaration = _admitted(issue)
         counts = roster(issue, declaration)
-        for row in declaration["certificates"]:
-            n = row["n"]
-            if n not in counts:
-                continue
-            if "fact" in row:
-                read = row["fact"]
-                side, placements = read_fact(packet_bytes(packet / read).decode("utf-8"), n)
-            else:
-                if row["format"] != "evand-cert":
-                    raise AreaRouteError(f"{issue} n={n}: no reader for {row['format']}")
-                read = (source / row["path"]).relative_to(packet).as_posix()
-                side, poses = parse_certificate(
-                    packet_bytes(source / row["path"]).decode("utf-8"), n
-                )
-                for other in row.get("same_packing", []):
-                    if other["format"] != "squish-json":
-                        raise AreaRouteError(f"{issue} n={n}: no reader for {other['format']}")
-                    copy = read_squish_json(packet_bytes(source / other["path"]), n)
-                    if copy != (side, poses):
-                        raise AreaRouteError(f"{issue} n={n}: {other['path']} differs")
-                placements = tuple(placed(poses))
-            found.append(Imported(issue, name, n, read, side, placements))
+        found.extend(
+            read_import(issue, row) for row in declaration["certificates"] if row["n"] in counts
+        )
     return found
+
+
+@functools.cache
+def _admitted(issue: str) -> dict[str, Any]:
+    """The import's declaration, once ``upper_bound_reports.read_facts`` admits its packet."""
+    packet = WEB / ALL_IMPORTS[issue]
+    upper.read_facts(packet)
+    return _declaration(packet)
+
+
+def read_import(issue: str, row: dict[str, Any]) -> Imported:
+    """One declared certificate of an admitted import, read by this route's own readers."""
+    name = ALL_IMPORTS[issue]
+    packet = WEB / name
+    n = row["n"]
+    if "fact" in row:
+        read = row["fact"]
+        side, placements = read_fact(packet_bytes(packet / read).decode("utf-8"), n)
+        return Imported(issue, name, n, read, side, placements)
+    if row["format"] != "evand-cert":
+        raise AreaRouteError(f"{issue} n={n}: no reader for {row['format']}")
+    record = json.loads((packet / "acquisition/sources.json").read_text(encoding="utf-8"))
+    source = REPO / record["sources"][0]["archived_path"]
+    read = (source / row["path"]).relative_to(packet).as_posix()
+    side, poses = parse_certificate(packet_bytes(source / row["path"]).decode("utf-8"), n)
+    for other in row.get("same_packing", []):
+        if other["format"] != "squish-json":
+            raise AreaRouteError(f"{issue} n={n}: no reader for {other['format']}")
+        copy = read_squish_json(packet_bytes(source / other["path"]), n)
+        if copy != (side, poses):
+            raise AreaRouteError(f"{issue} n={n}: {other['path']} differs")
+    return Imported(issue, name, n, read, side, tuple(placed(poses)))
+
+
+def import_packing(issue: str) -> Callable[[int], tuple[Fraction, tuple[Placed, ...]]]:
+    """The reader of an import's certificate at ``n``, any count it declares, for credit."""
+
+    def read(n: int) -> tuple[Fraction, tuple[Placed, ...]]:
+        rows = [row for row in _admitted(issue)["certificates"] if row["n"] == n]
+        if not rows:
+            raise AreaRouteError(f"{issue} declares no certificate at n={n}")
+        case = read_import(issue, rows[0])
+        return case.side, case.placements
+
+    return read
 
 
 def decide_import(case: Imported) -> dict[str, Any]:
@@ -1102,6 +1150,55 @@ def printed_rows(table: bytes, path: str) -> list[list[str]]:
     return [line for line in csv.reader(io.StringIO(text)) if line]
 
 
+def printed_json_side(
+    packet: Path, row: dict[str, Any], directory: Path
+) -> tuple[int, list[str]]:
+    """Hold a retained certificate's offered side to the JSON its row says prints it.
+
+    Evan Daniel's regularized lists print each certificate's exact side as ``S_cert`` in
+    a gzipped JSON beside it, which the row names as ``printed_in``. Where that is a JSON
+    at the pin, the copy fetched into ``directory`` must be the packet's retained file,
+    byte for byte, and its ``S_cert`` must be the side the row offers, for the row's
+    count. Any other ``printed_in`` is not a JSON print and is left alone. Returns the
+    number of printed sides checked, 0 or 1, and every disagreement.
+    """
+    blob = _BLOB.fullmatch(row.get("printed_in", ""))
+    if blob is None or not blob.group(2).endswith((".json", ".json.gz")):
+        return 0, []
+    record = json.loads((packet / "acquisition/sources.json").read_text(encoding="utf-8"))
+    source = record["sources"][0]
+    path = blob.group(2)
+    problem = _printed_json_problem(
+        row,
+        path,
+        directory / path,
+        REPO / source["archived_path"] / path,
+        at_pin=blob.group(1) == source["source_commit"],
+    )
+    return (0, [f"{packet.name} n={row['n']}: {problem}"]) if problem else (1, [])
+
+
+def _printed_json_problem(
+    row: dict[str, Any], path: str, fetched: Path, retained: Path, *, at_pin: bool
+) -> str | None:
+    """What is wrong with the JSON print of one row's side, or None."""
+    if not at_pin:
+        return "the side is printed at another commit"
+    if not fetched.is_file() or not retained.is_file():
+        return f"{path} is not both retained and fetched"
+    raw = fetched.read_bytes()
+    if raw != stored_bytes(retained):
+        return f"the retained {path} differs"
+    text = gzip.decompress(raw) if path.endswith(".gz") else raw
+    value = json.loads(text.decode("utf-8"), object_pairs_hook=_unique)
+    n = row["n"]
+    if type(value) is not dict or value.get("n") != n or type(value.get("S_cert")) is not str:
+        return f"{path} prints no S_cert for {n} squares"
+    if literal(value["S_cert"]) != literal(row["offered"]):
+        return f"{path} prints another side than the row offers"
+    return None
+
+
 def upstream_problems(
     packet: Path, directory: Path, counts: Sequence[int] | None = None
 ) -> tuple[int, list[str]]:
@@ -1113,7 +1210,9 @@ def upstream_problems(
     or, for #470's decimal poses, derived again by `derive_decimal_pose`; where the file
     its side is printed in is there too, at its pinned digest, the printed side must be a
     cell of that file's row for the count. Where the packet retains the certificate, the
-    retained bytes must be the upstream file's. ``counts`` defaults to the requested ones.
+    retained bytes must be the upstream file's, as stored for an upstream gzip, and a
+    side printed in a JSON at the pin must be the one the row offers
+    (`printed_json_side`). ``counts`` defaults to the requested ones.
     Returns the number of checks made, certificates and printed sides, and every
     disagreement.
     """
@@ -1146,9 +1245,19 @@ def upstream_problems(
             raw = upstream_bytes(row["path"])
             if raw is None:
                 continue
-            if raw != packet_bytes(REPO / source["archived_path"] / row["path"]):
+            retained = REPO / source["archived_path"] / row["path"]
+            # An upstream gzip is retained as its original bytes, so those are compared.
+            kept = (
+                stored_bytes(retained)
+                if row["path"].endswith(".gz")
+                else packet_bytes(retained)
+            )
+            if raw != kept:
                 problems.append(f"{packet.name} n={n}: the retained {row['path']} differs")
             held += 1
+            printed, printed_problems = printed_json_side(packet, row, directory)
+            held += printed
+            problems += printed_problems
             continue
         raw = pinned_bytes(row["path"])
         if raw is None:
@@ -1223,7 +1332,13 @@ def squish_update_packing(n: int) -> tuple[Fraction, tuple[Placed, ...]]:
 
 
 #: How each credited certificate is read, by its register entry.
-CREDITED_READERS = {"T-125": ryxu_packing, "T-115": squish_update_packing}
+CREDITED_READERS: dict[str, Callable[[int], tuple[Fraction, tuple[Placed, ...]]]] = {
+    "T-125": ryxu_packing,
+    "T-115": squish_update_packing,
+    "T-136": import_packing("#481"),
+    "T-137": import_packing("#483"),
+    "T-138": import_packing("#470"),
+}
 
 
 #: The displacements `arrangement_gap` counts squares beyond.
@@ -1295,6 +1410,25 @@ def arrangement_gap(
     return best
 
 
+def credited_gaps(found: Sequence[Imported]) -> dict[str, dict[str, Any]]:
+    """`arrangement_gap` of each credited certificate against each entry it is credited to.
+
+    A display-regularized certificate may slide squares far enough that no symmetry
+    matches the two packings one to one; that is recorded as ``unmatched`` with the side
+    difference, and is a measurement, as every gap is, not a refusal.
+    """
+    credit: dict[str, dict[str, Any]] = {}
+    for case in found:
+        for house in CREDITED.get((case.issue, case.n), ()):
+            other = CREDITED_READERS[house](case.n)
+            try:
+                gap = arrangement_gap((case.side, case.placements), other)
+            except AreaRouteError as error:
+                gap = {"unmatched": str(error), "side_difference": _text(case.side - other[0])}
+            credit[f"{case.issue} n={case.n} against {house}"] = gap
+    return credit
+
+
 def run_decide_imports(
     workers: int,
     output: Path | None,
@@ -1321,12 +1455,7 @@ def run_decide_imports(
             offered[row["n"]],
             cited=row["n"] in declaration["requested"],
         )
-    credit: dict[str, dict[str, Any]] = {}
-    for case in found:
-        if (case.issue, case.n) in CREDITED:
-            house = CREDITED[case.issue, case.n]
-            gap = arrangement_gap((case.side, case.placements), CREDITED_READERS[house](case.n))
-            credit[f"{case.issue} n={case.n} against {house}"] = gap
+    credit = credited_gaps(found)
     for row in rows:
         print(
             f"{row['issue']} n={row['n']:3d} passed={row['passed']} pairs={row['pairs']} "
