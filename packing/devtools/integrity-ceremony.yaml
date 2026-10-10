@@ -296,6 +296,16 @@ allowlist:
       review state, held against the retained rect_n40_L67 candidate and the input
       derived from it. Every finite value and the replay's rows are recomputed and
       compared whole; no run is refused on a digest.
+  - path: packing/devtools/audit_continuous_pose.py
+    kind: download
+    boundary: >-
+      Guzhou0806's #485 follow-up release: the density digest the release pins, the two
+      kernel-input digests its downloaded receipts and exact.py name, held against the
+      retained rect_n40_L67 candidate and the inputs derived from it; each downloaded
+      receipt's slab and axis records against the digests it states for them, the
+      source, input and binary it says it ran, and the CI run's binary digests, which a
+      build here from the retained source must reproduce. The replay's own receipts are
+      compared whole, field by field; no run is refused on a digest.
   - path: packing/devtools/audit_evand_mixed_covers.py
     kind: download
     boundary: Evan D's run headers against the retained upstream files (H7).

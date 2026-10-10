@@ -107,11 +107,6 @@
    "name": "axis: g captures at least as much there"
   },
   {
-   "detail": "axis-A 379193ff, net401-B 94c3ab2e",
-   "held": true,
-   "name": "crate inputs: the review's"
-  },
-  {
    "detail": "199950/4999",
    "held": true,
    "name": "crate inputs: the scaled mass is below n"

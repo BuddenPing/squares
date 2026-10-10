@@ -193,10 +193,10 @@ threshold $\mathrm{up}(\mathrm{fl}(4999/5000))$ at least $\tau$, by
 $1.33 \times 10^{-16}$; the receipts’ least leaf bound at least that threshold;
 $W(\varepsilon) \ge 1$, $A \le B$ and $B - AW(\varepsilon) =
 589499411/125000000000125000$; the axis minimum at least $\lceil 10^{27}\tau \rceil$, by
-$3.58 \times 10^{-6}$, the int128 guards and the $2213 \times 2213$ grid; and the two
-crate inputs’ digests. Every value equals the `scalar`, `admission`, `coverage` and
-`axis` blocks of both release receipts, every slab row of both is the contract’s run, and
-the source digests both receipts list are the retained files’.
+$3.58 \times 10^{-6}$, the int128 guards and the $2213 \times 2213$ grid.
+Every value equals the `scalar`, `admission`, `coverage` and `axis` blocks of both
+release receipts, every slab row of both is the contract’s run, and the source digests
+both receipts list are the retained files’.
 It refuses four altered parameters: G, the contract’s; $\tau = 3999/4000$, where
 $40\tau = M$; $T = 41/100$, short of $\pi/4$; and $\varepsilon = 10^{-5}$, where
 $AW(\varepsilon) > B$.

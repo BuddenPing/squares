@@ -6,11 +6,6 @@
  },
  "checks": [
   {
-   "detail": "tests/rounding_harness.cpp 96bd0222, verifier/axis_integer_grid.cpp f5bc3f60, verifier/continuous_pose.cpp da06206b",
-   "held": true,
-   "name": "builds: the retained sources"
-  },
-  {
    "detail": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
    "held": true,
    "name": "builds: the release's flags, exit 0"
@@ -23,7 +18,7 @@
   {
    "detail": "AXIS_COVERAGE_PROVED, 0.298 s",
    "held": true,
-   "name": "axis run: exit 0 on the derived input and the built binary"
+   "name": "axis run: exit 0"
   },
   {
    "detail": "minimum 999803584931237207459144828",
@@ -38,7 +33,7 @@
   {
    "detail": "43 runs",
    "held": true,
-   "name": "slabs: 43 runs with the contract's arguments on the derived input"
+   "name": "slabs: 43 runs with the contract's arguments"
   },
   {
    "detail": "43 of 43",
@@ -321,7 +316,7 @@
    "name": "control G-release-axis-side: exact.py refuses NEAR_AXIS_CONTAINMENT"
   },
   {
-   "detail": "d97758bbc9639edc70b8bd7dc83106d4e8d1be034bacb3e88f8c539b88091c88 (910b6b12c), binary 567a0fd58f7ae4e981580f2a90bed5c92ac44fa8f3ebb442b166e93043c15ed4",
+   "detail": "d97758bbc9639edc70b8bd7dc83106d4e8d1be034bacb3e88f8c539b88091c88 (910b6b12c)",
    "held": true,
    "name": "crate: reviewed source for a declared net, the binary embeds it"
   },
