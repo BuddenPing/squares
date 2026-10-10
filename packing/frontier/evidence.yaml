@@ -28801,7 +28801,11 @@ evidence:
       into each rational input; no further dilation or rounding is applied. Rational n51 is separate
       from the selected undilated radical witness. Complete source/result/house binding, private-worker
       copied inputs, mutation refusals, producer guards and original-frontier recovery were independently
-      reviewed. Offline admission is not a fresh deciding replay. Only finite feasibility enters: no
+      reviewed. Offline admission is not a fresh deciding replay. Issue 432 reports that ry-xu''s own
+      checks ran this repository''s sqpack at 84881f2 (packing-witness check, promote and verify, the
+      last VERIFIED for all 25), so the sqpack exact_verify route reproduces with the producer''s
+      checker; the independent rational-corner checker decides apart
+      from it, so the recorded relation and the rung are unaffected. Only finite feasibility enters: no
       optimality, lower bound, local-minimum theorem, rigidity, novelty, formal proof or human oversight
       is established.'
     external_review:
