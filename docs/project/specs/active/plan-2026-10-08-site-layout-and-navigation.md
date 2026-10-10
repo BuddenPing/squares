@@ -12,6 +12,8 @@ author: Codex, for the repository owner
 **Status:** Implemented and focused-verified in draft PR #462, including canonical
 Results URL (`think-3ci0`), shared homepage Atlas controls and centering, and shared
 H1/control-label refinements.
+Shared Atlas legend swatch alignment is tracked by `think-w51o` and focused-verified on
+both pages at desktop and mobile widths.
 Final Astra review approved the frozen changes; the next pushed-head CI is pending.
 The full checkpoint (`think-xio5`) remains separate and open.
 The earlier upstream geometry reconciliation (`think-p7c4`) is complete.
@@ -104,6 +106,12 @@ retains its compact label role.
 Apply the shared screen-only `--site-title-space-above` margin of 2.5rem to every
 visible `h1.site-title`, including homepage, About and other content pages.
 Print spacing keeps its existing rules.
+The homepage and dedicated Atlas share square legend swatches as tall as the explanatory
+text’s line box, using the note size times the common 1.4 leading token.
+Center angle numerals inside their squares and align swatch groups with the text
+baseline. Stack legend items in narrow containers so explanations wrap without clipping.
+Printable swatches use the same text-relative ratio without changing the packing
+diagrams or explanatory text size.
 
 Keep the homepage in this order:
 
@@ -183,26 +191,24 @@ Use the shared header for the About page and retain the source material’s mean
 links. Preserve the existing homepage `#the-squares-project` destination on the project
 card or forward it to the About page.
 
-Initially show six complete Triangle rows from the shared Atlas layout and up to twelve
-recent results. Recent results must be S4 or higher, dated within the last 180 days, and
-not superseded. Keep the complete results page’s filters unchanged.
+Initially show 100 cases in Triangle and up to twelve recent results.
+Recent results must be S4 or higher, dated within the last 180 days, and not superseded.
+Keep the complete results page’s filters unchanged.
 The register currently contains six qualifying entries; the twelve-row limit allows the
 preview to grow as results qualify.
 Each headline links to its canonical result page.
-The atlas preview preserves the per-case SVG drawings, colors, and case destinations in
-six Triangle rows, cases 1 to 36. Web labels show only the case number and an applicable
-recent-result star; the PDF retains its additional labels.
-Both pages use the same tile markup, row and segment placement, Small/Fixed sizing, and
-shared Atlas layout and animation engine.
-Complete rows pan horizontally on narrow viewports.
-All 324 case links and image references ship in the homepage; expansion moves whole rows
-between the visible and hidden containers.
-The first click immediately updates the layout and animates to 100 cases; the second
-reveals all 324. Keep Triangle at each stage.
-The browser may fetch immutable SVG images lazily as rows become visible.
-At full coverage Show Less restores 36, using the same shared animation.
+The atlas preview preserves the per-case SVG drawings, colors, and case destinations.
+Web labels show only the case number and an applicable recent-result star; the PDF
+retains its additional labels.
+Both pages use the same overview, controls, legend, tile markup, row and segment
+placement, Small/Fixed sizing, and shared Atlas layout and animation engine.
+Complete rows center when they fit and pan horizontally on narrow viewports.
+All 324 case links and image references ship in the homepage; Show More immediately
+updates layout and animates to all 324, and Show Less restores the complete preview
+around 100 cases. Hidden drawings are prepared in the background; image transport is
+separate from the synchronous layout change.
 Explore remains a direct link to the dedicated Atlas page.
-Without JavaScript, retain the first 36 homepage cases and Explore link; the dedicated
+Without JavaScript, retain the first 100 homepage cases and Explore link; the dedicated
 Atlas exposes all 324 cases.
 
 Publish the complete interactive atlas at `atlas.html`, reusing its existing drawings,
@@ -317,6 +323,9 @@ prepared-math pipeline.
 One repair phase, with independently scoped issues.
 Each issue adds its own focused regression coverage; the final browser review checks
 their combined behavior.
+The six-row and three-stage entries below record earlier completed iterations; the
+current homepage uses the shared preview around 100 cases, expands to 324, and collapses
+to that preview.
 
 | Issue | Bead | Priority | Scope and acceptance |
 | --- | --- | --- | --- |
@@ -383,7 +392,7 @@ project card’s About target, actual preview limits, and both primary buttons.
 About checks assert the retained project content and links, and **About** immediately
 before **GitHub** in the shared top navigation.
 Atlas checks assert complete case coverage, old-link forwarding, reversible homepage
-stages 36 → 100 → 324 → 36, immediate layout and animation with authored case links,
+stages 100 → 324 → 100, immediate layout and animation with authored case links,
 repeated expansion/collapse, reduced motion, SVG colors and labels, shared Small/Fixed
 row geometry, and horizontal panning on narrow viewports.
 Immutable lazy image requests may occur as newly visible rows load.
@@ -412,7 +421,7 @@ Planning completion leaves the implementation issues open.
 
 - Finish hosted checks on the final PR revision.
 - Run the full pre-merge checkpoint tracked by `think-xio5` before merging.
-  The reviewed homepage starts with cases 1 to 36 in six Triangle rows.
+  The reviewed homepage starts with 100 cases in the shared Triangle layout.
 
 ## References
 

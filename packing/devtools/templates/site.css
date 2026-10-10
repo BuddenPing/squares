@@ -2117,6 +2117,8 @@ html[data-site-atlas-size="large"] .site-page .site-atlas-grid:where([data-atlas
 /* The web atlas key shows angle colors and contact shades, centered as a group
    with each explanatory line aligned left. */
 .kpress .site-atlas-grid .site-atlas-legend {
+  --site-atlas-legend-leading: 1.4;
+  --site-atlas-swatch-size: calc(var(--site-font-size-note) * var(--site-atlas-legend-leading));
   color: var(--site-support-color);
   column-gap: 1.2rem;
   display: grid;
@@ -2126,8 +2128,15 @@ html[data-site-atlas-size="large"] .site-page .site-atlas-grid:where([data-atlas
   font-weight: var(--site-font-weight-sans-light);
   grid-template-columns: repeat(2, minmax(0, max-content));
   justify-content: center;
+  line-height: var(--site-atlas-swatch-size);
   margin: 0;
   text-align: start;
+}
+@container (max-width: 52rem) {
+  .kpress .site-atlas-grid .site-atlas-legend {
+    grid-template-columns: minmax(0, max-content);
+    row-gap: 0.4rem;
+  }
 }
 .site-atlas-legend-column {
   align-items: start;
@@ -2136,7 +2145,7 @@ html[data-site-atlas-size="large"] .site-page .site-atlas-grid:where([data-atlas
   gap: 0.3rem;
 }
 .site-atlas-legend-item {
-  align-items: start;
+  align-items: baseline;
   display: flex;
   gap: 0.3rem;
 }
@@ -2149,23 +2158,20 @@ html[data-site-atlas-size="large"] .site-page .site-atlas-grid:where([data-atlas
 .site-atlas-swatches {
   display: inline-flex;
   gap: 1px;
-  margin-block-start: 0.125em;
 }
 .site-atlas-swatch {
   background: var(--site-atlas-swatch);
-  block-size: 1.1rem;
+  block-size: var(--site-atlas-swatch-size);
   color: var(--kpress-doc-text);
   font-size: 0.55rem;
   font-variant-numeric: tabular-nums;
-  inline-size: 0.65rem;
-  line-height: 1.1rem;
+  inline-size: var(--site-atlas-swatch-size);
+  line-height: var(--site-atlas-swatch-size);
   text-align: center;
 }
-/* The first two angle swatches name their degrees; contact swatches keep their
-   compact single-number width. */
+/* Degree and contact labels share the same square swatch and text baseline. */
 .site-atlas-swatch[data-angle-label] {
   color: var(--site-atlas-angle-label-ink);
-  inline-size: 1rem;
 }
 /* The triangle's column count and tile width live in the shared rule so changing
    view does not restyle every drawing's inherited properties. The count uses the same

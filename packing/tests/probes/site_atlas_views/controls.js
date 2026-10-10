@@ -20,6 +20,12 @@
       items: [...column.querySelectorAll(".site-atlas-legend-item")].map((item) => ({
         box: box(item),
         textAlign: getComputedStyle(item).textAlign,
+        alignment: getComputedStyle(item).alignItems,
+        lineHeight: Number.parseFloat(getComputedStyle(item).lineHeight),
+        swatches: [...item.querySelectorAll(".site-atlas-swatch")].map((swatch) => {
+          const rect = swatch.getBoundingClientRect();
+          return { width: rect.width, height: rect.height, top: rect.top, bottom: rect.bottom };
+        }),
       })),
     })),
   };

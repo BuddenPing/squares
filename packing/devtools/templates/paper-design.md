@@ -1527,9 +1527,16 @@ it.
   eight-item legend, including status counts, recency and algebraic degree, remains in
   the printable diagrams.
   The key uses the support colour at the note size (`atlas_legend`) and describes no
-  layout mechanics. A case with a retained derived view in
-  `atlas/known-best/regularized/` (X-049) uses that selected drawing directly, without a
-  website layer badge, label or legend link.
+  layout mechanics. The shared swatch is square and as tall as this text’s line box:
+  `--site-atlas-swatch-size` is the note size multiplied by
+  `--site-atlas-legend-leading` (1.4). Angle numerals are centered inside the square;
+  swatch groups and explanations share a baseline.
+  On containers at most 52rem wide, the two legend items stack so wrapped explanations
+  remain inside the viewport.
+  Printable swatches use the same 1.4 ratio against their existing explanatory text
+  size, preserving the text baseline and packing diagrams.
+  A case with a retained derived view in `atlas/known-best/regularized/` (X-049) uses
+  that selected drawing directly, without a website layer badge, label or legend link.
   The index and atlas documentation keep the provenance.
   `devtools.render_regularized_atlas` draws the selected views and its `--check`
   verifies them against the index.

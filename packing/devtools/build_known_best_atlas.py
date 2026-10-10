@@ -261,6 +261,8 @@ SUMMARY_STAR_INSET = Decimal(6)
 SUMMARY_STAR_REFERENCE_SIZE = Decimal(14)
 SUMMARY_STAR_TEXT_INSET = Decimal(17)
 SUMMARY_BADGE_SIZE = Decimal(19)
+#: Color keys occupy a text line, matching the square web legend swatches.
+SUMMARY_LEGEND_SWATCH_LEADING = Decimal("1.4")
 #: Air between the bottom of the grid and the first legend row's baseline.
 SUMMARY_LEGEND_GAP = Decimal(30)
 #: Air between the last legend row and the explainer, which opens the footer block.
@@ -2351,6 +2353,7 @@ def _legend_row(
     badge_size = SUMMARY_BADGE_SIZE * type_scale
     footer_size = label_size or format_svg_number(Decimal(SUMMARY_FOOTER_SIZE) * type_scale)
     mark_gap = Decimal(8) * type_scale
+    swatch_size = Decimal(footer_size) * SUMMARY_LEGEND_SWATCH_LEADING
     top = baseline - badge_size + Decimal(4) * type_scale
 
     def mark_width(mark: object) -> Decimal:
@@ -2358,7 +2361,7 @@ def _legend_row(
             return Decimal(0)
         if isinstance(mark, tuple):
             return badge_size
-        return badge_size * Decimal(len(mark))  # pyright: ignore[reportArgumentType]
+        return swatch_size * Decimal(len(mark))  # pyright: ignore[reportArgumentType]
 
     gap = Decimal(34) * type_scale
     widths = [
@@ -2399,6 +2402,8 @@ def _legend_row(
             )
             run_end = cursor + badge_size
         else:
+            label_top, label_bottom = _print_ink_bounds(label, footer_size)
+            swatch_top = baseline + (label_top + label_bottom - swatch_size) / 2
             run_end = cursor
             for fill, numeral in mark:  # pyright: ignore[reportGeneralTypeIssues]
                 sub(
@@ -2407,9 +2412,9 @@ def _legend_row(
                     {
                         "data-feature": "legend-swatch",
                         "x": format_svg_number(run_end),
-                        "y": format_svg_number(top),
-                        "width": format_svg_number(badge_size),
-                        "height": format_svg_number(badge_size),
+                        "y": format_svg_number(swatch_top),
+                        "width": format_svg_number(swatch_size),
+                        "height": format_svg_number(swatch_size),
                         "fill": fill,
                         "stroke": PAPER_THEME.container,
                         "stroke-width": format_svg_number(Decimal("0.8") * type_scale),
@@ -2417,15 +2422,18 @@ def _legend_row(
                 )
                 if numeral:
                     numeral_size = format_svg_number(Decimal("11.5") * type_scale)
-                    if _text_width(numeral, numeral_size) > badge_size - type_scale:
+                    if _text_width(numeral, numeral_size) > swatch_size - type_scale:
                         raise ValueError("a legend swatch label exceeds its square")
+                    numeral_top, numeral_bottom = _print_ink_bounds(numeral, numeral_size)
                     sub(
                         legend,
                         "text",
                         {
                             "data-swatch-label": numeral,
-                            "x": format_svg_number(run_end + badge_size / 2),
-                            "y": format_svg_number(top + Decimal("13.4") * type_scale),
+                            "x": format_svg_number(run_end + swatch_size / 2),
+                            "y": format_svg_number(
+                                swatch_top + (swatch_size - numeral_top - numeral_bottom) / 2
+                            ),
                             "text-anchor": "middle",
                             "font-family": font_family,
                             "font-size": numeral_size,
@@ -2437,7 +2445,7 @@ def _legend_row(
                             else PAPER_THEME.ink,
                         },
                     ).text = numeral
-                run_end += badge_size
+                run_end += swatch_size
         sub(
             legend,
             "text",
@@ -2533,7 +2541,11 @@ def _append_summary_legend(
         if item.marker is None or item.key == "recent":
             return _text_width(item.formatted_text(count_style="words"), body_size)
         return (
-            badge_size * (len(item.marker_values) if item.marker_values else 1)
+            (
+                Decimal(body_size) * SUMMARY_LEGEND_SWATCH_LEADING * len(item.marker_values)
+                if item.marker_values
+                else badge_size
+            )
             + mark_gap
             + _text_width(item.formatted_text(count_style="words"), body_size)
         )

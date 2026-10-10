@@ -913,8 +913,12 @@ def test_a_plain_address_opens_small_triangle_under_its_two_tabs(seen: Readings)
         "role": "tabpanel",
         "labelledby": tabs["triangle"]["id"],
     }
-    # The strip's type is the bar's and the section tabs': the note step, 17.48px.
-    assert {tab["font_px"] for tab in tabs.values()} == {17.48}
+    # Tabs take the shared 90% label scale while the navigation keeps its note size.
+    nav_size = triangle["nav_link_font_px"]
+    assert nav_size is not None
+    assert nav_size > 0
+    for tab in tabs.values():
+        assert tab["font_px"] == pytest.approx(nav_size * 0.9, abs=0.01)
     assert tabs["grid"]["box"]["top"] == tabs["triangle"]["box"]["top"]
     assert tabs["grid"]["box"]["right"] <= tabs["triangle"]["box"]["left"] + 1
     assert len(triangle["tiles"]) == 100

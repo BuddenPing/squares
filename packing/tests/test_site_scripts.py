@@ -67,7 +67,6 @@ def test_inventory_accepts_the_actual_protocol_font_bootstrap(tmp_path: Path) ->
         ("headroom", "page.0123456789abcdef.js"),
         ("rating-tooltips", "rating-tooltips.0123456789abcdef.js"),
         ("rating-tooltips", "page.0123456789abcdef.js"),
-        ("homepage-atlas", "homepage-atlas.0123456789abcdef.js"),
     ],
 )
 def test_inventory_accepts_reviewed_shared_interaction_programs(

@@ -208,7 +208,7 @@ def test_every_link_to_a_result_goes_to_its_row(
     """The overview's recent table and replay table, and the case records, link a
     result at its row on the results page, never at a fragment of their own page."""
     rows = {row_id for row_id, _, _ in ROW.findall(results)}
-    linked = re.findall(r'href="all-results\.html#([^"]+)"', page)
+    linked = re.findall(r'href="results\.html#([^"]+)"', page)
     assert linked
     # The one link to the results page that is not a row: the Verification Ladders
     # section under its table, since 2026-10-02.
@@ -216,7 +216,7 @@ def test_every_link_to_a_result_goes_to_its_row(
     assert 'id="verification-ladders"' in results
     assert not re.search(r'href="#t-\d+"', page)
     for record in case_pages.values():
-        assert set(re.findall(r'href="\.\./all-results\.html#([^"]+)"', record)) <= rows
+        assert set(re.findall(r'href="\.\./results\.html#([^"]+)"', record)) <= rows
         assert 'href="index.html#t-' not in record
         assert 'href="../index.html#t-' not in record
 
@@ -2885,7 +2885,7 @@ def test_the_visualize_section_is_marked_current_on_both_its_pages(
 
 
 def test_the_bars_type_is_set_from_the_papers_scale() -> None:
-    """The bar's links and a section's tabs take one token, the note step of the paper's
+    """The bar's links and a section's tabs derive from the note step of the paper's
     scale, which is the first size under the body's prose; the site's name takes the sans
     base. Both come from the host base and the scale's own tokens, so no rule holds a
     size in pixels or rem, and the bar is one size on every page. Each token names the
@@ -2905,14 +2905,6 @@ def test_the_bars_type_is_set_from_the_papers_scale() -> None:
         # The line the bar's items are set on (`test_the_bars_name_is_aligned_by_its_text`).
         "--site-nav-line": "calc(var(--site-nav-font-size) * 1.43)",
     }
-    for selector, token in (
-        (".site-nav {", "--site-nav-font-size"),
-        (".site-nav .site-name {", "--site-nav-name-size"),
-        (".site-tabs {", "--site-nav-font-size"),
-    ):
-        rule = css[css.index(f"\n{selector}") :]
-        rule = rule[: rule.index("}")]
-        assert re.findall(r"font-size: ([^;]+);", rule) == [f"var({token})"], selector
     paper = render_overview.PAPER_TYPE_CSS.read_text(encoding="utf-8")
     for declaration in (
         "  --kpress-host-font-size-base: 18px;\n",
@@ -3614,7 +3606,7 @@ def test_recent_results_is_one_table_not_cards_or_a_list(
         row = _recent_row(recent, result.id)
         # The headline and ID each link to this result's own page. Only a
         # supersession links to a different result's row on the complete table.
-        linked = re.findall(r'href="all-results\.html#(t-\d+)"', row)
+        linked = re.findall(r'href="results\.html#(t-\d+)"', row)
         named = {other.lower() for mark in result.supersessions for other in mark.by}
         assert set(linked) == named, result.id
         # The id, in its own cell, is the row's native trigger, which opens its popover

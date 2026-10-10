@@ -97,6 +97,8 @@
     }
     relabel(expanded);
   };
+  // Font readiness can flush style; capture it with reads before placement writes.
+  const fontsReady = document.fonts.ready;
   const views = SiteAtlasView.mount({
     block: grid,
     cells,
@@ -153,7 +155,7 @@
       requestAnimationFrame(prepareNext);
     }
   };
-  void document.fonts.ready.then(prepare);
+  void fontsReady.then(prepare);
   /** Prioritize newly requested rows without delaying the synchronous FLIP. */
   const prepareRequested = () => {
     pendingRows.sort(

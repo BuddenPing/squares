@@ -277,20 +277,19 @@ def test_the_frontier_rows_minimal_popovers_are_gone(
 def test_case_entry_pages_carry_the_case_popover_script(
     overview: str, served: dict[str, str]
 ) -> None:
-    """Case entry pages load the same popover; the dedicated atlas also loads its grid
-    controls once, and each served page carries the linked programs."""
+    """Both Atlas entry pages load the shared popover and grid controls once, with
+    each served page carrying the linked programs."""
     atlas = site_renders.html("atlas.html")
     case_popover = render_case_pages.CASE_POPOVER_SCRIPT
+    grid_script = render_overview.ATLAS_GRID_SCRIPT
     for name, page in (
         ("index.html", overview),
         ("atlas.html", atlas),
     ):
         assert page.count(_program_tag(case_popover, name)) == 1, name
         assert case_popover.read_text(encoding="utf-8") in served[name], name
-    grid_script = render_overview.ATLAS_GRID_SCRIPT
-    assert atlas.count(_program_tag(grid_script, "atlas.html")) == 1
-    assert grid_script.read_text(encoding="utf-8") in served["atlas.html"]
-    assert _program_tag(grid_script, "index.html") not in overview
+        assert page.count(_program_tag(grid_script, name)) == 1, name
+        assert grid_script.read_text(encoding="utf-8") in served[name], name
     assert "data-atlas-facts" not in served["atlas.html"]
     assert 'id="pop-atlas"' not in atlas
 

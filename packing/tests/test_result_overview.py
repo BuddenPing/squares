@@ -540,7 +540,7 @@ def test_a_chain_names_only_the_successors_on_its_own_cases(bodies: dict[str, st
     T-043 on 2026-10-05 (think-6zg1), not those that supersede it at n = 18 or 19."""
     step = bodies["T-043"].split('data-step="t-019"', 1)[1].split("</li>", 1)[0]
     chips = step.split('<p class="site-result-step-chips">', 1)[1].split("</p>", 1)[0]
-    assert re.findall(r'href="all-results\.html#(t-\d+)"', chips) == ["t-093"]
+    assert re.findall(r'href="results\.html#(t-\d+)"', chips) == ["t-093"]
 
 
 @pytest.mark.parametrize("result_id", [SETTLED, EARLIER, BROAD])
