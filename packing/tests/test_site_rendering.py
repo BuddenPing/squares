@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
 from unittest.mock import Mock
 from urllib.parse import urlsplit
+from uuid import uuid4
 
 import pytest
 from kpress.format.markdown import parse_markdown
@@ -786,6 +787,9 @@ def test_native_frontier_passes_the_unchanged_http_load_and_nojs_budgets(
     frontier_native_site: str,
     width: int,
     scheme: Any,
+    *,
+    request: pytest.FixtureRequest,
+    tmp_path: Path,
 ) -> None:
     for javascript in (True, False):
         report = check_site_rendering.measure(
@@ -795,11 +799,101 @@ def test_native_frontier_passes_the_unchanged_http_load_and_nojs_budgets(
             scheme=scheme,
             javascript=javascript,
         )
-        assert report["shownMath"] == frontier_math_counts[1]
-        assert report["unreadableMath"] == 0
-        assert check_site_rendering.problems(report, javascript=javascript) == [], (
-            native_frontier_failure(report, width=width, scheme=scheme, javascript=javascript)
+        try:
+            assert report["shownMath"] == frontier_math_counts[1]
+            assert report["unreadableMath"] == 0
+            assert check_site_rendering.problems(report, javascript=javascript) == [], (
+                native_frontier_failure(
+                    report, width=width, scheme=scheme, javascript=javascript
+                )
+            )
+        except AssertionError as error:
+            # The first navigation alone decides the verdict. Trace one separate
+            # navigation only after failure: tracing changes the measured workload.
+            try:
+                junit = request.config.getoption("xmlpath")
+                directory = Path(junit).parent if junit else tmp_path
+                trace = directory / f"native-frontier-{width}-{scheme}-{uuid4().hex}.json"
+                error.add_note(
+                    f"Separate instrumented navigation: {trace}. This is not a trace "
+                    "of the failed navigation and cannot replace its verdict "
+                    "or prove its cause."
+                )
+                check_site_rendering.measure(
+                    browser,
+                    frontier_native_site,
+                    width=width,
+                    scheme=scheme,
+                    javascript=javascript,
+                    trace=trace,
+                )
+            except Exception as diagnostic_error:  # noqa: BLE001
+                # A diagnostic failure must never replace the original assertion.
+                error.add_note(
+                    f"Separate trace capture failed: {type(diagnostic_error).__name__}: "
+                    f"{diagnostic_error}"
+                )
+            raise
+
+
+@pytest.mark.parametrize("outcome", ["pass", "trace", "trace-error"])
+def test_native_frontier_diagnostic_never_replaces_the_original_verdict(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, outcome: str
+) -> None:
+    requests: list[dict[str, Any]] = []
+    artifact_directory = tmp_path / "artifacts"
+    request = Mock()
+    request.config.getoption.return_value = str(artifact_directory / "command.junit.xml")
+
+    def measure(_browser: Browser, _url: str, **options: Any) -> dict[str, Any]:
+        requests.append(options)
+        if trace := options.get("trace"):
+            if outcome == "trace-error":
+                raise RuntimeError("capture unavailable")
+            trace.parent.mkdir(parents=True)
+            trace.write_text('{"traceEvents": []}')
+        return {
+            "heading": "The Atlas",
+            "contentChars": 100,
+            "supported": True,
+            "cls": 0,
+            "lcpMs": 100,
+            "longestTaskMs": 0 if outcome == "pass" or options.get("trace") else 423,
+            "blockingMs": 0,
+            "shownMath": 282,
+            "unreadableMath": 0,
+        }
+
+    monkeypatch.setattr(check_site_rendering, "measure", measure)
+    arguments = (
+        cast("Browser", Mock()),
+        (271, 282),
+        "http://127.0.0.1/atlas.html",
+        390,
+        "dark",
+    )
+    if outcome == "pass":
+        test_native_frontier_passes_the_unchanged_http_load_and_nojs_budgets(
+            *arguments, request=request, tmp_path=tmp_path
         )
+        assert [options["javascript"] for options in requests] == [True, False]
+        assert all("trace" not in options for options in requests)
+        assert not artifact_directory.exists()
+    else:
+        with pytest.raises(AssertionError, match="423") as caught:
+            test_native_frontier_passes_the_unchanged_http_load_and_nojs_budgets(
+                *arguments, request=request, tmp_path=tmp_path
+            )
+        assert len(requests) == 2
+        assert "trace" not in requests[0]
+        trace = requests[1]["trace"]
+        assert trace.parent == artifact_directory
+        assert trace.exists() == (outcome == "trace")
+        assert any(
+            "not a trace of the failed navigation" in note for note in caught.value.__notes__
+        )
+        if outcome == "trace-error":
+            assert any("capture unavailable" in note for note in caught.value.__notes__)
 
 
 def test_frontier_preloads_every_pt_serif_face_it_draws(
