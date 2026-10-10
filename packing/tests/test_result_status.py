@@ -274,7 +274,9 @@ def test_superseded_is_marked_on_a_bound_and_where_a_later_result_is_declared() 
     # lanes there from T-099 and T-100, the one count each held; forty-nine when wand125's
     # mixed certificate of 3 October for n = 52 (T-082), decided here by sqverify-fast,
     # took the last count T-070 held; fifty when T-117's exact rational refinements
-    # took n = 105 and 292, the last verified ceilings T-056 held.
+    # took n = 105 and 292, the last verified ceilings T-056 held; fifty-four when
+    # Guzhou0806's continuous-pose kernel (T-145) took both of n = 40's lower-bound lanes
+    # from his clipped-corner transfer (T-133) on the same density.
     # T-120..T-123 report exact side forms for historical source configurations; no
     # current frontier lane relies on these unverified catalogue assertions. Each claim
     # states its side cut where its root interval's ends agree. T-120's lies above the
@@ -343,6 +345,7 @@ def test_superseded_is_marked_on_a_bound_and_where_a_later_result_is_declared() 
         "T-114",
         "T-120",
         "T-129",
+        "T-133",
     }
     # Couzo's eight-case source report of 8 October (T-128) holds no case lane either,
     # but every side it states is below the ceiling its case holds: nothing has replaced
