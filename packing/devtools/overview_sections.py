@@ -2131,7 +2131,7 @@ def link_card(
         shown = url.removeprefix("https://").rstrip("/")
         address = (
             f'<span class="site-card-url">{link_icon(url)}'
-            f"<span>{_breakable(shown)}</span></span>"
+            f'<span class="site-card-url-text">{_breakable(shown)}</span></span>'
         )
     body = (
         f"{card_hero(hero) if hero else ''}"
