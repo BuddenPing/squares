@@ -3295,7 +3295,8 @@ issues:
     triage: done
     summary: All eight complete source certificates and decimal context poses are retained. The complete
       24-job native finite-feasibility replay passed; actual private-worker custody passed without geometric
-      deciders. Historical source-house integration and confirmation remain pending.
+      deciders. The review of 10 October reproduced every job and a third exact route agreed; house adoption
+      waits for jlevy/squares#403.
     read_through: '2026-10-08T15:53:07Z'
     results:
     - key: eight-rational-refinements
@@ -3494,8 +3495,8 @@ issues:
     triage: done
     summary: Evan Daniel reports rational certificates at n=132 and n=155 below the case ceilings, in
       evand/square-packing at e008180, retained with their KKT points, inputs and solver reports. Both
-      pass both maintained exact routes. The n132 side is new and recorded as T-131 at V0/C0, pending
-      independent review and adoption. The n155 side equals Couzo's earlier issue451 certificate (T-128),
+      pass both maintained exact routes. The n132 side is new and recorded as T-131, whose replay the
+      review of 10 October reproduced; issue 476's n132 side is smaller. The n155 side equals Couzo's earlier issue451 certificate (T-128),
       with which it shares 152 of 155 exact poses, differing only in its free and flat-motion squares,
       so it maps to T-128 as an evidence update. Author checkers and KKT evidence
       were not run here; no optimality is claimed.
@@ -3509,6 +3510,7 @@ issues:
       - T-131
       evidence:
       - E-evand-465-record-hunt-report
+      - E-evand-465-record-hunt-exact-feasibility
     - key: s155-record-hunt
       claim: s(155) <= 12.952498944014007381965850566940 by an exact rational certificate from the hunt1
         record hunt, 4.26e-6 below the register's 12.9525032026045129. Its exact side is the n155 side
@@ -3518,6 +3520,7 @@ issues:
       - T-128
       evidence:
       - E-evand-465-record-hunt-report
+      - E-evand-465-record-hunt-exact-feasibility
     - key: kkt-local-minima
       claim: Each exact point is an 80-digit KKT point with positive multipliers on its load-bearing
         contacts, a reduced Hessian positive semidefinite modulo exact flat motions (132 33, 155 2) and

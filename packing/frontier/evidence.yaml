@@ -29043,6 +29043,72 @@ evidence:
       overlaps that source checker. The second maintained rational-geometry route is a separate deciding
       implementation; both routes share certificate parsing, half-angle conversion, Fraction arithmetic
       and the separating-axis method. No two independent methods, human oversight or optimality is claimed.'
+    external_review:
+      state: informally-verified
+      date: '2026-10-10'
+      reviewed_by: >-
+        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        intake pass under think-fvz4, prompted separately from the import lanes
+      note: >-
+        docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md accepted
+        all eight certificates for finite feasibility only, with six non-blocking findings
+        (RD-1 to RD-6); the replay it reproduced is E-couzo-451-exact-feasibility.
+  - id: E-couzo-451-exact-feasibility
+    claim: upper-bound
+    scope:
+      n_values: [105, 108, 127, 131, 155, 180, 228, 306]
+    assurance: verified
+    method: exact-algebraic
+    performed_by: repository
+    relationship_to_generator: independent-implementation
+    origin: replayed-here
+    novelty: previously-published
+    source_key: '[Couzo exact refinements 2026-10-08]'
+    certificate: packing/resources/web/couzo-exact-refinements-2026-10-08/facts/complete-certificates-and-decimal-poses.json.xz
+    replay: >-
+      From packing/ with the project interpreter: python -m devtools.check_half_angle_area
+      replay-t128 --workers 2 decides all 24 retained jobs again through both maintained
+      routes and holds each to its retained row (all equal, 339.0 s wall on 2026-10-10);
+      python -m devtools.check_half_angle_area decide --workers 2 decides the eight
+      certificates by the third route with six controls each, and holds every side, pose,
+      margin and register decimal to the record (no disagreement, 37.0 s for the review's
+      fifteen certificates).
+    replay_status: passed
+    verifiers:
+      - V-sqpack-verify
+      - V-check-rational-witness-independent
+      - V-check-half-angle-area
+    independence_record: docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md
+    external_review:
+      state: informally-verified
+      date: '2026-10-10'
+      reviewed_by: >-
+        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        intake pass under think-fvz4, prompted separately from the import lanes
+      note: >-
+        Accepted for finite feasibility only. All 24 retained jobs reproduced on both
+        maintained routes, and the third route, its own literal reader, half-extent
+        containment and exact intersection area, agreed with them at every side, pose,
+        wall clearance and register decimal; its 48 controls reached their required
+        outcomes. Findings RD-1 to RD-6, none blocking.
+    limitations: >-
+      All eight certificates pass both maintained routes and the third route; the 16
+      kernel controls (a duplicated square, a square moved outside) are refused by both
+      maintained routes and the 48 third-route controls reach their required outcomes,
+      four of them at exact contact or 10^-40 to 10^-30 past it. The receipt holds 770052
+      pair decisions; the longest job took 40.89 s. Every positive clears its nearest wall
+      by exactly 1/(2*10^20) and every pair by a Euclidean distance of at least
+      9.9999999999999865e-21. The kernel's own controls are gross, a pair gap of exactly -1
+      and a square whole units outside the box (RD-2); the maintained routes read one parse and one
+      half-angle conversion (RD-3), which the third route's own reader closes; and one
+      maintained route, sqpack.verify, is the copy of this repository's verifier the
+      source ran (RD-4), so the independently re-implemented relation rests on the
+      independent rational corner checker and the third route. All three routes share
+      Fraction arithmetic, and the two maintained routes the separating-axis method. The
+      source's own checkers, KKT and no-descent statements were not run or checked. Finite
+      feasibility only: no lower bound, optimum, local minimum, rigidity, novelty or human
+      oversight.
+    source_reviewed: '2026-10-10'
 
   - id: E-wand125-fine-net-n27-5655-followup-report
     claim: lower-bound
@@ -29206,6 +29272,72 @@ evidence:
       checker. The second maintained rational-geometry route is a separate deciding implementation;
       both routes share certificate parsing, half-angle conversion, Fraction arithmetic and the separating-axis
       method. No two independent methods, human oversight or optimality is claimed.'
+    external_review:
+      state: informally-verified
+      date: '2026-10-10'
+      reviewed_by: >-
+        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        intake pass under think-fvz4, prompted separately from the import lanes
+      note: >-
+        docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md accepted
+        all five certificates for finite feasibility only, with six non-blocking findings
+        (RD-1 to RD-6); the replay it reproduced is E-couzo-460-followup-exact-feasibility.
+  - id: E-couzo-460-followup-exact-feasibility
+    claim: upper-bound
+    scope:
+      n_values: [84, 86, 105, 175, 270]
+    assurance: verified
+    method: exact-algebraic
+    performed_by: repository
+    relationship_to_generator: independent-implementation
+    origin: replayed-here
+    novelty: previously-published
+    source_key: '[Couzo follow-up refinements 2026-10-08]'
+    certificate: packing/resources/web/couzo-followup-refinements-2026-10-08/facts/
+    replay: >-
+      From packing/ with the project interpreter: python -m devtools.couzo_followup_reports
+      check --replay decides all 15 retained jobs again through both maintained routes,
+      serially in one process, and holds each to its retained row (all equal, 130.5 s wall
+      on 2026-10-10); python -m devtools.check_half_angle_area decide --workers 2 decides
+      the five certificates by the third route with six controls each, and holds every
+      side, pose, margin and register decimal to the record (no disagreement, 37.0 s for
+      the review's fifteen certificates).
+    replay_status: passed
+    verifiers:
+      - V-sqpack-verify
+      - V-check-rational-witness-independent
+      - V-check-half-angle-area
+    independence_record: docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md
+    external_review:
+      state: informally-verified
+      date: '2026-10-10'
+      reviewed_by: >-
+        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        intake pass under think-fvz4, prompted separately from the import lanes
+      note: >-
+        Accepted for finite feasibility only. All 15 retained jobs reproduced on both
+        maintained routes, and the third route agreed with them at every side, pose, wall
+        clearance and register decimal; its 30 controls reached their required outcomes.
+        Findings RD-1 to RD-6, none blocking.
+    limitations: >-
+      All five certificates, kept as derived exact facts that rebuild each pinned blob,
+      pass both maintained routes and the third route; the 10 kernel controls are refused
+      by both maintained routes and the 30 third-route controls reach their required
+      outcomes, four per certificate at exact contact or 10^-40 to 10^-30 past it. The
+      receipt holds 384846 pair decisions, 131.84 route CPU seconds and 132.22 job wall
+      seconds; the longest job took 22.42 s. Every positive clears its nearest wall by
+      exactly 1/(2*10^20) and every pair by a Euclidean distance of at least
+      9.9999999999999865e-21. The kernel's own controls are gross (RD-2); the maintained routes read one parse and
+      one half-angle conversion (RD-3), which the third route's own reader closes; and the
+      source reports a pass from a copy of this repository's sqpack verifier, so one
+      maintained route is the producer's checker (RD-4) and the independently
+      re-implemented relation rests on the independent rational corner checker and the
+      third route. All three routes share Fraction arithmetic, and the two maintained
+      routes the separating-axis method. No private-worker custody is recorded for this
+      packet (RD-5), which a house move needs and this rung does not. The source's own
+      checkers, KKT and no-descent statements were not run or checked. Finite feasibility
+      only: no lower bound, optimum, local minimum, rigidity, novelty or human oversight.
+    source_reviewed: '2026-10-10'
   - id: E-evand-465-record-hunt-report
     claim: upper-bound
     scope:
@@ -29236,6 +29368,74 @@ evidence:
       The source checks with its own verify_cert.py and verify_cert2.py, not run here; the two maintained
       routes share certificate parsing, half-angle conversion, Fraction arithmetic and the separating-axis
       method. No two independent methods, human oversight or optimality is claimed.'
+    external_review:
+      state: informally-verified
+      date: '2026-10-10'
+      reviewed_by: >-
+        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        intake pass under think-fvz4, prompted separately from the import lanes
+      note: >-
+        docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md accepted
+        both certificates, n132 for T-131 and n155 as an evidence update to T-128, for
+        finite feasibility only, with six non-blocking findings (RD-1 to RD-6); the replay
+        it reproduced is E-evand-465-record-hunt-exact-feasibility.
+  - id: E-evand-465-record-hunt-exact-feasibility
+    claim: upper-bound
+    scope:
+      n_values: [132, 155]
+    assurance: verified
+    method: exact-algebraic
+    performed_by: repository
+    relationship_to_generator: independent-implementation
+    origin: replayed-here
+    novelty: previously-published
+    source_key: '[Daniel record hunt 2026-10-09]'
+    certificate: packing/resources/web/evand-record-hunt-2026-10-09/source/search/packer/candidates/
+    replay: >-
+      From packing/ with the project interpreter: python -m devtools.evand_hunt_reports
+      check --replay decides all six retained jobs again through both maintained routes
+      and holds each to its retained row (all equal, 38.5 s wall on 2026-10-10), and
+      check-claims rebuilds the frozen comparison with T-098, T-115 and T-128 (equal, 0.5
+      s); python -m devtools.check_half_angle_area decide --workers 2 decides both
+      certificates by the third route with six controls each, and holds every side, pose,
+      margin and register decimal to the record (no disagreement, 37.0 s for the review's
+      fifteen certificates).
+    replay_status: passed
+    verifiers:
+      - V-sqpack-verify
+      - V-check-rational-witness-independent
+      - V-check-half-angle-area
+    independence_record: docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md
+    external_review:
+      state: informally-verified
+      date: '2026-10-10'
+      reviewed_by: >-
+        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        intake pass under think-fvz4, prompted separately from the import lanes
+      note: >-
+        Accepted for finite feasibility only. All six retained jobs reproduced on both
+        maintained routes, the frozen comparison rebuilt equal, and the third route agreed
+        with them at every side, pose, wall clearance and register decimal; its 12
+        controls reached their required outcomes. Findings RD-1 to RD-6, none blocking.
+    limitations: >-
+      Both certificates, n132 for T-131 and n155 as an evidence update to T-128, pass both
+      maintained routes and the third route; the four kernel controls are refused by both
+      maintained routes and the 12 third-route controls reach their required outcomes. The
+      receipt holds 123486 pair decisions, 38.66 route CPU seconds and 38.79 job wall
+      seconds; the longest job took 7.72 s. Each positive clears its nearest wall by
+      exactly 1/(2*10^20) and every pair by a Euclidean distance of at least
+      9.9999999999999865e-21. The two n155 certificates share 152 of 155 exact poses and
+      differ exactly at the three squares the source's report lists as free or flat. The
+      kernel's own controls are gross (RD-2); the maintained routes read one parse and one
+      half-angle conversion (RD-3), which the third route's own reader closes. Neither
+      maintained route is the producer's checker here (RD-4). All three routes share
+      Fraction arithmetic, and the two maintained routes the separating-axis method. No
+      private-worker custody is recorded for this packet (RD-5), which a house move needs
+      and this rung does not. The source's verify_cert.py and verify_cert2.py were not
+      run, and its KKT, reduced-Hessian and jamming statements are not checked. Finite
+      feasibility only: no lower bound, optimum, local minimum, rigidity, novelty or human
+      oversight.
+    source_reviewed: '2026-10-10'
 
   - id: E-wand125-fine-net-n29-582-followup-report
     claim: lower-bound

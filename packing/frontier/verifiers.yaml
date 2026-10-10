@@ -1205,6 +1205,37 @@ verifiers:
       definition of the density, its D4 expansion and the transfer's formulas, and no
       code.
 
+  - id: V-check-half-angle-area
+    program: devtools.check_half_angle_area
+    author: Squares Project (Levy)
+    provenance: first-party
+    language: [Python]
+    methods: [exact-algebraic]
+    role: decides
+    summary: >-
+      Decides a rational centre and half-angle certificate, or a rational centre-basis
+      witness, in Fraction arithmetic: every rotation on the unit circle, containment in
+      the closed box by each square's half-extent with no corner formed, and disjoint
+      interiors by the circumscribed-disc rule, else by the exact area of one square
+      clipped by the other's four closed half-planes. It reads Evan Daniel's text format,
+      SQUISH's JSON, the centred JSON of issue 483 and derived facts with readers of its
+      own, runs six controls per certificate (two gross, and side and pair each at exact
+      contact and 10^-40 or 10^-30 past it), and holds every side, pose, margin and
+      claimed side to the maintained routes' retained inputs and the record. Its
+      replay-t128 command drives the kernel's own two-route replay of T-128's receipt.
+    source:
+      - packing/devtools/check_half_angle_area.py
+      - packing/tests/test_check_half_angle_area.py
+    independence_record: packing/devtools/check_half_angle_area.py
+    note: >-
+      Written on 2026-10-10 by the review lane of T-128, T-130 and T-131 from the
+      certificate formats and plane geometry, and extended the same day by the review
+      lane of issues 476, 481, 483 and 484. Its author had read both maintained routes,
+      their parser and the importer's adapters before writing it, so it is not
+      clean-room; it imports none of their parsing or deciding code and shares Fraction
+      with every exact checker here. It is a second pair-deciding procedure within one
+      method, exact-algebraic, not a second method.
+
   # --- First-party programs: premise checks and replay drivers ------------------------
   - id: V-evand-exact-certificates
     program: devtools.evand_exact_certificates

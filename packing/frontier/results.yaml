@@ -12993,14 +12993,34 @@ results:
     registered: '2026-10-08'
     headline: Eight complete rational refinements from Francisco Couzo
     claim: >-
-      Eight complete rational source certificates report finite upper-bound improvements at the
-      exact sides they state: s(105) <= 10.790618268107144505815379335866, s(108) <=
-      10.904821012320356429055628704222, s(127) <= 11.810878787589179839642367108002, s(131) <=
-      11.951105389414677460694240669403, s(155) <= 12.95249894401400738196585056694, s(180) <=
-      13.916993522477832483558124720393, s(228) <= 15.604601475729674284720634102188 and s(306)
-      <= 17.963433717491425739593840075522. Complete native feasibility outcomes are retained
-      separately; selected standing cases are unchanged pending historical source-house
-      integration and record review.
+      Eight complete rational source certificates by Francisco Couzo, reported on
+      jlevy/squares#451, prove finite upper bounds at the exact sides they state: s(105) <=
+      10.790618268107144505815379335866, s(108) <= 10.904821012320356429055628704222, s(127)
+      <= 11.810878787589179839642367108002, s(131) <= 11.951105389414677460694240669403,
+      s(155) <= 12.95249894401400738196585056694, s(180) <=
+      13.916993522477832483558124720393, s(228) <= 15.604601475729674284720634102188 and
+      s(306) <= 17.963433717491425739593840075522.
+
+      Each certificate gives a rational side and, for each unit square, a rational centre
+      and the tangent of its half-angle, in Evan Daniel's format. The source reports passes
+      from a copy of this repository's sqpack verifier in exact rational arithmetic.
+
+      All 24 retained jobs, the eight positives with their duplicate-square and
+      outside-container controls, were decided again here on 10 October 2026 by both
+      maintained exact routes and equal their retained rows, and a third exact route,
+      half-extent containment and exact intersection area, decided the eight certificates
+      with six controls each. One maintained route is the verifier the source ran; the
+      independent rational corner checker and the third route are independently
+      re-implemented. The 10 October review found no blocking defect.
+
+      Each side is below the ceiling its case holds; the case records are unchanged until a
+      house is adopted, so each is pending adoption.
+
+      Credit Francisco Couzo (https://github.com/franciscouzo/square-packing), refining Ryan
+      Xu's packings at 105, 108, 127 and 131, Nate Chaoweeraprasit's SQUISH packings at 155
+      and 180 (180 through Siddharth Gupta) and his own at 228 and 306, with David
+      Ellsworth's refine_packing, his basin hopping and Evan Daniel's fq; Daniel's exact
+      contact solver wrote every certificate.
     scope:
       n_values:
       - 105
@@ -13011,8 +13031,8 @@ results:
       - 180
       - 228
       - 306
-    verification: V0
-    confirmation: C0
+    verification: V3
+    confirmation: C3
     significance:
       score: 3
       rationale: Eight smaller finite construction sides; no lower bound or optimum.
@@ -13025,7 +13045,9 @@ results:
       published: '2026-10-08'
     evidence:
     - E-couzo-451-rational-report
+    - E-couzo-451-exact-feasibility
     - E-evand-465-record-hunt-report
+    - E-evand-465-record-hunt-exact-feasibility
     artifacts:
     - packing/resources/web/couzo-exact-refinements-2026-10-08/README.md
     - packing/resources/web/couzo-exact-refinements-2026-10-08/acquisition/case-inputs.json
@@ -13035,32 +13057,69 @@ results:
     - packing/resources/web/couzo-exact-refinements-2026-10-08/receipts/execution-attempts.json
     - packing/resources/web/couzo-exact-refinements-2026-10-08/receipts/private-custody-668cc1a-v1.json
     - packing/devtools/couzo_refinement_reports.py
+    - packing/devtools/check_half_angle_area.py
+    - docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md
     controls:
     - packing/tests/test_couzo_refinement_reports.py
     - packing/tests/test_couzo_custody.py
     - packing/tests/test_negative_controls.py
-    notes: 'All sixteen complete original factual files and all 24 native jobs are retained. The first
-      two-worker attempt was incomplete after 181.19 seconds; the fresh serial attempt passed in 398.40
-      seconds (6.64 wall minutes, 4.1025 CPU minutes) with unchanged 45-second children.
+    - packing/tests/test_check_half_angle_area.py
+    notes: >-
+      All sixteen complete original factual files and all 24 native jobs are retained. The
+      first two-worker attempt was incomplete after 181.19 seconds; the fresh serial attempt
+      passed in 398.40 seconds (6.64 wall minutes, 4.1025 CPU minutes) with unchanged
+      45-second children.
 
+      The actual private worker passed complete stored-input admission, six late mutations
+      and restoration checks without geometric deciders: 8.91 seconds call, 26.72 seconds
+      setup and 38.36 seconds total. The call fits the unchanged 12-second fast ceiling; the
+      child deadline remains 45 seconds.
 
-      The actual private worker passed complete stored-input admission, six late mutations and restoration
-      checks without geometric deciders: 8.91 seconds call, 26.72 seconds setup and 38.36 seconds total.
-      The call fits the unchanged 12-second fast ceiling; the child deadline remains 45 seconds.
+      V3 and C3 rest on the 10 October review
+      (docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md) and the
+      replay it reproduced (E-couzo-451-exact-feasibility). This packet's module has no
+      replay command of its own (RD-1), so check_half_angle_area replay-t128 drove the
+      kernel's replay of the retained receipt. Every positive clears its nearest wall by
+      exactly 1/(2*10^20) on all three routes. The kernel's controls are gross (RD-2), the
+      maintained routes share one parse and half-angle conversion (RD-3), and sqpack.verify
+      is the copy the source ran (RD-4); none blocks.
 
+      On 2026-10-09 Evan Daniel's issue 465 certificate hunt1_n155.cert was retained and
+      replayed here: it states exactly this entry's n155 side and differs from Couzo's
+      certificate only in the free square and two flat-motion squares its report lists. The
+      10 October review accepted it as an equal-side certificate
+      (E-evand-465-record-hunt-exact-feasibility); it moves no rung.
 
-      The source author copied this repository''s sqpack verifier, so the exact_verify route overlaps
-      that source checker. The second maintained rational-geometry route is a separate deciding implementation;
-      both routes share certificate parsing, half-angle conversion, Fraction arithmetic and the separating-axis
-      method. No two independent methods, human oversight or optimality is claimed.
-
-
-      On 2026-10-09 Evan Daniel''s issue 465 certificate hunt1_n155.cert was retained and replayed here: it states exactly this entry''s n155 side and differs from Couzo''s certificate
-      only in the free square and two flat-motion squares its report lists (E-evand-465-record-hunt-report).
-      It moves no rung.'
-    next_rung: Preserve and validate each complete historical source house before any selected-house
-      replacement, then independently review source-specific adoption and confirming records. Final
-      exact-head CI remains required.
+      The review recommends T-128 as the house at 108, 127, 155, 180, 228 and 306, Couzo's
+      n155 certificate, committed nine hours before Daniel's, holding 155. At 105 T-130's
+      side is smaller and at 131 issue 481's, so T-128's stay verified there and are not
+      selected. No house moves until jlevy/squares#403, which rewrites every case record,
+      lands.
+    next_rung: >-
+      V4 and C4 need a second accepted adversarial review of this replay by a distinct
+      reviewer and a retained human oversight record; the 10 October review is one, by an
+      AI agent. Separately, once jlevy/squares#403 lands, adopt T-128 as the house at 108,
+      127, 155, 180, 228 and 306 with each earlier house kept as history.
+    reviews:
+    - path: docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md
+      kind: adversarial
+      reviewer: >-
+        AI agent (Claude, model Opus 5.5, claude-opus-5-5), the stage 4 review lane (W2)
+        of the 2026-10-10 intake pass under think-fvz4, prompted separately from the
+        import lanes that built the three packets, with no shared context
+      reviewer_kind: ai
+      relation: project
+      date: '2026-10-10'
+      scope: >-
+        Finite feasibility of the fourteen certificates T-128, T-130 and T-131 register
+        and of Daniel's equal-side n155 certificate: every retained receipt replayed on
+        both maintained routes, a third exact route with sharp controls, the argument from
+        certificate to bound, each route's trust boundary, and the adoption per count.
+      verdict: accepted
+      covers:
+      - T-128
+      - T-130
+      - T-131
   - id: T-129
     kind: upper-bound
     registered: '2026-10-08'
@@ -13106,12 +13165,31 @@ results:
     registered: '2026-10-09'
     headline: Five follow-up rational refinements from Francisco Couzo
     claim: >-
-      Five complete rational source certificates report finite upper-bound improvements at the
-      exact sides they state: s(84) <= 9.697934799014921307163820128651, s(86) <=
-      9.820535407496742209971278280039, s(105) <= 10.789303783748158831034729697921, s(175) <=
-      13.767155163542549110085664417048 and s(270) <= 16.9367230228761834072968722597. Complete
-      native feasibility outcomes are retained separately; selected standing cases are unchanged
-      pending independent review, historical source-house integration and record review.
+      Five complete rational source certificates by Francisco Couzo, reported in a comment
+      on pull request jlevy/squares#460, prove finite upper bounds at the exact sides they
+      state: s(84) <= 9.697934799014921307163820128651, s(86) <=
+      9.820535407496742209971278280039, s(105) <= 10.789303783748158831034729697921, s(175)
+      <= 13.767155163542549110085664417048 and s(270) <= 16.9367230228761834072968722597.
+
+      Each certificate gives a rational side and, for each unit square, a rational centre
+      and the tangent of its half-angle, in Evan Daniel's format. The source reports passes
+      from Evan Daniel's verify_cert.py and a copy of this repository's sqpack verifier.
+
+      All 15 retained jobs, the five positives with their duplicate-square and
+      outside-container controls, were decided again here on 10 October 2026 by both
+      maintained exact routes and equal their retained rows, and a third exact route,
+      half-extent containment and exact intersection area, decided the five certificates
+      with six controls each. One maintained route is the verifier the source ran; the
+      independent rational corner checker and the third route are independently
+      re-implemented. The 10 October review found no blocking defect.
+
+      Each side is below the ceiling its case holds; the case records are unchanged until a
+      house is adopted, so each is pending adoption.
+
+      Credit Francisco Couzo (https://github.com/franciscouzo/square-packing), refining Ryan
+      Xu's packings at 84, 86, 105 and 175 and Evan Daniel's at 270 by his basin hopping
+      and, at 175, David Ellsworth's refine_packing and Evan Daniel's fq; Daniel's exact
+      contact solver wrote the certificates.
     scope:
       n_values:
       - 84
@@ -13119,8 +13197,8 @@ results:
       - 105
       - 175
       - 270
-    verification: V0
-    confirmation: C0
+    verification: V3
+    confirmation: C3
     significance:
       score: 3
       rationale: Five smaller finite construction sides; no lower bound or optimum.
@@ -13133,6 +13211,7 @@ results:
       published: '2026-10-08'
     evidence:
     - E-couzo-460-followup-rational-report
+    - E-couzo-460-followup-exact-feasibility
     artifacts:
     - packing/resources/web/couzo-followup-refinements-2026-10-08/README.md
     - packing/resources/web/couzo-followup-refinements-2026-10-08/acquisition/sources.json
@@ -13143,47 +13222,92 @@ results:
     - packing/resources/web/couzo-followup-refinements-2026-10-08/facts/n-270.yaml
     - packing/resources/web/couzo-followup-refinements-2026-10-08/receipts/exact-certification.json.xz
     - packing/devtools/couzo_followup_reports.py
+    - packing/devtools/check_half_angle_area.py
+    - docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md
     controls:
     - packing/tests/test_couzo_followup_reports.py
-    notes: 'All five complete certificates are kept as derived exact facts that rebuild each pinned
-      blob; no upstream byte is retained. A separate complete repository replay is retained: five positives
-      and ten duplicate-square and outside-container controls passed their required outcomes on both
-      routes, 384846 pair decisions with two workers and unchanged kernel limits. Summed over the fifteen
-      jobs, the receipt records 131.84 route CPU seconds and 132.22 job wall seconds; the longest job
-      took 22.42 seconds.
+    - packing/tests/test_check_half_angle_area.py
+    notes: >-
+      All five complete certificates are kept as derived exact facts that rebuild each
+      pinned blob; no upstream byte is retained. A separate complete repository replay is
+      retained: five positives and ten duplicate-square and outside-container controls
+      passed their required outcomes on both routes, 384846 pair decisions with two workers
+      and unchanged kernel limits. Summed over the fifteen jobs, the receipt records 131.84
+      route CPU seconds and 132.22 job wall seconds; the longest job took 22.42 seconds.
 
+      V3 and C3 rest on the 10 October review
+      (docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md) and the
+      replay it reproduced (E-couzo-460-followup-exact-feasibility). Every positive clears
+      its nearest wall by exactly 1/(2*10^20) on all three routes. The kernel's controls are
+      gross (RD-2), the maintained routes share one parse and half-angle conversion (RD-3),
+      and sqpack.verify is the copy the source ran (RD-4); none blocks. No private-worker
+      custody is on file for this packet (RD-5).
 
-      The earlier issue451 n105 certificate (T-128) stays retained with its own replay outcomes; the
-      new n105 side is smaller by exactly 262896871797134956129927589/200000000000000000000000000000.
-      Ryan Xu''s T-125 certificates at 84, 86, 105 and 175 and Evan Daniel''s T-119 certificate at 270
-      remain the selected and verified ceilings. The source seeds 84, 86, 105 and 175 from Ryan Xu''s
-      #432 packings and 270 from Evan Daniel''s #399 packing, refined by Couzo''s basin hopping and,
-      at 175, David Ellsworth''s refine_packing and Evan Daniel''s fq; Daniel''s exact contact solver
-      wrote the certificates.
-
-
-      The source author reports passes from Evan Daniel''s verify_cert.py and a copy of this repository''s
-      sqpack verifier, so the exact_verify route overlaps that source checker. The second maintained
-      rational-geometry route is a separate deciding implementation; both routes share certificate parsing,
-      half-angle conversion, Fraction arithmetic and the separating-axis method. No two independent
-      methods, human oversight or optimality is claimed.'
-    next_rung: Independently review the retained replay, preserve each complete historical source house
-      (Ryan Xu at 84, 86, 105 and 175; Evan Daniel at 270) before any selected-house replacement, then
-      record source-specific adoption and confirming evidence. Final exact-head CI remains required.
+      The earlier issue451 n105 certificate (T-128) stays retained with its own replay
+      outcomes; the new n105 side is smaller by exactly
+      262896871797134956129927589/200000000000000000000000000000. The review recommends
+      T-130 as the house at 84, 86, 105 and 175, Ryan Xu's T-125 certificates kept as
+      history. At 270 issue 481's and issue 476's sides are smaller, so T-130's stays
+      verified there and is not selected, and Evan Daniel's T-119 certificate stays the
+      case's ceiling until then. No house moves until jlevy/squares#403 lands.
+    next_rung: >-
+      V4 and C4 need a second accepted adversarial review of this replay by a distinct
+      reviewer and a retained human oversight record; the 10 October review is one, by an
+      AI agent. Separately, once jlevy/squares#403 lands and this packet's private-worker
+      custody is on file (RD-5), adopt T-130 as the house at 84, 86, 105 and 175 with each
+      earlier house kept as history.
+    reviews:
+    - path: docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md
+      kind: adversarial
+      reviewer: >-
+        AI agent (Claude, model Opus 5.5, claude-opus-5-5), the stage 4 review lane (W2)
+        of the 2026-10-10 intake pass under think-fvz4, prompted separately from the
+        import lanes that built the three packets, with no shared context
+      reviewer_kind: ai
+      relation: project
+      date: '2026-10-10'
+      scope: >-
+        Finite feasibility of the fourteen certificates T-128, T-130 and T-131 register
+        and of Daniel's equal-side n155 certificate: every retained receipt replayed on
+        both maintained routes, a third exact route with sharp controls, the argument from
+        certificate to bound, each route's trust boundary, and the adoption per count.
+      verdict: accepted
+      covers:
+      - T-128
+      - T-130
+      - T-131
   - id: T-131
     kind: upper-bound
     registered: '2026-10-09'
     headline: "`s(132) ≤ 11.987099332245063…` from Evan Daniel's record hunt"
     claim: >-
-      One complete rational source certificate reports a finite upper-bound improvement at the exact
-      side it states: s(132) <= 11.987099332245063227179742877435. Complete native feasibility outcomes
-      are retained separately; the selected standing case is unchanged pending independent review and
-      record review.
+      One complete rational source certificate by Evan Daniel, reported on
+      jlevy/squares#465, proves a finite upper bound at the exact side it states: s(132) <=
+      11.987099332245063227179742877435.
+
+      The certificate gives a rational side and, for each unit square, a rational centre and
+      the tangent of its half-angle. The source checks it with its own verify_cert.py and
+      verify_cert2.py, and reports a different local minimum from the case's, reached from
+      Francisco Couzo's packing by an uphill excursion.
+
+      All six retained jobs of the release, its n132 and n155 positives with their
+      duplicate-square and outside-container controls, were decided again here on 10
+      October 2026 by both maintained exact routes and equal their retained rows, and a
+      third exact route, half-extent containment and exact intersection area, decided both
+      certificates with six controls each. No route here is the source's code, so the
+      replay is independently re-implemented. The 10 October review found no blocking
+      defect.
+
+      The side is below the case's ceiling, Evan Daniel's exact optimum of Francisco
+      Couzo's packing (T-098); the case record is unchanged, so it is pending adoption.
+
+      Credit Evan Daniel (https://github.com/evand/square-packing), from Francisco Couzo's
+      packing.
     scope:
       n_values:
       - 132
-    verification: V0
-    confirmation: C0
+    verification: V3
+    confirmation: C3
     significance:
       score: 3
       rationale: A smaller finite construction side, 4.23e-3 below the case's ceiling; no lower bound
@@ -13197,46 +13321,73 @@ results:
       published: '2026-10-09'
     evidence:
     - E-evand-465-record-hunt-report
+    - E-evand-465-record-hunt-exact-feasibility
     artifacts:
     - packing/resources/web/evand-record-hunt-2026-10-09/README.md
     - packing/resources/web/evand-record-hunt-2026-10-09/acquisition/claims.json
     - packing/resources/web/evand-record-hunt-2026-10-09/source/search/packer/candidates/hunt1_n132.cert
     - packing/resources/web/evand-record-hunt-2026-10-09/receipts/exact-certification.json.xz
     - packing/devtools/evand_hunt_reports.py
+    - packing/devtools/check_half_angle_area.py
+    - docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md
     controls:
     - packing/tests/test_evand_hunt_reports.py
-    notes: 'The certificate, its 80-digit KKT point, binary64 input and solver report are retained
-      unchanged under the source''s MIT licence. A separate complete repository replay is retained: the
-      n132 and n155 positives and four duplicate-square and outside-container controls passed their required
-      outcomes on both routes, 123486 pair decisions; summed over the six jobs, the receipt records 38.66
-      route CPU seconds and 38.79 job wall seconds, the longest job 7.72 seconds. The n132 positive clears
-      every wall by 1/200000000000000000000 and every pair by just under 1e-20.
+    - packing/tests/test_check_half_angle_area.py
+    notes: >-
+      The certificate, its 80-digit KKT point, binary64 input and solver report are retained
+      unchanged under the source's MIT licence. A separate complete repository replay is
+      retained: the n132 and n155 positives and four duplicate-square and outside-container
+      controls passed their required outcomes on both routes, 123486 pair decisions; summed
+      over the six jobs, the receipt records 38.66 route CPU seconds and 38.79 job wall
+      seconds, the longest job 7.72 seconds. The n132 positive clears every wall by
+      1/200000000000000000000 and every pair by just under 1e-20.
 
+      V3 and C3 rest on the 10 October review
+      (docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md) and the
+      replay it reproduced (E-evand-465-record-hunt-exact-feasibility). The kernel's
+      controls are gross (RD-2) and the maintained routes share one parse and half-angle
+      conversion (RD-3), which the third route's own reader closes; none blocks. No
+      private-worker custody is on file for this packet (RD-5).
 
-      The exact side lies 84571108928763690161985083/20000000000000000000000000000 below the case''s
-      selected and verified ceiling, Evan Daniel''s exact optimum of Francisco Couzo''s packing (T-098),
-      which stays retained with its own replay. The source reports a different local minimum, reached
-      from Couzo''s packing by an uphill excursion.
+      The exact side lies 84571108928763690161985083/20000000000000000000000000000 below the
+      case's selected and verified ceiling, T-098, which stays retained with its own replay.
+      Issue 476's exact side at 132 is smaller still, so the review recommends #476 as the
+      house there, with T-131 verified and not selected and T-098 kept as history.
 
+      The same release's n155 certificate states exactly the n155 side of Couzo's issue451
+      certificate (T-128) and shares 152 of its 155 exact poses; the three differing indices
+      are exactly those its source report labels as a free square and two flat-motion
+      squares. A connecting motion and equivalence of local minima have not been verified.
+      It is an evidence update to T-128 rather than a new entry, and issue 465 maps it
+      there.
 
-      The same release''s n155 certificate states exactly
-      the n155 side of Couzo''s issue451 certificate (T-128) and shares 152 of its 155 exact poses;
-      the three differing indices are exactly those its source report labels as a free square and two
-      flat-motion squares. A connecting motion and equivalence of local minima have not been verified.
-      T-128''s side is pending adoption,
-      not a value a case record holds, so the n155 certificate is an evidence update to T-128 rather
-      than a new entry, and issue 465 maps it there.
-
-
-      The source checks with its own verify_cert.py and verify_cert2.py, not run here. The two maintained
-      routes, the sqpack rational witness verifier and the independent rational corner checker, share
-      certificate parsing, half-angle conversion, Fraction arithmetic and the separating-axis method.
-      The author''s KKT, reduced-Hessian and jamming statements are numerical and not checked. No two
-      independent methods, human oversight or optimality is claimed.'
-    next_rung: Independently review the retained replay and compare the latest reported n132 candidates,
-      including https://github.com/jlevy/squares/issues/476, before choosing a selected-house replacement.
-      Keep T-098's certificate as the historical house at 132, then record any source-specific adoption
-      and confirming evidence. Final exact-head CI remains required.
+      The author's KKT, reduced-Hessian and jamming statements are numerical and not
+      checked. No two independent methods, human oversight or optimality is claimed.
+    next_rung: >-
+      V4 and C4 need a second accepted adversarial review of this replay by a distinct
+      reviewer and a retained human oversight record; the 10 October review is one, by an
+      AI agent. No house move is due: at 132 issue 476's smaller side is the one the review
+      recommends adopting.
+    reviews:
+    - path: docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md
+      kind: adversarial
+      reviewer: >-
+        AI agent (Claude, model Opus 5.5, claude-opus-5-5), the stage 4 review lane (W2)
+        of the 2026-10-10 intake pass under think-fvz4, prompted separately from the
+        import lanes that built the three packets, with no shared context
+      reviewer_kind: ai
+      relation: project
+      date: '2026-10-10'
+      scope: >-
+        Finite feasibility of the fourteen certificates T-128, T-130 and T-131 register
+        and of Daniel's equal-side n155 certificate: every retained receipt replayed on
+        both maintained routes, a third exact route with sharp controls, the argument from
+        certificate to bound, each route's trust boundary, and the adoption per count.
+      verdict: accepted
+      covers:
+      - T-128
+      - T-130
+      - T-131
 
   - id: T-132
     kind: lower-bound

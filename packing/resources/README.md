@@ -917,11 +917,13 @@ and a diagnostic eight-direction sample.
 A complete replay and whole-net controls remain pending.
 
 - **[Couzo exact refinements 2026-10-08]** — Francisco Couzo’s eight complete rational
-  certificates and separate decimal context poses; T-128 remains V0/C0 pending
-  historical source-house integration and confirmation.
-  All 24 native jobs completed their finite-feasibility and control outcomes in 6.64
-  wall minutes; actual private-worker custody passed complete stored-input and
-  mutation-restoration checks.
+  certificates and separate decimal context poses.
+  T-128 is at V3/C3 on the
+  [review of 10 October](../../docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md),
+  which reproduced every job and decided all eight by a third exact route; house
+  adoption waits for jlevy/squares#403. All 24 native jobs completed their
+  finite-feasibility and control outcomes in 6.64 wall minutes; actual private-worker
+  custody passed complete stored-input and mutation-restoration checks.
   [Factual packet](web/couzo-exact-refinements-2026-10-08/README.md).
   Ryan Xu, Nate Chaoweeraprasit, Siddharth Gupta, David Ellsworth and Evan Daniel
   receive the source’s construction/refinement credits; no optimality is asserted.
@@ -964,11 +966,11 @@ A complete replay and whole-net controls remain pending.
   rational certificates at 84, 86, 105, 175 and 270, pinned at 2d32a6e and kept as
   derived exact facts with the complete pinned tree; no upstream byte is retained.
   [Derived packet](web/couzo-followup-refinements-2026-10-08/README.md).
-  T-130 remains V0/C0: all five positives passed both maintained exact routes and both
-  routes refused all ten controls, while independent review, historical source-house
-  integration and confirmation remain pending.
-  Ryan Xu, Evan Daniel and David Ellsworth receive the source’s seed and refinement
-  credits; no optimality is asserted.
+  All five positives passed both maintained exact routes and both routes refused all ten
+  controls; T-130 is at V3/C3 on the
+  [review of 10 October](../../docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md),
+  and house adoption waits for jlevy/squares#403. Ryan Xu, Evan Daniel and David
+  Ellsworth receive the source’s seed and refinement credits; no optimality is asserted.
 
 ## Evan Daniel’s record-hunt certificates, 9 October 2026
 
@@ -978,7 +980,9 @@ A complete replay and whole-net controls remain pending.
 with their KKT points, inputs and solver reports;
 [packet](web/evand-record-hunt-2026-10-09/README.md).
 Both project exact routes accept both certificates and refuse all four controls.
-T-131 records the n = 132 side at V0/C0, pending independent review and adoption.
+T-131 records the n = 132 side at V3/C3 on the
+[review of 10 October](../../docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md);
+issue 476’s smaller n = 132 side is the house that review recommends.
 The n = 155 side equals Couzo’s earlier issue451 certificate (T-128), with which it
 shares 152 of 155 exact poses, differing only in the free and flat-motion squares the
 source’s report lists; it is recorded as an evidence update to T-128. The source credits
