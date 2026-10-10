@@ -1848,6 +1848,23 @@ sources:
       implementation, regression tests, packaging and the update under the author's direction,
       and asks that Joshua Levy / the Squares Project be credited for the concave-section
       inspiration (web/guzhou-n40-continuous-pose-2026-10-10/README.md). Dated by that commit.
+  - key: '[Daniel regularized lists 2026-10-10]'
+    authors: [Daniel]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-10'
+    lineage: builds-on-project
+    credit: Daniel after Xu, Chaoweeraprasit, Mishapolk, Deleeuw, Levy
+    short_credit: Daniel after Xu et al.
+    note: >-
+      Fifteen complete exact certificates at ea1a2f23678a13bd1d252f9f4c95ca5dd2ffd2b7,
+      unchanged since 346c6ed, from the display-regularized record lists of search/regularize,
+      made for this project's poster with orientations fitted to its known-best witnesses:
+      each the source's best packing at its count solved to its exact side, regularized for
+      display at that side and scaled by 1 + 1e-20. The packings are Xu's, Deleeuw's,
+      Mishapolk's and Chaoweeraprasit's. MIT-licensed certificates and JSON retained; Claude
+      assistance disclosed. The source claims no record; no KKT, same-packing, local or
+      global optimality is admitted.
 credited_names:
   Nate Chaoweeraprasit (itsnaka): Chaoweeraprasit
   Siddharth Gupta: Gupta

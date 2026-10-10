@@ -1094,6 +1094,17 @@ rows that supersede issue #484’s. The unnamed n = 305 certificate has exactly 
 #488’s side there, and the source’s log drops it as Couzo’s. The source credits Kevin
 Fang’s #484 packings at 308, 343 and 344 and discloses Claude assistance.
 
+## Evan Daniel’s regularized record lists, 10 October 2026
+
+**[Daniel regularized lists 2026-10-10]**: Evan Daniel’s exact rational certificates
+from his display-regularized record lists for n = 70, 102, 103, 123, 129, 146, 153, 236,
+258, 263, 269, 292, 295, 302 and 303, the fifteen below every value the record held,
+pinned at `ea1a2f23678a13bd1d252f9f4c95ca5dd2ffd2b7` and retained as their upstream gzip
+under the source’s MIT licence; [packet](web/evand-regularized-2026-10-10/README.md).
+Both project exact routes accept all fifteen and refuse all 30 controls, and a third
+exact route agrees. The source calls each a display view at the same side and not a new
+bound; T-146 records the sides at V0/C0, pending independent review and adoption.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->

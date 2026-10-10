@@ -15155,3 +15155,170 @@ results:
 
       n = 40's reported and verified lower bounds move from T-133's 335427/50000, which the case
       record keeps as history, to 1340000/199529. Ids are provisional until merged to main.
+
+  - id: T-146
+    kind: upper-bound
+    registered: '2026-10-10'
+    headline: Exact rational certificates at fifteen counts from Evan Daniel's regularized record lists
+    claim: >-
+      Fifteen complete rational certificates from Evan Daniel's display-regularized record
+      lists, which no issue reports, state finite upper bounds at their exact sides: s(70)
+      <= 8.880960371555579594785501178639, s(102) <= 10.605828696431578360490734944053,
+      s(103) <= 10.679232047361306442680936279997, s(123) <=
+      11.591378145497698159550863183468, s(129) <= 11.872029849081179973752429831968,
+      s(146) <= 12.583782277415076881948309755914, s(153) <=
+      12.872029849081179973762429831968, s(236) <= 15.863955747159267422617702706295,
+      s(258) <= 16.563448002133789379765816191273, s(263) <=
+      16.733166007899378970679613144039, s(269) <= 16.901513582189132198548012552701,
+      s(292) <= 17.591378145497698159610863183468, s(295) <=
+      17.704232790736030358056092972112, s(302) <= 17.872029849081179973812429831968 and
+      s(303) <= 17.913065462738532305839753791206. Each is below every value the record
+      held or had pending at its count when read, by 2.21e-17 at 302 to 7.82e-10 at 295; the
+      source claims no record. Complete native feasibility outcomes are retained separately;
+      the selected standing cases are unchanged pending independent review and record
+      review.
+
+      REGULARIZE.md reports every one of the lists' 324 certificates VALID under the source's
+      two exact checkers, verify_cert.py and verify_cert2.py, and verified at 80 digits; the
+      checkers are byte-identical to the copies the issue-399 packet retains. It calls each
+      refreshed side the exact optimum of the store's best packing, and classes each of the
+      fifteen as level 2, same packing traversable without expansion, by a path test that
+      samples angle paths in 0.01 degree steps and that it says is not a continuous proof.
+      Those statements are the author's; no source program ran here.
+
+      Credit the packings to their finders, as the record holds them: Ryan Xu's (ry-xu,
+      https://github.com/ry-xu/square_packing, issue 432) at 70, 102, 123, 129, 146 and 295,
+      which at 70 Eric Deleeuw had refined (issue 483); Mishapolk's at 103 and 258 (issue
+      470), refinements of Ryan Xu's and of SQUISH's; and Nate Chaoweeraprasit's SQUISH
+      packings of issue 481 at 153, 236, 263, 269, 292, 302 and 303, composed from pieces of
+      Francisco Couzo's, Ryan Xu's and earlier packings. Evan Daniel
+      (https://github.com/evand/square-packing) refreshed each from his store, solved it to
+      the exact side stated, regularized it for display at that side and wrote the
+      certificate. His lists name instead the finders of the arrangements the packings
+      descend from: Joe DeVincentis at 70, Francisco Couzo at 102, 103, 123, 236, 263, 269,
+      292, 302 and 303, David Ellsworth at 129 and 153 and David W. Cantrell at 146, and no
+      one at 258 and 295. The source claims no record, and its credits say the repository's
+      work was produced by Claude (Anthropic) under human direction.
+    scope:
+      n_values: [70, 102, 103, 123, 129, 146, 153, 236, 258, 263, 269, 292, 295, 302, 303]
+    verification: V0
+    confirmation: C0
+    significance:
+      score: 2
+      rationale: >-
+        Smaller finite construction sides at fifteen counts from 70 to 303, 2.21e-17 to
+        7.82e-10 below the least side the record held or had pending at each (5.36e-12 to
+        9.28e-03 below the case ceilings): the exact optima of packings the record already
+        credits, a citable detail of each case that moves no theorem, S2 as T-098 is; no
+        lower bound or optimum.
+      scored: '2026-10-10'
+      by: think-8k76 Evan Daniel import (draft)
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Daniel regularized lists 2026-10-10]']
+      published: '2026-10-10'
+    activity:
+      state: in-analysis
+      what: >-
+        The stage 4 review of the retained replay, the third route's reading and the credit
+        each certificate would take, run separately from the import lane.
+      since: '2026-10-10'
+      link: think-8k76
+    evidence:
+      - E-evand-regularized-certificate-report
+    artifacts:
+      - packing/resources/web/evand-regularized-2026-10-10/README.md
+      - packing/resources/web/evand-regularized-2026-10-10/acquisition/claims.json
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-070.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-102.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-103.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-123.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-129.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-146.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-153.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-236.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-258.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-263.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-269.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-292.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-295.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-302.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-303.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/receipts/exact-certification.json.xz
+      - packing/devtools/upper_bound_reports.py
+      - packing/devtools/check_half_angle_area.py
+    controls:
+      - packing/tests/test_upper_bound_reports.py
+      - packing/tests/test_upper_bound_reports_regularized.py
+      - packing/tests/test_check_half_angle_area.py
+    notes: >-
+      A separate complete repository replay is retained for n = 70, 102, 103, 123, 129, 146,
+      153, 236, 258, 263, 269, 292, 295, 302 and 303: 15 positives and 30 duplicate-square
+      and outside-container controls passed their required outcomes on both routes, 2155368
+      pair decisions; summed over the 45 jobs, the receipt records 413.8 route CPU seconds
+      and 566.29 job wall seconds, the longest job 39.16 seconds. Every positive clears every
+      wall by at least 5.00e-21 and every pair by at least 9.99e-21. A fresh serial check
+      --replay decided all 45 jobs again, equal to the retained rows.
+
+      The third exact route (devtools.check_half_angle_area decide-imports --imports
+      regularized) accepts all fifteen, reaches the required outcome on all 90 of its
+      controls, and finds the same least wall clearance, 5e-21, and a least Euclidean
+      distance between squares of 1.00e-20 at every count. Run with --upstream at the pin,
+      it holds each retained gzip to its upstream bytes and each offered side to the S_cert
+      its JSON prints: 30 checks, no disagreement.
+
+      At n = 70 the certificate is below the case's ceiling (Ryan Xu, T-125) by 1.53e-10 and
+      T-137 (issue 483, Eric Deleeuw) by 1.07e-11. At n = 102, 123, 129, 146 and 295 it is
+      below the case's ceiling (Ryan Xu, T-125) by 7.90e-11, 2.14e-10, 1.31e-10, 9.75e-11 and
+      7.82e-10, with no pending report. At n = 103 it is below the case's ceiling (Ryan Xu,
+      T-125) by 1.49e-10 and T-138 (issue 470, Mishapolk) by 6.94e-13; at n = 258 below the
+      case's (Nate Chaoweeraprasit, T-115) by 5.36e-12 and T-138 by 4.21e-12. At n = 153 and
+      236 it is below the case's ceiling (Nate Chaoweeraprasit, improved by Siddharth Gupta,
+      T-127) by 7.65e-03 and 3.85e-03, and T-136 (issue 481, Nate Chaoweeraprasit) by
+      8.48e-16 and 3.29e-16. At n = 263 it is below the case's ceiling (Nate
+      Chaoweeraprasit, T-116) by 7.25e-03, T-134 (issue 476, Francisco Couzo) by 7.25e-03 and
+      T-136 by 5.05e-13. At n = 269 it is below the case's ceiling (Francisco Couzo, improved
+      by Evan Daniel, T-098) by 4.45e-03, issue 476's equal side by 4.45e-03 and T-136 by
+      6.73e-16. At n = 292 it is below the case's ceiling (Francisco Couzo, improved by Seth
+      Rehwaldt, T-117) by 5.87e-03 and T-136 by 2.03e-13. At n = 302 it is below the case's
+      ceiling (Nate Chaoweeraprasit, T-116) by 9.28e-03, T-138 by 9.28e-03 and T-136 by
+      2.21e-17. At n = 303 it is below the case's ceiling (Nate Chaoweeraprasit, T-113) by
+      7.25e-03, T-138 by 7.25e-03, T-134 by 4.38e-03, T-136 by 4.48e-16 and issue 488's
+      uncited side by 4.30e-03. At every count it is the smallest.
+
+      Measured pose by pose against the certificate credited (arrangement_gap), each
+      regularized view differs from it, as display regularization is meant to: under the
+      box symmetry the lists' orientation column names, 10 to 238 squares lie more than 1e-6
+      from their counterparts, and at 123, 129 and 292 nearest centres match one to one under
+      no symmetry. At 70 the view lies nearer Ryan Xu's poses than Eric Deleeuw's refinement
+      of them, 60 squares within 1e-9 of Xu's and 50 of Deleeuw's. That each view is the same
+      packing is the source's sampled path test, not verified here.
+
+      The author does not claim records. REGULARIZE.md says: "No refreshed side is below the
+      store's best beyond rounding (2e-12 .. 8e-10, the exact optimum of the same packing;
+      305 matched a pending Couzo packing that arrived mid-run, both certificate checkers
+      VALID)." Each certificate's JSON says: "regularized display view of a certified packing
+      at the same side; not a new bound". As for T-139 and T-137, each side is still a value
+      the register did not hold.
+
+      The credit at 70 names Ryan Xu, with Eric Deleeuw's refinement (T-137) noted, since the
+      view lies nearer Xu's poses; the owner may decide otherwise. Pending this entry's
+      review, the house recommendation at its fifteen counts goes to it, and the notes of
+      T-125 (at 70, 102, 103, 123, 129, 146 and 295), T-136 (at 153, 236, 263, 269, 292, 302
+      and 303), T-137 (at 70) and T-138 (at 103 and 258) say so. No house moves until
+      jlevy/squares#403, which rewrites every case record, lands.
+
+      The source's own checkers were not run here. The two maintained routes, the sqpack
+      rational witness verifier and the independent rational corner checker, share
+      certificate parsing, half-angle conversion, Fraction arithmetic and the separating-axis
+      method. No two independent methods, human oversight or optimality is claimed.
+    next_rung: >-
+      Independently review the retained replay and the third route's reading, then weigh
+      adoption count by count. Each side lies below every value the record holds or has
+      pending, by 2.2e-17 at 302 to 7.8e-10 at 295; the source calls each the exact optimum
+      of its store's best packing, and the credit takes that packing to be the one whose side
+      lies just above. The regularized views differ from those certificates pose by pose, and
+      that each is still the same packing is the source's sampled path test, not verified
+      here; the review should decide whether the credit may rest on it. Then, once
+      jlevy/squares#403 lands, record source-specific adoption and confirming evidence. Final
+      exact-head CI remains required.

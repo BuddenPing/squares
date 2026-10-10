@@ -3552,6 +3552,32 @@ sources:
     first-party exact audit and the near-axis statement by sqverify-fast; the mathematics was reviewed
     the same day with no blocking defect. Both lanes of n-040.md move to 1340000/199529 (T-145); T-133's
     335427/50000 on the same density stays as history.
+- id: evand-regularized-2026-10-10
+  title: Evan Daniel's regularized record lists at ea1a2f2, no issue
+  role: source-repository
+  url: https://github.com/evand/square-packing/tree/ea1a2f23678a13bd1d252f9f4c95ca5dd2ffd2b7
+  local: resources/web/evand-regularized-2026-10-10/
+  source_key: '[Daniel regularized lists 2026-10-10]'
+  scope:
+    n_values: [70, 102, 103, 123, 129, 146, 153, 236, 258, 263, 269, 292, 295, 302, 303]
+  reviewed: '2026-10-10'
+  source_date: '2026-10-10'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/results.yaml
+  - resources/web/evand-regularized-2026-10-10/acquisition/claims.json
+  evidence:
+  - E-evand-regularized-certificate-report
+  notes: >-
+    The fifteen certificates of search/regularize/lists/certs/ below every value the record held
+    are retained as their upstream gzip, with their 50-digit JSON, under the source's MIT licence;
+    each is admitted at the exact side its JSON prints as S_cert. T-146 records them at V0/C0. All 45
+    native jobs have full outcomes, and the third exact route agrees. The source claims no record:
+    each JSON calls its certificate a regularized display view at the same side and not a new bound.
+    The other 314 certificates of the lists are pinned by the commit and not retained. No selected
+    override or superseded claim is created while house adoption waits for jlevy/squares#403;
+    current cases and earlier source ownership remain unchanged.
 selected_overrides:
 - n: 51
   source_id: ry-xu-undilated-n51-2026
