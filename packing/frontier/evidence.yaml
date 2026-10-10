@@ -30356,3 +30356,89 @@ evidence:
       arithmetic and the separating-axis method. No two independent methods, human
       oversight or optimality is claimed.
     source_reviewed: '2026-10-10'
+
+  - id: E-wand125-fine-net-n28-57425-report
+    claim: lower-bound
+    scope:
+      n_values:
+      - 28
+    assurance: reported
+    reported_method: interval-certified
+    performed_by: source-author
+    relationship_to_generator: same-implementation
+    origin: external
+    novelty: previously-published
+    source_key: '[wand125 fine-net n28 n30 2026-10-10]'
+    certificate: packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/reported-n28-followup.json
+    replay_status: not-attempted
+    verifiers: [V-wand125-sqverify-proof-net]
+    limitations: The author reports 2297/400 at all 2073 directions of the net its candidate declares
+      (step 1/5002, core 4999/5000) by sqverify-proof-net, its copy of this repository's sqverify_fast,
+      at 36b85b9, on no issue. Complete source-byte custody and the maintained mass, net and check2
+      premises are accepted (receipts/premises-n28.json). Eight sampled directions run here by
+      sqverify-fast verified and matched the source's log; that is a diagnostic, not a replay. The
+      pre-publication receipt repeats the source's check2 run (772 s against 771.6 s), so one complete
+      author run is reported. The 32-direction 197/200 control remains sampled. A complete capture,
+      whole-net controls, restored positives and a review that reads this certificate remain pending
+      under think-i85v, priced at about 3.3 CPU-hours. The shared crate establishes no independent
+      implementation. No standing bound or rating changes; T-107 and the issue-446 287/50 report stand.
+    source_reviewed: '2026-10-10'
+
+  - id: E-wand125-fine-net-n30-58925-report
+    claim: lower-bound
+    scope:
+      n_values:
+      - 30
+    assurance: reported
+    reported_method: interval-certified
+    performed_by: source-author
+    relationship_to_generator: same-implementation
+    origin: external
+    novelty: previously-published
+    source_key: '[wand125 fine-net n28 n30 2026-10-10]'
+    certificate: packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/reported-n30-followup.json
+    replay_status: not-attempted
+    verifiers: [V-wand125-sqverify-proof-net]
+    limitations: The author reports 2357/400 at all 2073 directions of the net its candidate declares
+      (step 1/5002, core 4999/5000) by sqverify-proof-net, its copy of this repository's sqverify_fast,
+      at ff9f269, on no issue. Complete source-byte custody and the maintained mass, net and check2
+      premises are accepted (receipts/premises-n30.json), and every listed file has the directory's
+      digest. That receipt is the very run
+      record the check2 receipt embeds, so one complete author run is reported. Eight sampled directions
+      run here by sqverify-fast verified and matched the source's log; that is a diagnostic, not a replay.
+      The 32-direction 197/200 control remains sampled. A complete capture, whole-net
+      controls, restored positives and a review that reads this certificate remain pending under
+      think-i85v, priced at about 4.5 CPU-hours. The shared crate establishes no independent
+      implementation. No standing bound or rating changes; T-109 stands.
+    source_reviewed: '2026-10-10'
+
+  - id: E-wand125-linear-n122-1126-report
+    claim: lower-bound
+    scope: {n_values: [122, 123, 124, 125, 126]}
+    assurance: reported
+    reported_method: interval-certified
+    performed_by: source-author
+    relationship_to_generator: same-implementation
+    origin: external
+    novelty: previously-published
+    source_key: '[wand125 linear n122 2026-10-10]'
+    certificate: packing/resources/web/wand125-linear-n122-2026-10-10/reported-n122.json
+    replay_status: not-attempted
+    verifiers: [V-wand125-unified-linear-verify-cpp]
+    limitations: >-
+      wand125/square-packing at a9f76c382d023b4095899c4eb7ea7483b8b87ecf, on no issue,
+      reports s(122) >= 563/50 = 11.26 from a linear measure of 502 point, 1,268 segment and
+      3 rectangle orbits under D4, total mass 12199999/100000, core side 9977/10000 and 201
+      net half-angles of step 83/40000, checked at all 201 angles by
+      code/unified_linear_verify.cpp (SHA-256 0249726a...), T-080's checker; 73,694,735
+      nodes. A packing of 123 to 126 squares contains one of 122, so the value is also the
+      strongest report at those counts. Complete source-byte custody of the 31,784,537-byte
+      release asset, which the release's SHA256SUMS does not list, and the T-080 route's
+      exact premises, bundle bindings and 201 input enclosures are accepted
+      (receipts/linear-premises.json). Two angles replayed here (37 and 108) by the shipped
+      replay function and checker from this repository's retained copies returned the
+      certificate's records; that is a diagnostic, not a replay. The author's complete
+      replay (7 h 41 min at three workers) has no published receipt. A complete replay, the
+      route's control and a review that reads this certificate remain pending under
+      think-nd7g, priced at about 11.2 CPU-hours. No standing bound or rating changes.
+    source_reviewed: '2026-10-10'

@@ -1011,6 +1011,22 @@ COPY_SEPARATELY = (
     ROOT / "resources/web/wand125-fine-net-n29-2026-10-10/source-manifest.json",
     ROOT / "resources/web/wand125-fine-net-n29-2026-10-10/receipts/premises.json",
     ROOT / "resources/web/wand125-fine-net-n29-2026-10-10/receipts/sample-diagnostic.json",
+    ROOT / "resources/web/wand125-fine-net-n28-n30-2026-10-10/README.md",
+    ROOT / "resources/web/wand125-fine-net-n28-n30-2026-10-10/reported-n28-followup.json",
+    ROOT / "resources/web/wand125-fine-net-n28-n30-2026-10-10/reported-n30-followup.json",
+    ROOT / "resources/web/wand125-fine-net-n28-n30-2026-10-10/source-manifest.json",
+    ROOT / "resources/web/wand125-fine-net-n28-n30-2026-10-10/receipts/premises-n28.json",
+    ROOT / "resources/web/wand125-fine-net-n28-n30-2026-10-10/receipts/premises-n30.json",
+    ROOT
+    / "resources/web/wand125-fine-net-n28-n30-2026-10-10/receipts/sample-diagnostic-n28.json",
+    ROOT
+    / "resources/web/wand125-fine-net-n28-n30-2026-10-10/receipts/sample-diagnostic-n30.json",
+    ROOT / "resources/web/wand125-linear-n122-2026-10-10/README.md",
+    ROOT / "resources/web/wand125-linear-n122-2026-10-10/reported-n122.json",
+    ROOT / "resources/web/wand125-linear-n122-2026-10-10/source-manifest.json",
+    ROOT / "resources/web/wand125-linear-n122-2026-10-10/receipts/linear-premises.json",
+    ROOT
+    / "resources/web/wand125-linear-n122-2026-10-10/receipts/linear-sample-diagnostic.json",
     REPO / ".flowmarkignore",
     REPO / ".gitignore",
     REPO / ".github/PULL_REQUEST_TEMPLATE.md",

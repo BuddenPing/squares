@@ -3445,6 +3445,77 @@ sources:
     override is created while house adoption waits for jlevy/squares#403; current cases and
     earlier source ownership remain unchanged.
   claims_record: resources/web/evand-record-hunt3-2026-10-10/acquisition/beyond-horizon-claims.json
+- id: wand125-fine-net-n28-57425-2026-10-10
+  title: Wand125 reported n28 fine-net lower bound, no issue
+  role: source-repository
+  url: https://github.com/wand125/square-packing/tree/36b85b9f37efa7cc5d4464805cfb0f2d21576267/problems/square-lower-bounds/certificates/mixed_n28_L57425
+  local: resources/web/wand125-fine-net-n28-n30-2026-10-10/
+  source_key: '[wand125 fine-net n28 n30 2026-10-10]'
+  scope:
+    n_values:
+    - 28
+  reviewed: '2026-10-10'
+  source_date: '2026-10-10'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - resources/web/wand125-fine-net-n28-n30-2026-10-10/README.md
+  evidence:
+  - E-wand125-fine-net-n28-57425-report
+  notes: The reported 2297/400 at n28 is above T-107's 1147/200 and the issue-446 report of 287/50;
+    both standing claims and the seven-case packet are unchanged. Complete release-asset and document
+    custody and the exact mass, declared-net and check2 premises are accepted; an eight-direction
+    maintained sample is diagnostic, and the author's full positives and 32-direction controls do not
+    supply a maintained capture or whole-net controls. Replay and adoption remain under think-i85v.
+- id: wand125-fine-net-n30-58925-2026-10-10
+  title: Wand125 reported n30 fine-net lower bound, no issue
+  role: source-repository
+  url: https://github.com/wand125/square-packing/tree/ff9f2692afe7d1e65a51bb079b61b3710b97fc82/problems/square-lower-bounds/certificates/mixed_n30_L58925
+  local: resources/web/wand125-fine-net-n28-n30-2026-10-10/
+  source_key: '[wand125 fine-net n28 n30 2026-10-10]'
+  scope:
+    n_values:
+    - 30
+  reviewed: '2026-10-10'
+  source_date: '2026-10-10'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - resources/web/wand125-fine-net-n28-n30-2026-10-10/README.md
+  evidence:
+  - E-wand125-fine-net-n30-58925-report
+  notes: The reported 2357/400 at n30 is above T-109's 11767/2000, which is unchanged. Complete
+    release-asset and document custody and the exact mass, declared-net and check2 premises are accepted. An eight-direction
+    maintained sample is diagnostic, and the author's full positives and 32-direction controls do not
+    supply a maintained capture or whole-net controls. Replay and adoption remain under think-i85v.
+- id: wand125-linear-n122-1126-2026-10-10
+  title: Linear point, segment and rectangle certificate for n = 122, no issue
+  role: source-repository
+  url: https://github.com/wand125/square-packing/tree/a9f76c382d023b4095899c4eb7ea7483b8b87ecf/problems/square-lower-bounds/certificates/mixed_n122_L1126
+  local: resources/web/wand125-linear-n122-2026-10-10/
+  source_key: '[wand125 linear n122 2026-10-10]'
+  scope:
+    n_values:
+    - 122
+    - 123
+    - 124
+    - 125
+    - 126
+  reviewed: '2026-10-10'
+  source_date: '2026-10-10'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - resources/web/wand125-linear-n122-2026-10-10/README.md
+  evidence:
+  - E-wand125-linear-n122-1126-report
+  notes: Revision a9f76c382d023b4095899c4eb7ea7483b8b87ecf, retrieved at 2026-10-10T17:00:59Z. A
+    measure of points, uniform segments and uniform rectangles on T-080's net, checked by
+    code/unified_linear_verify.cpp, byte for byte T-080's checker; by its mass it raises n = 122 to 126
+    above Green's and Nagamochi's reported values and the Karakus strip bounds. The T-080 route's exact
+    premises, bundle bindings and input enclosures pass, and a two-angle replay sample returned the
+    certificate's records; the complete replay waits under think-nd7g. The release asset is pinned by
+    digest and not retained.
 selected_overrides:
 - n: 51
   source_id: ry-xu-undilated-n51-2026
