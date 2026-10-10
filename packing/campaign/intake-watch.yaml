@@ -388,3 +388,9 @@ repositories:
       side. e059b1e releases slack-separated pairs in exactsolve; the rest is packer
       tooling, the s(110) census of certified minima above the record (493 to 683), a site
       page and TODO, NEEDS and DESIGN notes. Nothing else to import.
+  - url: https://github.com/squarepacker/k2-minus-c-upper
+    read_through: c6df2f4a07159166df4335167bda237e7a831910
+    read_on: '2026-10-10'
+    note: >-
+      The single commit after the retained v1.1 pin fills the README citation DOI
+      placeholder; nothing else changes. Nothing to import.

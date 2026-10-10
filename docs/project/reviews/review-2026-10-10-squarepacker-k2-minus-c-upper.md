@@ -633,6 +633,17 @@ repository changed except this document and its map entry.
   the author’s assistants.
   It is not a referee’s acceptance.
 
+## Correction of 10 October 2026
+
+Added by the records lane of the same intake pass (`think-fvz4`), after the review; the
+text above is unchanged.
+Section 2 says Theorem 1.4 beats $k-1$ “from $k=65$ on”, which overstates it.
+$8\lceil\sqrt{k-4}\rceil-1 < k-1$ holds exactly at $k = 65$ to $68$ and at every
+$k \ge 73$: at $69 \le k \le 72$, $\lceil\sqrt{k-4}\rceil = 9$ gives $71 \ge k-1$.
+Section 3’s statement that $65$ is the first $k$ at which the theorem improves on $k-1$
+stands. The register row and its tool were corrected in `efd89b421`; this review’s
+verdict and its other findings are unchanged.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->

@@ -3613,7 +3613,7 @@ issues:
     opened: '2026-10-09'
     state: open
     kind: result-report
-    triage: pending
+    triage: done
     summary: >-
       squarepacker reports a preprint, v1.0 at Zenodo 10.5281/zenodo.23256655 with programs and data
       in squarepacker/k2-minus-c-upper, bounding c*(k), the largest c with s(k^2 - c) = k, from above:
@@ -3621,36 +3621,51 @@ issues:
       for k >= 6, and at five values of k from 10^5 to 10^8. The constructions are L-shaped packings
       with tilted bands after H. D. Bui (arXiv:2508.04603v2). The author states the preprint is not
       refereed, was checked by AI reviews and by programs including independent re-implementations,
-      and was developed with Claude. #486 announces version 1.1.
+      and was developed with Claude. #486 announces version 1.1. Imported on 10 October 2026: v1.0
+      retained in the squarepacker-k2-minus-c-upper-2026-10-09 packet with its two largest Theorem 1.6
+      certificates hosted, the source's replays and independent checks run here, and the proofs
+      reviewed the same day; every theorem is recorded as reported in the asymptotic waste register,
+      since none settles a count of the case corpus.
     read_through: '2026-10-09T07:19:46Z'
     results:
     - key: theorem-1.1
       claim: c*(k) < 43.06 k^{3/8} + 2*10^-5 for every integer k >= 4*10^26, with computer-assisted constants
-        certified in interval arithmetic by three independent coverings of the range.
+        certified in interval arithmetic by what the source reports as three independent coverings of the
+        range; the release contains one covering, cert3e.py, which was replayed here.
       source: body
-      not_registered: Triage pending under think-rd8u; not yet retained or reviewed here.
-      queued: true
-      bead: think-rd8u
+      not_registered: >-
+        Recorded as reported in frontier/asymptotic-waste-bounds.yaml (deficiency_upper_bounds); it
+        settles no count n <= 324, so the result register has no applicable scope.
+      queued: false
     - key: theorem-1.2
       claim: c*(k) < 20.668 k^{2/5} + 0.623 for every integer k >= 1.6*10^7.
       source: body
-      not_registered: Triage pending under think-rd8u; not yet retained or reviewed here.
-      queued: true
-      bead: think-rd8u
+      not_registered: >-
+        Recorded as reported in frontier/asymptotic-waste-bounds.yaml (deficiency_upper_bounds); it
+        settles no count n <= 324, so the result register has no applicable scope.
+      queued: false
     - key: theorem-1.4
       claim: c*(k) <= 8 ceil(sqrt(k - 4)) - 1 for every integer k >= 6.
       source: body
-      not_registered: Triage pending under think-rd8u; not yet retained or reviewed here.
-      queued: true
-      bead: think-rd8u
+      not_registered: >-
+        Recorded as reported in frontier/asymptotic-waste-bounds.yaml (deficiency_upper_bounds); it
+        settles no count n <= 324, so the result register has no applicable scope.
+      queued: false
     - key: theorem-1.6
       claim: c*(10^5) <= 1583, c*(10^6) <= 3972, c*(10^7) <= 10039, c*(3.825*10^7) <= 16988 and c*(10^8)
         <= 24790, by packings included as data and checked in exact rational arithmetic, among others
         by a checker written independently of the generator.
       source: body
-      not_registered: Triage pending under think-rd8u; not yet retained or reviewed here.
-      queued: true
+      not_registered: >-
+        Recorded as reported in frontier/asymptotic-waste-bounds.yaml (deficiency_upper_bounds); it
+        settles no count n <= 324, so the result register has no applicable scope.
+      queued: false
+    asks:
+    - what: Review the proofs; replay the coverings and certificates.
+      state: done
       bead: think-rd8u
+      note: Review of 2026-10-10 accepted; 70 replay jobs match; Theorem 1.6 decided by an independent
+        checker.
     beads:
     - think-rd8u
     answer_bead: think-rd8u
@@ -3937,13 +3952,15 @@ issues:
     opened: '2026-10-10'
     state: open
     kind: result-report
-    triage: pending
+    triage: done
     summary: >-
       squarepacker announces version 1.1 of the #471 preprint (Zenodo 10.5281/zenodo.23278927, release
       v1.1 of squarepacker/k2-minus-c-upper). Theorem 1.1 becomes twelve tiers c*(k) < C_i k^{3/8} + a_i
       for k >= k_i with interval-certified constants, below the k^{2/5} bound for every k >= 2.48*10^12;
       Theorems 1.2, 1.4 and 1.6 are reported unchanged. Not refereed; the source says its reviews and
-      checks are by AI systems.
+      checks are by AI systems. Imported on 10 October 2026: v1.1 retained in the
+      squarepacker-k2-minus-c-upper-v11-2026-10-10 packet with its 28 unchanged files bound to v1.0,
+      and reviewed with #471's.
     read_through: '2026-10-10T09:46:30Z'
     results:
     - key: theorem-1.1-v1.1-tiers
@@ -3951,10 +3968,11 @@ issues:
         k >= 2.48*10^12, < 41.19 k^{3/8} + 0.04 for k >= 5.22*10^12 and < 40.62 k^{3/8} + 1.4*10^-5 for
         k >= 3.4*10^26, superseding v1.0's 43.06 k^{3/8} + 2*10^-5.
       source: body
-      not_registered: Triage pending under think-7lpw; not yet retained or reviewed here. The mathematical
-        review runs with #471's under think-rd8u.
-      queued: true
-      bead: think-7lpw
+      not_registered: >-
+        Recorded as reported in a row of its own in frontier/asymptotic-waste-bounds.yaml
+        (deficiency_upper_bounds), and the v1.0 row keeps its claim; it settles no count n <= 324, so
+        the result register has no applicable scope.
+      queued: false
     beads:
     - think-7lpw
     answer_bead: think-7lpw

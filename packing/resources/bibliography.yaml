@@ -548,6 +548,34 @@ sources:
       independently, separately for nine- and thirteen-overlap routes. The
       independent per-box labelling obligation remains think-k3tk; source custody
       and arithmetic do not discharge it. No small-count bound is imported.
+  - key: '[squarepacker k2-minus-c-upper 2026]'
+    authors: [Ryu]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-09'
+    credit: Ryu after Bui
+    lineage: independent
+    note: >-
+      Sungjoon Ryu, "Packing k^2-c unit squares: an upper bound of order k^{3/8} for the
+      deficiency", v1.0, 700668795e6b95f0bf2a2c6de104adaf3a3ebce0, DOI
+      10.5281/zenodo.23256655, reported on jlevy/squares#471. Retained in
+      web/squarepacker-k2-minus-c-upper-2026-10-09/ (two certificates hosted). The source
+      credits the staircase and chained wall stairs to H. D. Bui (arXiv:2508.04603v2,
+      Sections 3-4), states extensive Claude (Anthropic) assistance and no human review,
+      and cites this repository only as a problem collection. CC BY 4.0 paper, MIT code and
+      data.
+  - key: '[squarepacker k2-minus-c-upper v1.1 2026]'
+    authors: [Ryu]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-10'
+    credit: Ryu after Bui
+    lineage: independent
+    note: >-
+      Version 1.1, 5742311db220b4bd8e825167aeae689a1bd65ce9, DOI 10.5281/zenodo.23278927,
+      reported on jlevy/squares#486; retained in
+      web/squarepacker-k2-minus-c-upper-v11-2026-10-10/ with 28 unchanged files bound to
+      v1.0. Same licences and statements.
   - key: '[squarepacker s12 2026-10-05]'
     authors: [Ryu]
     year: 2026
