@@ -360,7 +360,10 @@ def test_a_broad_report_keeps_its_full_payload_within_the_canonical_page_budget(
     page = pages[0]
     assert page.name == "result/t-124.html"
     row = next(row for row in site_urls.load_registry() if row.path == page.name)
-    assert site_urls.page_budget(row) == 300_000
+    # The canonical result budget held the whole report until 10 October 2026, when four
+    # chain steps (T-135, T-141 to T-143) took it to 304,237 bytes; its measured exception
+    # keeps every case, step and link rather than dropping any to fit.
+    assert site_urls.page_budget(row) == site_urls.PAGE_BUDGET_EXCEPTIONS[page.name][0]
     assert len(page.html.encode("utf-8")) <= site_urls.page_budget(row)
     article = page.html.split('<article class="site-result"', 1)[1].split("</article>", 1)[0]
     assert re.findall(r'data-overview-case="(\d+)"', article) == [str(n) for n in cases]
