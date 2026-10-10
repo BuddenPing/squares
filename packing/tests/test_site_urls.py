@@ -154,6 +154,9 @@ def test_closed_world_and_constrained_asset_names(tmp_path: Path) -> None:
     folder = tmp_path / "assets/css"
     folder.mkdir(parents=True)
     (folder / "site.0123456789abcdef.css").write_text("", encoding="utf-8")
+    image = tmp_path / "assets/images/known-best-1-324.0123456789abcdef.png"
+    image.parent.mkdir(parents=True)
+    image.write_bytes(b"poster fixture")
     assert not failures(site_urls.check_site(tmp_path, rows))
     (folder / "unregistered.html").write_text("", encoding="utf-8")
     assert "unregistered.html" in failures(site_urls.check_site(tmp_path, rows))

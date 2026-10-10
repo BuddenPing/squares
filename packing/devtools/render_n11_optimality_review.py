@@ -37,6 +37,7 @@ from devtools.render_n11_lower_bounds_explainer_pdf import dated
 from devtools.render_overview import (
     EMBED_SCRIPT,
     HEADROOM_SCRIPT,
+    KPRESS_CLIENT_FRAME,
     MATH_SCRIPT,
     N11_OPTIMALITY_REVIEW,
     PAPER_TYPE_CSS,
@@ -179,6 +180,7 @@ RENDER_INPUTS = (
     THEME_SCRIPT,
     EMBED_SCRIPT,
     HEADROOM_SCRIPT,
+    KPRESS_CLIENT_FRAME,
     TOOLTIP_SCRIPT,
     MATH_SCRIPT,
     render_n11_lower_bounds_explainer.INLINE_SCRIPT_ASSETS["NATIVE_MATH_METRICS"],
@@ -223,10 +225,7 @@ RENDER_INPUTS = (
 def version_history_markdown() -> str:
     """The paper's own editions, newest first, each with the day it was first published
     and what changed in the paper: `sqpack.release.OPTIMALITY_REVIEW_HISTORY`."""
-    return "\n".join(
-        f"- **{entry.version} — {entry.first_published}.** {entry.result_scope}"
-        for entry in OPTIMALITY_REVIEW_HISTORY
-    )
+    return paper_front.version_history_markdown(OPTIMALITY_REVIEW_HISTORY)
 
 
 def render_all_figures() -> dict[str, str]:

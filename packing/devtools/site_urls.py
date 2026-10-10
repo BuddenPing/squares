@@ -131,10 +131,11 @@ HASHED_ASSET_PATTERN = (
     r"|js/[a-zA-Z0-9_-]+\.[0-9a-f]{16}\.js"
     r"|fonts/[a-zA-Z0-9_-]+\.[0-9a-f]{16}\.woff2)"
 )
+IMAGE_ASSET_PATTERN = r"assets/images/[a-zA-Z0-9_-]+\.[0-9a-f]{16}\.png"
 WORKBENCH_ASSET_PATTERN = "workbench/" + HASHED_ASSET_PATTERN
 WORKBENCH_DATA_PATTERN = r"workbench/data/corpus\.[0-9a-f]{16}\.json"
 ALLOWED_PATTERNS = frozenset(
-    {HASHED_ASSET_PATTERN, WORKBENCH_ASSET_PATTERN, WORKBENCH_DATA_PATTERN}
+    {HASHED_ASSET_PATTERN, IMAGE_ASSET_PATTERN, WORKBENCH_ASSET_PATTERN, WORKBENCH_DATA_PATTERN}
 )
 Checks = list[tuple[bool, str]]
 
@@ -222,7 +223,17 @@ def hashed_asset_rows(day: str) -> list[SiteURL]:
             day,
             day,
             pattern=HASHED_ASSET_PATTERN,
-        )
+        ),
+        SiteURL(
+            "assets/images/*.{hash}.png",
+            "",
+            "asset-file",
+            "devtools.site_assets:shared",
+            "overview",
+            day,
+            day,
+            pattern=IMAGE_ASSET_PATTERN,
+        ),
     ]
 
 

@@ -14,9 +14,9 @@ The $n = 11$ series:
   ([T-060](results.html#t-060), `V3/C3`); the review record is pending.
 
 The [square-packing tutorial](tutorial.html) introduces the problem and its mathematics.
-[How Record Square Packings Are Found](papers/square-packing-methods-survey.html)
-follows the discovery process from a seed through search and local refinement to a
-certified upper bound, with examples from published record packings.
+[{{METHODS_PAPER_TITLE}}]({{METHODS_PAPER}}) follows the discovery process from a seed
+through search and local refinement to a certified upper bound, with figures drawn from
+published record packings.
 
 {{PAPER_CARDS}}
 

@@ -50,6 +50,15 @@ urls:
   first_published: '2026-09-29'
   lastmod: '2026-10-02'
   status: live
+- path: assets/images/*.{hash}.png
+  canonical: ''
+  kind: asset-file
+  generator: devtools.site_assets:shared
+  producer: overview
+  first_published: '2026-10-02'
+  lastmod: '2026-10-02'
+  status: live
+  pattern: assets/images/[a-zA-Z0-9_-]+\.[0-9a-f]{16}\.png
 - path: assets/{css,js,fonts}/*.{hash}.{ext}
   canonical: ''
   kind: asset-file
@@ -6018,7 +6027,7 @@ urls:
   generator: devtools.render_n11_lower_bounds_explainer:main
   producer: paper:n11-lower-bounds-explainer
   first_published: '2026-09-05'
-  lastmod: '2026-10-09'
+  lastmod: '2026-10-10'
   status: live
 - path: papers/n11-lower-bounds-explainer.md
   canonical: papers/n11-lower-bounds-explainer.md
@@ -6026,7 +6035,7 @@ urls:
   generator: devtools.render_n11_lower_bounds_explainer:main
   producer: paper:n11-lower-bounds-explainer
   first_published: '2026-09-05'
-  lastmod: '2026-10-09'
+  lastmod: '2026-10-10'
   status: live
 - path: papers/n11-lower-bounds-explainer.pdf
   canonical: papers/n11-lower-bounds-explainer.pdf
@@ -6034,7 +6043,7 @@ urls:
   generator: devtools.render_n11_lower_bounds_explainer:main
   producer: paper:n11-lower-bounds-explainer
   first_published: '2026-09-05'
-  lastmod: '2026-10-09'
+  lastmod: '2026-10-10'
   status: live
 - path: papers/n11-optimality-review.html
   canonical: papers/n11-optimality-review.html
@@ -6090,7 +6099,7 @@ urls:
   generator: devtools.render_packing_methods:main
   producer: paper:square-packing-methods-survey
   first_published: '2026-10-08'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-10'
   status: live
 - path: papers/square-packing-methods-survey.md
   canonical: papers/square-packing-methods-survey.md
@@ -6098,7 +6107,7 @@ urls:
   generator: devtools.render_packing_methods:main
   producer: paper:square-packing-methods-survey
   first_published: '2026-10-08'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-10'
   status: live
 - path: papers/square-packing-methods-survey.pdf
   canonical: papers/square-packing-methods-survey.pdf
@@ -6106,7 +6115,7 @@ urls:
   generator: devtools.render_packing_methods:main
   producer: paper:square-packing-methods-survey
   first_published: '2026-10-08'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-10'
   status: live
 - path: readme.html
   canonical: readme.html

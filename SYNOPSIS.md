@@ -326,8 +326,8 @@ hypothesis status and summarizes experiment verdicts, and the
 
 | Record | Total | State |
 | --- | ---: | --- |
-| Agendas | 42 | 20 active; 16 completed; 5 paused; 1 superseded |
-| Commitments | 436 | 233 complete; 65 stopped; 72 blocked; 25 ready; 21 tentative; 20 in progress |
+| Agendas | 43 | 20 active; 16 completed; 6 paused; 1 superseded |
+| Commitments | 443 | 233 complete; 65 stopped; 72 blocked; 31 ready; 22 tentative; 20 in progress |
 | Sessions | 185 | 105 completed; 80 stopped; all terminal |
 | Explorations | 50 | 30 linked to proposed hypotheses; 20 uncodified |
 | Hypotheses | 283 | 74 confirmed; 48 refuted; 75 blocked; 24 unresolved; 20 open; 37 open questions; 2 result registered; 2 abandoned; 0 running; 1 exhausted |
@@ -1382,6 +1382,8 @@ case or experiment separately.
 | [Postmortem: The Soundness Class, and the Perimeter That Let D-014 Through](docs/project/postmortems/postmortem-2026-08-23-soundness-class.md) | failure analysis and lessons | supporting | maintained | — |
 | [Postmortem: Three Catalogue Intakes Nobody Owned](docs/project/postmortems/postmortem-2026-10-05-orphaned-catalogue-intake.md) | failure analysis and lessons | record | retained | — |
 | [Proof Verification Consolidation and Independent n11 Completion](docs/project/specs/active/plan-2026-09-29-proof-verification-consolidation.md) | implementation plan | current | transient | — |
+| [n17 Eight-Hour Proof Block](docs/project/specs/active/plan-2026-10-10-n17-eight-hour-proof-block.md) | implementation plan | current | transient | — |
+| [n17 Three-Block Session Plan](docs/project/specs/active/plan-2026-10-10-n17-three-block-session.md) | implementation plan | current | transient | — |
 | [Feature: Minimal Packing Toolkit](docs/project/specs/active/plan-2026-08-22-minimal-packing-toolkit.md) | implementation plan | current | transient | — |
 | [Feature: Unattended Square-Packing Research Readiness](docs/project/specs/active/plan-2026-08-23-overnight-cartography-run.md) | implementation plan | current | transient | — |
 | [Feature: Frontier Assurance and Verification](docs/project/specs/active/plan-2026-08-24-frontier-assurance-and-verification.md) | implementation plan | current | transient | — |
@@ -1658,6 +1660,22 @@ stop. Long autonomous sessions use the same rule; autonomy changes the duration 
 controller, not permission to blur contracts.
 
 ### Current Handoff
+
+The prepared
+[eight-hour X-052 continuation](docs/project/specs/active/plan-2026-10-10-n17-eight-hour-proof-block.md)
+is owned by BC-455 / `think-wnbr` under BC-418. Its
+[agenda-046](packing/campaign/agendas/agenda-046-n17-eight-hour-proof-block.md) is
+paused pending launch.
+Mathematical distance toward a complete proof is the objective: two Astra authors pursue
+nonterminal exclusions and capture/terminal mathematics, with independent Astra review.
+GPT-6.1 Sol implements the selected proof tools; repeated confirmation receives a
+bounded support allocation.
+The
+[three-block session plan](docs/project/specs/active/plan-2026-10-10-n17-three-block-session.md)
+maps two conditional further eight-hour blocks, each replanned from the preceding
+block’s evidence and recorded with fresh session clocks.
+The next entry is W10 launch selection with real session clocks and resource checks.
+No experiment has started under this agenda.
 
 The
 [6 October W3 consolidation](docs/project/reviews/review-2026-10-06-n17-w3-consolidation.md)
@@ -8057,7 +8075,7 @@ the citation keys below resolve there and in the per-case
 [`frontier/`](packing/frontier/README.md) artifacts.
 Each entry names what this project relies on it for.
 
-- Stromquist, W. (2003). *Packing 10 or 11 unit squares in a square.* Electronic Journal
+- Stromquist, W. (2003). *Packing 10 or 11 Unit Squares in a Square.* Electronic Journal
   of Combinatorics 10(1), R8. Supplies $s(10)$, states the $s(11)$ lower-bound value,
   and proves the $0^{\circ}$/`45°` class bound.
   Exp-016 refutes its printed unrestricted Figure 14 cover; exp-017 independently
@@ -8067,20 +8085,20 @@ Each entry names what this project relies on it for.
   The standing upper bound.
 - Friedman, E. (2009). *Packing Unit Squares in Squares: A Survey and New Results.*
   Electronic Journal of Combinatorics, DS7. The survey the corpus is checked against.
-- Erdős, P. and Graham, R. L. (1975). *On packing squares with equal squares.* The
+- Erdős, P. and Graham, R. L. (1975). *On Packing Squares with Equal Squares.* The
   asymptotic waste line of work.
-- Nagamochi, H. (2005). *Packing unit squares in a rectangle.* The general closed-form
+- Nagamochi, H. (2005). *Packing Unit Squares in a Rectangle.* The general closed-form
   lower bound used where the register has no stronger formal evidence.
 - Montanher, T. et al.
-  (2018). *Rigorous packing of unit squares into a circle.* The only rigorous
+  (2018). *Rigorous Packing of Unit Squares into a Circle.* The only rigorous
   computer-assisted optimality proof for rotatable unit squares in any container, and
   the scope limit on what `sqpack` claims.
-- Doye, J. P. K., Miller, M. A. and Wales, D. J. (1999). The double funnel energy
-  landscape of the 38-atom Lennard-Jones cluster.
+- Doye, J. P. K., Miller, M. A. and Wales, D. J. (1999). The Double-Funnel Energy
+  Landscape of the 38-Atom Lennard-Jones Cluster.
   The precedent behind the rarity premise.
-- Stillinger, F. H. and Weber, T. A. (1982). Inherent structures and the quench map.
+- Stillinger, F. H. and Weber, T. A. (1982). Hidden Structure in Liquids.
   The decomposition T-2 supplies a cell-exact version of.
-- Mouret, J.-B. and Clune, J. (2015). *Illuminating search spaces by mapping elites.*
+- Mouret, J.-B. and Clune, J. (2015). *Illuminating Search Spaces by Mapping Elites.*
   The precedent behind H-015.
 
 <!-- This document follows common-doc-guidelines.md.
