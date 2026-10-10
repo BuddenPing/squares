@@ -3788,8 +3788,14 @@ issues:
       roundings of it; replayed in full on both maintained exact routes and decided again by a third
       exact route in the review of the same day, which held each fact to its pinned upstream file, with
       no blocking defect. All seventeen are registered together as T-136; squares touch the closed
-      box at every count. The case records wait for jlevy/squares#403.
-    read_through: '2026-10-09T21:59:29Z'
+      box at every count. The case records wait for jlevy/squares#403. The author edited the
+      body twice on 10 October, leaving the certificate commit and the title unchanged: a
+      per-count table of the pieces each packing was composed from, with a list by finder,
+      and a credit line after Francisco Couzo, Ryan Xu, Frits Göbel, Thomas Schadt, David
+      Ellsworth and Károly Hajba, whose packings supplied pieces, verified with David
+      Ellsworth's check_packing.py; T-136's credit and the source's bibliography credit
+      follow it.
+    read_through: '2026-10-10T18:33:00Z'
     results:
     - key: fifteen-new-packings
       claim: s(n) <= S_n at n = 131, 153, 207, 209, 232, 236, 259, 263, 269, 270, 292, 302, 303, 305 and

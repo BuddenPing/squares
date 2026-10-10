@@ -13938,10 +13938,12 @@ results:
       pending adoption.
 
       Credit Nate Chaoweeraprasit (https://github.com/itsnaka/squish-certs), using SQUISH
-      and its Mondrian composition method, with the packings the pieces came from as the
-      source names them: the Kingbird catalogue's packing of 5 and former records at 11,
-      50, 152, 202 and 241, Francisco Couzo's packings of 182 and 180, Ryan Xu's of 123,
-      129 and 175, and SQUISH's own earlier packings. The source states that the solver,
+      and its Mondrian composition method, after Francisco Couzo, Ryan Xu, Frits Göbel,
+      Thomas Schadt, David Ellsworth and Károly Hajba, whose packings supplied pieces, as
+      the issue's credit line names them. Per count, the issue lists the pieces: the
+      Kingbird catalogue's packing of 5 and former records at 11, 50, 152, 202 and 241,
+      Francisco Couzo's packings of 182 and 180, Ryan Xu's of 123, 129 and 175, and
+      SQUISH's own earlier packings. The source states that the solver,
       its verification and the issue were written with Claude Opus 5.5 under the author's
       direction.
     scope:

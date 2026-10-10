@@ -1702,13 +1702,16 @@ sources:
     venue: GitHub
     dated: '2026-10-09'
     lineage: builds-on-project
-    credit: Chaoweeraprasit after Couzo, Xu, Ellsworth, Friedman, Levy
+    credit: Chaoweeraprasit after Couzo, Xu, Goebel, Schadt, Ellsworth, Hajba, Levy
     short_credit: Chaoweeraprasit after Couzo et al.
     note: >-
       Seventeen complete exact certificates at d45669b48cc97ad3aa17a6c847a8d06630f66eac,
       reported on jlevy/squares#481, from SQUISH's Mondrian composition of pieces of
       earlier packings, Couzo's, Xu's, the Kingbird catalogue's and SQUISH's own, compared
-      against this project's register. Derived exact facts only; no upstream byte is
+      against this project's register. The issue's credit line, as edited on 10 October
+      2026, credits Chaoweeraprasit after Francisco Couzo, Ryan Xu, Frits Göbel, Thomas
+      Schadt, David Ellsworth and Károly Hajba, whose packings supplied pieces; Goebel is
+      Göbel in the credit's ASCII. Derived exact facts only; no upstream byte is
       retained. Claude assistance disclosed. No KKT, interval, local or global optimality
       claim.
   - key: '[Deleeuw n70 refinement 2026-10-10]'
