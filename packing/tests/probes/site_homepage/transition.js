@@ -104,26 +104,13 @@ async (options) => {
         return [0];
       }
       const n = Number(link.dataset.atlasN);
-      // Native direct cards wrap logical rows; dedicated rows pan without wrapping.
-      // Derive this oracle independently of the shared engine's layout adapter.
+      // Both surfaces retain a complete logical row with separate non-grid/grid segments.
       const k = Math.ceil(Math.sqrt(n));
-      const rowSize = 2 * k - 1;
-      const position = n - (k - 1) ** 2;
-      const rowLine = Math.ceil(position / per);
-      const lines = Math.ceil(rowSize / per);
-      const held = rowLine === lines ? rowSize - (lines - 1) * per : per;
-      let above = 0;
-      for (let row = 1; row < k; row += 1) {
-        above += Math.ceil((2 * row - 1) / per);
-      }
-      const at = {
-        line: above + rowLine,
-        column: per - held + position - (rowLine - 1) * per,
-        opens: k > 1 && rowLine === 1,
-      };
-      return Number(link.style.getPropertyValue("--site-atlas-line")) === at.line &&
-        Number(link.style.getPropertyValue("--site-atlas-column")) === at.column &&
-        Number(link.style.getPropertyValue("--site-atlas-opens")) === Number(at.opens)
+      const segment = link.closest("[data-atlas-segment]");
+      const first = Number(segment?.getAttribute("data-first-n"));
+      return Number(link.style.getPropertyValue("--site-atlas-line")) === 1 &&
+        Number(link.style.getPropertyValue("--site-atlas-column")) === n - first + 1 &&
+        Number(link.closest("[data-atlas-row]")?.getAttribute("data-atlas-row")) === k
         ? []
         : [n];
     }),
@@ -131,36 +118,27 @@ async (options) => {
       const rect = link.firstElementChild?.getBoundingClientRect();
       return rect ? rect.width / rect.height : null;
     }),
-    crop_errors: [11, 18, 291, 324].flatMap((n) => {
-      const svg = cells.querySelector(`[data-case="${n}"] > svg`);
-      if (!(svg instanceof SVGSVGElement) || svg.getClientRects().length === 0) {
-        return [];
-      }
-      const view = svg.viewBox.baseVal;
-      const errors = [...svg.querySelectorAll('text, [data-feature="evidence-badge"]')].flatMap(
-        (mark) => {
-          if (!(mark instanceof SVGGraphicsElement)) {
-            return [`${n}: unexpected mark`];
-          }
-          const box = mark.getBBox();
-          return box.x >= view.x &&
-            box.y >= view.y &&
-            box.x + box.width <= view.x + view.width &&
-            box.y + box.height <= view.y + view.height
-            ? []
-            : [
-                `${n}: ${mark.getAttribute("data-feature") ?? mark.localName} ${JSON.stringify({ x: box.x, y: box.y, width: box.width, height: box.height, view: { x: view.x, y: view.y, width: view.width, height: view.height } })}`,
-              ];
-        },
-      );
-      const outline = svg
-        .querySelector('[data-feature="container-outline"]')
-        ?.getBoundingClientRect();
-      if (!outline || Math.abs(outline.width - outline.height) > 0.1) {
-        errors.push(`${n}: outline ${outline?.width} x ${outline?.height}`);
-      }
-      return errors;
+    drawing_errors: shown.flatMap((link) => {
+      const image = link.querySelector("img");
+      const box = image?.getBoundingClientRect();
+      return box && box.width > 0 && Math.abs(box.width - box.height) <= 0.1
+        ? []
+        : [Number(link.getAttribute("data-case"))];
     }),
+    row_alignment_errors: [...cells.querySelectorAll(".site-atlas-row")]
+      .filter((row) => row.getClientRects().length > 0)
+      .flatMap((row) => {
+        const rowBox = row.getBoundingClientRect();
+        const last = row.querySelector(".site-atlas-cell:last-child:last-of-type");
+        const all = [...row.querySelectorAll(".site-atlas-cell")];
+        const endpoint = all.at(-1)?.getBoundingClientRect();
+        return last &&
+          endpoint &&
+          Math.abs(endpoint.right - rowBox.right) < 0.5 &&
+          all.every((tile) => Math.abs(tile.getBoundingClientRect().top - endpoint.top) < 0.5)
+          ? []
+          : [Number(row.getAttribute("data-atlas-row"))];
+      }),
     address: location.href,
     root_view: document.documentElement.dataset.siteAtlasView ?? null,
     root_size: document.documentElement.dataset.siteAtlasSize ?? null,

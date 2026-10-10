@@ -11,7 +11,6 @@ filters on top while `overview/row-popover.js` makes the whole row the control.
 from __future__ import annotations
 
 import base64
-import gzip
 import html
 import itertools
 import json
@@ -20,7 +19,6 @@ import re
 import textwrap
 from collections.abc import Collection, Iterable, Mapping, Sequence
 from datetime import date, timedelta
-from decimal import Decimal
 from functools import cache
 from html.parser import HTMLParser
 from pathlib import Path
@@ -3021,47 +3019,9 @@ def atlas_legend() -> str:
     )
 
 
-def atlas_grid() -> str:
-    """Every tracked case's known-best packing, n = 1 to 324, as a grid of drawings,
-    each a link to its case record. With scripts, a cell opens the page's one case
-    popover instead (`overview/case-popover.js`), which shows the case's record as its
-    own page does: the visual summary, the drawing large and the bounds' number line,
-    then the record's further data (`render_case_pages`, think-t21m).
-
-    The block is rendered in the triangle view (`data-atlas-view`), under tabs that
-    also offer the grid (`atlas_view_tabs`). Both views are one set of tiles: the triangle
-    uses positions supplied by the static markup and stylesheet, so a tile's markup is
-    the same in both.
-    A perfect square's tile is marked `data-atlas-square`: it ends its row of the
-    triangle, and the triangle numbers it in the text's colour. The
-    block is rendered at the small size (`data-atlas-size`), under tabs beside the view
-    tabs that make every tile smaller or larger (`atlas_size_tabs`), in either view.
-    Scale changes the drawing within each tile: Fixed (the default), its actual side
-    relative to its logical row's grid side, or relative to the largest currently shown
-    actual enclosing side. Slots, number type and the grid separator stay fixed.
-
-    The first `ATLAS_FIRST` cells arrive as static markup with reserved, lazy-loaded
-    SVG images; the rest are already present in a hidden container. The script shows
-    them only when the reader presses the button under the grid, "Show More" with the
-    double chevron down. The button then reads "Show Less" with the chevron up and
-    collapses the grid again; its name for assistive
-    technology says what each does and how many cases that is (`data-name-more`,
-    `data-name-less`), it controls the box of tiles (`ATLAS_PANEL`), and it is the site's
-    one action under a table or grid (`.site-action`, with "See all results"). Ordinary
-    links give readers without scripting all case records and the frontier survey. The atlas
-    popover, filled by the script from a JSON of the film's facts, stood after the block until
-    2026-10-03; the case popover took its place.
-
-    A case with a regularized view (`atlas_regularized`) is drawn from it directly, and
-    every other case from its house rendering: one tile a case. Until 2026-10-04 the
-    house tiles were the default and a third `<template>` held a second tile for each
-    regularized case, which House and Regularized tabs swapped in place; the owner
-    dropped the choice for the regularized drawings alone (think-k8x9), and with it the
-    second set. Layout, Size and Scale strips and the key
-    (`atlas_legend`) share the controls box (`.site-atlas-controls`) above the tiles.
-    """
+def _atlas_rows(first: int) -> tuple[list[str], str]:
+    """Canonical split rows and their drawing geometry for either Atlas surface."""
     from devtools import render_frontier_page as frontier  # noqa: PLC0415
-    from devtools.render_case_pages import case_popover  # noqa: PLC0415
 
     cases = frontier.frontier_cases()
     tracked = {case["n"] for case in cases}
@@ -3103,17 +3063,63 @@ def atlas_grid() -> str:
             f"{''.join(groups)}</div>"
         )
     frame_inset, frame_span = atlas_frame_fractions()
-    first_rows = math.isqrt(ATLAS_FIRST)
+    first_rows = math.isqrt(first)
     positions = (
         f"--site-atlas-first-extra:{int(transitions[first_rows - 1].has_irregular_prefix)};"
         f"--site-atlas-last-extra:{int(transitions[-1].has_irregular_prefix)};"
-        f"--site-atlas-first-side:{max(sides[n] for n in tracked if n <= ATLAS_FIRST)};"
+        f"--site-atlas-first-side:{max(sides[n] for n in tracked if n <= first)};"
         f"--site-atlas-last-side:{max(sides[n] for n in tracked)};"
         f"--site-atlas-frame-inset:{frame_inset};--site-atlas-frame-span:{frame_span};"
         f"--site-atlas-ink-inset:{atlas_frame_ink_inset()}"
     )
+    return rows, positions
+
+
+def atlas_grid() -> str:
+    """Every tracked case's known-best packing, n = 1 to 324, as a grid of drawings,
+    each a link to its case record. With scripts, a cell opens the page's one case
+    popover instead (`overview/case-popover.js`), which shows the case's record as its
+    own page does: the visual summary, the drawing large and the bounds' number line,
+    then the record's further data (`render_case_pages`, think-t21m).
+
+    The block is rendered in the triangle view (`data-atlas-view`), under tabs that
+    also offer the grid (`atlas_view_tabs`). Both views are one set of tiles: the triangle
+    uses positions supplied by the static markup and stylesheet, so a tile's markup is
+    the same in both.
+    A perfect square's tile is marked `data-atlas-square`: it ends its row of the
+    triangle, and the triangle numbers it in the text's colour. The
+    block is rendered at the small size (`data-atlas-size`), under tabs beside the view
+    tabs that make every tile smaller or larger (`atlas_size_tabs`), in either view.
+    Scale changes the drawing within each tile: Fixed (the default), its actual side
+    relative to its logical row's grid side, or relative to the largest currently shown
+    actual enclosing side. Slots, number type and the grid separator stay fixed.
+
+    The first `ATLAS_FIRST` cells arrive as static markup with reserved, lazy-loaded
+    SVG images; the rest are already present in a hidden container. The script shows
+    them only when the reader presses the button under the grid, "Show More" with the
+    double chevron down. The button then reads "Show Less" with the chevron up and
+    collapses the grid again; its name for assistive
+    technology says what each does and how many cases that is (`data-name-more`,
+    `data-name-less`), it controls the box of tiles (`ATLAS_PANEL`), and it is the site's
+    one action under a table or grid (`.site-action`, with "See all results"). Ordinary
+    links give readers without scripting all case records and the frontier survey. The atlas
+    popover, filled by the script from a JSON of the film's facts, stood after the block until
+    2026-10-03; the case popover took its place.
+
+    A case with a regularized view (`atlas_regularized`) is drawn from it directly, and
+    every other case from its house rendering: one tile a case. Until 2026-10-04 the
+    house tiles were the default and a third `<template>` held a second tile for each
+    regularized case, which House and Regularized tabs swapped in place; the owner
+    dropped the choice for the regularized drawings alone (think-k8x9), and with it the
+    second set. Layout, Size and Scale strips and the key
+    (`atlas_legend`) share the controls box (`.site-atlas-controls`) above the tiles.
+    """
+    from devtools.render_case_pages import case_popover  # noqa: PLC0415
+
+    rows, positions = _atlas_rows(ATLAS_FIRST)
+    first_rows = math.isqrt(ATLAS_FIRST)
     more, less = "Show More", "Show Less"
-    name_more = f"Show more: all {len(cases)} cases"
+    name_more = f"Show more: all {len(rows) ** 2} cases"
     name_less = f"Show less: the first {ATLAS_FIRST}"
     return (
         f'<div class="site-wide site-atlas-grid" data-atlas-view="{ATLAS_VIEW}" '
@@ -3151,150 +3157,26 @@ def atlas_grid() -> str:
 
 #: The homepage starts with six mathematical square rows, then ten, then all eighteen.
 ATLAS_PREVIEW_ROWS = 6
-ATLAS_COMPOSITE = REPO / "packing" / "atlas" / "known-best" / "known-best-1-324.svg"
-
-
-def _web_atlas_graphic(source: str) -> str:
-    """Prepare native card drawings, their number and applicable star for the web.
-
-    Read the poster as XML: its compact serialization and triangular row positions
-    are independent of the website. Each card supplies its actual crop from the
-    enclosing frame. Auxiliary badges and labels stay in the scientific source only.
-    """
-    from devtools.build_known_best_atlas import (  # noqa: PLC0415
-        SUMMARY_CARD_WIDTH,
-        SUMMARY_PACKING_INSET_X,
-        SUMMARY_PACKING_INSET_Y,
-        SUMMARY_ROW_PITCH,
-        SUMMARY_STAR_POINTS,
-        _append_star,  # pyright: ignore[reportPrivateUsage]
-        _star_center_y,  # pyright: ignore[reportPrivateUsage]
-        _star_scale,  # pyright: ignore[reportPrivateUsage]
-        _text_width,  # pyright: ignore[reportPrivateUsage]
-    )
-    from sqpack.render.numbers import format_svg_number  # noqa: PLC0415
-
-    namespace = "http://www.w3.org/2000/svg"
-    ET.register_namespace("", namespace)
-    original = ET.fromstring(source)
-    prepared = ET.Element(
-        f"{{{namespace}}}svg",
-        {
-            key: value
-            for key, value in original.attrib.items()
-            if key in ("width", "height", "viewBox")
-        },
-    )
-    recent = recent_contributions_by_case()
-    cards = [
-        element for element in original.iter() if element.get("data-feature") == "packing-card"
-    ]
-    if [int(card.attrib["data-n"]) for card in cards] != list(range(1, 325)):
-        raise SystemExit(
-            "The retained Atlas must contain one ordered card for each of 324 cases"
-        )
-    for card in cards:
-        # Poster provenance stays in its scientific source; the browser needs only
-        # card identity and crop metadata. Keep every drawing attribute intact.
-        card.attrib = {key: card.attrib[key] for key in ("data-feature", "data-n")}
-        frame = next(
-            (element for element in card if element.get("data-feature") == "container-outline"),
-            None,
-        )
-        label = next(
-            (element for element in card if element.get("data-feature") == "packing-label"),
-            None,
-        )
-        if frame is None or label is None:
-            raise SystemExit("The retained Atlas card is missing its enclosing frame or number")
-        left = Decimal(frame.attrib["x"]) - SUMMARY_PACKING_INSET_X
-        top = Decimal(frame.attrib["y"]) - SUMMARY_PACKING_INSET_Y
-        card.set(
-            "data-homepage-atlas-viewbox",
-            " ".join(
-                map(format_svg_number, (left, top, SUMMARY_CARD_WIDTH, SUMMARY_ROW_PITCH))
-            ),
-        )
-        for parent in card.iter():
-            for element in list(parent):
-                if (
-                    element.tag == f"{{{namespace}}}text" and element is not label
-                ) or element.get("data-feature") == "evidence-badge":
-                    parent.remove(element)
-        n = int(card.attrib["data-n"])
-        size = label.attrib["font-size"]
-        # Use the served site face with the retained number advance. Leave half an
-        # em before the star's left edge, including at small hinted glyph sizes.
-        number_width = _text_width(str(n), size)
-        label.set("font-family", "var(--kpress-font-sans)")
-        label.set("textLength", format_svg_number(number_width))
-        label.set("lengthAdjust", "spacingAndGlyphs")
-        if recent[n].any:
-            star_half_width = max(abs(dx) for dx, _dy in SUMMARY_STAR_POINTS) * _star_scale(
-                size
-            )
-            _append_star(
-                card,
-                center_x=(
-                    Decimal(label.attrib["x"])
-                    + number_width
-                    + Decimal(size) / 2
-                    + star_half_width
-                ),
-                center_y=_star_center_y(Decimal(label.attrib["y"]), size),
-                feature="release-star",
-                label=NEW_RESULT,
-                scale=_star_scale(size),
-            )
-        prepared.append(card)
-    return ET.tostring(prepared, encoding="unicode")
 
 
 @cache
 def atlas_preview() -> str:
-    """Six native mathematical rows, prepared for the shared Atlas triangle animation.
+    """The dedicated Atlas's canonical rows, with six visible and the rest ready.
 
-    The visible cards and inert compressed expansion source share each card's actual
-    native crop. Prepared cards make expansion synchronous without a click-time request.
+    Both surfaces share drawings, split segments and placement. All links arrive in
+    the HTML; the homepage controller changes only which complete rows are visible.
     """
-    from devtools.build_known_best_atlas import (  # noqa: PLC0415
-        SUMMARY_CARD_WIDTH,
-        SUMMARY_ROW_PITCH,
-    )
-    from devtools.render_case_pages import case_popover, case_url  # noqa: PLC0415
+    from devtools.render_case_pages import case_popover  # noqa: PLC0415
 
-    source = _web_atlas_graphic(ATLAS_COMPOSITE.read_text(encoding="utf-8"))
-    cards = list(ET.fromstring(source))
     count = ATLAS_PREVIEW_ROWS**2
-    recent = recent_contributions_by_case()
-    tiles = []
-    for card in cards[:count]:
-        n = int(card.attrib["data-n"])
-        row = math.isqrt(n - 1) + 1
-        viewbox = card.attrib["data-homepage-atlas-viewbox"]
-        left, top, width, height = viewbox.split()
-        name = f"Case {n}: packing and bounds" + (f", {NEW_RESULT}" if recent[n].any else "")
-        tiles.append(
-            f'<a class="site-atlas-cell" href="{case_url(n)}" data-case="{n}" '
-            f'data-atlas-n="{n}" aria-label="{name}" '
-            f'style="--r:{row};--c:{row * row - n};'
-            f'--o:{int(row > 1 and n == (row - 1) ** 2 + 1)}">'
-            '<svg xmlns="http://www.w3.org/2000/svg" '
-            f'width="{SUMMARY_CARD_WIDTH}" height="{SUMMARY_ROW_PITCH}" '
-            f'viewBox="{viewbox}" aria-hidden="true" data-homepage-atlas-svg>'
-            '<rect data-feature="atlas-background" '
-            f'x="{left}" y="{top}" width="{width}" height="{height}" fill="#ffffff" />'
-            f"{ET.tostring(card, encoding='unicode')}</svg></a>"
-        )
-    payload = base64.b64encode(gzip.compress(source.encode("utf-8"), mtime=0)).decode("ascii")
+    rows, positions = _atlas_rows(count)
     return (
         '<div class="site-wide site-atlas-grid site-homepage-atlas" data-atlas-preview '
-        f'data-atlas-view="triangle" data-atlas-size="medium" data-atlas-count="{count}" '
-        f'data-atlas-card-width="{SUMMARY_CARD_WIDTH}" '
-        f'data-atlas-card-height="{SUMMARY_ROW_PITCH}">'
+        f'data-atlas-view="triangle" data-atlas-size="{ATLAS_SIZE}" '
+        f'data-atlas-scale="{ATLAS_SCALE}" data-atlas-count="{count}" data-atlas-grid>'
         '<div class="site-atlas-cells" id="homepage-atlas-cells" '
-        f'style="--site-atlas-widest:{2 * ATLAS_PREVIEW_ROWS - 1}">'
-        f'{"".join(tiles)}<div class="site-atlas-rest" data-atlas-rest hidden></div></div>'
-        f"<template data-homepage-atlas-gzip>{payload}</template></div>"
-        f"{case_popover()}"
+        f'style="--site-atlas-widest:{2 * ATLAS_PREVIEW_ROWS - 1};{positions}">'
+        f"{''.join(rows[:ATLAS_PREVIEW_ROWS])}"
+        '<div class="site-atlas-rest" data-atlas-rest hidden>'
+        f"{''.join(rows[ATLAS_PREVIEW_ROWS:])}</div></div></div>{case_popover()}"
     )

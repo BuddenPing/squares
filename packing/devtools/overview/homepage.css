@@ -1,4 +1,4 @@
-/* The front door starts with six square rows of the retained native Atlas graphic. */
+/* The front door starts with six canonical rows of the shared Atlas. */
 .site-page:has([data-atlas-preview]) {
   overflow-anchor: none;
 }
@@ -28,58 +28,6 @@
   margin-block: 1.2rem;
   margin-inline: auto;
   max-inline-size: 30rem;
-}
-
-/* Include the native 287-unit row pitch: the lower label's glyph tails extend into
-   the poster's gutter at small sizes. Packing geometry remains unscaled internally. */
-.site-homepage-atlas .site-atlas-cell > svg {
-  aspect-ratio: 216 / 287;
-}
-
-/* Native polygon colors retain the poster's angle/contact palette. Its background,
-   labels and lines use the reader's current theme, including prepared hidden rows.
-   Each thumbnail link opens the complete, prepared case detail on selection. */
-[data-homepage-atlas-svg] [data-feature="atlas-background"],
-[data-homepage-atlas-svg] [data-feature="container-outline"] {
-  fill: var(--kpress-doc-bg);
-}
-
-[data-homepage-atlas-svg] [data-feature="container-outline"],
-[data-homepage-atlas-svg] [data-feature="square-fills"] {
-  stroke: var(--kpress-doc-text);
-}
-
-[data-homepage-atlas-svg] [data-feature="packing-label"] {
-  fill: var(--kpress-doc-text);
-}
-
-[data-homepage-atlas-svg]
-  :is(
-    [data-feature="side-bound"],
-    [data-feature="lower-bound"],
-    [data-feature="algebraic-degree"]
-  ) {
-  fill: var(--kpress-doc-muted);
-}
-
-[data-homepage-atlas-svg] [data-feature="evidence-badge"]:not([fill="none"]) {
-  fill: var(--kpress-doc-muted);
-}
-
-[data-homepage-atlas-svg] [data-feature="evidence-badge"] + text {
-  fill: var(--kpress-doc-bg);
-}
-
-[data-homepage-atlas-svg] [data-feature="evidence-badge"][fill="none"] {
-  stroke: var(--kpress-doc-muted);
-}
-
-[data-homepage-atlas-svg] [data-feature="evidence-badge"][fill="none"] + text {
-  fill: var(--kpress-doc-muted);
-}
-
-[data-homepage-atlas-svg] [data-feature="release-star"] {
-  fill: var(--site-new-result);
 }
 
 .site-homepage-atlas .site-atlas-cell:focus-visible {

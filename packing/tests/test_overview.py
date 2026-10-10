@@ -303,60 +303,6 @@ def test_the_hero_draws_case_53_and_keeps_its_ordinary_record_link() -> None:
     ) in hero
 
 
-def test_native_web_atlas_preserves_each_actual_crop_drawing_and_applicable_star() -> None:
-    from xml.etree import ElementTree as ET  # noqa: PLC0415
-
-    from devtools.build_known_best_atlas import (  # noqa: PLC0415
-        SUMMARY_CARD_WIDTH,
-        SUMMARY_PACKING_INSET_X,
-        SUMMARY_PACKING_INSET_Y,
-        SUMMARY_ROW_PITCH,
-    )
-
-    source = overview_sections.ATLAS_COMPOSITE.read_text()
-    original = ET.fromstring(source)
-    cards = {
-        int(card.attrib["data-n"]): card
-        for card in original.iter()
-        if card.get("data-feature") == "packing-card"
-    }
-    prepare = overview_sections._web_atlas_graphic  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
-    prepared = ET.fromstring(prepare(source))
-    recent = overview_sections.recent_contributions_by_case()
-    assert [int(card.attrib["data-n"]) for card in prepared] == list(range(1, 325))
-    for card in prepared:
-        n = int(card.attrib["data-n"])
-        original_card = cards[n]
-        frame = next(e for e in original_card if e.get("data-feature") == "container-outline")
-        left, top, width, height = map(
-            Decimal, card.attrib["data-homepage-atlas-viewbox"].split()
-        )
-        assert (left, top, width, height) == (
-            Decimal(frame.attrib["x"]) - SUMMARY_PACKING_INSET_X,
-            Decimal(frame.attrib["y"]) - SUMMARY_PACKING_INSET_Y,
-            SUMMARY_CARD_WIDTH,
-            SUMMARY_ROW_PITCH,
-        )
-
-        def polygons(parent: ET.Element) -> list[dict[str, str]]:
-            return [
-                e.attrib
-                for e in parent.iter()
-                if e.tag.endswith("}polygon") and e.get("data-feature") != "release-star"
-            ]
-
-        assert polygons(card) == polygons(original_card), n
-        texts = [e for e in card.iter() if e.tag.endswith("}text")]
-        assert len(texts) == 1, n
-        assert texts[0].text == str(n), n
-        assert texts[0].get("font-family") == "var(--kpress-font-sans)"
-        assert texts[0].get("lengthAdjust") == "spacingAndGlyphs"
-        assert Decimal(texts[0].attrib["textLength"]) > 0
-        stars = [e for e in card if e.get("data-feature") == "release-star"]
-        assert len(stars) == int(recent[n].any), n
-        assert not any(e.get("data-feature") == "evidence-badge" for e in card.iter())
-
-
 def test_the_homepage_keeps_the_original_packing_graphic_above_its_intro(page: str) -> None:
     figure = re.search(r'<figure class="site-hero-figure[^"]*">(.*?)</figure>', page, re.DOTALL)
     assert figure is not None
@@ -446,7 +392,7 @@ def test_the_homepage_sections_run_in_the_requested_order(page: str, atlas_page:
         + overview_sections.arrow_icon("double-down")
     ) in page
     assert '<a class="site-action" href="all-results.html" data-all-results' in page
-    assert len(re.findall(r'data-atlas-n="\d+"', page)) == 36
+    assert len(re.findall(r'data-atlas-n="\d+"', page)) == 324
     assert len(re.findall(r'data-atlas-n="\d+"', atlas_page)) == 324
     assert '<div class="site-atlas-rest" data-atlas-rest hidden>' in page
     assert "data-atlas-toggle" not in page
@@ -1430,8 +1376,6 @@ def test_the_triangle_is_sized_and_timed_by_tokens_the_script_reads() -> None:
     assert "margin-block-start: var(--site-atlas-row-gap);" in boundary
     assert "--site-atlas-row-space" not in shared
     assert "data-atlas-wrapped" not in row
-    assert "--site-atlas-row-space" in _rule(css, ".site-homepage-atlas .site-atlas-cells")
-    assert ".site-homepage-atlas .site-atlas-cells[data-atlas-wrapped]" in css
     assert "transform-origin: 0 0;" in _rule(css, ".kpress .site-atlas-cell")
     cells = _rule(
         css,

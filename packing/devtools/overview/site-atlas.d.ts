@@ -8,7 +8,7 @@ interface SiteAtlasParts {
   cells: HTMLElement;
   tabs: HTMLElement | null;
   sizes: HTMLElement | null;
-  /** Keep view/size state local and preserve the cells' ordinary semantics. */
+  /** Keep view/size state local; geometry and FLIP remain shared with the dedicated Atlas. */
   scoped?: boolean;
   /** Complete the visible preview with freshly measured capacity, before layout writes. */
   beforeArrange?: (capacity: number) => void;

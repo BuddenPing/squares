@@ -8,10 +8,6 @@ async () => {
   const scope = document.querySelector(".site-recent-scope");
   const allTiles = [...(cells?.querySelectorAll("a.site-atlas-cell") ?? [])];
   const tiles = allTiles.filter((tile) => tile.getClientRects().length > 0);
-  const svg = tiles[0]?.querySelector("[data-homepage-atlas-svg]");
-  const cards = tiles.flatMap((tile) => [
-    ...tile.querySelectorAll('g[data-feature="packing-card"]'),
-  ]);
   const legend = document.querySelector(".site-rung-legend");
   const heading = legend?.querySelector(".site-rung-legend-heading");
   const table = document.querySelector("table.site-results");
@@ -78,45 +74,41 @@ async () => {
     number_fonts: [
       ...new Set(
         tiles.map((tile) => {
-          const number = tile.querySelector('[data-feature="packing-label"]');
+          const number = tile.querySelector(".site-atlas-n");
           return number ? getComputedStyle(number).fontFamily : null;
         }),
       ),
     ],
     sans_family: cardLabel ? getComputedStyle(cardLabel).fontFamily : null,
     mark_errors: tiles.flatMap((tile) => {
-      const svg = tile.querySelector("svg");
-      const number = svg?.querySelector('[data-feature="packing-label"]');
-      const star = svg?.querySelector('[data-feature="release-star"]');
-      if (!(svg instanceof SVGSVGElement) || !(number instanceof SVGGraphicsElement)) {
+      const number = tile.querySelector(".site-atlas-n");
+      const star = number?.querySelector(".site-star");
+      if (!number) {
         return [tile.getAttribute("data-case")];
       }
-      const view = svg.viewBox.baseVal;
-      const numberBox = number.getBBox();
-      const starBox = star instanceof SVGGraphicsElement ? star.getBBox() : null;
-      return numberBox.x >= view.x &&
-        numberBox.x + numberBox.width <= view.x + view.width &&
-        (!starBox ||
-          (starBox.x > numberBox.x + numberBox.width &&
-            starBox.x + starBox.width <= view.x + view.width))
+      const numberBox = number.getBoundingClientRect();
+      const starBox = star?.getBoundingClientRect();
+      const tileBox = tile.getBoundingClientRect();
+      return numberBox.left >= tileBox.left &&
+        numberBox.right <= tileBox.right &&
+        (!starBox || (starBox.left > numberBox.right && starBox.right <= tileBox.right))
         ? []
         : [
-            `Case ${tile.getAttribute("data-case")}: number ${numberBox.x}..${numberBox.x + numberBox.width}; ` +
-              `star ${starBox ? `${starBox.x}..${starBox.x + starBox.width}` : "none"}; ` +
-              `crop ${view.x}..${view.x + view.width}; font ${getComputedStyle(number).fontFamily}`,
+            `Case ${tile.getAttribute("data-case")}: number ${numberBox.left}..${numberBox.right}; ` +
+              `star ${starBox ? `${starBox.left}..${starBox.right}` : "none"}; ` +
+              `tile ${tileBox.left}..${tileBox.right}`,
           ];
     }),
     raw_markup: cells?.querySelectorAll("pre, code").length ?? 0,
     star_cases: allTiles
-      .filter((tile) => tile.querySelector('[data-feature="release-star"]'))
+      .filter((tile) => tile.querySelector(".site-star"))
       .map((tile) => Number(tile.getAttribute("data-case"))),
     label_errors: allTiles.flatMap((tile) => {
       const n = tile.getAttribute("data-case");
-      const texts = [...tile.querySelectorAll("text")];
-      return texts.length === 1 &&
-        texts[0]?.getAttribute("data-feature") === "packing-label" &&
-        texts[0]?.textContent?.trim() === n &&
-        tile.querySelectorAll('[data-feature="evidence-badge"]').length === 0
+      const label = tile.querySelector(".site-atlas-n");
+      return label?.firstChild?.textContent?.trim() === n &&
+        label.querySelectorAll(":scope > :not(.site-star)").length === 0 &&
+        tile.querySelectorAll("img").length === 1
         ? []
         : [n];
     }),
@@ -124,14 +116,13 @@ async () => {
     stage: Number(cells?.parentElement?.getAttribute("data-atlas-count")),
     cells_role: cells?.getAttribute("role"),
     visible_cases: tiles.filter((tile) => tile.getClientRects().length > 0).length,
-    svg: {
-      cards: cards.length,
-      rows: [
-        ...new Set(
-          cards.map((card) => Math.floor(Math.sqrt(Number(card.getAttribute("data-n")) - 1))),
-        ),
-      ],
-      viewbox: svg?.getAttribute("viewBox"),
+    drawings: {
+      cards: tiles.length,
+      rows: [...(cells?.querySelectorAll(".site-atlas-row") ?? [])]
+        .filter((row) => row.getClientRects().length > 0)
+        .map((row) => Number(row.getAttribute("data-atlas-row"))),
+      size: cells?.parentElement?.getAttribute("data-atlas-size"),
+      scale: cells?.parentElement?.getAttribute("data-atlas-scale"),
     },
     busy: cells?.getAttribute("aria-busy"),
     toggle:

@@ -9,7 +9,8 @@ author: Codex, for the repository owner
 
 **Author:** Codex, for the repository owner
 
-**Status:** Implemented in draft PR #462; hosted verification in progress
+**Status:** Implemented in draft PR #462; shared Atlas geometry reconciliation
+(`think-p7c4`) pending verification
 
 **Tracking:** `think-2u4x` (epic), `think-s54c` (planning)
 
@@ -114,8 +115,9 @@ Keep the homepage in this order:
    An Atlas tile link fully expands the grid before scrolling to and highlighting the
    requested tile, including cases beyond the initial hundred.
    Follow it with a centered **The Squares Project** card linking to `about.html`.
-2. Embed the existing SVG atlas graphic, initially filtered to fewer rows, with **Show
-   More**, **Download PDF**, and **Explore the Atlas** buttons.
+2. Reuse the dedicated Atlas’s per-case SVG drawings and complete row and segment
+   placement, initially showing six Triangle rows, with **Show More**, **Download PDF**,
+   and **Explore the Atlas** buttons.
    Download the complete 1–324 PDF, with a shared down-arrow-over-baseline icon.
    Place the download action immediately before Explore.
    In-place expand/collapse controls use the shared double-down/double-up chevrons
@@ -165,21 +167,27 @@ Use the shared header for the About page and retain the source material’s mean
 links. Preserve the existing homepage `#the-squares-project` destination on the project
 card or forward it to the About page.
 
-Use a compact row subset of the original SVG atlas and up to twelve recent results
-initially. Recent results must be S4 or higher, dated within the last 180 days, and not
-superseded. Keep the complete results page’s filters unchanged.
+Initially show six complete Triangle rows from the shared Atlas layout and up to twelve
+recent results. Recent results must be S4 or higher, dated within the last 180 days, and
+not superseded. Keep the complete results page’s filters unchanged.
 The register currently contains six qualifying entries; the twelve-row limit allows the
 preview to grow as results qualify.
 Each headline links to its canonical result page.
-The atlas preview preserves the original SVG drawings, colors, and case destinations in
+The atlas preview preserves the per-case SVG drawings, colors, and case destinations in
 six Triangle rows, cases 1 to 36. Web labels show only the case number and an applicable
 recent-result star; the PDF retains its additional labels.
-Both pages use the shared Atlas layout and animation engine.
-Prepare the remaining drawings during initialization so Show More starts immediately.
-The first click reveals 100 cases; the second reveals all 324. Keep Triangle at each
-stage. At full coverage Show Less restores 36, using the same shared animation.
+Both pages use the same tile markup, row and segment placement, Small/Fixed sizing, and
+shared Atlas layout and animation engine.
+Complete rows pan horizontally on narrow viewports.
+All 324 case links and image references ship in the homepage; expansion moves whole rows
+between the visible and hidden containers.
+The first click immediately updates the layout and animates to 100 cases; the second
+reveals all 324. Keep Triangle at each stage.
+The browser may fetch immutable SVG images lazily as rows become visible.
+At full coverage Show Less restores 36, using the same shared animation.
 Explore remains a direct link to the dedicated Atlas page.
-Without JavaScript, retain the visible SVG preview and Explore link.
+Without JavaScript, retain the first 36 homepage cases and Explore link; the dedicated
+Atlas exposes all 324 cases.
 
 Publish the complete interactive atlas at `atlas.html`, reusing its existing drawings,
 view controls, and case-record behavior.
@@ -297,19 +305,19 @@ their combined behavior.
 | --- | --- | --- | --- |
 | L1: Repair the $n = 291$ case math | `think-18kd` | P1 | Reproduce on the direct page and case popover, identify the failure, then render all formulas without parse errors, missing glyphs, clipping, or raw markup. Retain a regression that exercises the actual failure. |
 | L2: Normalize case and popover layouts | `think-0ahf` | P1 | Consistent headings, spacing, drawings, bounds and math across both containers. No viewport-wide overflow; long content scrolls inside the popover and its close control remains reachable. |
-| L3: Tighten the homepage and preserve both previews | `think-5c8r` | P1 | Order: intro with centered project card, Atlas preview, Recent Major Results, Papers, PDFs, Video and Squares Project Documentation, resources. Filtered initial SVG rows and up to twelve S4+ recent results; no count/scope sentence; linked legend card; prominent destination buttons. |
+| L3: Tighten the homepage and preserve both previews | `think-5c8r` | P1 | Order: intro with centered project card, Atlas preview, Recent Major Results, Papers, PDFs, Video and Squares Project Documentation, resources. Six initial shared Triangle rows and up to twelve S4+ recent results; no count/scope sentence; linked legend card; prominent destination buttons. |
 | L4: Publish the complete dedicated Atlas page | `think-a9au` | P1 | All 324 cases and existing view controls work at `atlas.html`; case links/popovers work; navigation and the URL registry include it; legacy atlas links and view state still reach the full atlas. |
 | L5: Add shared Headroom navigation | `think-byu7` | P1 | Hide down, show immediately up on desktop and mobile; visible at top and during focus/menu use; all four shell families covered; no layout jump or obscured anchor target. |
 | L6: Verify the combined website layouts and interactions | `think-xio5` | P2 | Browser checks cover section order, paper-card grouping, previews and buttons, the About page and project card, About immediately before GitHub in the nav, the dedicated Atlas and Results pages, $n = 291$ math, popover scrolling/focus, and header direction. Retain reviewed before/after screenshots across representative shells, widths and themes. |
 | L7: Publish The Squares Project About page | `think-h21i` | P1 | Move the full project section to `about.html`; retain its narrative, attribution and links; add About immediately before GitHub in the shared top nav; the homepage project card opens About; register and crawl the new route. |
-| L8: Expand the homepage Atlas in place | `think-hyd6` | P1 | Show More alongside Explore; retain native SVG drawings in initial Triangle rows 1–6 (36 cases), immediately animate to 100 then 324 with two Show More clicks, and Show Less back to 36 using the shared engine; retain destinations and keyboard state. |
+| L8: Expand the homepage Atlas in place | `think-hyd6` | P1 | Show More alongside Explore; reuse dedicated Atlas SVG drawings and complete row placement in initial Triangle rows 1–6 (36 cases), immediately animate to 100 then 324 with two Show More clicks, and Show Less back to 36 using the shared engine; retain destinations and keyboard state. |
 | L9: Standardize uppercase button labels | `think-rfy8` | P1 | One shared design rule across site, popovers, Atlas, papers and Workbench; preserve mathematical case and card prose. |
 | L10: Remove duplicate result titles and tighten popover headings | `think-1rg7` | P1 | One visible main title after article loading, meaningful fallback, unique accessible heading IDs, compact shared sans hierarchy. |
 | L11: Align the navigation gear | `think-675d` | P1 | Gear follows GitHub in the shared track and aligns with navigation text across desktop and mobile shells. |
 | L12: Separate and place media cards | `think-erq7` | P1 | PDF cards on homepage and Papers; click-to-play inline video on homepage and full player on Visualize. Separate groups; no autoplay or initial video download on homepage; no media cards on Atlas. |
 | L14: Hero popover and expanded Atlas case navigation | `think-h3ms` | P1 | A single centered native hero packing for 53 uses the requested best-known caption and opens its case popover; separate record/Frontier/Atlas actions follow current case. Atlas targets fully expand before revealing the matching tile, including n=291/324. |
 | L17: Case popover hierarchy and Atlas directory | `think-g28m` | P1 | Centered Case Record eyebrow and larger mathematical count; icons, star/notes, then tags; shared right-arrow destination buttons; remove All cases and forward directory URLs to Atlas. |
-| L18: Web Atlas labels and shared controls | `think-ngcg` | P2 | Web graphic shows only case number and applicable star, PDF detail preserved; homepage Show More/Show Less controls match Atlas through 36 → 100 → 324. |
+| L18: Web Atlas labels and shared controls | `think-ngcg` | P2 | Web graphic shows only case number and applicable star, PDF detail preserved; homepage uses the shared Small/Fixed Triangle geometry and Show More/Show Less controls through 36 → 100 → 324 → 36. |
 | L19: Subtle shared scrollbars | `think-7y0v` | P2 | Thin theme-aware thumbs and transparent tracks across shared screen surfaces. |
 | L20: Shared evidence tooltips | `think-tg0p` | P2 | Meaningful styled hover/focus tooltips for case-property icons and S/V/C levels, including fetched popovers; standard motion and reduced-motion support. |
 | L21: Readable introduction | `think-8xzs` | P2 | Restore both owner-provided explanatory paragraphs with prepared math and upper/lower-bound examples. |
@@ -320,7 +328,7 @@ their combined behavior.
 | L26: Integrate the new methods paper | `think-mbp9` | P2 | Preserve current-main methods reading, use its canonical Title Case card, and apply shared Headroom/tooltip shell behavior. |
 | L15: Consolidate Frontier Survey under Atlas | `think-od15` | P1 | Full survey after graphical Atlas; distinct row/tile fragments, legacy Frontier forwarding and unified top navigation. |
 | L16: Complete responsive Atlas preview rows | `think-b2o9` | P1 | Around 100 collapsed cases, ending on complete rectangular Grid rows or complete square-number Triangle groups at every width and size; recompute on view, size, and resize; expanded coverage remains strictly all 324. |
-| L13: Honor SVG Atlas themes | `think-pvod` | P1 | Initial, expanded and cached SVGs use shared live light/dark theme tokens for backgrounds, labels, outlines and badges; preserve native packing colors and geometry. |
+| L13: Honor SVG Atlas themes | `think-pvod` | P1 | Initial and expanded Atlas tiles use shared live light/dark theme tokens for backgrounds, labels and outlines; preserve SVG packing colors and geometry. |
 
 Start with L1’s reproduction so its regression identifies a real failure.
 L2 and L5 can be developed independently.
@@ -358,8 +366,10 @@ project card’s About target, actual preview limits, and both primary buttons.
 About checks assert the retained project content and links, and **About** immediately
 before **GitHub** in the shared top navigation.
 Atlas checks assert complete case coverage, old-link forwarding, reversible homepage
-stages 36 → 100 → 324 → 36, immediate animation without click-time requests, repeated
-expansion/collapse, reduced motion, and native SVG colors and labels.
+stages 36 → 100 → 324 → 36, immediate layout and animation with authored case links,
+repeated expansion/collapse, reduced motion, SVG colors and labels, shared Small/Fixed
+row geometry, and horizontal panning on narrow viewports.
+Immutable lazy image requests may occur as newly visible rows load.
 Measure the homepage against the existing 1.3-megabyte page ceiling.
 Check uppercase computed button styles, the legend card’s destination and keyboard
 activation, hero popover actions, expanded Atlas targets for n=53/291/324, centered solo

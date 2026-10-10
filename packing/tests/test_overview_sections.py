@@ -2,15 +2,11 @@
 
 from __future__ import annotations
 
-import base64
-import gzip
 import html
 import re
-import xml.etree.ElementTree as ET
 from dataclasses import replace
 from datetime import timedelta
 
-from devtools import build_known_best_atlas as composite
 from devtools import overview_data, overview_sections
 from devtools.result_status import recent_contributions_by_case
 
@@ -132,88 +128,37 @@ def test_recent_preview_contains_only_the_twelve_newest_eligible_rows() -> None:
     assert "data-retired-results=" in attributes
 
 
-def test_atlas_preview_keeps_six_rows_and_prepares_web_labels_without_changing_print() -> None:
+def test_atlas_preview_reuses_canonical_split_rows_and_keeps_every_case() -> None:
     preview = overview_sections.atlas_preview()
-    source = overview_sections.ATLAS_COMPOSITE.read_text(encoding="utf-8")
-    payload = preview.split("<template data-homepage-atlas-gzip>", 1)[1].split(
-        "</template>", 1
-    )[0]
-    assert re.fullmatch(r"[A-Za-z0-9+/=]+", payload)
-    web = gzip.decompress(base64.b64decode(payload)).decode("utf-8")
-    originals = ET.fromstring(source).findall('.//*[@data-feature="packing-card"]')
-    cards = ET.fromstring(web).findall('.//*[@data-feature="packing-card"]')
-    recent = recent_contributions_by_case()
-    assert len(originals) == len(cards) == 324
-    for n, (original, card) in enumerate(zip(originals, cards, strict=True), 1):
-        assert card.get("data-feature") == "packing-card"
-        assert card.get("data-n") == str(n)
-        assert set(card.attrib) == {"data-feature", "data-n", "data-homepage-atlas-viewbox"}
-        frame = original.find('./{*}rect[@data-feature="container-outline"]')
-        assert frame is not None
-        assert tuple(map(float, card.attrib["data-homepage-atlas-viewbox"].split())) == (
-            float(frame.attrib["x"]) - float(composite.SUMMARY_PACKING_INSET_X),
-            float(frame.attrib["y"]) - float(composite.SUMMARY_PACKING_INSET_Y),
-            float(composite.SUMMARY_CARD_WIDTH),
-            float(composite.SUMMARY_ROW_PITCH),
-        )
-        texts = card.findall(".//{*}text")
-        assert [(text.get("data-feature"), "".join(text.itertext())) for text in texts] == [
-            ("packing-label", str(n))
-        ]
-        assert texts[0].get("font-family") == "var(--kpress-font-sans)"
-        assert float(texts[0].attrib["textLength"]) > 0
-        assert texts[0].get("lengthAdjust") == "spacingAndGlyphs"
-        assert card.findall('.//*[@data-feature="evidence-badge"]') == []
-        assert len(original.findall(".//{*}text")) > 1
-        assert original.findall('.//*[@data-feature="evidence-badge"]')
-        for feature in ("container-outline", "square-fills"):
-            original_nodes = original.findall(f'.//*[@data-feature="{feature}"]')
-            web_nodes = card.findall(f'.//*[@data-feature="{feature}"]')
-            assert [
-                [(child.tag, child.attrib, (child.text or "").strip()) for child in node.iter()]
-                for node in web_nodes
-            ] == [
-                [(child.tag, child.attrib, (child.text or "").strip()) for child in node.iter()]
-                for node in original_nodes
-            ], (n, feature)
-        stars = card.findall('.//*[@data-feature="release-star"]')
-        assert len(stars) == int(recent[n].any), n
-        assert all(star.tag.endswith("polygon") and star.get("points") for star in stars)
-        for star in stars:
-            star_x = [float(point.split(",")[0]) for point in star.attrib["points"].split()]
-            label_right = float(texts[0].attrib["x"]) + float(texts[0].attrib["textLength"])
-            gap = min(star_x) - label_right
-            assert abs(gap - float(texts[0].attrib["font-size"]) / 2) < 1e-6, n
-            left, _top, width, _height = map(
-                float, card.attrib["data-homepage-atlas-viewbox"].split()
-            )
-            assert max(star_x) < left + width, n
-    visible = preview.split("<template data-homepage-atlas-gzip>", 1)[0]
-    svgs = re.findall(r"<svg\b.*?</svg>", visible, re.DOTALL)
-    links = re.findall(r'<a class="site-atlas-cell"[^>]*>', visible)
-    assert len(svgs) == len(links) == 36
+    complete = overview_sections.atlas_grid()
+    tiles = re.findall(r'<a class="site-atlas-cell"[^>]*>.*?</a>', preview)
+    assert len(tiles) == 324
+    assert tiles == re.findall(r'<a class="site-atlas-cell"[^>]*>.*?</a>', complete)
+    assert [int(n) for n in re.findall(r'data-atlas-n="(\d+)"', preview)] == list(range(1, 325))
     assert overview_sections.ATLAS_PREVIEW_ROWS == 6
-    assert 'data-atlas-view="triangle"' in preview
-    assert 'data-atlas-count="36"' in preview
-    assert 'style="--site-atlas-widest:11"' in preview
-    for n, (svg, link, prepared) in enumerate(zip(svgs, links, cards[:36], strict=True), 1):
-        # Parse the native group independently of HTML's boolean SVG-host attribute.
-        initial = ET.fromstring(svg[svg.index("<g") : svg.rfind("</g>") + 4])
-        assert [
-            (node.tag, node.attrib, (node.text or "").strip()) for node in initial.iter()
-        ] == [(node.tag, node.attrib, (node.text or "").strip()) for node in prepared.iter()]
-        assert f'viewBox="{prepared.attrib["data-homepage-atlas-viewbox"]}"' in svg
-        assert re.search(r"\n[ \t]*\n", svg) is None
-        k = int((n - 1) ** 0.5) + 1
-        assert f'style="--r:{k};--c:{k * k - n};--o:' in link
-        assert f'href="cases/{n}.html" data-case="{n}"' in link
-        name = f"Case {n}: packing and bounds" + (", new result" if recent[n].any else "")
-        assert f'aria-label="{name}"' in link
-    assert overview_sections.ATLAS_COMPOSITE.read_text(encoding="utf-8") == source
-    assert len(preview.encode("utf-8")) < 1_200_000
-    assert '<div class="site-atlas-rest" data-atlas-rest hidden></div>' in preview
-    assert "data-atlas-preview" in preview
+    assert 'data-atlas-view="triangle" data-atlas-size="small"' in preview
+    assert 'data-atlas-scale="fixed" data-atlas-count="36"' in preview
+    assert 'id="homepage-atlas-cells"' in preview
+    assert "--site-atlas-widest:11;" in preview
+    visible, rest = preview.split('<div class="site-atlas-rest" data-atlas-rest hidden>', 1)
+    assert re.findall(r'data-atlas-row="(\d+)"', visible) == list(map(str, range(1, 7)))
+    assert re.findall(r'data-atlas-row="(\d+)"', rest) == list(map(str, range(7, 19)))
+    assert preview.count('data-atlas-segment="non-grid"') == 18
+    assert preview.count('data-atlas-segment="grid"') == 18
+    recent = recent_contributions_by_case()
+    for n, tile in enumerate(tiles, 1):
+        assert f'id="atlas-n-{n}" href="cases/{n}.html" data-case="{n}"' in tile
+        assert "<img " in tile
+        assert 'loading="lazy"' in tile
+        assert tile.count('class="site-star"') == int(recent[n].any)
+        assert (", new result" in tile) == recent[n].any
+        assert "evidence-badge" not in tile
+    assert preview.count('id="pop-case"') == 1
+    assert len(preview.encode("utf-8")) < 400_000
     for absent in (
+        "data-homepage-atlas-gzip",
+        "data-homepage-atlas-svg",
+        "<noscript>",
         "data-atlas-toggle",
         'role="tab"',
     ):

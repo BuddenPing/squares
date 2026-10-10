@@ -1552,23 +1552,25 @@ it.
   `tests/test_site_atlas_views.py` reads both in Chromium at 1280 and 390 pixels and
   holds their colours, type, height, padding and centring to each other.
 
-- **Homepage Atlas preview.** Embed the retained 1-to-324 SVG atlas, preserving its
-  drawing geometry and colors, with case-number and applicable-star labels
-  (`think-hyd6`, `think-ngcg`). Initially show six square-number Triangle rows, cases 1
-  to 36. Omit the printed poster title and footer.
-  Both pages use `SiteAtlasView` for layout and animation.
-  Prepare the remaining native SVG drawings during initialization from an embedded
-  compressed payload. Each card retains its actual poster-frame crop, including the
-  current native row pitch, independently of the poster’s triangular arrangement.
-  **Show More** immediately animates from 36 to 100 cases on the first click, and from
-  100 to all 324 on the second, retaining Triangle throughout.
-  There is no click-time request or delay.
+- **Homepage Atlas preview.** Reuse the dedicated Atlas’s per-case SVG drawings, row and
+  segment placement, and Small/Fixed sizing, preserving drawing geometry and colors with
+  case-number and applicable-star labels (`think-hyd6`, `think-ngcg`). Initially show
+  six complete Triangle rows, cases 1 to 36. Both pages use the same tile markup and
+  `SiteAtlasView` layout and animation.
+  Narrow viewports pan horizontally across the complete rows.
+  All 324 case links and image references ship in the page; expansion moves whole rows
+  across the visible and hidden-container boundary.
+  **Show More** immediately updates the layout and animates from 36 to 100 cases on the
+  first click, and from 100 to all 324 on the second, retaining Triangle throughout.
+  The DOM and animation need no click-time preparation; the browser may fetch immutable
+  SVG images lazily as they become visible.
   At full coverage the button becomes **Show Less**, restoring 36. Its accessible name
   states the next case count; double-down chevrons mean more expansion and double-up
   means collapse. Persistent case links retain case popovers and ordinary page
   destinations. The homepage instance keeps its state local; dedicated Atlas view
   controls and URL state retain their existing behavior.
-  Without scripting, the compact SVG preview and Explore link remain available.
+  Without scripting, the first 36 cases and Explore link remain available; the dedicated
+  Atlas exposes all 324 cases.
   The homepage does not insert explanatory selection/tile prose above the graphic.
 
 - **About and Papers.** About separates the project narrative into paragraphs for its
@@ -1594,8 +1596,8 @@ it.
   the grid. All 324 links ship in the page.
   The dedicated Atlas retains each row, segment and link in place; changing its
   collapsed cutoff hides out-of-prefix cells and empty rows without cloning drawings or
-  losing case state. The homepage alone moves links across its visible and
-  hidden-container boundary.
+  losing case state. The homepage moves complete rows across its visible and
+  hidden-container boundary, retaining the same row and segment geometry.
   The remaining box uses `display: contents`, and expansion reveals it; the expanded
   case count is strictly 324. Grid hides cells beyond its complete-row cutoff and their
   empty row containers; Triangle keeps the first ten logical rows.
@@ -1605,8 +1607,9 @@ it.
   cell pressed. Without scripting the button’s row stays `hidden`, since it would do
   nothing. In the dedicated triangle, expansion retains the readable drawing size and
   widens its complete-row scroll canvas from 19 to 35 tiles.
-  The homepage preview keeps its compact wrapped Triangle and its separate
-  36-to-100-to-324 stages.
+  The homepage uses the same complete Triangle placement and Small/Fixed sizing, with
+  its separate 36-to-100-to-324 stages.
+  Both pages pan horizontally when their complete rows exceed the viewport.
 
 - **Wide bleed.** A wide block (`.site-wide`) takes the wide track, `--site-wide`, less
   the page gutters (`--site-wide-gutter` on either side; **Spacing**, above).

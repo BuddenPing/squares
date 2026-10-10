@@ -2,7 +2,7 @@
 
 Real rendered pages and their assets are served through request routes in memory, so
 the fixture writes no site output. One desktop and one mobile session exercise the
-keyboard, prepared native tiles, shared triangle animation and a case link.
+keyboard, canonical Atlas tiles, shared triangle animation and a case link.
 """
 
 from __future__ import annotations
@@ -13,11 +13,9 @@ from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit
-from xml.etree import ElementTree as ET
 
 import pytest
 
-from devtools import build_known_best_atlas as composite
 from devtools import overview_sections, render_overview, site_assets
 from devtools.render_n11_lower_bounds_explainer import COMPOSITE_ASSETS
 from devtools.result_status import recent_contributions_by_case
@@ -38,27 +36,11 @@ ORIGIN = "http://homepage.test/"
 TOGGLE = "[data-homepage-atlas-toggle]"
 CELLS = "#homepage-atlas-cells"
 TILES = f"{CELLS} .site-atlas-cell:visible"
-GRAPHIC = overview_sections.ATLAS_COMPOSITE.name
+GRAPHIC = "known-best-1-324.svg"
 STATUS = "[data-homepage-atlas-status]"
 EXPLORE = '.site-homepage-atlas-actions a[href="atlas.html"]'
 WIDTHS = (1280, 390)
 LEGEND_WIDTHS = (*WIDTHS, 320)
-
-
-def _native_first_viewbox() -> tuple[float, float, float, float]:
-    """Independent crop from the published composite's actual first packing frame."""
-    graphic = ET.fromstring(overview_sections.ATLAS_COMPOSITE.read_text())
-    namespace = {"svg": "http://www.w3.org/2000/svg"}
-    frame = graphic.find(
-        ".//svg:g[@data-n='1']/svg:rect[@data-feature='container-outline']", namespace
-    )
-    assert frame is not None
-    return (
-        float(frame.attrib["x"]) - float(composite.SUMMARY_PACKING_INSET_X),
-        float(frame.attrib["y"]) - float(composite.SUMMARY_PACKING_INSET_Y),
-        float(composite.SUMMARY_CARD_WIDTH),
-        float(composite.SUMMARY_ROW_PITCH),
-    )
 
 
 @pytest.fixture(scope="module")
@@ -82,7 +64,6 @@ def payloads() -> dict[str, bytes]:
         **{name: html.encode("utf-8") for name, html in documents.items()},
         **{f"assets/{name}": data for name, data in assets.items()},
         **render_overview.support_files(),
-        GRAPHIC: overview_sections.ATLAS_COMPOSITE.read_bytes(),
         **{path.name: path.read_bytes() for path in COMPOSITE_ASSETS if path.name in media},
     }
 
@@ -235,7 +216,7 @@ def seen(toggle_seen: dict[int, dict[str, Any]]) -> dict[int, dict[str, Any]]:
 
 
 @pytest.mark.parametrize("width", WIDTHS)
-def test_keyboard_expansion_uses_the_shared_triangle_without_click_requests(
+def test_keyboard_expansion_uses_the_shared_triangle_without_click_time_preparation(
     toggle_seen: dict[int, dict[str, Any]], width: int
 ) -> None:
     report = toggle_seen[width]
@@ -267,11 +248,10 @@ def test_keyboard_expansion_uses_the_shared_triangle_without_click_requests(
     assert report["static_hero"]["drawings"][0]["href"] == "cases/53.html"
     assert initial["cases"] == list(range(1, 37))
     assert initial["visible_cases"] == 36
-    assert initial["svg"]["cards"] == 36
-    assert initial["svg"]["rows"] == list(range(6))
-    assert tuple(map(float, initial["svg"]["viewbox"].split())) == pytest.approx(
-        _native_first_viewbox()
-    )
+    assert initial["drawings"]["cards"] == 36
+    assert initial["drawings"]["rows"] == list(range(1, 7))
+    assert initial["drawings"]["size"] == "small"
+    assert initial["drawings"]["scale"] == "fixed"
     assert initial["stage"] == 36
     assert initial["view"] == "triangle"
     assert initial["toggle"]["name"] == "Show more: expand from 36 to 100 cases (10 rows)"
@@ -298,13 +278,12 @@ def test_keyboard_expansion_uses_the_shared_triangle_without_click_requests(
         assert state["toggle"]["arrow"] == "double-up", name
         assert not state["toggle"]["disabled"], name
         assert state["busy"] is None, name
-        assert state["svg"]["cards"] == 324
-        assert state["svg"]["rows"] == list(range(18))
-        assert state["svg"]["viewbox"] == initial["svg"]["viewbox"]
+        assert state["drawings"]["cards"] == 324
+        assert state["drawings"]["rows"] == list(range(1, 19))
         assert state["view"] == "triangle"
     collapsed = report["collapsed"]
     assert collapsed["cases"] == initial["cases"]
-    assert collapsed["svg"] == initial["svg"]
+    assert collapsed["drawings"] == initial["drawings"]
     assert collapsed["toggle"]["expanded"] == "false"
     assert collapsed["toggle"]["label"] == "Show More"
     assert collapsed["toggle"]["arrow"] == "double-down"
@@ -317,10 +296,9 @@ def test_keyboard_expansion_uses_the_shared_triangle_without_click_requests(
         assert state["label_errors"] == [], name
         assert state["mark_errors"] == [], name
         assert state["number_fonts"] == [state["sans_family"]], name
-        assert state["case_names"] == {
-            str(n): f"Case {n}: packing and bounds" + (", new result" if recent[n].any else "")
-            for n in state["cases"]
-        }, name
+        for n in state["cases"]:
+            assert state["case_names"][str(n)].startswith(f"n = {n}, "), name
+            assert (", new result" in state["case_names"][str(n)]) == recent[n].any, name
         assert report[name]["raw_markup"] == 0, name
         assert state["star_cases"] == [n for n in range(1, 325) if recent[n].any], name
     assert report["atlas_requests"] == 0
@@ -340,7 +318,8 @@ def test_keyboard_expansion_uses_the_shared_triangle_without_click_requests(
         assert response["same_nodes"]
         assert response["scroll_delta"] == 0
         assert transition["placement_errors"] == []
-        assert transition["crop_errors"] == []
+        assert transition["drawing_errors"] == []
+        assert transition["row_alignment_errors"] == []
         assert transition["duration"] == 360
         if response["layout_changed"]:
             assert response["animations"]
@@ -353,9 +332,7 @@ def test_keyboard_expansion_uses_the_shared_triangle_without_click_requests(
         assert transition["root_size"] == report["root_size"]
         assert transition["panel_id"] == "homepage-atlas-cells"
         assert transition["panel_role"] is None
-        assert all(
-            aspect == pytest.approx(216 / 287, abs=0.002) for aspect in transition["aspects"]
-        )
+        assert all(aspect == pytest.approx(1, abs=0.002) for aspect in transition["aspects"])
     assert report["collapsed_move"]["input"]["same_nodes"]
     assert report["collapsed_move"]["toggle_in_view"]
     reduced = report["reduced_move"]
@@ -372,15 +349,15 @@ def test_keyboard_expansion_uses_the_shared_triangle_without_click_requests(
     assert report["rapid"]["input"]["same_nodes"]
     assert report["rapid"]["placement_errors"] == []
     assert report["rapid"]["toggle_in_view"]
-    assert report["static"]["overflow"] == 0
+    assert report["static"]["page_overflow"] == 0
     static = report["static"]["tiles"]
     assert report["static_labels"]["raw_markup"] == 0
     assert report["static_labels"]["label_errors"] == []
-    assert report["static_labels"]["star_cases"] == [n for n in range(1, 37) if recent[n].any]
+    assert report["static_labels"]["star_cases"] == [n for n in range(1, 325) if recent[n].any]
     assert [tile["n"] for tile in static] == list(range(1, 37))
     for index, tile in enumerate(static):
-        assert tile["left"] >= -0.5
-        assert tile["right"] <= report["static"]["width"] + 0.5
+        assert tile["left"] >= report["static"]["canvas"]["left"] - 0.5
+        assert tile["right"] <= report["static"]["canvas"]["right"] + 0.5
         for other in static[index + 1 :]:
             assert (
                 tile["right"] <= other["left"] + 0.5
@@ -614,21 +591,14 @@ def test_native_svg_case_links_align_with_drawings_and_open_by_pointer_after_scr
         assert [reading["n"] for reading in readings] == list(cases)
         for reading in readings:
             assert reading["opened"] == str(reading["n"])
-            for name, expected in (
-                ("left_gap", 24),
-                ("top_gap", 12),
-                ("link_width", 216),
-                ("link_height", 287),
-                ("drawing_width", 158),
-                ("drawing_height", 158),
-            ):
-                # Compare in CSS pixels: fractional layout rounds the percentage
-                # link bounds to subpixels, especially in the scrolled phone view.
-                error = abs(reading[name] - expected) * reading["scale"]
-                assert error <= 0.1, (phase, reading)
+            assert reading["drawing_width"] > 0
+            assert reading["drawing_width"] == pytest.approx(reading["drawing_height"], abs=0.1)
+            assert reading["row"] == int((reading["n"] - 1) ** 0.5) + 1
+            assert reading["segment"] in ("grid", "non-grid")
+            assert reading["source"].endswith(f"/n-{reading['n']}.svg")
             assert 0 <= reading["center_x"] <= reading["viewport_width"]
             assert reading["contained"]
-            assert reading["horizontal_scroll"] == 0, (phase, reading)
+            assert reading["page_overflow"] == 0, (phase, reading)
 
 
 @pytest.mark.parametrize("width", WIDTHS)
@@ -818,8 +788,8 @@ def test_native_svg_follows_live_system_light_dark_choices_in_all_cached_states(
         assert state["resolved"] == state["expected"]
         assert state["cases"] == (324 if state["phase"] == "expanded" else 36)
         assert state["background"] == state["page_background"]
-        assert state["container"] == state["background"]
-        assert state["outline"] == state["grid"] == state["label"]
+        assert state["white_samples"] > 0, state
+        assert state["colored_samples"] > 0, state
         assert state["label_contrast"] >= 4.5, state
         assert state["palette_samples"] >= 5
         assert state["palette_unchanged"]
@@ -827,18 +797,18 @@ def test_native_svg_follows_live_system_light_dark_choices_in_all_cached_states(
     for phase in ("preview", "expanded", "collapsed"):
         colors = {tuple(state["background"]) for state in readings if state["phase"] == phase}
         assert len(colors) == 2, phase
+        pixels = {state["palette_signature"] for state in readings if state["phase"] == phase}
+        assert len(pixels) == 1, phase
 
 
 @pytest.mark.parametrize("width", WIDTHS)
-def test_failed_startup_preparation_keeps_native_preview_and_explore_usable(
+def test_missing_shared_engine_keeps_native_preview_and_explore_usable(
     browser: Any, payloads: dict[str, bytes], width: int
 ) -> None:
     sync_api = site_browser.api()
     page = browser.new_page(viewport={"width": width, "height": 900})
-    broken = payloads["index.html"].replace(
-        b"<template data-homepage-atlas-gzip>", b"<template data-homepage-atlas-gzip>!"
-    )
-    _serve(page, {**payloads, "index.html": broken})
+    _serve(page, payloads)
+    page.route(f"{ORIGIN}assets/js/atlas-view.*.js", lambda route: route.abort())
     errors = []
 
     def record_error(error: Any) -> None:
@@ -853,7 +823,7 @@ def test_failed_startup_preparation_keeps_native_preview_and_explore_usable(
         failed = page.evaluate(STATE)
         assert failed["visible_cases"] == 36
         assert failed["toggle"]["expanded"] == "false"
-        assert failed["prepared_cases"] == 36
+        assert failed["prepared_cases"] == 324
         assert failed["busy"] is None
         assert failed["status"]["role"] == "status"
         assert "Explore the atlas" in failed["status"]["text"]
