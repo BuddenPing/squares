@@ -24,11 +24,13 @@ their original gzip files.
 
 The two largest certificates, `data/stair_k38250000.json.gz` (2,577,279 bytes) and
 `data/stair_k100000000.json.gz` (4,494,252 bytes), are pinned by digest and kept out of
-Git under `OR-18`. They are hosted by
+Git under `OR-18`. They are in the Zenodo archive above, and are to be hosted in the
+release `data/squarepacker-k2-minus-c-upper-certificates-v1` that
 [`packing/hosted/squarepacker-k2-minus-c-upper-certificates.yaml`](../../../hosted/squarepacker-k2-minus-c-upper-certificates.yaml)
-and are in the Zenodo archive above; their SHA-256 digests in the manifest equal the
-source’s own `SHA256SUMS`. Fetch them from `packing/` with
-`uv run --frozen --all-extras --group dev python -m devtools.hosted_data fetch --manifest hosted/squarepacker-k2-minus-c-upper-certificates.yaml`.
+names, once the owner publishes it; their SHA-256 digests in the manifest equal the
+source’s own `SHA256SUMS`. Once that release exists, fetch them from `packing/` with
+`uv run --frozen --all-extras --group dev python -m devtools.hosted_data fetch --manifest hosted/squarepacker-k2-minus-c-upper-certificates.yaml`;
+the command works only then.
 
 Every member of the Zenodo archive was compared here with the tagged tree by Git blob:
 all 35 are equal, and `sha256sum -c SHA256SUMS` passes.
@@ -87,7 +89,8 @@ None settles a count n ≤ 324. The mathematical review is
 status and how its output compares with the output the source records; the complete
 outputs are in `receipts/replay/outputs.jsonl.gz`. They were written by
 `packing/cases/asymptotic/ryu_upper_replay.py`, which rebuilds the tree from this packet
-and the hosted certificates and runs each program with the project interpreter under
+and the two certificates the hosted-data manifest pins, read from their local copies,
+and runs each program with the project interpreter under
 `python -I`. Two kinds of job are here:
 
 - the source’s own programs (`const_stair.py`, `stair_check.py` at all five k and its

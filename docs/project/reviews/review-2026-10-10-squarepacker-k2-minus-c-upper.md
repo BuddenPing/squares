@@ -644,6 +644,24 @@ Section 3’s statement that $65$ is the first $k$ at which the theorem improves
 stands. The register row and its tool were corrected in `efd89b421`; this review’s
 verdict and its other findings are unchanged.
 
+## Correction of 10 October 2026: the Further Coverings
+
+Added by records lane R4 of the same intake pass (`think-fvz4`); the text above is
+unchanged. The summary at the top and section 11 speak of “two further coverings per
+version”, which holds for version 1.0 only.
+Version 1.0’s `source/README.md` reports three independent full-range coverings of
+$C_E = 15.54$, the first of them `cert3e.py`, so two further coverings are reported and
+not in the release. Version 1.1’s `source/README.md` reports, besides the author’s
+coverings `code/cert_v3/cert_v3.py` and `code/cert_v4/cert_v4.py`, three coverings per
+tier written independently from the text, two by verification agents and one by a
+reviewer, as section 6 states; none of the three is in the release.
+The packets’ receipts agree: version 1.0’s replay runs `cert3e.py` once, and version
+1.1’s runs no covering but the author’s two, 37 jobs of `cert_v3.py` and 12 of
+`cert_v4.py`, beside three exact tests.
+So version 1.1 has three further coverings per tier, as issue #486, the register’s
+version 1.1 row and the 10 October packet say.
+No finding, rung or verdict changes.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->
