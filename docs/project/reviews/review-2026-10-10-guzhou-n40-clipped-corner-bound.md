@@ -525,6 +525,13 @@ every finite quantity, the derived input’s identity, six of 401 directions and
 controls; what the source reports and this review did not run is the complete
 401-direction run, which its receipts, its CI run and wand125’s comment each report.
 
+## Note of 10 October 2026: the Register Id
+
+Added by the records lane of the same intake pass (`think-fvz4`); the review above is
+unchanged. The register entry this review calls `T-NNN`, to be assigned, is `T-133`,
+taken in the commit that registered it, which cites this review in its `reviews`. Ids
+are provisional until merged to `main`.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->

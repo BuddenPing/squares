@@ -493,6 +493,16 @@ No review of #476’s 59 unnamed certificates, #481’s `sources/` packings or #
 `derive --check` from a Git checkout.
 No house adoption, case-record change or private-worker custody.
 
+## Note of 10 October 2026: the Register Ids
+
+Added by the records lane of the same intake pass (`think-fvz4`); the review above is
+unchanged. The entries this review calls `T-NNN` were registered at `V3`/`C3` with the
+confirming evidence it proposes, each in its own commit: #476 as `T-134`, #484 as
+`T-135` (308 only; 343 and 344 are verified beyond-horizon rows), #481 as `T-136` and
+#483 as `T-137`. No case record changed: house adoption waits for jlevy/squares#403, so
+each confirming entry is a recorded deferral of its case citation.
+Ids are provisional until merged to `main`.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->
