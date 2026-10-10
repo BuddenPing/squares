@@ -152,7 +152,7 @@ def _arrives(
 def _arrivals(root: str) -> dict[str, str]:
     """Where each old address should arrive, for a site whose root is `root`."""
     return {
-        "results.html": f"{root}/all-results.html",
+        "all-results.html": f"{root}/results.html",
         "status.html": f"{root}/atlas.html",
         "frontier.html": f"{root}/atlas.html",
         "defects.html": DEFECTS,
@@ -166,7 +166,7 @@ def _arrivals(root: str) -> dict[str, str]:
 
 def test_each_old_address_arrives_with_its_query_and_fragment(browser: Any, site: Path) -> None:
     moved = dict(render_overview.MOVED_PAGES)
-    assert moved["results.html"] == "all-results.html"
+    assert moved["all-results.html"] == "results.html"
     assert moved["status.html"] == "atlas.html"
     assert moved["frontier.html"] == "atlas.html"
     assert moved["defects.html"] == DEFECTS

@@ -65,9 +65,48 @@ async () => {
       },
     ];
   });
+  const frame = cells?.getBoundingClientRect();
+  const occupied = tiles.map((tile) => tile.getBoundingClientRect());
+  const left = Math.min(...occupied.map((box) => box.left));
+  const right = Math.max(...occupied.map((box) => box.right));
   return {
+    centering: frame
+      ? {
+          width: right - left,
+          frame_width: frame.width,
+          offset: (left + right - frame.left - frame.right) / 2,
+          fits: right - left <= frame.width + 0.5,
+          page_overflow:
+            document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        }
+      : null,
     cases: tiles.map((tile) => Number(tile.getAttribute("data-case"))),
     prepared_cases: allTiles.length,
+    images: {
+      decoded: allTiles.filter((tile) => tile.querySelector('img[data-atlas-image-state="ready"]'))
+        .length,
+      loaded: allTiles.filter((tile) => {
+        const image = tile.querySelector("img");
+        return image?.complete && image.naturalWidth > 0;
+      }).length,
+      failed: cells?.querySelectorAll('img[data-atlas-image-state="failed"]').length ?? 0,
+    },
+    control_groups: [...document.querySelectorAll("[data-atlas-controls] [role=tablist]")].map(
+      (list) => list.getAttribute("aria-label"),
+    ),
+    atlas_legend: document.querySelector("[data-atlas-legend]") !== null,
+    control_type: [
+      ...document.querySelectorAll("[data-atlas-controls] [role=tab], [data-atlas-toggle]"),
+    ].map((button) => {
+      const style = getComputedStyle(button);
+      const reference = button.matches('[role="tab"]')
+        ? document.querySelector(".site-nav")
+        : status;
+      return {
+        size: Number.parseFloat(style.fontSize),
+        base: reference ? Number.parseFloat(getComputedStyle(reference).fontSize) : null,
+      };
+    }),
     case_names: Object.fromEntries(
       tiles.map((tile) => [tile.getAttribute("data-case"), tile.getAttribute("aria-label")]),
     ),
@@ -152,6 +191,10 @@ async () => {
     main_titles: [...document.querySelectorAll("h1.site-title")].map((heading) => heading.id),
     lower_headings: document.querySelectorAll("h3, h4, h5, h6").length,
     main_title_style: mainTitle ? titleStyle(mainTitle) : null,
+    h1_spacing: [...document.querySelectorAll("h1.site-title")].map((heading) => ({
+      id: heading.id,
+      above: Number.parseFloat(getComputedStyle(heading).marginBlockStart),
+    })),
     section_title_styles: [...document.querySelectorAll("h1.site-title, h2.site-title")]
       .filter((heading) => heading !== mainTitle)
       .map(titleStyle),

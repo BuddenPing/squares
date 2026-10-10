@@ -18,13 +18,14 @@ urls:
   lastmod: '2026-10-08'
   status: live
 - path: all-results.html
-  canonical: all-results.html
-  kind: page
-  generator: devtools.render_overview:render_all
+  canonical: results.html
+  kind: forwarder
+  generator: devtools.render_overview:forwarder_pages
   producer: overview
   first_published: '2026-09-29'
   lastmod: '2026-10-02'
-  status: live
+  status: forwarded
+  target: results.html
 - path: apple-touch-icon.png
   canonical: apple-touch-icon.png
   kind: asset-file
@@ -11920,14 +11921,13 @@ urls:
     - packing/resources/web/evand-record-hunt-2026-10-09/receipts/exact-certification.json.xz
     - packing/devtools/evand_hunt_reports.py
 - path: results.html
-  canonical: all-results.html
-  kind: forwarder
-  generator: devtools.render_overview:forwarder_pages
+  canonical: results.html
+  kind: page
+  generator: devtools.render_overview:render_all
   producer: overview
   first_published: '2026-09-29'
   lastmod: '2026-10-02'
-  status: forwarded
-  target: all-results.html
+  status: live
 - path: sitemap.xml
   canonical: sitemap.xml
   kind: site-file

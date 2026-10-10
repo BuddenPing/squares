@@ -465,7 +465,7 @@ def test_the_checked_pages_are_every_page_the_site_serves_but_the_workbench() ->
     assert PAGE_URL.endswith(f"/squares/{EXPLAINER}")
     assert EXPLAINER == "papers/n11-lower-bounds-explainer.html"
     assert {*SITE_PAGES, EXPLAINER, "workbench/index.html"} <= set(render_overview.SITE_PAGES)
-    assert {"index.html", "atlas.html", "all-results.html"} == LINK_CHECKED_PAGES
+    assert {"index.html", "atlas.html", "results.html"} == LINK_CHECKED_PAGES
     assert render_overview.canonical_url("index.html") == check_published_site.SITE_URL
     assert render_overview.canonical_url("tutorial.html").endswith("/squares/tutorial.html")
     # The papers page was added to the renderer alone, and is checked here for it.
@@ -624,7 +624,7 @@ def test_check_requires_every_result_overview_the_results_table_names(
     assert failure.endswith("but it is 'result/t-001.html'")
 
     assert failures(monkeypatch, fake_site(site_naming(()))) == [
-        "all-results.html names 0 result overviews",
+        "results.html names 0 result overviews",
         f"result overview {OVERVIEWS[0]}: sampled for its record links and not served",
     ]
 
@@ -1396,7 +1396,7 @@ def test_check_requires_a_forwarder_at_every_address_a_page_used_to_have(
     that is."""
     moved = dict(render_overview.MOVED_PAGES)
     assert set(moved) == {
-        "results.html",
+        "all-results.html",
         "status.html",
         "frontier.html",
         "defects.html",
@@ -1413,7 +1413,7 @@ def test_check_requires_a_forwarder_at_every_address_a_page_used_to_have(
         assert f"https://example.org/{old}" in requested, old
 
     for old, new in moved.items():
-        # The slash keeps `results.html` from also losing `all-results.html`.
+        # Match the whole old path without hiding another page with a shared suffix.
         (failure,) = failures(monkeypatch, fake_site(site_pages(), lost=(f"/{old}",)))
         assert failure.startswith(f"forwarder {old}: HTTP 404, says "), failure
 

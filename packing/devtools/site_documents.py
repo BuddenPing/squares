@@ -21,8 +21,9 @@ code span:
 
 Three generated views of the record were pages here until 2026-10-01 and are not now:
 `RESULTS.md`, `STATUS.md` and `defects.md` (think-bk2e, and the review of that date
-under `docs/project/reviews/`). Their old addresses are forwarders
-(`render_overview.MOVED_PAGES`).
+under `docs/project/reviews/`). The old status and defect addresses remain forwarders;
+`results.html` now serves the complete Results table, with `all-results.html` as its
+legacy forwarder (`render_overview.MOVED_PAGES`).
 
 A relative link is resolved against the document's own directory, as GitHub resolves
 it. Every rewritten repository target is checked against the tree being rendered, which

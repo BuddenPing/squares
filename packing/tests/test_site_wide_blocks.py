@@ -55,7 +55,7 @@ from devtools.preview_site import (
 from devtools.render_n11_lower_bounds_explainer_pdf import BROWSER_OVERRIDE
 from tests import site_renders
 
-PAGES = ("index.html", "all-results.html", "atlas.html", "visualize.html", "tutorial.html")
+PAGES = ("index.html", "results.html", "atlas.html", "visualize.html", "tutorial.html")
 WIDTHS = (*CLIP_WIDTHS, 390)
 #: The rule the wide track had: its room measured from the window, a rem a side.
 FROM_THE_WINDOW = ".site-page .site-wide { --site-wide-room: calc(100vw - 2rem) !important; }"
@@ -118,7 +118,7 @@ def test_a_block_sized_from_the_window_is_caught(browser: Any, pages: dict[str, 
     once a scrollbar takes its width from the layout, and the check names each."""
     page = browser.new_page(viewport={"width": 768, "height": 900})
     try:
-        page.goto(pages["all-results.html"].as_uri(), wait_until="load")
+        page.goto(pages["results.html"].as_uri(), wait_until="load")
         page.add_style_tag(content=FROM_THE_WINDOW)
         plain = page.evaluate(CLIPPED, {"scrollbar": 0})
         narrowed = page.evaluate(CLIPPED, {"scrollbar": SCROLLBAR_PX})

@@ -278,7 +278,7 @@ runs:
 3. **Recent Results.** One table of every result, newest first, in the results page’s
    six columns (id, n, result, credit, rungs with the kind and the status under them,
    date), filtered by default to significance S4 and up, a maximum age of 180 days and
-   superseded results hidden, with a link to the full table on `all-results.html`. It
+   superseded results hidden, with a link to the full table on `results.html`. It
    replaces the headline cards, the exact-value cards and the recent-changes list.
    Until 2026-10-01 a separate disclosure followed it, the cases awaiting a replay; a
    reported result is now a row of the table with the status *recorded* (`think-d04u`).
@@ -312,7 +312,7 @@ the template as a literal.
 
 One row per register entry, grouped and ordered exactly as `RESULTS.md` is, through the
 shared `grouped_results()`. Amended 2026-09-30: the table is its own page,
-`all-results.html`, with a Results nav tab; the overview keeps Recent Results, and
+`results.html`, with a Results nav tab; the overview keeps Recent Results, and
 `forward.js` sends old `index.html#every-result` and `#t-nnn` links there.
 Amended 2026-10-01: the table is one flat list, newest first, with no lineage headings;
 `RESULTS.md` keeps the grouping.
@@ -783,7 +783,7 @@ decisions that changed the plan above:
   (`think-7oho`). The homepage has no `h1` or tagline, the version is in the footer
   only, and the problem section makes no bound or open-case claim (`think-sz43`,
   `think-r07m`, `think-7stg`).
-- **More pages.** Every result moves to `all-results.html`, each case gets a record at
+- **More pages.** Every result appears on `results.html`, each case gets a record at
   `cases.html#n-N`, and Visualize (`visualize.html`) shows the film with the workbench
   under a second tab (`think-x8ev`, `think-7vjh`, `think-88zu`).
 - **Recent Results replaces the headline cards and the recent-changes list**: one table

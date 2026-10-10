@@ -25,7 +25,21 @@
   const shown = tiles.filter((tile) => tile.getClientRects().length > 0);
   const box = toggle?.getBoundingClientRect();
   const focus = document.activeElement;
+  const frame = cells?.getBoundingClientRect();
+  const occupied = shown.map((tile) => tile.getBoundingClientRect());
+  const left = Math.min(...occupied.map((box) => box.left));
+  const right = Math.max(...occupied.map((box) => box.right));
   return {
+    centering: frame
+      ? {
+          width: right - left,
+          frame_width: frame.width,
+          offset: (left + right - frame.left - frame.right) / 2,
+          fits: right - left <= frame.width + 0.5,
+          page_overflow:
+            document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        }
+      : null,
     view: block.dataset.atlasView,
     root_view: document.documentElement.dataset.siteAtlasView ?? null,
     size: block.dataset.atlasSize,

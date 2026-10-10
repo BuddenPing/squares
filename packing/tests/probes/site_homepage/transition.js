@@ -71,6 +71,10 @@ async (options) => {
                 animation.effect.getKeyframes().some((frame) => "transform" in frame),
             )
             .map((animation) => ({
+              first_transform:
+                animation.effect instanceof KeyframeEffect
+                  ? animation.effect.getKeyframes()[0]?.transform
+                  : null,
               duration: animation.effect?.getTiming().duration,
               delay: animation.effect?.getTiming().delay,
               easing: animation.effect?.getTiming().easing,
@@ -81,6 +85,7 @@ async (options) => {
     });
   }
   if (options.rapid && toggle instanceof HTMLButtonElement) {
+    toggle.click();
     toggle.click();
     toggle.click();
     toggle.click();

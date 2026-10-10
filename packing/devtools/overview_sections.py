@@ -624,9 +624,8 @@ def result_row_popover_body(
 
 #: Where complete result pages are served under the site's root. The historic
 #: constant name remains for callers that also use their articles in popovers.
-#: Not `results/`: `results.html` is still
-#: served, as the forwarder where `RESULTS.md` was a page, and a host may serve either
-#: at `/results`.
+#: Keep the singular directory distinct from the canonical `results.html` index;
+#: a host may also serve that index at `/results`.
 RESULT_FRAGMENTS = "result"
 
 
@@ -863,7 +862,7 @@ def result_filters(
     Two more controls are preset-only (`data-preset`): Project, which holds a row to one
     of the listed projects it is attributed to (`has`, against the row's `data-project`),
     and At significance, which holds it to one S rung exactly. Each is `hidden` in the
-    HTML and starts at all. A link sets them, `all-results.html?project=…&s=4`, as the
+    HTML and starts at all. A link sets them, `results.html?project=…&s=4`, as the
     tallies on the other projects' cards do (`project_tally`), and the script shows a
     preset control while it filters, so the reader sees what narrows the table and can
     set it back to All.
@@ -2889,6 +2888,7 @@ def _atlas_tablist(
     name: str,
     extra: str = "",
     descriptions: Mapping[str, str] | None = None,
+    panel: str = ATLAS_PANEL,
 ) -> str:
     """One strip of the atlas's tabs: a tablist of buttons, `default` selected and the
     strip's one stop in the tab order, each controlling the static box of tiles."""
@@ -2903,7 +2903,7 @@ def _atlas_tablist(
     tabs = "".join(
         f'<button type="button" role="tab" id="{ids}-{key}" {data}="{key}" '
         f'aria-selected="{"true" if key == default else "false"}" '
-        f'aria-controls="{ATLAS_PANEL}"{description(key)}'
+        f'aria-controls="{panel}"{description(key)}'
         f"{'' if key == default else ' tabindex="-1"'}>"
         f"{_esc(label)}</button>"
         for key, label in choices
@@ -2914,7 +2914,7 @@ def _atlas_tablist(
     )
 
 
-def atlas_view_tabs() -> str:
+def atlas_view_tabs(panel: str = ATLAS_PANEL) -> str:
     """The tabs over the atlas's tiles that choose its view, Grid or Triangle: the
     section tabs' strip (`.site-tabs`), but a tablist of two buttons that rearrange the
     one set of tiles in place, where the Visualize section's are links to two pages.
@@ -2930,11 +2930,12 @@ def atlas_view_tabs() -> str:
         data="data-atlas-tab",
         classes="site-atlas-views",
         name="Atlas layout",
-        extra=f'data-atlas-views data-atlas-panel="{ATLAS_PANEL}" ',
+        extra=f'data-atlas-views data-atlas-panel="{panel}" ',
+        panel=panel,
     )
 
 
-def atlas_size_tabs() -> str:
+def atlas_size_tabs(panel: str = ATLAS_PANEL) -> str:
     """The tabs beside the view tabs that choose the size of the tiles, Small, Medium
     or Large (think-ht8t): the view tabs' strip, a tablist of three buttons that resize
     the one set of tiles in place, in either view. Small is selected and is the strip's
@@ -2948,10 +2949,11 @@ def atlas_size_tabs() -> str:
         classes="site-atlas-sizes",
         name="Atlas tile size",
         extra="data-atlas-sizes ",
+        panel=panel,
     )
 
 
-def atlas_scale_tabs() -> str:
+def atlas_scale_tabs(panel: str = ATLAS_PANEL) -> str:
     """Accessible drawing scale choices, with the reference side described per tab."""
     return _atlas_tablist(
         ATLAS_SCALES,
@@ -2962,6 +2964,7 @@ def atlas_scale_tabs() -> str:
         name="Atlas drawing scale",
         extra="data-atlas-scales ",
         descriptions=ATLAS_SCALE_DESCRIPTIONS,
+        panel=panel,
     )
 
 
@@ -3075,7 +3078,7 @@ def _atlas_rows(first: int) -> tuple[list[str], str]:
     return rows, positions
 
 
-def atlas_grid() -> str:
+def atlas_grid(*, homepage: bool = False) -> str:
     """Every tracked case's known-best packing, n = 1 to 324, as a grid of drawings,
     each a link to its case record. With scripts, a cell opens the page's one case
     popover instead (`overview/case-popover.js`), which shows the case's record as its
@@ -3116,30 +3119,42 @@ def atlas_grid() -> str:
     """
     from devtools.render_case_pages import case_popover  # noqa: PLC0415
 
+    panel = "homepage-atlas-cells" if homepage else ATLAS_PANEL
+    preview = ' data-atlas-preview data-atlas-count="100"' if homepage else ""
+    home_class = " site-homepage-atlas" if homepage else ""
+    toggle_hook = " data-homepage-atlas-toggle" if homepage else ""
+    label_hook = " data-homepage-atlas-label" if homepage else ""
+    hidden = " hidden" if homepage else ""
     rows, positions = _atlas_rows(ATLAS_FIRST)
     first_rows = math.isqrt(ATLAS_FIRST)
     more, less = "Show More", "Show Less"
     name_more = f"Show more: all {len(rows) ** 2} cases"
     name_less = f"Show less: the first {ATLAS_FIRST}"
     return (
-        f'<div class="site-wide site-atlas-grid" data-atlas-view="{ATLAS_VIEW}" '
+        f'<div class="site-wide site-atlas-grid{home_class}" data-atlas-view="{ATLAS_VIEW}" '
         f'data-atlas-size="{ATLAS_SIZE}" data-atlas-scale="{ATLAS_SCALE}" '
-        f'data-atlas-first="{ATLAS_FIRST}" data-atlas-grid>'
+        f'data-atlas-first="{ATLAS_FIRST}" data-atlas-grid{preview}>'
         '<div class="site-atlas-controls" data-atlas-controls>'
-        f"{atlas_view_tabs()}{atlas_size_tabs()}{atlas_scale_tabs()}"
+        f"{atlas_view_tabs(panel)}{atlas_size_tabs(panel)}{atlas_scale_tabs(panel)}"
         f"{atlas_legend()}</div>"
-        f'<div class="site-atlas-cells" id="{ATLAS_PANEL}" style="{positions}">'
+        f'<div class="site-atlas-cells" id="{panel}" style="{positions}">'
         f"{''.join(rows[:first_rows])}"
         '<div class="site-atlas-rest" data-atlas-rest hidden>'
         f"{''.join(rows[first_rows:])}</div></div>"
-        "<noscript><style>[data-atlas-grid] .site-atlas-rest[hidden]{display:contents}"
-        ".kpress .site-page [data-atlas-grid] .site-atlas-cells{--site-atlas-widest:35;"
-        "--site-atlas-extra:var(--site-atlas-last-extra);"
-        "--site-atlas-global-side:var(--site-atlas-last-side)}"
-        "[data-atlas-grid] .site-atlas-toggle-row{display:none}</style>"
-        "<p>"
-        '<a href="atlas.html#the-frontier-survey">Every packing and bound in the frontier '
-        "survey</a></p></noscript>"
+        + (
+            '<p class="site-homepage-atlas-status" data-homepage-atlas-status '
+            'role="status" hidden></p>'
+            if homepage
+            else "<noscript><style>[data-atlas-grid] .site-atlas-rest[hidden]{display:contents}"
+            ".kpress .site-page [data-atlas-grid] .site-atlas-cells{--site-atlas-widest:35;"
+            "--site-atlas-extra:var(--site-atlas-last-extra);"
+            "--site-atlas-global-side:var(--site-atlas-last-side)}"
+            "[data-atlas-grid] .site-atlas-toggle-row{display:none}</style>"
+            "<p>"
+            '<a href="atlas.html#the-frontier-survey">Every packing and bound in the frontier '
+            "survey</a></p></noscript>"
+        )
+        +
         # The triangle's one-line key ("Each row ends at a perfect square…") stood here
         # and the line under the expander ("Every case from n = 1 to 324 is also in the
         # frontier survey, and each has a case record.") after it, until 2026-10-02 (the
@@ -3147,36 +3162,16 @@ def atlas_grid() -> str:
         # page card. The expander's row ends the block.
         '<p class="site-action-row site-atlas-toggle-row">'
         '<button type="button" class="site-action site-atlas-toggle" '
-        f'data-atlas-toggle aria-expanded="false" aria-controls="{ATLAS_PANEL}" '
+        f'data-atlas-toggle{toggle_hook} aria-expanded="false" aria-controls="{panel}" '
         f'aria-label="{name_more}" data-label-more="{more}" data-label-less="{less}" '
-        f'data-name-more="{name_more}" data-name-less="{name_less}">'
-        f"<span data-atlas-label>{more}</span>{arrow_icon('double-down')}</button></p>"
+        f'data-name-more="{name_more}" data-name-less="{name_less}"{hidden}>'
+        f"<span data-atlas-label{label_hook}>{more}</span>"
+        f"{arrow_icon('double-down')}</button></p>"
         f"</div>{case_popover()}"
     )
 
 
-#: The homepage starts with six mathematical square rows, then ten, then all eighteen.
-ATLAS_PREVIEW_ROWS = 6
-
-
 @cache
 def atlas_preview() -> str:
-    """The dedicated Atlas's canonical rows, with six visible and the rest ready.
-
-    Both surfaces share drawings, split segments and placement. All links arrive in
-    the HTML; the homepage controller changes only which complete rows are visible.
-    """
-    from devtools.render_case_pages import case_popover  # noqa: PLC0415
-
-    count = ATLAS_PREVIEW_ROWS**2
-    rows, positions = _atlas_rows(count)
-    return (
-        '<div class="site-wide site-atlas-grid site-homepage-atlas" data-atlas-preview '
-        f'data-atlas-view="triangle" data-atlas-size="{ATLAS_SIZE}" '
-        f'data-atlas-scale="{ATLAS_SCALE}" data-atlas-count="{count}" data-atlas-grid>'
-        '<div class="site-atlas-cells" id="homepage-atlas-cells" '
-        f'style="--site-atlas-widest:{2 * ATLAS_PREVIEW_ROWS - 1};{positions}">'
-        f"{''.join(rows[:ATLAS_PREVIEW_ROWS])}"
-        '<div class="site-atlas-rest" data-atlas-rest hidden>'
-        f"{''.join(rows[ATLAS_PREVIEW_ROWS:])}</div></div></div>{case_popover()}"
-    )
+    """The same initial overview, controls and prepared case links as the Atlas page."""
+    return atlas_grid(homepage=True)

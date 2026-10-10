@@ -280,16 +280,16 @@ def test_the_page_says_once_what_the_tag_means_and_links_the_corrected_result(
     assert sentence == (
         "Beside 219 of the stars, *corrects Nagamochi 2005* says the bound stands in for "
         "a published result found unsound, the register\u2019s "
-        "[T-007](all-results.html#t-007): "
+        "[T-007](results.html#t-007): "
         "Lemma 1, on which Theorem 2\u2019s proof rests, is false."
     )
     prose = page[: page.index('id="frontier-table"')]
     assert (
         "Beside 219 of the stars, <em>corrects Nagamochi 2005</em> says the bound stands in"
     ) in prose
-    assert '<a href="all-results.html#t-007">T-007</a>' in prose
+    assert '<a href="results.html#t-007">T-007</a>' in prose
     table = page[page.index("<tbody>") : page.index("</tbody>")]
-    assert "all-results.html#t-007" not in table
+    assert "results.html#t-007" not in table
 
 
 #: The cases whose verified lower bound rests only on a published proof nobody here has

@@ -152,9 +152,9 @@ certificates, and its $s(50) \ge 37/5$, verified here by a complete replay, foll
 28 September. Guzhou0806’s continuation of R052, $s(17) > 4.62003$, superseded by
 `v1.1.0`, is retained as a publication record.
 The [results register](packing/frontier/RESULTS.md) and the site’s
-[results table](https://jlevy.github.io/squares/all-results.html) give the credit for
-each. The rungs above are the register’s, under the ladder in force since 2026-09-30.
-Dated sections further down keep the rungs they were written with;
+[results table](https://jlevy.github.io/squares/results.html) give the credit for each.
+The rungs above are the register’s, under the ladder in force since 2026-09-30. Dated
+sections further down keep the rungs they were written with;
 [`epistemics.md`](epistemics.md#what-changed-on-2026-09-30) says how the two ladders
 correspond.
 

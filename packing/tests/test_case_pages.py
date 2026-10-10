@@ -153,7 +153,7 @@ def test_a_records_links_are_written_from_its_own_directory(
     (`overview/case-popover.js`)."""
     record = _record(records, 11)
     assert 'href="../atlas.html#n-11"' in record
-    assert 'href="../all-results.html#t-018"' in record
+    assert 'href="../results.html#t-018"' in record
     assert 'href="10.html" rel="prev" data-case-step="10"' in record
     assert 'href="12.html" rel="next" data-case-step="12"' in record
     assert "data-case-index" not in record
@@ -472,7 +472,7 @@ def test_case_11_carries_its_polynomial_results_verification_and_links(
     assert "<msup><mi>s</mi><mn>8</mn></msup>" in record
     assert "<msup><mi>s</mi><mn>7</mn></msup>" in record
     for result in ("T-018", "T-026", "T-033"):
-        assert f'<a href="../all-results.html#{result.lower()}">{result}</a>' in record
+        assert f'<a href="../results.html#{result.lower()}">{result}</a>' in record
     assert '<a href="../atlas.html#n-11">' in record
     branch = f"{REPO_URL}/blob/{DEFAULT_BRANCH}/"
     assert f'class="site-case-github" href="{branch}packing/frontier/n-011.md"' in record

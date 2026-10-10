@@ -177,14 +177,14 @@ def test_the_render_is_deterministic(
 def test_the_results_table_has_its_own_page_and_the_overview_points_to_it(
     page: str, results: str, served: Callable[[str], str]
 ) -> None:
-    """The table is on `all-results.html`, marked current in the bar, with its sorting
+    """The table is on `results.html`, marked current in the bar, with its sorting
     and filters; the overview keeps no row of it, only a pointer under the recent table."""
-    assert render_overview.RESULTS_PAGE == "all-results.html"
-    assert "all-results.html" in render_overview.SITE_PAGES
-    # `results.html` was `RESULTS.md` as a page, and now forwards to the table.
-    assert "results.html" not in render_overview.SITE_PAGES
-    assert dict(render_overview.MOVED_PAGES)["results.html"] == "all-results.html"
-    assert 'aria-current="page" href="all-results.html">Results</a>' in results
+    assert render_overview.RESULTS_PAGE == "results.html"
+    assert "results.html" in render_overview.SITE_PAGES
+    # The old index address forwards to the canonical table without losing selectors.
+    assert "all-results.html" not in render_overview.SITE_PAGES
+    assert dict(render_overview.MOVED_PAGES)["all-results.html"] == "results.html"
+    assert 'aria-current="page" href="results.html">Results</a>' in results
     assert "data-site-table" in results
     assert results.count(_asset_tag(render_overview.TABLE_SCRIPT)) == 1
     table = render_overview.TABLE_SCRIPT.read_text(encoding="utf-8")
@@ -197,7 +197,7 @@ def test_the_results_table_has_its_own_page_and_the_overview_points_to_it(
     attributes = overview_sections.all_results_link_attributes(site_renders.overview())
     assert (
         '<p class="site-action-row site-more"><a class="site-action" '
-        f'href="all-results.html" {attributes}>'
+        f'href="results.html" {attributes}>'
         f"View all results{overview_sections.arrow_icon('right')}</a></p>"
     ) in recent
 
@@ -386,16 +386,16 @@ def test_the_homepage_sections_run_in_the_requested_order(page: str, atlas_page:
     assert 'href="atlas.html">Explore the atlas' in page
     assert 'data-homepage-atlas-toggle aria-expanded="false"' in page
     assert 'aria-controls="homepage-atlas-cells"' in page
-    assert "<span data-homepage-atlas-label>Show More</span>" in page
+    assert "<span data-atlas-label data-homepage-atlas-label>Show More</span>" in page
     assert (
-        "<span data-homepage-atlas-label>Show More</span>"
+        "<span data-atlas-label data-homepage-atlas-label>Show More</span>"
         + overview_sections.arrow_icon("double-down")
     ) in page
-    assert '<a class="site-action" href="all-results.html" data-all-results' in page
+    assert '<a class="site-action" href="results.html" data-all-results' in page
     assert len(re.findall(r'data-atlas-n="\d+"', page)) == 324
     assert len(re.findall(r'data-atlas-n="\d+"', atlas_page)) == 324
     assert '<div class="site-atlas-rest" data-atlas-rest hidden>' in page
-    assert "data-atlas-toggle" not in page
+    assert page.count("data-atlas-toggle data-homepage-atlas-toggle") == 1
     assert re.search(r"<h[3-6]\b", page) is None
     assert '<h1 id="more-resources" class="site-title">More Resources' in page
     assert "site-resource-links" not in page
@@ -1517,7 +1517,7 @@ def test_the_big_tables_have_no_outer_border(
     assert "border-block-end: 1px solid var(--kpress-doc-border);" in rows[: rows.index("}")]
     for name, html_page in (
         ("index.html", page),
-        ("all-results.html", results),
+        ("results.html", results),
         ("atlas.html", rendered("atlas.html")),
     ):
         tables = re.findall(r'<table class="([^"]*)"', html_page)
@@ -1868,7 +1868,7 @@ def test_a_table_of_results_has_a_legend_of_every_rungs_mark_under_it(
         for level, _ in sorted(overview_sections.rubric_levels()[scale])
     ]
     for served, href in (
-        (page, "all-results.html#verification-ladders"),
+        (page, "results.html#verification-ladders"),
         (results, "#verification-ladders"),
     ):
         legend = _legend(served)
@@ -1958,7 +1958,7 @@ def test_the_ladders_are_the_results_pages_and_the_overview_points_to_them(
     assert 'class="site-ladders"' not in page
     # The overview names the ladders nowhere a reader sees: its legend links them.
     assert _seen(page).count("Verification Ladders") == 0
-    assert 'href="all-results.html#verification-ladders"' in _legend(page)
+    assert 'href="results.html#verification-ladders"' in _legend(page)
     for scale, _, _, question in overview_sections.DIMENSIONS:
         assert question in results, scale
 
@@ -2063,8 +2063,8 @@ def test_the_frontier_page_opens_with_the_surveys_account(
     assert "Before this project\u2019s work began, seven authors had published" in text
     for author in ("Brandwijk", "Burns", "MacIver", "Mira", "Fort", "Massaccesi"):
         assert author in text, author
-    assert 'href="all-results.html#t-015">T-015</a>' in prose
-    assert 'href="all-results.html#t-016">T-016</a>' in prose
+    assert 'href="results.html#t-015">T-015</a>' in prose
+    assert 'href="results.html#t-016">T-016</a>' in prose
     assert 'href="cases/17.html" data-case="17">seventeen-square record</a>' in prose
     # Neither other page says any of this a second time: the Results page points to the
     # policy for results by others and does not restate when a certificate counts. Each
@@ -2389,7 +2389,7 @@ def test_the_document_cards_lead_with_readme_and_epistemics(
         "conventions.md",
         "development.md",
     ]
-    for name in ("results.html", "status.html", "defects.html"):
+    for name in ("all-results.html", "status.html", "defects.html"):
         assert f'"{name}' not in about, name
     for gone in ("RESULTS.md", "STATUS.md", "defects.md"):
         assert f">Expand {gone}<" not in about, gone
@@ -2584,7 +2584,7 @@ def test_the_nav_links_only_to_served_pages() -> None:
 NAV_ENTRIES = [
     ("overview", "./", "Overview"),
     ("atlas", "atlas.html", "Atlas"),
-    ("results", "all-results.html", "Results"),
+    ("results", "results.html", "Results"),
     ("papers", "papers.html", "Papers"),
     ("visualize", "visualize.html", "Visualize"),
     ("about", "about.html", "About"),
@@ -3142,7 +3142,7 @@ def test_an_embedded_page_keeps_its_query_and_fragment() -> None:
 CHIP = re.compile(r'<span class="site-chip( site-rung-fill)?"([^>]*)>([^<]+)</span>')
 
 
-@pytest.mark.parametrize("name", ["index.html", "atlas.html", "all-results.html"])
+@pytest.mark.parametrize("name", ["index.html", "atlas.html", "results.html"])
 def test_every_small_label_is_one_chip(name: str, rendered: Callable[[str], str]) -> None:
     """Rungs and case statuses share one chip; a rung chip carries its scale and level,
     which the stylesheet colours, and names the rung it shows."""
@@ -3594,7 +3594,7 @@ def test_recent_results_is_one_table_not_cards_or_a_list(
     assert not re.search(r'class="site-card[ "]', recent)
     legend = _legend(section)
     assert section.count(legend) == 1
-    assert 'href="all-results.html#verification-ladders"' in legend
+    assert 'href="results.html#verification-ladders"' in legend
     assert re.findall(r'class="site-card[^"]*"', section) == [
         'class="site-card site-card-link site-rung-legend"'
     ]
@@ -3646,7 +3646,7 @@ def test_the_recent_table_contains_the_advertised_static_subset(
     assert 0 < len(listed) < len(overview.results)
     section = page.split('id="recent-results"', 1)[1].split('<h2 id="papers"', 1)[0]
     assert "data-filter=" not in section
-    assert 'href="all-results.html" data-all-results' in section
+    assert 'href="results.html" data-all-results' in section
     assert "site-recent-scope" not in section
     assert "last 180 days" not in _seen(section)
     assert "excluding superseded results" not in _seen(section)
@@ -4006,12 +4006,12 @@ def test_the_sites_own_statement_follows_readmes_introduction(about: str, result
         '<a href="papers/n11-threshold-bound-review.html">certified lower bound of 31/8</a>',
         '<a href="papers/n11-optimality-review.html">landmark new proof</a>',
         f'<a href="{render_case_pages.case_url(11)}" data-case="11">case of 11 squares</a>',
-        '<a href="all-results.html#t-064">a whole infinite family</a>',
+        '<a href="results.html#t-064">a whole infinite family</a>',
         *(
             f'<a href="{render_case_pages.case_url(n)}" data-case="{n}">{n}</a>'
             for n in (21, 32, 45)
         ),
-        '<a href="all-results.html#verification-ladders">AI-assisted verification</a>',
+        '<a href="results.html#verification-ladders">AI-assisted verification</a>',
     ):
         assert link in " ".join(paragraphs[:4]), link
     assert 'id="t-064"' in results
@@ -4182,7 +4182,7 @@ def test_the_explainer_card_says_what_the_explainer_now_is(papers: str, results:
     assert "kpress-math" in value
     assert "kpress-math" in note
     assert "formal" not in card_text(value + note).lower()
-    assert '<a href="all-results.html#t-060">T-060</a>' in article
+    assert '<a href="results.html#t-060">T-060</a>' in article
     assert 'id="t-060"' in results
 
 
@@ -4273,9 +4273,9 @@ def test_a_papers_card_holds_no_link_so_the_introduction_links_what_it_names(
     assert re.findall(r'<a href="([^"]+)">([^<]+)</a>', introduction) == [
         (overview_sections.LOWER_BOUNDS_PAPER, "Part I"),
         (overview_sections.THRESHOLD_BOUND_PAPER, "Part II"),
-        ("all-results.html#t-037", "T-037"),
+        ("results.html#t-037", "T-037"),
         (overview_sections.OPTIMALITY_PAPER, "Part III"),
-        ("all-results.html#t-060", "T-060"),
+        ("results.html#t-060", "T-060"),
         ("tutorial.html", "square-packing tutorial"),
         ("papers/square-packing-methods-survey.html", "How Record Square Packings Are Found"),
     ]
@@ -4353,7 +4353,7 @@ def test_the_papers_page_introduces_the_papers_within_t060s_rungs(
     article = papers_article(rendered("papers.html"))
     text = card_text(article)
     assert re.search(r"<h1\b[^>]*>Papers</h1>", article)
-    assert '<a href="all-results.html#t-060">T-060</a>' in article
+    assert '<a href="results.html#t-060">T-060</a>' in article
     assert f'<a href="{overview_sections.OPTIMALITY_PAPER}">Part III</a>' in article
     assert "proved optimal" in text
     assert "machine-checked and reviewed here" in text
@@ -4383,7 +4383,7 @@ def test_the_film_note_says_the_films_predate_t060(
         "Both predate T-060, so at n = 11 they show the lower bound of 28 September, "
         "not the proved value." in text
     )
-    assert '<a href="all-results.html#t-060">T-060</a>' in page
+    assert '<a href="results.html#t-060">T-060</a>' in page
     release = next(e for e in PUBLICATION_HISTORY if e.version == render_overview.FILM_RELEASE)
     released = datetime.strptime(release.first_published, "%B %d, %Y").date()  # noqa: DTZ007
     t060 = next(r for r in register if r["id"] == "T-060")
@@ -4451,10 +4451,10 @@ def test_a_reported_bound_is_a_row_of_the_results_table_and_no_block_of_its_own(
     assert sentence.endswith(".")
     assert "this table shows" not in sentence
     for status, count in held.items():
-        link = f"[{count} {status}](all-results.html?status={status})"
+        link = f"[{count} {status}](results.html?status={status})"
         assert (link in sentence) is (status != "confirmed"), status
         if status != "confirmed":
-            linked = f'<a href="all-results.html?status={status}">{count} {status}</a>'
+            linked = f'<a href="results.html?status={status}">{count} {status}</a>'
             assert linked in results
             assert linked not in page
     # It stands where the statuses are defined, between their definitions and the rule
@@ -4938,7 +4938,7 @@ def test_a_filter_at_its_default_is_gray_and_one_that_filters_is_the_text_colour
         assert f"color: var({colour});" in block[: block.index("}")], rule
     assert 'class="site-table-tools' not in page
     for name, html_page in (
-        ("all-results.html", results),
+        ("results.html", results),
         ("atlas.html", rendered("atlas.html")),
     ):
         bar = html_page.split('<div class="site-table-tools', 1)[1].split("</div>", 1)[0]
@@ -5505,7 +5505,7 @@ def test_every_data_table_is_the_shared_component(page: str, results: str) -> No
 
 #: The pages whose tables have rows with detail. The frontier table's rows open the
 #: case popover instead, since 2026-10-03 (`test_case_pages`).
-ROW_PAGES = ("index.html", "all-results.html")
+ROW_PAGES = ("index.html", "results.html")
 
 
 class _RowWiring(HTMLParser):
@@ -5631,7 +5631,7 @@ def test_the_tables_with_row_detail_are_the_ones_named(
     recent = {f"pop-result-{r.id.lower()}" for r in _recent_entries(overview)}
     assert recent
     assert set(row_wiring("index.html").popovers) == recent
-    assert set(row_wiring("all-results.html").popovers) == {
+    assert set(row_wiring("results.html").popovers) == {
         f"pop-result-{r.id.lower()}" for r in overview.results
     }
     assert not row_wiring("atlas.html").popovers
@@ -6085,7 +6085,7 @@ def _without_defaults(bar: str) -> str:
 def test_both_tables_of_results_carry_the_identical_filter_set(page: str, results: str) -> None:
     """The complete table exposes every filter while the static subset links to it."""
     assert "data-filter=" not in page.split('id="recent-results"', 1)[1].split("<h2", 1)[0]
-    assert 'href="all-results.html" data-all-results' in page
+    assert 'href="results.html" data-all-results' in page
     bar = _filter_bar(results)
     assert _controls(bar) == RESULT_FILTERS
     assert dict(_SELECTED.findall(bar)) == {
@@ -6284,7 +6284,7 @@ def test_rows_outside_a_tables_defaults_are_hidden_in_the_html_and_stay_in_it(
 
 
 def test_a_row_named_by_the_address_shows_whatever_the_filters_hide() -> None:
-    """A link to a result's row (`all-results.html#t-048`) must land on the row even
+    """A link to a result's row (`results.html#t-048`) must land on the row even
     when the default filter hides it. With scripts `table.js` keeps the row the fragment
     names, which `tests/node/overview_table/filters.test.mjs` runs; without them one
     rule shows a hidden row that is the target, as a table row and, on a phone, as the

@@ -183,7 +183,7 @@
     id === "verification-at-a-glance" ||
     registered.includes(id);
   if (result) {
-    forward("all-results.html");
+    forward("results.html");
   } else if (id === "the-frontier-survey" || id === "the-survey") {
     forward("atlas.html");
   } else if (explainerAnchors.has(id)) {

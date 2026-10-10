@@ -38,7 +38,7 @@ RETIRED = tuple(
 
 #: The complete table has controls; index.html has a static recent subset instead.
 PAGES = {
-    "all-results.html": overview_sections.RESULTS_DEFAULTS,
+    "results.html": overview_sections.RESULTS_DEFAULTS,
 }
 #: The widths the design is shot at: a desktop, a tablet and a phone.
 WIDTHS = (1280, 768, 390)
@@ -252,7 +252,7 @@ def test_it_composes_with_status_and_neither_sets_the_other(
     # Some confirmed results are superseded and some are not, so the two controls differ.
     assert set(by_status["confirmed"]) & superseded
     assert set(by_status["confirmed"]) - superseded
-    page = opened(browser, pages["all-results.html"], overview)
+    page = opened(browser, pages["results.html"], overview)
     try:
         box = page.get_by_label(LABEL)
         box.check()
@@ -286,7 +286,7 @@ def test_kind_shows_the_results_of_one_kind(
     for result in overview.results:
         by_kind.setdefault(str(result.record["kind"]), []).append(result.id.lower())
     assert {"lower-bound", "upper-bound", "optimality", "rigidity"} <= set(by_kind)
-    page = opened(browser, pages["all-results.html"], overview)
+    page = opened(browser, pages["results.html"], overview)
     try:
         for kind, ids in by_kind.items():
             page.locator(KIND).select_option(kind)
@@ -299,7 +299,7 @@ def test_kind_shows_the_results_of_one_kind(
         page.locator(STATUS).select_option("")
         page.locator(KIND).select_option("")
         assert len(state(page)["shown"]) == len(overview.results)
-        page.goto(pages["all-results.html"].as_uri() + "?kind=optimality", wait_until="load")
+        page.goto(pages["results.html"].as_uri() + "?kind=optimality", wait_until="load")
         assert page.locator(KIND).input_value() == "optimality"
         assert sorted(state(page)["shown"]) == sorted(by_kind["optimality"])
     finally:
@@ -310,7 +310,7 @@ def test_a_link_can_set_it_or_clear_it(
     browser: Any, pages: dict[str, Path], overview: overview_data.Overview
 ) -> None:
     """Both current presets apply on the complete page and leave its HTML default clear."""
-    name = "all-results.html"
+    name = "results.html"
     for checked in (True, False):
         query = f"?current={str(checked).lower()}"
         page = browser.new_page(viewport={"width": 1280, "height": 900})
@@ -359,7 +359,7 @@ def test_home_includes_only_its_visible_recent_subset_and_ordinary_links(
     assert {row["result"]: row["href"] for row in found["links"]} == {
         result: f"result/{result}.html" for result in expected
     }
-    assert urlsplit(found["destination"]).path.endswith("/all-results.html")
+    assert urlsplit(found["destination"]).path.endswith("/results.html")
     assert found["overflow"] <= 0
 
 
@@ -406,7 +406,7 @@ def test_legacy_home_query_and_registered_fragment_reach_the_complete_filtered_t
         with page.expect_navigation(wait_until="load"):
             page.get_by_role("link", name="View all results", exact=True).click()
         landed = urlsplit(page.url)
-        assert landed.path.endswith("/all-results.html")
+        assert landed.path.endswith("/results.html")
         assert landed.query == destination.query
         assert landed.fragment == target
         assert page.locator(KIND).input_value() == "rigidity"
@@ -468,11 +468,11 @@ def test_initial_registered_home_result_fragment_retains_automatic_forwarding(
         )
     }
     assert target not in expected
-    page = opened(browser, pages["all-results.html"], overview)
+    page = opened(browser, pages["results.html"], overview)
     try:
         page.goto(pages["index.html"].as_uri() + query + "#" + fragment, wait_until="load")
         landed = urlsplit(page.url)
-        assert landed.path.endswith("/all-results.html")
+        assert landed.path.endswith("/results.html")
         assert landed.query == query.removeprefix("?")
         assert landed.fragment == fragment
         assert page.locator(KIND).input_value() == "rigidity"
@@ -514,7 +514,7 @@ def test_initial_retired_home_fragments_reach_the_registered_explanation(
     name = Path(row.path).stem
     fragment = name.replace("t", "%74", 1) if encoded else name
     query = "current=true&kind=rigidity&review=legacy"
-    page = opened(browser, pages["all-results.html"], overview, 390)
+    page = opened(browser, pages["results.html"], overview, 390)
     try:
         page.goto(
             pages["index.html"].as_uri() + "?" + query + "#" + fragment, wait_until="load"
@@ -573,10 +573,10 @@ def test_direct_retired_results_fragment_has_a_visible_static_notice_and_tombsto
         viewport={"width": 390, "height": 900}, java_script_enabled=javascript
     )
     try:
-        page.goto(pages["all-results.html"].as_uri() + "#" + name, wait_until="load")
+        page.goto(pages["results.html"].as_uri() + "#" + name, wait_until="load")
         notice = page.locator(f"p.site-withdrawn-result#{name}")
         assert notice.count() == 1, "the retained fragment needs an ordinary static notice"
-        assert urlsplit(page.url).path.endswith("/all-results.html")
+        assert urlsplit(page.url).path.endswith("/results.html")
         assert urlsplit(page.url).fragment == name
         assert "withdrawn" in notice.inner_text()
         box = notice.bounding_box()

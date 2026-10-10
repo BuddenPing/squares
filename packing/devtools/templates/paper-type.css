@@ -168,6 +168,7 @@
   --paper-note-inset: 1.4rem;
   --paper-support-leading: 1.4;
   --paper-button-label-case: uppercase;
+  --paper-button-label-scale: 0.9;
   --paper-popover-title-scale: 1.25;
   --paper-popover-section-scale: 1.1;
 }

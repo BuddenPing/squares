@@ -10,7 +10,7 @@ Patterns admit declared namespaces, file types and sixteen-digit asset names.
 | --- | --- | --- | --- | --- | --- | --- |
 | 404.html | 404.html | site-file | overview | 2026-10-07 | 2026-10-07 | live |
 | about.html | about.html | page | overview | 2026-10-08 | 2026-10-08 | live |
-| all-results.html | all-results.html | page | overview | 2026-09-29 | 2026-10-02 | live |
+| all-results.html | results.html | forwarder | overview | 2026-09-29 | 2026-10-02 | forwarded → results.html |
 | apple-touch-icon.png | apple-touch-icon.png | asset-file | overview | 2026-10-07 | 2026-10-07 | live |
 | ascent-n1-100-poster.png | ascent-n1-100-poster.png | asset-file | paper:n11-lower-bounds-explainer | 2026-09-29 | 2026-10-02 | live |
 | ascent-n1-324-poster.png | ascent-n1-324-poster.png | asset-file | paper:n11-lower-bounds-explainer | 2026-09-29 | 2026-10-02 | live |
@@ -900,7 +900,7 @@ Patterns admit declared namespaces, file types and sixteen-digit asset names.
 | result/t-129.html | result/t-129.html | result | overview | 2026-10-08 | 2026-10-08 | live |
 | result/t-130.html | result/t-130.html | result | overview | 2026-10-09 | 2026-10-09 | live |
 | result/t-131.html | result/t-131.html | result | overview | 2026-10-09 | 2026-10-09 | live |
-| results.html | all-results.html | forwarder | overview | 2026-09-29 | 2026-10-02 | forwarded → all-results.html |
+| results.html | results.html | page | overview | 2026-09-29 | 2026-10-02 | live |
 | sitemap.xml | sitemap.xml | site-file | overview | 2026-10-07 | 2026-10-07 | live |
 | social-card.png | social-card.png | asset-file | overview | 2026-09-29 | 2026-10-02 | live |
 | square-packings-100-20261008.pdf | square-packings-100-20261008.pdf | asset-file | paper:n11-lower-bounds-explainer | 2026-10-08 | 2026-10-08 | live |
@@ -948,7 +948,6 @@ Patterns admit declared namespaces, file types and sixteen-digit asset names.
 
 | Physical path | Bytes | Reason |
 | --- | ---: | --- |
-| all-results.html | 800,000 | The complete registered-result table with prepared math measures 717,328 bytes. |
 | atlas.html | 1,000,000 | Combined 324-case Atlas measures 862,357 bytes: 688,112 for the complete Frontier Survey and 174,245 for graphics and the shared shell. |
 | cases/11.html | 500,000 | Complete n=11 proof/certificate record and prepared bounds measure 416,870 bytes. |
 | cases/17.html | 500,000 | Complete n=17 proof/certificate record and prepared bounds measure 443,761 bytes. |
@@ -961,6 +960,7 @@ Patterns admit declared namespaces, file types and sixteen-digit asset names.
 | result/t-058.html | 600,000 | Complete broad scope history and prepared exact bounds measure 509,332 bytes. |
 | result/t-083.html | 800,000 | Complete broad scope history and prepared exact bounds measure 688,505 bytes. |
 | result/t-085.html | 800,000 | Complete broad scope history and prepared exact bounds measure 694,374 bytes. |
+| results.html | 800,000 | The complete registered-result table with prepared math measures 717,328 bytes. |
 | tutorial.html | 800,000 | The complete authored tutorial and prepared formulas measure 742,713 bytes. |
 
 <!-- This document follows common-doc-guidelines.md.

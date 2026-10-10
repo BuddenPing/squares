@@ -41,9 +41,8 @@ lower bounds for seventeen squares, some also for eighteen, all independently:
 Brandwijk’s $89/20$ (18 July), Burns’s $4.4811$ (6 August), MacIver’s $4.4502\ldots$ (8
 August), Mira’s and Fort’s sixteen-point sets (10 and 11 August), anabologyco-maker’s
 $4.57$ and $9141/2000$ (13 and 16 August), and Massaccesi’s $4.5058$ (21 August),
-replayed here as [T-015](all-results.html#t-015) and [T-016](all-results.html#t-016).
-The [seventeen-square record](cases/17.html) lists them all; each has since been
-superseded.
+replayed here as [T-015](results.html#t-015) and [T-016](results.html#t-016). The
+[seventeen-square record](cases/17.html) lists them all; each has since been superseded.
 
 **Reported and verified.** The *best known packing* and the *reported lower* bound are
 what the published sources say, credited to whoever found or proved them.

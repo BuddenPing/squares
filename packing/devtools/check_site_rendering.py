@@ -39,7 +39,7 @@ NATIVE_TRACE_CATEGORIES = (
 )
 DEFAULT_PAGES = (
     "index.html",
-    "all-results.html",
+    "results.html",
     "atlas.html",
     "cases/11.html",
     "result/t-037.html",

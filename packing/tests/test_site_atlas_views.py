@@ -294,6 +294,10 @@ def _completed(page: Any, *, expanded: bool = False) -> dict[str, Any]:
     assert state["total"] == 324
     assert state["shown"] == list(range(1, count + 1))
     assert state["same_nodes"]
+    center = state["centering"]
+    assert center["page_overflow"] == 0
+    if center["fits"]:
+        assert abs(center["offset"]) <= 0.5, center
     if expanded:
         assert count == 324
     elif state["view"] == "triangle":
@@ -363,7 +367,7 @@ def test_default_triangle_explicit_grid_and_complete_rows_keep_all_case_nodes(
         assert (
             page.locator("[data-atlas-preview]").get_attribute("data-atlas-view") == "triangle"
         )
-        assert page.locator("#homepage-atlas-cells a.site-atlas-cell:visible").count() == 36
+        assert page.locator("#homepage-atlas-cells a.site-atlas-cell:visible").count() == 100
         assert page.locator("html").get_attribute("data-site-atlas-view") is None
     finally:
         page.close()

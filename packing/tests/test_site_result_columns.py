@@ -72,7 +72,7 @@ AS_OPENED = "index.html as it opens"
 #: A view where no long list of cases shows: the results of one kind that each hold a
 #: case or two. (The overview as it opens held only such rows until T-064, a family of
 #: thirteen cases at S4, joined it.)
-SHORT_LISTS = "all-results.html, one kind of short lists"
+SHORT_LISTS = "results.html, one kind of short lists"
 SHORT_LISTS_QUERY = "?s-min=&age=&current=false&kind=rigidity"
 #: The credit column's floor, 11.5rem, in pixels (`site.css`).
 CREDIT_MIN = 184

@@ -206,7 +206,7 @@ function homepageLink(
   retired = '{"t-117":"result/t-117.html","t-118":"result/t-118.html"}',
 ) {
   class Link {
-    href = "https://example.test/all-results.html";
+    href = "https://example.test/results.html";
     /** @param {string} name */
     getAttribute(name) {
       return name === "data-result-ids" ? ids : name === "data-retired-results" ? retired : null;
@@ -253,7 +253,7 @@ void test("the home link carries supported filters and a known historical result
     "?kind=rigidity&current=true&s-min=3&age=180&utm_source=unrelated&redirect=elsewhere",
     "#t-031",
   );
-  assert.equal(target.pathname, "/all-results.html");
+  assert.equal(target.pathname, "/results.html");
   assert.equal(target.search, "?kind=rigidity&current=true&s-min=3&age=180");
   assert.equal(target.hash, "#t-031");
 });
@@ -295,10 +295,10 @@ void test("retired result fragments select the registered tombstone and preserve
   assert.equal(target.hash, "#%74-117");
   assert.equal(homepageLink("", "#t-118").pathname, "/result/t-118.html");
   const restored = homepageLink("?current=false", "#t-117", "t-031", "#t-031");
-  assert.equal(restored.pathname, "/all-results.html");
+  assert.equal(restored.pathname, "/results.html");
   assert.equal(restored.hash, "#t-031");
   const cleared = homepageLink("", "#t-117", "t-031", "#t-999");
-  assert.equal(cleared.pathname, "/all-results.html");
+  assert.equal(cleared.pathname, "/results.html");
   assert.equal(cleared.hash, "");
 });
 
@@ -312,7 +312,7 @@ void test("retired home link targets reject malformed and unsafe alias metadata"
     '{"t-117":"result/t-118.html"}',
   ]) {
     const target = homepageLink("?current=false", "#t-117", "", undefined, retired);
-    assert.equal(target.pathname, "/all-results.html", retired);
+    assert.equal(target.pathname, "/results.html", retired);
     assert.equal(target.hash, "", retired);
   }
 });

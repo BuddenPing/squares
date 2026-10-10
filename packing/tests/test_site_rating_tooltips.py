@@ -306,7 +306,7 @@ def test_hover_transition_and_touch_badges_keep_the_enclosing_card_destination(
         assert "V5" in seen["text"]
         assert touch.url == f"{ORIGIN}ordinary.html"
         assert touch.locator("a.site-rung-legend").get_attribute("href") == (
-            "all-results.html#verification-ladders"
+            "results.html#verification-ladders"
         )
     finally:
         touch.close()

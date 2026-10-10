@@ -30,7 +30,7 @@
 // the build takes from the register, and here, on load, as of the reader's.
 //
 // One row is placed by more than the filters: the row the page's fragment names
-// (`all-results.html#t-018`) always shows, so a link to a row never lands on nothing.
+// (`results.html#t-018`) always shows, so a link to a row never lands on nothing.
 // A filtered table is one flat list, with no heading row among its rows.
 //
 // The bar's `.site-count` shows how many rows remain. A link can open the table

@@ -445,7 +445,8 @@
   display: flex;
   font-family: var(--kpress-font-sans);
   font-feature-settings: var(--kpress-font-features-sans);
-  font-size: var(--site-nav-font-size);
+  font-size: calc(var(--site-nav-font-size) * var(--paper-button-label-scale));
+  line-height: var(--site-nav-line);
   inline-size: fit-content;
   margin: var(--site-tabs-space) auto 0;
 }

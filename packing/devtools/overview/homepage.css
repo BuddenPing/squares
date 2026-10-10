@@ -1,13 +1,9 @@
-/* The front door starts with six canonical rows of the shared Atlas. */
+/* The front door shares the Atlas overview, controls and centered visible rows. */
 .site-page:has([data-atlas-preview]) {
   overflow-anchor: none;
 }
 
 @media screen {
-  .kpress h1.site-title {
-    margin-block-start: 2.5rem;
-  }
-
   .kpress h2.site-title {
     margin-block-start: calc(var(--paper-section-space) + 0.5rem);
   }
@@ -92,7 +88,7 @@
   display: none;
 }
 
-.site-homepage-atlas-actions [data-homepage-atlas-toggle][hidden] {
+.site-homepage-atlas [data-homepage-atlas-toggle][hidden] {
   display: none;
 }
 

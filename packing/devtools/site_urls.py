@@ -95,7 +95,7 @@ PAGE_BUDGET_EXCEPTIONS: dict[str, tuple[int, str]] = {
             "Frontier Survey and 174,245 for graphics and the shared shell."
         ),
     ),
-    "all-results.html": (
+    "results.html": (
         800_000,
         "The complete registered-result table with prepared math measures 717,328 bytes.",
     ),
@@ -850,8 +850,8 @@ def render_not_found(rows: Sequence[SiteURL]) -> tuple[str, dict[str, bytes]]:
                 for row in rows
                 if row.kind == "result" and row.status == "live"
             ),
-            "allResults": "all-results.html"
-            if any(row.path == "all-results.html" and row.status == "live" for row in rows)
+            "allResults": "results.html"
+            if any(row.path == "results.html" and row.status == "live" for row in rows)
             else None,
         },
         separators=(",", ":"),

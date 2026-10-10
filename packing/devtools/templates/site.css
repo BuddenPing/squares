@@ -244,7 +244,7 @@ body {
 }
 /* The page title: the sans face in upright caps (never KPress's italic h2) at 1.5 times
    the sans base, centred. A page's `h1` in its hero takes it, and so does any heading
-   given `site-title` (the homepage, which has no `h1`, sets its first section this way). */
+   given `site-title`, including the homepage and About sections. */
 .site-hero h1,
 .kpress .site-title {
   font-family: var(--kpress-font-sans);
@@ -254,6 +254,15 @@ body {
   letter-spacing: var(--kpress-caps-spacing);
   text-align: center;
   text-transform: var(--kpress-caps-transform);
+}
+/* Main section titles share the homepage's breathing room on every web page. */
+@media screen {
+  .kpress {
+    --site-title-space-above: 2.5rem;
+  }
+  .kpress h1.site-title {
+    margin-block-start: var(--site-title-space-above);
+  }
 }
 /* A page's subtitle, such as "A survey of all reviewed results": the sans face a small
    step above the base (`--site-subtitle-scale`), in the page's own text colour, with
@@ -817,8 +826,10 @@ body {
   background: var(--kpress-doc-accent);
   color: var(--kpress-doc-bg);
   display: inline-flex;
+  font-size: calc(var(--site-font-size-note) * var(--paper-button-label-scale));
   font-weight: var(--site-font-weight-sans-medium);
   gap: 0.5rem;
+  line-height: calc(var(--site-font-size-note) * 1.5);
   padding: 0.45rem 0.9rem;
   text-decoration: none;
   transition: var(--site-hover-transition);
@@ -833,9 +844,7 @@ body {
   border-radius: 0;
   cursor: pointer;
   font-family: var(--kpress-font-sans);
-  font-size: inherit;
   font-weight: var(--site-font-weight-sans-medium);
-  line-height: inherit;
 }
 .kpress :is(.site-popover a, button).site-popover-action:is(:hover, :focus-visible),
 .kpress :is(a, button).site-action:is(:hover, :focus-visible) {
@@ -1118,7 +1127,7 @@ body {
 .site-table tr[hidden] {
   display: none;
 }
-/* The row a page's address names (`all-results.html#t-018`) shows whatever the filters
+/* The row a page's address names (`results.html#t-018`) shows whatever the filters
    hide, so a link to a row never lands on nothing: with scripts `table.js` keeps it,
    and without them this rule does. */
 .site-table tr[hidden]:target {
@@ -1660,7 +1669,7 @@ body {
 .kpress .site-table tbody tr:hover {
   background: var(--site-wash);
 }
-/* A row reached by its address (`frontier.html#n-11`, `all-results.html#t-018`) is
+/* A row reached by its address (`frontier.html#n-11`, `results.html#t-018`) is
    marked with the same wash. */
 .kpress .site-table tbody tr:target {
   background: var(--site-wash);
@@ -2226,6 +2235,7 @@ html[data-site-atlas-size="large"] .site-page .site-atlas-grid:where([data-atlas
   display: grid;
   gap: var(--site-atlas-row-gap) var(--site-atlas-cell-gap);
   grid-template-columns: repeat(var(--site-atlas-per-line), var(--site-atlas-tile));
+  justify-content: center;
 }
 @media (max-width: 40rem) {
   .site-page .site-atlas-grid {
@@ -2347,9 +2357,9 @@ html[data-site-atlas-scale="row"]
 .site-atlas-segment {
   display: contents;
 }
-/* Triangle keeps complete rows at Grid's readable drawing scale. Its own scroll
-   frame contains wide rows, and opens at their common right endpoint before scripts.
-   Rows restore left-to-right reading order inside that right-origin scroll frame. */
+/* Triangle keeps complete rows at Grid's readable drawing scale. The visible rows
+   share their actual widest canvas, centered when it fits. Wide rows retain the
+   right-origin scroll frame and left-to-right reading order within it. */
 html:not([data-site-atlas-view="grid"])
   .site-atlas-grid:where([data-atlas-grid]):where([data-atlas-view="triangle"])
   .site-atlas-cells,
@@ -2383,17 +2393,15 @@ html[data-site-atlas-view="triangle"] .site-atlas-grid:where([data-atlas-grid]) 
     (var(--site-atlas-grid-space) + var(--site-atlas-cell-gap)) *
     clamp(0, var(--site-atlas-prefix-count), 1)
   );
-  min-inline-size: max(
-    100%,
-    calc(
-      var(--site-atlas-widest) *
-      var(--site-atlas-tile) +
-      (var(--site-atlas-widest) - 1) *
-      var(--site-atlas-cell-gap) +
-      var(--site-atlas-extra) *
-      var(--site-atlas-grid-space)
-    )
+  inline-size: calc(
+    var(--site-atlas-widest) *
+    var(--site-atlas-tile) +
+    (var(--site-atlas-widest) - 1) *
+    var(--site-atlas-cell-gap) +
+    var(--site-atlas-extra) *
+    var(--site-atlas-grid-space)
   );
+  margin-inline: auto;
 }
 html:not([data-site-atlas-view="grid"])
   .site-atlas-grid:where([data-atlas-grid]):where([data-atlas-view="triangle"])

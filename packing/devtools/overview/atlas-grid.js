@@ -17,6 +17,16 @@
   ) {
     return;
   }
+  const scoped = grid.hasAttribute("data-atlas-preview");
+  if (!globalThis.SiteAtlasView) {
+    const status = grid.querySelector("[data-homepage-atlas-status]");
+    if (status instanceof HTMLElement) {
+      status.textContent =
+        "Use Explore the atlas to open the complete page; the preview is still available.";
+      status.hidden = false;
+    }
+    return;
+  }
   const tiles = [...cells.querySelectorAll("a.site-atlas-cell")];
   const first = Number(grid.dataset.atlasFirst) || 100;
   let expanded = false;
@@ -61,6 +71,7 @@
     grid.dataset.atlasPreviewCount = String(count);
     toggle.dataset.nameLess = `Show less: the first ${count}`;
     const shown = expanded ? tiles.length : count;
+    grid.dataset.atlasCount = String(shown);
     const focused = document.activeElement;
     // Keep the server's row/segment structure and all link identities intact.
     rest.hidden = false;
@@ -93,7 +104,70 @@
     sizes: sizes instanceof HTMLElement ? sizes : null,
     scales: scales instanceof HTMLElement ? scales : null,
     beforeArrange: completePreview,
+    scoped,
   });
+
+  // Prepare immutable drawings a row per frame after first paint and fonts. Layout
+  // never waits for network/decode; repeated expansion reuses the same image nodes.
+  const rows = [...cells.querySelectorAll(".site-atlas-row")];
+  const images = [...cells.querySelectorAll("img")];
+  const pendingRows = [...rows];
+  let preparing = false;
+  let decoded = 0;
+  /** @param {Element} row */
+  const prepareRow = (row) => {
+    for (const image of row.querySelectorAll("img")) {
+      if (image.dataset.atlasImageState) {
+        continue;
+      }
+      image.dataset.atlasImageState = "preparing";
+      image.loading = "eager";
+      if (image.fetchPriority !== "high") {
+        image.fetchPriority = "low";
+      }
+      void image.decode().then(
+        () => {
+          image.dataset.atlasImageState = "ready";
+          decoded += 1;
+          grid.dataset.atlasImagesReady = String(decoded);
+        },
+        () => {
+          // A missing drawing keeps its canonical case link and reserved geometry.
+          image.dataset.atlasImageState = "failed";
+        },
+      );
+    }
+  };
+  const prepareNext = () => {
+    const row = pendingRows.shift();
+    if (row) {
+      prepareRow(row);
+      requestAnimationFrame(prepareNext);
+    } else {
+      preparing = false;
+    }
+  };
+  const prepare = () => {
+    if (!preparing && pendingRows.length > 0) {
+      preparing = true;
+      requestAnimationFrame(prepareNext);
+    }
+  };
+  void document.fonts.ready.then(prepare);
+  /** Prioritize newly requested rows without delaying the synchronous FLIP. */
+  const prepareRequested = () => {
+    pendingRows.sort(
+      (a, b) =>
+        Number(Number(b.getAttribute("data-atlas-row")) > Math.sqrt(first)) -
+        Number(Number(a.getAttribute("data-atlas-row")) > Math.sqrt(first)),
+    );
+    for (const image of images) {
+      if (image.closest("[hidden]") === null && image.dataset.atlasImageState !== "ready") {
+        image.fetchPriority = "high";
+      }
+    }
+    prepare();
+  };
 
   // Showing or hiding the rest changes where the triangle's tiles stand, since its
   // longest row sets how many a line holds, so it is a change of layout like a change
@@ -112,6 +186,9 @@
       views.arrange();
       settle?.();
     });
+    if (open) {
+      prepareRequested();
+    }
   };
   toggle.addEventListener("click", () => {
     const open = !expanded;
@@ -177,4 +254,6 @@
   });
   window.addEventListener("hashchange", () => reveal(location.hash));
   reveal(location.hash);
+  grid.dataset.atlasReady = "true";
+  toggle.hidden = false;
 })();

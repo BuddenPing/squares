@@ -48,7 +48,7 @@ def payloads() -> dict[str, bytes]:
     """The real destination pages and exercised cases, with every browser dependency."""
     documents = {
         name: site_renders.html(name)
-        for name in ("index.html", "atlas.html", "about.html", "all-results.html")
+        for name in ("index.html", "atlas.html", "about.html", "results.html")
     }
     documents.update(
         {
@@ -180,7 +180,7 @@ def _themes(page: Any) -> list[dict[str, Any]]:
     """Switch the actual theme controls and OS scheme through all three SVG states."""
     sync_api = site_browser.api()
     readings = []
-    for phase, count in (("preview", 36), ("expanded", 324), ("collapsed", 36)):
+    for phase, count in (("preview", 100), ("expanded", 324), ("collapsed", 100)):
         while page.locator(TILES).count() != count:
             page.locator(TOGGLE).click()
             page.evaluate(TRANSITION, {"install": False, "settle": True})
@@ -221,6 +221,12 @@ def test_keyboard_expansion_uses_the_shared_triangle_without_click_time_preparat
 ) -> None:
     report = toggle_seen[width]
     initial = report["initial"]
+    assert initial["h1_spacing"]
+    assert report["about"]["h1_spacing"]
+    h1_space = initial["h1_spacing"][0]["above"]
+    assert h1_space > 0
+    for heading in (*initial["h1_spacing"], *report["about"]["h1_spacing"]):
+        assert heading["above"] == pytest.approx(h1_space, abs=0.01)
     hero = report["hero"]
     assert [drawing["n"] for drawing in hero["drawings"]] == [53]
     assert hero["captions"] == [
@@ -246,35 +252,37 @@ def test_keyboard_expansion_uses_the_shared_triangle_without_click_time_preparat
         "atlas.html#atlas-n-53",
     ]
     assert report["static_hero"]["drawings"][0]["href"] == "cases/53.html"
-    assert initial["cases"] == list(range(1, 37))
-    assert initial["visible_cases"] == 36
-    assert initial["drawings"]["cards"] == 36
-    assert initial["drawings"]["rows"] == list(range(1, 7))
+    assert initial["cases"] == list(range(1, 101))
+    assert initial["visible_cases"] == 100
+    assert initial["drawings"]["cards"] == 100
+    assert initial["drawings"]["rows"] == list(range(1, 11))
     assert initial["drawings"]["size"] == "small"
     assert initial["drawings"]["scale"] == "fixed"
-    assert initial["stage"] == 36
+    assert initial["stage"] == 100
     assert initial["view"] == "triangle"
-    assert initial["toggle"]["name"] == "Show more: expand from 36 to 100 cases (10 rows)"
+    assert initial["toggle"]["name"] == "Show more: all 324 cases"
     assert initial["prepared_cases"] == 324
-    assert initial["cells_role"] is None
+    assert initial["images"] == {"decoded": 324, "loaded": 324, "failed": 0}
+    assert initial["control_groups"] == [
+        "Atlas layout",
+        "Atlas tile size",
+        "Atlas drawing scale",
+    ]
+    assert initial["atlas_legend"]
+    for control in initial["control_type"]:
+        assert control["size"] / control["base"] == pytest.approx(0.9, abs=0.001)
+    assert initial["cells_role"] == "tabpanel"
     assert initial["toggle"]["expanded"] == "false"
     assert initial["toggle"]["label"] == "Show More"
     assert initial["toggle"]["arrow"] == "double-down"
     assert initial["toggle"]["controls"] == "homepage-atlas-cells"
-    intermediate = report["intermediate"]
-    assert intermediate["cases"] == list(range(1, 101))
-    assert intermediate["stage"] == 100
-    assert intermediate["toggle"]["expanded"] == "true"
-    assert intermediate["toggle"]["label"] == "Show More"
-    assert intermediate["toggle"]["arrow"] == "double-down"
-    assert intermediate["toggle"]["name"] == "Show more: expand from 100 to 324 cases (18 rows)"
     for name in ("expanded", "cached"):
         state = report[name]
         assert state["cases"] == list(range(1, 325)), name
         assert state["visible_cases"] == 324, name
         assert state["toggle"]["expanded"] == "true", name
         assert state["toggle"]["label"] == "Show Less", name
-        assert state["toggle"]["name"] == "Show less: collapse from 324 to 36 cases (6 rows)"
+        assert state["toggle"]["name"] == "Show less: the first 100"
         assert state["toggle"]["arrow"] == "double-up", name
         assert not state["toggle"]["disabled"], name
         assert state["busy"] is None, name
@@ -290,8 +298,13 @@ def test_keyboard_expansion_uses_the_shared_triangle_without_click_time_preparat
     assert collapsed["toggle"]["focused"]
     assert collapsed["prepared_cases"] == 324
     assert collapsed["view"] == "triangle"
+    for name in ("initial", "expanded", "collapsed", "cached", "static_labels"):
+        center = report[name]["centering"]
+        assert center["page_overflow"] == 0, name
+        if center["fits"]:
+            assert abs(center["offset"]) <= 0.5, (name, center)
     recent = recent_contributions_by_case()
-    for name in ("initial", "intermediate", "expanded", "collapsed", "cached"):
+    for name in ("initial", "expanded", "collapsed", "cached"):
         state = report[name]
         assert state["label_errors"] == [], name
         assert state["mark_errors"] == [], name
@@ -307,7 +320,6 @@ def test_keyboard_expansion_uses_the_shared_triangle_without_click_time_preparat
         assert report[name]["toggle"]["arrow_mask"] != "none"
         assert report[name]["toggle"]["arrow_width"] > 0
     for name, count in (
-        ("intermediate_move", 100),
         ("expanded_move", 324),
         ("cached_move", 324),
     ):
@@ -321,6 +333,13 @@ def test_keyboard_expansion_uses_the_shared_triangle_without_click_time_preparat
         assert transition["drawing_errors"] == []
         assert transition["row_alignment_errors"] == []
         assert transition["duration"] == 360
+        if name == "expanded_move" and initial["centering"]["fits"]:
+            # Growing the centered visible canvas moves retained tiles horizontally.
+            assert any(
+                abs(float(animation["first_transform"].split("(", 1)[1].split("px", 1)[0]))
+                > 0.5
+                for animation in response["animations"]
+            )
         if response["layout_changed"]:
             assert response["animations"]
         for animation in response["animations"]:
@@ -331,7 +350,7 @@ def test_keyboard_expansion_uses_the_shared_triangle_without_click_time_preparat
         assert transition["root_view"] == report["root_view"]
         assert transition["root_size"] == report["root_size"]
         assert transition["panel_id"] == "homepage-atlas-cells"
-        assert transition["panel_role"] is None
+        assert transition["panel_role"] == "tabpanel"
         assert all(aspect == pytest.approx(1, abs=0.002) for aspect in transition["aspects"])
     assert report["collapsed_move"]["input"]["same_nodes"]
     assert report["collapsed_move"]["toggle_in_view"]
@@ -341,11 +360,11 @@ def test_keyboard_expansion_uses_the_shared_triangle_without_click_time_preparat
     assert reduced["input"]["animations"] == []
     assert reduced["duration"] == 0
     assert reduced["placement_errors"] == []
-    assert report["reduced_collapsed"]["input"]["count"] == 36
+    assert report["reduced_collapsed"]["input"]["count"] == 100
     assert report["reduced_collapsed"]["input"]["same_nodes"]
     assert report["reduced_collapsed"]["input"]["animations"] == []
     assert report["reduced_collapsed"]["toggle_in_view"]
-    assert report["rapid"]["counts"][-3:] == [100, 324, 36]
+    assert report["rapid"]["counts"][-4:] == [324, 100, 324, 100]
     assert report["rapid"]["input"]["same_nodes"]
     assert report["rapid"]["placement_errors"] == []
     assert report["rapid"]["toggle_in_view"]
@@ -354,7 +373,7 @@ def test_keyboard_expansion_uses_the_shared_triangle_without_click_time_preparat
     assert report["static_labels"]["raw_markup"] == 0
     assert report["static_labels"]["label_errors"] == []
     assert report["static_labels"]["star_cases"] == [n for n in range(1, 325) if recent[n].any]
-    assert [tile["n"] for tile in static] == list(range(1, 37))
+    assert [tile["n"] for tile in static] == list(range(1, 101))
     for index, tile in enumerate(static):
         assert tile["left"] >= report["static"]["canvas"]["left"] - 0.5
         assert tile["right"] <= report["static"]["canvas"]["right"] + 0.5
@@ -365,13 +384,24 @@ def test_keyboard_expansion_uses_the_shared_triangle_without_click_time_preparat
                 or tile["top"] + tile["height"] <= other["top"] + 0.5
                 or other["top"] + other["height"] <= tile["top"] + 0.5
             ), (tile["n"], other["n"])
-    assert [themed["cases"] for themed in report["staged_themes"]] == [36, 100, 324, 36]
+    assert [themed["cases"] for themed in report["staged_themes"]] == [100, 324, 100]
     for themed in report["staged_themes"]:
         assert themed["resolved"] == themed["expected"]
         assert themed["background"] == themed["page_background"]
         assert themed["palette_unchanged"]
         assert themed["label_contrast"] >= 4.5
     assert urlsplit(report["late_case"]).path.lstrip("/") == "cases/291.html"
+    controls = report["controls"]
+    assert [state["view"] for state in controls] == ["grid"] * 5 + ["triangle"]
+    assert controls[1]["drawings"]["size"] == "large"
+    assert controls[2]["drawings"]["scale"] == "row"
+    assert controls[-1]["drawings"]["size"] == "small"
+    assert controls[-1]["drawings"]["scale"] == "fixed"
+    for state in controls:
+        assert state["address"] == report["address"]
+        assert state["centering"]["page_overflow"] == 0
+        if state["centering"]["fits"]:
+            assert abs(state["centering"]["offset"]) <= 0.5
 
 
 @pytest.fixture(scope="module")
@@ -390,6 +420,10 @@ def toggle_seen(browser: Any, request: pytest.FixtureRequest) -> dict[int, dict[
         try:
             page.goto(f"{origin}index.html", wait_until="load")
             sync_api.expect(page.locator(TOGGLE)).to_be_visible()
+            # The ordinary reader expansion reuses already decoded, authored images.
+            sync_api.expect(page.locator("[data-atlas-preview]")).to_have_attribute(
+                "data-atlas-images-ready", "324", timeout=15000
+            )
             report = {"initial": page.evaluate(STATE)}
             report["origin"] = origin
             report["download"] = page.evaluate(DOWNLOAD_ACTION)
@@ -447,24 +481,13 @@ def toggle_seen(browser: Any, request: pytest.FixtureRequest) -> dict[int, dict[
                     path=str(Path(screenshot_dir) / f"homepage-hero-53-{width}.png")
                 )
                 page.locator("[data-atlas-preview]").screenshot(
-                    path=str(Path(screenshot_dir) / f"homepage-triangle-36-{width}.png")
+                    path=str(Path(screenshot_dir) / f"homepage-triangle-100-{width}.png")
                 )
             baseline = page.evaluate(TRANSITION, {"install": True, "settle": False})
             report["root_view"] = baseline["root_view"]
             report["root_size"] = baseline["root_size"]
             toggle = page.locator(TOGGLE)
             toggle.focus()
-            page.evaluate(TRANSITION, {"install": False, "settle": True, "position": True})
-            page.keyboard.press("Enter")
-            report["intermediate_move"] = page.evaluate(
-                TRANSITION, {"install": False, "settle": True}
-            )
-            sync_api.expect(page.locator(TILES)).to_have_count(100)
-            report["intermediate"] = page.evaluate(STATE)
-            if screenshot_dir:
-                page.locator("[data-atlas-preview]").screenshot(
-                    path=str(Path(screenshot_dir) / f"homepage-triangle-100-{width}.png")
-                )
             page.evaluate(TRANSITION, {"install": False, "settle": True, "position": True})
             page.keyboard.press("Enter")
             report["expanded_move"] = page.evaluate(
@@ -482,11 +505,8 @@ def toggle_seen(browser: Any, request: pytest.FixtureRequest) -> dict[int, dict[
             report["collapsed_move"] = page.evaluate(
                 TRANSITION, {"install": False, "settle": True}
             )
-            sync_api.expect(page.locator(TILES)).to_have_count(36)
-            report["collapsed"] = page.evaluate(STATE)
-            page.keyboard.press("Enter")
-            page.evaluate(TRANSITION, {"install": False, "settle": True})
             sync_api.expect(page.locator(TILES)).to_have_count(100)
+            report["collapsed"] = page.evaluate(STATE)
             page.evaluate(TRANSITION, {"install": False, "settle": True, "position": True})
             page.keyboard.press("Enter")
             report["cached_move"] = page.evaluate(
@@ -496,8 +516,6 @@ def toggle_seen(browser: Any, request: pytest.FixtureRequest) -> dict[int, dict[
             report["cached"] = page.evaluate(STATE)
             page.emulate_media(reduced_motion="reduce")
             page.keyboard.press("Space")
-            page.evaluate(TRANSITION, {"install": False, "settle": True})
-            page.keyboard.press("Enter")
             page.evaluate(TRANSITION, {"install": False, "settle": True})
             page.keyboard.press("Enter")
             report["reduced_move"] = page.evaluate(
@@ -513,10 +531,9 @@ def toggle_seen(browser: Any, request: pytest.FixtureRequest) -> dict[int, dict[
             )
             report["staged_themes"] = []
             for stage, mode, scheme in (
-                (36, "system", "light"),
                 (100, "system", "dark"),
                 (324, "light", "dark"),
-                (36, "dark", "light"),
+                (100, "dark", "light"),
             ):
                 if page.locator(TILES).count() != stage:
                     toggle.click()
@@ -532,8 +549,6 @@ def toggle_seen(browser: Any, request: pytest.FixtureRequest) -> dict[int, dict[
                         "expected": scheme if mode == "system" else mode,
                     }
                 )
-            toggle.click()
-            page.evaluate(TRANSITION, {"install": False, "settle": True})
             toggle.click()
             page.evaluate(TRANSITION, {"install": False, "settle": True})
             report["expanded_pointer"] = _pointer_cases(page, (306, 324))
@@ -567,13 +582,25 @@ def toggle_seen(browser: Any, request: pytest.FixtureRequest) -> dict[int, dict[
             try:
                 static_page.goto(f"{origin}index.html", wait_until="load")
                 sync_api.expect(static_page.locator(TOGGLE)).to_be_hidden()
-                sync_api.expect(static_page.locator(TILES)).to_have_count(36)
+                sync_api.expect(static_page.locator(TILES)).to_have_count(100)
                 sync_api.expect(static_page.locator(EXPLORE)).to_be_visible()
                 report["static"] = static_page.evaluate(INITIAL_LAYOUT)
                 report["static_labels"] = static_page.evaluate(STATE)
                 report["static_hero"] = static_page.evaluate(HERO)
             finally:
                 static_page.close()
+            report["controls"] = []
+            for selector in (
+                '[data-atlas-tab="grid"]',
+                '[data-atlas-size-tab="large"]',
+                '[data-atlas-scale-tab="row"]',
+                '[data-atlas-scale-tab="fixed"]',
+                '[data-atlas-size-tab="small"]',
+                '[data-atlas-tab="triangle"]',
+            ):
+                page.locator(selector).click()
+                page.evaluate(TRANSITION, {"install": False, "settle": True})
+                report["controls"].append({"address": page.url, **page.evaluate(STATE)})
             page.goto(f"{origin}about.html", wait_until="load")
             report["about"] = page.evaluate(STATE)
             reports[width] = report
@@ -644,7 +671,7 @@ def test_homepage_order_chrome_and_single_card_rows_keep_the_shared_design(
     for action in home["actions"]:
         assert action["transform"] == "uppercase", action
     download = seen[width]["download"]
-    assert download["order"] == ["Show More", "Download PDF", "Explore the atlas"]
+    assert download["order"] == ["Download PDF", "Explore the atlas"]
     assert download["href"] == "known-best-1-324.pdf"
     assert download["download"]
     assert download["uppercase"] == "uppercase"
@@ -695,7 +722,7 @@ def test_homepage_legend_is_centered_compact_and_keeps_every_rung(
     assert legend["title_align"] == "center"
     assert abs(legend["title_center_offset"]) <= 1
     assert legend["star"]
-    assert legend["detail"] == "all-results.html#verification-ladders"
+    assert legend["detail"] == "results.html#verification-ladders"
     assert legend["shared_card"]
     assert legend["destination_kind"] == "page"
     assert legend["nested_links"] == 0
@@ -743,7 +770,7 @@ def legend_seen(browser: Any, request: pytest.FixtureRequest) -> dict[int, dict[
             sync_api.expect(card).to_be_focused()
             with page.expect_navigation(wait_until="load"):
                 page.keyboard.press("Enter")
-            destination = f"{origin}all-results.html#verification-ladders"
+            destination = f"{origin}results.html#verification-ladders"
             sync_api.expect(page).to_have_url(destination)
             target = page.locator("#verification-ladders")
             sync_api.expect(target).to_have_text("Verification Ladders")
@@ -786,7 +813,7 @@ def test_native_svg_follows_live_system_light_dark_choices_in_all_cached_states(
     assert len(readings) == 12
     for state in readings:
         assert state["resolved"] == state["expected"]
-        assert state["cases"] == (324 if state["phase"] == "expanded" else 36)
+        assert state["cases"] == (324 if state["phase"] == "expanded" else 100)
         assert state["background"] == state["page_background"]
         assert state["white_samples"] > 0, state
         assert state["colored_samples"] > 0, state
@@ -821,7 +848,7 @@ def test_missing_shared_engine_keeps_native_preview_and_explore_usable(
         sync_api.expect(page.locator(STATUS)).to_be_visible()
         sync_api.expect(page.locator(TOGGLE)).to_be_hidden()
         failed = page.evaluate(STATE)
-        assert failed["visible_cases"] == 36
+        assert failed["visible_cases"] == 100
         assert failed["toggle"]["expanded"] == "false"
         assert failed["prepared_cases"] == 324
         assert failed["busy"] is None
@@ -847,7 +874,7 @@ def test_explore_stays_usable_without_javascript_and_the_expander_stays_hidden(
     try:
         page.goto(f"{ORIGIN}index.html", wait_until="load")
         sync_api.expect(page.locator(TOGGLE)).to_be_hidden()
-        sync_api.expect(page.locator(TILES)).to_have_count(36)
+        sync_api.expect(page.locator(TILES)).to_have_count(100)
         sync_api.expect(page.locator(EXPLORE)).to_be_visible()
         page.locator(EXPLORE).click()
         sync_api.expect(page).to_have_url(f"{ORIGIN}atlas.html")

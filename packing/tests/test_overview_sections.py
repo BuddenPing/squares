@@ -15,7 +15,7 @@ def test_homepage_legend_keeps_original_rungs_in_four_icon_and_label_rows() -> N
     home = overview_sections.rung_legend(here=False, heading="Legend")
     complete = overview_sections.rung_legend(here=True)
     assert '<h2 class="site-rung-legend-heading">Legend</h2>' in home
-    assert 'href="all-results.html#verification-ladders"' in home
+    assert 'href="results.html#verification-ladders"' in home
     assert home.count('<span class="site-rung-legend-icons">') == 4
     assert re.findall(r'<span class="site-rung-legend-name">([^<]+)</span>', home) == [
         "Significance",
@@ -135,14 +135,13 @@ def test_atlas_preview_reuses_canonical_split_rows_and_keeps_every_case() -> Non
     assert len(tiles) == 324
     assert tiles == re.findall(r'<a class="site-atlas-cell"[^>]*>.*?</a>', complete)
     assert [int(n) for n in re.findall(r'data-atlas-n="(\d+)"', preview)] == list(range(1, 325))
-    assert overview_sections.ATLAS_PREVIEW_ROWS == 6
     assert 'data-atlas-view="triangle" data-atlas-size="small"' in preview
-    assert 'data-atlas-scale="fixed" data-atlas-count="36"' in preview
+    assert 'data-atlas-count="100"' in preview
     assert 'id="homepage-atlas-cells"' in preview
-    assert "--site-atlas-widest:11;" in preview
+    assert 'data-atlas-first="100"' in preview
     visible, rest = preview.split('<div class="site-atlas-rest" data-atlas-rest hidden>', 1)
-    assert re.findall(r'data-atlas-row="(\d+)"', visible) == list(map(str, range(1, 7)))
-    assert re.findall(r'data-atlas-row="(\d+)"', rest) == list(map(str, range(7, 19)))
+    assert re.findall(r'data-atlas-row="(\d+)"', visible) == list(map(str, range(1, 11)))
+    assert re.findall(r'data-atlas-row="(\d+)"', rest) == list(map(str, range(11, 19)))
     assert preview.count('data-atlas-segment="non-grid"') == 18
     assert preview.count('data-atlas-segment="grid"') == 18
     recent = recent_contributions_by_case()
@@ -154,12 +153,15 @@ def test_atlas_preview_reuses_canonical_split_rows_and_keeps_every_case() -> Non
         assert (", new result" in tile) == recent[n].any
         assert "evidence-badge" not in tile
     assert preview.count('id="pop-case"') == 1
+    assert preview.count('role="tab"') == complete.count('role="tab"') == 8
+    assert "data-atlas-toggle data-homepage-atlas-toggle" in preview
+    assert preview.count("data-atlas-legend") == complete.count("data-atlas-legend")
+    assert 'aria-controls="atlas-cells"' not in preview
+    assert preview.count('aria-controls="homepage-atlas-cells"') == 9
     assert len(preview.encode("utf-8")) < 400_000
     for absent in (
         "data-homepage-atlas-gzip",
         "data-homepage-atlas-svg",
         "<noscript>",
-        "data-atlas-toggle",
-        'role="tab"',
     ):
         assert absent not in preview

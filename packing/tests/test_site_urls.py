@@ -51,6 +51,32 @@ def test_atlas_and_about_are_registered_canonical_crawl_destinations() -> None:
     assert not failures(site_urls.check_history(rows, retained))
 
 
+def test_results_index_is_canonical_and_its_old_address_only_forwards() -> None:
+    retained = site_urls.load_registry()
+    rows = site_urls.derive_registry(retained)
+    by_path = {entry.path: entry for entry in rows}
+    index, legacy = by_path["results.html"], by_path["all-results.html"]
+    assert (index.kind, index.status, index.canonical, index.target) == (
+        "page",
+        "live",
+        "results.html",
+        "",
+    )
+    assert (legacy.kind, legacy.status, legacy.canonical, legacy.target) == (
+        "forwarder",
+        "forwarded",
+        "results.html",
+        "results.html",
+    )
+    assert render_overview.RESULTS_PAGE == "results.html"
+    assert "results.html" in render_overview.PAGES
+    assert "all-results.html" not in render_overview.SITE_PAGES
+    sitemap = site_urls.render_sitemap(rows)
+    assert render_overview.canonical_url("results.html") in sitemap
+    assert render_overview.canonical_url("all-results.html") not in sitemap
+    assert not failures(site_urls.check_history(rows, retained))
+
+
 def test_case_directories_are_retained_atlas_forwarders_and_records_stay_canonical() -> None:
     retained = site_urls.load_registry()
     rows = site_urls.derive_registry(retained)
@@ -230,7 +256,7 @@ def test_crawl_writer_emits_safe_404_and_tombstones(tmp_path: Path) -> None:
         row("index.html"),
         replace(row("cases/11.html"), kind="record"),
         replace(row("result/t-001.html"), kind="result"),
-        row("all-results.html"),
+        row("results.html"),
         replace(
             row("result/t-002.html"),
             kind="result",

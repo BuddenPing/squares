@@ -25,15 +25,13 @@ can exist, such as the reported $s(29) \ge 5.81$).
 
 {{ATLAS_GRID}}
 
-<p class="site-action-row site-more site-homepage-atlas-actions"><button type="button" class="site-action" data-homepage-atlas-toggle aria-expanded="false" aria-controls="homepage-atlas-cells" hidden><span data-homepage-atlas-label>Show More</span>{{ARROW_DOUBLE_DOWN}}</button><a class="site-action" href="known-best-1-324.pdf" download>Download PDF{{ARROW_DOWNLOAD}}</a><a class="site-action" href="atlas.html">Explore the atlas{{ARROW_RIGHT}}</a></p>
-
-<p class="site-homepage-atlas-status" data-homepage-atlas-status role="status" hidden></p>
+<p class="site-action-row site-more site-homepage-atlas-actions"><a class="site-action" href="known-best-1-324.pdf" download>Download PDF{{ARROW_DOWNLOAD}}</a><a class="site-action" href="atlas.html">Explore the atlas{{ARROW_RIGHT}}</a></p>
 
 <h2 id="recent-results" class="site-title">Recent Major Results</h2>
 
 {{RECENT}}
 
-<p class="site-action-row site-more"><a class="site-action" href="all-results.html" {{RESULTS_LINK_ATTRIBUTES}}>View all results{{ARROW_RIGHT}}</a></p>
+<p class="site-action-row site-more"><a class="site-action" href="results.html" {{RESULTS_LINK_ATTRIBUTES}}>View all results{{ARROW_RIGHT}}</a></p>
 
 <h2 id="papers" class="site-title">Papers<a id="learn-more"></a></h2>
 

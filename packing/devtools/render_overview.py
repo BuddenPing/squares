@@ -7,7 +7,7 @@ adds the front door and the pages around it, as the plan in
 
 - `index.html`, the overview: the problem, the headline and recent results and the
   verification statistics, generated from the register;
-- `all-results.html`, every registered result in one table, which the overview's cards
+- `results.html`, every registered result in one table, which the overview's cards
   and recent list point into by row (`#t-018`);
 - `atlas.html`, the graphical Atlas followed by the Frontier Survey: one row for every
   case from its `SquarePackingCase/v2` record; `frontier.html` forwards here;
@@ -105,7 +105,6 @@ THEME_SCRIPT = BROWSER / "theme.js"
 HEADROOM_SCRIPT = BROWSER / "headroom.js"
 TOOLTIP_SCRIPT = BROWSER / "rating-tooltips.js"
 HOMEPAGE_CSS = BROWSER / "homepage.css"
-HOMEPAGE_ATLAS_SCRIPT = BROWSER / "homepage-atlas.js"
 #: The frame the site's flattened kpress client modules are placed in.
 KPRESS_CLIENT_FRAME = BROWSER / "kpress-client.js"
 #: kpress's client modules a site page carries, in dependency order: the contents rail's
@@ -207,10 +206,9 @@ FRONTIER_DESCRIPTION = (
     "the best known packing, the reported and verified bounds, and their records."
 )
 
-#: The results table's page; its row ids are the results' (`#t-018`). `results.html` was
-#: `RESULTS.md` rendered as a reader document until 2026-10-01, and is now a forwarder
-#: to this page (`MOVED_PAGES`).
-RESULTS_PAGE = "all-results.html"
+#: The results table's canonical page; row ids are the results' (`#t-018`).
+#: The legacy `all-results.html` address forwards here with query and fragment kept.
+RESULTS_PAGE = "results.html"
 
 #: The repository documents served as pages outside the navigation, reached from the
 #: overview's cards, in the cards' order; `site_documents` renders them. README and
@@ -341,7 +339,7 @@ SITE_PAGES: tuple[str, ...] = (
 #: (`forwarder_pages`), so a link written before the change arrives with its query and
 #: its fragment. Nothing on the site links an old path; a test holds every page to that.
 MOVED_PAGES: tuple[tuple[str, str], ...] = (
-    ("results.html", RESULTS_PAGE),
+    ("all-results.html", RESULTS_PAGE),
     ("status.html", "atlas.html"),
     ("frontier.html", "atlas.html"),
     ("defects.html", repo_url(repo_links.DEFECTS, kind="blob")),
@@ -473,7 +471,7 @@ class PageMeta(NamedTuple):
     """One or two plain sentences on this page and no other, `DESCRIPTION_LIMIT`
     characters at most."""
     path: str
-    """Where the page is served, under the site's root: `all-results.html`,
+    """Where the page is served, under the site's root: `results.html`,
     `workbench/index.html`. Its canonical URL is read from this (`canonical_url`)."""
     kind: PageKind = "website"
     """`article` for a paper, `website` for every other page."""
@@ -1171,7 +1169,6 @@ def overview_page() -> Page:
         "OTHER_PROJECTS": overview_sections.other_project_cards(overview),
         "ARROW_RIGHT": overview_sections.arrow_icon("right"),
         "ARROW_DOWNLOAD": overview_sections.arrow_icon("download"),
-        "ARROW_DOUBLE_DOWN": overview_sections.arrow_icon("double-down"),
     }
     markdown = _template_markdown(OVERVIEW_ARTICLE, values)
     return kpress_page(
@@ -1190,7 +1187,7 @@ def overview_page() -> Page:
             ROW_POPOVER_SCRIPT,
             CASE_POPOVER_SCRIPT,
             ATLAS_VIEW_SCRIPT,
-            HOMEPAGE_ATLAS_SCRIPT,
+            ATLAS_GRID_SCRIPT,
         ),
     )
 

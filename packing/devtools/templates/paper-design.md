@@ -620,6 +620,7 @@ one of them changes.
 | How much nearer the bar an opening picture starts | `--site-hero-lift` | 0.5rem, 8px | `site.css` |
 | Above a section heading (`h2`) | `--paper-section-space` | 2.7 of the prose base, 48.6px | `paper-type.css` |
 | Below a section heading (`h2`) | `--paper-section-space-below` | 1.7rem, 27.2px | `paper-type.css` |
+| Above a visible site-title H1 | `--site-title-space-above` | 2.5rem, 40px | `site.css` |
 | Below a page’s title, and below its subtitle | `--site-subtitle-space` | 1.5rem, 24px | `site.css` |
 | Above and below a table | `--site-table-space` | 2rem, 32px | `site.css` |
 | Between a wide block and the edge of the page’s content area | `--site-wide-gutter` | 0.5rem, 8px | `site.css` |
@@ -850,21 +851,22 @@ it.
   The introduction has two readable paragraphs defining the packing problem and
   explaining upper/lower bounds (`think-8xzs`). About uses only H1 section headings,
   each with the same `site-title` styling as The Squares Project (`think-6m9n`,
-  `think-sq1i`). Main homepage headings share the H1 title style and have an extra
-  0.5rem of space above the shared section spacing; the compact Legend label keeps its
-  own spacing. The hero graphic opens the case popover, with the case-record link as its
-  no-script fallback. Case popovers offer separate record, Frontier-row and Atlas-tile
-  actions. Atlas case targets fully expand the grid before scrolling to and highlighting
-  the requested tile. Every row containing one card is centered.
+  `think-sq1i`). Every visible `h1.site-title` shares the screen-only 2.5rem margin
+  above it (`--site-title-space-above`); the compact Legend label keeps its own spacing.
+  The hero graphic opens the case popover, with the case-record link as its no-script
+  fallback. Case popovers offer separate record, Frontier-row and Atlas-tile actions.
+  Atlas case targets fully expand the grid before scrolling to and highlighting the
+  requested tile. Every row containing one card is centered.
   The full project narrative and attribution live on About; documentation cards also
   appear on the homepage; **About** sits immediately before **GitHub** in the shared
   navigation.
 
 - **Page headings.** The homepage opens with “The Square Packing Problem” as its `h1`,
-  followed by section `h2`s. The Visualize page shows no title: the bar, the section
-  tabs and the film are the page, and its `h1`, “Visualize”, is for a screen reader
-  alone (`.site-visually-hidden`, in `site.css`: out of the flow, one pixel, clipped,
-  the class for any block a reader does not see and a screen reader should).
+  followed by visible section `h1`s in the same title style.
+  The Visualize page shows no title: the bar, the section tabs and the film are the
+  page, and its `h1`, “Visualize”, is for a screen reader alone
+  (`.site-visually-hidden`, in `site.css`: out of the flow, one pixel, clipped, the
+  class for any block a reader does not see and a screen reader should).
   The film after the hidden title is the page’s first block, so on screen it brings no
   margin above and starts `--site-page-top` under the header.
   A page that has a title (the Frontier page, the Results page, the Papers page, the
@@ -883,6 +885,8 @@ it.
   no subtitle, a document’s own `h1` among them, stands that space above its first
   paragraph. The page title style (every hero `h1`, and `.site-title`) is the sans face
   in upright caps (not KPress’s italic `h2`) at 1.5 times the sans base, centred.
+  On screen, `h1.site-title` uses `--site-title-space-above` (2.5rem) above the title on
+  every content page; print keeps its existing heading spacing.
   The homepage’s first section, The Square Packing Problem, takes it through
   `.site-title`, so it reads as the Frontier page’s title does.
   That section opens with README’s two opening paragraphs: the block between README’s
@@ -1020,7 +1024,7 @@ it.
     record: a result’s claim, why it matters, its rungs and records.
     A result’s row is on the results page, so its card is a page card, with the right
     arrow for its icon, that previews rather than frames: the button, **Open T-NNN in
-    the results table**, goes to `all-results.html#t-nnn`. A row on the overview itself
+    the results table**, goes to `results.html#t-nnn`. A row on the overview itself
     would scroll, with the down arrow.
 
   The frame loads only when its popover first opens, so the overview stays light.
@@ -1202,6 +1206,12 @@ it.
   line takes a line. A row keeps its kind and status as `data-kind` and `data-status` for
   the filters; a step of a result’s chain keeps its standing on that case as
   `data-standing`. A novelty chip (`data-novelty`) is always plain gray.
+
+- **Control labels.** Shared `--paper-button-label-scale` is 0.9: actions use 90% of
+  their contextual note-size sans label, navigation tabs and Atlas toggles use 90% of
+  their contextual navigation-size sans label, and Workbench buttons use 90% of their
+  contextual body label.
+  Keep the original line boxes, padding and click areas.
 
 - **Arrows.** Every arrow on the site is one drawing, never a typed character: the
   site’s text face has glyphs for `↑` and `↓` only, so `←`, `→` and `↗` came from a
@@ -1552,26 +1562,28 @@ it.
   `tests/test_site_atlas_views.py` reads both in Chromium at 1280 and 390 pixels and
   holds their colours, type, height, padding and centring to each other.
 
-- **Homepage Atlas preview.** Reuse the dedicated Atlas’s per-case SVG drawings, row and
-  segment placement, and Small/Fixed sizing, preserving drawing geometry and colors with
-  case-number and applicable-star labels (`think-hyd6`, `think-ngcg`). Initially show
-  six complete Triangle rows, cases 1 to 36. Both pages use the same tile markup and
-  `SiteAtlasView` layout and animation.
-  Narrow viewports pan horizontally across the complete rows.
-  All 324 case links and image references ship in the page; expansion moves whole rows
-  across the visible and hidden-container boundary.
-  **Show More** immediately updates the layout and animates from 36 to 100 cases on the
-  first click, and from 100 to all 324 on the second, retaining Triangle throughout.
-  The DOM and animation need no click-time preparation; the browser may fetch immutable
-  SVG images lazily as they become visible.
-  At full coverage the button becomes **Show Less**, restoring 36. Its accessible name
-  states the next case count; double-down chevrons mean more expansion and double-up
-  means collapse. Persistent case links retain case popovers and ordinary page
-  destinations. The homepage instance keeps its state local; dedicated Atlas view
-  controls and URL state retain their existing behavior.
-  Without scripting, the first 36 cases and Explore link remain available; the dedicated
-  Atlas exposes all 324 cases.
-  The homepage does not insert explanatory selection/tile prose above the graphic.
+- **Homepage Atlas preview.** Reuse the dedicated Atlas’s per-case SVG drawings,
+  overview, view/size/scale controls, color legend, complete row and segment placement,
+  and Small/Fixed default.
+  Preserve drawing geometry and colors with case-number and applicable-star labels
+  (`think-hyd6`, `think-ngcg`). Initially show 100 cases in Triangle; Grid completes the
+  preview’s rectangular rows for the chosen size and width, as on the dedicated page.
+  Both pages use the same tile markup, `SiteAtlasView` layout and animation.
+  Center the complete canvas when it fits; when it is wider than the viewport, preserve
+  the complete rows and horizontal panning to either endpoint.
+  All 324 case links and image references ship in the page.
+  Prepare hidden SVG drawings during startup so expansion can reveal the existing rows
+  smoothly, with reserved tile and image dimensions.
+  **Show More** updates the layout and animates to all 324 cases; **Show Less** restores
+  the complete preview.
+  The DOM and animation need no click-time preparation.
+  Immutable image loading is distinct from layout readiness; cached or prepared drawings
+  do not imply that every browser performs zero later requests.
+  Persistent case links retain case popovers and ordinary page destinations.
+  The homepage instance keeps its state local; dedicated Atlas controls and URL state
+  retain their existing behavior.
+  Without scripting, the homepage shows its first 100 cases and Explore link; the
+  dedicated Atlas exposes all 324 cases.
 
 - **About and Papers.** About separates the project narrative into paragraphs for its
   origins, subsequent work, independent results, and current role.
@@ -1596,8 +1608,8 @@ it.
   the grid. All 324 links ship in the page.
   The dedicated Atlas retains each row, segment and link in place; changing its
   collapsed cutoff hides out-of-prefix cells and empty rows without cloning drawings or
-  losing case state. The homepage moves complete rows across its visible and
-  hidden-container boundary, retaining the same row and segment geometry.
+  losing case state. The homepage uses the same complete-row cutoff and persistent
+  row/segment geometry, with its own panel and local control state.
   The remaining box uses `display: contents`, and expansion reveals it; the expanded
   case count is strictly 324. Grid hides cells beyond its complete-row cutoff and their
   empty row containers; Triangle keeps the first ten logical rows.
@@ -1607,9 +1619,11 @@ it.
   cell pressed. Without scripting the button’s row stays `hidden`, since it would do
   nothing. In the dedicated triangle, expansion retains the readable drawing size and
   widens its complete-row scroll canvas from 19 to 35 tiles.
-  The homepage uses the same complete Triangle placement and Small/Fixed sizing, with
-  its separate 36-to-100-to-324 stages.
-  Both pages pan horizontally when their complete rows exceed the viewport.
+  Both pages start with the complete preview around 100 cases, expand to 324 and
+  collapse to their complete preview.
+  Their fitting canvases are centered; complete rows pan horizontally when they exceed
+  the viewport. Shared FLIP animates the actual centered positions, with instant geometry
+  under reduced motion.
 
 - **Wide bleed.** A wide block (`.site-wide`) takes the wide track, `--site-wide`, less
   the page gutters (`--site-wide-gutter` on either side; **Spacing**, above).
@@ -1959,8 +1973,8 @@ it.
   prose says what it marks (`star_legend`). A superseded result’s row reads quieter, its
   text in the support colour, in every site table, by one rule on
   `tr[data-current="false"]`; its chips keep their fills.
-  A row reached by its address (`atlas.html#n-11`, `all-results.html#t-018`) takes the
-  wash, in every site table.
+  A row reached by its address (`atlas.html#n-11`, `results.html#t-018`) takes the wash,
+  in every site table.
 
 - **Frontier table.** The frontier atlas’s table is a site table of ten columns, in this
   order (`render_frontier_page.HEADERS`): the drawing, n, Recent, Status, Best known
@@ -2079,9 +2093,9 @@ Max age is a number of days, and empty is no limit. There is no date range.
 
 - **Preset-only controls.** Project and At significance follow the bar’s own controls
   and are out of the bar (`hidden`, on their labels) until a link sets them:
-  `all-results.html?project=evand-square-packing` opens the table on the results
-  attributed to one listed project, and `&s=4` on those at S4 exactly, where the
-  Significance floor would keep S5 as well.
+  `results.html?project=evand-square-packing` opens the table on the results attributed
+  to one listed project, and `&s=4` on those at S4 exactly, where the Significance floor
+  would keep S5 as well.
   The other projects’ cards link this way (**Other projects**, above).
   While a preset control filters, its label is in the bar with the choice it holds, the
   project by its owner and repository, so the reader sees what narrows the table, and
@@ -2092,7 +2106,7 @@ Max age is a number of days, and empty is no limit. There is no date range.
 - **Status.** The select offers each status some result has, in the workflow’s order:
   `recorded`, `reviewed`, `confirmed`, `incomplete`. It is the chip the row draws, so
   what a reader filters by is what a reader sees.
-  A link can preset it, as it can any control: `all-results.html?status=recorded` is the
+  A link can preset it, as it can any control: `results.html?status=recorded` is the
   results recorded and not yet replayed here, which is how the overview points at them.
 
 - **Hide superseded.** One checkbox, straight after Status, hides exactly the superseded
@@ -2143,8 +2157,8 @@ Max age is a number of days, and empty is no limit. There is no date range.
   filter narrows the table to this project’s results or to others’.
   `RESULTS.md`, the generated register document, keeps its groups.
 
-- **A row named by the address** (`all-results.html#t-048`) shows whatever the filters
-  hide, so a link to a result never lands on nothing.
+- **A row named by the address** (`results.html#t-048`) shows whatever the filters hide,
+  so a link to a result never lands on nothing.
   The script keeps it, and without scripts one rule, `.site-table tr[hidden]:target`,
   shows it.
 
@@ -2284,7 +2298,7 @@ pointer and by keyboard, and measures its label at 1280, 768 and 390 pixels.
   180 days, newest first, excluding superseded results (`think-5c8r`). The preview has
   no count/scope sentence or introductory text explaining the links.
   The table shares the full Results page’s columns, sorting, result popovers and mobile
-  row cards. Filtering and older results remain on `all-results.html`, whose defaults are
+  row cards. Filtering and older results remain on `results.html`, whose defaults are
   unchanged. A result’s ordinary link opens its canonical article without scripts.
   **View all results**, in the shared uppercase action style, follows the table.
   The homepage displays the rung legend as a centered card beneath the preview table.
@@ -2293,13 +2307,14 @@ pointer and by keyboard, and measures its label at 1280, 768 and 390 pixels.
   Icons and chips share one left-hand column, with their labels aligned in a second
   column. Omit “What each rung means” helper text from this card.
   The entire card is one keyboard-accessible link to
-  `all-results.html#verification-ladders`, with no nested links.
+  `results.html#verification-ladders`, with no nested links.
   The full ratings explanation remains on the Results page.
 
 - **Results page.** Every registered result is one row of the results table on its own
-  page, `all-results.html`, “Results” in the navigation bar after Atlas.
-  (`results.html` was `RESULTS.md` rendered as a reader document, so the table’s page
-  took the other name; since 2026-10-01 `results.html` is a forwarder to this page.)
+  page, `results.html`, “Results” in the navigation bar after Atlas.
+  The legacy `all-results.html` address forwards here, preserving the query string and
+  fragment. Current navigation, buttons, cards and record links name `results.html`
+  directly; only the legacy address remains in the compatibility registry.
   The page has the Frontier page’s shape: a hero title, “Every Result”, whose id is
   `every-result`, a subtitle, the prose that names the three ratings and points at the
   ladders, defines the kinds, statuses and dating rule, with how many results stand at
@@ -2344,7 +2359,7 @@ pointer and by keyboard, and measures its label at 1280, 768 and 390 pixels.
   `templates/site-forwarder.html`): `forward.js` reads where a visit goes from the root
   element’s `data-moved-to` and sends it there with its query string and fragment, and a
   reader without scripts gets a refresh and a link.
-  `results.html` goes to the results table, `status.html` to the frontier atlas,
+  `all-results.html` goes to `results.html`, `status.html` to the frontier atlas,
   `defects.html` to the defect log on GitHub, and `cases.html`, every case record on one
   page until 2026-10-03, to the record page, `cases/`, whose script shows the case a
   fragment such as `#n-11` names (**Case records**, above).
@@ -2422,8 +2437,8 @@ results, so each is written once, as `result/t-nnn.html` beside the pages
 opens (**Row popovers**, Fetched bodies).
 A fragment is the one block and nothing else: it has no shell, and its links are written
 from the site’s root, so only a page there may place it.
-The directory is `result/`, not `results/`, since `results.html` is still served, as the
-forwarder where `RESULTS.md` was a page.
+The singular directory `result/` stays distinct from the canonical `results.html` index
+and a host’s extensionless `/results` spelling.
 `tests/test_overview.py` holds the two pages under a size ceiling each, and
 `check_published_site` asks the deployed site for every overview the results table
 names.

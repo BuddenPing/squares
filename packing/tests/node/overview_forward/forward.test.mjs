@@ -82,15 +82,15 @@ function forwarded(
 }
 
 void test("the old results section goes to the results page", () => {
-  assert.equal(forwarded("#every-result"), "all-results.html#every-result");
+  assert.equal(forwarded("#every-result"), "results.html#every-result");
 });
 
 void test("a result's row goes to its row on the results page", () => {
-  assert.equal(forwarded("#t-018"), "all-results.html#t-018");
-  assert.equal(forwarded("#t-037", { search: "?x=1" }), "all-results.html?x=1#t-037");
+  assert.equal(forwarded("#t-018"), "results.html#t-018");
+  assert.equal(forwarded("#t-037", { search: "?x=1" }), "results.html?x=1#t-037");
   assert.equal(
     forwarded("#%74-031", { search: "?kind=rigidity&current=true" }),
-    "all-results.html?kind=rigidity&current=true#%74-031",
+    "results.html?kind=rigidity&current=true#%74-031",
   );
 });
 
@@ -148,8 +148,8 @@ void test("the ladders' two fragments go to the results page where the section i
   // Verification Ladders left the overview for the results page on 2026-10-02; it was
   // `#verification-at-a-glance` until 2026-10-01, and its heading there keeps an empty
   // anchor of that id, so both fragments are sent on with the fragment kept.
-  assert.equal(forwarded("#verification-ladders"), "all-results.html#verification-ladders");
-  assert.equal(forwarded("#verification-at-a-glance"), "all-results.html#verification-at-a-glance");
+  assert.equal(forwarded("#verification-ladders"), "results.html#verification-ladders");
+  assert.equal(forwarded("#verification-at-a-glance"), "results.html#verification-at-a-glance");
 });
 
 void test("the survey's two fragments go to the combined Atlas page", () => {
@@ -193,7 +193,7 @@ void test("the compact homepage forwards full atlas state and moved resource fra
 });
 
 void test("a forwarder page sends every visit where it names", () => {
-  assert.equal(forwarded("", { moved: "all-results.html" }), "all-results.html");
+  assert.equal(forwarded("", { moved: "results.html" }), "results.html");
   assert.equal(forwarded("", { moved: "frontier.html" }), "frontier.html");
   const defects = "https://github.com/jlevy/squares/blob/main/defects.md";
   assert.equal(forwarded("", { moved: defects }), defects);
@@ -203,8 +203,8 @@ void test("a forwarder page sends every visit where it names", () => {
 
 void test("a forwarder page keeps the query string and the fragment", () => {
   assert.equal(
-    forwarded("#next-actions", { moved: "all-results.html", search: "?x=1" }),
-    "all-results.html?x=1#next-actions",
+    forwarded("#next-actions", { moved: "results.html", search: "?x=1" }),
+    "results.html?x=1#next-actions",
   );
   // A fragment the old page had is not looked up: a forwarder has no content of its own.
   assert.equal(forwarded("#n-11", { moved: "frontier.html", ids: ["n-11"] }), "frontier.html#n-11");

@@ -2,7 +2,7 @@
 """The overview of one registered result: the body of the popover its row opens.
 
 A result's row, in Recent Results on the homepage and in the table on
-`all-results.html`, opens a popover with everything the site knows about the result.
+`results.html`, opens a popover with everything the site knows about the result.
 This module writes that popover's body, `result_popover_html(result, overview)`; the
 popover around it, with the result's id as its caps label and its summary as its
 headline, and the row that opens it, belong to the pages that list results
@@ -1119,7 +1119,7 @@ def check_links(result_id: str, body: str, overview: Overview) -> None:
     ids = {other.id.lower() for other in overview.results}
     fragments = {
         "atlas.html": {"the-frontier-survey", *(f"n-{n}" for n in overview.cases)},
-        "all-results.html": ids,
+        "results.html": ids,
     }
     served = {
         *SITE_PAGES,

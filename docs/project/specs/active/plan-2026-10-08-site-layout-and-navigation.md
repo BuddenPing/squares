@@ -9,8 +9,12 @@ author: Codex, for the repository owner
 
 **Author:** Codex, for the repository owner
 
-**Status:** Implemented in draft PR #462; shared Atlas geometry reconciliation
-(`think-p7c4`) pending verification
+**Status:** Implemented and focused-verified in draft PR #462, including canonical
+Results URL (`think-3ci0`), shared homepage Atlas controls and centering, and shared
+H1/control-label refinements.
+Final Astra review approved the frozen changes; the next pushed-head CI is pending.
+The full checkpoint (`think-xio5`) remains separate and open.
+The earlier upstream geometry reconciliation (`think-p7c4`) is complete.
 
 **Tracking:** `think-2u4x` (epic), `think-s54c` (planning)
 
@@ -26,7 +30,8 @@ Results**, then **Papers**, **PDFs**, **Video**, **Squares Project Documentation
 downloads and the inline video remain separate sections.
 The Atlas has **Show More** and **Explore** buttons; the results preview links to the
 complete Results page.
-All buttons use uppercase labels through shared design rules.
+Buttons, tabs and toggles use uppercase labels at 90% of their existing contextual sans
+size through `--paper-button-label-scale`, preserving line boxes and click areas.
 Card titles use Chicago Manual of Style Title Case, preserving mathematical notation,
 acronyms, and proper names; descriptions remain in sentence case.
 The full project section moves to the About page, with **About** in the top navigation
@@ -67,7 +72,7 @@ repair wave; shared button typography applies to their controls too.
 ## Background
 
 The current implementation already renders a static subset of recent results, with full
-filtering on `all-results.html`. Each result has a canonical `result/t-NNN.html` page.
+filtering on `results.html`. Each result has a canonical `result/t-NNN.html` page.
 The homepage atlas contains all 324 tiles, with lazy external drawings; 100 tiles are
 initially visible. There is no dedicated visual Atlas page.
 `frontier.html` is the survey table, and `cases/N.html` is a complete case record whose
@@ -96,7 +101,9 @@ preserves the static pages, canonical addresses, and published-link guarantees o
 Use only H1 and H2 headings on the homepage.
 Main section headings share the introduction’s sans, uppercase title styling; the legend
 retains its compact label role.
-Give main section headings a modest extra 0.5rem of space above them.
+Apply the shared screen-only `--site-title-space-above` margin of 2.5rem to every
+visible `h1.site-title`, including homepage, About and other content pages.
+Print spacing keeps its existing rules.
 
 Keep the homepage in this order:
 
@@ -115,20 +122,29 @@ Keep the homepage in this order:
    An Atlas tile link fully expands the grid before scrolling to and highlighting the
    requested tile, including cases beyond the initial hundred.
    Follow it with a centered **The Squares Project** card linking to `about.html`.
-2. Reuse the dedicated Atlas’s per-case SVG drawings and complete row and segment
-   placement, initially showing six Triangle rows, with **Show More**, **Download PDF**,
-   and **Explore the Atlas** buttons.
+2. Reuse the dedicated Atlas’s overview, toggles, color legend, per-case SVG drawings
+   and complete row and segment placement.
+   Start at 100 cases in Triangle with Small/Fixed defaults; Grid completes preview rows
+   for the current size and width.
+   Center the canvas when it fits and retain horizontal panning when it overflows.
+   Shared FLIP animates its actual positions.
+   Prepare hidden SVG drawings during startup for smooth in-place expansion to 324, then
+   collapse to the complete preview.
+   Keep **Show More**, **Download PDF**, and **Explore the Atlas** buttons.
    Download the complete 1–324 PDF, with a shared down-arrow-over-baseline icon.
    Place the download action immediately before Explore.
    In-place expand/collapse controls use the shared double-down/double-up chevrons
    respectively, synchronized with state.
-   Omit explanatory selection/tile prose.
+   Share the dedicated Atlas overview and omit redundant selection/tile prose.
+   Without scripts the homepage shows its first 100 cases and Explore link; the
+   dedicated Atlas shows all 324. Layout and animation are ready independently of later
+   immutable image requests.
 3. **Recent Major Results** immediately below the atlas: up to twelve S4-or-higher
    results and a prominent **View all results** button.
    Omit the count and scope sentence.
    Omit an introductory sentence that only explains the links.
    Center the legend card at a medium width, with a centered small-caps **LEGEND**
-   heading. Make the whole card link to `all-results.html#verification-ladders`.
+   heading. Make the whole card link to `results.html#verification-ladders`.
    Significance, Verification and Confirmation each occupy their own line, with icons
    and chips in one column and labels aligned to their right.
    Remove the “What each rung means” text from the homepage card.
@@ -202,11 +218,12 @@ PDF labels retain their full metadata.
 The homepage uses the same **Show More** and **Show Less** controls as the Atlas page.
 
 Expanded coverage is strictly all 324 cases, including a short final Grid row when
-necessary (`think-b2o9`). Keep the complete results table and filters at
-`all-results.html`. Use the Atlas as the case directory, with the Frontier survey below
-its graphics. Forward old case-directory addresses to the Atlas, preserving individual
-case records. The shared navigation exposes the Atlas page while retaining access to
-Frontier.
+necessary (`think-b2o9`). Keep the complete results table and filters at `results.html`;
+keep `all-results.html` only as a query- and fragment-preserving legacy forwarder.
+Current links go directly to `results.html`. Use the Atlas as the case directory, with
+the Frontier survey below its graphics.
+Forward old case-directory addresses to the Atlas, preserving individual case records.
+The shared navigation exposes the Atlas page while retaining access to Frontier.
 
 Register `atlas.html` and `about.html` in `packing/site-urls.yaml` and the builders’
 page, asset, crawl, preview, and Pages-scope declarations.

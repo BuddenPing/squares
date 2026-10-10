@@ -442,7 +442,7 @@ def test_the_chain_is_every_result_on_the_case_oldest_first(
     lines = result_overview.result_lines()
     for other in expected:
         step = body.split(f'data-step="{other.id.lower()}"', 1)[1].split("</li>", 1)[0]
-        assert f'<a href="all-results.html#{other.id.lower()}">{other.id}</a>' in step
+        assert f'<a href="results.html#{other.id.lower()}">{other.id}</a>' in step
         # A step's date leads and what it dates follows, then the id, as in the tables.
         dated = overview_sections.date_cell(other)
         assert f'<p class="site-result-step-head">{dated} <a href=' in step
@@ -550,7 +550,7 @@ def test_the_links_reach_the_site_and_the_record(
     result = _result(overview, result_id)
     record = result.record
     links = bodies[result_id].split('class="site-result-section site-result-links"', 1)[1]
-    assert f'<a href="all-results.html#{result_id.lower()}">' in links
+    assert f'<a href="results.html#{result_id.lower()}">' in links
     if result_id == BROAD:
         assert '<a href="atlas.html#the-frontier-survey">' in links
         assert 'href="cases/"' not in links
@@ -720,7 +720,7 @@ def test_a_link_to_nothing_fails_the_render(overview: overview_data.Overview) ->
         '<a href="nowhere.html">x</a>',
         '<a href="cases/999.html">x</a>',
         '<a href="cases.html#n-11">x</a>',
-        '<a href="all-results.html#t-999">x</a>',
+        '<a href="results.html#t-999">x</a>',
     )
     for body in refused:
         with pytest.raises(SystemExit):

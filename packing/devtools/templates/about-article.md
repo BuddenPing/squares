@@ -13,12 +13,12 @@ Now several others have obtained results building on this work, including Kledda
 optimality of the famous [case of 11 squares](cases/11.html).
 
 Separately, Evan Daniel has proved the optimality of
-[a whole infinite family](all-results.html#t-064), $s(k^2 - 3) = k$ for every $k \ge 6$,
+[a whole infinite family](results.html#t-064), $s(k^2 - 3) = k$ for every $k \ge 6$,
 along with exact values at [21](cases/21.html), [32](cases/32.html) and
 [45](cases/45.html) squares.
 
 This project now independently tabulates all known new results and does
-[AI-assisted verification](all-results.html#verification-ladders) of the proofs and
+[AI-assisted verification](results.html#verification-ladders) of the proofs and
 certificates behind them, to encourage open collaboration on open questions and
 formalizations of current proofs.
 
