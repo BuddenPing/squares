@@ -442,6 +442,45 @@ def test_smallest_names_one_report_only_when_it_is_decidably_below_every_other()
     ) == {"smallest": None, "tied": ["a", "b"]}
 
 
+def test_a_tie_reads_as_one_exact_side_and_not_as_undecided() -> None:
+    """`smallest` reports equal exact sides as `tied`, with no `undecided_among`.
+
+    The notes' sentence read `undecided_among` whatever `smallest` returned, so a count
+    where the certificate ties another report's exact side raised a KeyError.
+    """
+    side = Fraction(37, 2)
+    row: dict[str, Any] = {
+        "n": 400,
+        "case": None,
+        "grid_side": "20",
+        "exact_side": legacy.literal(side),
+        "pending": [{"report": "#1", "holders": "A", "relation": "equal", "difference": "0"}],
+        **reports.smallest(
+            [(reports.THIS, reports.exact_span(side)), ("#1", reports.exact_span(side))]
+        ),
+    }
+    assert "undecided_among" not in row
+    assert reports.comparison(row) == (
+        "At n = 400 the certificate is beyond the horizon, with no case record, and "
+        "1.50e+00 below the grid; equal #1 (A); no report is smallest, since this "
+        "certificate and #1 are one exact side."
+    )
+
+
+def test_a_comparison_prints_a_distance_whichever_side_is_larger() -> None:
+    """A certificate above its case's ceiling is above it by a positive distance."""
+    row = {
+        "n": 88,
+        "case": {"holders": "B", "relation": "above", "difference": "-753/1000000000000000"},
+        "pending": [],
+        "smallest": "case: B",
+    }
+    assert reports.comparison(row) == (
+        "At n = 88 the certificate is above the case's ceiling (B) by 7.53e-13; "
+        "smallest: case: B."
+    )
+
+
 @functools.cache
 def _rows(name: str) -> dict[int, dict[str, Any]]:
     """A retained packet's frozen comparison, rebuilt once: the tests only read it."""

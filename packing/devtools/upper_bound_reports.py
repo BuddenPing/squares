@@ -1484,23 +1484,32 @@ def _replay(positives: dict[int, Any], record: Mapping[str, Any]) -> str:
     )
 
 
-def _comparison(row: Mapping[str, Any]) -> str:
-    """One count's frozen comparison, as a sentence of the register's notes."""
+def comparison(row: Mapping[str, Any]) -> str:
+    """One count's frozen comparison, as a sentence of the register's notes.
+
+    Every difference is printed as a distance, the relation saying which side is larger.
+    Where no report is decidably smallest, `smallest` either found the unbeaten reports
+    to be one exact side (``tied``) or could not order them (``undecided_among``).
+    """
     if row["case"] is None:
         grid = Fraction(row["grid_side"]) - Fraction(row["exact_side"])
         parts = [f"beyond the horizon, with no case record, and {_sci(grid)} below the grid"]
     else:
         case = row["case"]
         held = f"{case['holders']}, {case['result']}" if "result" in case else case["holders"]
-        parts = [
-            f"{case['relation']} the case's ceiling ({held}) by {_sci(case['difference'])}"
-        ]
+        decided = case["relation"] in {"below", "above"}
+        by = f" by {_sci(abs(Fraction(case['difference'])))}" if decided else ""
+        parts = [f"{case['relation']} the case's ceiling ({held}){by}"]
     for other in row["pending"]:
         decided = other["relation"] in {"below", "above"}
         by = f" by {_sci(abs(Fraction(other['difference'])))}" if decided else ""
         parts.append(f"{other['relation']} {other['report']} ({other['holders']}){by}")
     if row["smallest"]:
         parts.append(f"smallest: {row['smallest']}")
+    elif "tied" in row:
+        parts.append(
+            "no report is smallest, since " + _and(row["tied"]) + " are one exact side"
+        )
     else:
         parts.append("no report is decidably smallest of " + _and(row["undecided_among"]))
     return f"At n = {row['n']} the certificate is " + "; ".join(parts) + "."
@@ -1614,7 +1623,7 @@ def register_plan(packet: Path) -> dict[str, Any]:
         "controls": ["packing/tests/test_upper_bound_reports.py"],
         "notes": (
             f"{replay}\n\n"
-            + " ".join(_comparison(row) for row in rows)
+            + " ".join(comparison(row) for row in rows)
             + (
                 f"\n\nThe same commit holds {len(others)} further certificates the issue does "
                 f"not name, at n = {_and([str(n) for n in others])}; the packet's claim "
