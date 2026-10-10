@@ -14978,3 +14978,151 @@ results:
       126 while Green's or Nagamochi's reported value and the Karakus strip bound hold
       them. The release asset (31.8 MB) is pinned by size and digest and kept outside Git;
       the release's SHA256SUMS does not list it.
+
+  - id: T-145
+    kind: lower-bound
+    registered: '2026-10-10'
+    headline: "`s(40) > 1340000/199529 = 6.7158157…`, by a continuous-pose interval kernel"
+    claim: >-
+      s(40) > 1340000/199529 = 6.715815746082023…, by Guzhou0806, published on 10 October 2026
+      as release n40-continuous-1340000-199529-20261010 of Guzhou0806/n40-square-packing and
+      reported on jlevy/squares#485. It raises T-133's 335427/50000 by 72586117/9976450000 =
+      0.0072757…, from the same certificate.
+
+      The certificate is wand125's rect_n40_L67 rectangle density of T-068, unchanged, of mass
+      3999/100. Every closed square of side 199529/200000 inside [0, 67/10]^2, at every angle and
+      every legal centre, captures mass at least 4999/5000, and 40 × 4999/5000 − 3999/100 = 1/500,
+      so no packing fits at side 1340000/199529; compactness makes the bound strict.
+
+      A new interval kernel covers the continuous pose domain, centre and half-angle tangent together, in 43
+      closed slabs of t = tan(θ/2) over [10^-6, 83/200], by outward-rounded binary64 branch and
+      bound with a concave-section integral bound and translation-derivative bounds; an exact
+      integer certificate for horizontal squares of side 997643/1000000, which lie inside every
+      side-B square at t ≤ 10^-6, covers the rest. No net, no transfer and no density peak are
+      needed.
+
+      The source decided both parts with its two C++ kernels, in a local run and a GitHub Actions
+      run.
+
+      Both were decided here on 10 October 2026: the two kernels, built from the retained
+      source into the CI run's binaries, ran the axis certificate and all 43 slabs, every output
+      equal to both release receipts apart from timing, and refused every synthetic density whose
+      least capture is below the threshold: confirmed, reproduced with the producer's code.
+
+      This repository's exact audit, which shares no code with the release's, regenerated both kernel
+      inputs and decided every finite step, and sqverify-fast decided the near-axis statement a
+      second way on the original density. The 10 October review re-derived the kernel's lemmas and
+      found no blocking defect. No second method decided the continuous cover.
+
+      Guzhou0806 after wand125, Tokoharu and Levy,
+      [n40-square-packing](https://github.com/Guzhou0806/n40-square-packing/tree/71c97d07553d7d5ff5c5c82f0c9d1c75a150a4e3).
+      The source credits the density to wand125, the rectangle-density method and the
+      translation-derivative structure to Tokoharu, says the concave-section bound is informed by
+      this repository's sqverify_fast, and gives Guzhou0806's contribution, the continuous-pose
+      extension, the smaller-square coverage, the near-axis patch and the composition, as
+      AI-assisted research; the comment says AI assisted the exploration, proof drafting,
+      implementation, tests, packaging and the update under the author's direction.
+    scope: {n_values: [40]}
+    verification: V3
+    confirmation: C3
+    significance:
+      score: 3
+      rationale: >-
+        The strongest lower bound on record at n = 40, 0.00728 above T-133 on the same
+        certificate. The technique, an interval cover of the continuous pose domain with the angle
+        as an interval dimension, is new to this record, dispenses with the net, the transfer and
+        the density peak, and applies as it stands to every format T certificate the record holds,
+        with the side and threshold as its parameters; it is one count and not yet a bound family.
+        S3 by the precedent of T-133, with the technique noted, as the 10 October review suggests.
+      scored: '2026-10-10'
+      by: 'think-xms6 import, registering lane (repository; draft, as the 10 October review suggests)'
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Guzhou0806 n40 continuous pose 2026-10-10]']
+      published: '2026-10-10'
+    composition: >-
+      One certificate, wand125's rect_n40_L67, and three load-bearing parts. The continuous cover
+      of the 43 slabs is decided by the release's continuous_pose.cpp, interval-certified, the
+      producer's code, rebuilt here from reviewed source and replayed in full. The near-axis
+      statement at side 997643/1000000 is decided by the release's axis_integer_grid.cpp, exact,
+      replayed here, and again by sqverify-fast's exact axis-vertex sweep on the original density,
+      which shares no code with it. The finite steps, both inputs' identity, the near-axis
+      containment, the slab partition, the threshold and the counting margin, are decided by this
+      repository's exact audit, independently re-implemented with respect to exact.py, and are
+      recorded as structure.
+
+      The result takes the part closest to the producer's code: confirmed, reproduced with the
+      producer's code. C3 rests on the complete replay of both kernels and its controls, and the
+      kernel's lemmas on the 10 October review. No second method decides the continuous cover; the
+      401-direction run of sqverify-fast at the new parameters is a necessary condition it passed.
+    evidence:
+      - E-n040-guzhou-continuous-pose-report
+      - E-n040-guzhou-continuous-pose-kernel-replay
+      - E-n040-guzhou-continuous-pose-finite-audit
+      - E-n040-guzhou-continuous-pose-crate-axis
+    reviews:
+      - path: docs/project/reviews/review-2026-10-10-guzhou-n40-continuous-pose-bound.md
+        kind: adversarial
+        reviewer: AI agent (Claude, at maximum reasoning effort), the mathematical lane of stage 4 of the issue 485 follow-up import (think-xms6), prompted separately from the records lane, before any complete replay here and before retention
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-10'
+        scope: >-
+          Guzhou0806's s(40) > 1340000/199529, pinned at 71c97d07: the argument from wand125's
+          rect_n40_L67 density to the bound, re-derived (the D4 reduction, the t-dependent centre
+          domain, the enclosures of cos, sin and their sum, whole-box containment and exclusion,
+          the concave-section integral bound, the translation-derivative extension, the dyadic
+          cover, the near-axis containment and dominated measure, the integer axis certificate,
+          the counting and the strict endpoint); the 195-line kernel read line by line; every
+          finite quantity recomputed in exact rationals with the reviewer's own code; the CI
+          binaries rebuilt; three of the 43 slabs replayed; 98 adversarial synthetic kernel runs;
+          the axis statements and the 401-direction nodal statement decided by sqverify-fast; the
+          replay contract; and the drafted significance.
+        verdict: accepted
+        covers: [T-145]
+    artifacts:
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/README.md
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/PROOF.md
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/certificate/parameters.json
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/verifier/continuous_pose.cpp
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/verifier/axis_integer_grid.cpp
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/results/verification.json
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/release-ci/results/verification.json
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/receipts/builds.json
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/receipts/axis-run.json
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/receipts/slabs.jsonl.gz
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/receipts/crate-runs.json.gz
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/receipts/replay-check.json
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/receipts/finite-audit.json
+      - packing/resources/web/wand125-rectangle-certificates-2026-10-01/wand125-rectangles/certificates/rect_n40_L67/certified_candidate.json.gz
+      - packing/devtools/audit_continuous_pose.py
+      - docs/project/reviews/review-2026-10-10-guzhou-n40-continuous-pose-bound.md
+    controls:
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/receipts/controls.jsonl.gz
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/receipts/control-G-release.json
+      - packing/tests/test_audit_continuous_pose.py
+    next_rung: >-
+      V4 and C4 need a second adversarial AI review of this result by a distinct reviewer and a
+      human oversight record; the 10 October review is one. A method-distinct decision of the
+      continuous cover would stand beside the rung: a first-party interval kernel with the angle
+      as an interval dimension (GC-4 of the review, its specification), a W7 slice and a budget
+      the owner sets.
+    notes: >-
+      Registered on 10 October 2026 by the records lane of the issue 485 follow-up (think-xms6),
+      after the complete replay of both kernels, the finite audit and the crate's two runs, whose
+      receipts are in the packet; the review lane was prompted separately, before any complete
+      replay here and before retention. Of the review's findings, GC-1 (the 3.6e-6 axis margin),
+      GC-2 (main has no return, undefined once the harnesses rename it) and GC-7 (NaN through
+      min_element) are notes for the author; the packet keeps both release receipts and names
+      them (GC-3); the composition and the claim say what decides the continuous cover (GC-4);
+      the replay kept the full 30,000,000-node budget per slab (GC-5); GC-6 and GC-8 record what
+      was checked.
+
+      The contract's control H as written (tau = 1/2 in the axis header) is accepted
+      by the axis kernel, not refused, since 1/2 is below the minimum: the replay ran it as written
+      and ran the intended refusal at tau = 999804/10^6, just above the minimum, which the kernel
+      refused (exit 2), beside 999803/10^6, just below, which it proved. The review's dated note
+      of 10 October records that one-line correction of its contract.
+
+      n = 40's reported and verified lower bounds move from T-133's 335427/50000, which the case
+      record keeps as history, to 1340000/199529. Ids are provisional until merged to main.

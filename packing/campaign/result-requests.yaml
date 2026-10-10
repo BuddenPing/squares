@@ -3924,8 +3924,16 @@ issues:
       code, with controls A to D; the transfer's finite steps decided again by a first-party exact audit
       sharing no code with the release's, with controls E to H; the mathematics reviewed the same day
       with no blocking defect. Both bounds are registered together as T-133, and n = 40's reported and
-      verified lower bounds move to 335427/50000.
-    read_through: '2026-10-10T07:53:18Z'
+      verified lower bounds moved to 335427/50000. A comment of 14:50 UTC the same day reports
+      s(40) > 1340000/199529 = 6.7158157460... by a new continuous-pose kernel on the same density, at
+      71c97d07553d7d5ff5c5c82f0c9d1c75a150a4e3 with release n40-continuous-1340000-199529-20261010;
+      wand125's review does not cover it. Imported the same day: the release retained in the
+      guzhou-n40-continuous-pose-2026-10-10 packet, both kernels rebuilt into the CI run's binaries and
+      replayed in full here, the producer's code, with their controls; the finite steps decided again
+      by a first-party exact audit and the near-axis statement by sqverify-fast; the mathematics
+      reviewed with no blocking defect. It is registered as T-145, and n = 40's reported and verified
+      lower bounds move to 1340000/199529.
+    read_through: '2026-10-10T14:50:00Z'
     results:
     - key: s40-clipped-corner
       claim: s(40) > 335427/50000 = 6.70854, by excluding a container of side exactly 335427/50000 and
@@ -3945,8 +3953,25 @@ issues:
       evidence:
       - E-n040-guzhou-clipped-corner-report
       - E-n040-guzhou-clipped-corner-sqverify-fast-replay
+    - key: s40-continuous-pose
+      claim: >-
+        s(40) > 1340000/199529 = 6.715815746082023..., by excluding a container of side exactly
+        1340000/199529 and compactness: wand125's rect_n40_L67 density, unchanged, captures at least
+        4999/5000 in every square of side 199529/200000 over the continuous pose domain (43 closed
+        slabs in t = tan(theta/2) over [10^-6, 83/200], and an axis certificate at side
+        997643/1000000 for t in [0, 10^-6]), and 40 * 4999/5000 - 3999/100 = 1/500 > 0. It is
+        72586117/9976450000 above T-133.
+      source: https://github.com/jlevy/squares/issues/485#issuecomment-6098734391
+      register:
+      - T-145
+      evidence:
+      - E-n040-guzhou-continuous-pose-report
+      - E-n040-guzhou-continuous-pose-kernel-replay
+      - E-n040-guzhou-continuous-pose-finite-audit
+      - E-n040-guzhou-continuous-pose-crate-axis
     beads:
     - think-3oi5
+    - think-xms6
     answer_bead: think-3oi5
     replies: []
     close_when: The import and its review disposition are on main and the owner has posted the resulting

@@ -3234,8 +3234,9 @@ sources:
     local one. It reports s(40) > 335427/50000 and the weaker full-core s(40) > 67000 sqrt(6400006889)/798988091.
     The 401-direction nodal statement was replayed here in full with sqverify-fast, the producer's own
     nodal code, and the transfer's finite steps were decided again by a first-party exact audit; the
-    mathematics was reviewed on the same day with no blocking defect. Both lanes of n-040.md move to
-    335427/50000 (T-133); T-068's 67/10 on the same density stays as history. The repository's earlier
+    mathematics was reviewed on the same day with no blocking defect. Both lanes of n-040.md moved to
+    335427/50000 (T-133) and then to 1340000/199529 (T-145); T-068's 67/10 on the same density stays as
+    history. The repository's earlier
     commit 485dd8f, with s(40) > 33509/5000 on the standard net, is pinned by history and not retained.
 - id: couzo-exact-certificates-2026-10-09
   title: Francisco Couzo's six exact rational certificates at 02f9690, issue476
@@ -3520,6 +3521,36 @@ sources:
     premises, bundle bindings and input enclosures pass, and a two-angle replay sample returned the
     certificate's records; the complete replay waits under think-nd7g. The release asset is pinned by
     digest and not retained.
+- id: guzhou-n40-continuous-pose-2026-10-10
+  title: Strict lower bound for forty unit squares by a continuous-pose interval kernel, issue485
+  role: source-repository
+  url: https://github.com/Guzhou0806/n40-square-packing/tree/71c97d07553d7d5ff5c5c82f0c9d1c75a150a4e3
+  local: resources/web/guzhou-n40-continuous-pose-2026-10-10/
+  source_key: '[Guzhou0806 n40 continuous pose 2026-10-10]'
+  scope:
+    n_values:
+    - 40
+  reviewed: '2026-10-10'
+  source_date: '2026-10-10'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/n-040.md
+  - frontier/results.yaml
+  evidence:
+  - E-n040-guzhou-continuous-pose-report
+  - E-n040-guzhou-continuous-pose-kernel-replay
+  - E-n040-guzhou-continuous-pose-finite-audit
+  - E-n040-guzhou-continuous-pose-crate-axis
+  notes: Release n40-continuous-1340000-199529-20261010 at 71c97d07, retrieved at 2026-10-10T17:25Z for
+    the follow-up comment on jlevy/squares#485, with 27 of its 28 files retained, wand125's rect_n40_L67
+    density pinned by digest, and the release ZIP's CI receipt kept beside the tree's local one. It
+    reports s(40) > 1340000/199529 by a continuous-pose interval kernel over 43 slabs and an exact axis
+    certificate. Both kernels were rebuilt here into the CI run's binaries and replayed in full, every
+    output equal to both release receipts apart from timing; the finite steps were decided again by a
+    first-party exact audit and the near-axis statement by sqverify-fast; the mathematics was reviewed
+    the same day with no blocking defect. Both lanes of n-040.md move to 1340000/199529 (T-145); T-133's
+    335427/50000 on the same density stays as history.
 selected_overrides:
 - n: 51
   source_id: ry-xu-undilated-n51-2026

@@ -557,6 +557,64 @@ verifiers:
       code; the finite steps were decided again here by V-audit-clipped-corner-transfer,
       written without opening finite.py.
 
+  - id: V-guzhou-n40-continuous-pose
+    program: verifier/continuous_pose.cpp, the release's continuous-pose interval kernel
+    author: Guzhou0806
+    provenance: external
+    language: [C++]
+    methods: [interval-certified]
+    role: decides
+    summary: >-
+      Decides, for one closed slab [PL/DEN, PH/DEN] of the half-angle tangent t = tan(theta/2),
+      that every square of side B in [0, L]^2 at every angle of the slab and every legal centre
+      captures at least TN/TD of a rectangle density, by depth-first interval branch and bound over
+      the normalised centre and the angle together: outward-rounded binary64 intervals,
+      whole-box containment and exclusion by projection on the square's normals, a concave-section
+      trapezoid bound on each rectangle's clipped area at the box's centre, and
+      translation-derivative bounds that extend it over the box. It exits 0 with "verified" only
+      when the stack empties, and 3 with "unresolved" at the node budget or a half-width below
+      2^-40.
+    source:
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/verifier/continuous_pose.cpp
+    versions:
+      - sha256: da06206b8e83a57b8a710ba62e743c6d3a1959e9160ff32ae89ede583841c73c
+        revision: 71c97d07553d7d5ff5c5c82f0c9d1c75a150a4e3
+        note: >-
+          Built here with g++ 13.3.0 -O3 -std=c++17 -fno-fast-math -ffp-contract=off from the
+          tree's directory into 69bc9e64..., the CI run's binary.
+    note: >-
+      Read line by line by the 10 October 2026 review of the release
+      (docs/project/reviews/review-2026-10-10-guzhou-n40-continuous-pose-bound.md), which
+      re-derived its lemmas; replayed here in full on all 43 slabs. Its source says its
+      translation derivatives follow Tokoharu and its concave sections the Squares Project, and
+      that its lineage is not wholly independent; it shares no code with sqverify-fast.
+
+  - id: V-guzhou-n40-axis-integer-grid
+    program: verifier/axis_integer_grid.cpp, the release's exact axis certificate
+    author: Guzhou0806
+    provenance: external
+    language: [C++]
+    methods: [exact-algebraic]
+    role: decides
+    summary: >-
+      Decides that every horizontal square of side A in the northeast quadrant of [0, l]^2
+      captures at least TN/TD of an integer rectangle density, by writing each rectangle as
+      sixteen signed hinge products, accumulating coefficient prefix sums on the grid of
+      breakpoints and evaluating every vertex in signed 128-bit integers within a guarded bound;
+      it reconciles the minimiser by a direct sum and exits 0 with AXIS_COVERAGE_PROVED or 2 with
+      AXIS_TEST_REFUSED.
+    source:
+      - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/verifier/axis_integer_grid.cpp
+    versions:
+      - sha256: f5bc3f60065aaea3d14ffb8465865750fca22cf8bbc6bd8739b5120200b6277d
+        revision: 71c97d07553d7d5ff5c5c82f0c9d1c75a150a4e3
+        note: Built here with g++ 13.3.0 -O2 -std=c++17 into cccecb9a..., the CI run's binary.
+    note: >-
+      Read by the 10 October 2026 review, which re-derived the bilinear-cell lemma, the hinge
+      expansion and the int128 bounds; replayed here. Its minimum was evaluated again at the
+      minimiser by devtools.audit_continuous_pose, and the axis statement decided again on the
+      original density by sqverify-fast's axis-vertex sweep.
+
   - id: V-burns-n17-verify-py
     program: verify-n17-lower-bound-4_4811.py
     author: Burns
@@ -1204,6 +1262,36 @@ verifiers:
       verifier/release.py, tests/test_finite.py or PROOF.md. It shares with finite.py the
       definition of the density, its D4 expansion and the transfer's formulas, and no
       code.
+
+  - id: V-audit-continuous-pose
+    program: devtools.audit_continuous_pose
+    author: Squares Project (Levy)
+    provenance: first-party
+    language: [Python]
+    methods: [exact-algebraic]
+    role: decides
+    summary: >-
+      Decides in exact rationals the finite steps of Guzhou0806's continuous-pose bound
+      s(40) > 1340000/199529 on the retained rect_n40_L67 density: it regenerates both kernel
+      inputs and both sqverify-fast inputs, binding the kernel inputs to the digests the receipts name, checks every enclosure and
+      the dominated measure, decides the counting margin, the slab partition, the kernel's
+      threshold, the near-axis containment A W(eps) <= B and the axis minimum against tau, which
+      it evaluates again at the reported minimiser, holds every value to both release receipts,
+      and refuses four altered parameters. It also builds both kernels from the retained source,
+      drives the complete replay, controls A to H and the crate's two runs, and judges those
+      receipts; there it checks receipts and decides no coverage.
+    source:
+      - packing/devtools/audit_continuous_pose.py
+      - packing/tests/test_audit_continuous_pose.py
+    independence_record: packing/devtools/audit_continuous_pose.py
+    note: >-
+      Its module docstring is its read log: written on 2026-10-10 from the review of the release
+      and its scratch measurements, reading the release's parameters and receipts as data, both
+      kernels and harnesses and run.py in full, and never opening exact.py, audit.py,
+      tests/oracle.py, tests/test_kernel.py, tests/test_admission.py or PROOF.md while it was
+      written; exact.py was read afterwards, to run control G on it, and nothing in the finite
+      part changed. It shares with exact.py the definition of the density, its D4 expansion, the
+      kernels' input order, the enclosure rule and the inward rounding, and no code.
 
   - id: V-check-half-angle-area
     program: devtools.check_half_angle_area
