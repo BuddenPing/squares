@@ -27,15 +27,15 @@
     {"n": 132, "report": "T-131 (#465)", "url": "https://github.com/jlevy/squares/issues/465", "holders": "Evan Daniel", "result": "T-131", "reader": "[Daniel record hunt 2026-10-09]"},
     {"n": 132, "report": "#470", "url": "https://github.com/Mishapolk/square-packing-records/blob/dd3da5c753c5ded6cb3b89476193b7b801005415/README.md", "holders": "Mishapolk", "printed": "11.986956226066", "rounding": "up"},
     {"n": 132, "report": "#476", "url": "https://github.com/jlevy/squares/issues/476", "holders": "Francisco Couzo", "reader": "[Couzo exact certificates 2026-10-09]"},
-    {"n": 132, "report": "#488", "url": "https://github.com/jlevy/squares/issues/488", "holders": "Francisco Couzo", "reader": "[Couzo certificates 2026-10-10]"},
+    {"n": 132, "report": "#488", "url": "https://github.com/jlevy/squares/issues/488", "holders": "Francisco Couzo", "result": "T-140", "reader": "[Couzo certificates 2026-10-10]"},
     {"n": 305, "report": "#476", "url": "https://github.com/jlevy/squares/issues/476", "holders": "Francisco Couzo", "reader": "[Couzo exact certificates 2026-10-09]"},
-    {"n": 305, "report": "#481", "url": "https://github.com/jlevy/squares/issues/481", "holders": "Nate Chaoweeraprasit", "reader": "[SQUISH third request 2026-10-09]"},
-    {"n": 305, "report": "#488", "url": "https://github.com/jlevy/squares/issues/488", "holders": "Francisco Couzo", "reader": "[Couzo certificates 2026-10-10]"},
-    {"n": 308, "report": "#484", "url": "https://github.com/jlevy/squares/issues/484", "holders": "Kevin Fang", "reader": "[Fang two-wedge certificates 2026-10-10]"},
+    {"n": 305, "report": "#481", "url": "https://github.com/jlevy/squares/issues/481", "holders": "Nate Chaoweeraprasit", "result": "T-136", "reader": "[SQUISH third request 2026-10-09]"},
+    {"n": 305, "report": "#488", "url": "https://github.com/jlevy/squares/issues/488", "holders": "Francisco Couzo", "result": "T-140", "reader": "[Couzo certificates 2026-10-10]"},
+    {"n": 308, "report": "#484", "url": "https://github.com/jlevy/squares/issues/484", "holders": "Kevin Fang", "result": "T-135", "reader": "[Fang two-wedge certificates 2026-10-10]"},
     {"n": 343, "report": "#470", "url": "https://github.com/Mishapolk/square-packing-records/blob/dd3da5c753c5ded6cb3b89476193b7b801005415/README.md", "holders": "Mishapolk", "printed": "19.000000000007", "rounding": "unstated"},
-    {"n": 343, "report": "#484", "url": "https://github.com/jlevy/squares/issues/484", "holders": "Kevin Fang", "reader": "[Fang two-wedge certificates 2026-10-10]"},
+    {"n": 343, "report": "#484", "url": "https://github.com/jlevy/squares/issues/484", "holders": "Kevin Fang", "result": "T-135", "reader": "[Fang two-wedge certificates 2026-10-10]"},
     {"n": 344, "report": "#470", "url": "https://github.com/Mishapolk/square-packing-records/blob/dd3da5c753c5ded6cb3b89476193b7b801005415/README.md", "holders": "Mishapolk", "printed": "19.002369297056", "rounding": "unstated"},
-    {"n": 344, "report": "#484", "url": "https://github.com/jlevy/squares/issues/484", "holders": "Kevin Fang", "reader": "[Fang two-wedge certificates 2026-10-10]"}
+    {"n": 344, "report": "#484", "url": "https://github.com/jlevy/squares/issues/484", "holders": "Kevin Fang", "result": "T-135", "reader": "[Fang two-wedge certificates 2026-10-10]"}
   ],
   "register": {
     "title": "Evan Daniel's Hunt 3 certificates at 76a529b, issue489",

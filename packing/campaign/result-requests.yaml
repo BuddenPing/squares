@@ -4001,10 +4001,10 @@ issues:
       all nine added or changed certificates retained in the couzo-certificates-2026-10-10 packet
       and passing both maintained exact routes, and the six requested decided again by the third
       exact route. Each requested side is below its case ceiling; at 209, 237, 270 and 305 it is
-      below SQUISH's #481, and at 132 issue #489's exact side is smaller still. The six are
-      registered together as T-140 at V0/C0, pending review; the case records wait for
-      jlevy/squares#403. Author checkers and KKT statements were not run here; no optimality is
-      claimed.
+      below SQUISH's #481, and at 132 issue #489's exact side is smaller still. The review of the
+      same day reproduced the replay and found no blocking defect, and the six are registered
+      together as T-140 at V3/C3; the case records wait for jlevy/squares#403. Author checkers
+      and KKT statements were not run here; no optimality is claimed.
     read_through: '2026-10-10T14:08:32Z'
     results:
     - key: six-exact-certificates
@@ -4016,6 +4016,7 @@ issues:
       - T-140
       evidence:
       - E-couzo-488-certificate-report
+      - E-couzo-488-exact-feasibility
     - key: kkt-no-descent
       claim: Each of the six lies within about 1e-19 of its KKT point, and the corner-corner MILP finds
         no first-order descent in any branch.
@@ -4054,11 +4055,12 @@ issues:
       evand-record-hunt3-2026-10-10 packet with their KKT points, inputs and solver reports; all four,
       and the unnamed hunt3_n305 certificate, pass both maintained exact routes, and the third exact
       route decides the four. 132 is below every case and pending side, issue #488's included, by
-      1.27e-3; 308 is below the grid and Kevin Fang's #484. Both are registered together as T-141 at
-      V0/C0, pending review; the case records wait for jlevy/squares#403. 343 and 344 lie beyond the
-      case corpus, below #484's sides there, and are dated beyond-horizon rows that supersede
-      #484's. The n305 side equals #488's exactly; the author's log drops it as Couzo's. Author
-      checkers and KKT evidence were not run here.
+      1.27e-3; 308 is below the grid and Kevin Fang's #484. The review of the same day reproduced the
+      replay and found no blocking defect, and both are registered together as T-141 at V3/C3; the
+      case records wait for jlevy/squares#403. 343 and 344 lie beyond the case corpus, below #484's
+      sides there, and are verified beyond-horizon rows that supersede #484's. The n305 side equals
+      #488's exactly; the author's log gives it to Couzo, and no entry cites it. Author checkers and
+      KKT evidence were not run here.
     read_through: '2026-10-10T14:47:57Z'
     results:
     - key: hunt3-132-308
@@ -4069,12 +4071,14 @@ issues:
       - T-141
       evidence:
       - E-evand-489-hunt3-report
+      - E-evand-489-exact-feasibility
     - key: hunt3-343-344
       claim: s(343) <= 18.978232523635611279730512106023 and s(344) <= 18.994450514277401521114135796864,
         beyond the 1..324 case corpus.
       source: body
       evidence:
       - E-evand-489-hunt3-report
+      - E-evand-489-exact-feasibility
     - key: kkt-local-minima
       claim: Each exact point is an 80-digit KKT point with positive multipliers (least 1.8e-7), a reduced
         Hessian positive semidefinite modulo exact flat motions (132 31, 308 52, 343 19, 344 71) and

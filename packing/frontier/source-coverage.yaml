@@ -3410,10 +3410,12 @@ sources:
   - resources/web/couzo-certificates-2026-10-10/acquisition/claims.json
   evidence:
   - E-couzo-488-certificate-report
+  - E-couzo-488-exact-feasibility
   notes: >-
     All 6 complete certificates are retained as the source wrote them, each admitted only where
     its exact side equals, or rounds up to, the side its source prints. T-140 records the
-    in-horizon report at V0/C0. All 27 native jobs have full outcomes. The three further
+    in-horizon report at V3/C3 on the review of 10 October, which reproduced all 27 native jobs
+    and decided the six by a third exact route. The three further
     certificates the commit changes, at 303, 338 and 340, are compared in the claim record and
     registered by no entry, and the other 54 are pinned to the issue-476 packet's identical
     copies. No selected override or superseded claim is created while house adoption waits for
@@ -3435,12 +3437,14 @@ sources:
   - resources/web/evand-record-hunt3-2026-10-10/acquisition/claims.json
   evidence:
   - E-evand-489-hunt3-report
+  - E-evand-489-exact-feasibility
   notes: >-
     All 4 complete certificates are retained as the source wrote them, each admitted only where
     its exact side equals, or rounds up to, the side its source prints. T-141 records the
-    in-horizon report at V0/C0; the n343 and n344 sides are beyond-horizon rows at assurance
-    reported, the issue's prints, which are the exact sides, and supersede issue 484's rows at
-    those counts. All 15 native jobs have full outcomes. The certificate at 305, which the issue
+    in-horizon report at V3/C3 on the review of 10 October, which reproduced all 15 native jobs
+    and decided the four by a third exact route; the n343 and n344 sides are beyond-horizon
+    rows at assurance verified from the same evidence, the issue's prints, which are the exact
+    sides, and supersede issue 484's rows at those counts. The certificate at 305, which the issue
     does not name, is compared in the claim record and registered by no entry. No selected
     override is created while house adoption waits for jlevy/squares#403; current cases and
     earlier source ownership remain unchanged.
@@ -5505,7 +5509,7 @@ beyond_horizon_claims:
   source_id: evand-record-hunt3-2026-10-10
   claim: upper-bound
   value: '18.978232523635611279730512106023'
-  assurance: reported
+  assurance: verified
   disposition: tracked-outside-case-corpus
   bead: think-xm4h
 - n: 344
@@ -5520,7 +5524,7 @@ beyond_horizon_claims:
   source_id: evand-record-hunt3-2026-10-10
   claim: upper-bound
   value: '18.994450514277401521114135796864'
-  assurance: reported
+  assurance: verified
   disposition: tracked-outside-case-corpus
   bead: think-xm4h
 - n: 364

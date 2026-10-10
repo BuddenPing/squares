@@ -1074,8 +1074,9 @@ other 54 are pinned against the issue-476 packet’s identical copies;
 [packet](web/couzo-certificates-2026-10-10/README.md).
 Both project exact routes accept all 9 replayed certificates and refuse all 18 controls,
 and the third route accepts the six requested ones.
-T-140 records the six sides at V0/C0, pending independent review and adoption; at n =
-132 issue #489’s side is smaller.
+T-140 records the six sides at V3/C3 on the
+[review of 10 October](../../docs/project/reviews/review-2026-10-10-upper-bound-imports-488-489.md),
+pending adoption; at n = 132 issue #489’s side is smaller.
 
 ## Evan Daniel’s Hunt 3 certificates, 10 October 2026
 
@@ -1086,11 +1087,11 @@ names) and retained under the source’s MIT licence with their KKT points, inpu
 solver reports; [packet](web/evand-record-hunt3-2026-10-10/README.md).
 Both project exact routes accept all 5 replayed certificates and refuse all 10 controls,
 and the third route accepts the four requested ones.
-T-141 records the n = 132 and 308 sides at V0/C0, pending independent review and
-adoption. The n = 343 and 344 sides lie beyond the case corpus and are tracked as
-beyond-horizon rows that supersede issue #484’s. The unnamed n = 305 certificate has
-exactly issue #488’s side there, and the source’s log drops it as Couzo’s. The source
-credits Kevin Fang’s #484 packings at 308, 343 and 344 and discloses Claude assistance.
+T-141 records the n = 132 and 308 sides at V3/C3 on the same review, pending adoption.
+The n = 343 and 344 sides lie beyond the case corpus and are verified beyond-horizon
+rows that supersede issue #484’s. The unnamed n = 305 certificate has exactly issue
+#488’s side there, and the source’s log drops it as Couzo’s. The source credits Kevin
+Fang’s #484 packings at 308, 343 and 344 and discloses Claude assistance.
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.

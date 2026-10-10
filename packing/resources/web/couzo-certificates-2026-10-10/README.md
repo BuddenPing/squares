@@ -171,8 +171,9 @@ The certificates establish finite upper bounds at their exact sides, nothing mor
 The source says each of the six lies within about $10^{-19}$ of its KKT point.
 It also says the corner–corner MILP finds no first-order descent in any branch.
 Those statements are the author’s and were not replayed here.
-Novelty, local or global optimality and rigidity are not established, and no review of
-the replay has been made.
+Novelty, local or global optimality and rigidity are not established.
+The [review of 10 October](../../../../docs/project/reviews/review-2026-10-10-upper-bound-imports-488-489.md) reproduced the replay and accepted the certificates
+for finite feasibility only, with no blocking finding.
 
 ## Credit and Licence
 

@@ -573,6 +573,23 @@ No review of #488’s 54 unchanged certificates beyond their custody, of the pos
 or of the packer log beyond its lines on 305. No house adoption, case-record change or
 private-worker custody.
 
+## Note of 10 October 2026: the Register Ids
+
+Added by records lane R3 of the same intake pass (`think-fvz4`); the review above is
+unchanged. The entries this review calls `T-NNN-488` and `T-NNN-489` are `T-140` and
+`T-141`, each taken in the commit that first registered it at `V0`/`C0` and raised to
+`V3`/`C3` with the confirming evidence this review proposes:
+`E-couzo-488-exact-feasibility` and `E-evand-489-exact-feasibility`. `T-141` cites 132
+and 308; 343 and 344 are verified beyond-horizon rows, and #484’s rows there are marked
+superseded in the same change (RL-1, RL-7). The `HOUSES` readers of RL-2 cover the
+issue-481, issue-484, issue-488 and issue-489 packets, both declarations name those
+reports by `reader` and `result`, and both claim records were refrozen, so the 305
+comparison reads as an exact tie.
+Hunt 3’s 305 is cited by no entry (RL-3), and Couzo’s 338 and 340 stay compared and
+uncited for the owner (RL-9). No case record changed: house adoption waits for
+jlevy/squares#403, so each confirming entry is a recorded deferral of its case citation.
+Ids are provisional until merged to `main`.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->

@@ -149,7 +149,8 @@ Couzo’s. The issue does not report it.
 The record keeps 343 and 344 as dated beyond-horizon rows, the form Kevin Fang’s
 issue-484 sides take: one row each in `beyond_horizon_claims` of `source-coverage.yaml`,
 keyed on the count and this source, with the side the issue prints,
-`assurance: reported` and `disposition: tracked-outside-case-corpus`, and no case
+`assurance: verified`, from the replay and its review, and
+`disposition: tracked-outside-case-corpus`, and no case
 record, register row, selected bound or atlas entry.
 A row there must equal its source’s reparsed claim byte for byte, so
 [acquisition/beyond-horizon-claims.json](acquisition/beyond-horizon-claims.json) holds
@@ -168,8 +169,9 @@ semidefinite modulo exact flat motions: 31 at 132, 52 at 308, 19 at 343 and 71 a
 Third, a first-order MILP finds it jammed in every corner-to-corner branch.
 Those are numerical evidence, as the source itself says, and were not replayed here.
 So are its matching distances from the packings each started from.
-Novelty, local or global optimality and rigidity are not established, and no review of
-the replay has been made.
+Novelty, local or global optimality and rigidity are not established.
+The [review of 10 October](../../../../docs/project/reviews/review-2026-10-10-upper-bound-imports-488-489.md) reproduced the replay and accepted the certificates
+for finite feasibility only, with no blocking finding.
 The source expects further improvement at 343.
 
 ## Credit and Licence
