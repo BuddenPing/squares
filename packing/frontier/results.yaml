@@ -14077,11 +14077,13 @@ results:
       (docs/project/reviews/review-2026-10-10-upper-bound-imports-488-489.md) recommends
       T-140 at 209, 237, 270 and 305, so this entry is recommended as the house at the
       other thirteen, 131, 153, 154, 207, 232, 236, 259, 263, 269, 292, 302, 303 and 307,
-      and stays verified, second to T-140, at those four. Pending the review of T-146, which
-      credits these packings at 153, 236, 263, 269, 292, 302 and 303, the house
-      recommendation at those seven goes to T-146, so this entry is recommended at 131, 154,
-      207, 232, 259 and 307. No house moves until jlevy/squares#403, which rewrites every
-      case record, lands and private-worker custody is on file (RI-5).
+      and stays verified, second to T-140, at those four.
+
+      Pending the review of T-146, which credits these packings at 153, 236, 263, 269, 292,
+      302 and 303, the house recommendation at those seven goes to T-146, so this entry is
+      recommended at 131, 154, 207, 232, 259 and 307. No house moves until
+      jlevy/squares#403, which rewrites every case record, lands and private-worker custody
+      is on file (RI-5).
 
       The three sources/ certificates at 155, 240 and 306 are above their cases and are
       not imported. The source's own checkers were not run here. No two independent
@@ -15199,11 +15201,12 @@ results:
       16.733166007899378970679613144039, s(269) <= 16.901513582189132198548012552701,
       s(292) <= 17.591378145497698159610863183468, s(295) <=
       17.704232790736030358056092972112, s(302) <= 17.872029849081179973812429831968 and
-      s(303) <= 17.913065462738532305839753791206. Each is below every value the record
-      held or had pending at its count when read, by 2.21e-17 at 302 to 7.82e-10 at 295; the
-      source claims no record. Complete native feasibility outcomes are retained separately;
-      the selected standing cases are unchanged pending independent review and record
-      review.
+      s(303) <= 17.913065462738532305839753791206.
+
+      Each is below every value the record held or had pending at its count when read, by
+      2.21e-17 at 302 to 7.82e-10 at 295; the source claims no record. Complete native
+      feasibility outcomes are retained separately; the selected standing cases are
+      unchanged pending independent review and record review.
 
       REGULARIZE.md reports every one of the lists' 324 certificates VALID under the source's
       two exact checkers, verify_cert.py and verify_cert2.py, and verified at 80 digits; the
@@ -15221,11 +15224,13 @@ results:
       Francisco Couzo's, Ryan Xu's and earlier packings. Evan Daniel
       (https://github.com/evand/square-packing) refreshed each from his store, solved it to
       the exact side stated, regularized it for display at that side and wrote the
-      certificate. His lists name instead the finders of the arrangements the packings
-      descend from: Joe DeVincentis at 70, Francisco Couzo at 102, 103, 123, 236, 263, 269,
-      292, 302 and 303, David Ellsworth at 129 and 153 and David W. Cantrell at 146, and no
-      one at 258 and 295. The source claims no record, and its credits say the repository's
-      work was produced by Claude (Anthropic) under human direction.
+      certificate.
+
+      His lists name instead the finders of the arrangements the packings descend from: Joe
+      DeVincentis at 70, Francisco Couzo at 102, 103, 123, 236, 263, 269, 292, 302 and 303,
+      David Ellsworth at 129 and 153 and David W. Cantrell at 146, and no one at 258 and
+      295. The source claims no record, and its credits say the repository's work was
+      produced by Claude (Anthropic) under human direction.
     scope:
       n_values: [70, 102, 103, 123, 129, 146, 153, 236, 258, 263, 269, 292, 295, 302, 303]
     verification: V0
@@ -15299,19 +15304,22 @@ results:
       below the case's ceiling (Ryan Xu, T-125) by 7.90e-11, 2.14e-10, 1.31e-10, 9.75e-11 and
       7.82e-10, with no pending report. At n = 103 it is below the case's ceiling (Ryan Xu,
       T-125) by 1.49e-10 and T-138 (issue 470, Mishapolk) by 6.94e-13; at n = 258 below the
-      case's (Nate Chaoweeraprasit, T-115) by 5.36e-12 and T-138 by 4.21e-12. At n = 153 and
-      236 it is below the case's ceiling (Nate Chaoweeraprasit, improved by Siddharth Gupta,
-      T-127) by 7.65e-03 and 3.85e-03, and T-136 (issue 481, Nate Chaoweeraprasit) by
-      8.48e-16 and 3.29e-16. At n = 263 it is below the case's ceiling (Nate
-      Chaoweeraprasit, T-116) by 7.25e-03, T-134 (issue 476, Francisco Couzo) by 7.25e-03 and
-      T-136 by 5.05e-13. At n = 269 it is below the case's ceiling (Francisco Couzo, improved
-      by Evan Daniel, T-098) by 4.45e-03, issue 476's equal side by 4.45e-03 and T-136 by
-      6.73e-16. At n = 292 it is below the case's ceiling (Francisco Couzo, improved by Seth
-      Rehwaldt, T-117) by 5.87e-03 and T-136 by 2.03e-13. At n = 302 it is below the case's
-      ceiling (Nate Chaoweeraprasit, T-116) by 9.28e-03, T-138 by 9.28e-03 and T-136 by
-      2.21e-17. At n = 303 it is below the case's ceiling (Nate Chaoweeraprasit, T-113) by
-      7.25e-03, T-138 by 7.25e-03, T-134 by 4.38e-03, T-136 by 4.48e-16 and issue 488's
-      uncited side by 4.30e-03. At every count it is the smallest.
+      case's (Nate Chaoweeraprasit, T-115) by 5.36e-12 and T-138 by 4.21e-12.
+
+      At n = 153 and 236 it is below the case's ceiling (Nate Chaoweeraprasit, improved by
+      Siddharth Gupta, T-127) by 7.65e-03 and 3.85e-03, and T-136 (issue 481, Nate
+      Chaoweeraprasit) by 8.48e-16 and 3.29e-16. At n = 263 it is below the case's ceiling
+      (Nate Chaoweeraprasit, T-116) by 7.25e-03, T-134 (issue 476, Francisco Couzo) by
+      7.25e-03 and T-136 by 5.05e-13. At n = 269 it is below the case's ceiling (Francisco
+      Couzo, improved by Evan Daniel, T-098) by 4.45e-03, issue 476's equal side by 4.45e-03
+      and T-136 by 6.73e-16. At n = 292 it is below the case's ceiling (Francisco Couzo,
+      improved by Seth Rehwaldt, T-117) by 5.87e-03 and T-136 by 2.03e-13.
+
+      At n = 302 it is below the case's ceiling (Nate Chaoweeraprasit, T-116) by 9.28e-03,
+      T-138 by 9.28e-03 and T-136 by 2.21e-17. At n = 303 it is below the case's ceiling
+      (Nate Chaoweeraprasit, T-113) by 7.25e-03, T-138 by 7.25e-03, T-134 by 4.38e-03, T-136
+      by 4.48e-16 and issue 488's uncited side by 4.30e-03. At every count it is the
+      smallest.
 
       Measured pose by pose against the certificate credited (arrangement_gap), each
       regularized view differs from it, as display regularization is meant to: under the
