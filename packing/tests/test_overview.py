@@ -5676,8 +5676,12 @@ def test_result_preview_keeps_claim_scope_and_links_with_full_context_in_fragmen
 #: about 13 KB a result on each page. Each ceiling keeps about a hundred kilobytes above
 #: the second measurement. Merged with main's T-101 the same day, as T-102 to T-111, they
 #: measured 2,727,614 and 1,379,239 bytes, above both earlier ceilings and about 70 KB
-#: under these.
-PAGE_CEILINGS = {"index.html": 600_000, render_overview.RESULTS_PAGE: 800_000}
+#: under these. The prepared canonical pages of 7 October 2026 set 600,000 and 800,000
+#: with 115 results registered. The intake pass of 10 October took the register to 139,
+#: and the pages measured 605,376 and 794,521 bytes, about 2.2 KB a result on the
+#: homepage; each ceiling now keeps about a hundred kilobytes above that measurement
+#: again, until the homepage's compaction (PR 462) is measured against it.
+PAGE_CEILINGS = {"index.html": 700_000, render_overview.RESULTS_PAGE: 900_000}
 
 
 def test_no_page_carries_a_result_overview(
