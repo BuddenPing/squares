@@ -3418,6 +3418,33 @@ sources:
     registered by no entry, and the other 54 are pinned to the issue-476 packet's identical
     copies. No selected override or superseded claim is created while house adoption waits for
     jlevy/squares#403; current cases and earlier source ownership remain unchanged.
+- id: evand-record-hunt3-2026-10-10
+  title: Evan Daniel's Hunt 3 certificates at 76a529b, issue489
+  role: source-repository
+  url: https://github.com/evand/square-packing/tree/76a529bc6f36ed05827cae3d1412d6acb5be00fc
+  local: resources/web/evand-record-hunt3-2026-10-10/
+  source_key: '[Daniel record hunt 3 2026-10-10]'
+  scope:
+    n_values: [132, 308, 343, 344]
+  reviewed: '2026-10-10'
+  source_date: '2026-10-10'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/results.yaml
+  - resources/web/evand-record-hunt3-2026-10-10/acquisition/claims.json
+  evidence:
+  - E-evand-489-hunt3-report
+  notes: >-
+    All 4 complete certificates are retained as the source wrote them, each admitted only where
+    its exact side equals, or rounds up to, the side its source prints. T-141 records the
+    in-horizon report at V0/C0; the n343 and n344 sides are beyond-horizon rows at assurance
+    reported, the issue's prints, which are the exact sides, and supersede issue 484's rows at
+    those counts. All 15 native jobs have full outcomes. The certificate at 305, which the issue
+    does not name, is compared in the claim record and registered by no entry. No selected
+    override is created while house adoption waits for jlevy/squares#403; current cases and
+    earlier source ownership remain unchanged.
+  claims_record: resources/web/evand-record-hunt3-2026-10-10/acquisition/beyond-horizon-claims.json
 selected_overrides:
 - n: 51
   source_id: ry-xu-undilated-n51-2026
@@ -5400,15 +5427,31 @@ beyond_horizon_claims:
   claim: upper-bound
   value: '18.994903529220497'
   assurance: verified
-  disposition: tracked-outside-case-corpus
+  disposition: superseded
+  superseded_by: evand-record-hunt3-2026-10-10
   bead: think-ar8g
+- n: 343
+  source_id: evand-record-hunt3-2026-10-10
+  claim: upper-bound
+  value: '18.978232523635611279730512106023'
+  assurance: reported
+  disposition: tracked-outside-case-corpus
+  bead: think-xm4h
 - n: 344
   source_id: fang-two-wedge-certificates-2026-10-10
   claim: upper-bound
   value: '18.995489275430816'
   assurance: verified
-  disposition: tracked-outside-case-corpus
+  disposition: superseded
+  superseded_by: evand-record-hunt3-2026-10-10
   bead: think-ar8g
+- n: 344
+  source_id: evand-record-hunt3-2026-10-10
+  claim: upper-bound
+  value: '18.994450514277401521114135796864'
+  assurance: reported
+  disposition: tracked-outside-case-corpus
+  bead: think-xm4h
 - n: 364
   source_id: couzo-extended-range-reports-2026-10-08
   claim: upper-bound

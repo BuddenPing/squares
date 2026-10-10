@@ -1772,6 +1772,21 @@ sources:
       refine_packing. The source checks with Squares Project (Levy) verification code; this
       project lineage is not independent. The certificates are retained as factual data;
       the unlicensed prose is hash-pinned. No optimizer, local or global claim.
+  - key: '[Daniel record hunt 3 2026-10-10]'
+    authors: [Daniel]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-10'
+    lineage: builds-on-project
+    credit: Daniel after Fang, Arslanov, Mustafin, Shangitbayev, Couzo, Levy
+    short_credit: Daniel after Fang et al.
+    note: >-
+      Five complete exact certificates at 76a529bc6f36ed05827cae3d1412d6acb5be00fc from the
+      record hunt Hunt 3, unchanged from c013f43, the four reported in issue 489 and one at
+      305 its log drops for issue 488; 308, 343 and 344 grown from Fang's two-wedge packings
+      of issue 484, 132 from Daniel's own lineage of issue 465. MIT-licensed certificates and
+      solver reports retained; Claude assistance disclosed. KKT and jamming statements are
+      the author's numerical evidence; no local or global optimality claim.
 credited_names:
   Nate Chaoweeraprasit (itsnaka): Chaoweeraprasit
   Siddharth Gupta: Gupta

@@ -14568,8 +14568,111 @@ results:
       method. No two independent methods, human oversight or optimality is claimed.
     next_rung: >-
       Independently review the retained replay and weigh every pending report at each count
-      before any selected-house replacement: issue 489's exact side is smaller at 132
+      before any selected-house replacement: issue 489's exact side, T-141, is smaller at 132
       (https://github.com/jlevy/squares/issues/489), the Hunt 3 commit it names holds a
       certificate of exactly this side at 305, and T-131 at 132 and T-130 at 175 and 270 stay
       as recorded. Then record source-specific adoption and confirming evidence. Final
       exact-head CI remains required.
+
+  - id: T-141
+    kind: upper-bound
+    registered: '2026-10-10'
+    headline: Exact rational certificates at 132 and 308 from Evan Daniel's third record hunt
+    claim: >-
+      Two complete rational source certificates report finite upper-bound improvements at
+      the exact sides they state: s(132) <= 11.985680198845808811522231964102 and s(308) <=
+      17.998269879526255875387992744507. Complete native feasibility outcomes are retained
+      separately; the selected standing cases are unchanged pending independent review and
+      record review. The same release states s(343) <= 18.978232523635611279730512106023
+      and s(344) <= 18.994450514277401521114135796864, beyond the case corpus; the source
+      register tracks those as beyond-horizon rows.
+
+      The author reports that his two exact rational checkers, verify_cert.py and
+      verify_cert2.py, with different geometry, pass all four, with least certified
+      clearances of 1e-20 for pairs and 5e-21 for walls. Each side is an 80-digit KKT point
+      with positive multipliers on the load-bearing contacts, a reduced Hessian positive
+      semidefinite modulo exact flat motions and a jammed first-order MILP in every
+      corner-corner branch; those are numerical evidence, as the source says, not proofs. No
+      source program ran here.
+
+      Credit Evan Daniel (https://github.com/evand/square-packing), whose quality-diversity
+      basin explorer with a two-parent crossover move found all four. The packings at 308,
+      343 and 344 build on Kevin Fang's packings from issue 484 in the
+      Arslanov-Mustafin-Shangitbayev two-wedge family, and the author asks that the
+      construction be credited to him: 344 is his packing polished and moved by a
+      corner-corner descent, 308 his packing polished and moved seven explorer steps, and 343
+      his 344 less one square, in a different basin from his 343. The packing at 132 is the
+      author's own lineage from issue 465. The search code and the request were written with
+      Claude under the author's direction.
+    scope:
+      n_values: [132, 308]
+    verification: V0
+    confirmation: C0
+    significance:
+      score: 3
+      rationale: >-
+        Smaller finite construction sides at n = 132 and 308, 1.73e-03 to 5.65e-03 below the
+        case ceilings; no lower bound or optimum.
+      scored: '2026-10-10'
+      by: think-xm4h Evan Daniel import
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Daniel record hunt 3 2026-10-10]']
+      published: '2026-10-10'
+    evidence:
+      - E-evand-489-hunt3-report
+    artifacts:
+      - packing/resources/web/evand-record-hunt3-2026-10-10/README.md
+      - packing/resources/web/evand-record-hunt3-2026-10-10/acquisition/claims.json
+      - packing/resources/web/evand-record-hunt3-2026-10-10/acquisition/beyond-horizon-claims.json
+      - packing/resources/web/evand-record-hunt3-2026-10-10/source/search/packer/candidates/hunt3_n132.cert
+      - packing/resources/web/evand-record-hunt3-2026-10-10/source/search/packer/candidates/hunt3_n308.cert
+      - packing/resources/web/evand-record-hunt3-2026-10-10/receipts/exact-certification.json.xz
+      - packing/devtools/upper_bound_reports.py
+      - packing/devtools/check_half_angle_area.py
+    controls:
+      - packing/tests/test_upper_bound_reports.py
+      - packing/tests/test_upper_bound_reports_488_489.py
+      - packing/tests/test_check_half_angle_area.py
+    notes: >-
+      A separate complete repository replay is retained for n = 132, 305, 308, 343 and 344:
+      5 positives and 10 duplicate-square and outside-container controls passed their
+      required outcomes on both routes, 1319598 pair decisions; summed over the 15 jobs, the
+      receipt records 308.35 route CPU seconds and 409.47 job wall seconds, the longest job
+      43.27 seconds. Every positive clears every wall by at least 5.00e-21 and every pair by
+      at least 9.99e-21. The third exact route, devtools.check_half_angle_area
+      decide-imports, decided the four requested certificates by half-extent containment
+      and exact clipping and reached the required outcome on all 24 of its controls.
+
+      Issue 484's and issue 488's sides are compared exactly, from their retained packets,
+      and issue 470's at the places its source prints. At n = 132 the certificate is below
+      the case's ceiling (Francisco Couzo, improved by Evan Daniel, T-098) by 5.65e-03;
+      below T-131 (#465) (Evan Daniel) by 1.42e-03; below #470 (Mishapolk) by 1.28e-03;
+      below #476 (Francisco Couzo) by 1.27e-03; below #488 (Francisco Couzo) by 1.27e-03;
+      smallest: this certificate. At n = 308 the certificate is below the case's ceiling
+      (the grid) by 1.73e-03; below #484 (Kevin Fang) by 1.04e-03; smallest: this
+      certificate.
+
+      At n = 343 the certificate is beyond the horizon, with no case record, and 2.18e-02
+      below the grid; below #470 (Mishapolk) by 2.18e-02; below #484 (Kevin Fang) by
+      1.67e-02; smallest: this certificate. At n = 344 the certificate is beyond the
+      horizon, with no case record, and 5.55e-03 below the grid; below #470 (Mishapolk) by
+      7.92e-03; below #484 (Kevin Fang) by 1.04e-03; smallest: this certificate. The source
+      register's beyond-horizon rows at 343 and 344 are these sides, and issue 484's rows
+      there are kept as superseded.
+
+      The same commit holds 1 further certificate the issue does not name, at n = 305, whose
+      exact side equals issue 488's there; the source's log drops it as Couzo's, and it is
+      an import of its own.
+
+      The source's own checkers were not run here. The two maintained routes, the sqpack
+      rational witness verifier and the independent rational corner checker, share
+      certificate parsing, half-angle conversion, Fraction arithmetic and the separating-axis
+      method. No two independent methods, human oversight or optimality is claimed.
+    next_rung: >-
+      Independently review the retained replay, then weigh the pending reports before any
+      selected-house replacement: at 132 this side is below every pending report, issue
+      488's (T-140) included, and at 308 below Kevin Fang's issue 484 side (T-135), where the
+      case holds the grid's 18 in both lanes. The n343 and n344 sides supersede issue 484's
+      beyond-horizon rows. Then record source-specific adoption and confirming evidence.
+      Final exact-head CI remains required.

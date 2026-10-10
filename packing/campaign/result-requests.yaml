@@ -4031,3 +4031,56 @@ issues:
     replies: []
     close_when: The import and its disposition are on main and the owner has posted the resulting state;
       optimality and the credit for the starting packings' constructions stay with their sources.
+  - number: 489
+    title: 'New packings: s(132), s(308), s(343), s(344): registration request'
+    author: evand
+    opened: '2026-10-10'
+    state: open
+    kind: result-report
+    triage: done
+    summary: >-
+      Evan Daniel reports four exact rational certificates from the record hunt Hunt 3, at n = 132,
+      308, 343 and 344, in evand/square-packing search/packer/candidates at c013f43, built with his
+      quality-diversity basin explorer; 308, 343 and 344 build on Kevin Fang's #484 packings. No
+      optimality is claimed; the KKT and jamming statements are the author's numerical evidence.
+      Imported on 10 October 2026: retained at the branch head
+      76a529bc6f36ed05827cae3d1412d6acb5be00fc (byte-identical files) in the
+      evand-record-hunt3-2026-10-10 packet with their KKT points, inputs and solver reports; all four,
+      and the unnamed hunt3_n305 certificate, pass both maintained exact routes, and the third exact
+      route decides the four. 132 is below every case and pending side, issue #488's included, by
+      1.27e-3; 308 is below the grid and Kevin Fang's #484. Both are registered together as T-141 at
+      V0/C0, pending review; the case records wait for jlevy/squares#403. 343 and 344 lie beyond the
+      case corpus, below #484's sides there, and are dated beyond-horizon rows that supersede
+      #484's. The n305 side equals #488's exactly; the author's log drops it as Couzo's. Author
+      checkers and KKT evidence were not run here.
+    read_through: '2026-10-10T14:47:57Z'
+    results:
+    - key: hunt3-132-308
+      claim: s(132) <= 11.985680198845808811522231964102 and s(308) <= 17.998269879526255875387992744507,
+        each the exact rational side of a Hunt 3 certificate.
+      source: body
+      register:
+      - T-141
+      evidence:
+      - E-evand-489-hunt3-report
+    - key: hunt3-343-344
+      claim: s(343) <= 18.978232523635611279730512106023 and s(344) <= 18.994450514277401521114135796864,
+        beyond the 1..324 case corpus.
+      source: body
+      evidence:
+      - E-evand-489-hunt3-report
+    - key: kkt-local-minima
+      claim: Each exact point is an 80-digit KKT point with positive multipliers (least 1.8e-7), a reduced
+        Hessian positive semidefinite modulo exact flat motions (132 31, 308 52, 343 19, 344 71) and
+        jammed in every corner-corner branch by a first-order MILP; numerical evidence, not interval proofs.
+      source: body
+      not_registered: Numerical evidence of local optimality, not a bound on s(n); recorded as reported
+        in E-evand-489-hunt3-report and not checked here.
+      queued: false
+    beads:
+    - think-xm4h
+    answer_bead: think-xm4h
+    replies: []
+    close_when: The import and its disposition, including the beyond-horizon counts, are on main and the
+      owner has posted the resulting state; Kevin Fang's credit for the two-wedge constructions and
+      optimality stay with their sources.

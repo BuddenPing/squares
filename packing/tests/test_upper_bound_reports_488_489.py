@@ -14,6 +14,8 @@ from fractions import Fraction
 from pathlib import PurePosixPath
 from typing import Any
 
+import pytest
+
 from devtools import check_source_coverage as coverage_check
 from devtools import upper_bound_reports as reports
 
@@ -67,33 +69,63 @@ def test_the_488_claims_find_489_smaller_at_132_and_481_smaller_only_at_303() ->
     }
 
 
-def test_the_488_claims_read_481_and_489_at_their_exact_sides() -> None:
-    """Both later reports are retained, so neither is compared at its printed decimals."""
-    rows = reports.check_claims(reports.packet_path(COUZO_488))["results"]
-    readers = {"#481": "[SQUISH third request 2026-10-09]", "#489": HUNT3_KEY}
+#: The retained reports each packet reads exactly, by report and the counts it reads them.
+EXACT_READS = {
+    COUZO_488: {"#481": (209, 237, 270, 303, 305), "#489": (132,)},
+    HUNT3: {"#481": (305,), "#484": (308, 343, 344), "#488": (132, 305)},
+}
+READERS = {
+    "#481": "[SQUISH third request 2026-10-09]",
+    "#484": "[Fang two-wedge certificates 2026-10-10]",
+    "#488": "[Couzo certificates 2026-10-10]",
+    "#489": HUNT3_KEY,
+}
+
+
+@pytest.mark.parametrize("name", [COUZO_488, HUNT3])
+def test_each_claim_record_reads_the_retained_reports_at_their_exact_sides(name: str) -> None:
+    """Issues #481, #484, #488 and #489 are retained, so none is compared at its print."""
+    rows = reports.check_claims(reports.packet_path(name))["results"]
     read = {
-        (row["n"], other["report"]): other["exact_side"]
+        (row["n"], other["report"]): other
         for row in rows
         for other in row["pending"]
-        if other["report"] in readers
+        if other["report"] in READERS
     }
-    assert sorted(read) == [
-        (132, "#489"),
-        *((n, "#481") for n in (209, 237, 270, 303, 305)),
-    ]
-    for (n, report), side in read.items():
-        assert Fraction(side) == reports.house_side(readers[report], n)
+    assert sorted(read) == sorted(
+        (n, report) for report, counts in EXACT_READS[name].items() for n in counts
+    )
+    for (n, report), other in read.items():
+        assert "printed" not in other
+        assert Fraction(other["exact_side"]) == reports.house_side(READERS[report], n)
 
 
-def test_the_489_claims_leave_305_undecided_against_488_at_its_printed_side() -> None:
+def test_the_489_claims_read_305_as_a_tie_with_488_at_one_exact_side() -> None:
+    """Read exactly, #488's side at 305 is Hunt 3's: neither is smaller, and both are one side.
+
+    At #488's 12-place print the comparison could not decide between them; the exact
+    reader of the #488 packet makes it a tie, which the register's notes then state.
+    """
     assert _smallest(HUNT3) == {
         132: reports.THIS,
-        305: [reports.THIS, "#488"],
+        305: None,
         308: reports.THIS,
         343: reports.THIS,
         344: reports.THIS,
     }
-    # The printed comparison cannot decide it: the two exact sides are one number.
+    rows = {
+        row["n"]: row for row in reports.check_claims(reports.packet_path(HUNT3))["results"]
+    }
+    tie = rows[305]
+    assert tie["tied"] == [reports.THIS, "#488"]
+    assert "undecided_among" not in tie
+    (couzo_row,) = [other for other in tie["pending"] if other["report"] == "#488"]
+    assert couzo_row["relation"] == "equal"
+    assert Fraction(couzo_row["exact_side"]) == Fraction(tie["exact_side"])
+    assert "printed" not in couzo_row
+    assert reports.comparison(tie).endswith(
+        "no report is smallest, since this certificate and #488 are one exact side."
+    )
     couzo = reports.read_facts(reports.packet_path(COUZO_488))[305]
     hunt = reports.read_facts(reports.packet_path(HUNT3))[305]
     assert couzo.side == hunt.side == Fraction(8975569886103498772971256586313, 5 * 10**29)

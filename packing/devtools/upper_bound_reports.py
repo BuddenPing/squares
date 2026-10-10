@@ -1646,9 +1646,14 @@ def register_plan(packet: Path) -> dict[str, Any]:
             f"{replay}\n\n"
             + " ".join(comparison(row) for row in rows)
             + (
-                f"\n\nThe same commit holds {len(others)} further certificates the issue does "
-                f"not name, at n = {_and([str(n) for n in others])}; the packet's claim "
-                "record compares each with its case, and each is an import of its own."
+                f"\n\nThe same commit holds {_many(len(others), 'further certificate')} the "
+                f"issue does not name, at n = {_and([str(n) for n in others])}; the packet's "
+                "claim record compares "
+                + (
+                    "it with its case, and it is an import of its own."
+                    if len(others) == 1
+                    else "each with its case, and each is an import of its own."
+                )
                 if others
                 else ""
             )
