@@ -973,6 +973,7 @@ Patterns admit declared namespaces, file types and sixteen-digit asset names.
 | result/t-058.html | 600,000 | Complete broad scope history and prepared exact bounds measure 509,332 bytes. |
 | result/t-083.html | 800,000 | Complete broad scope history and prepared exact bounds measure 688,505 bytes. |
 | result/t-085.html | 800,000 | Complete broad scope history and prepared exact bounds measure 694,374 bytes. |
+| result/t-124.html | 400,000 | Complete broad scope history and prepared exact bounds measure 304,237 bytes. |
 | tutorial.html | 800,000 | The complete authored tutorial and prepared formulas measure 742,713 bytes. |
 
 <!-- This document follows common-doc-guidelines.md.
