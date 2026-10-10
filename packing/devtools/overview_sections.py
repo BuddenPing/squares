@@ -1841,6 +1841,27 @@ OTHER_PROJECTS: tuple[tuple[str, str, str], ...] = (
         "Exact rational certificates for SQUISH upper-bound packings.",
     ),
     (
+        "https://github.com/TheSnakeFang/squarepack-certs",
+        "Kevin Fang",
+        (
+            "Two-wedge packings of 308, 343 and 344 squares with exact certificates; the"
+            " 308, below the grid, is replayed here (T-135)."
+        ),
+    ),
+    (
+        "https://github.com/ebdeleeuw/square-packing-n70",
+        "Eric Deleeuw",
+        "An exact rational refinement of Ryan Xu's packing of 70 squares (T-137).",
+    ),
+    (
+        "https://github.com/Mishapolk/square-packing-records",
+        "Mishapolk",
+        (
+            "Decimal packings at 48 counts; exact witnesses derived here prove the printed"
+            " sides at the 30 within the corpus (T-138)."
+        ),
+    ),
+    (
         "https://github.com/griffcass/square-packing",
         "Griffin Casson",
         "Improved packings for n = 103, 105 and other cases.",
