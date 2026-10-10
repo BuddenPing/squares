@@ -29999,3 +29999,97 @@ evidence:
       feasibility only: no lower bound, optimum, local minimum, rigidity, novelty or human
       oversight.
     source_reviewed: '2026-10-10'
+
+  - id: E-deleeuw-483-certificate-report
+    claim: upper-bound
+    scope:
+      n_values: [70]
+    assurance: reported
+    reported_method: exact-algebraic
+    performed_by: source-author
+    relationship_to_generator: same-implementation
+    origin: external
+    novelty: previously-published
+    source_key: '[Deleeuw n70 refinement 2026-10-10]'
+    certificate: packing/resources/web/ebdeleeuw-n70-refinement-2026-10-10/facts/
+    replay_status: not-attempted
+    verifiers: []
+    external_review:
+      state: informally-verified
+      date: '2026-10-10'
+      reviewed_by: >-
+        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        intake pass under think-fvz4, prompted separately from the import lanes
+      note: >-
+        docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
+        accepted the certificate for finite feasibility only, with seven non-blocking
+        findings (RI-1 to RI-7); the replay it reproduced is E-deleeuw-483-exact-feasibility.
+    limitations: >-
+      This atom records the source author's report of one exact rational certificate at
+      24221d5, a centred rational centre and half-angle certificate kept as a derived exact
+      fact with no upstream byte retained; its stated side already carries its stated
+      dilation. The author reports that its own exact Fraction checker, written with the
+      generator, accepts all 280 corners and 2,415 pairs, and that David Ellsworth's
+      check_packing.py accepts a 60-digit export at epsilon 1e-40; neither was run here.
+      The repository replay and its review are E-deleeuw-483-exact-feasibility. No local
+      or global optimality claim.
+    source_reviewed: '2026-10-10'
+
+  - id: E-deleeuw-483-exact-feasibility
+    claim: upper-bound
+    scope:
+      n_values: [70]
+    assurance: verified
+    method: exact-algebraic
+    performed_by: repository
+    relationship_to_generator: independent-implementation
+    origin: replayed-here
+    novelty: previously-published
+    source_key: '[Deleeuw n70 refinement 2026-10-10]'
+    certificate: packing/resources/web/ebdeleeuw-n70-refinement-2026-10-10/facts/n-070.yaml.gz
+    replay: >-
+      From packing/ with the project interpreter: python -m devtools.upper_bound_reports
+      ebdeleeuw-n70-refinement-2026-10-10 check --replay decides all three retained jobs
+      again through both maintained routes and holds each to its retained row (all equal,
+      4.5 s wall on 2026-10-10); check-claims rebuilds the frozen comparison (equal);
+      python -m devtools.check_half_angle_area decide-imports --workers 2 --upstream
+      ebdeleeuw-n70-refinement-2026-10-10 DIRECTORY decides the certificate by the third
+      route with six controls, and holds the fact to certificate.json fetched at the pin
+      into DIRECTORY, read by the route's own centred-JSON reader with every centre moved by
+      S/2 (no disagreement, 101.5 s for the review's 27 certificates).
+    replay_status: passed
+    verifiers:
+      - V-sqpack-verify
+      - V-check-rational-witness-independent
+      - V-evand-arrangement-receipts
+      - V-upper-bound-reports
+      - V-check-half-angle-area
+    independence_record: docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
+    external_review:
+      state: informally-verified
+      date: '2026-10-10'
+      reviewed_by: >-
+        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        intake pass under think-fvz4, prompted separately from the import lanes
+      note: >-
+        Accepted for finite feasibility only. All three retained jobs reproduced on both
+        maintained routes, the frozen comparison rebuilt equal, and the third route agreed
+        with them at the side, every pose, the wall clearance and the frozen claim; its six
+        controls reached their required outcomes, and the fact is the packing its pinned
+        upstream file states. Findings RI-1 to RI-7, none blocking.
+    limitations: >-
+      The certificate passes both maintained routes and the third route; both kernel
+      controls are refused by both maintained routes and the six third-route controls
+      reach their required outcomes. The receipt's three jobs hold 14490 pair decisions,
+      3.31 route CPU seconds and 3.34 job wall seconds; the longest job took 1.12 s. The
+      positive clears every wall by 6.01e-13 and every pair by a least Euclidean distance of
+      1.200573e-12. The certificate states its centres in [-S/2, S/2]^2, and the adapter
+      moves each by exactly S/2, which the box arithmetic needs. Nothing retained binds the
+      derived fact to the bytes it was derived from (RI-2): the review held it to its
+      upstream certificate, fetched at the pin with the SHA-256 the packet pins, once on
+      2026-10-10. The kernel's controls are gross (RI-3). No maintained route is the
+      producer's checker; the maintained routes share one parse, half-angle conversion and
+      the separating-axis method, and all three share Fraction arithmetic. No
+      private-worker custody is on file (RI-5). Finite feasibility only: no lower bound,
+      optimum, local minimum, rigidity, novelty or human oversight.
+    source_reviewed: '2026-10-10'

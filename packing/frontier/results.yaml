@@ -13747,7 +13747,7 @@ results:
           files, admission against each print, the claim comparisons and each route's
           trust boundary.
         verdict: accepted
-        covers: [T-134, T-135, T-136]
+        covers: [T-134, T-135, T-136, T-137]
 
   - id: T-135
     kind: upper-bound
@@ -13868,7 +13868,7 @@ results:
           files, admission against each print, the claim comparisons and each route's
           trust boundary.
         verdict: accepted
-        covers: [T-134, T-135, T-136]
+        covers: [T-134, T-135, T-136, T-137]
 
   - id: T-136
     kind: upper-bound
@@ -14067,4 +14067,115 @@ results:
           files, admission against each print, the claim comparisons and each route's
           trust boundary.
         verdict: accepted
-        covers: [T-134, T-135, T-136]
+        covers: [T-134, T-135, T-136, T-137]
+
+  - id: T-137
+    kind: upper-bound
+    registered: '2026-10-10'
+    headline: An exact rational refinement of Ryan Xu's packing of 70 squares
+    claim: >-
+      One complete rational source certificate by Eric Deleeuw, reported on
+      jlevy/squares#483, proves a finite upper bound at the exact side it states: s(70) <=
+      8.88096037156625096037155737.
+
+      The certificate gives a rational side and, for each unit square, a rational centre in
+      the centred box and the tangent of its half-angle; its side already carries the
+      dilation it states. The author reports that its own exact Fraction checker accepts
+      all 280 corners and all 2,415 pairs with zero tolerance, and that David Ellsworth's
+      check_packing.py accepts a 60-digit export; the generator and the exact checker were
+      written together.
+
+      All three retained jobs, the positive with its duplicate-square and outside-container
+      controls, were decided again here on 10 October 2026 by both maintained exact routes,
+      from an exact fact derived from the pinned certificate with every centre moved by
+      half the side, and equal their retained rows. A third exact route, half-extent
+      containment and exact intersection area, decided it with six controls and found the
+      fact to be the packing the pinned upstream file states. No route here is the source's
+      code, so the replay is independently re-implemented. The 10 October review found no
+      blocking defect.
+
+      The side is 1.43e-10 below the ceiling the case holds, Ryan Xu's certificate (T-125);
+      the case record is unchanged, so it is pending adoption.
+
+      Credit Eric Deleeuw (https://github.com/ebdeleeuw/square-packing-n70) for the
+      refinement and the rational certificate, after Ryan Xu's arrangement and published
+      warm-start coordinates (issue 432). The source discloses OpenAI Codex assistance with
+      the refinement, the certificate, the verification tools and the submission.
+    scope:
+      n_values: [70]
+    verification: V3
+    confirmation: C3
+    significance:
+      score: 2
+      rationale: >-
+        A smaller finite construction side at n = 70, 1.43e-10 below the case ceiling; no
+        lower bound or optimum.
+      scored: '2026-10-10'
+      by: think-8m3u Eric Deleeuw import
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Deleeuw n70 refinement 2026-10-10]']
+      published: '2026-10-10'
+    evidence:
+      - E-deleeuw-483-certificate-report
+      - E-deleeuw-483-exact-feasibility
+    artifacts:
+      - packing/resources/web/ebdeleeuw-n70-refinement-2026-10-10/README.md
+      - packing/resources/web/ebdeleeuw-n70-refinement-2026-10-10/acquisition/claims.json
+      - packing/resources/web/ebdeleeuw-n70-refinement-2026-10-10/facts/n-070.yaml.gz
+      - packing/resources/web/ebdeleeuw-n70-refinement-2026-10-10/receipts/exact-certification.json.xz
+      - packing/devtools/upper_bound_reports.py
+      - packing/devtools/check_half_angle_area.py
+      - docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
+    controls:
+      - packing/tests/test_upper_bound_reports.py
+      - packing/tests/test_check_half_angle_area.py
+    notes: >-
+      A separate complete repository replay is retained for n = 70: 1 positive and 2
+      duplicate-square and outside-container controls passed their required outcomes on
+      both routes, 14490 pair decisions; summed over the 3 jobs, the receipt records 3.31
+      route CPU seconds and 3.34 job wall seconds, the longest job 1.12 seconds. Every
+      positive clears every wall by at least 6.01e-13 and every pair by at least 1.20e-12.
+
+      V3 and C3 rest on the 10 October review
+      (docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md) and the
+      replay it reproduced (E-deleeuw-483-exact-feasibility). Its findings here are
+      non-blocking: no retained check binds the derived fact to its upstream bytes, which
+      the review closed once by fetching the certificate at the pin (RI-2), and the
+      kernel's controls are gross (RI-3).
+
+      At n = 70 the certificate is below the case's ceiling (Ryan Xu, T-125) by exactly
+      14263000000014263/10^26, and no other pending report names that count. The review
+      recommends it as the house at 70, Ryan Xu's arrangement refined by Eric Deleeuw, with
+      Ryan Xu's certificate kept as history. No house moves until jlevy/squares#403, which
+      rewrites every case record, lands and private-worker custody is on file (RI-5).
+
+      The source's own checker was not run here. No two independent methods, human
+      oversight or optimality is claimed.
+    next_rung: >-
+      V4 and C4 need a second accepted adversarial review of this replay by a distinct
+      reviewer and a retained human oversight record; the 10 October review is one, by an
+      AI agent. Separately, once jlevy/squares#403 lands and private-worker custody is on
+      file (RI-5), adopt this entry as the house at 70, Ryan Xu's T-125 certificate kept as
+      history.
+    reviews:
+      - path: docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
+        kind: adversarial
+        reviewer: >-
+          AI agent (Claude, model Opus 5.5, claude-opus-5-5, at the reasoning setting its
+          harness gave it, which the agent cannot read), the stage 4 review lane (W2) of the
+          2026-10-10 intake pass under think-fvz4, prompted separately from the import
+          lanes that built the four packets, with no shared context
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-10'
+        scope: >-
+          Finite feasibility of the 27 certificates the four imports' entries cite: issue
+          476 at 132, 237, 263, 267, 270 and 303; issue 481 at its seventeen counts; issue
+          483 at 70; issue 484 at 308, with 343 and 344 beyond the corpus. Every retained
+          receipt replayed on both maintained routes, the third exact route extended for
+          these formats with sharp controls, the derived facts held to their upstream
+          files, admission against each print, the claim comparisons and each route's
+          trust boundary.
+        verdict: accepted
+        covers: [T-134, T-135, T-136, T-137]

@@ -1683,6 +1683,20 @@ sources:
       against this project's register. Derived exact facts only; no upstream byte is
       retained. Claude assistance disclosed. No KKT, interval, local or global optimality
       claim.
+  - key: '[Deleeuw n70 refinement 2026-10-10]'
+    authors: [Deleeuw]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-10'
+    lineage: builds-on-project
+    credit: Deleeuw after Xu, Levy
+    short_credit: Deleeuw after Xu et al.
+    note: >-
+      One complete exact certificate at 24221d5e51244ca5290d5b1c43f1fbe36f9749e0, reported
+      on jlevy/squares#483, refining Ryan Xu's #432 packing of 70 squares: a centred
+      rational centre and half-angle certificate compared against this project's register.
+      Derived exact facts only; no upstream byte is retained. OpenAI Codex assistance
+      disclosed. No local or global optimality claim.
 credited_names:
   Nate Chaoweeraprasit (itsnaka): Chaoweeraprasit
   Siddharth Gupta: Gupta

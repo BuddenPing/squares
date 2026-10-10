@@ -3781,13 +3781,18 @@ issues:
     opened: '2026-10-10'
     state: open
     kind: result-report
-    triage: pending
+    triage: done
     summary: >-
       Eric Deleeuw reports an exact rational precision refinement of Ryan Xu's n = 70 packing, 1.4263e-10
       below Ryan Xu's exact certificate side, in ebdeleeuw/square-packing-n70 at
       24221d5e51244ca5290d5b1c43f1fbe36f9749e0, with an exact Fraction checker, its verification record,
       a 60-digit pose export and a log of Ellsworth's checker. The arrangement is Ryan Xu's, credited
-      to him; no optimality or lower-bound change is claimed. OpenAI's Codex assisted.
+      to him; no optimality or lower-bound change is claimed. OpenAI's Codex assisted. Imported on 10
+      October 2026: the certificate kept as a derived exact fact in the
+      ebdeleeuw-n70-refinement-2026-10-10 packet, replayed on both maintained exact routes and decided
+      again by a third exact route in the review of the same day, which held the fact to its pinned
+      upstream file, with no blocking defect. Registered as T-137; the case record waits for
+      jlevy/squares#403.
     read_through: '2026-10-10T02:22:35Z'
     results:
     - key: n70-exact-refinement
@@ -3795,12 +3800,14 @@ issues:
         (SHA-256 eeebf55cf3c1614a96f51339695f28443e35f33b0195bfc24ef0549b50550cb1), valid under the author's
         exact checker and Ellsworth's check_packing.py at 40 digits.
       source: body
-      not_registered: Triage pending under think-8m3u; the certificate is not yet retained or replayed
-        here.
-      queued: true
-      bead: think-8m3u
+      register:
+      - T-137
+      evidence:
+      - E-deleeuw-483-certificate-report
+      - E-deleeuw-483-exact-feasibility
     beads:
     - think-8m3u
+    - think-fvz4
     answer_bead: think-8m3u
     replies: []
     close_when: The import and its disposition are on main and the owner has posted the resulting state;

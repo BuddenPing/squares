@@ -3313,6 +3313,30 @@ sources:
     selected override or superseded claim is created while house adoption waits for jlevy/squares#403;
     current cases and earlier source ownership remain unchanged. The three sources/ certificates at 155,
     240 and 306 are above their cases and not imported.
+- id: ebdeleeuw-n70-refinement-2026-10-10
+  title: Eric Deleeuw's n70 refinement at 24221d5, issue483
+  role: source-repository
+  url: https://github.com/ebdeleeuw/square-packing-n70/tree/24221d5e51244ca5290d5b1c43f1fbe36f9749e0
+  local: resources/web/ebdeleeuw-n70-refinement-2026-10-10/
+  source_key: '[Deleeuw n70 refinement 2026-10-10]'
+  scope:
+    n_values: [70]
+  reviewed: '2026-10-10'
+  source_date: '2026-10-10'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/results.yaml
+  - resources/web/ebdeleeuw-n70-refinement-2026-10-10/acquisition/claims.json
+  evidence:
+  - E-deleeuw-483-certificate-report
+  - E-deleeuw-483-exact-feasibility
+  notes: The complete certificate is kept as a derived exact fact, no upstream byte retained, admitted
+    because its exact side equals the side the issue prints, with every centre moved by half the side
+    out of the source's centred box. T-137 records it at V3/C3 on the review of 10 October, which
+    reproduced all 3 native jobs, decided it by a third exact route and held the fact to its upstream
+    certificate fetched at the pin. No selected override or superseded claim is created while house
+    adoption waits for jlevy/squares#403; the current case and earlier source ownership remain unchanged.
 selected_overrides:
 - n: 51
   source_id: ry-xu-undilated-n51-2026

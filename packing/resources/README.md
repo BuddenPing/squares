@@ -1024,6 +1024,14 @@ Both project exact routes accept all 17 replayed certificates and refuse all 34
 controls, and a third exact route agrees and held each fact to its pinned upstream file.
 T-136 records the seventeen sides at V3/C3, pending adoption.
 
+**[Deleeuw n70 refinement 2026-10-10]**: Eric Deleeuw’s exact rational certificate for n
+= 70, a refinement of Ryan Xu’s packing, pinned at
+`24221d5e51244ca5290d5b1c43f1fbe36f9749e0`, kept as a derived exact fact, no upstream
+byte retained; [packet](web/ebdeleeuw-n70-refinement-2026-10-10/README.md).
+Both project exact routes accept the replayed certificate and refuse both controls, and
+a third exact route agrees and held the fact to its pinned upstream file.
+T-137 records the side at V3/C3, pending adoption.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->
