@@ -29051,7 +29051,7 @@ evidence:
       state: informally-verified
       date: '2026-10-10'
       reviewed_by: >-
-        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        AI agent (Claude), the stage 4 review lane of the 2026-10-10
         intake pass under think-fvz4, prompted separately from the import lanes
       note: >-
         docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md accepted
@@ -29087,7 +29087,7 @@ evidence:
       state: informally-verified
       date: '2026-10-10'
       reviewed_by: >-
-        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        AI agent (Claude), the stage 4 review lane of the 2026-10-10
         intake pass under think-fvz4, prompted separately from the import lanes
       note: >-
         Accepted for finite feasibility only. All 24 retained jobs reproduced on both
@@ -29280,7 +29280,7 @@ evidence:
       state: informally-verified
       date: '2026-10-10'
       reviewed_by: >-
-        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        AI agent (Claude), the stage 4 review lane of the 2026-10-10
         intake pass under think-fvz4, prompted separately from the import lanes
       note: >-
         docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md accepted
@@ -29316,7 +29316,7 @@ evidence:
       state: informally-verified
       date: '2026-10-10'
       reviewed_by: >-
-        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        AI agent (Claude), the stage 4 review lane of the 2026-10-10
         intake pass under think-fvz4, prompted separately from the import lanes
       note: >-
         Accepted for finite feasibility only. All 15 retained jobs reproduced on both
@@ -29376,7 +29376,7 @@ evidence:
       state: informally-verified
       date: '2026-10-10'
       reviewed_by: >-
-        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        AI agent (Claude), the stage 4 review lane of the 2026-10-10
         intake pass under think-fvz4, prompted separately from the import lanes
       note: >-
         docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md accepted
@@ -29414,7 +29414,7 @@ evidence:
       state: informally-verified
       date: '2026-10-10'
       reviewed_by: >-
-        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        AI agent (Claude), the stage 4 review lane of the 2026-10-10
         intake pass under think-fvz4, prompted separately from the import lanes
       note: >-
         Accepted for finite feasibility only. All six retained jobs reproduced on both
@@ -29519,7 +29519,7 @@ evidence:
       state: informally-verified
       date: '2026-10-10'
       reviewed_by: >-
-        AI agent (Claude, model Fable 5.1, maximum thinking effort), the mathematical lane
+        AI agent (Claude, at maximum reasoning effort), the mathematical lane
         of stage 4 of the issue 485 import (think-3oi5), prompted separately from the
         records lane, before any replay here and before retention
         (docs/project/reviews/review-2026-10-10-guzhou-n40-clipped-corner-bound.md)
@@ -29728,7 +29728,7 @@ evidence:
       state: informally-verified
       date: '2026-10-10'
       reviewed_by: >-
-        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        AI agent (Claude), the stage 4 review lane of the 2026-10-10
         intake pass under think-fvz4, prompted separately from the import lanes
       note: >-
         docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
@@ -29779,7 +29779,7 @@ evidence:
       state: informally-verified
       date: '2026-10-10'
       reviewed_by: >-
-        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        AI agent (Claude), the stage 4 review lane of the 2026-10-10
         intake pass under think-fvz4, prompted separately from the import lanes
       note: >-
         Accepted for finite feasibility only. All 51 retained jobs reproduced on both
@@ -29825,7 +29825,7 @@ evidence:
       state: informally-verified
       date: '2026-10-10'
       reviewed_by: >-
-        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        AI agent (Claude), the stage 4 review lane of the 2026-10-10
         intake pass under think-fvz4, prompted separately from the import lanes
       note: >-
         docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
@@ -29877,7 +29877,7 @@ evidence:
       state: informally-verified
       date: '2026-10-10'
       reviewed_by: >-
-        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        AI agent (Claude), the stage 4 review lane of the 2026-10-10
         intake pass under think-fvz4, prompted separately from the import lanes
       note: >-
         Accepted for finite feasibility only. All nine retained jobs reproduced on both
@@ -29919,7 +29919,7 @@ evidence:
       state: informally-verified
       date: '2026-10-10'
       reviewed_by: >-
-        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        AI agent (Claude), the stage 4 review lane of the 2026-10-10
         intake pass under think-fvz4, prompted separately from the import lanes
       note: >-
         docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
@@ -29974,7 +29974,7 @@ evidence:
       state: informally-verified
       date: '2026-10-10'
       reviewed_by: >-
-        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        AI agent (Claude), the stage 4 review lane of the 2026-10-10
         intake pass under think-fvz4, prompted separately from the import lanes
       note: >-
         Accepted for finite feasibility only. All 51 retained jobs reproduced on both
@@ -30022,7 +30022,7 @@ evidence:
       state: informally-verified
       date: '2026-10-10'
       reviewed_by: >-
-        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        AI agent (Claude), the stage 4 review lane of the 2026-10-10
         intake pass under think-fvz4, prompted separately from the import lanes
       note: >-
         docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
@@ -30073,7 +30073,7 @@ evidence:
       state: informally-verified
       date: '2026-10-10'
       reviewed_by: >-
-        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        AI agent (Claude), the stage 4 review lane of the 2026-10-10
         intake pass under think-fvz4, prompted separately from the import lanes
       note: >-
         Accepted for finite feasibility only. All three retained jobs reproduced on both
@@ -30118,7 +30118,7 @@ evidence:
       state: informally-verified
       date: '2026-10-10'
       reviewed_by: >-
-        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10 intake pass
+        AI agent (Claude), the stage 4 review lane of the 2026-10-10 intake pass
         under think-fvz4, prompted separately from the import lanes
       note: >-
         docs/project/reviews/review-2026-10-10-upper-bound-imports-470-and-trio126.md accepted
@@ -30175,7 +30175,7 @@ evidence:
       state: informally-verified
       date: '2026-10-10'
       reviewed_by: >-
-        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10 intake pass
+        AI agent (Claude), the stage 4 review lane of the 2026-10-10 intake pass
         under think-fvz4, prompted separately from the import lanes
       note: >-
         Accepted for finite feasibility only. All 90 retained jobs reproduced on both maintained
@@ -30224,7 +30224,7 @@ evidence:
       state: informally-verified
       date: '2026-10-10'
       reviewed_by: >-
-        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10 intake pass
+        AI agent (Claude), the stage 4 review lane of the 2026-10-10 intake pass
         under think-fvz4, prompted separately from the import lanes
       note: >-
         docs/project/reviews/review-2026-10-10-upper-bound-imports-470-and-trio126.md accepted
@@ -30274,7 +30274,7 @@ evidence:
       state: informally-verified
       date: '2026-10-10'
       reviewed_by: >-
-        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10 intake pass
+        AI agent (Claude), the stage 4 review lane of the 2026-10-10 intake pass
         under think-fvz4, prompted separately from the import lanes
       note: >-
         Accepted for finite feasibility only. All three retained jobs reproduced on both

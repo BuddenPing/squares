@@ -5,9 +5,9 @@ import for [jlevy/squares#471](https://github.com/jlevy/squares/issues/471) (ver
 1.0) and [jlevy/squares#486](https://github.com/jlevy/squares/issues/486) (version 1.1)
 of Sungjoon Ryu’s preprint “Packing $k^2-c$ unit squares: an upper bound of order
 $k^{3/8}$ for the deficiency”.
-The reviewer is an AI agent, `claude-fable-5-1` at its maximum reasoning setting,
-prompted as the mathematical lane of the 2026-10-10 intake pass; it shares no context
-with the lane that retains the sources.
+The reviewer is an AI agent, Claude at its maximum reasoning setting, prompted as the
+mathematical lane of the 2026-10-10 intake pass; it shares no context with the lane that
+retains the sources.
 No source packet existed when it was written, so the sources were read from the Zenodo
 archives and the GitHub release commits named below.
 

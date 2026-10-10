@@ -13104,7 +13104,7 @@ results:
     - path: docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md
       kind: adversarial
       reviewer: >-
-        AI agent (Claude, model Opus 5.5, claude-opus-5-5), the stage 4 review lane (W2)
+        AI agent (Claude), the stage 4 review lane (W2)
         of the 2026-10-10 intake pass under think-fvz4, prompted separately from the
         import lanes that built the three packets, with no shared context
       reviewer_kind: ai
@@ -13260,7 +13260,7 @@ results:
     - path: docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md
       kind: adversarial
       reviewer: >-
-        AI agent (Claude, model Opus 5.5, claude-opus-5-5), the stage 4 review lane (W2)
+        AI agent (Claude), the stage 4 review lane (W2)
         of the 2026-10-10 intake pass under think-fvz4, prompted separately from the
         import lanes that built the three packets, with no shared context
       reviewer_kind: ai
@@ -13372,7 +13372,7 @@ results:
     - path: docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md
       kind: adversarial
       reviewer: >-
-        AI agent (Claude, model Opus 5.5, claude-opus-5-5), the stage 4 review lane (W2)
+        AI agent (Claude), the stage 4 review lane (W2)
         of the 2026-10-10 intake pass under think-fvz4, prompted separately from the
         import lanes that built the three packets, with no shared context
       reviewer_kind: ai
@@ -13556,7 +13556,7 @@ results:
     reviews:
       - path: docs/project/reviews/review-2026-10-10-guzhou-n40-clipped-corner-bound.md
         kind: adversarial
-        reviewer: AI agent (Claude, model Fable 5.1, maximum thinking effort), the mathematical lane of stage 4 of the issue 485 import (think-3oi5), prompted separately from the records lane, before any replay here and before retention
+        reviewer: AI agent (Claude, at maximum reasoning effort), the mathematical lane of stage 4 of the issue 485 import (think-3oi5), prompted separately from the records lane, before any replay here and before retention
         reviewer_kind: ai
         relation: project
         date: '2026-10-10'
@@ -13731,7 +13731,7 @@ results:
       - path: docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
         kind: adversarial
         reviewer: >-
-          AI agent (Claude, model Opus 5.5, claude-opus-5-5, at the reasoning setting its
+          AI agent (Claude, at the reasoning setting its
           harness gave it, which the agent cannot read), the stage 4 review lane (W2) of the
           2026-10-10 intake pass under think-fvz4, prompted separately from the import
           lanes that built the four packets, with no shared context
@@ -13852,7 +13852,7 @@ results:
       - path: docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
         kind: adversarial
         reviewer: >-
-          AI agent (Claude, model Opus 5.5, claude-opus-5-5, at the reasoning setting its
+          AI agent (Claude, at the reasoning setting its
           harness gave it, which the agent cannot read), the stage 4 review lane (W2) of the
           2026-10-10 intake pass under think-fvz4, prompted separately from the import
           lanes that built the four packets, with no shared context
@@ -14051,7 +14051,7 @@ results:
       - path: docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
         kind: adversarial
         reviewer: >-
-          AI agent (Claude, model Opus 5.5, claude-opus-5-5, at the reasoning setting its
+          AI agent (Claude, at the reasoning setting its
           harness gave it, which the agent cannot read), the stage 4 review lane (W2) of the
           2026-10-10 intake pass under think-fvz4, prompted separately from the import
           lanes that built the four packets, with no shared context
@@ -14162,7 +14162,7 @@ results:
       - path: docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
         kind: adversarial
         reviewer: >-
-          AI agent (Claude, model Opus 5.5, claude-opus-5-5, at the reasoning setting its
+          AI agent (Claude, at the reasoning setting its
           harness gave it, which the agent cannot read), the stage 4 review lane (W2) of the
           2026-10-10 intake pass under think-fvz4, prompted separately from the import
           lanes that built the four packets, with no shared context
@@ -14326,7 +14326,7 @@ results:
       - path: docs/project/reviews/review-2026-10-10-upper-bound-imports-470-and-trio126.md
         kind: adversarial
         reviewer: >-
-          AI agent (Claude, model Opus 5.5, claude-opus-5-5, at the reasoning setting its
+          AI agent (Claude, at the reasoning setting its
           harness gave it, which the agent cannot read), the stage 4 review lane (W2) of the
           2026-10-10 intake pass under think-fvz4, prompted separately from the import lanes
           that built the two packets, with no shared context
@@ -14445,7 +14445,7 @@ results:
       - path: docs/project/reviews/review-2026-10-10-upper-bound-imports-470-and-trio126.md
         kind: adversarial
         reviewer: >-
-          AI agent (Claude, model Opus 5.5, claude-opus-5-5, at the reasoning setting its
+          AI agent (Claude, at the reasoning setting its
           harness gave it, which the agent cannot read), the stage 4 review lane (W2) of the
           2026-10-10 intake pass under think-fvz4, prompted separately from the import lanes
           that built the two packets, with no shared context

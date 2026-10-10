@@ -11,11 +11,11 @@ added to the register; none can take `V4`/`C4` from this review alone.
 
 This is the stage 4 review lane (W2) of the 2026-10-10 intake pass
 ([result-import.md](../../../packing/campaign/result-import.md#stage-4-validate)), under
-`think-fvz4`, written by an AI agent (Claude, model Opus 5.5, `claude-opus-5-5`)
-prompted separately from the import lanes that built the three packets, with no shared
-context. Its relation to the results is `project`. It moves no rung, writes no register
-row and adopts no house; the proposed record changes are listed at the end for the
-adoption round.
+`think-fvz4`, written by an AI agent (Claude) prompted separately from the import lanes
+that built the three packets, with no shared context.
+Its relation to the results is `project`. It moves no rung, writes no register row and
+adopts no house; the proposed record changes are listed at the end for the adoption
+round.
 
 ## Claims Covered
 

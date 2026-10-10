@@ -23,11 +23,10 @@ The draft significance `S3` is suggested by the precedent of `T-099`, with the n
 the transfer is a technique new to this record.
 
 This is the mathematical lane of stage 4 of the result import for issue 485
-(`think-3oi5`), written on 2026-10-10 by an AI agent (Claude, model Fable 5.1, maximum
-thinking effort), prompted separately from the records lane, before any replay here and
-before retention.
-It registers nothing and moves no bound; the register entry is `T-NNN`,
-to be assigned.
+(`think-3oi5`), written on 2026-10-10 by an AI agent (Claude, at maximum reasoning
+effort), prompted separately from the records lane, before any replay here and before
+retention. It registers nothing and moves no bound; the register entry is `T-NNN`, to be
+assigned.
 
 ## Scope and Evidence
 

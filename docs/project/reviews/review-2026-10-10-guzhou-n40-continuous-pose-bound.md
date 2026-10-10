@@ -32,11 +32,11 @@ the technique is new to this record and makes the net, the transfer and the dens
 unnecessary.
 
 This is the mathematical lane of the stage 4 import of the issue 485 follow-up
-(`think-xms6`), written on 2026-10-10 by an AI agent (Claude, model Fable 5.1, maximum
-thinking effort), prompted separately from the records lane, before any complete replay
-here and before retention.
-It registers nothing and moves no bound; the register entry is `T-NNN`, to be assigned,
-and `T-133` keeps its claim.
+(`think-xms6`), written on 2026-10-10 by an AI agent (Claude, at maximum reasoning
+effort), prompted separately from the records lane, before any complete replay here and
+before retention.
+It registers nothing and moves no bound; the register entry is `T-NNN`,
+to be assigned, and `T-133` keeps its claim.
 
 ## Scope and Evidence
 

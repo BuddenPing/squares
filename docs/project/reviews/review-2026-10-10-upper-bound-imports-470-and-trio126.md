@@ -19,9 +19,9 @@ can take `V4`/`C4` from this review alone.
 
 This is the stage 4 review lane (W2) of the 2026-10-10 intake pass
 ([result-import.md](../../../packing/campaign/result-import.md#stage-4-validate)), under
-`think-fvz4`, written by an AI agent (Claude, model Opus 5.5, `claude-opus-5-5`, at the
-reasoning setting its harness gave it, which the agent cannot read) prompted separately
-from the import lanes that built the two packets, with no shared context.
+`think-fvz4`, written by an AI agent (Claude, at the reasoning setting its harness gave
+it, which the agent cannot read) prompted separately from the import lanes that built
+the two packets, with no shared context.
 Its relation to the results is `project`. It moves no rung, writes no register row and
 adopts no house; the proposed record changes are listed at the end for the adoption
 round.
@@ -363,10 +363,10 @@ reconstruction and certificate.
 **RK-8, non-blocking: the kernel’s controls are gross** (RD-2, RI-3, unchanged).
 
 **RK-9, non-blocking: the reviewer and one producer share a model family.** The trio126
-commit names Claude Opus 5.5 as co-author and its `CREDITS.md` says the repository’s
-work was produced by Claude; this review and the third route are Claude’s. #470
-discloses Gemini 3.8 assistance.
-The decisions are exact, but `V4`/`C4` needs a distinct reviewer in any case.
+commit names Claude as co-author and its `CREDITS.md` says the repository’s work was
+produced by Claude; this review and the third route are Claude’s. #470 discloses Gemini
+3.8 assistance. The decisions are exact, but `V4`/`C4` needs a distinct reviewer in any
+case.
 
 **RK-10, non-blocking for this claim: no private-worker custody at either packet**
 (RI-5). The adoption round should close it before any house moves.
@@ -498,7 +498,7 @@ For the adoption round; this review writes none of them.
   reviews:
     - path: docs/project/reviews/review-2026-10-10-upper-bound-imports-470-and-trio126.md
       kind: adversarial
-      reviewer: Claude (Opus 5.5, claude-opus-5-5), the W2 review lane of the 2026-10-10 intake pass
+      reviewer: Claude, the W2 review lane of the 2026-10-10 intake pass
       reviewer_kind: ai
       relation: project
       date: '2026-10-10'
@@ -551,7 +551,7 @@ For the adoption round; this review writes none of them.
   external_review:
     state: informally-verified
     date: '2026-10-10'
-    reviewed_by: Claude Opus 5.5, W2 review lane of the 2026-10-10 intake pass
+    reviewed_by: Claude, W2 review lane of the 2026-10-10 intake pass
     note: docs/project/reviews/review-2026-10-10-upper-bound-imports-470-and-trio126.md
 - id: E-mishapolk-470-exact-feasibility
   claim: upper-bound
@@ -588,7 +588,7 @@ For the adoption round; this review writes none of them.
   external_review:
     state: informally-verified
     date: '2026-10-10'
-    reviewed_by: Claude Opus 5.5, W2 review lane of the 2026-10-10 intake pass
+    reviewed_by: Claude, W2 review lane of the 2026-10-10 intake pass
     note: Accepted finite feasibility; see the review for RK-1 to RK-11.
 - id: E-evand-trio126-exact-feasibility
   claim: upper-bound
@@ -619,7 +619,7 @@ For the adoption round; this review writes none of them.
   external_review:
     state: informally-verified
     date: '2026-10-10'
-    reviewed_by: Claude Opus 5.5, W2 review lane of the 2026-10-10 intake pass
+    reviewed_by: Claude, W2 review lane of the 2026-10-10 intake pass
     note: Accepted finite feasibility; see the review.
 # and on E-evand-trio126-certificate-report: the same external_review, which makes it reviewed.
 ```
