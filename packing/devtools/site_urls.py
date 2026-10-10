@@ -85,15 +85,15 @@ PAGE_BUDGET_EXCEPTIONS: dict[str, tuple[int, str]] = {
     "all-results.html": (
         900_000,
         (
-            "The complete registered-result table with prepared math measures 794,521 bytes "
-            "at 139 results."
+            "The complete registered-result table with prepared math measures 822,485 bytes "
+            "at 145 results."
         ),
     ),
     "index.html": (
         700_000,
         (
-            "The homepage's recent-result rows with prepared math measure 605,376 bytes "
-            "at 139 results."
+            "The homepage's recent-result rows with prepared math measure 627,942 bytes "
+            "at 145 results."
         ),
     ),
     "tutorial.html": (

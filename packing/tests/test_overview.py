@@ -5679,8 +5679,9 @@ def test_result_preview_keeps_claim_scope_and_links_with_full_context_in_fragmen
 #: under these. The prepared canonical pages of 7 October 2026 set 600,000 and 800,000
 #: with 115 results registered. The intake pass of 10 October took the register to 139,
 #: and the pages measured 605,376 and 794,521 bytes, about 2.2 KB a result on the
-#: homepage; each ceiling now keeps about a hundred kilobytes above that measurement
-#: again, until the homepage's compaction (PR 462) is measured against it.
+#: homepage; each ceiling was raised to keep about a hundred kilobytes above that
+#: measurement, until the homepage's compaction (PR 462) is measured against it. At 145
+#: results the same day they measured 627,942 and 822,485 bytes.
 PAGE_CEILINGS = {"index.html": 700_000, render_overview.RESULTS_PAGE: 900_000}
 
 

@@ -960,12 +960,12 @@ Patterns admit declared namespaces, file types and sixteen-digit asset names.
 
 | Physical path | Bytes | Reason |
 | --- | ---: | --- |
-| all-results.html | 900,000 | The complete registered-result table with prepared math measures 794,521 bytes at 139 results. |
+| all-results.html | 900,000 | The complete registered-result table with prepared math measures 822,485 bytes at 145 results. |
 | cases/11.html | 500,000 | Complete n=11 proof/certificate record and prepared bounds measure 416,870 bytes. |
 | cases/17.html | 500,000 | Complete n=17 proof/certificate record and prepared bounds measure 443,761 bytes. |
 | cases/18.html | 350,000 | Complete n=18 certificate record; prepared HTML measures 326,548 bytes. |
 | frontier.html | 1,750,000 | All 324 case rows and prepared exact bounds measure 1,536,618 bytes. |
-| index.html | 700,000 | The homepage's recent-result rows with prepared math measure 605,376 bytes at 139 results. |
+| index.html | 700,000 | The homepage's recent-result rows with prepared math measure 627,942 bytes at 145 results. |
 | papers/n11-lower-bounds-explainer.html | 1,500,000 | Four prepared font preferences and the authored paper content measure 1,417,498 bytes. |
 | papers/n11-threshold-bound-review.html | 900,000 | The 401-formula review measures 823,322 bytes after sharing font geometry. Its 842,245-byte edition passed three-run desktop/mobile, light/dark and no-JS checks with CLS ≤0.050 and LCP ≤836 ms. The ceiling leaves headroom above the measured edition. |
 | result/t-007.html | 800,000 | Complete broad scope history and prepared exact bounds measure 711,115 bytes. |
