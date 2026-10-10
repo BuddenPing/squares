@@ -3691,7 +3691,7 @@ issues:
     opened: '2026-10-09'
     state: open
     kind: result-report
-    triage: pending
+    triage: done
     summary: >-
       Francisco Couzo reports six exact rational certificates, at n = 132, 237, 263, 267, 270 and 303,
       following #451 and its update in #460, in franciscouzo/square-packing certificates/ at
@@ -3700,7 +3700,11 @@ issues:
       with the best value known to the author, at 132 and 267 a pending #470 packing. All six are valid
       under Evan Daniel's verify_cert.py and this repository's verify.py. The starting packings are
       Mishapolk's (132), SQUISH's (237, 263, 303), Ryan Xu's (267) and Evan Daniel's (270). No optimality
-      is claimed.
+      is claimed. Imported on 10 October 2026: all 65 certificates of the commit retained in the
+      couzo-exact-certificates-2026-10-09 packet, the six the issue names and eleven others replayed on
+      both maintained exact routes, and the six decided again by a third exact route in the review of
+      the same day, with no blocking defect. The six are registered together as T-134; the case records
+      wait for jlevy/squares#403, and at 237, 263, 270 and 303 issue 481's sides are smaller.
     read_through: '2026-10-09T20:38:53Z'
     results:
     - key: six-exact-certificates
@@ -3708,12 +3712,14 @@ issues:
         (16.838815269949), 270 (16.936720031122) and 303 (17.917443925495), each S_n an exact rational
         side rounded up to 12 decimals.
       source: body
-      not_registered: Triage pending under think-m8ck; the certificates are not yet retained or replayed
-        here.
-      queued: true
-      bead: think-m8ck
+      register:
+      - T-134
+      evidence:
+      - E-couzo-476-certificate-report
+      - E-couzo-476-exact-feasibility
     beads:
     - think-m8ck
+    - think-fvz4
     answer_bead: think-m8ck
     replies: []
     close_when: The import and its disposition are on main and the owner has posted the resulting state;

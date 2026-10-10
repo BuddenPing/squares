@@ -3237,6 +3237,30 @@ sources:
     mathematics was reviewed on the same day with no blocking defect. Both lanes of n-040.md move to
     335427/50000 (T-133); T-068's 67/10 on the same density stays as history. The repository's earlier
     commit 485dd8f, with s(40) > 33509/5000 on the standard net, is pinned by history and not retained.
+- id: couzo-exact-certificates-2026-10-09
+  title: Francisco Couzo's six exact rational certificates at 02f9690, issue476
+  role: source-repository
+  url: https://github.com/franciscouzo/square-packing/tree/02f969075f79d5e13fa21e09e381a44e8647b452
+  local: resources/web/couzo-exact-certificates-2026-10-09/
+  source_key: '[Couzo exact certificates 2026-10-09]'
+  scope:
+    n_values: [132, 237, 263, 267, 270, 303]
+  reviewed: '2026-10-10'
+  source_date: '2026-10-09'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/results.yaml
+  - resources/web/couzo-exact-certificates-2026-10-09/acquisition/claims.json
+  evidence:
+  - E-couzo-476-certificate-report
+  - E-couzo-476-exact-feasibility
+  notes: All 6 complete certificates are retained as the source wrote them, each admitted only where
+    its exact side equals, or rounds up to, the side its source prints. T-134 records the in-horizon
+    report at V3/C3 on the review of 10 October, which reproduced all 51 native jobs and decided the six
+    by a third exact route. No selected override or superseded claim is created while house adoption
+    waits for jlevy/squares#403; current cases and earlier source ownership remain unchanged. The 59
+    further certificates of the commit are compared in the claim record and registered by no entry.
 selected_overrides:
 - n: 51
   source_id: ry-xu-undilated-n51-2026

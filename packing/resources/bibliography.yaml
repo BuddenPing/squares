@@ -1637,6 +1637,22 @@ sources:
       "AI-assisted research"; the issue says AI assisted the exploration, proof drafting,
       implementation, testing, packaging and submission under the author's direction
       (web/guzhou-n40-clipped-corner-2026-10-10/README.md). Dated by that commit.
+  - key: '[Couzo exact certificates 2026-10-09]'
+    authors: [Couzo]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-09'
+    lineage: builds-on-project
+    credit: Couzo after Mishapolk, Chaoweeraprasit, Gupta, Xu, Daniel, Ellsworth, Levy
+    short_credit: Couzo after Mishapolk et al.
+    note: >-
+      Six complete exact certificates at 02f969075f79d5e13fa21e09e381a44e8647b452, reported
+      on jlevy/squares#476: five exact optima from Daniel's exact contact solver and a
+      rational witness at 263, refined from Mishapolk's, Chaoweeraprasit's, Xu's and
+      Daniel's packings with Ellsworth's refine_packing and Daniel's fq. The source checks
+      with Squares Project (Levy) verification code; this project lineage is not
+      independent. The certificates are retained as factual data; the unlicensed prose is
+      hash-pinned. No optimizer, local or global claim.
 credited_names:
   Nate Chaoweeraprasit (itsnaka): Chaoweeraprasit
   Siddharth Gupta: Gupta

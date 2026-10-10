@@ -1656,6 +1656,30 @@ verifiers:
     source:
     - packing/devtools/evand_arrangement_reports.py
 
+  - id: V-upper-bound-reports
+    program: devtools.upper_bound_reports
+    author: Squares Project (Levy)
+    provenance: first-party
+    language: [Python]
+    methods: [exact-algebraic]
+    role: premises
+    summary: >-
+      Imports a report of rational upper-bound certificates by another author from its
+      packet's declaration: admits custody through acquire_source, reads each retained
+      file or derived fact by its declared adapter (Evan Daniel's text format, SQUISH's
+      JSON, centred JSON, decimal poses by a declared dilation), admits each side only
+      where it equals or rounds up to its print, rebuilds the frozen claim comparison and
+      the register plan, and drives the arrangement kernel's two exact routes and two
+      controls per count. It decides no geometry itself.
+    source:
+      - packing/devtools/upper_bound_reports.py
+      - packing/devtools/evand_arrangement_reports.py
+      - packing/tests/test_upper_bound_reports.py
+    note: >-
+      Written for the 2026-10-10 intake pass's upper-bound imports from the formats the
+      sources state. sqpack.verify and the independent rational corner checker decide; the
+      10 October review of issues 476, 481, 483 and 484 read it in full.
+
   - id: V-rehwaldt-n68-verify
     program: verify.py
     author: Seth Rehwaldt

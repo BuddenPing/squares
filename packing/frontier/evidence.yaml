@@ -29705,3 +29705,100 @@ evidence:
       confirmation is read from the nodal decision, the part of the claim closest to the
       producer's code (epistemics.md, Which Code Confirmed It).
     source_reviewed: '2026-10-10'
+
+  - id: E-couzo-476-certificate-report
+    claim: upper-bound
+    scope:
+      n_values: [132, 237, 263, 267, 270, 303]
+    assurance: reported
+    reported_method: exact-algebraic
+    performed_by: source-author
+    relationship_to_generator: same-implementation
+    origin: external
+    novelty: previously-published
+    source_key: '[Couzo exact certificates 2026-10-09]'
+    certificate: packing/resources/web/couzo-exact-certificates-2026-10-09/source/certificates/
+    replay_status: not-attempted
+    verifiers: []
+    external_review:
+      state: informally-verified
+      date: '2026-10-10'
+      reviewed_by: >-
+        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        intake pass under think-fvz4, prompted separately from the import lanes
+      note: >-
+        docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
+        accepted all six certificates for finite feasibility only, with seven non-blocking
+        findings (RI-1 to RI-7); the replay it reproduced is E-couzo-476-exact-feasibility.
+    limitations: >-
+      This atom records the source author's report of six exact rational certificates at
+      02f9690, which the issue prints rounded up at 12 places: five exact optima from Evan
+      Daniel's exact contact solver and a rational witness at 263, its decimal packing with
+      centres scaled apart by 1 + 1e-12. The author reports passes from Evan Daniel's
+      verify_cert.py and a copy of this repository's sqpack verifier; neither was run here,
+      and the KKT and no-descent statements are not checked. The same commit holds 59
+      further certificates the issue does not name, compared in the packet's claim record
+      and registered by no entry. The repository replay and its review are
+      E-couzo-476-exact-feasibility. No optimality is claimed.
+    source_reviewed: '2026-10-10'
+
+  - id: E-couzo-476-exact-feasibility
+    claim: upper-bound
+    scope:
+      n_values: [132, 237, 263, 267, 270, 303]
+    assurance: verified
+    method: exact-algebraic
+    performed_by: repository
+    relationship_to_generator: independent-implementation
+    origin: replayed-here
+    novelty: previously-published
+    source_key: '[Couzo exact certificates 2026-10-09]'
+    certificate: packing/resources/web/couzo-exact-certificates-2026-10-09/source/certificates/
+    replay: >-
+      From packing/ with the project interpreter: python -m devtools.upper_bound_reports
+      couzo-exact-certificates-2026-10-09 check --replay decides all 51 retained jobs of the
+      17-count roster again through both maintained routes, serially in one process, and
+      holds each to its retained row (all equal, 546.5 s wall on 2026-10-10); check-claims
+      rebuilds the frozen comparison (equal); python -m devtools.check_half_angle_area
+      decide-imports --workers 2 decides the six certificates by the third route with six
+      controls each, and holds every side, pose, margin, frozen claim and print to the
+      record (no disagreement, 101.5 s for the review's 27 certificates).
+    replay_status: passed
+    verifiers:
+      - V-sqpack-verify
+      - V-check-rational-witness-independent
+      - V-evand-arrangement-receipts
+      - V-upper-bound-reports
+      - V-check-half-angle-area
+    independence_record: docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
+    external_review:
+      state: informally-verified
+      date: '2026-10-10'
+      reviewed_by: >-
+        AI agent (Claude, model Opus 5.5), the stage 4 review lane of the 2026-10-10
+        intake pass under think-fvz4, prompted separately from the import lanes
+      note: >-
+        Accepted for finite feasibility only. All 51 retained jobs reproduced on both
+        maintained routes, the frozen comparison rebuilt equal, and the third route agreed
+        with them at every side, pose, wall clearance, frozen claim and print; its 36
+        controls for the six reached their required outcomes. Findings RI-1 to RI-7, none
+        blocking.
+    limitations: >-
+      All six certificates pass both maintained routes and the third route; the 12 kernel
+      controls are refused by both maintained routes and the 36 third-route controls reach
+      their required outcomes, four per certificate at exact contact or 10^-40 to 10^-30
+      past it. The receipt's 51 jobs hold 1486686 pair decisions, 338.07 route CPU seconds
+      and 958.00 job wall seconds; the longest job took 99.13 s. Five positives clear their
+      nearest wall by exactly 1/(2*10^20) and every pair by a least Euclidean distance that
+      rounds to 1.000000e-20; the rational witness at 263 clears by 1e-15 and 1.582645e-12.
+      The kernel's controls are gross (RI-3), and the source reports a pass from a copy of
+      this repository's sqpack verifier, so one maintained route is the producer's checker
+      (RI-4) and the independently re-implemented relation rests on the independent rational
+      corner checker and the third route. The maintained routes share one parse, half-angle
+      conversion and the separating-axis method, and all three share Fraction arithmetic.
+      The claim record compares issue 481 by printed displays that miss its exact sides by
+      up to 1.84 units in the last place, which changes no relation (RI-1). No
+      private-worker custody is on file (RI-5), and the reviewer and the producer share a
+      model family (RI-7). Finite feasibility only: no lower bound, optimum, local minimum,
+      rigidity, novelty or human oversight.
+    source_reviewed: '2026-10-10'

@@ -989,6 +989,23 @@ source’s report lists; it is recorded as an evidence update to T-128. The sour
 Couzo’s and Chaoweeraprasit’s packings as starting points and discloses Claude
 assistance under Daniel’s direction.
 
+## Upper-bound imports of 9 and 10 October 2026
+
+The intake pass of 10 October 2026 imported these releases through
+`devtools.upper_bound_reports`; the
+[review of 10 October](../../docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md)
+replayed the four that issues #476, #481, #483 and #484 report.
+No case record changes until house adoption, which waits for jlevy/squares#403.
+
+**[Couzo exact certificates 2026-10-09]**: Francisco Couzo’s exact rational certificates
+for n = 132, 237, 263, 267, 270 and 303, pinned at
+`02f969075f79d5e13fa21e09e381a44e8647b452`, retained as the source wrote them;
+[packet](web/couzo-exact-certificates-2026-10-09/README.md).
+Both project exact routes accept all 17 replayed certificates and refuse all 34
+controls, and a third exact route agrees on the six.
+T-134 records the six sides at V3/C3, pending adoption; the other 59 certificates of the
+commit are compared in the packet’s claim record and registered by no entry.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->

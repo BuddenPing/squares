@@ -36,3 +36,12 @@ deferrals:
       The 2026-10-10 review of T-128, T-130 and T-131 accepted the replay for finite
       feasibility, and the house adoption it recommends waits for jlevy/squares#403, which
       rewrites every case record; the coordinator recorded the deferral on think-fvz4.
+  - evidence: E-couzo-476-exact-feasibility
+    results: [T-134]
+    bead: think-fvz4
+    blocked_on: jlevy/squares#403
+    recorded: '2026-10-10'
+    reason: >-
+      The 2026-10-10 review of issues 476, 481, 483 and 484 accepted the replay for finite
+      feasibility, and the house adoption it recommends waits for jlevy/squares#403, which
+      rewrites every case record; the coordinator recorded the deferral on think-fvz4.

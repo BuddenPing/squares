@@ -13611,3 +13611,140 @@ results:
       the case records do not hold. wand125's comment on the issue reporting a third run
       and an exact check of the transfer is a third party's report and is not retained as a
       replay. Ids here are provisional until merged.
+
+  - id: T-134
+    kind: upper-bound
+    registered: '2026-10-10'
+    headline: Six exact rational certificates from Francisco Couzo
+    claim: >-
+      Six complete rational source certificates by Francisco Couzo, reported on
+      jlevy/squares#476, prove finite upper bounds at the exact sides they state: s(132) <=
+      11.986954193640392741450366579623, s(237) <= 15.903670905580623014470917594172, s(263)
+      <= 7488939206954142477014939239/447356905819500000000000000, s(267) <=
+      16.838815269948262260434481342204, s(270) <= 16.936720031121015799532991452837 and
+      s(303) <= 17.917443925494235891916989336536.
+
+      Each certificate gives a rational side and, for each unit square, a rational centre
+      and the tangent of its half-angle, in Evan Daniel's format. The author reports that
+      all six pass Evan Daniel's verify_cert.py and a copy of this repository's sqpack
+      verifier in exact rational arithmetic. Five are exact optima from Daniel's exact
+      contact solver; the one at 263 is a rational witness, the decimal packing with its
+      centres scaled apart by 1 + 1e-12.
+
+      All 51 retained jobs of the release's 17-count replay, the six positives with their
+      duplicate-square and outside-container controls among them, were decided again here
+      on 10 October 2026 by both maintained exact routes and equal their retained rows, and
+      a third exact route, half-extent containment and exact intersection area, decided the
+      six with six controls each. One maintained route is the verifier the source ran; the
+      independent rational corner checker and the third route are independently
+      re-implemented. The 10 October review found no blocking defect.
+
+      Each side is below the ceiling its case holds; the case records are unchanged until a
+      house is adopted, so each is pending adoption.
+
+      Credit Francisco Couzo (https://github.com/franciscouzo/square-packing), with the
+      packings each started from, as the author asks: Mishapolk's at 132, Nate
+      Chaoweeraprasit's SQUISH packings at 237, 263 and 303 (237 through Siddharth Gupta's
+      refinement), Ryan Xu's at 267 and Evan Daniel's at 270. The search used David
+      Ellsworth's refine_packing and Evan Daniel's fq, and was written with Claude under
+      the author's direction.
+    scope:
+      n_values: [132, 237, 263, 267, 270, 303]
+    verification: V3
+    confirmation: C3
+    significance:
+      score: 3
+      rationale: >-
+        Smaller finite construction sides at n = 132, 237, 263, 267, 270 and 303, 5.33e-06
+        to 4.37e-03 below the case ceilings; no lower bound or optimum.
+      scored: '2026-10-10'
+      by: think-m8ck Francisco Couzo import
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Couzo exact certificates 2026-10-09]']
+      published: '2026-10-09'
+    evidence:
+      - E-couzo-476-certificate-report
+      - E-couzo-476-exact-feasibility
+    artifacts:
+      - packing/resources/web/couzo-exact-certificates-2026-10-09/README.md
+      - packing/resources/web/couzo-exact-certificates-2026-10-09/acquisition/claims.json
+      - packing/resources/web/couzo-exact-certificates-2026-10-09/source/certificates/n132.cert
+      - packing/resources/web/couzo-exact-certificates-2026-10-09/source/certificates/n237.cert
+      - packing/resources/web/couzo-exact-certificates-2026-10-09/source/certificates/n263.cert
+      - packing/resources/web/couzo-exact-certificates-2026-10-09/source/certificates/n267.cert
+      - packing/resources/web/couzo-exact-certificates-2026-10-09/source/certificates/n270.cert
+      - packing/resources/web/couzo-exact-certificates-2026-10-09/source/certificates/n303.cert
+      - packing/resources/web/couzo-exact-certificates-2026-10-09/receipts/exact-certification.json.xz
+      - packing/devtools/upper_bound_reports.py
+      - packing/devtools/check_half_angle_area.py
+      - docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
+    controls:
+      - packing/tests/test_upper_bound_reports.py
+      - packing/tests/test_check_half_angle_area.py
+    notes: >-
+      A separate complete repository replay is retained for n = 68, 84, 86, 102, 103, 105,
+      106, 108, 110, 127, 131, 132, 237, 263, 267, 270 and 303: 17 positives and 34
+      duplicate-square and outside-container controls passed their required outcomes on both
+      routes, 1486686 pair decisions; summed over the 51 jobs, the receipt records 338.07
+      route CPU seconds and 958.0 job wall seconds, the longest job 99.13 seconds. Every
+      positive clears every wall by at least 5.00e-21 and every pair by at least 9.99e-21.
+
+      V3 and C3 rest on the 10 October review
+      (docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md) and the
+      replay it reproduced (E-couzo-476-exact-feasibility). Its findings here are
+      non-blocking: the claim record compares issue 481 by printed displays that are not
+      roundings of its exact sides, which changes no relation (RI-1); the kernel's controls
+      are gross (RI-3); and sqpack.verify is the copy the source ran (RI-4).
+
+      At n = 132 the certificate is below the case's ceiling (Francisco Couzo, improved by
+      Evan Daniel, T-098) by 4.37e-03, below T-131 by 1.45e-04 and below Mishapolk's issue
+      470 print by 2.03e-06, so it is the smallest known; at 267 it is below the case's
+      ceiling (Ryan Xu, T-125) by 1.67e-05 and below Mishapolk's print by 1.33e-05, the
+      smallest known.
+
+      At 237, 263, 270 and 303 the certificate is below the case's ceiling by 5.33e-06,
+      7.03e-06, 1.09e-03 and 2.87e-03, and at 270 below T-130 by 2.99e-06, but issue 481's
+      exact sides are smaller at all four, by 6.82e-04, 7.25e-03, 6.94e-03 and 4.38e-03.
+
+      The review recommends this entry as the house at 132, crediting Mishapolk's packing as
+      its start, and at 267; at 237, 263, 270 and 303 it stays verified, second to issue
+      481's. No house moves until jlevy/squares#403, which rewrites every case record,
+      lands and private-worker custody is on file (RI-5).
+
+      The same commit holds 59 further certificates the issue does not name, at n = 68, 84,
+      86, 102, 103, 105, 106, 108, 110, 127, 131, 152, 155, 156, 172, 175, 177, 180, 181,
+      182, 206, 208, 210, 228, 240, 241, 259, 268, 269, 271, 272, 273, 292, 297, 301, 304,
+      305, 306, 307, 327, 332, 335, 336, 337, 338, 339, 340, 341, 342, 364, 369, 372, 373,
+      374, 375, 376, 377, 378 and 379; the packet's claim record compares each with its
+      case, and each is an import of its own.
+
+      The source's own checkers were not run here. No two independent methods, human
+      oversight or optimality is claimed.
+    next_rung: >-
+      V4 and C4 need a second accepted adversarial review of this replay by a distinct
+      reviewer and a retained human oversight record; the 10 October review is one, by an
+      AI agent. Separately, once jlevy/squares#403 lands and private-worker custody is on
+      file (RI-5), adopt this entry as the house at 132 and 267, with each earlier house
+      kept as history.
+    reviews:
+      - path: docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
+        kind: adversarial
+        reviewer: >-
+          AI agent (Claude, model Opus 5.5, claude-opus-5-5, at the reasoning setting its
+          harness gave it, which the agent cannot read), the stage 4 review lane (W2) of the
+          2026-10-10 intake pass under think-fvz4, prompted separately from the import
+          lanes that built the four packets, with no shared context
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-10'
+        scope: >-
+          Finite feasibility of the 27 certificates the four imports' entries cite: issue
+          476 at 132, 237, 263, 267, 270 and 303; issue 481 at its seventeen counts; issue
+          483 at 70; issue 484 at 308, with 343 and 344 beyond the corpus. Every retained
+          receipt replayed on both maintained routes, the third exact route extended for
+          these formats with sharp controls, the derived facts held to their upstream
+          files, admission against each print, the claim comparisons and each route's
+          trust boundary.
+        verdict: accepted
+        covers: [T-134]
