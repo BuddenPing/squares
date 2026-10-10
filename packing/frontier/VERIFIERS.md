@@ -25,8 +25,8 @@ second implementation agrees.
 
 ## The Short Version
 
-- **107** programs: **38** external and **69** first-party; **77** decide claims and **30** check premises.
-- **431** of **490** evidence entries name the programs that verified them: 230 reproduced with the producer’s code, 174 independently re-implemented, 17 re-implemented, sharing the producer’s components, 10 no relation: a proof, a derivation or a report.
+- **110** programs: **40** external and **70** first-party; **80** decide claims and **30** check premises.
+- **440** of **501** evidence entries name the programs that verified them: 235 reproduced with the producer’s code, 178 independently re-implemented, 17 re-implemented, sharing the producer’s components, 10 no relation: a proof, a derivation or a report.
 
 ## Programs
 
@@ -35,8 +35,8 @@ second implementation agrees.
 | [`V-tokoharu-verify-cpp`](#v-tokoharu-verify-cpp) | verify.cpp | Tokoharu | external | decides | 13 | 7 |
 | [`V-wand125-mixed-rotated-verify-cpp`](#v-wand125-mixed-rotated-verify-cpp) | mixed_rotated_verify.cpp | wand125 | external | decides | 89 | 14 |
 | [`V-wand125-verify-mixed-full-proof-py`](#v-wand125-verify-mixed-full-proof-py) | verify_mixed_full_proof.py | wand125 | external | decides | 66 | 11 |
-| [`V-wand125-sqverify-proof-net`](#v-wand125-sqverify-proof-net) | sqverify-proof-net | wand125, adapting this repository's sqverify_fast | external | decides | 10 | 10 |
-| [`V-wand125-unified-linear-verify-cpp`](#v-wand125-unified-linear-verify-cpp) | unified_linear_verify.cpp | wand125 | external | decides | 6 | 3 |
+| [`V-wand125-sqverify-proof-net`](#v-wand125-sqverify-proof-net) | sqverify-proof-net | wand125, adapting this repository's sqverify_fast | external | decides | 12 | 12 |
+| [`V-wand125-unified-linear-verify-cpp`](#v-wand125-unified-linear-verify-cpp) | unified_linear_verify.cpp | wand125 | external | decides | 7 | 4 |
 | [`V-wand125-verify-portable-py`](#v-wand125-verify-portable-py) | verify_portable.py | wand125 | external | decides | 2 | 1 |
 | [`V-wand125-check-with-sqpack`](#v-wand125-check-with-sqpack) | check_with_sqpack.py | wand125 | external | decides | 5 | 1 |
 | [`V-wand125-valid7-checker`](#v-wand125-valid7-checker) | valid7-independent-check (Tier A, Tier B and the record checker) | wand125 | external | decides | 2 | 2 |
@@ -58,6 +58,8 @@ second implementation agrees.
 | [`V-guzhou-r052-verify-py`](#v-guzhou-r052-verify-py) | certificates/R052/verify.py | Guzhou0806 | external | decides | 2 | 1 |
 | [`V-guzhou-n17-verify-cpp`](#v-guzhou-n17-verify-cpp) | verify.cpp | Guzhou0806 | external | decides | 5 | 3 |
 | [`V-guzhou-n40-finite-py`](#v-guzhou-n40-finite-py) | verifier/run.py | Guzhou0806 | external | decides | 1 | 1 |
+| [`V-guzhou-n40-continuous-pose`](#v-guzhou-n40-continuous-pose) | verifier/continuous_pose.cpp | Guzhou0806 | external | decides | 2 | 1 |
+| [`V-guzhou-n40-axis-integer-grid`](#v-guzhou-n40-axis-integer-grid) | verifier/axis_integer_grid.cpp | Guzhou0806 | external | decides | 2 | 1 |
 | [`V-burns-n17-verify-py`](#v-burns-n17-verify-py) | verify-n17-lower-bound-4_4811.py | Burns | external | decides | 1 | 0 |
 | [`V-massaccesi-n17-verify-py`](#v-massaccesi-n17-verify-py) | verify-n17-lower-bound-4_5058.py | Massaccesi | external | decides | 1 | 2 |
 | [`V-mira-17squares-point-checker`](#v-mira-17squares-point-checker) | verify_certificate.py | Mira | external | decides | 1 | 0 |
@@ -70,8 +72,8 @@ second implementation agrees.
 | [`V-anabologyco-n17-checker`](#v-anabologyco-n17-checker) | scripts/check_certificate.py and its event pipeline | anabologyco-maker | external | decides | 1 | 0 |
 | [`V-check-basic-bounds`](#v-check-basic-bounds) | devtools.check_basic_bounds | Squares Project (Levy) | first-party | decides | 3 | 14 |
 | [`V-optimal-moduli`](#v-optimal-moduli) | cases.small_n.optimal_moduli | Squares Project (Levy) | first-party | decides | 1 | 0 |
-| [`V-sqpack-verify`](#v-sqpack-verify) | sqpack.verify | Squares Project (Levy) | first-party | decides | 32 | 22 |
-| [`V-check-rational-witness-independent`](#v-check-rational-witness-independent) | devtools.check_rational_witness_independent | Squares Project (Levy) | first-party | decides | 27 | 25 |
+| [`V-sqpack-verify`](#v-sqpack-verify) | sqpack.verify | Squares Project (Levy) | first-party | decides | 34 | 24 |
+| [`V-check-rational-witness-independent`](#v-check-rational-witness-independent) | devtools.check_rational_witness_independent | Squares Project (Levy) | first-party | decides | 29 | 27 |
 | [`V-check-nagamochi-lemma1-counterexample`](#v-check-nagamochi-lemma1-counterexample) | devtools.check_nagamochi_lemma1_counterexample | Squares Project (Levy) | first-party | decides | 1 | 1 |
 | [`V-check-karakus-strip-measure`](#v-check-karakus-strip-measure) | devtools.check_karakus_strip_measure | Squares Project (Levy) | first-party | decides | 1 | 2 |
 | [`V-upper-bound-promotion`](#v-upper-bound-promotion) | devtools.upper_bound_packets | Squares Project (Levy) | first-party | decides | 6 | 5 |
@@ -105,7 +107,8 @@ second implementation agrees.
 | [`V-n17-catalogue-polynomial`](#v-n17-catalogue-polynomial) | devtools.check_n17_catalogue_polynomial | Squares Project (Levy) | first-party | decides | 1 | 0 |
 | [`V-n11-optimality-checkers`](#v-n11-optimality-checkers) | The devtools.check_n11_optimality | Squares Project (Levy) | first-party | decides | 2 | 2 |
 | [`V-audit-clipped-corner-transfer`](#v-audit-clipped-corner-transfer) | devtools.audit_clipped_corner_transfer | Squares Project (Levy) | first-party | decides | 2 | 1 |
-| [`V-check-half-angle-area`](#v-check-half-angle-area) | devtools.check_half_angle_area | Squares Project (Levy) | first-party | decides | 9 | 9 |
+| [`V-audit-continuous-pose`](#v-audit-continuous-pose) | devtools.audit_continuous_pose | Squares Project (Levy) | first-party | decides | 3 | 1 |
+| [`V-check-half-angle-area`](#v-check-half-angle-area) | devtools.check_half_angle_area | Squares Project (Levy) | first-party | decides | 11 | 11 |
 | [`V-evand-exact-certificates`](#v-evand-exact-certificates) | devtools.evand_exact_certificates | Squares Project (Levy) | first-party | premises | 4 | 2 |
 | [`V-check-n11-final-composition`](#v-check-n11-final-composition) | devtools.check_n11_final_composition | Squares Project (Levy) | first-party | premises | 2 | 2 |
 | [`V-audit-n11-lean`](#v-audit-n11-lean) | devtools.audit_n11_lean | Squares Project (Levy) | first-party | premises | 2 | 1 |
@@ -115,7 +118,7 @@ second implementation agrees.
 | [`V-audit-wand125-point-and-mixed`](#v-audit-wand125-point-and-mixed) | devtools.audit_wand125_point_and_mixed | Squares Project (Levy) | first-party | premises | 17 | 7 |
 | [`V-audit-wand125-declared-net`](#v-audit-wand125-declared-net) | devtools.audit_wand125_declared_net | Squares Project (Levy) | first-party | premises | 2 | 2 |
 | [`V-audit-wand125-linear`](#v-audit-wand125-linear) | devtools.audit_wand125_linear | Squares Project (Levy) | first-party | premises | 3 | 3 |
-| [`V-sqverify-fast`](#v-sqverify-fast) | sqverify-fast | Squares Project (Levy) | first-party | decides | 109 | 21 |
+| [`V-sqverify-fast`](#v-sqverify-fast) | sqverify-fast | Squares Project (Levy) | first-party | decides | 110 | 22 |
 | [`V-replay-chelokot-lean`](#v-replay-chelokot-lean) | devtools.replay_chelokot_lean | Squares Project (Levy) | first-party | premises | 1 | 1 |
 | [`V-replay-evand-zmx2`](#v-replay-evand-zmx2) | devtools.replay_evand_zmx2 | Squares Project (Levy) | first-party | premises | 5 | 5 |
 | [`V-audit-evand-mixed-covers`](#v-audit-evand-mixed-covers) | devtools.audit_evand_mixed_covers | Squares Project (Levy) | first-party | premises | 9 | 8 |
@@ -131,8 +134,8 @@ second implementation agrees.
 | [`V-squish-upper-bound-packets`](#v-squish-upper-bound-packets) | devtools.squish_upper_bound_packets | Squares Project (Levy) | first-party | premises | 2 | 2 |
 | [`V-squish-followup-packets`](#v-squish-followup-packets) | devtools.squish_followup_packets | Squares Project (Levy) | first-party | premises | 1 | 1 |
 | [`V-squish-second-update-confirmation`](#v-squish-second-update-confirmation) | devtools.squish_second_update_confirmation | Squares Project (Levy) | first-party | premises | 1 | 1 |
-| [`V-evand-arrangement-receipts`](#v-evand-arrangement-receipts) | devtools.evand_arrangement_reports | Squares Project (Levy) | first-party | premises | 7 | 7 |
-| [`V-upper-bound-reports`](#v-upper-bound-reports) | devtools.upper_bound_reports | Squares Project (Levy) | first-party | premises | 6 | 6 |
+| [`V-evand-arrangement-receipts`](#v-evand-arrangement-receipts) | devtools.evand_arrangement_reports | Squares Project (Levy) | first-party | premises | 9 | 9 |
+| [`V-upper-bound-reports`](#v-upper-bound-reports) | devtools.upper_bound_reports | Squares Project (Levy) | first-party | premises | 8 | 8 |
 | [`V-rehwaldt-n68-verify`](#v-rehwaldt-n68-verify) | verify.py | Seth Rehwaldt | external | decides | 1 | 1 |
 | [`V-rehwaldt-n68-independent-support-check`](#v-rehwaldt-n68-independent-support-check) | independent_support_check.py | Seth Rehwaldt | external | decides | 1 | 1 |
 | [`V-refinement-custody`](#v-refinement-custody) | devtools.refinement_custody | Squares Project (Levy) | first-party | premises | 2 | 2 |
@@ -370,6 +373,8 @@ The source's copy of this repository's sqverify_fast with one change, reading a 
 | `E-n039-wand125-mixed-665-report` | the source’s own run | producer’s code | T-110 |
 | `E-n041-wand125-mixed-6775-report` | the source’s own run | producer’s code | T-111 |
 | `E-wand125-fine-net-n29-582-followup-report` | the source’s own run | producer’s code | T-132 |
+| `E-wand125-fine-net-n28-57425-report` | the source’s own run | producer’s code | T-142 |
+| `E-wand125-fine-net-n30-58925-report` | the source’s own run | producer’s code | T-143 |
 
 ### `V-wand125-unified-linear-verify-cpp`
 
@@ -389,6 +394,7 @@ Decides a linear (segment) certificate at every net direction, the axis directio
 | `E-n101-wand125-linear-1028-source-replay` | replayed here | producer’s code | T-080 |
 | `E-n082-wand125-linear-932-report` | the source’s own run | producer’s code | T-076 |
 | `E-n082-wand125-linear-932-source-replay` | replayed here | producer’s code | T-076 |
+| `E-wand125-linear-n122-1126-report` | the source’s own run | producer’s code | T-144 |
 
 ### `V-wand125-verify-portable-py`
 
@@ -753,6 +759,36 @@ The release's own verification of s(40) > 335427/50000: run.py derives the 401-d
 | --- | --- | --- | --- |
 | `E-n040-guzhou-clipped-corner-report` | the source’s own run | producer’s code | T-133 |
 
+### `V-guzhou-n40-continuous-pose`
+
+**verifier/continuous_pose.cpp, the release's continuous-pose interval kernel** · Guzhou0806 · external · decides · C++ · interval-certified
+
+Decides, for one closed slab [PL/DEN, PH/DEN] of the half-angle tangent t = tan(theta/2), that every square of side B in [0, L]^2 at every angle of the slab and every legal centre captures at least TN/TD of a rectangle density, by depth-first interval branch and bound over the normalised centre and the angle together: outward-rounded binary64 intervals, whole-box containment and exclusion by projection on the square's normals, a concave-section trapezoid bound on each rectangle's clipped area at the box's centre, and translation-derivative bounds that extend it over the box. It exits 0 with "verified" only when the stack empties, and 3 with "unresolved" at the node budget or a half-width below 2^-40.
+
+- Source: [`packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/verifier/continuous_pose.cpp`](../../packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/verifier/continuous_pose.cpp)
+- Versions run: SHA-256 `da06206b8e83…`, revision `71c97d07553d` (Built here with g++ 13.3.0 -O3 -std=c++17 -fno-fast-math -ffp-contract=off from the tree's directory into 69bc9e64..., the CI run's binary.)
+- Note: Read line by line by the 10 October 2026 review of the release (docs/project/reviews/review-2026-10-10-guzhou-n40-continuous-pose-bound.md), which re-derived its lemmas; replayed here in full on all 43 slabs. Its source says its translation derivatives follow Tokoharu and its concave sections the Squares Project, and that its lineage is not wholly independent; it shares no code with sqverify-fast.
+
+| evidence | run | code | results |
+| --- | --- | --- | --- |
+| `E-n040-guzhou-continuous-pose-report` | the source’s own run | producer’s code | T-145 |
+| `E-n040-guzhou-continuous-pose-kernel-replay` | replayed here | producer’s code | T-145 |
+
+### `V-guzhou-n40-axis-integer-grid`
+
+**verifier/axis_integer_grid.cpp, the release's exact axis certificate** · Guzhou0806 · external · decides · C++ · exact-algebraic
+
+Decides that every horizontal square of side A in the northeast quadrant of [0, l]^2 captures at least TN/TD of an integer rectangle density, by writing each rectangle as sixteen signed hinge products, accumulating coefficient prefix sums on the grid of breakpoints and evaluating every vertex in signed 128-bit integers within a guarded bound; it reconciles the minimiser by a direct sum and exits 0 with AXIS_COVERAGE_PROVED or 2 with AXIS_TEST_REFUSED.
+
+- Source: [`packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/verifier/axis_integer_grid.cpp`](../../packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/verifier/axis_integer_grid.cpp)
+- Versions run: SHA-256 `f5bc3f60065a…`, revision `71c97d07553d` (Built here with g++ 13.3.0 -O2 -std=c++17 into cccecb9a..., the CI run's binary.)
+- Note: Read by the 10 October 2026 review, which re-derived the bilinear-cell lemma, the hinge expansion and the int128 bounds; replayed here. Its minimum was evaluated again at the minimiser by devtools.audit_continuous_pose, and the axis statement decided again on the original density by sqverify-fast's axis-vertex sweep.
+
+| evidence | run | code | results |
+| --- | --- | --- | --- |
+| `E-n040-guzhou-continuous-pose-report` | the source’s own run | producer’s code | T-145 |
+| `E-n040-guzhou-continuous-pose-kernel-replay` | replayed here | producer’s code | T-145 |
+
 ### `V-burns-n17-verify-py`
 
 **verify-n17-lower-bound-4_4811.py** · Burns · external · decides · Python · exact-algebraic
@@ -962,6 +998,8 @@ Decides a packing pair by pair and wall by wall: by exact sign in a number field
 | `E-deleeuw-483-exact-feasibility` | replayed here | independent | T-137 |
 | `E-mishapolk-470-exact-feasibility` | replayed here | independent | T-138 |
 | `E-evand-trio126-exact-feasibility` | replayed here | independent | T-139 |
+| `E-couzo-488-exact-feasibility` | replayed here | independent | T-140 |
+| `E-evand-489-exact-feasibility` | replayed here | independent | T-141 |
 
 ### `V-check-rational-witness-independent`
 
@@ -1003,6 +1041,8 @@ Decides a rational-corner witness pair by pair and wall by wall in Fraction arit
 | `E-deleeuw-483-exact-feasibility` | replayed here | independent | T-137 |
 | `E-mishapolk-470-exact-feasibility` | replayed here | independent | T-138 |
 | `E-evand-trio126-exact-feasibility` | replayed here | independent | T-139 |
+| `E-couzo-488-exact-feasibility` | replayed here | independent | T-140 |
+| `E-evand-489-exact-feasibility` | replayed here | independent | T-141 |
 
 ### `V-check-nagamochi-lemma1-counterexample`
 
@@ -1507,6 +1547,23 @@ Decides in exact rationals the finite steps of Guzhou0806's clipped-corner trans
 | `E-n040-guzhou-clipped-corner-sqverify-fast-replay` | replayed here | producer’s code | T-133 |
 | `E-n040-guzhou-clipped-corner-finite-audit` | audited here | independent | T-133 |
 
+### `V-audit-continuous-pose`
+
+**devtools.audit_continuous_pose** · Squares Project (Levy) · first-party · decides · Python · exact-algebraic
+
+Decides in exact rationals the finite steps of Guzhou0806's continuous-pose bound s(40) > 1340000/199529 on the retained rect_n40_L67 density: it regenerates both kernel inputs and both sqverify-fast inputs, binding the kernel inputs to the digests the receipts name, checks every enclosure and the dominated measure, decides the counting margin, the slab partition, the kernel's threshold, the near-axis containment A W(eps) <= B and the axis minimum against tau, which it evaluates again at the reported minimiser, holds every value to both release receipts, and refuses four altered parameters. It also builds both kernels from the retained source, drives the complete replay, controls A to H and the crate's two runs, and judges those receipts; there it checks receipts and decides no coverage.
+
+- Source: [`packing/devtools/audit_continuous_pose.py`](../../packing/devtools/audit_continuous_pose.py), [`packing/tests/test_audit_continuous_pose.py`](../../packing/tests/test_audit_continuous_pose.py)
+- Versions run: this repository's commits, which Git holds
+- What its authors read and used: [`packing/devtools/audit_continuous_pose.py`](../../packing/devtools/audit_continuous_pose.py)
+- Note: Its module docstring is its read log: written on 2026-10-10 from the review of the release and its scratch measurements, reading the release's parameters and receipts as data, both kernels and harnesses and run.py in full, and never opening exact.py, audit.py, tests/oracle.py, tests/test_kernel.py, tests/test_admission.py or PROOF.md while it was written; exact.py was read afterwards, to run control G on it, and nothing in the finite part changed. It shares with exact.py the definition of the density, its D4 expansion, the kernels' input order, the enclosure rule and the inward rounding, and no code.
+
+| evidence | run | code | results |
+| --- | --- | --- | --- |
+| `E-n040-guzhou-continuous-pose-kernel-replay` | replayed here | producer’s code | T-145 |
+| `E-n040-guzhou-continuous-pose-finite-audit` | audited here | independent | T-145 |
+| `E-n040-guzhou-continuous-pose-crate-axis` | audited here | independent | T-145 |
+
 ### `V-check-half-angle-area`
 
 **devtools.check_half_angle_area** · Squares Project (Levy) · first-party · decides · Python · exact-algebraic
@@ -1516,7 +1573,7 @@ Decides a rational centre and half-angle certificate, or a rational centre-basis
 - Source: [`packing/devtools/check_half_angle_area.py`](../../packing/devtools/check_half_angle_area.py), [`packing/tests/test_check_half_angle_area.py`](../../packing/tests/test_check_half_angle_area.py)
 - Versions run: this repository's commits, which Git holds
 - What its authors read and used: [`packing/devtools/check_half_angle_area.py`](../../packing/devtools/check_half_angle_area.py)
-- Note: Written on 2026-10-10 by the review lane of T-128, T-130 and T-131 from the certificate formats and plane geometry, and extended the same day by the review lanes of issues 476, 481, 483 and 484 and of issue 470 and Evan Daniel's n = 126 certificate. Its author had read both maintained routes, their parser and the importer's adapters before writing it, so it is not clean-room; it imports none of their parsing or deciding code and shares Fraction with every exact checker here. It is a second pair-deciding procedure within one method, exact-algebraic, not a second method.
+- Note: Written on 2026-10-10 by the review lane of T-128, T-130 and T-131 from the certificate formats and plane geometry, and extended the same day by the review lanes of issues 476, 481, 483 and 484 and of issue 470 and Evan Daniel's n = 126 certificate; the review lane of issues 488 and 489 ran it as retained, on the ten certificates their entries cite and, by a driver of its functions, the four the two commits hold that no entry cites. Its author had read both maintained routes, their parser and the importer's adapters before writing it, so it is not clean-room; it imports none of their parsing or deciding code and shares Fraction with every exact checker here. It is a second pair-deciding procedure within one method, exact-algebraic, not a second method.
 
 | evidence | run | code | results |
 | --- | --- | --- | --- |
@@ -1529,6 +1586,8 @@ Decides a rational centre and half-angle certificate, or a rational centre-basis
 | `E-deleeuw-483-exact-feasibility` | replayed here | independent | T-137 |
 | `E-mishapolk-470-exact-feasibility` | replayed here | independent | T-138 |
 | `E-evand-trio126-exact-feasibility` | replayed here | independent | T-139 |
+| `E-couzo-488-exact-feasibility` | replayed here | independent | T-140 |
+| `E-evand-489-exact-feasibility` | replayed here | independent | T-141 |
 
 ### `V-evand-exact-certificates`
 
@@ -1798,6 +1857,7 @@ Decides a measure-capture lower-bound certificate of format T, M or L on the 201
 | `E-n039-wand125-mixed-665-sqverify-fast-replay` | replayed here | shared components | T-110 |
 | `E-n041-wand125-mixed-6775-sqverify-fast-replay` | replayed here | shared components | T-111 |
 | `E-n040-guzhou-clipped-corner-sqverify-fast-replay` | replayed here | producer’s code | T-133 |
+| `E-n040-guzhou-continuous-pose-crate-axis` | audited here | independent | T-145 |
 
 ### `V-replay-chelokot-lean`
 
@@ -2035,6 +2095,8 @@ Binds all three complete source certificates and all nine full deciding inputs/n
 | `E-deleeuw-483-exact-feasibility` | replayed here | independent | T-137 |
 | `E-mishapolk-470-exact-feasibility` | replayed here | independent | T-138 |
 | `E-evand-trio126-exact-feasibility` | replayed here | independent | T-139 |
+| `E-couzo-488-exact-feasibility` | replayed here | independent | T-140 |
+| `E-evand-489-exact-feasibility` | replayed here | independent | T-141 |
 
 ### `V-upper-bound-reports`
 
@@ -2044,7 +2106,7 @@ Imports a report of rational upper-bound certificates by another author from its
 
 - Source: [`packing/devtools/upper_bound_reports.py`](../../packing/devtools/upper_bound_reports.py), [`packing/devtools/evand_arrangement_reports.py`](../../packing/devtools/evand_arrangement_reports.py), [`packing/tests/test_upper_bound_reports.py`](../../packing/tests/test_upper_bound_reports.py)
 - Versions run: this repository's commits, which Git holds
-- Note: Written for the 2026-10-10 intake pass's upper-bound imports from the formats the sources state. sqpack.verify and the independent rational corner checker decide; the 10 October reviews of issues 476, 481, 483 and 484 and of issue 470 read it in full. For issue 470 its decimal_dilation adapter generates the exact witnesses from the source's decimal poses, so there this repository is the witness's generator.
+- Note: Written for the 2026-10-10 intake pass's upper-bound imports from the formats the sources state. sqpack.verify and the independent rational corner checker decide; the 10 October reviews of issues 476, 481, 483 and 484, of issue 470 and of issues 488 and 489 read it in full; for the last, its HOUSES readers of the issue-481, issue-484, issue-488 and issue-489 packets are the exact readers that review proposed (RL-2). For issue 470 its decimal_dilation adapter generates the exact witnesses from the source's decimal poses, so there this repository is the witness's generator.
 
 | evidence | run | code | results |
 | --- | --- | --- | --- |
@@ -2054,6 +2116,8 @@ Imports a report of rational upper-bound certificates by another author from its
 | `E-deleeuw-483-exact-feasibility` | replayed here | independent | T-137 |
 | `E-mishapolk-470-exact-feasibility` | replayed here | independent | T-138 |
 | `E-evand-trio126-exact-feasibility` | replayed here | independent | T-139 |
+| `E-couzo-488-exact-feasibility` | replayed here | independent | T-140 |
+| `E-evand-489-exact-feasibility` | replayed here | independent | T-141 |
 
 ### `V-rehwaldt-n68-verify`
 

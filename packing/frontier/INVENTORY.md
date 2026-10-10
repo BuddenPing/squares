@@ -8,8 +8,8 @@ ours, which rest on someone else's argument, and how far each has been checked.
 
 ## The short version
 
-- **490** evidence records. **302** are formal; **295** of those were established here.
-- **180** rest on an argument made elsewhere, of which **7** have been read by nobody here.
+- **501** evidence records. **307** are formal; **300** of those were established here.
+- **186** rest on an argument made elsewhere, of which **7** have been read by nobody here.
 - **1** formal record proves a theorem only under a hypothesis nothing here has replayed, and is verified as that implication alone: `E-k2m4-evand-bentz4-lean-build` (ValidTilt9).
 - **41** claim to be first established here. **14** make no novelty statement at all - not assessed, which is not the same as not novel.
 
@@ -498,8 +498,8 @@ results, it is a statement about what this repository has itself examined.
 | `E-evand-465-record-hunt-report` | 0 | upper-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | *none held* |
 | `E-evand-465-record-hunt-exact-feasibility` | 0 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` |
 | `E-wand125-fine-net-n29-582-followup-report` | 0 | lower-bound | reported | - | elsewhere | - | previously-published | producer’s code | `V-wand125-sqverify-proof-net` |
-| `E-n040-guzhou-clipped-corner-report` | 1 | lower-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | `V-guzhou-n40-finite-py` |
-| `E-n040-guzhou-clipped-corner-sqverify-fast-replay` | 1 | lower-bound | verified | strict inequalities only | here | - | previously-published | producer’s code | `V-sqverify-fast`, `V-audit-clipped-corner-transfer` |
+| `E-n040-guzhou-clipped-corner-report` | 0 | lower-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | `V-guzhou-n40-finite-py` |
+| `E-n040-guzhou-clipped-corner-sqverify-fast-replay` | 0 | lower-bound | verified | strict inequalities only | here | - | previously-published | producer’s code | `V-sqverify-fast`, `V-audit-clipped-corner-transfer` |
 | `E-n040-guzhou-clipped-corner-finite-audit` | 0 | derived-structure | verified | equalities and inequalities, no tolerance | here | - | previously-published | independent | `V-audit-clipped-corner-transfer` |
 | `E-couzo-476-certificate-report` | 0 | upper-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | *none held* |
 | `E-couzo-476-exact-feasibility` | 0 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-check-half-angle-area` |
@@ -513,13 +513,24 @@ results, it is a statement about what this repository has itself examined.
 | `E-mishapolk-470-exact-feasibility` | 0 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-check-half-angle-area` |
 | `E-evand-trio126-certificate-report` | 0 | upper-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | *none held* |
 | `E-evand-trio126-exact-feasibility` | 0 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-check-half-angle-area` |
+| `E-couzo-488-certificate-report` | 0 | upper-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | *none held* |
+| `E-couzo-488-exact-feasibility` | 0 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-check-half-angle-area` |
+| `E-evand-489-hunt3-report` | 0 | upper-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | *none held* |
+| `E-evand-489-exact-feasibility` | 0 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-check-half-angle-area` |
+| `E-wand125-fine-net-n28-57425-report` | 0 | lower-bound | reported | - | elsewhere | - | previously-published | producer’s code | `V-wand125-sqverify-proof-net` |
+| `E-wand125-fine-net-n30-58925-report` | 0 | lower-bound | reported | - | elsewhere | - | previously-published | producer’s code | `V-wand125-sqverify-proof-net` |
+| `E-wand125-linear-n122-1126-report` | 0 | lower-bound | reported | - | elsewhere | - | previously-published | producer’s code | `V-wand125-unified-linear-verify-cpp` |
+| `E-n040-guzhou-continuous-pose-report` | 1 | lower-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | `V-guzhou-n40-continuous-pose`, `V-guzhou-n40-axis-integer-grid` |
+| `E-n040-guzhou-continuous-pose-kernel-replay` | 1 | lower-bound | verified | strict inequalities only | here | - | previously-published | producer’s code | `V-guzhou-n40-continuous-pose`, `V-guzhou-n40-axis-integer-grid`, `V-audit-continuous-pose` |
+| `E-n040-guzhou-continuous-pose-finite-audit` | 0 | derived-structure | verified | equalities and inequalities, no tolerance | here | - | previously-published | independent | `V-audit-continuous-pose` |
+| `E-n040-guzhou-continuous-pose-crate-axis` | 0 | derived-structure | verified | strict inequalities only | here | - | previously-published | independent | `V-sqverify-fast`, `V-audit-continuous-pose` |
 
 ## What the register rests on
 
-- **assurance**: numerically-checked 4, reported 184, verified 302
-- **method**: exact-algebraic 123, interval-certified 163, numerical-multiprecision 4, proof-assistant-checked 5, proof-audited 4, published-proof 7, reported 184
-- **novelty**: apparently-novel 41, common-knowledge 4, not assessed 14, previously-published 431
-- **relationship to the producer's code**: generator 5, independent-implementation 174, not-applicable 22, same-implementation 266, shared-components 17, unknown-historical 6
+- **assurance**: numerically-checked 4, reported 190, verified 307
+- **method**: exact-algebraic 126, interval-certified 165, numerical-multiprecision 4, proof-assistant-checked 5, proof-audited 4, published-proof 7, reported 190
+- **novelty**: apparently-novel 41, common-knowledge 4, not assessed 14, previously-published 442
+- **relationship to the producer's code**: generator 5, independent-implementation 178, not-applicable 22, same-implementation 273, shared-components 17, unknown-historical 6
 
 The `cases` column is how many frontier records cite each piece of evidence, and it is the reason to read this table rather than count records. Ranked below are the *formal* records only: a `reported` record cited across the frontier may be a shared catalogue and is labelled as such, which is the register working rather than risk. The risk is a verified claim resting on an argument nobody has examined.
 

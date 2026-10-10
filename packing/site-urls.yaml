@@ -3417,7 +3417,7 @@ urls:
   generator: devtools.render_case_pages:case_records
   producer: overview
   first_published: '2026-10-03'
-  lastmod: '2026-10-06'
+  lastmod: '2026-10-10'
   status: live
 - path: cases/123.html
   canonical: cases/123.html
@@ -3425,7 +3425,7 @@ urls:
   generator: devtools.render_case_pages:case_records
   producer: overview
   first_published: '2026-10-03'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-10'
   status: live
 - path: cases/124.html
   canonical: cases/124.html
@@ -3433,7 +3433,7 @@ urls:
   generator: devtools.render_case_pages:case_records
   producer: overview
   first_published: '2026-10-03'
-  lastmod: '2026-10-06'
+  lastmod: '2026-10-10'
   status: live
 - path: cases/125.html
   canonical: cases/125.html
@@ -3441,7 +3441,7 @@ urls:
   generator: devtools.render_case_pages:case_records
   producer: overview
   first_published: '2026-10-03'
-  lastmod: '2026-10-06'
+  lastmod: '2026-10-10'
   status: live
 - path: cases/126.html
   canonical: cases/126.html
@@ -4809,7 +4809,7 @@ urls:
   generator: devtools.render_case_pages:case_records
   producer: overview
   first_published: '2026-10-03'
-  lastmod: '2026-10-07'
+  lastmod: '2026-10-10'
   status: live
 - path: cases/280.html
   canonical: cases/280.html
@@ -4993,7 +4993,7 @@ urls:
   generator: devtools.render_case_pages:case_records
   producer: overview
   first_published: '2026-10-03'
-  lastmod: '2026-10-07'
+  lastmod: '2026-10-10'
   status: live
 - path: cases/300.html
   canonical: cases/300.html
@@ -12325,6 +12325,211 @@ urls:
     - packing/devtools/upper_bound_reports.py
     - packing/devtools/check_half_angle_area.py
     - docs/project/reviews/review-2026-10-10-upper-bound-imports-470-and-trio126.md
+- path: result/t-140.html
+  canonical: result/t-140.html
+  kind: result
+  generator: devtools.render_overview:result_fragments
+  producer: overview
+  first_published: '2026-10-10'
+  lastmod: '2026-10-10'
+  status: live
+  identity:
+    kind: upper-bound
+    scope:
+      n_values:
+      - 132
+      - 175
+      - 209
+      - 237
+      - 270
+      - 305
+    established: null
+    attribution:
+      source_keys:
+      - '[Couzo certificates 2026-10-10]'
+      published: '2026-10-10'
+    builds_on: null
+    evidence:
+    - E-couzo-488-certificate-report
+    - E-couzo-488-exact-feasibility
+    artifacts:
+    - packing/resources/web/couzo-certificates-2026-10-10/README.md
+    - packing/resources/web/couzo-certificates-2026-10-10/acquisition/claims.json
+    - packing/resources/web/couzo-certificates-2026-10-10/source/certificates/n132.cert
+    - packing/resources/web/couzo-certificates-2026-10-10/source/certificates/n175.cert
+    - packing/resources/web/couzo-certificates-2026-10-10/source/certificates/n209.cert
+    - packing/resources/web/couzo-certificates-2026-10-10/source/certificates/n237.cert
+    - packing/resources/web/couzo-certificates-2026-10-10/source/certificates/n270.cert
+    - packing/resources/web/couzo-certificates-2026-10-10/source/certificates/n305.cert
+    - packing/resources/web/couzo-certificates-2026-10-10/receipts/exact-certification.json.xz
+    - packing/devtools/upper_bound_reports.py
+    - packing/devtools/check_half_angle_area.py
+    - docs/project/reviews/review-2026-10-10-upper-bound-imports-488-489.md
+- path: result/t-141.html
+  canonical: result/t-141.html
+  kind: result
+  generator: devtools.render_overview:result_fragments
+  producer: overview
+  first_published: '2026-10-10'
+  lastmod: '2026-10-10'
+  status: live
+  identity:
+    kind: upper-bound
+    scope:
+      n_values:
+      - 132
+      - 308
+    established: null
+    attribution:
+      source_keys:
+      - '[Daniel record hunt 3 2026-10-10]'
+      published: '2026-10-10'
+    builds_on: null
+    evidence:
+    - E-evand-489-hunt3-report
+    - E-evand-489-exact-feasibility
+    artifacts:
+    - packing/resources/web/evand-record-hunt3-2026-10-10/README.md
+    - packing/resources/web/evand-record-hunt3-2026-10-10/acquisition/claims.json
+    - packing/resources/web/evand-record-hunt3-2026-10-10/acquisition/beyond-horizon-claims.json
+    - packing/resources/web/evand-record-hunt3-2026-10-10/source/search/packer/candidates/hunt3_n132.cert
+    - packing/resources/web/evand-record-hunt3-2026-10-10/source/search/packer/candidates/hunt3_n308.cert
+    - packing/resources/web/evand-record-hunt3-2026-10-10/receipts/exact-certification.json.xz
+    - packing/devtools/upper_bound_reports.py
+    - packing/devtools/check_half_angle_area.py
+    - docs/project/reviews/review-2026-10-10-upper-bound-imports-488-489.md
+- path: result/t-142.html
+  canonical: result/t-142.html
+  kind: result
+  generator: devtools.render_overview:result_fragments
+  producer: overview
+  first_published: '2026-10-10'
+  lastmod: '2026-10-10'
+  status: live
+  identity:
+    kind: lower-bound
+    scope:
+      n_values:
+      - 28
+    established: null
+    attribution:
+      source_keys:
+      - '[wand125 fine-net n28 n30 2026-10-10]'
+      published: '2026-10-10'
+    builds_on: null
+    evidence:
+    - E-wand125-fine-net-n28-57425-report
+    artifacts:
+    - packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/README.md
+    - packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/reported-n28-followup.json
+    - packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/source-manifest.json
+    - packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/receipts/premises-n28.json
+    - packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/receipts/sample-diagnostic-n28.json
+    - packing/devtools/fine_net_followup.py
+    - packing/devtools/audit_wand125_declared_net.py
+- path: result/t-143.html
+  canonical: result/t-143.html
+  kind: result
+  generator: devtools.render_overview:result_fragments
+  producer: overview
+  first_published: '2026-10-10'
+  lastmod: '2026-10-10'
+  status: live
+  identity:
+    kind: lower-bound
+    scope:
+      n_values:
+      - 30
+    established: null
+    attribution:
+      source_keys:
+      - '[wand125 fine-net n28 n30 2026-10-10]'
+      published: '2026-10-10'
+    builds_on: null
+    evidence:
+    - E-wand125-fine-net-n30-58925-report
+    artifacts:
+    - packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/README.md
+    - packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/reported-n30-followup.json
+    - packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/source-manifest.json
+    - packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/receipts/premises-n30.json
+    - packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/receipts/sample-diagnostic-n30.json
+    - packing/devtools/fine_net_followup.py
+    - packing/devtools/audit_wand125_declared_net.py
+- path: result/t-144.html
+  canonical: result/t-144.html
+  kind: result
+  generator: devtools.render_overview:result_fragments
+  producer: overview
+  first_published: '2026-10-10'
+  lastmod: '2026-10-10'
+  status: live
+  identity:
+    kind: lower-bound
+    scope:
+      n_values:
+      - 122
+      - 123
+      - 124
+      - 125
+      - 126
+    established: null
+    attribution:
+      source_keys:
+      - '[wand125 linear n122 2026-10-10]'
+      published: '2026-10-10'
+    builds_on: null
+    evidence:
+    - E-wand125-linear-n122-1126-report
+    artifacts:
+    - packing/resources/web/wand125-linear-n122-2026-10-10/README.md
+    - packing/resources/web/wand125-linear-n122-2026-10-10/reported-n122.json
+    - packing/resources/web/wand125-linear-n122-2026-10-10/source-manifest.json
+    - packing/resources/web/wand125-linear-n122-2026-10-10/receipts/linear-premises.json
+    - packing/resources/web/wand125-linear-n122-2026-10-10/receipts/linear-sample-diagnostic.json
+    - packing/devtools/fine_net_followup.py
+    - packing/devtools/audit_wand125_linear.py
+- path: result/t-145.html
+  canonical: result/t-145.html
+  kind: result
+  generator: devtools.render_overview:result_fragments
+  producer: overview
+  first_published: '2026-10-10'
+  lastmod: '2026-10-10'
+  status: live
+  identity:
+    kind: lower-bound
+    scope:
+      n_values:
+      - 40
+    established: null
+    attribution:
+      source_keys:
+      - '[Guzhou0806 n40 continuous pose 2026-10-10]'
+      published: '2026-10-10'
+    builds_on: null
+    evidence:
+    - E-n040-guzhou-continuous-pose-report
+    - E-n040-guzhou-continuous-pose-kernel-replay
+    - E-n040-guzhou-continuous-pose-finite-audit
+    - E-n040-guzhou-continuous-pose-crate-axis
+    artifacts:
+    - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/README.md
+    - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/PROOF.md
+    - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/certificate/parameters.json
+    - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/verifier/continuous_pose.cpp
+    - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/verifier/axis_integer_grid.cpp
+    - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/results/verification.json
+    - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/release-ci/results/verification.json
+    - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/receipts/builds.json
+    - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/receipts/axis-run.json
+    - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/receipts/slabs.jsonl.gz
+    - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/receipts/crate-runs.json.gz
+    - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/receipts/replay-check.json
+    - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/receipts/finite-audit.json
+    - packing/resources/web/wand125-rectangle-certificates-2026-10-01/wand125-rectangles/certificates/rect_n40_L67/certified_candidate.json.gz
+    - packing/devtools/audit_continuous_pose.py
+    - docs/project/reviews/review-2026-10-10-guzhou-n40-continuous-pose-bound.md
 - path: results.html
   canonical: all-results.html
   kind: forwarder
