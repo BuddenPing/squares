@@ -717,6 +717,137 @@ def test_check_accepts_the_deployed_lazy_record_links_without_refetching(
         assert requested.count(f"https://example.org/{address}") == 1
 
 
+def test_check_shares_fragment_requests_but_keeps_queries_methods_and_failures(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    website = fake_site(site_pages())
+    assert failures(monkeypatch, website) == []
+    requested: list[tuple[str, bool]] = []
+    resource = f"{REPO_URL}/blob/main/README.md"
+
+    def fetch(url: str, *, head: bool = False, timeout: float = 30.0) -> tuple[int, bytes]:
+        requested.append((url, head))
+        if "?missing" in url:
+            return 503, b""
+        return website(url, head=head, timeout=timeout)
+
+    def registry_prefetch(_site: str, read: Fetch, **_kwargs: object) -> list[tuple[bool, str]]:
+        read(resource + "#L1", timeout=1)
+        read(resource + "#L2", head=True, timeout=1)
+        read(resource + "?raw=1#L1", head=True, timeout=1)
+        read(resource + "?raw=1#L2", timeout=1)
+        read(resource + "?raw=2#L1", timeout=1)
+        for url in (resource + "?missing#L1", resource + "?missing#L2"):
+            assert read(url, head=True, timeout=1) == (503, b"")
+        return []
+
+    monkeypatch.setattr(check_published_site, "fetch", fetch)
+    monkeypatch.setattr(check_published_site, "deployed_registry_checks", registry_prefetch)
+    checked = check_published_site.check(
+        "https://example.org", COMMIT, timeout=1, browser=False
+    )
+    assert all(passed for passed, _ in checked)
+    assert [(url, head) for url, head in requested if url.startswith(resource)] == [
+        (resource, False),
+        (resource + "?raw=1", True),
+        (resource + "?raw=1", False),
+        (resource + "?raw=2", False),
+        (resource + "?missing", True),
+    ]
+    pages = site_pages()
+    pages[EXPLAINER] += (
+        f'<a href="{resource}#L1">one</a><a href="{resource}#L2">two</a>'.encode()
+    )
+    urls: list[str] = []
+    assert failures(monkeypatch, fake_site(pages, requested=urls, lost=("README.md",))) == [
+        f"link HTTP 404: {resource}",
+        f"link HTTP 404: {resource}#L1",
+        f"link HTTP 404: {resource}#L2",
+    ]
+    assert urls.count(resource) == 1
+
+
+def test_live_progress_reports_phases_requests_and_retries_without_changing_verdicts(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    real_fetch = check_published_site.fetch
+    website = fake_site(site_pages())
+    assert failures(monkeypatch, website) == []
+    monkeypatch.setattr(check_published_site, "forwarders_followed", lambda *_args, **_kw: [])
+    monkeypatch.setattr(
+        check_published_site,
+        "workbench_startup",
+        lambda *_args, **_kw: (True, "browser started"),
+    )
+    expected = check_published_site.check("https://example.org", COMMIT, timeout=1)
+    events: list[str] = []
+    requests: list[tuple[str, bool]] = []
+    clock = [0.0]
+    resource = f"{REPO_URL}/blob/main/README.md"
+
+    def fetch_once(url: str, *, head: bool = False, timeout: float = 30.0) -> tuple[int, bytes]:
+        assert events, "progress must precede network work"
+        assert "start" in events[0]
+        requests.append((url, head))
+        clock[0] += 0.25
+        if url == resource and requests.count((url, head)) == 1:
+            clock[0] += 5
+            return 503, b""
+        return website(url, head=head, timeout=timeout)
+
+    def advance(delay: float) -> None:
+        clock[0] += delay
+
+    def fetch(
+        url: str,
+        *,
+        head: bool = False,
+        timeout: float = 30.0,
+        on_retry: Callable[[int, float], object] | None = None,
+    ) -> tuple[int, bytes]:
+        return real_fetch(url, head=head, timeout=timeout, sleep=advance, on_retry=on_retry)
+
+    monkeypatch.setattr(check_published_site, "fetch", fetch)
+    monkeypatch.setattr(check_published_site, "fetch_once", fetch_once)
+    monkeypatch.setattr(check_published_site.time, "monotonic", lambda: clock[0])
+    actual = check_published_site.check(
+        "https://example.org", COMMIT, timeout=1, progress=events.append
+    )
+    assert actual == expected
+    assert any("repository links: retry HEAD" in line and "HTTP 503" in line for line in events)
+    assert any("registry: start" in line for line in events)
+    assert any("content: complete" in line for line in events)
+    assert any("publication files: start" in line for line in events)
+    assert any("browser forwarders: start" in line for line in events)
+    assert any("browser workbench: complete" in line for line in events)
+    assert any(f"HEAD {resource}: HTTP 200 in 7.50s" in line for line in events)
+    assert "complete" in events[-1]
+    assert f"unique_requests={len(set(requests))}" in events[-1]
+    assert "retries=1" in events[-1]
+    assert f"audit +{clock[0]:.2f}s" in events[-1]
+
+
+def test_live_cli_keeps_progress_separate_and_preserves_failure_exit_status(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    def check(
+        _site: str,
+        _commit: str,
+        *,
+        progress: Callable[[str], object],
+        **_kwargs: object,
+    ) -> list[tuple[bool, str]]:
+        progress("audit registry: start")
+        assert capsys.readouterr().err == "audit registry: start\n"
+        return [(False, "link HTTP 503: https://example.org/missing")]
+
+    monkeypatch.setattr(check_published_site, "check", check)
+    assert check_published_site.main(["--commit", COMMIT, "--no-browser"]) == 1
+    assert capsys.readouterr().out == (
+        "FAIL link HTTP 503: https://example.org/missing\n0 of 1 checks passed\n"
+    )
+
+
 @pytest.mark.parametrize(
     "separator",
     ["\n", "\r", "\v", "\u2028", "\u2029"],

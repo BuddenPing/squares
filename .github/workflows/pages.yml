@@ -2240,6 +2240,9 @@ jobs:
     needs: deploy
     if: ${{ !cancelled() && needs.deploy.result == 'success' }}
     runs-on: ubuntu-latest
+    # Bound the live network audit; exceeding this ceiling leaves verification
+    # failed (think-6y2j).
+    timeout-minutes: 30
     steps:
       - name: Check out the repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

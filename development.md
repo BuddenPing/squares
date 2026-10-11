@@ -815,14 +815,17 @@ Checks run concurrently, but their captured output is replayed in declared order
 workers.
 Strict mode cannot be combined with a partial selection and fails on every skip.
 
-`--push` is the pre-push floor (`BC-086`). It selects the edit tier plus a
-`reachable behavioral tests` step: `devtools.reachable_tests` computes the test files
-the change can reach — import closure over `src/sqpack`, `devtools`, `cases` and
-`tests`, text mention of a changed module or file, repository walkers always included —
-and errs toward running too many, up to the whole suite when nothing narrower is
-defensible. Each of 2026-08-30’s three red pushes broke a test reachable this way from
-the changed paths ([D-381, D-393](defects.md)), and the floor would have caught all
-three.
+`--push` is the pre-push floor (`BC-086`). It scopes edit-tier prerequisites and
+reachable behavioral tests from one changed-path snapshot, including old and new rename
+paths and deleted files.
+Unclaimed inputs and an empty diff retain the complete prerequisite floor; checks
+without declared inputs always run.
+For behavioral tests, `devtools.reachable_tests` computes the test files the change can
+reach — import closure over `src/sqpack`, `devtools`, `cases` and `tests`, text mention
+of a changed module or file, repository walkers always included — and errs toward
+running too many, up to the whole suite when nothing narrower is defensible.
+Each of 2026-08-30’s three red pushes broke a test reachable this way from the changed
+paths ([D-381, D-393](defects.md)), and the floor would have caught all three.
 
 The Pages workflow has an explicit publication invocation contract.
 Its first-party commands, named test files, explicit builder files and workflow/scope
@@ -1516,6 +1519,15 @@ what record links it writes at that commit: every result row of the overview and
 results page carries its own, and the overviews of three sampled results carry every
 repository link the renderer writes for them ([D-512](defects.md)). Run it from a
 checkout at the deployed commit, since the register it reads is the checkout’s.
+
+The live command reports phase timings, unique transport requests, retries, and slow
+requests to stderr during execution.
+URL fragments share a transport request while query strings remain distinct; every
+original link retains its own verdict.
+Persistent HTTP errors fail verification after bounded retries.
+A successful Pages deploy with a failed link audit remains incomplete publication
+verification; preserve the failed receipt and rerun only verification after diagnosing
+the external response.
 
 The check also reads every page’s head for the site’s identity and link-preview tags and
 fetches the card they name:

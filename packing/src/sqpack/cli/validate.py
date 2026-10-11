@@ -33,10 +33,11 @@ import traceback
 import uuid
 from collections.abc import Callable, Iterator, Mapping, Sequence
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from contextlib import contextmanager, nullcontext, suppress
+from contextlib import ExitStack, contextmanager, nullcontext, suppress
 from dataclasses import asdict, dataclass, field, replace
 from datetime import UTC, datetime
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from threading import Event, Lock, Thread
 from typing import Literal, Never, TextIO, override
 
@@ -5813,7 +5814,7 @@ def changed_paths(since: str) -> list[str]:
     return sorted(out)
 
 
-def _push_test_step(base: str) -> Step:
+def _push_test_step(base: str, *, paths_file: Path | None = None) -> Step:
     """The behavioral tests reachable from the change against `base` (BC-086).
 
     Selection happens in `devtools.reachable_tests`, which errs toward inclusion the
@@ -5823,8 +5824,13 @@ def _push_test_step(base: str) -> Step:
     probe is a subprocess because the selector lives in `devtools`, which `sqpack` does
     not import.
     """
+    change_arguments = (
+        ("--changed-paths-file", str(paths_file))
+        if paths_file is not None
+        else ("--since", base)
+    )
     probe = subprocess.run(
-        (sys.executable, "-m", "devtools.reachable_tests", "--summary", "--since", base),
+        (sys.executable, "-m", "devtools.reachable_tests", "--summary", *change_arguments),
         cwd=PROJECT_ROOT,
         capture_output=True,
         text=True,
@@ -5851,8 +5857,7 @@ def _push_test_step(base: str) -> Step:
                 "-m",
                 "devtools.reachable_tests",
                 "--run",
-                "--since",
-                base,
+                *change_arguments,
                 # The same distribution both behavioural lanes take, forwarded because the
                 # selector's runner cannot work it out: `cpus - jobs + 1` is about how many
                 # outer slots this run has busy, which only the caller knows. Without it the
@@ -7350,6 +7355,7 @@ def _validate_runtime() -> None:
 def main(argv: Sequence[str] | None = None) -> int:
     """Run validation and return a process-compatible status code."""
     parser = _parser()
+    resources = ExitStack()
     try:
         namespace = parser.parse_args(argv)
         exhaustive_shard = _exhaustive_shard(namespace.exhaustive_shard)
@@ -7424,7 +7430,23 @@ def main(argv: Sequence[str] | None = None) -> int:
         exclusive_step_name = ""
         if namespace.push:
             base = namespace.since or "origin/main"
-            step = _push_test_step(base)
+            paths = changed_paths(base)
+            selection = select_for_paths(paths, selected)
+            selected = list(selection.steps)
+            # Keep both subprocess phases on the same complete change set as the
+            # prerequisites. A file also avoids argv size limits on broad changes.
+            directory = resources.enter_context(TemporaryDirectory(prefix="packing-push-"))
+            paths_file = Path(directory) / "changed-paths.json"
+            paths_file.write_text(json.dumps(paths), encoding="utf-8")
+            step = _push_test_step(base, paths_file=paths_file)
+            print(
+                f"== pre-push prerequisites: {len(selected)}/{selection.universe_size} "
+                f"from {len(paths)} changed paths =="
+            )
+            if selection.unattributed_paths:
+                print("  unclaimed paths; running the whole prerequisite selection")
+            elif not paths:
+                print("  no paths determined; running the whole prerequisite selection")
             # A large proper subset can cost as much as the whole fallback. When both
             # resource settings are implicit and there are enough selected files to
             # occupy the host, let the edit pool drain, then give pytest the host. The
@@ -7501,6 +7523,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     except (UsageError, StepFailureError, ProjectLayoutError) as error:
         print(f"packing-validate: error: {error}", file=sys.stderr)
         return 2 if isinstance(error, (UsageError, ProjectLayoutError)) else 1
+    finally:
+        resources.close()
 
     if namespace.format == "json":
         print(json.dumps(asdict(summary), indent=2))
