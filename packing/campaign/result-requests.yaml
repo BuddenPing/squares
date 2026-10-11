@@ -4104,11 +4104,11 @@ issues:
         217911/99764500 above T-145.
       source: https://github.com/jlevy/squares/issues/485#issuecomment-6106761997
       not_registered: >-
-        Imported on 11 October and registered by the records lane of the 2026-10-11 pass, which
-        takes its T-NNN; the packet guzhou-n40-new-supports-2026-10-11 retains the release, and
-        devtools.audit_n40_new_supports decided the finite steps and the near-axis statement. The
-        complete replay of the 43 slabs, priced at about 0.74 CPU-hours here, waits for an owner
-        budget (think-tln9).
+        Retained and its finite steps audited, not registered: the packet
+        guzhou-n40-new-supports-2026-10-11 retains the release, and devtools.audit_n40_new_supports
+        decided the finite steps and the near-axis statement. A later layer of the 2026-10-11 intake
+        registers it and takes its T-NNN. The complete replay of the 43 slabs is priced at about
+        0.74 CPU-hours here and has no owner budget yet.
       queued: true
       bead: think-tln9
     - key: s40-support-family-obstruction

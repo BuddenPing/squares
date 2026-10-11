@@ -89,7 +89,7 @@
   {
    "detail": "5480 rows, 0 dropped",
    "held": true,
-   "name": "axis input: every term kept"
+   "name": "axis input: 5480 rows, none dropped"
   },
   {
    "detail": "supports rounded inward to 1e-9, densities down to 1e-9",
@@ -139,7 +139,7 @@
   {
    "detail": "217911/99764500",
    "held": true,
-   "name": "claim: X raises T-145's bound"
+   "name": "claim: X raises the earlier bound"
   },
   {
    "detail": "1/500",
@@ -179,12 +179,17 @@
   {
    "detail": "B - A W(eps) = 424025836324581/839750000000839750000000",
    "held": true,
-   "name": "near-axis: A W(eps) <= B, by PROOF.md's margin"
+   "name": "near-axis: A W(eps) <= B"
   },
   {
    "detail": "1001486431423867090847280653 against ceil(1e27 tau) = 999800000000000000000000000",
    "held": true,
    "name": "axis: the receipts' minimum is at least tau"
+  },
+  {
+   "detail": "section 6",
+   "held": true,
+   "name": "near-axis: B - A W(eps) is PROOF.md's margin"
   },
   {
    "detail": "all keys",
@@ -197,12 +202,12 @@
    "name": "local receipt: parameters"
   },
   {
-   "detail": "424025836324581/839750000000839750000000",
+   "detail": "1/500",
    "held": true,
    "name": "local receipt: scalar block"
   },
   {
-   "detail": "the derived inputs' digests and the orbit counts",
+   "detail": "the derived inputs' digests and counts",
    "held": true,
    "name": "local receipt: admission block"
   },
@@ -217,7 +222,7 @@
    "name": "local receipt: axis block is the axis output's"
   },
   {
-   "detail": "",
+   "detail": "7f66379f4c4be56092cdad20289b98268c9ec7329c0a4afba0bdfc27c344dcb8, 0db283c86a302e2efa23dbb024bda1f244f12d0205a294630fc298bc59df0136",
    "held": true,
    "name": "local receipt: slab and axis records by digest"
   },
@@ -227,7 +232,7 @@
    "name": "local receipt: the source it ran is the retained tree"
   },
   {
-   "detail": "REPLAYED_SAME_KERNEL, four workers",
+   "detail": "REPLAYED_SAME_KERNEL",
    "held": true,
    "name": "local receipt: status and flags"
   },
@@ -252,12 +257,12 @@
    "name": "ci receipt: parameters"
   },
   {
-   "detail": "424025836324581/839750000000839750000000",
+   "detail": "1/500",
    "held": true,
    "name": "ci receipt: scalar block"
   },
   {
-   "detail": "the derived inputs' digests and the orbit counts",
+   "detail": "the derived inputs' digests and counts",
    "held": true,
    "name": "ci receipt: admission block"
   },
@@ -272,7 +277,7 @@
    "name": "ci receipt: axis block is the axis output's"
   },
   {
-   "detail": "",
+   "detail": "2c60b9342fb702d27ec39fea26209dee77c3420e6cdf0ff8659e4ee4772ea7c0, 33f918e940be8b004f67d7269adb5a8329451b1fa8b0aef78224ca9766b8a2b1",
    "held": true,
    "name": "ci receipt: slab and axis records by digest"
   },
@@ -282,7 +287,7 @@
    "name": "ci receipt: the source it ran is the retained tree"
   },
   {
-   "detail": "REPLAYED_SAME_KERNEL, four workers",
+   "detail": "REPLAYED_SAME_KERNEL",
    "held": true,
    "name": "ci receipt: status and flags"
   },
@@ -302,14 +307,14 @@
    "name": "ci receipt: the fourteen stages exited as expected"
   },
   {
-   "detail": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0, Python 3.14.4",
+   "detail": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0, Python 3.14.4, 726.753125245 s",
    "held": true,
    "name": "local receipt: the producer's run, not CI"
   },
   {
-   "detail": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, Python 3.12.3",
+   "detail": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, Python 3.12.3, 1386.242149262 s",
    "held": true,
-   "name": "ci receipt: run 38120568498 on the pin"
+   "name": "ci receipt: run 38120568498 on the pin, the binaries g++ 13.3.0 rebuilds"
   },
   {
    "detail": "43 of 43",
@@ -338,11 +343,13 @@
    "change": "A one step of 1/250000000 larger, 249329660/250000000",
    "control": "G",
    "expect_failed": [
-    "near-axis: A W(eps) <= B, by PROOF.md's margin"
+    "near-axis: A W(eps) <= B"
    ],
    "failed": [
-    "near-axis: A W(eps) <= B, by PROOF.md's margin"
+    "near-axis: A W(eps) <= B"
    ],
+   "near_axis_margin": "-146749044083603/41987500000041987500000",
+   "near_axis_margin_decimal": "-3.49507e-09",
    "refused": true
   },
   {
@@ -354,6 +361,8 @@
    "failed": [
     "counting: n tau - M > 0"
    ],
+   "near_axis_margin": "424025836324581/839750000000839750000000",
+   "near_axis_margin_decimal": "5.04943e-10",
    "refused": true
   },
   {
@@ -367,19 +376,23 @@
     "slabs: T passes pi/4",
     "slabs: the endpoints partition [eps, T]"
    ],
+   "near_axis_margin": "424025836324581/839750000000839750000000",
+   "near_axis_margin_decimal": "5.04943e-10",
    "refused": true
   },
   {
    "change": "eps replaced by 1/10^5",
    "control": "G4",
    "expect_failed": [
-    "near-axis: A W(eps) <= B, by PROOF.md's margin",
+    "near-axis: A W(eps) <= B",
     "slabs: the endpoints partition [eps, T]"
    ],
    "failed": [
     "slabs: the endpoints partition [eps, T]",
-    "near-axis: A W(eps) <= B, by PROOF.md's margin"
+    "near-axis: A W(eps) <= B"
    ],
+   "near_axis_margin": "-150743799917875419/8397500000839750000000",
+   "near_axis_margin_decimal": "-1.7951e-05",
    "refused": true
   },
   {
@@ -404,6 +417,21 @@
    "failed": [
     "density: the release's candidate",
     "density: the weights sum to M"
+   ],
+   "refused": true
+  },
+  {
+   "change": "a hundredth of site 0's weight moved to site 1",
+   "control": "D3",
+   "expect_failed": [
+    "pose input: the receipts' input",
+    "axis input: the receipts' input"
+   ],
+   "failed": [
+    "density: the release's candidate",
+    "pose input: the receipts' input",
+    "axis input: the receipts' input",
+    "axis: the capture at the minimiser, evaluated here"
    ],
    "refused": true
   }

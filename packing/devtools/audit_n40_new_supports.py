@@ -13,25 +13,27 @@ both kernels line by line and states the input formats this tool regenerates.
 Four subcommands:
 
 - ``derive`` writes the two kernel inputs, regenerated here from the retained density
-  (`pose_input`, and `axis_input` of `devtools.audit_continuous_pose`), and the crate's
-  near-axis input, and prints their SHA-256. Both release receipts name the kernel
-  inputs by digest (`POSE_SHA256`, `AXIS_SHA256`), which is what binds them to the
-  density.
+  (`pose_input` and `axis_input` of `devtools.audit_continuous_pose`, ``B`` written as
+  this release writes it), and the crate's near-axis input, and prints their SHA-256.
+  Both release receipts name the kernel inputs by digest (`POSE_SHA256`,
+  `AXIS_SHA256`), which is what binds them to the density.
 - ``check`` decides the claim's finite steps in exact rationals (`check_report`): the
   density's orbit facts (`support_facts`: the 522 inherited boxes are rows of the
   original pool, the 163 generated ones are D4-equivalent to none of its 2,526
   rectangles, the 685 orbits are distinct, every box lies in ``K``, every weight is
-  positive and they sum to ``M``), the D4 expansion, both inputs' identity and the
+  positive and they sum to ``M``), then the D4 expansion, both inputs' identity and the
   enclosure of every number, the dominated measure, the scalar chain, and every value
-  of both release receipts; it refuses the finite controls (`FINITE_CONTROLS`) and
-  prices the continuous-pose replay from the receipts and T-145's replay here
-  (`price`).
+  of both release receipts, by the checks `devtools.audit_continuous_pose` makes of
+  T-145's release, made of this one (`RELEASE`) rather than copied; it refuses the
+  finite controls (`FINITE_CONTROLS`, `density_controls`) and prices the
+  continuous-pose replay from the receipts and T-145's replay here (`price`).
 - ``run-axis`` builds the release's axis kernel from the retained source with the
   release's flags in a scratch tree, runs it on the derived input and at two thresholds
   either side of its minimum, and, given a crate binary of reviewed source, decides the
   near-axis statement a second way with ``sqverify-fast``'s exact axis sweep. These are
   the quick parts of the replay; the 43 slabs are not run here.
-- ``check-axis`` judges those receipts.
+- ``check-axis`` judges those receipts, and refuses them without the crate's decision
+  unless told ``--without-crate``.
 
 **What its author read** (its independence record, for the finite steps). Written on
 2026-10-11 by an AI agent (Claude, lane E of the 2026-10-11 intake pass, ``think-tln9``)
@@ -40,8 +42,8 @@ from the release's ``README.md``, ``SOURCES.md``, ``VERIFICATION.md``,
 the parameters), ``certificate/parameters.json``, the diff of ``verifier/run.py`` and the
 workflow against T-145's pin (for the commands; the axis kernel is now built with the
 pose kernel's flags), and the receipts and both densities as data; and from
-`devtools.audit_continuous_pose`, whose input builders it reuses. It did not open
-``verifier/exact.py``, ``verifier/audit.py``, ``obstruction/check.py``,
+`devtools.audit_continuous_pose`, whose input builders and finite checks it reuses. It
+did not open ``verifier/exact.py``, ``verifier/audit.py``, ``obstruction/check.py``,
 ``obstruction/check.cpp``, ``obstruction/run.py`` or the release's tests. It shares with
 ``exact.py`` the definition of the density (weight ``w`` puts ``w / (8 |R|)`` on each of
 the eight images), its D4 expansion, the kernels' input order, the enclosure rule and the
@@ -56,7 +58,8 @@ Usage, from ``packing/``, each after ``uv run --frozen --all-extras --group dev`
     python -m devtools.audit_n40_new_supports check [--output OUT.json]
     python -m devtools.audit_n40_new_supports run-axis --out DIR \\
         [--crate-binary sqverify_fast/target/release/sqverify-fast]
-    python -m devtools.audit_n40_new_supports check-axis [--receipts DIR] [--output OUT]
+    python -m devtools.audit_n40_new_supports check-axis [--receipts DIR] [--output OUT] \\
+        [--without-crate]
 """
 
 from __future__ import annotations
@@ -64,9 +67,7 @@ from __future__ import annotations
 import argparse
 import gzip
 import heapq
-import itertools
 import json
-import math
 import shutil
 import subprocess
 import sys
@@ -83,7 +84,6 @@ from devtools.audit_clipped_corner_transfer import (
     area,
     d4_maps,
     image,
-    invariant,
     merge,
     rational,
     sha256,
@@ -95,34 +95,29 @@ from devtools.audit_continuous_pose import (
     FLAGS,
     GRID,
     KERNEL_SOURCES,
-    RELEASE_STAGES,
-    SQRT2_UP,
-    TIMING,
     Check,
     Claim,
-    axis_block,
-    axis_capture,
+    Facts,
+    FiniteControl,
+    Release,
+    admission_block,
     axis_input,
     axis_rows,
-    ceil_div,
-    coverage_block,
+    chain_checks,
     crate_input,
-    dominated,
     extent,
-    grid_nodes,
-    hex_pair,
+    facts,
+    finite_controls,
+    identity_checks,
+    input_checks,
     kernel_threshold,
     least_bound,
-    maps_terms,
-    pose_terms,
-    quarter_terms,
+    manifest,
+    pose_input,
     read_receipt,
     read_slabs,
-    scalar_block,
-    slab_output,
+    receipt_checks,
     spawn,
-    term_capture,
-    without,
     write_json,
 )
 from devtools.check_sqverify_fast import crate_source_sha256
@@ -141,9 +136,6 @@ ORIGINAL = (
 )
 PARAMETERS = SOURCE / "certificate/parameters.json"
 MANIFEST = PACKET / "acquisition/upstream-subtree.sha256"
-#: The release's two receipts: the producer's local run in the tree at the pin, and the
-#: GitHub Actions run 38120568498 that the release ZIP carries instead.
-RECEIPTS = {"local": SOURCE / "results", "ci": PACKET / "release-ci/results"}
 RECEIPT_DIR = PACKET / "receipts"
 #: T-145's packet: its kernels, its receipts and its replay here, the price's calibration.
 T145 = WEB / "guzhou-n40-continuous-pose-2026-10-10"
@@ -184,6 +176,28 @@ RAISE = Fraction(217911, 99764500)
 NEAR_AXIS_MARGIN = Fraction(424025836324581, 839750000000839750000000)
 SCHEMA = "n40-expanded-rectangles/v1"
 COUNTS = {"sites": 685, "inherited": 522, "generated": 163, "terms": 5480, "pool": 2526}
+#: This release, as the finite checks of `devtools.audit_continuous_pose`, which this tool
+#: shares rather than copies, judge it.
+RELEASE = Release(
+    packet=PACKET,
+    claim=CLAIM,
+    pin=PIN,
+    ci_run="38120568498",
+    pose_sha256=POSE_SHA256,
+    axis_sha256=AXIS_SHA256,
+    ci_binaries=CI_BINARIES,
+    earlier=EARLIER,
+    raises=RAISE,
+    terms=COUNTS["terms"],
+    distinct=5424,
+    nodes=3293,
+    source_files=30,
+    results=("axis.json", "obstruction.json", "slabs.jsonl", "verification.json"),
+    hex_b=True,
+)
+#: The release's two receipts: the producer's local run in the tree at the pin, and the
+#: GitHub Actions run 38120568498 that the release ZIP carries instead.
+RECEIPTS = RELEASE.receipts
 
 
 # --------------------------------------------------------------------------- the density
@@ -294,7 +308,10 @@ def support_facts(raw: bytes, pool_raw: bytes) -> SupportFacts:
         ),
         inherited_distinct=len(set(indices)) == len(indices),
         inherited_positive_before=sum(
-            s.source_index is not None and weights[s.source_index] > 0 for s in inherited
+            s.source_index is not None
+            and 0 <= s.source_index < len(weights)
+            and weights[s.source_index] > 0
+            for s in inherited
         ),
         generated_outside_pool=sum(
             canonical(s.box, side) not in pool_orbits for s in generated
@@ -310,115 +327,6 @@ def load_candidate() -> bytes:
 
 def load_pool() -> bytes:
     return read_retained_bytes(ORIGINAL)
-
-
-# --------------------------------------------------------------------------- the facts
-
-
-@dataclass(frozen=True)
-class InputFacts:
-    """What the density and the derived inputs give at the claim."""
-
-    distinct: int
-    invariant: bool
-    integral: Fraction
-    pose_sha256: str
-    pose_is_expansion: bool
-    enclosures: tuple[int, int]
-    axis_sha256: str
-    axis_rows: int
-    axis_dropped: int
-    axis_is_expansion: bool
-    axis_dominated: bool
-    axis_quarter_invariant: bool
-    dominated_mass: Fraction
-    axis_weights: int
-    evaluation_bound: int
-    nodes: tuple[int, int]
-    minimiser: tuple[int, int]
-    minimum: int
-    minimiser_capture: int
-    minimiser_capture_g: Fraction
-
-
-def pose_input(density: Density, claim: Claim = CLAIM) -> bytes:
-    """The pose kernel's ``certificate_input.txt`` as this release writes it: T-145's
-    format (`devtools.audit_continuous_pose.pose_input`) but for ``B``, which is now a
-    hexadecimal pair like every other number, since ``3350/3359`` has no finite decimal.
-    The kernel reads each pair with ``stod``, which takes either form."""
-    terms = pose_terms(density)
-    lines = [hex_pair(claim.L), hex_pair(claim.B), str(len(terms))]
-    lines += [" ".join(hex_pair(v) for v in term) for term in terms]
-    return ("\n".join(lines) + "\n").encode()
-
-
-def pose_enclosures(data: bytes, density: Density, claim: Claim = CLAIM) -> tuple[int, int]:
-    """How many of the pose input's numbers there are, and how many lie in a finite
-    binary64 pair that brackets their rational."""
-    lines = data.decode().splitlines()
-    values = [claim.L, claim.B]
-    pairs = [lines[0].split(), lines[1].split()]
-    terms = pose_terms(density)
-    if int(lines[2]) != len(terms) or len(lines) != len(terms) + 3:
-        return 0, 1
-    for term, line in zip(terms, lines[3:], strict=True):
-        numbers = line.split()
-        values += list(term)
-        pairs += [numbers[2 * k : 2 * k + 2] for k in range(len(term))]
-    held = 0
-    for x, pair in zip(values, pairs, strict=True):
-        lo, hi = float.fromhex(pair[0]), float.fromhex(pair[1])
-        held += math.isfinite(lo) and math.isfinite(hi) and Fraction(lo) <= x <= Fraction(hi)
-    return held, len(values)
-
-
-def input_facts(density: Density, claim: Claim = CLAIM) -> InputFacts:
-    expansion = Counter(maps_terms(density))
-    pose = pose_input(density, claim)
-    quarter = quarter_terms(density)
-    rows = axis_rows(density)
-    length, side = int(claim.L * GRID), int(claim.A * GRID)
-    dominated_ok = all(
-        Fraction(row[0], GRID) >= t[0]
-        and Fraction(row[1], GRID) >= t[1]
-        and Fraction(row[2], GRID) <= t[2]
-        and Fraction(row[3], GRID) <= t[3]
-        and 0 <= Fraction(row[4], GRID) <= t[4]
-        for row, t in zip(map(dominated, quarter), quarter, strict=True)
-    )
-    turned = Counter((length - e, a, length - b, d, w) for a, b, d, e, w in rows)
-    weights = sum(row[4] for row in rows)
-    axis = json.loads(str(read_receipt(RECEIPTS["ci"], "axis.json")["stdout"]))
-    x, y = int(axis["minimizer_x_integer"]), int(axis["minimizer_y_integer"])
-    return InputFacts(
-        distinct=len(density.merged),
-        invariant=invariant(density),
-        integral=sum((area(r) * v for r, v in density.merged.items()), Fraction(0)),
-        pose_sha256=sha256(pose),
-        pose_is_expansion=Counter(pose_terms(density)) == expansion,
-        enclosures=pose_enclosures(pose, density, claim),
-        axis_sha256=sha256(axis_input(rows, claim)),
-        axis_rows=len(rows),
-        axis_dropped=len(quarter) - len(rows),
-        axis_is_expansion=Counter(quarter) == expansion,
-        axis_dominated=dominated_ok,
-        axis_quarter_invariant=turned == Counter(rows),
-        dominated_mass=sum(
-            (Fraction(w * (d - a) * (e - b), GRID**3) for a, b, d, e, w in rows), Fraction(0)
-        ),
-        axis_weights=weights,
-        evaluation_bound=16 * weights * (length + length + side // 2) ** 2,
-        nodes=(
-            len(grid_nodes(rows, length, side, 0)),
-            len(grid_nodes(rows, length, side, 1)),
-        ),
-        minimiser=(x, y),
-        minimum=int(axis["minimum_numerator"]),
-        minimiser_capture=axis_capture(rows, x, y, side),
-        minimiser_capture_g=term_capture(
-            maps_terms(density), Fraction(x, GRID), Fraction(y, GRID), claim.A
-        ),
-    )
 
 
 # --------------------------------------------------------------------------- the checks
@@ -477,357 +385,35 @@ def support_checks(s: SupportFacts, density: Density, claim: Claim = CLAIM) -> l
     ]
 
 
-def density_checks(f: InputFacts, density: Density, claim: Claim = CLAIM) -> list[Check]:
-    """The D4 expansion and both derived inputs, at the claim."""
-    held, total = f.enclosures
-    length = int(claim.L * GRID)
-    terms = COUNTS["terms"]
-    return [
-        Check(
-            "density: D4 expansion",
-            density.terms == terms,
-            f"{density.terms} terms, {f.distinct} distinct rectangles",
-        ),
-        Check("density: D4-invariant", f.invariant, "under each of the eight maps"),
-        Check("density: integral of g is M", f.integral == claim.mass, text(f.integral)),
-        Check("pose input: the receipts' input", f.pose_sha256 == POSE_SHA256, f.pose_sha256),
-        Check(
-            "pose input: its terms are the D4 expansion",
-            f.pose_is_expansion,
-            "the same multiset as the eight maps give",
-        ),
-        Check(
-            "pose input: every number brackets its rational",
-            held == total == 2 + 5 * terms,
-            f"{held} of {total}",
-        ),
-        Check("axis input: the receipts' input", f.axis_sha256 == AXIS_SHA256, f.axis_sha256),
-        Check(
-            "axis input: its terms are the D4 expansion",
-            f.axis_is_expansion,
-            "quarter-turn order, the same multiset as the eight maps give",
-        ),
-        Check(
-            "axis input: every term kept",
-            (f.axis_rows, f.axis_dropped) == (terms, 0),
-            f"{f.axis_rows} rows, {f.axis_dropped} dropped",
-        ),
-        Check(
-            "axis input: dominated by g",
-            f.axis_dominated,
-            "supports rounded inward to 1e-9, densities down to 1e-9",
-        ),
-        Check(
-            "axis input: quarter-turn invariant",
-            f.axis_quarter_invariant,
-            "the integer rows map onto themselves under (x, y) -> (L - y, x)",
-        ),
-        Check(
-            "axis input: the dominated mass is below M",
-            0 < claim.mass - f.dominated_mass < Fraction(1, 10**4),
-            f"M - mass = {float(claim.mass - f.dominated_mass):.6g}",
-        ),
-        Check(
-            "axis input: the int128 guards",
-            f.axis_weights < 10**15 and f.evaluation_bound < 2**125,
-            f"16 sum w (l + l + A/2)^2 = {f.evaluation_bound}",
-        ),
-        Check(
-            "axis input: the grid of breakpoints",
-            f.nodes == (3293, 3293) and f.nodes[0] * f.nodes[1] <= 15_000_000,
-            f"{f.nodes[0]} x {f.nodes[1]} = {f.nodes[0] * f.nodes[1]} vertices",
-        ),
-        Check(
-            "axis: the minimiser is a vertex of the quadrant",
-            length // 2 <= f.minimiser[0] <= length - int(claim.A * GRID) // 2
-            and length // 2 <= f.minimiser[1] <= length - int(claim.A * GRID) // 2,
-            f"({f.minimiser[0]}, {f.minimiser[1]}) / 1e9",
-        ),
-        Check(
-            "axis: the capture at the minimiser, evaluated here",
-            f.minimiser_capture == f.minimum,
-            f"{f.minimiser_capture} / 1e27",
-        ),
-        Check(
-            "axis: g captures at least as much there",
-            f.minimiser_capture_g * GRID**3 >= f.minimiser_capture,
-            f"{float(f.minimiser_capture_g):.12f}",
-        ),
-    ]
-
-
-def chain_checks(claim: Claim, f: InputFacts, least: Fraction) -> list[Check]:
-    """The scalar chain at the claim's parameters, with the receipts' kernel outputs."""
-    tip = claim.T * claim.T + 2 * claim.T - 1
-    near = claim.eps * claim.eps + 2 * claim.eps - 1
-    margin = claim.B - claim.A * extent(claim.eps)
-    ends = claim.endpoints
-    first, last = (ends[0], ends[-1]) if ends else (0, 0)
-    threshold = kernel_threshold(claim.tau)
-    required = ceil_div(GRID**3 * claim.tau.numerator, claim.tau.denominator)
-    return [
-        Check("claim: X = L / B", claim.X == claim.L / claim.B, text(claim.L / claim.B)),
-        Check(
-            "claim: X raises T-145's bound",
-            claim.X - EARLIER == RAISE,
-            text(claim.X - EARLIER),
-        ),
-        Check(
-            "counting: n tau - M > 0",
-            claim.n * claim.tau - claim.mass > 0,
-            text(claim.n * claim.tau - claim.mass),
-        ),
-        Check(
-            "domain: E > 0 at every angle",
-            SQRT2_UP * SQRT2_UP > 2 and claim.L > claim.B * SQRT2_UP,
-            f"L - B sqrt2_up = {text(claim.L - claim.B * SQRT2_UP)}",
-        ),
-        Check(
-            "slabs: T passes pi/4",
-            tip > 0 and Fraction(1, 2) >= claim.T,
-            f"T^2 + 2T - 1 = {text(tip)}",
-        ),
-        Check(
-            "slabs: the endpoints partition [eps, T]",
-            len(ends) >= 2
-            and all(p < q for p, q in itertools.pairwise(ends))
-            and Fraction(first, claim.den) == claim.eps
-            and Fraction(last, claim.den) == claim.T
-            and first > 0
-            and 2 * last <= claim.den <= 10**7,
-            f"{len(ends) - 1} slabs from {first} to {last} over {claim.den}",
-        ),
-        Check(
-            "slabs: the kernel's threshold is at least tau",
-            Fraction(threshold) >= claim.tau,
-            f"up(fl(tau)) - tau = {float(Fraction(threshold) - claim.tau):.3g}",
-        ),
-        Check(
-            "slabs: the receipts' least leaf bound is at least the threshold",
-            least >= Fraction(threshold),
-            f"{text(least)}, above tau by {float(least - claim.tau):.3g}",
-        ),
-        Check(
-            "near-axis: W increases on [0, eps] and A <= B",
-            near < 0 and extent(claim.eps) >= 1 and claim.A <= claim.B,
-            f"eps^2 + 2 eps - 1 = {float(near):.6g}",
-        ),
-        Check(
-            "near-axis: A W(eps) <= B, by PROOF.md's margin",
-            margin >= 0 and (claim != CLAIM or margin == NEAR_AXIS_MARGIN),
-            f"B - A W(eps) = {text(margin)}",
-        ),
-        Check(
-            "axis: the receipts' minimum is at least tau",
-            f.minimum >= required,
-            f"{f.minimum} against ceil(1e27 tau) = {required}",
-        ),
-    ]
-
-
-def manifest(path: Path = MANIFEST) -> dict[str, str]:
-    """A packet's subtree manifest: upstream path to SHA-256."""
-    out: dict[str, str] = {}
-    for line in path.read_text(encoding="utf-8").splitlines():
-        digest, name = line.split(maxsplit=1)
-        out[name.removeprefix("./")] = digest
-    return out
-
-
-def admission_block(s: SupportFacts, f: InputFacts, density: Density) -> dict[str, object]:
+def release_admission(s: SupportFacts, f: Facts) -> dict[str, object]:
+    """The receipts' ``admission`` block: `admission_block`'s keys, and the orbit counts
+    and the pool's digest this release adds to them."""
     return {
-        "axis_evaluation_bound": str(f.evaluation_bound),
-        "axis_input_sha256": f.axis_sha256,
+        **admission_block(f),
         "generated_representatives": s.kinds.get("generated", 0),
         "inherited_representatives": s.kinds.get("inherited", 0),
-        "mass": text(s.mass),
         "original_sha256": str(s.header.get("source_sha256")),
-        "pose_input_sha256": f.pose_sha256,
-        "positive_representatives": s.positive,
-        "source_sha256": density.sha256,
-        "terms": density.terms,
     }
 
 
-def slab_row_checks(name: str, rows: Sequence[dict[str, Any]], pose_binary: str) -> Check:
-    """Every slab row of one release receipt: the contract's arguments, exit 0, the
-    identities, and a verified kernel output whose counts close the cover."""
-    digests = manifest()
-    good = 0
-    for index, ((lo, hi), row) in enumerate(zip(CLAIM.slabs(), rows, strict=False)):
-        out = slab_output(row)
-        args = [str(lo), str(hi), str(CLAIM.den), "4999", "5000", str(CLAIM.budget)]
-        good += (
-            row.get("index") == index
-            and row.get("arguments") == args
-            and row.get("exit_code") == 0
-            and row.get("timed_out") is False
-            and row.get("input_sha256") == POSE_SHA256
-            and row.get("source_sha256") == digests[KERNEL_SOURCES["pose"]]
-            and row.get("binary_sha256") == pose_binary
-            and out.get("status") == "verified"
-            and (out.get("pl"), out.get("ph"), out.get("den")) == (lo, hi, CLAIM.den)
-            and int(out["nodes"]) == 2 * int(out["leaves"]) - 1
-            and Fraction(out["lower_bound"]) >= Fraction(kernel_threshold(CLAIM.tau))
-        )
-    return Check(
-        f"{name} receipt: every slab verified as the contract runs it",
-        good == len(rows) == len(CLAIM.slabs()),
-        f"{good} of {len(rows)}",
-    )
-
-
-def receipt_checks(
-    name: str, folder: Path, s: SupportFacts, f: InputFacts, density: Density
-) -> list[Check]:
-    """One release receipt against this tool's values."""
-    receipt = read_receipt(folder)
-    slabs = read_slabs(folder)
-    axis = read_receipt(folder, "axis.json")
-    stdout = json.loads(str(axis["stdout"]))
-    binaries = receipt.get("binaries") or {}
-    digests = manifest()
-    sources = receipt.get("source_sha256") or {}
-    stages = {stage["stage"]: stage["exit_code"] for stage in receipt.get("stages", [])}
-    return [
-        Check(
-            f"{name} receipt: parameters", receipt.get("parameters") == CLAIM.parameters(), ""
-        ),
-        Check(
-            f"{name} receipt: scalar block",
-            receipt.get("scalar") == scalar_block(CLAIM),
-            str((receipt.get("scalar") or {}).get("axis_containment_margin")),
-        ),
-        Check(
-            f"{name} receipt: admission block",
-            receipt.get("admission") == admission_block(s, f, density),
-            "the derived inputs' digests and the orbit counts",
-        ),
-        Check(
-            f"{name} receipt: coverage block is the slabs' totals",
-            receipt.get("coverage") == coverage_block(slabs),
-            json.dumps(coverage_block(slabs), sort_keys=True),
-        ),
-        Check(
-            f"{name} receipt: axis block is the axis output's",
-            receipt.get("axis") == axis_block(stdout, CLAIM),
-            json.dumps(axis_block(stdout, CLAIM), sort_keys=True),
-        ),
-        Check(
-            f"{name} receipt: slab and axis records by digest",
-            receipt.get("slabs_sha256") == sha256((folder / "slabs.jsonl").read_bytes())
-            and receipt.get("axis_sha256") == sha256((folder / "axis.json").read_bytes()),
-            "",
-        ),
-        Check(
-            f"{name} receipt: the source it ran is the retained tree",
-            len(sources) == 30 and all(digests.get(p) == d for p, d in sources.items()),
-            f"{sum(digests.get(p) == d for p, d in sources.items())} of {len(sources)} files",
-        ),
-        Check(
-            f"{name} receipt: status and flags",
-            receipt.get("status") == "REPLAYED_SAME_KERNEL"
-            and receipt.get("author_claim_status") == "CERTIFIED"
-            and receipt.get("claim") == f"s({CLAIM.n}) > {text(CLAIM.X)}"
-            and receipt.get("compile_flags") == list(FLAGS)
-            and receipt.get("workers") == 4,
-            f"{receipt.get('status')}, four workers",
-        ),
-        Check(
-            f"{name} receipt: the axis run",
-            axis.get("exit_code") == 0
-            and axis.get("input_sha256") == AXIS_SHA256
-            and axis.get("source_sha256") == digests[KERNEL_SOURCES["axis"]]
-            and axis.get("binary_sha256") == binaries.get("axis")
-            and stdout.get("status") == "AXIS_COVERAGE_PROVED"
-            and (stdout.get("x_nodes"), stdout.get("y_nodes")) == f.nodes
-            and stdout.get("scale") == str(GRID**3)
-            and stdout.get("direct_sum_matches") is True
-            and stdout.get("evaluation_abs_bound") == str(f.evaluation_bound)
-            and int(stdout["minimum_numerator"]) == f.minimum,
-            str(stdout.get("status")),
-        ),
-        slab_row_checks(name, slabs, str(binaries.get("pose"))),
-        Check(
-            f"{name} receipt: the fourteen stages exited as expected",
-            stages == RELEASE_STAGES,
-            ", ".join(f"{k} {v}" for k, v in stages.items()),
-        ),
-    ]
-
-
-def identity_checks() -> list[Check]:
-    """What tells the two receipts apart, what they share, and what the release keeps
-    from T-145's."""
-    local, ci = read_receipt(RECEIPTS["local"]), read_receipt(RECEIPTS["ci"])
-    slabs = {name: read_slabs(folder) for name, folder in RECEIPTS.items()}
-    axes = {name: read_receipt(folder, "axis.json") for name, folder in RECEIPTS.items()}
-    same = sum(
-        without(slab_output(a), TIMING) == without(slab_output(b), TIMING)
-        and without(a, {"seconds", "stdout", "binary_sha256"})
-        == without(b, {"seconds", "stdout", "binary_sha256"})
-        for a, b in zip(slabs["local"], slabs["ci"], strict=True)
-    )
-    ci_sums = set((PACKET / "release-ci/SHA256SUMS").read_text(encoding="utf-8").splitlines())
-    tree_sums = set((SOURCE / "SHA256SUMS").read_text(encoding="utf-8").splitlines())
-    result_lines = {
-        f"{sha256((RECEIPTS['ci'] / name).read_bytes())}  results/{name}"
-        for name in ("axis.json", "obstruction.json", "slabs.jsonl", "verification.json")
-    }
-    ours, theirs = manifest(), manifest(T145 / "acquisition/upstream-subtree.sha256")
+def kernel_checks() -> list[Check]:
+    """What the release keeps byte for byte from T-145's, whose review read it."""
+    ours = manifest(MANIFEST)
+    theirs = manifest(T145 / "acquisition/upstream-subtree.sha256")
     kept = [path for path in SHARED_WITH_T145 if ours.get(path) == theirs.get(path)]
     return [
-        Check(
-            "local receipt: the producer's run, not CI",
-            local.get("source_commit") is None and "15.2.0" in str(local.get("compiler")),
-            f"{local.get('compiler')}, Python {local.get('python')}",
-        ),
-        Check(
-            "ci receipt: run 38120568498 on the pin",
-            ci.get("source_commit") == PIN
-            and ci.get("compiler") == CI_COMPILER
-            and ci.get("binaries") == CI_BINARIES,
-            f"{ci.get('compiler')}, Python {ci.get('python')}",
-        ),
-        Check(
-            "receipts: every slab identical apart from timing and the binary",
-            same == len(slabs["local"]) == len(slabs["ci"]) == len(CLAIM.slabs()),
-            f"{same} of {len(slabs['ci'])}",
-        ),
-        Check(
-            "receipts: the axis outputs identical",
-            json.loads(str(axes["local"]["stdout"])) == json.loads(str(axes["ci"]["stdout"])),
-            "every field",
-        ),
-        Check(
-            "release-ci SHA256SUMS: the tree's but for the four results lines",
-            len(ci_sums) == len(tree_sums) == 34
-            and result_lines <= ci_sums
-            and len(ci_sums - tree_sums) == 4
-            and len(tree_sums - ci_sums) == 4,
-            "the CI receipts' digests",
-        ),
         Check(
             "kernels: byte for byte T-145's, which its review read",
             kept == list(SHARED_WITH_T145),
             f"{len(kept)} of {len(SHARED_WITH_T145)}: {', '.join(kept)}",
-        ),
+        )
     ]
 
 
 # --------------------------------------------------------------------------- controls
 
 
-@dataclass(frozen=True)
-class FiniteControl:
-    name: str
-    change: str
-    claim: Claim
-    #: The checks of `chain_checks` that must fail on it.
-    expect: tuple[str, ...]
-
-
-NEAR_AXIS = "near-axis: A W(eps) <= B, by PROOF.md's margin"
+NEAR_AXIS = "near-axis: A W(eps) <= B"
 FINITE_CONTROLS = (
     FiniteControl(
         "G",
@@ -854,27 +440,15 @@ FINITE_CONTROLS = (
         (NEAR_AXIS, "slabs: the endpoints partition [eps, T]"),
     ),
 )
-
-
-def finite_controls(f: InputFacts, least: Fraction) -> list[dict[str, object]]:
-    out: list[dict[str, object]] = []
-    for control in FINITE_CONTROLS:
-        failed = [c.name for c in chain_checks(control.claim, f, least) if not c.held]
-        out.append(
-            {
-                "control": control.name,
-                "change": control.change,
-                "expect_failed": list(control.expect),
-                "failed": failed,
-                "refused": all(name in failed for name in control.expect),
-            }
-        )
-    return out
+#: The two checks that bind the density to what both kernels decided.
+INPUT_DIGESTS = ("pose input: the receipts' input", "axis input: the receipts' input")
 
 
 def density_controls(raw: bytes, pool_raw: bytes) -> list[dict[str, object]]:
-    """Two altered densities, each refused by `support_checks`: one generated site moved
-    onto a pool rectangle's D4 image, and one weight scaled by 99/100."""
+    """Three altered densities, each refused: one generated site moved onto a pool
+    rectangle's D4 image and one weight scaled by 99/100, which `support_checks` refuses,
+    and a hundredth of site 0's weight moved to site 1, which keeps every orbit fact and
+    the mass, so only `input_checks`' digests of the derived inputs can refuse it."""
     data = json.loads(raw)
     pool = json.loads(pool_raw)["rectangles"]
     first = next(i for i, site in enumerate(data["sites"]) if site["kind"] == "generated")
@@ -886,26 +460,38 @@ def density_controls(raw: bytes, pool_raw: bytes) -> list[dict[str, object]]:
     scaled = json.loads(raw)
     weight = Fraction(scaled["sites"][0]["weight"]) * Fraction(99, 100)
     scaled["sites"][0]["weight"] = text(weight)
+    shifted = json.loads(raw)
+    step = Fraction(shifted["sites"][0]["weight"]) / 100
+    for index, sign in ((0, -1), (1, 1)):
+        shifted["sites"][index]["weight"] = text(
+            Fraction(shifted["sites"][index]["weight"]) + sign * step
+        )
     out: list[dict[str, object]] = []
     for name, change, value, expect in (
         (
             "D1",
             f"generated site {first} moved onto pool rectangle 0 reflected in x",
             moved,
-            "density: no generated box is D4-equivalent to any of the 2526 pool rectangles",
+            ("density: no generated box is D4-equivalent to any of the 2526 pool rectangles",),
         ),
-        ("D2", "site 0's weight scaled by 99/100", scaled, "density: the weights sum to M"),
+        ("D2", "site 0's weight scaled by 99/100", scaled, ("density: the weights sum to M",)),
+        ("D3", "a hundredth of site 0's weight moved to site 1", shifted, INPUT_DIGESTS),
     ):
         mutant = json.dumps(value).encode()
-        checks = support_checks(support_facts(mutant, pool_raw), site_density(mutant))
+        density = site_density(mutant)
+        checks = support_checks(support_facts(mutant, pool_raw), density)
+        # A control is judged by the checks it names: the input checks only where it
+        # names them, since only they can see a change that keeps every orbit fact.
+        if any(item in INPUT_DIGESTS for item in expect):
+            checks += input_checks(facts(density, CLAIM, RELEASE), CLAIM, RELEASE)
         failed = [c.name for c in checks if not c.held]
         out.append(
             {
                 "control": name,
                 "change": change,
-                "expect_failed": [expect],
+                "expect_failed": list(expect),
                 "failed": failed,
-                "refused": expect in failed,
+                "refused": all(item in failed for item in expect),
             }
         )
     return out
@@ -976,9 +562,9 @@ def price() -> dict[str, Any]:
         },
         "receipt_full_entry": {
             name: {
-                "seconds": round(float(r.get("full_entry_seconds", 0)), 1),
-                "workers": r.get("workers"),
-                "worker_seconds": round(float(r.get("full_entry_seconds", 0)) * 4, 1),
+                "seconds": round(float(r["full_entry_seconds"]), 1),
+                "workers": r["workers"],
+                "worker_seconds": round(float(r["full_entry_seconds"]) * int(r["workers"]), 1),
             }
             for name, r in receipts.items()
         },
@@ -990,12 +576,15 @@ def price() -> dict[str, Any]:
 
 
 def check_report() -> dict[str, Any]:
+    """The finite audit: the orbit facts here, then the checks `audit_continuous_pose`
+    makes of T-145's release, made of this one (`RELEASE`), and the controls."""
     raw, pool_raw = load_candidate(), load_pool()
     density = site_density(raw)
     s = support_facts(raw, pool_raw)
-    f = input_facts(density)
+    f = facts(density, CLAIM, RELEASE)
     least, at = least_bound(read_slabs(RECEIPTS["ci"]))
     parameters = json.loads(PARAMETERS.read_text(encoding="utf-8"))
+    margin = CLAIM.B - CLAIM.A * extent(CLAIM.eps)
     checks = [
         Check(
             "density: the pool is rect_n40_L67, as the release pins it",
@@ -1003,8 +592,13 @@ def check_report() -> dict[str, Any]:
             "the 2026-10-01 packet's copy",
         ),
         *support_checks(s, density),
-        *density_checks(f, density),
-        *chain_checks(CLAIM, f, least),
+        *input_checks(f, CLAIM, RELEASE),
+        *chain_checks(CLAIM, f, least, RELEASE),
+        Check(
+            "near-axis: B - A W(eps) is PROOF.md's margin",
+            margin == NEAR_AXIS_MARGIN,
+            "section 6",
+        ),
         Check(
             "retained parameters.json is the claim",
             parameters == CLAIM.parameters(),
@@ -1012,11 +606,13 @@ def check_report() -> dict[str, Any]:
         ),
     ]
     for name, folder in RECEIPTS.items():
-        checks += receipt_checks(name, folder, s, f, density)
-    checks += identity_checks()
-    controls = finite_controls(f, least) + density_controls(raw, pool_raw)
+        checks += receipt_checks(
+            name, folder, CLAIM, f, release=RELEASE, admission=release_admission(s, f)
+        )
+    checks += identity_checks(RELEASE) + kernel_checks()
+    controls = finite_controls(f, least, FINITE_CONTROLS, RELEASE)
+    controls += density_controls(raw, pool_raw)
     held = all(c.held for c in checks) and all(item["refused"] for item in controls)
-    margin = CLAIM.B - CLAIM.A * extent(CLAIM.eps)
     minimum = Fraction(f.minimum, GRID**3)
     return {
         "kind": "n40-new-supports-finite-audit/v1",
@@ -1127,15 +723,32 @@ def run_axis(out: Path, crate: Path | None) -> dict[str, Any]:
     return record
 
 
-def axis_stage_checks(record: dict[str, Any]) -> list[Check]:
-    """The axis stage's receipts against both release receipts."""
+def json_object(value: object) -> dict[str, Any]:
+    """A program's output read as a JSON object, or an empty one when it printed anything
+    else, so that a run which stops with other output fails its check rather than
+    raising."""
+    try:
+        parsed = json.loads(str(value))
+    except json.JSONDecodeError:
+        return {}
+    return parsed if isinstance(parsed, dict) else {}
+
+
+#: The check that holds only on the crate's own decision of the near-axis statement.
+CRATE_DECISION = "crate: the near-axis statement at side A by the exact vertex sweep"
+
+
+def axis_stage_checks(record: dict[str, Any], *, require_crate: bool = True) -> list[Check]:
+    """The axis stage's receipts against both release receipts. The stage's second
+    decision of the near-axis statement is the crate's, so a record without it fails
+    `CRATE_DECISION` unless ``require_crate`` is false, for a run made without the crate."""
     build, runs = record["build"], record["runs"]
     release = [
         json.loads(str(read_receipt(folder, "axis.json")["stdout"]))
         for folder in RECEIPTS.values()
     ]
     axis = runs["axis"]
-    output = json.loads(axis["stdout"]) if axis["exit_code"] == 0 else {}
+    output = json_object(axis["stdout"]) if axis["exit_code"] == 0 else {}
     ci_compiler = record["compiler"] == CI_COMPILER
     checks = [
         Check(
@@ -1159,7 +772,7 @@ def axis_stage_checks(record: dict[str, Any]) -> list[Check]:
     ]
     for name, tau, code, status in AXIS_CONTROLS:
         run = runs[name]
-        seen = json.loads(run["stdout"]).get("status") if run["stdout"].strip() else None
+        seen = json_object(run["stdout"]).get("status")
         checks.append(
             Check(
                 f"axis control {name}: tau = {text(tau)} gives {status}",
@@ -1167,41 +780,50 @@ def axis_stage_checks(record: dict[str, Any]) -> list[Check]:
                 f"exit {run['exit_code']}, {seen}",
             )
         )
-    if "crate" in record:
-        crate = record["crate"]
-        lines = [json.loads(line) for line in crate["stdout"].splitlines() if line]
-        row = next((x for x in lines if "r" in x), {})
-        summary = next((x for x in lines if x.get("kind")), {})
-        premises = summary.get("premises") or {}
-        reviewed = REVIEWED_SOURCES.get(str((summary.get("build") or {}).get("source_sha256")))
-        checks += [
-            Check(
-                "crate: reviewed source for a declared net, the binary embeds it",
-                reviewed is not None and reviewed.declared_nets,
-                str((summary.get("build") or {}).get("source_sha256")),
-            ),
-            Check(
-                "crate: the near-axis statement at side A by the exact vertex sweep",
-                crate["exit_code"] == 0
-                and premises.get("format") == "T"
-                and premises.get("source_rectangles") == COUNTS["sites"]
-                and premises.get("mass_exact") == text(CLAIM.mass * CRATE_SCALE)
-                and premises.get("B") == text(CLAIM.A)
-                and summary.get("threshold") == "1"
-                and row.get("verdict") == "verified"
-                and row.get("method") == "axis-vertex-sweep"
-                and float(row.get("min_certified_lower_bound", 0)) >= 1,
-                f"{row.get('verdict')}, {row.get('vertices')} vertices, least "
-                f"{row.get('min_certified_lower_bound')!r} at {row.get('argmin')}, "
-                f"{crate['wall_seconds']} s",
-            ),
-        ]
-    return checks
+    if "crate" not in record:
+        if require_crate:
+            checks.append(
+                Check(
+                    CRATE_DECISION,
+                    held=False,
+                    detail="not in the record: run without --crate-binary",
+                )
+            )
+        return checks
+    crate = record["crate"]
+    lines = [json_object(line) for line in crate["stdout"].splitlines() if line]
+    row = next((x for x in lines if "r" in x), {})
+    summary = next((x for x in lines if x.get("kind")), {})
+    premises = summary.get("premises") or {}
+    reviewed = REVIEWED_SOURCES.get(str((summary.get("build") or {}).get("source_sha256")))
+    return [
+        *checks,
+        Check(
+            "crate: reviewed source for a declared net, the binary embeds it",
+            reviewed is not None and reviewed.declared_nets,
+            str((summary.get("build") or {}).get("source_sha256")),
+        ),
+        Check(
+            CRATE_DECISION,
+            crate["exit_code"] == 0
+            and premises.get("format") == "T"
+            and premises.get("source_rectangles") == COUNTS["sites"]
+            and premises.get("mass_exact") == text(CLAIM.mass * CRATE_SCALE)
+            and premises.get("B") == text(CLAIM.A)
+            and summary.get("threshold") == "1"
+            and row.get("verdict") == "verified"
+            and row.get("method") == "axis-vertex-sweep"
+            and float(row.get("min_certified_lower_bound", 0)) >= 1,
+            f"{row.get('verdict')}, {row.get('vertices')} vertices, least "
+            f"{row.get('min_certified_lower_bound')!r} at {row.get('argmin')}, "
+            f"{crate['wall_seconds']} s",
+        ),
+    ]
 
 
-def axis_report(folder: Path) -> dict[str, Any]:
+def axis_report(folder: Path, *, require_crate: bool = True) -> dict[str, Any]:
     record = json.loads((folder / "axis-stage.json").read_text(encoding="utf-8"))
-    checks = axis_stage_checks(record)
+    checks = axis_stage_checks(record, require_crate=require_crate)
     held = all(c.held for c in checks)
     return {
         "kind": "n40-new-supports-axis-check/v1",
@@ -1242,12 +864,17 @@ def main(argv: Sequence[str] | None = None) -> int:
     judge = commands.add_parser("check-axis", help="judge the axis stage's receipts")
     judge.add_argument("--receipts", type=Path, default=RECEIPT_DIR)
     judge.add_argument("--output", type=Path)
+    judge.add_argument(
+        "--without-crate",
+        action="store_true",
+        help="judge a stage run without --crate-binary: the crate's decision is not required",
+    )
     args = parser.parse_args(argv)
     if args.command == "derive":
         density = site_density(load_candidate())
         args.out.mkdir(parents=True, exist_ok=True)
         files = {
-            "certificate_input.txt": pose_input(density, CLAIM),
+            "certificate_input.txt": pose_input(density, CLAIM, RELEASE),
             "axis-input.txt": axis_input(axis_rows(density), CLAIM),
             "axis-A.json": crate_axis_input(density),
         }
@@ -1260,8 +887,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.command == "run-axis":
         crate = args.crate_binary.resolve() if args.crate_binary else None
         run_axis(args.out.resolve(), crate)
-        return emit(axis_report(args.out.resolve() / "receipts"), None)
-    return emit(axis_report(args.receipts), args.output)
+        if crate is None:
+            print("crate: not run; check-axis refuses these receipts without --without-crate")
+        receipts = args.out.resolve() / "receipts"
+        return emit(axis_report(receipts, require_crate=crate is not None), None)
+    return emit(axis_report(args.receipts, require_crate=not args.without_crate), args.output)
 
 
 if __name__ == "__main__":
