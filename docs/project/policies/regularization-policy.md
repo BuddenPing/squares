@@ -139,6 +139,22 @@ Views from `regularize_axis_components/2` are classified by the same table; havi
 variant or level, they meet row 10’s last two conditions by construction.
 A view in the review queue is not drawn until a review record admits it.
 
+**How a decision is reported** (owner, 11 October 2026). “Refused” is kept for a view
+that would change the drawing and fails an obligation.
+A run reports every count in one of these words, in this order of precedence:
+
+| Reported as | When | Rows |
+| --- | --- | --- |
+| **no view** | The generator produced nothing to judge; the witness or the current view stands | 1 |
+| **no change** | The view would draw the same picture: no square moves beyond $10^{-3}$ or turns, and the angle classes and the house contact counts are the source’s. Whatever its side relation, nothing is drawn differently, so there is nothing to refuse; a side below $U$ is still listed as a register-result candidate in the receipt | 3 to 7 and 10, when nothing visible changes; 5 |
+| **refused** | The view changes the drawing and an exact route refuses it (2), it is not the packing (6), or a square’s house or stage count falls (7) | 2, 6, 7 |
+| **held** | The view changes the drawing, passes every route, and waits on the record: a register result first (3) or a side the record does not hold (4); the reason is shown with it | 3, 4 |
+| **review** or **alternate** | As rows 8 and 9 say | 8, 9 |
+| **admitted** | Row 10 | 10 |
+
+This changes how decisions are worded, not what is drawn: only an admitted view, or a
+reviewed one, enters the layer.
+
 Two kinds of admitted view are listed first in the gallery for the reviewer:
 
 - **A tie-break of taste:** the generator dropped a symmetry for a coincidence, fell
