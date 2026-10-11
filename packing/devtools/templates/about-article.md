@@ -17,8 +17,8 @@ Now several others have obtained results building on this work, including:
   [eleven squares](cases/11.html).
 - Independently, [Evan Daniel](https://x.com/evanbd) has proved the optimality of
   [an infinite family](results.html#t-064), $s(k^2 - 3) = k$ for every $k \ge 6$, along
-  with exact values at [21](cases/21.html), [32](cases/32.html) and [45](cases/45.html)
-  squares.
+  with exact values at [21](cases/21.html), [32](cases/32.html), [45](cases/45.html) and
+  [60](cases/60.html) squares.
 
 This project now independently tabulates all known new results and does
 [AI-assisted verification](results.html#verification-ladders) of the proofs and
@@ -44,7 +44,8 @@ formalizations of current proofs.
      same way: s(k^2 - 3) = k for every k >= 6 is T-064, and s(21) = 5, s(32) = 6 and
      s(45) = 7 are T-052, T-051 and T-053, all four credited to Daniel after Burns,
      Massaccesi and all at V3/C3, T-064 by the full replay of the source's Valid7
-     checker and the Lean reduction built here. The bibliography files their sources as
+     checker and the Lean reduction built here. On 2026-10-11 (think-knxg) s(60) = 8
+     joined the list: T-062, credited and rated the same. The bibliography files their sources as
      independent of this project, so the contributor list explicitly labels Daniel's
      results independent; it gives no significance score, since only n = 11's results
      are S5 and these are S4. "AI-assisted

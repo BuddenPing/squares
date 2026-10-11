@@ -69,7 +69,11 @@ The most significant since August 2026:
   confirmation depends on.
 - **An infinite family of exact values:** Evan Daniel proved $s(k^2 - 3) = k$ for every
   $k \ge 6$ ([T-064](packing/frontier/RESULTS.md)), and the exact values $s(21) = 5$,
-  $s(32) = 6$ and $s(45) = 7$ ([T-052, T-051 and T-053](packing/frontier/RESULTS.md)).
+  $s(32) = 6$, $s(45) = 7$ and $s(60) = 8$
+  ([T-052, T-051, T-053 and T-062](packing/frontier/RESULTS.md)), independently of this
+  project. His $s(k^2 - 4) = k$ for every $k \ge 5$
+  ([T-081](packing/frontier/RESULTS.md)) awaits its full replay here, so its nine new
+  cases, $n = 96, 117, \ldots, 320$, are on the frontier as reported bounds.
 - **Seventeen squares bracketed:** both ends are machine-checked, Guzhou0806’s lower
   bound $s(17) > 4.66044275$ ([T-093](packing/frontier/RESULTS.md)) and the upper bound
   $s(17) \le 4.67553009\ldots$ of John Bidwell’s 1998 packing, certified exactly from

@@ -3880,7 +3880,8 @@ def _template_paragraphs(section: str) -> list[str]:
     return [" ".join(part.split()) for part in prose.split("\n\n") if part.strip()]
 
 
-#: README's `project-intro` block, the owner's words of 2026-10-03 (`think-8lyq`): the
+#: README's `project-intro` block, from the owner's 2026-10-03 text (`think-8lyq`),
+#: with wording reviewed on 2026-10-11. It retains the
 #: question after a colon, the lower bound glossed as a size below which no packing can
 #: exist, and an example of each bound at $n = 29$, the case's current bounds as the
 #: record reports them (the owner, 2026-10-03: "make the examples current"), each
@@ -3898,8 +3899,8 @@ PROBLEM_STATEMENT = (
         "smallest square is written $s(n)$."
     ),
     (
-        "The question of the value of $s(n)$ is simple, but the answer is an open problem "
-        "for most $n$. In many cases, $s(n)$ is known only to lie between an upper bound "
+        "The value of $s(n)$ remains unknown for most $n$. In many cases, $s(n)$ is known "
+        "only to lie between an upper bound "
         "(the size of the enclosing square for the tightest packing ever discovered, such "
         "as $s(29) \\le 5.934$) and a lower bound (a size below which it is proved that no "
         "packing can exist, such as the reported $s(29) \\ge 5.81$)."
@@ -3977,7 +3978,8 @@ def test_recent_preview_headlines_link_to_their_canonical_result_pages(page: str
         assert f'<a href="result/{result_id}.html">' in headline
 
 
-#: The site's own statement, the owner's words of 2026-10-03 (`think-a7oa`), with the
+#: The site's own statement, from the owner's 2026-10-03 text (`think-a7oa`), with
+#: wording reviewed on 2026-10-11 and the
 #: name the owner left blank filled with the source's handle, Queuingtheorydotcom
 #: (T-060 is credited to Ahmed in the register),
 #: the project's start put as the record has it (its explorations obtained the lower
@@ -3992,8 +3994,8 @@ def test_recent_preview_headlines_link_to_their_canonical_result_pages(page: str
 SITE_STATEMENT = (
     (
         "Work on the square packing problem has exploded in the summer of 2026 thanks to "
-        "AI-powered research efforts. This Squares Project was begun by Joshua Levy in "
-        "August 2026 with some initial explorations that obtained new lower bounds for "
+        "AI-powered research efforts. Joshua Levy began the Squares Project in "
+        "August 2026 with initial explorations that produced new lower bounds for "
         "$n = 11, 17, 18, 19, 20$ and other low values."
     ),
     (
@@ -4067,7 +4069,7 @@ def test_the_sites_own_statement_follows_readmes_introduction(about: str, result
         _markdown_text(
             "Independently, Evan Daniel has proved the optimality of an infinite family, "
             r"$s(k^2 - 3) = k$ for every $k \ge 6$, along with exact values at "
-            "21, 32 and 45 squares."
+            "21, 32, 45 and 60 squares."
         ),
     ]
     text = _rendered_text(narrative)
@@ -4093,7 +4095,7 @@ def test_the_sites_own_statement_follows_readmes_introduction(about: str, result
         ("cases/11.html", "eleven squares"),
         ("results.html#t-064", "an infinite family"),
         ("results.html#verification-ladders", "AI-assisted verification"),
-        *((f"cases/{n}.html", str(n)) for n in (21, 32, 45)),
+        *((f"cases/{n}.html", str(n)) for n in (21, 32, 45, 60)),
     ):
         assert re.search(
             rf'<a href="{re.escape(address)}"[^>]*>{re.escape(label)}</a>', narrative
@@ -4110,7 +4112,7 @@ def test_the_sites_own_statement_follows_readmes_introduction(about: str, result
     assert by_id["T-060"].group == groups["builds-on-project"]
     assert by_id["T-037"].credit.startswith("Kleddamag")
     assert by_id["T-037"].group == groups["builds-on-project"]
-    exact = {"T-064": None, "T-052": [21], "T-051": [32], "T-053": [45]}
+    exact = {"T-064": None, "T-052": [21], "T-051": [32], "T-053": [45], "T-062": [60]}
     for result, n_values in exact.items():
         record = by_id[result].record
         assert by_id[result].credit.startswith("Daniel"), result
@@ -4393,7 +4395,7 @@ def test_the_papers_page_says_what_each_paper_is(papers: str) -> None:
         "why the approach is shaped the way it is",
         "what the research has and has not established",
         "linear programming",
-        "is first needed",
+        "algebraic number fields",
     ):
         assert phrase in card_text(note), phrase
         assert phrase in opening, phrase
