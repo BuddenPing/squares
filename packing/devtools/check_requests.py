@@ -733,13 +733,18 @@ class BacklogRow:
     beads: tuple[str, ...]
     issues: tuple[int, ...]
     next_rung: str
+    #: Its unfinished confirmations, each as `result_status.unfinished_label` says it:
+    #: `C3: about 4.3 CPU-hours (priced 2026-10-10)`.
+    unfinished: tuple[str, ...] = ()
 
 
 def backlog_rows(record: Mapped, register: Register) -> list[BacklogRow]:
-    """Every register entry below V3 or C3: its next rung, activity, beads and issues.
+    """Every register entry below V3 or C3: its next rung, activity, unfinished
+    confirmations, beads and issues.
 
-    The beads are those its `next_rung` and its activity's link name; `devtools.
-    intake_sweep` reads the same rows, so the backlog has one definition."""
+    The beads are those its `next_rung`, its activity's link and its unfinished
+    confirmations' links name; `devtools.intake_sweep` reads the same rows, so the
+    backlog has one definition."""
     serves: dict[str, list[int]] = {}
     for issue in record["issues"]:
         for result in issue.get("results", ()):
@@ -759,7 +764,9 @@ def backlog_rows(record: Mapped, register: Register) -> list[BacklogRow]:
         doing = result_status.activity_label(activity)
         if doing:
             doing = f"{doing} since {activity.get('since')}"
-        text = f"{entry.get('next_rung', '')} {activity.get('link', '')}"
+        unfinished = entry.get("unfinished_confirmations") or ()
+        links = " ".join(str(item.get("link", "")) for item in unfinished)
+        text = f"{entry.get('next_rung', '')} {activity.get('link', '')} {links}"
         rows.append(
             BacklogRow(
                 id=ident,
@@ -769,27 +776,60 @@ def backlog_rows(record: Mapped, register: Register) -> list[BacklogRow]:
                 beads=tuple(sorted(set(BEAD.findall(text)), key=text.index)),
                 issues=tuple(serves.get(ident, ())),
                 next_rung=str(entry.get("next_rung", "")).strip(),
+                unfinished=tuple(result_status.unfinished_label(item) for item in unfinished),
             )
         )
     return rows
 
 
+def priced_line(items: Sequence[Mapped]) -> str:
+    """The known cost of `items`, unfinished confirmations, in one sentence: the central
+    estimates summed, the sum of the upper ends where any is given, and how many carry no
+    price (`result_status.priced_hours`)."""
+    if not items:
+        return "No entry above names an unfinished confirmation."
+    central, high, unpriced = result_status.priced_hours(items)
+    priced = len(items) - unpriced
+    if not priced:
+        return f"Unfinished confirmations listed: {len(items)}, none with a price."
+    total = f"about {result_status.hours(central, 1)} CPU-hours"
+    if high > central:
+        total += f", up to about {result_status.hours(high, 1)}"
+    rest = f", and {unpriced} {'has' if unpriced == 1 else 'have'} none" if unpriced else ""
+    return (
+        f"Unfinished confirmations listed: {len(items)}; the {priced} with a price "
+        f"{'comes' if priced == 1 else 'come'} to {total}{rest}."
+    )
+
+
 def backlog(record: Mapped, register: Register) -> list[str]:
-    """Every register entry below V3 or C3: its next rung, activity, beads and issues."""
+    """Every register entry below V3 or C3: its next rung, activity, unfinished
+    confirmations and their cost, beads and issues, then the known CPU-hours of every
+    unfinished confirmation listed."""
     lines = [
         "# Validation Backlog",
         "",
-        "| id | rungs | status | activity | beads | issues |",
-        "| --- | --- | --- | --- | --- | --- |",
+        "| id | rungs | status | activity | unfinished confirmations | beads | issues |",
+        "| --- | --- | --- | --- | --- | --- | --- |",
     ]
     rows = backlog_rows(record, register)
     for row in rows:
         issues = ", ".join(f"#{number}" for number in row.issues)
         lines.append(
             f"| {row.id} | {row.rungs} | {row.status} | {row.activity} "
-            f"| {', '.join(row.beads)} | {issues} |"
+            f"| {_cell('; '.join(row.unfinished))} | {', '.join(row.beads)} | {issues} |"
         )
-    lines.append("")
+    lines += [
+        "",
+        priced_line(
+            [
+                item
+                for row in rows
+                for item in register.results[row.id].get("unfinished_confirmations") or ()
+            ]
+        ),
+        "",
+    ]
     for row in rows:
         lines += [f"**{row.id}.** {_cell(row.next_rung)}", ""]
     return lines

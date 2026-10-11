@@ -646,6 +646,57 @@ def test_the_backlog_lists_every_entry_below_v3_or_c3_with_its_beads_and_issues(
     assert "in analysis since 2026-10-01" in rows[2]
 
 
+def test_the_backlog_prices_each_unfinished_confirmation_and_totals_the_known_hours() -> None:
+    """Each entry's unfinished confirmations are listed with their rung and cost, their
+    beads join the entry's, and one line sums the CPU-hours the record knows: the central
+    estimates, the upper ends where given, and how many carry no price."""
+    priced = {
+        "what": "a complete census",
+        "rung": "C3",
+        "link": "think-wxyz",
+        "estimated_cost": {"cpu_hours": 4.3, "basis": "a sample", "priced": "2026-10-10"},
+    }
+    ranged = {
+        "what": "a complete replay",
+        "rung": "C3",
+        "estimated_cost": {
+            "cpu_hours": 11.24,
+            "cpu_hours_high": 23,
+            "basis": "a sample, and the author's own run",
+            "priced": "2026-10-10",
+        },
+    }
+    unpriced = {"what": "a read of the proof", "rung": "C1"}
+    results = dict(REGISTER.results)
+    results["T-002"] = {**results["T-002"], "unfinished_confirmations": [priced]}
+    results["T-005"] = {**results["T-005"], "unfinished_confirmations": [ranged, unpriced]}
+    register = Register(results=results, evidence=REGISTER.evidence)
+    lines = check_requests.backlog(record(issue()), register)
+    rows = {line.split(" | ")[0][2:]: line for line in lines if line.startswith("| T-")}
+    assert (
+        "| C3: about 4.3 CPU-hours (priced 2026-10-10) | think-abcd, think-wxyz |"
+        in (rows["T-002"])
+    )
+    assert (
+        "| C3: about 11.24 CPU-hours, up to about 23 (priced 2026-10-10); C1: not priced |"
+        in rows["T-005"]
+    )
+    assert "|  | think-abcd |" in rows["T-003"]
+    assert (
+        "Unfinished confirmations listed: 3; the 2 with a price come to about 15.5 "
+        "CPU-hours, up to about 27.3, and 1 has none."
+    ) in lines
+    assert check_requests.priced_line([]) == (
+        "No entry above names an unfinished confirmation."
+    )
+    assert check_requests.priced_line([unpriced]) == (
+        "Unfinished confirmations listed: 1, none with a price."
+    )
+    assert check_requests.priced_line([priced]) == (
+        "Unfinished confirmations listed: 1; the 1 with a price comes to about 4.3 CPU-hours."
+    )
+
+
 def test_the_live_backlog_and_report_render() -> None:
     live = check_requests.load_record()
     register = check_requests.load_register()

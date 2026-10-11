@@ -24,6 +24,8 @@ supersede it (`devtools.render_recent_results.position_marks`): for a bound no c
 rests on now, the results its cases' bounds rest on instead, both derived from the case
 records; for a result of another kind, the later results its entry declares imply it
 (`superseded_by`), and `superseded in part` where they imply only some of it.
+The closing list gives each result's next action, its `next_rung`, and under it each of
+its `unfinished_confirmations` with the rung it would reach and its estimated cost.
 
 Usage, from `packing/`:
     uv run --frozen --all-extras --group dev python -m devtools.render_results --update
@@ -43,7 +45,7 @@ from devtools.check_results import confirmation_code, kind_label
 from devtools.register_prose import paragraphs
 from devtools.render_recent_results import load_records, position_marks, standing
 from devtools.result_credit import OTHERS, credit_line, source_lineage
-from devtools.result_status import CONFIRMED, status, status_line
+from devtools.result_status import CONFIRMED, status, status_line, unfinished_sentence
 from devtools.verifier_registry import LABELS, entry_line
 from devtools.verifier_registry import load as load_verifiers
 from sqpack.yamlio import safe_load
@@ -115,11 +117,16 @@ def claim_cell(record: dict) -> str:
 
 def next_action(record: dict) -> list[str]:
     """One result's `next_rung` as a list item: its first paragraph on the bullet's line,
-    and each later paragraph as a paragraph of the same item, indented under it."""
+    and each later paragraph as a paragraph of the same item, indented under it; then its
+    unfinished confirmations, one nested item each (`result_status.unfinished_sentence`)."""
     first, *rest = paragraphs(record["next_rung"])
     lines = [f"- **{record['id']}** — {first}"]
     for paragraph in rest:
         lines += ["", f"  {paragraph}"]
+    unfinished = record.get("unfinished_confirmations") or []
+    if unfinished and rest:
+        lines.append("")
+    lines.extend(f"  - Unfinished, {unfinished_sentence(item)}" for item in unfinished)
     if rest:
         # A blank line closes a multi-paragraph item, so the next bullet starts clean.
         lines.append("")
@@ -256,7 +263,11 @@ def render() -> str:
     lines.extend(verification_code(results, evidence))
     lines.append("## Next actions")
     lines.append("")
-    lines.append("The next evidence-improving action or terminal rationale for each result:")
+    lines.append(
+        "The next evidence-improving action or terminal rationale for each result, and "
+        "under it each confirmation the register lists as not yet run, with the rung it "
+        "would reach and its cost in CPU-hours where the record has priced it:"
+    )
     lines.append("")
     for record in results:
         lines.extend(next_action(record))

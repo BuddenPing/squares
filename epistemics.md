@@ -300,7 +300,29 @@ Two marks sit beside a status and are no part of it.
   It is the one hand-recorded fact in this section, so it expires: the checker refuses
   one dated more than 30 days before the register’s `last_reviewed`, and it is then
   re-dated with what happened since, or removed.
-  Work that is queued and not begun stays in `next_rung`.
+  Work that is queued and not begun stays in `next_rung`, and the confirmations among it
+  are also listed in `unfinished_confirmations`.
+
+**Unfinished confirmations** are the confirmations a result’s record names and has not
+run, or has not finished, listed in its optional `unfinished_confirmations` where the
+record knows the work concretely: `what` the confirmation is, the confirmation `rung` it
+would reach, and the bead, issue or file that owns it in `link`. Wherever a price is
+known, `estimated_cost` gives it in CPU-hours: `cpu_hours`, the central estimate,
+`cpu_hours_high` where the source gives an upper end, the `basis` it was priced on (the
+sample, the ratio, the host or the source’s own run), and the day it was `priced`. A
+price recorded only in wall-hours is converted where the number of workers is stated,
+and the basis says so.
+`next_rung` stays the prose of the next evidence-improving action; this list is the
+structured, priced part of it.
+It is no mark beside the status: `activity` says what is under way, and an item under
+way is in both. A run that would only add an attribute beside the rung, a second machine
+method or a reproduction with the producer’s code, reaches no rung and is not listed.
+[`devtools/check_results.py`](packing/devtools/check_results.py) refuses an item at or
+below the result’s `confirmation`, so an item is removed when its confirmation lands,
+and refuses an upper end below the estimate, a price dated after `last_reviewed`, and an
+item listed twice. The validation backlog (`devtools.check_requests --backlog`) and
+[`RESULTS.md`](packing/frontier/RESULTS.md#next-actions) show each item’s rung and cost,
+and the backlog sums the known CPU-hours.
 
 Until 2026-10-01 the site and `RESULTS.md` showed a *standing* in this place, which
 mixed three things: the frontier position (`current best`, `superseded`), whether the

@@ -28,7 +28,10 @@ result the clause is about holds (`devtools.rung_prose`); a statement of what a 
 needs is not such an assertion. A result's status (recorded, reviewed, confirmed, incomplete) is
 derived from its rungs by `devtools.result_status` and never stored; this holds
 the one hand-recorded workflow fact, an entry's `activity`, to its fields, its
-link and its age. Human review owns evidence relevance, claim
+link and its age, and an entry's `unfinished_confirmations`, the confirmations it names
+and has not run, to rungs above its own, one listing each, a link that resolves and a
+price that is positive, ordered and dated no later than the register's last review
+(`unfinished_confirmations_problems`). Human review owns evidence relevance, claim
 coverage, composition, significance, novelty, whether a headline says what its
 claim says, and the choice between kinds the record cannot tell apart.
 
@@ -46,7 +49,13 @@ from typing import Any
 
 from devtools.build_bound_citations import RECENT_SINCE
 from devtools.render_document_map import document_link
-from devtools.result_status import STATUSES, activity_problems, latest_review, status
+from devtools.result_status import (
+    STATUSES,
+    activity_problems,
+    latest_review,
+    link_problem,
+    status,
+)
 from devtools.rung_prose import REGISTER_FIELDS, Standing, label_problems
 from devtools.verifier_registry import RANK, confirming_runs, strongest
 from sqpack.assurance import EXTERNAL_ORIGINS, PROOF_METHODS
@@ -999,6 +1008,92 @@ def _established_date_problem(established: str, last_reviewed: str) -> str | Non
     return None
 
 
+#: The confirmation rungs an unfinished confirmation may name: a confirmation reaches one
+#: of them, never `C0`.
+UNFINISHED_RUNGS = ("C1", "C2", "C3", "C4", "C5")
+
+
+def _cpu_hours(value: object) -> float | None:
+    """A price in CPU-hours as the schema types it, a positive number, or nothing."""
+    if isinstance(value, bool) or not isinstance(value, int | float) or value <= 0:
+        return None
+    return float(value)
+
+
+def unfinished_confirmations_problems(
+    record: Mapping[str, Any], last_reviewed: str
+) -> list[str]:
+    """What is wrong with a result's `unfinished_confirmations`, the confirmations its
+    record names and has not run (epistemics.md, Status).
+
+    Each names what it is and the confirmation rung it would reach, which lies above the
+    result's own: a confirmation that has landed raised the rung and is removed. It is
+    listed once, its `link` is a bead, an issue, a branch or a repository file, and a
+    price, where one is recorded, is a positive number of CPU-hours whose upper end is no
+    lower than its estimate, dated no later than the register's last review. The check
+    reads the register's own date and never the clock, as `activity_problems` does.
+    """
+    items = record.get("unfinished_confirmations")
+    if not items:
+        return []
+    rid = record["id"]
+    held = str(record.get("confirmation", "C0"))
+    reviewed = _iso_date(last_reviewed)
+    problems: list[str] = []
+    seen: dict[str, int] = {}
+    for number, item in enumerate(items, start=1):
+        rung = str(item.get("rung"))
+        name = f"{rid}: unfinished confirmation {number} ({rung})"
+        what = " ".join(str(item.get("what") or "").split())
+        if not what:
+            problems.append(f"{name} says what it is in `what`")
+        elif (first := seen.setdefault(what.casefold(), number)) != number:
+            problems.append(f"{name} repeats unfinished confirmation {first}")
+        if rung not in UNFINISHED_RUNGS:
+            problems.append(f"{name} names no rung among {', '.join(UNFINISHED_RUNGS)}")
+        elif _rank(rung) <= _rank(held):
+            problems.append(
+                f"{name} is not above the result's confirmation, {held}; a confirmation "
+                "that has landed is removed"
+            )
+        if item.get("link") and (problem := link_problem(str(item["link"]))):
+            problems.append(f"{name}: link {problem}: {item['link']}")
+        problems.extend(_cost_problems(name, item.get("estimated_cost"), reviewed))
+    return problems
+
+
+def _cost_problems(
+    name: str, cost: Mapping[str, Any] | None, reviewed: date | None
+) -> list[str]:
+    """What is wrong with one unfinished confirmation's `estimated_cost`, if it has one."""
+    if cost is None:
+        return []
+    problems: list[str] = []
+    central = _cpu_hours(cost.get("cpu_hours"))
+    if central is None:
+        problems.append(f"{name}: estimated_cost.cpu_hours is not a positive number")
+    if "cpu_hours_high" in cost:
+        high = _cpu_hours(cost.get("cpu_hours_high"))
+        if high is None:
+            problems.append(f"{name}: estimated_cost.cpu_hours_high is not a positive number")
+        elif central is not None and high < central:
+            problems.append(
+                f"{name}: estimated_cost.cpu_hours_high, {cost['cpu_hours_high']}, is below "
+                f"its estimate, {cost['cpu_hours']}"
+            )
+    if not str(cost.get("basis") or "").strip():
+        problems.append(f"{name}: estimated_cost says how it was priced in `basis`")
+    priced = _iso_date(cost.get("priced"))
+    if priced is None:
+        problems.append(f"{name}: estimated_cost.priced is not a calendar date")
+    elif reviewed is not None and priced > reviewed:
+        problems.append(
+            f"{name}: estimated_cost.priced {priced.isoformat()} is after the register's "
+            f"last_reviewed {reviewed.isoformat()}"
+        )
+    return problems
+
+
 def coverage_problems(
     results: list[dict],
     evidence_index: dict[str, dict],
@@ -1229,6 +1324,9 @@ def main() -> int:
         problems.extend(superseded_by_problems(record, dated, scopes, holding))
         problems.extend(established_problems(record, register["last_reviewed"]))
         problems.extend(activity_problems(record, str(register["last_reviewed"])))
+        problems.extend(
+            unfinished_confirmations_problems(record, str(register["last_reviewed"]))
+        )
         problems.extend(confirmation_prose_problems(record))
 
         for kind, value in (record.get("produced_by") or {}).items():
@@ -1312,7 +1410,8 @@ def main() -> int:
         "headline and date holds, every kind agrees with its claim and evidence, every "
         "declared supersession names a result no earlier on a shared case, never "
         "supersedes all of a result a case bound rests on and never leads back, every "
-        "recent case lower bound is covered, every reader-tier mention exists; by status, "
+        "unfinished confirmation lies above its result's rung, every recent case lower "
+        "bound is covered, every reader-tier mention exists; by status, "
         + ", ".join(f"{held.count(name)} {name}" for name in STATUSES)
     )
     return 0

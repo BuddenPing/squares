@@ -1300,3 +1300,194 @@ def test_corrects_names_a_published_result_that_no_longer_stands() -> None:
         "credits" in problem
         for problem in check_results.corrects_problems(record, sources, {"T-007": other})
     )
+
+
+def _unfinished(**changes: object) -> dict[str, object]:
+    """One unfinished confirmation at C3, owned by a bead and priced, with `changes`
+    applied; a change to `None` drops the field."""
+    item: dict[str, object] = {
+        "what": "a complete replay of the certificate, its controls and a review",
+        "rung": "C3",
+        "link": "think-r333",
+        "estimated_cost": {
+            "cpu_hours": 4.3,
+            "cpu_hours_high": 6,
+            "basis": "An eight-direction sample at 0.613 of the source's CPU.",
+            "priced": "2026-10-10",
+        },
+    }
+    item.update(changes)
+    return {key: value for key, value in item.items() if value is not None}
+
+
+def _priced(**changes: object) -> dict[str, object]:
+    """`_unfinished`'s price with `changes` applied; a change to `None` drops the field."""
+    cost = {**_unfinished()["estimated_cost"], **changes}  # type: ignore[dict-item]
+    return {key: value for key, value in cost.items() if value is not None}
+
+
+def _unfinished_problems(
+    *items: dict[str, object], confirmation: str = "C0", reviewed: str = "2026-10-10"
+) -> list[str]:
+    record = {"id": "T-999", "confirmation": confirmation, "unfinished_confirmations": items}
+    return check_results.unfinished_confirmations_problems(record, reviewed)
+
+
+def test_an_unfinished_confirmation_lies_above_the_rung_once_with_an_ordered_price() -> None:
+    """An unfinished confirmation names a rung above the result's own, since one that has
+    landed raised the rung and is removed; it is listed once, links a bead, an issue or a
+    file, and its price, which is optional, is positive, its upper end no lower than its
+    estimate, and dated no later than the register's last review."""
+    problems = _unfinished_problems
+    assert check_results.unfinished_confirmations_problems({"id": "T-999"}, "2026-10-10") == []
+    assert problems(_unfinished()) == []
+    assert problems(_unfinished(estimated_cost=_priced(cpu_hours_high=None))) == []
+    assert problems(_unfinished(estimated_cost=_priced(cpu_hours_high=4.3))) == []
+    assert problems(_unfinished(estimated_cost=None, link=None, rung="C1")) == []
+    assert problems(_unfinished(), _unfinished(what="a second review", rung="C4")) == []
+    assert problems(_unfinished(rung="C4"), confirmation="C3") == []
+
+    def one(*items: dict[str, object], confirmation: str = "C0") -> str:
+        (problem,) = problems(*items, confirmation=confirmation)
+        return problem
+
+    assert one(_unfinished(), confirmation="C3") == (
+        "T-999: unfinished confirmation 1 (C3) is not above the result's confirmation, "
+        "C3; a confirmation that has landed is removed"
+    )
+    assert "not above the result's confirmation, C3" in one(
+        _unfinished(rung="C2"), confirmation="C3"
+    )
+    assert "names no rung among C1, C2, C3, C4, C5" in one(_unfinished(rung="C0"))
+    assert one(_unfinished(estimated_cost=_priced(cpu_hours_high=4))) == (
+        "T-999: unfinished confirmation 1 (C3): estimated_cost.cpu_hours_high, 4, is "
+        "below its estimate, 4.3"
+    )
+    assert one(_unfinished(estimated_cost=_priced(priced="2026-10-11"))) == (
+        "T-999: unfinished confirmation 1 (C3): estimated_cost.priced 2026-10-11 is after "
+        "the register's last_reviewed 2026-10-10"
+    )
+    assert one(_unfinished(), _unfinished(link="think-i85v")) == (
+        "T-999: unfinished confirmation 2 (C3) repeats unfinished confirmation 1"
+    )
+    respaced = _unfinished(
+        what="A complete replay of the certificate,  its controls and a review"
+    )
+    assert "repeats unfinished confirmation 1" in one(_unfinished(), respaced)
+    assert "says what it is" in one(_unfinished(what=" "))
+    assert "is not a bead" in one(_unfinished(link="see the notes"))
+    assert "is not a bead" in one(_unfinished(link="packing/frontier/no-such-file.yaml"))
+    assert "cpu_hours is not a positive number" in one(
+        _unfinished(estimated_cost=_priced(cpu_hours=0))
+    )
+    assert "cpu_hours_high is not a positive number" in one(
+        _unfinished(estimated_cost=_priced(cpu_hours_high="23"))
+    )
+    assert "says how it was priced" in one(_unfinished(estimated_cost=_priced(basis="")))
+    assert "not a calendar date" in one(_unfinished(estimated_cost=_priced(priced="October")))
+
+
+def test_a_landed_unfinished_confirmation_fails_the_register_gate(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    landed = [{"what": "a complete replay", "rung": "C3"}]
+    monkeypatch.setattr(
+        check_results,
+        "RESULTS",
+        _changed_result(tmp_path, "T-037", unfinished_confirmations=landed),
+    )
+    assert check_results.main() == 1
+    assert (
+        "T-037: unfinished confirmation 1 (C3) is not above the result's confirmation, C3"
+        in capsys.readouterr().out
+    )
+
+
+#: The prices the 10 October packets and beads give the four imports of that day: the
+#: rung, the central estimate and the upper end in CPU-hours, and the bead that owns it.
+PACKET_PRICES = {
+    "T-132": ("C3", 4.3, None, "think-r333"),
+    "T-142": ("C3", 3.28, None, "think-i85v"),
+    "T-143": ("C3", 4.49, None, "think-i85v"),
+    "T-144": ("C3", 11.24, 23, "think-nd7g"),
+    "T-081": ("C3", 118, 435, "think-hwpr"),
+}
+
+
+def test_the_registers_unfinished_confirmations_pass_and_the_schema_knows_the_field() -> None:
+    from jsonschema_rs import Draft202012Validator  # noqa: PLC0415
+
+    register = safe_load(check_results.RESULTS.read_text(encoding="utf-8"))
+    carrying = {
+        entry["id"]: entry
+        for entry in register["results"]
+        if entry.get("unfinished_confirmations")
+    }
+    for rid, entry in carrying.items():
+        assert (
+            check_results.unfinished_confirmations_problems(entry, register["last_reviewed"])
+            == []
+        ), rid
+    for rid, (rung, central, high, link) in PACKET_PRICES.items():
+        (item,) = carrying[rid]["unfinished_confirmations"]
+        cost = item["estimated_cost"]
+        assert (item["rung"], cost["cpu_hours"], cost.get("cpu_hours_high"), item["link"]) == (
+            rung,
+            central,
+            high,
+            link,
+        ), rid
+    # T-146 is under review in the same pass, and its rung is the review's to set.
+    assert "T-146" not in carrying
+
+    schema = safe_load((check_results.FRONTIER / "results.schema.yaml").read_text("utf-8"))
+    field = schema["$defs"]["result"]["properties"]["unfinished_confirmations"]
+    assert field["items"]["properties"]["rung"]["enum"] == list(check_results.UNFINISHED_RUNGS)
+    assert "unfinished_confirmations" not in schema["$defs"]["result"]["required"]
+    validator = Draft202012Validator(schema)
+    # The softschema header is the validator's own and is stripped before the schema.
+    payload = {key: value for key, value in register.items() if key != "softschema"}
+    assert validator.is_valid(payload)
+    t132 = next(entry for entry in payload["results"] if entry["id"] == "T-132")
+    for refused in (
+        _unfinished(rung="C0"),
+        _unfinished(owner="someone"),
+        _unfinished(estimated_cost=_priced(cpu_hours=0)),
+        _unfinished(estimated_cost=_priced(wall_hours=2.2)),
+        _unfinished(estimated_cost=_priced(priced=None)),
+        _unfinished(what=None),
+    ):
+        t132["unfinished_confirmations"] = [refused]
+        assert not validator.is_valid(payload), refused
+
+
+def test_results_md_lists_each_unfinished_confirmation_under_its_next_action() -> None:
+    unpriced = _unfinished(what="a second review", rung="C4", link=None, estimated_cost=None)
+    record = {
+        "id": "T-999",
+        "next_rung": "First.\nSecond.",
+        "unfinished_confirmations": [_unfinished(), unpriced],
+    }
+    assert render_results.next_action(record) == [
+        "- **T-999** — First.",
+        "",
+        "  Second.",
+        "",
+        (
+            "  - Unfinished, C3 (think-r333): a complete replay of the certificate, its "
+            "controls and a review. About 4.3 CPU-hours, up to about 6 (priced 2026-10-10)."
+        ),
+        "  - Unfinished, C4: a second review. Not priced.",
+        "",
+    ]
+    assert render_results.next_action({**record, "next_rung": "First."}) == [
+        "- **T-999** — First.",
+        (
+            "  - Unfinished, C3 (think-r333): a complete replay of the certificate, its "
+            "controls and a review. About 4.3 CPU-hours, up to about 6 (priced 2026-10-10)."
+        ),
+        "  - Unfinished, C4: a second review. Not priced.",
+    ]
+    committed = render_results.OUTPUT.read_text(encoding="utf-8")
+    assert "  - Unfinished, C3 (think-nd7g): a complete replay of all 201 angles" in committed
+    assert "About 11.24 CPU-hours, up to about 23 (priced 2026-10-10)." in committed

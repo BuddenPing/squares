@@ -23,6 +23,7 @@ from devtools import (
     render_overview,
     repo_links,
     result_overview,
+    result_status,
     site_assets,
     site_urls,
 )
@@ -331,13 +332,22 @@ def test_a_broad_report_keeps_its_full_payload_within_the_canonical_page_budget(
     assert 'rowspan="' in body
     for paragraph in register_prose.paragraphs(result.record["claim"]):
         assert f'<p class="site-result-claim">{overview_data.tex_bounds(paragraph)}</p>' in body
+    unfinished = result.record.get("unfinished_confirmations") or []
+    # T-124's one unfinished confirmation, an audit and an independent Lean build, is
+    # unpriced, and its page says so under the next rung.
+    assert [item["rung"] for item in unfinished] == ["C3"]
     for label, value in (
         ("Significance", result.record["significance"]["rationale"]),
         ("Composition", result.record.get("composition")),
         ("Next rung", result.record.get("next_rung")),
+        (
+            "Unfinished confirmations",
+            "\n".join(result_status.unfinished_sentence(item) for item in unfinished),
+        ),
     ):
         if value:
             assert f"<dt>{label}</dt><dd>{result_overview.prose_html(value)}</dd>" in body
+    assert "Lean proof. Not priced.</dd>" in body
     members = result_overview.chain(overview, cases)
     assert len(members) >= 67
     assert [identity for identity, _ in STEP.findall(body)] == [

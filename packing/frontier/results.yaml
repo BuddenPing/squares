@@ -3223,6 +3223,11 @@ results:
       consume, and with C4 a second adversarial AI review by a distinct reviewer and a human
       oversight record. Retaining the per-face dual witnesses and recomputing the gap cap
       from distinct source are the closure review's two bounded residual tasks.
+    unfinished_confirmations:
+      - what: >-
+          BC-240's audited prose steps, which the composition note judges load-bearing,
+          mechanised or reviewed again by a distinct reviewer
+        rung: C3
     notes: >-
       2026-10-03: T-060, which confirms that s(11) is Trump's exact side U (its T), implies
       this result's first clause and not its equality clause (superseded_by), so this
@@ -4060,6 +4065,16 @@ results:
       the census route that reads them, it would carry every count of this entry. C1 before
       that, by recording the 2026-09-27 scaling review as an external_review on the report
       entries.
+    unfinished_confirmations:
+      - what: >-
+          the 2026-09-27 checker-scaling review recorded as an external_review on the
+          report entries this result cites
+        rung: C1
+      - what: >-
+          sqverify-fast's census of 3 October, which verified all 48 standing certificates
+          at all 201 directions, recorded with its control receipts and a review of the
+          census route that reads them
+        rung: C3
     notes: >-
       V0 because every cited entry is the source's public claim or a reported-lane transfer
       from it: assurance reported, replay not attempted. The source reports each standing
@@ -7829,6 +7844,28 @@ results:
       first-party route; it plans points and segments only, and box 9 also needs a
       uniform-polygon primitive and an exact argument inside the Lebesgue block, where
       every square has mass exactly one.
+    unfinished_confirmations:
+      - what: >-
+          ValidTilt9 replayed in full by either checker, with the route's controls, as a
+          replayed entry beside the Lean reduction's build: wand125's run, the independent
+          route, or qx2_zm.py on the box-9 cover in the shards of the evand packet's replay
+          plan, compared root for root with the published record
+        rung: C3
+        link: think-hwpr
+        estimated_cost:
+          cpu_hours: 118
+          cpu_hours_high: 435
+          basis: >-
+            The cheaper route, wand125's, priced from 30 of its roots re-run here
+            (packing/resources/web/wand125-valid7-independent-check-2026-10-06/README.md,
+            section A-6, and receipts/validtilt9_sample_compare.json): about 118 CPU-hours
+            with every root under the run's last options, certified afresh, an estimate
+            that rests on nine heavy probes, and about 435 as published, each root under its
+            own phase's options and compared leaf for leaf. The alternative, qx2_zm.py, is
+            226.48 CPU-hours in the source's record and about 265 here at the speed of 1.17
+            its calibration measured on 3 October
+            (packing/resources/web/evand-square-packing-2026-10-03/receipts/valid9/qx2_replay_plan.json).
+          priced: '2026-10-06'
     notes: >-
       V0 because every cited entry is a report, the source's or wand125's: assurance
       reported, replay not attempted. C1 because the claim-chain review of 3 October is recorded as the report
@@ -8442,6 +8479,12 @@ results:
       C2 and above need a replay of the geometry, not only the arithmetic: a machine check
       that the lattice of Theorem 7 pierces every unit square in the square of side x, or
       a formalization of the three-case reduction in Theorem 3's proof.
+    unfinished_confirmations:
+      - what: >-
+          a replay of the geometry: a machine check that the lattice of Theorem 7 pierces
+          every unit square in the square of side x, or a formalization of the three-case
+          reduction in Theorem 3's proof
+        rung: C2
     notes: >-
       Superseded as the verified lower bound at both of its cases when this line of the
       register merged with the replays recorded in parallel, on 2026-10-03: at n = 37 by
@@ -11715,6 +11758,11 @@ results:
       equality case; a Lean statement of the equality case would be the route to rung 5,
       once a formalization is reviewed here. Rung 4 needs what T-060's rung 4 needs: the
       owner's oversight record and a second adversarial review of the global chain.
+    unfinished_confirmations:
+      - what: >-
+          the step at S = T mechanised, or reviewed again by a distinct reviewer with the
+          oversight record the ladder asks for
+        rung: C3
     notes: >-
       Registered on 6 October 2026 by the owner's decision, to state separately what
       the record had held only as a conditional corollary: the paper stated it from
@@ -12453,6 +12501,11 @@ results:
     - packing/devtools/evand_report_catalogue.py
     next_rung: Acquire and bind the exact source geometry, check root identity and full feasibility
       independently, and review any minimality claim separately. PR403 owns canonical exact-value integration.
+    unfinished_confirmations:
+      - what: >-
+          the exact source geometry acquired and bound, and its root identity and full
+          feasibility checked independently
+        rung: C3
     notes: Source assertions only. No upstream checker or Lean build was executed here; retained checker
       flags are not local verdicts. Polynomial irreducibility, minimality, published-expression equality
       and exact geometry remain unverified. No global optimality or rigidity established. Source packings
@@ -12493,6 +12546,11 @@ results:
     - packing/devtools/evand_report_catalogue.py
     next_rung: Acquire and bind the exact source geometry, check root identity and full feasibility
       independently, and review any minimality claim separately. PR403 owns canonical exact-value integration.
+    unfinished_confirmations:
+      - what: >-
+          the exact source geometry acquired and bound, and its root identity and full
+          feasibility checked independently
+        rung: C3
     notes: Source assertions only. No upstream checker or Lean build was executed here; retained checker
       flags are not local verdicts. Polynomial irreducibility, minimality, published-expression equality
       and exact geometry remain unverified. No global optimality or rigidity established. Source packings
@@ -12533,6 +12591,11 @@ results:
     - packing/devtools/evand_report_catalogue.py
     next_rung: Acquire and bind the exact source geometry, check root identity and full feasibility
       independently, and review any minimality claim separately. PR403 owns canonical exact-value integration.
+    unfinished_confirmations:
+      - what: >-
+          the exact source geometry acquired and bound, and its root identity and full
+          feasibility checked independently
+        rung: C3
     notes: Source assertions only. No upstream checker or Lean build was executed here; retained checker
       flags are not local verdicts. Polynomial irreducibility, minimality, published-expression equality
       and exact geometry remain unverified. No global optimality or rigidity established. Source packings
@@ -12573,6 +12636,11 @@ results:
     - packing/devtools/evand_report_catalogue.py
     next_rung: Acquire and bind the exact source geometry, check root identity and full feasibility
       independently, and review any minimality claim separately. PR403 owns canonical exact-value integration.
+    unfinished_confirmations:
+      - what: >-
+          the exact source geometry acquired and bound, and its root identity and full
+          feasibility checked independently
+        rung: C3
     notes: Source assertions only. No upstream checker or Lean build was executed here; retained checker
       flags are not local verdicts. Polynomial irreducibility, minimality, published-expression equality
       and exact geometry remain unverified. No global optimality or rigidity established. Source packings
@@ -12789,6 +12857,12 @@ results:
     next_rung: Audit the retained theorem, embedded configuration and perturbation-definition bindings and pinned
       dependencies, acquire any inputs that audit finds missing, and independently build the pinned Lean
       proof before raising either rung.
+    unfinished_confirmations:
+      - what: >-
+          an audit of the retained theorem, embedded configuration and
+          perturbation-definition bindings and pinned dependencies, and an independent
+          build here of the pinned Lean proof
+        rung: C3
     notes: Reported non-strict local minima under the source matched-index perturbation convention,
       with angles modulo 90 degrees and plateaux permitted. The actual roster has176 integer-band configurations
       plus n11 and n28; it is not every count in the shorthand bands. Full source Lean code is retained;
@@ -13474,6 +13548,24 @@ results:
       FC-1) and a review that reads this certificate, by the checklist of the 6 October
       declared-net soundness review. The eight-direction sample prices the run and its
       controls at about 4.3 CPU-hours, so it waits in think-r333 for a budget.
+    unfinished_confirmations:
+      - what: >-
+          a complete sqverify-fast census at all 2,073 directions from a retained
+          candidate, with its whole-net control receipt (the 99/100 mutant at every
+          direction, FC-1) and a review that reads this certificate, by the checklist of the 6 October
+          declared-net soundness review
+        rung: C3
+        link: think-r333
+        estimated_cost:
+          cpu_hours: 4.3
+          basis: >-
+            The eight-direction sqverify-fast sample of 10 October (directions 0, 296, ...,
+            2072; 27.3 CPU-s, 0.613 of the source's CPU on them) applied to the source's
+            12,616 CPU-s over the net: a complete capture about 7,740 CPU-s and the
+            whole-net controls about 7,750
+            (packing/resources/web/wand125-fine-net-n29-2026-10-10/README.md and
+            receipts/sample-diagnostic.json).
+          priced: '2026-10-10'
     notes: >-
       V0 because the cited entry is the source's public claim: assurance reported, replay
       not attempted. C0 because no cited entry carries a qualifying external_review. The
@@ -14869,6 +14961,24 @@ results:
       FC-1) and a review that reads this certificate, by the checklist of the 6 October
       declared-net soundness review. The eight-direction sample prices the run and its
       controls at about 3.3 CPU-hours, so it waits in think-i85v for a budget.
+    unfinished_confirmations:
+      - what: >-
+          a complete sqverify-fast census at all 2,073 directions from a retained
+          candidate, with its whole-net control receipt (the 99/100 mutant at every
+          direction, FC-1) and a review that reads this certificate, by the checklist of the 6 October
+          declared-net soundness review
+        rung: C3
+        link: think-i85v
+        estimated_cost:
+          cpu_hours: 3.28
+          basis: >-
+            The eight-direction sqverify-fast sample of 10 October (directions 0, 296, ...,
+            2072; 21.19 CPU-s here against the source's 33.05, ratio 0.641) applied to the
+            source's 9,204 CPU-s over the net: a complete capture 5,903 CPU-s and the
+            whole-net controls 5,911
+            (packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/README.md and
+            receipts/sample-diagnostic-n28.json).
+          priced: '2026-10-10'
     notes: >-
       V0 because the cited entry is the source's public claim: assurance reported, replay
       not attempted. C0 because no cited entry carries a qualifying external_review. The
@@ -14948,6 +15058,23 @@ results:
       mutant at every direction, FC-1) and a review that reads this certificate. The
       eight-direction sample prices the run and its controls at about 4.5 CPU-hours, so it
       waits in think-i85v for a budget.
+    unfinished_confirmations:
+      - what: >-
+          a complete sqverify-fast census at all 2,073 directions from a retained
+          candidate, with its whole-net control receipt (the 99/100 mutant at every
+          direction, FC-1) and a review that reads this certificate
+        rung: C3
+        link: think-i85v
+        estimated_cost:
+          cpu_hours: 4.49
+          basis: >-
+            The eight-direction sqverify-fast sample of 10 October (directions 0, 296, ...,
+            2072; 29.65 CPU-s here against the source's 52.60, ratio 0.564) applied to the
+            source's 14,335 CPU-s over the net: a complete capture 8,080 CPU-s and the
+            whole-net controls 8,092
+            (packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/README.md and
+            receipts/sample-diagnostic-n30.json).
+          priced: '2026-10-10'
     notes: >-
       V0 because the cited entry is the source's public claim: assurance reported, replay
       not attempted. C0 because no cited entry carries a qualifying external_review. The
@@ -15028,6 +15155,27 @@ results:
       as the 2 October review read T-080's. The two-angle sample prices the replay and
       control at about 11.2 CPU-hours (the author's own replay suggests up to about 23), so
       it waits in think-nd7g for a budget.
+    unfinished_confirmations:
+      - what: >-
+          a complete replay of all 201 angles by the T-080 route, with the certificate
+          registered in devtools.audit_wand125_linear so that linear-replay writes
+          resumable receipts, the route's linear-control receipt and a review that reads
+          this certificate, as the 2 October review read T-080's
+        rung: C3
+        link: think-nd7g
+        estimated_cost:
+          cpu_hours: 11.24
+          cpu_hours_high: 23
+          basis: >-
+            Angles 37 and 108 replayed here on 10 October by the source's replay function
+            and unchanged checker (57.4 and 117.9 CPU-s against the source's 73.6 and 152.0,
+            ratio 0.776) applied to the source's 51,877 s over the net: the complete replay
+            40,278 CPU-s and the route's control at angle 37 172 CPU-s
+            (packing/resources/web/wand125-linear-n122-2026-10-10/README.md and
+            receipts/linear-sample-diagnostic.json). The upper end is the author's own
+            replay, 7 hours 41 minutes of wall at three workers, converted at full use of
+            the three.
+          priced: '2026-10-10'
     notes: >-
       V0 because the cited entry is the source's public claim: assurance reported, replay
       not attempted. C0 because no cited entry carries a qualifying external_review. One
