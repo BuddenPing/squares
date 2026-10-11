@@ -115,7 +115,7 @@ def test_the_checkbox_starts_at_its_pages_default_and_the_table_with_it(
     """On load the complete page's checkbox is clear as its HTML has it; every row
     shows and the count is theirs. The rows that carry the flag are every result
     that is not superseded: the current bests, the second certificates, the better
-    bounds the case records have not taken in yet (T-128, pending adoption) and the
+    bounds the case records have not taken in yet (T-122, pending adoption) and the
     results that claim no bound, which have no standing, but for one the register
     declares a later result implies whole (T-031, superseded by T-060)."""
     defaults = PAGES[name]

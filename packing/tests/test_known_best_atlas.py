@@ -52,8 +52,10 @@ from devtools import refinement_packets as refinement_sources
 from devtools import ryxu_arrangement_reports as ryxu_reports
 from devtools import ryxu_house_links as ryxu_houses
 from devtools import ryxu_radical_n51 as ryxu_radical
+from devtools import upper_bound_houses as adopted_houses
 from devtools.atlas_legend import AtlasLegendCounts, atlas_legend
 from devtools.result_status import RecentContributions, recent_contributions_by_case
+from devtools.retained_data import read_retained_bytes
 from sqpack.known_best import (
     ATLAS_SAMPLE_STRIDE,
     COMPOSITE_PDF_EDITION_DATE,
@@ -106,10 +108,12 @@ GOLDEN_SOURCE_KINDS: dict[str, dict[str, int]] = {
         "kingbird-derived-facts": 53,
         "packet-derived-facts": 33,
     },
+    # 232 (from Kingbird) and 308 (from the grid) moved to packet houses in the house
+    # adoption of 11 October 2026 (think-fvz4).
     "n=1..324": {
-        "exact-grid": 176,
-        "kingbird-derived-facts": 80,
-        "packet-derived-facts": 68,
+        "exact-grid": 175,
+        "kingbird-derived-facts": 79,
+        "packet-derived-facts": 70,
     },
 }
 
@@ -336,6 +340,22 @@ def _assert_container_retains(
     assert retained == digests[entry["source_path"]], row["url"]
 
 
+def _assert_file_retains(row: dict[str, Any], path: Path) -> None:
+    """A house adopted on 11 October 2026 (think-fvz4) keeps its certificate as the
+    upstream file itself under its packet's archive: its bytes, or the bytes it holds
+    compressed, carry the SHA-256 the packet's acquisition record pinned upstream."""
+    packet = adopted_houses.source_for(row["n"]).packet
+    revision, digests = _packet_acquisition(packet)
+    _, marker, upstream = row["url"].partition(f"/blob/{revision}/")
+    assert marker, row["url"]
+    data = (
+        path.read_bytes()
+        if path.name == Path(upstream).name
+        else read_retained_bytes(path, limit=adopted_houses.reports.MAX_SOURCE_BYTES)
+    )
+    assert hashlib.sha256(data).hexdigest() == digests[upstream], row["url"]
+
+
 def test_every_retained_packet_source_holds_its_upstream_bytes() -> None:
     """A packet row marked `raw_asset_retained` keeps the file its `url` names, byte for
     byte: the builder marks a row so when its `path` is a complete-certificate container
@@ -351,6 +371,9 @@ def test_every_retained_packet_source_holds_its_upstream_bytes() -> None:
     containers: dict[str, dict[str, Any]] = {}
     for row in rows:
         path = ROOT / row["path"]
+        if not row["path"].endswith(".json.xz"):
+            _assert_file_retains(row, path)
+            continue
         if row["path"] not in containers:
             containers[row["path"]] = _retained_container(path)
         _assert_container_retains(
@@ -582,6 +605,11 @@ def _assert_witness_agrees_with_entry(entry: dict, release_by_n: dict) -> None:
     n = entry["n"]
     if n in ryxu_houses.NUMBERS and entry["source"]["url"] == ryxu_houses.source_url(n):
         assert ROOT / entry["witness"]["path"] == ryxu_houses.house_path(n)
+    if (
+        n in adopted_houses.ADOPTED
+        and entry["source"]["url"] == adopted_houses.source_for(n).origin(n).url
+    ):
+        assert ROOT / entry["witness"]["path"] == adopted_houses.house_path(n)
     witness = load_witness(ROOT / entry["witness"]["path"], fallback_schema=SCHEMA)
     assert witness["n"] == n
     assert witness["id"] == entry["witness"]["id"]
@@ -600,6 +628,17 @@ def _assert_witness_agrees_with_entry(entry: dict, release_by_n: dict) -> None:
         )
         source = refinement_houses.source(n) if n in refinement_houses.NUMBERS else None
         if (
+            n in adopted_houses.ADOPTED
+            and witness["source"]["key"] == adopted_houses.source_for(n).key
+        ):
+            # A house adopted on 11 October 2026 (think-fvz4) is drawn from its
+            # certificate's retained file; admit the whole house it rebuilds, with the
+            # count's native jobs, not a matching path alone.
+            origin = adopted_houses.source_for(n).origin(n)
+            assert entry["source"]["path"] == origin.path.relative_to(ROOT).as_posix()
+            assert witness["source"]["path"] == entry["source"]["path"]
+            adopted_houses.check_houses([n])
+        elif (
             n in gupta_houses.NUMBERS
             and witness["source"]["key"] == gupta_houses.reports.SOURCE_KEY
         ):
@@ -650,8 +689,10 @@ def _assert_witness_agrees_with_entry(entry: dict, release_by_n: dict) -> None:
         )
 
 
-@pytest.mark.parametrize("n", [51, 70])
-def test_ryxu_manifest_refuses_a_noncanonical_house_path(n: int) -> None:
+@pytest.mark.parametrize("n", [51, 261, 70, 308])
+def test_a_linked_house_manifest_refuses_a_noncanonical_house_path(n: int) -> None:
+    """An ry-xu house (51, 261) or one adopted on 11 October 2026 (70, 308) is read only
+    from its canonical leaf."""
     document = json.loads((ATLAS / "manifest.json").read_text(encoding="utf-8"))
     entry = next(row for row in document["atlas"]["entries"] if row["n"] == n)
     changed = {**entry, "witness": {**entry["witness"], "path": "witnesses/other-house.yaml"}}

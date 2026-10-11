@@ -664,7 +664,8 @@ def admit(certificate: legacy.Certificate, offered: str) -> None:
     )
 
 
-def _options(row: CertificateRow) -> dict[str, str]:
+def row_options(row: CertificateRow) -> dict[str, str]:
+    """The options a certificate row declares for its format's reader, by name."""
     options = row.get("options", [])
     names = [option["name"] for option in options]
     _require(len(names) == len(set(names)), f"n={row['n']}: an option is declared twice")
@@ -779,7 +780,7 @@ def read_facts(packet: Path) -> dict[int, legacy.Certificate]:
             certificate = read_fact(packet, declaration, row)
         else:
             raw = _read(source, row["path"])
-            certificate = parse_certificate(raw, n, row["format"], _options(row))
+            certificate = parse_certificate(raw, n, row["format"], row_options(row))
         admit(certificate, row["offered"])
         for other in row.get("same_packing", []):
             copy = parse_certificate(_read(source, other["path"]), n, other["format"])
@@ -1204,7 +1205,7 @@ def derive(packet: Path, checkout: Path, *, check: bool = False) -> list[retaine
         )
         with upstream.open("rb") as stream:
             raw = stream.read(MAX_SOURCE_BYTES + 1)
-        certificate = parse_certificate(raw, row["n"], row["format"], _options(row))
+        certificate = parse_certificate(raw, row["n"], row["format"], row_options(row))
         admit(certificate, row["offered"])
         witness = fact_witness(packet, declaration, row, certificate)
         text = witness_document(witness, schema=FACT_SCHEMA)

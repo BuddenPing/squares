@@ -24,6 +24,7 @@ from devtools import register_ryxu_reports as register
 from devtools import regularize_axis_components as regularizer
 from devtools import run_negative_controls as controls
 from devtools import ryxu_house_links as houses
+from devtools import upper_bound_houses as adopted
 from sqpack.render import render_packing_svg
 from sqpack.render.model import EvidenceTier, RenderSpec, ScalarKind
 from sqpack.witness import materialize_exact_witness, witness_document
@@ -48,11 +49,29 @@ def private(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     monkeypatch.setattr(
         register, "HISTORY", packet / "acquisition/frontier-prior-state.json.xz"
     )
+    retained = tmp_path / "historical-houses"
+    retained.mkdir()
+    facts = houses.reports.read_facts()
+    positives = houses.reports.check_certification()
     for n in houses.NUMBERS:
         path = houses.house_path(n)
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.symlink_to(SOURCE / path.relative_to(repo))
+        if n not in adopted.ADOPTED:
+            path.symlink_to(SOURCE / path.relative_to(repo))
+            continue
+        # Since the house adoption of 11 October 2026 a later source owns this atlas leaf
+        # (think-fvz4). Admission stays scoped to this packet: rebuild the earlier house
+        # from its private inputs, without reading the newer pose.
+        earlier = retained / path.name
+        witness = houses.expected_witness(n, facts=facts, positives=positives)
+        earlier.write_text(witness_document(witness, schema="../witness.schema.yaml"))
+        path.symlink_to(earlier)
     return repo
+
+
+def drawn() -> list[int]:
+    """The counts whose live atlas leaf is still the ry-xu house."""
+    return [n for n in houses.NUMBERS if n not in adopted.ADOPTED]
 
 
 def test_exact_radical_projection_keeps_all_coefficient_geometry() -> None:
@@ -202,11 +221,12 @@ def test_actual_worker_keeps_full_scientific_inputs_and_refuses_producers(
         assert private.is_file()
         assert not private.is_symlink()
         assert private.read_bytes() == path.read_bytes()
-    script = """
+    script = f"""
+ns = {drawn()!r}
 from devtools import ryxu_house_links as h, build_known_best_atlas as a
 from devtools import refinement_custody as old425
 from devtools import squish_second_update_confirmation as old422
-old425.check_index(old425.read_index()); old422.admit_certification(); h.check_houses()
+old425.check_index(old425.read_index()); old422.admit_certification(); h.check_houses(ns)
 paths=(a.MANIFEST,a.SOURCE_MANIFEST,a.MANIFEST.parent/'composite-figure.json')
 def contents(): return tuple(path.read_bytes() if path.exists() else None for path in paths)
 before=contents()
@@ -223,12 +243,12 @@ for path, route in [(h.reports.receipt_path(),'rational'),
     else: value['exact_verify']['minimum_best_pair_gap']='1'
     try:
         h.reports.save(path,value)
-        try: h.check_houses()
+        try: h.check_houses(ns)
         except ValueError: pass
         else: raise AssertionError('copied deciding receipt corruption was accepted')
     finally: path.write_bytes(original)
     assert path.read_bytes()==original
-    h.check_houses()
+    h.check_houses(ns)
 """
     result = subprocess.run(
         [sys.executable, "-c", script],
@@ -250,7 +270,7 @@ def test_frontier_witness_field_parser_is_independent_of_key_order() -> None:
     assert safe_load(updated.split("---\n", 2)[1]) == original
 
 
-@pytest.mark.parametrize("n", [51, 105, 108])
+@pytest.mark.parametrize("n", [51, 261])
 @pytest.mark.parametrize("mutation", ["side", "credit", "body"])
 def test_source_adoption_refuses_mutable_upper_geometry_claims(
     private: Path, n: int, mutation: str

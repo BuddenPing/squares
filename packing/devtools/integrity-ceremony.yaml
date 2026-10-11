@@ -109,6 +109,16 @@ allowlist:
       the packet's acquisition record pinned at import, before the third route's own
       reader holds it to the retained derived fact. The digest decides no geometry
       and names no file this repository wrote.
+  - path: packing/devtools/upper_bound_houses.py
+    kind: download
+    boundary: >-
+      The houses adopted on 11 October 2026 are rebuilt in every private worker from
+      one retained certificate of another party per count, without the packet's whole
+      acquire_source check, whose inputs a worker does not carry. Each retained file's
+      SHA-256 is held against the value its packet's subtree manifest pinned at import,
+      and T-130's derived fact against the size and digest its acquisition row records
+      for the rendered certificate. The digest decides no geometry and names no file
+      this repository wrote.
   - path: packing/devtools/n17_shared_centre_lp.py
     kind: generated-artifact
     boundary: >-

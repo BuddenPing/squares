@@ -3519,3 +3519,43 @@ def test_couzo_complete_sources_survive_native_worker_boundaries(
         assert source.read_bytes() == original
         assert (tree / source.relative_to(controls.REPO)).read_bytes() == original
     assert snapshot_source_bytes() <= SNAPSHOT_MAX_BYTES
+
+
+def test_adopted_houses_survive_native_worker_boundaries(
+    control_snapshot: tuple[Path, set[Path]],
+) -> None:
+    """Every adopted house rebuilds in a worker from ordinary private inputs alone.
+
+    The worker refuses a late verdict and a late certificate mutation of one count of each
+    adopted packet and restores both; no geometric decider runs (`upper_bound_houses`).
+    """
+    from devtools import upper_bound_houses as houses  # noqa: PLC0415
+
+    tree, _copied = control_snapshot
+    inputs = houses.private_input_paths()
+    assert set(inputs) <= set(controls.COPY_SEPARATELY)
+    originals = {path: path.read_bytes() for path in inputs}
+    for source, original in originals.items():
+        target = tree / source.relative_to(controls.REPO)
+        assert target.is_file()
+        assert not target.is_symlink()
+        assert target.read_bytes() == original
+    for n in houses.NUMBERS:
+        assert (tree / houses.house_path(n).relative_to(controls.REPO)).exists()
+    completed = subprocess.run(
+        [sys.executable, "-m", "devtools.upper_bound_houses", "worker-custody"],
+        cwd=tree / HERE,
+        env=controls.control_environment(tree, tree / "house-custody-pycache"),
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=houses.CUSTODY_TIMEOUT,
+    )
+    assert completed.returncode == 0, completed.stdout + completed.stderr
+    report = json.loads(completed.stdout.strip().splitlines()[-1])
+    assert report["houses"] == len(houses.NUMBERS)
+    assert len(report["refused"]) == 2 * len(houses.source_keys())
+    for source, original in originals.items():
+        assert source.read_bytes() == original
+        assert (tree / source.relative_to(controls.REPO)).read_bytes() == original
+    assert snapshot_source_bytes() <= SNAPSHOT_MAX_BYTES

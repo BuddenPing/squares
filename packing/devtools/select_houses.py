@@ -341,7 +341,7 @@ def table(selections: Mapping[int, Selection], *, everything: bool) -> str:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description=__doc__.split("\n\n", 1)[0])
+    parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n\n", 1)[0])
     parser.add_argument("--all", action="store_true", help="every count a candidate reaches")
     parser.add_argument("--json", action="store_true", help="print the rows as JSON")
     parser.add_argument("--check", action="store_true", help="fail where a house would move")
