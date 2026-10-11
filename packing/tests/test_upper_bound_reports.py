@@ -40,7 +40,9 @@ COUZO_488 = "couzo-certificates-2026-10-10"
 HUNT3 = "evand-record-hunt3-2026-10-10"
 #: Evan Daniel's regularized record lists: fifteen upstream gzip certificates, no issue.
 REGULARIZED = "evand-regularized-2026-10-10"
-EVERY = (*PACKETS, *DERIVED, MISHAPOLK, COUZO_488, HUNT3, REGULARIZED)
+#: Issue #500, SQUISH's fourth request, kept as derived facts; #506 is smaller at 304 and 305.
+SQUISH_500 = "squish-500-fourth-request-2026-10-11"
+EVERY = (*PACKETS, *DERIVED, MISHAPOLK, COUZO_488, HUNT3, REGULARIZED, SQUISH_500)
 
 
 def _packet(name: str) -> Path:
@@ -703,7 +705,7 @@ def test_the_receipt_admits_every_job_on_both_routes(name: str) -> None:
         Fraction(m["exact_verify_containment_clearance"])
         for m in reports.margins(positives).values()
     }
-    assert (walls == {0}) is (name == SQUISH_481)
+    assert (walls == {0}) is (name in {SQUISH_481, SQUISH_500})
 
 
 def _jobs_from_receipt(packet: Path, directory: Path) -> None:
@@ -875,6 +877,7 @@ def test_the_register_plan_states_each_bound_as_check_standing_reads_it(name: st
         TRIO126: "2026-10-09",
         PINGYOU_503: "2026-10-11",
         PINGYOU_504: "2026-10-11",
+        SQUISH_500: "2026-10-11",
     }
     assert result["attribution"]["published"] == published.get(name, "2026-10-10")
     evidence = plan["evidence.yaml"]
