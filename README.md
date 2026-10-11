@@ -1,9 +1,14 @@
 # The Squares Project
 
-**[Square Packing](https://jlevy.github.io/squares/) is the definitive website for the
-square packing problem.** For every case $n = 1\ldots324$ it gives the best packing
-known, the current upper and lower bounds with their sources and credit, and how far
-each result has been verified, all generated from the record in this repository.
+**[Square Packing](https://jlevy.github.io/squares/) is this project’s website and a
+full archive of every known result on the square packing problem**, including the many
+new results since August 2026, several of them first found here and since built on by
+many others. It holds an atlas of the frontier, with the best known packing and the
+current upper and lower bounds for every case $n = 1\ldots324$, each with its source and
+credit, along with comprehensive documentation, papers, a large set of tools, and
+agent-based third-party validation that rates how far each new result has been verified.
+Its homepage links every other major resource on square packing.
+All of it is generated from the record in this repository.
 
 [![The best known packings of n = 1 to 324 unit squares, one row for each perfect square, from the atlas on the Square Packing website](docs/images/atlas-triangle-1-324.png)](https://jlevy.github.io/squares/)
 
@@ -136,7 +141,7 @@ The rest of this README is about that work.
 
 | Where | What |
 | --- | --- |
-| [**Website**](https://jlevy.github.io/squares/) | The definitive reference for square packing: the atlas, every result with its credit and verification ratings, the frontier survey, papers, and films |
+| [**Website**](https://jlevy.github.io/squares/) | The archive of every known result: the atlas, every result with its credit and verification ratings, the frontier survey, papers, films, and links to every other major square packing resource |
 | [**Tutorial**](TUTORIAL.md) | First-principles introduction to the objects, bounds, cells, stationary branches, search, and proof obligations |
 | [**How Record Packings Are Found**](https://jlevy.github.io/squares/papers/square-packing-methods-survey.html) | Geometric construction, physics-inspired search, annealing, surgery, local refinement, and upper-bound certification, with sourced record histories |
 | [**Synopsis**](SYNOPSIS.md) | Current research status and roadmap, established results, terminology, workflow contracts, and handoff |
