@@ -21,10 +21,12 @@ from pathlib import Path
 
 import mpmath
 import pytest
+from jsonschema import Draft202012Validator
 
 from devtools import regularize_evand as drive
 from devtools.regularize_evand import Decision, Measured, Options, classify
 from sqpack.witness import load_witness, materialize_exact_witness
+from sqpack.yamlio import load_yaml
 
 ALL_ROUTES = {"exact_verify": True, "independent": True, "half_angle": True}
 
@@ -289,6 +291,63 @@ def test_a_solved_view_with_no_upper_bound_is_held_and_says_so() -> None:
     at_bound = classify(replace(measured, upper=SW))
     assert at_bound.decision == "held"
     assert "exactly the verified upper bound" in at_bound.reason
+
+
+def _register_item_validator() -> Draft202012Validator:
+    schema = load_yaml((drive.ROOT / "frontier/results.schema.yaml").read_text())
+    return Draft202012Validator(
+        schema["$defs"]["result"]["properties"]["regularizations"]["items"]
+    )
+
+
+REPORT = {
+    "n": 26,
+    "source": {
+        "path": "packing/witnesses/known-best/n-026.yaml",
+        "provenance": {"source_key": "[kingbird]", "found_by": ["Göbel"], "improved_by": []},
+    },
+    "generator": {
+        "pin": "675a5ea",
+        "patches": [],
+        "variant": "conservative",
+        "style": "coincide",
+    },
+    "regularize": {
+        "merged": [[8, -0.0057, 0.0], [23, -44.994, 45.0], [4, 12.0, 30.5]],
+        "angle_changes": [["determined-merge", 30.0, 30.7, 2]],
+    },
+    "outputs": {"same": {"relation": "same"}, "solved": {"relation": "solved"}},
+    "identity": {"one_to_one": True, "moved": 1, "max_move": "3.1e-1", "max_turn_deg": "0"},
+}
+
+
+def test_the_regularization_record_is_the_registers_item_once_of_is_resolved() -> None:
+    """Owner, 11 October 2026: our regularizations are tracked with the packing's
+    provenance, in the register's terms, so admission copies the record unchanged."""
+    record = drive.regularization_record(REPORT)
+    assert record is not None
+    assert record["of_witness"] == "W-known-best-n026"
+    assert record["provenance"]["source_key"] == "[kingbird]"
+    assert record["by"] == "project"
+    assert "evand/square-packing@675a5ea" in record["method"]
+    assert record["side"] == "same"
+    assert record["changes"] == {
+        "merged_rotation_groups_deg": 0.7,
+        # Square 8 onto the axis; 23 onto 45 degrees and 4 onto 30.5 are re-angled.
+        "straightened": 1,
+        "re_angled": 2,
+    }
+    assert record["identity"]["basis"] == "measured"
+    as_item = {
+        key: value for key, value in record.items() if key not in {"of_witness", "provenance"}
+    }
+    errors = list(_register_item_validator().iter_errors({**as_item, "of": "T-001"}))
+    assert errors == []
+
+
+def test_no_view_has_no_regularization_record() -> None:
+    assert drive.regularization_record({**REPORT, "outputs": {}}) is None
+    assert drive.regularization_record({**REPORT, "identity": None}) is None
 
 
 # --------------------------------------------------------------------------------------

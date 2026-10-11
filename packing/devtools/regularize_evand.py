@@ -428,6 +428,8 @@ def case_facts(n: int) -> dict[str, Any]:
             "exact_form": None,
             "reported": None,
             "found_by": [],
+            "improved_by": [],
+            "source_key": None,
         }
     front = load_yaml(path.read_text(encoding="utf-8").split("---\n", 2)[1])["packing"]
     verified = front.get("verified_upper_bound") or {}
@@ -437,6 +439,8 @@ def case_facts(n: int) -> dict[str, Any]:
         "exact_form": verified.get("exact_form"),
         "reported": reported.get("value"),
         "found_by": list(reported.get("found_by") or []),
+        "improved_by": list(reported.get("improved_by") or []),
+        "source_key": reported.get("source_key"),
     }
 
 
@@ -1267,12 +1271,18 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
     facts = case_facts(n)
     upper = upper_bound(facts)
     source = {
+        "id": witness.get("id"),
         "path": relative(path),
         "sha256": sha256_of(path.read_bytes()),
         "kind": frame.kind,
         "s_W": frame.side_text,
         "s_W_exact": literal(frame.side) if frame.side is not None else None,
         "frame": frame.derivation,
+    }
+    source["provenance"] = {
+        "source_key": facts.get("source_key"),
+        "found_by": facts.get("found_by") or [],
+        "improved_by": facts.get("improved_by") or [],
     }
     report["source"] = source
     report["verified_upper_bound"] = facts["verified_upper_bound"]
@@ -1397,6 +1407,7 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
         )  # fmt: skip
     seconds["measure"] = round(time.perf_counter() - started, 3)
     _decide(report, measured["solved"], measured.get("same"), same_refusal)
+    report["regularization"] = regularization_record(report)
 
 
 def _decide(
@@ -1510,6 +1521,86 @@ def run(counts: Sequence[int], options: Options, workers: int) -> dict[str, Any]
     return receipt
 
 
+#: How this project names the vendored method in a regularization's `method`: the pin in
+#: the vendored README's form for structured fields, then the variant and placement.
+METHOD = (
+    "Evan Daniel's search/regularize (MIT), evand/square-packing@{pin}{patches}, "
+    "{variant}, {style}, through devtools.regularize_evand"
+)
+#: Where a regularization's identity measurements come from.
+MEASURED_IN = "devtools.check_half_angle_area.arrangement_gap, in devtools.regularize_evand"
+
+
+def regularization_record(report: Mapping[str, Any]) -> dict[str, Any] | None:
+    """The count's regularization in the register's own terms, or None without a view.
+
+    The fields are `results.schema.yaml`'s `regularizations` item (owner, 11 October
+    2026: the regularizations this project makes are tracked with the provenance of the
+    packings they redraw), so admitting a view copies the record into its index entry,
+    or into a register result's `regularizations`, unchanged. Two fields stand in for
+    the register's `of` until admission resolves it to a result: `of_witness`, the source
+    witness the view redraws, and `provenance`, the case record's credit for that packing
+    (its `source_key`, finders and improvers), which a regularization never changes.
+    `changes` counts the free squares the regularizer turned onto the axis
+    (`straightened`) or to another angle (`re_angled`), and the largest determined-group
+    merge in degrees; `identity` is measured here, on the view the decision is about.
+    """
+    outputs = report.get("outputs") or {}
+    chosen = outputs.get("same") or outputs.get("solved")
+    ident = report.get("identity")
+    if not chosen or not ident:
+        return None
+    generator = report.get("generator") or {}
+    patches = generator.get("patches") or []
+    regularized = report.get("regularize") or {}
+    turned = [entry for entry in regularized.get("merged") or [] if len(entry) == 3]
+    axis = sum(1 for _square, _before, after in turned if abs(fold_degrees(after)) < 1e-9)
+    merges = [
+        abs(float(entry[2]) - float(entry[1]))
+        for entry in regularized.get("angle_changes") or []
+        if isinstance(entry, list) and len(entry) >= 3 and entry[0] == "determined-merge"
+    ]
+    changes: dict[str, Any] = {}
+    if merges:
+        changes["merged_rotation_groups_deg"] = round(max(merges), 6)
+    if axis:
+        changes["straightened"] = axis
+    if len(turned) - axis:
+        changes["re_angled"] = len(turned) - axis
+    identity: dict[str, Any] = {"basis": "measured", "measured_in": MEASURED_IN}
+    identity["one_to_one"] = bool(ident.get("one_to_one"))
+    if ident.get("moved") is not None:
+        identity["moved"] = int(ident["moved"])
+    if ident.get("max_move") is not None:
+        identity["max_move"] = float(ident["max_move"])
+    if ident.get("max_turn_deg") is not None:
+        identity["max_turn_deg"] = float(ident["max_turn_deg"])
+    source = report.get("source") or {}
+    record: dict[str, Any] = {
+        "n": report["n"],
+        "of_witness": source.get("id") or f"W-known-best-n{int(report['n']):03d}",
+        "provenance": source.get("provenance"),
+        "by": "project",
+        "method": METHOD.format(
+            pin=generator.get("pin"),
+            patches="".join(f"+{patch}" for patch in patches),
+            variant=generator.get("variant"),
+            style=generator.get("style"),
+        ),
+        "side": chosen.get("relation"),
+    }
+    if changes:
+        record["changes"] = changes
+    record["identity"] = identity
+    return record
+
+
+def fold_degrees(degrees: float) -> float:
+    """An angle in degrees modulo 90, into (-45, 45]."""
+    folded = (float(degrees) + 45.0) % 90.0 - 45.0
+    return 45.0 if folded == -45.0 else folded
+
+
 def receipt_lists(ordered: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     """The receipt's lists: register candidates (row 3 on either output, whatever the
     decision is reported as), the review queue, and the counts by index record."""
@@ -1600,6 +1691,15 @@ def reclassify(run_dir: Path, counts: Sequence[int] | None = None) -> dict[str, 
         _decide(
             report, measured_from_report(report, "solved"), same, outputs.get("same_refusal")
         )
+        source = report.setdefault("source", {})
+        if not source.get("provenance"):
+            facts = case_facts(n)
+            source["provenance"] = {
+                "source_key": facts.get("source_key"),
+                "found_by": facts.get("found_by") or [],
+                "improved_by": facts.get("improved_by") or [],
+            }
+        report["regularization"] = regularization_record(report)
         write_json(report_path, report)
         rows[n] = receipt_row(report)
     ordered = [rows[n] for n in sorted(rows)]

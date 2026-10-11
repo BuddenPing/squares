@@ -466,6 +466,13 @@ for the owner, a few minutes each.
   and review records (think-ux1v).
 - [ ] Give `arrangement_gap` a spatial index; it took 72 s of 553 at $n = 292$
   (think-fkmn).
+- [ ] Record every regularization the project makes with the packing’s provenance, in
+  the register’s `regularizations` terms (owner, 11 October 2026). The driver already
+  writes the record per count; the index contract and admission carry it into the layer
+  (think-k35c, now a blocker of the full run).
+- [ ] After the full run: an explainer paper in the project’s own format, rendered by
+  kpress like the $n = 11$ lower-bounds explainer, citing Evan Daniel’s work and
+  summarizing this project’s changes with before/after figures (think-scua).
 
 ## Methodology
 
