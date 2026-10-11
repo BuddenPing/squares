@@ -5787,10 +5787,14 @@ def test_result_preview_keeps_claim_scope_and_links_with_full_context_in_fragmen
 #: about 13 KB a result on each page. Each ceiling keeps about a hundred kilobytes above
 #: the second measurement. Merged with main's T-101 the same day, as T-102 to T-111, they
 #: measured 2,727,614 and 1,379,239 bytes, above both earlier ceilings and about 70 KB
-#: under these.
+#: under these. The prepared canonical pages of 7 October 2026 set 600,000 and 800,000
+#: with 115 results registered. The intake pass of 10 October took the register to 145,
+#: and the pages measured 627,942 and 822,485 bytes before the homepage's compaction.
 #: The native homepage SVG preview and inert compressed expansion payload measured
 #: 1,172,468 bytes on 10 October 2026; the retained startup budget is 1,300,000 bytes.
-PAGE_CEILINGS = {"index.html": 1_300_000, render_overview.RESULTS_PAGE: 800_000}
+#: Merged with that layout on 11 October, the results page measured 843,037 bytes at
+#: 146 results, and its ceiling keeps about a hundred kilobytes above that.
+PAGE_CEILINGS = {"index.html": 1_300_000, render_overview.RESULTS_PAGE: 950_000}
 
 
 def test_no_page_carries_a_result_overview(

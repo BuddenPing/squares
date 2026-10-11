@@ -936,6 +936,13 @@ body {
 .kpress .site-card .site-card-url > :where(span) {
   min-inline-size: 0;
 }
+/* The address's text is the flex item. Without a zero minimum it keeps its longest
+   unbroken run, a commit hash, at full width, and in a narrow column that run widened
+   the card past the page (37px at 1280px, 10 October 2026); at zero the address's own
+   `break-word` cuts the run where the line ends. */
+.kpress .site-card .site-card-url-text {
+  min-inline-size: 0;
+}
 .kpress .site-card .site-link-icon {
   block-size: 1em;
   flex: none;

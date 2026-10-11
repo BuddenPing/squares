@@ -1880,6 +1880,27 @@ OTHER_PROJECTS: tuple[tuple[str, str, str], ...] = (
         "Exact rational certificates for SQUISH upper-bound packings.",
     ),
     (
+        "https://github.com/TheSnakeFang/squarepack-certs",
+        "Kevin Fang",
+        (
+            "Two-wedge packings of 308, 343 and 344 squares with exact certificates; the"
+            " 308, below the grid, is replayed here (T-135)."
+        ),
+    ),
+    (
+        "https://github.com/ebdeleeuw/square-packing-n70",
+        "Eric Deleeuw",
+        "An exact rational refinement of Ryan Xu's packing of 70 squares (T-137).",
+    ),
+    (
+        "https://github.com/Mishapolk/square-packing-records",
+        "Mishapolk",
+        (
+            "Decimal packings at 48 counts; exact witnesses derived here prove the printed"
+            " sides at the 30 within the corpus (T-138)."
+        ),
+    ),
+    (
         "https://github.com/griffcass/square-packing",
         "Griffin Casson",
         "Improved packings for n = 103, 105 and other cases.",
@@ -1913,6 +1934,11 @@ OTHER_PROJECTS: tuple[tuple[str, str, str], ...] = (
         "https://github.com/Guzhou0806/n17-square-packing",
         "Guzhou0806",
         "Strict lower bounds for seventeen squares.",
+    ),
+    (
+        "https://github.com/Guzhou0806/n40-square-packing",
+        "Guzhou0806",
+        "A strict lower bound for forty squares, on wand125's density.",
     ),
     (
         "https://github.com/DRMacIver/square-packing-research",
@@ -2144,7 +2170,7 @@ def link_card(
         shown = url.removeprefix("https://").rstrip("/")
         address = (
             f'<span class="site-card-url">{link_icon(url)}'
-            f"<span>{_breakable(shown)}</span></span>"
+            f'<span class="site-card-url-text">{_breakable(shown)}</span></span>'
         )
     body = (
         f"{card_hero(hero) if hero else ''}"
