@@ -244,7 +244,7 @@ The Motion Lab is an exploratory instrument, not a citable research result.
 
 ## Reports
 
-These 41 research reports are the durable topical syntheses:
+These 42 research reports are the durable topical syntheses:
 
 | Report | Scope |
 | --- | --- |

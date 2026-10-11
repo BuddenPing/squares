@@ -4,7 +4,7 @@
 
 **Author:** Joshua Levy, with Claude (session_017JNnKDwL74rnktr9s8BdjP)
 
-**Status:** In Progress
+**Status:** Complete (spikes and recommendations; the full run is not started)
 
 **Bead:** think-pwmi (epic think-cdud).
 
@@ -245,7 +245,57 @@ exact route), 170 to 206 s (same-side re-solve) and 72 s (`arrangement_gap`).
   Each is technically a new verified bound, so the policy holds the drawing until it is
   registered.
 
-<!-- PILOT-2 -->
+**Pilot 2: where upstream merges most.** Ten counts chosen from upstream’s best-choice
+list by how many rotation groups it merges, including three the current layer refuses
+(66, 87, 260).
+
+| $n$ | Witness | Outcome (policy row) | Angle classes | Light squares | Four-side squares | What moved |
+| --- | --- | --- | --- | --- | --- | --- |
+| 66 | decimal | admit (10) | 2 → 2 | 0 → 0 | 33 → 33 | 24 squares by up to 0.025, into the packing’s symmetry |
+| 86, 127 | rational | refused (1): the exact solve finds the newer witness not jammed | — | — | — | nothing |
+| 87 | decimal | candidate (3), about $10^{-14}$ below | 3 → 3 | 16 → 16 | 49 → 49 | 6 squares, up to 0.003 |
+| 102 | rational | candidate (3), solved $7.9 \times 10^{-11}$ below (T-146) | 4 → 3 | 29 → 26 | 46 → 46 | 15 moved, 1 turned |
+| 126 | rational | **admit (10)** | **5 → 2** | **26 → 7** | **51 → 55** | 15 moved, 3 turned |
+| 206 | decimal (Couzo) | refused (4): solved view at a side other than the witness’s | **44 → 4** | **135 → 26** | **32 → 144** | 96 moved, 40 turned |
+| 260 | decimal | candidate (3), about $10^{-14}$ below | 2 → 2 | 0 → 0 | 188 → 188 | nothing |
+| 267 | rational | candidate (3), solved $2.5 \times 10^{-11}$ below | 9 → 5 | 41 → 37 | 196 → 196 | 31 moved, 10 turned |
+| 295 | rational | refused (7): 22 per-square counts fall | 2 → 2 | **62 → 3** | **101 → 166** | 122 moved |
+
+It cost 1,598 CPU-seconds and 933 seconds of wall time at three workers; the exact solve
+at $n = 260$ alone took 801 s.
+
+Three cases decide how the policy should read:
+
+- **$n = 206$ is the clearest picture of what regularization is for.** Near-axis noise
+  gives the source 44 angle classes, so the drawing scatters colour across a region that
+  is a grid; the regularized view has 4 classes and a dark carpet.
+  Its side is not the witness’s printed side, but it is **exactly the verified upper
+  bound**: the certificate’s side and the case record’s bound are the same rational,
+  $232189979115498488075628916091 / 15625000000000000000000000000$, because T-098 made
+  that bound from Evan Daniel’s exact solve of this same packing.
+  Row 4 refuses it as a dilated side, but it certifies nothing the register does not
+  already hold.
+- **$n = 295$ improves on every histogram total** (light squares 62 to 3, four-side 101
+  to 166) and is refused because 22 individual counts fall: one square loses a house
+  contact and a row of squares loses a stage contact each.
+  Strict per-square non-regression, written for the axis tool’s single slides, is too
+  strict for a generator that moves a whole band; this is a case for review.
+- **$n = 86$ and 127 fail in the exact solve** on the newer witnesses the record now
+  holds, which upstream never solved.
+  The current layer’s views stand there.
+
+**The `fewest` variant** (owner question 1), run at 129 and 292 from the same solves:
+
+| $n$ | Variant | Rotation groups | Identity | Four-side squares | Outcome |
+| --- | --- | --- | --- | --- | --- |
+| 129 | `conservative` | 10 → 6 | one to one | 79 → 79 | candidate (3) |
+| 129 | `fewest` | 10 → 4 | **not one to one** | **79 → 53** | candidate (3) |
+| 292 | `conservative` | 24 → 9 | one to one | 84 → 198 | admit (10) |
+| 292 | `fewest` | 24 → 7 | one to one | 84 → 198 | alternate (8) |
+
+`fewest` merges two more groups at each count and, at 129, loses 26 four-side squares
+and the one-to-one pairing T-146’s review also found missing.
+It buys little for the colour conventions and costs identity.
 
 ## Key Insights
 
@@ -277,6 +327,165 @@ exact route), 170 to 206 s (same-side re-solve) and 72 s (`arrangement_gap`).
    square. At $n = 292$ Evan Daniel’s view has fewer light squares than the project’s
    current view (54 against 87) and more four-side squares (198 against 124); at 70 and
    129 the project’s current view changes nothing visible.
+6. **The decision table is right about soundness and too blunt about drawings.** Of 25
+   pilot counts it admitted 5; most of the rest were held by rounding (row 3), by
+   T-146’s refinements rediscovered (row 3), by a view exactly at the verified bound
+   (row 4, $n = 206$), or by per-square non-regression while every total improved (row
+   7, $n = 295$), none of them a soundness problem.
+   The genuine refusals were the Göbel family and $n = 51$, which need a number field,
+   and three counts whose exact solve fails (86, 127, 261).
+7. **`conservative` is the right variant.** `fewest` adds a group merge or two and, at
+   $n = 129$, costs a quarter of the four-side squares and the one-to-one identity.
+
+## Comparison Matrix
+
+| Criterion | Axis components (`regularize_axis_components/2`) | Evan Daniel’s certificate alone | Evan Daniel + same-side re-solve (recommended) | `fewest` variant | Number-field views |
+| --- | --- | --- | --- | --- | --- |
+| Side of the drawing | The witness’s, exactly | Dilated, $S^{\ast}(1 + 10^{-20})$ | The witness’s, exactly, where rotations stay rational | As either | The exact optimum |
+| Near-axis tilts and slack | Straightens within $10^{-4}$ rad, slides one axis at a time | Fixed by the LP and merges | Fixed | Fixed | Fixed |
+| Tilted bands and hue classes | Untouched | Merged | Merged, same side | Merged further | Merged |
+| Symmetry | None imposed | Imposed where feasible | Kept from the view | Kept | Kept |
+| Decimal witnesses | Refuses 73 | Reaches all | Reaches those whose printed side is not truncated | As left | Reaches the Göbel family |
+| Non-regression | Measured per square | Not measured | Measured, by the driver | Measured | To be measured |
+| Identity | Same squares by construction | Sampled path test upstream | Measured one to one | Fails at 129 | To be measured |
+| Cost for 1..324 | About 800 CPU-s | 3 to 4 CPU-h | About 7 CPU-h (pilot fit) | Similar | Not built |
+| Status | In the layer (68 views) | T-146’s fifteen | Built this session; pilot only | Measured | think-yk2h |
+
+## Options Considered
+
+### Option A: Keep the Axis Tool Only
+
+**Description:** the status quo; regularize only straight squares and slack.
+
+**Pros:** sound by construction; already gated; cheap.
+
+**Cons:** leaves every tilted band’s hue noise, imposes no symmetry, and cannot touch
+the 73 refused decimal records; at $n = 206$ it leaves 42 of 44 angle classes.
+
+### Option B: Evan Daniel’s Regularizer Through the Same-Side Re-Solve
+
+**Description:** the vendored generator (`conservative`, `coincide`, source orientation)
+on the KKT point, each view re-solved over $\mathbb{Q}$ at the witness’s side, decided
+on the maintained exact routes, measured, and classified; the axis tool kept as fallback
+and as the non-regression reference.
+
+**Pros:** reaches tilted structure and hue classes at the record’s exact side; every
+view is exact and verified here; identity and shading are measured, not asserted.
+
+**Cons:** about 7 CPU-hours for a full run; same side is impossible at Göbel-family
+decimals; at counts where the witness is not at its optimum the re-solve moves the
+packing and the view lands below the bound instead.
+
+### Option C: Draw Evan Daniel’s Certificates As They Are
+
+**Description:** admit the dilated certificates as drawings.
+
+**Pros:** every count gets a view; no re-solve.
+
+**Cons:** reverses the 2 October ruling; a dilated side certifies something the register
+does not say, except where it equals the bound exactly.
+
+### Eliminated Options
+
+- **Loosening the renderer’s tolerance:** reaches only the precision band (65 squares
+  atlas-wide) and makes the drawing lie about contacts.
+- **Hand-editing coordinates:** the policy forbids it; every pose comes from a generator
+  and an exact re-solve.
+- **`fewest` as the default:** measured above; alternates only.
+
+## Recommendations
+
+Adopt Option B as the standard procedure for every result, with four amendments to the
+policy and two changes to the record made first.
+Everything below is a proposal for the owner; nothing in it has been applied.
+
+**Settle the record before the full run.**
+
+1. **Adopt registered refinements as the atlas witnesses** where the register already
+   holds a lower exact side than the case record (T-146 at 15 counts, and any import in
+   flight, such as #476 at 267). Then the run regularizes the credited packing at its
+   own side instead of rediscovering it; at 70, 102, 129 and 146 the same-side re-solve
+   should then succeed, which the next pilot must confirm.
+2. **Register the exact packings at the printed sides in one batch.** Wherever the
+   same-side view is exact at a witness’s printed side and that side is below the
+   verified bound (37, 87, 101, 200 and 260 in the pilots; 17 waits on the $n = 17$
+   intake hold, think-x4v4), one register result with a `regularizations` item per count
+   closes the gap between reported and verified and lets the drawings in.
+   This is owner question 3 in its current, much smaller form.
+
+**Amend the decision table** (policy section 4):
+
+3. **Row 4:** a view whose exact side equals the verified upper bound is admissible as a
+   drawing (relation `bound`), since it certifies exactly what the register holds.
+   This admits $n = 206$ and every T-098 or T-101 count where the regularizer reproduces
+   the certified side.
+4. **Row 7:** when per-square counts fall but neither rule’s totals fall (no fewer
+   four-side squares, no more light squares), send the view to review instead of
+   refusing it. Keep refusal when a total falls.
+5. **Row 5:** a view within $10^{-9}$ of the witness with no square turned is
+   `unchanged`, so a $10^{-33}$ difference ($n = 11$) does not create a file.
+6. **Question 1:** `conservative` only, as the policy already defaults.
+
+**Run it in three batches** (1–108, 109–216, 217–324), each with its receipt, its
+gallery and a review record per decision, as the epic’s plan already says.
+The automated pass admits row 10; the reviewer sees rows 7 to 9 and the gallery’s
+flagged tie-breaks.
+Where both generators admit a view, keep Evan Daniel’s and record the
+axis tool’s beside it.
+
+**Leave alone, deliberately:** the Göbel-family decimal records and $n = 51$, which are
+already regular in the drawings and need a number field to be framed exactly
+(think-yk2h); and the counts where the exact solve fails (86, 127, 261), where the axis
+tool’s view or the witness stands.
+
+**Effort.** About 7 CPU-hours for all 324 counts by a fit to the 25 pilot counts (cost
+grows roughly as $n^{2.3}$; the exact solve dominates and has a heavy tail: 801 s at
+$n = 260$), so 2 to 3 hours of wall time at three or four workers, mostly in the third
+batch. Review: if a tenth to a fifth of counts reach the queue, 30 to 60 gallery entries
+for the owner, a few minutes each.
+
+## Next Steps
+
+- [ ] Owner: answer the amendments and the two record changes above (think-pn0e).
+- [ ] Adopt the register’s lower exact certificates as the atlas witnesses, T-146 at its
+  15 counts first, and run the full pass only after the imports in flight at the same
+  counts (#470, #476, #481, #483, #488, #489) land, since a changed witness lapses every
+  review (think-cb34).
+- [ ] Register the exact packings at printed sides in one batch (think-omqv).
+- [ ] Amend the policy’s decision table, then teach `devtools.regularize_evand.classify`
+  the amendments (think-up3h).
+- [ ] The index contract for both generators (think-k35c), then batch 1 with its gallery
+  and review records (think-ux1v).
+- [ ] Give `arrangement_gap` a spatial index; it took 72 s of 553 at $n = 292$
+  (think-fkmn).
+
+## Methodology
+
+The record’s history comes from a read of the atlas README, X-049, the regularized
+index, the reviews of T-098 and T-146, the assessment, the policy, Evan Daniel’s method
+log and the beads of epics think-los0 and think-cdud, with every count checked against
+the files. The spikes ran `devtools.regularize_evand` at the vendored pin on this host
+(four cores, shared), outputs kept outside the repository; the gallery was rendered from
+them with `devtools.regularize_gallery`. The cost fit is a least-squares line in log-log
+over the 21 pilot counts with $n \ge 26$; it is an estimate, not a measurement of the
+full run.
+
+## References
+
+- [Regularization policy](../policies/regularization-policy.md): the obligations and the
+  decision table this document proposes to amend.
+- [Assessment of Evan Daniel’s process](research-2026-10-11-evand-regularization-assessment.md):
+  how upstream works, and the adaptation plan these tools carry out.
+- [Atlas README, “The regularized views”](../../../packing/atlas/known-best/README.md#the-regularized-views):
+  the layer and the 2 October ruling.
+- [X-049](../../../packing/campaign/explorations/X-049-families-shading-and-the-large-n-limit.md):
+  why grid squares render light, and the axis tool.
+- [Review of T-146](../reviews/review-2026-10-10-evand-regularized-certificates.md): the
+  first regularizations the register carries.
+- [Evan Daniel’s `search/regularize`](https://github.com/evand/square-packing/tree/675a5eaa8712542daac8b4515b0f69ad7044df44/search/regularize)
+  (MIT), vendored under `vendor/evand-regularize/`.
+- The tools: `packing/devtools/regularize_evand.py`, `regularize_same_side.py`,
+  `regularize_gallery.py`.
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
