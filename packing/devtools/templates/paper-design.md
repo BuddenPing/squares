@@ -1623,8 +1623,11 @@ it.
 
 - **About and Papers.** About separates the project narrative into paragraphs for its
   origins, subsequent work, independent results, and current role.
-  **Contribute Your Results!** is an H1 over the reporting invitation; project
-  documentation remains on About.
+  **Report Your Results!** is an H1 over the reporting invitation, which asks for the
+  name to credit and ends in a **Report a Result** button opening the repository’s
+  result form; the old `#contribute-your-results` anchor stays on the heading.
+  The overview carries the same invitation (`report-results.md`) as an H2 after Recent
+  Major Results. Project documentation remains on About.
   Papers holds the paper, tutorial, and PDF cards.
   About no longer carries Reading and Research; omit redundant Frontier Survey and
   Workbench cards from both pages (`think-h21i`).

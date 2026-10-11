@@ -1,5 +1,23 @@
 # The Squares Project
 
+**[Square Packing](https://jlevy.github.io/squares/) is the definitive website for the
+square packing problem.** For every case $n = 1\ldots324$ it gives the best packing
+known, the current upper and lower bounds with their sources and credit, and how far
+each result has been verified, all generated from the record in this repository.
+
+[![The best known packings of n = 1 to 324 unit squares, one row for each perfect square, from the atlas on the Square Packing website](docs/images/atlas-triangle-1-324.png)](https://jlevy.github.io/squares/)
+
+> [!IMPORTANT]
+> **Report your results!** If you have new results of any kind for square packing (a
+> better packing, a lower bound, an exact value, a proof, a verification, or a
+> correction), or know of newer results, please
+> [file an issue](https://github.com/jlevy/squares/issues/new?template=result-registration.md)
+> to report them, including what name you wish to be used for credits.
+> We encourage real names, for better record keeping.
+> Agents will validate, tabulate, and cite your work once it is a confirmed record.
+>
+> **[Report a Result →](https://github.com/jlevy/squares/issues/new?template=result-registration.md)**
+
 <!-- BEGIN SHARED: project-intro (devtools.site_documents) -->
 
 The square packing problem is a simple and long-standing problem in geometry: what is
@@ -53,16 +71,17 @@ trusting Lean’s compiler for its numerical certificates.
 It is recorded on T-060 as the source’s report; a complete build this record can rest
 on, and a human expert’s review of the formalization, are still to come.
 
-**The results live on the project site,
-[Square Packing](https://jlevy.github.io/squares/).** It carries the
+**The results live on [the website](https://jlevy.github.io/squares/).** It carries the
 [recent results](https://jlevy.github.io/squares/#recent-results) by this project and by
 others with their credit, the
 [verification ratings](https://jlevy.github.io/squares/results.html#verification-ladders),
-[the atlas](https://jlevy.github.io/squares/#the-atlas-of-square-packings) of known-best
-packings and its films, the table of
-[every result](https://jlevy.github.io/squares/results.html), and
+[the atlas](https://jlevy.github.io/squares/atlas.html) of known-best packings, the
+table of [every result](https://jlevy.github.io/squares/results.html),
 [the frontier survey](https://jlevy.github.io/squares/atlas.html#the-frontier-survey) of
-every case $n = 1\ldots324$, all generated from the record in this repository.
+every case $n = 1\ldots324$, the
+[films and workbench](https://jlevy.github.io/squares/visualize.html) that build each
+packing one square at a time, and
+[how to report a result](https://jlevy.github.io/squares/about.html#report-your-results).
 The in-repository record is the [results register](packing/frontier/RESULTS.md), the
 per-case [status table](packing/frontier/STATUS.md), and
 [`epistemics.md`](epistemics.md), which defines how each claim is graded.
@@ -106,8 +125,9 @@ recorded process, with hypotheses registered before measurement, every claim gra
 every defect logged.
 The rest of this README is about that work.
 
-[Results (site)](https://jlevy.github.io/squares/) ·
-[Research Status](SYNOPSIS.md#research-program-status-and-roadmap) ·
+[Website](https://jlevy.github.io/squares/) ·
+[Report a Result](https://github.com/jlevy/squares/issues/new?template=result-registration.md)
+· [Research Status](SYNOPSIS.md#research-program-status-and-roadmap) ·
 [Repository Guide](#repository-guide) · [Getting Started](#getting-started) ·
 [Reports](#reports) · [Autonomous Research Process](#autonomous-research-process) ·
 [Conventions](#conventions) · [Layout](#layout)
@@ -116,6 +136,7 @@ The rest of this README is about that work.
 
 | Where | What |
 | --- | --- |
+| [**Website**](https://jlevy.github.io/squares/) | The definitive reference for square packing: the atlas, every result with its credit and verification ratings, the frontier survey, papers, and films |
 | [**Tutorial**](TUTORIAL.md) | First-principles introduction to the objects, bounds, cells, stationary branches, search, and proof obligations |
 | [**How Record Packings Are Found**](https://jlevy.github.io/squares/papers/square-packing-methods-survey.html) | Geometric construction, physics-inspired search, annealing, surgery, local refinement, and upper-bound certification, with sourced record histories |
 | [**Synopsis**](SYNOPSIS.md) | Current research status and roadmap, established results, terminology, workflow contracts, and handoff |
@@ -555,6 +576,7 @@ for results by others: their scope, credit, import and reply.
 ├── operating-rules.md      Session conduct and workflow rules
 ├── development.md          Python setup, engineering boundaries, and validation
 ├── defects.md              Generated view of packing/defects.yaml
+├── docs/images/            Pictures README shows, made by the devtools
 ├── docs/project/           Reports, reviews, specs, postmortems, and dated handoffs
 ├── docs/project/research/  The research reports listed above
 ├── packing/                Code, data, and the research record
