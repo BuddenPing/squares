@@ -156,7 +156,7 @@ one bought.
 
 ## The regularized views
 
-The [regularization policy](../../../regularization.md) governs every view here: what
+The [regularization policy](../../../docs/project/policies/regularization-policy.md) governs every view here: what
 admits a view, what goes to manual review, and what is a register result instead.
 
 [`regularized/`](regularized/index.json) holds exact derived views of 68 records (its

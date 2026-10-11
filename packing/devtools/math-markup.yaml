@@ -42,6 +42,7 @@ migrated:
 - docs/project/handoff-2026-09-21-n17-external-intake.md
 - docs/project/handoff-2026-09-22-low-n-review-and-the-2880-rung.md
 - docs/project/n17-optimality-explainer.md
+- docs/project/policies/regularization-policy.md
 - docs/project/postmortems/postmortem-2026-08-23-soundness-class.md
 - docs/project/research/research-2026-08-22-frankensim-rust-toolkit-for-square-packing.md
 - docs/project/research/research-2026-08-22-infrastructure-for-packing-exploration.md
@@ -1556,7 +1557,6 @@ migrated:
 - packing/frontier/n-323.md
 - packing/frontier/n-324.md
 - packing/strategies/preview/README.md
-- regularization.md
 keep:
 - path: SYNOPSIS.md
   span: +W

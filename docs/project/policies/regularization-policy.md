@@ -10,12 +10,12 @@ It says what a regularized view must satisfy, what the automated pass decides by
 what a reviewer decides, and how each decision is recorded and credited.
 
 Neighbouring documents own the rest.
-[`epistemics.md`](epistemics.md#parallel-projects-and-their-credit) owns credit and the
-rungs; the [atlas README](packing/atlas/known-best/README.md#the-regularized-views)
+[`epistemics.md`](../../../epistemics.md#parallel-projects-and-their-credit) owns credit and the
+rungs; the [atlas README](../../../packing/atlas/known-best/README.md#the-regularized-views)
 describes the layer and how to rebuild it;
-[`development.md`](development.md#the-deep-gate-the-deferred-surface-before-the-merge)
+[`development.md`](../../../development.md#the-deep-gate-the-deferred-surface-before-the-merge)
 places the gates; and the
-[assessment of Evan Daniel’s process](docs/project/research/research-2026-10-11-evand-regularization-assessment.md)
+[assessment of Evan Daniel’s process](../research/research-2026-10-11-evand-regularization-assessment.md)
 is the evidence behind the rules below.
 
 ## 1. Purpose and Scope
@@ -32,7 +32,7 @@ A run produces two kinds of output, and they take different paths:
 | Output | What it is | Where it lives | Path in |
 | --- | --- | --- | --- |
 | **Regularized view** | An exact packing of the credited arrangement at the side the record already states | `packing/atlas/known-best/regularized/` and its `index.json`; the atlas and site drawings made from it | The automated pass ([section 4](#4-the-automated-pass)), then review ([section 5](#5-manual-review-and-adjustment)) |
-| **Register result** | An exact certificate whose side is below the case’s verified upper bound: a new verified upper bound, however it was made | An entry in [`results.yaml`](packing/frontier/results.yaml) with one `regularizations` item per count | The [import runbook’s](packing/campaign/result-import.md#stage-3-record) record and validate stages, as `T-146` took |
+| **Register result** | An exact certificate whose side is below the case’s verified upper bound: a new verified upper bound, however it was made | An entry in [`results.yaml`](../../../packing/frontier/results.yaml) with one `regularizations` item per count | The [import runbook’s](../../../packing/campaign/result-import.md#stage-3-record) record and validate stages, as `T-146` took |
 
 A certificate that proves more than the record holds is registered as a result first,
 and its drawing enters the layer only after that.
@@ -151,7 +151,7 @@ Two kinds of admitted view are listed first in the gallery for the reviewer:
 **Who reviews:** the owner, or a person the owner names in writing as the layer’s
 reviewer. An agent prepares the gallery and may draft a recommendation, and the review
 record names the person who decided: the rule
-[No Blind Trust](epistemics.md#no-blind-trust) sets for the rungs, evidence from an
+[No Blind Trust](../../../epistemics.md#no-blind-trust) sets for the rungs, evidence from an
 agent and the decision from a person.
 
 **What the reviewer sees:** a gallery the driver renders for each pass.
@@ -224,7 +224,7 @@ The project may patch them, on four conditions:
   by a port of it, credits Evan Daniel’s method ([section 7](#7-credit)).
 
 A patch that fixes a defect in the upstream code is reported to its author, as
-[`epistemics.md`](epistemics.md#parallel-projects-and-their-credit) asks of every defect
+[`epistemics.md`](../../../epistemics.md#parallel-projects-and-their-credit) asks of every defect
 found here.
 
 ## 7. Credit
@@ -245,8 +245,8 @@ identity as its source’s claim until a measurement here decides it.
 The generator costs about three to four CPU-hours for $n = 1..324$, far above any
 routine gate’s wall ceiling.
 So it runs on request with a receipt, and the gates hold the decisions it produced
-([OR-13](operating-rules.md#or-13-every-fast-check-runs-in-ci-only-the-unavoidably-slow-ones-leave),
-[OR-17](operating-rules.md#or-17-every-routine-gate-has-a-wall-ceiling-and-anything-above-it-is-selected-on-purpose)).
+([OR-13](../../../operating-rules.md#or-13-every-fast-check-runs-in-ci-only-the-unavoidably-slow-ones-leave),
+[OR-17](../../../operating-rules.md#or-17-every-routine-gate-has-a-wall-ceiling-and-anything-above-it-is-selected-on-purpose)).
 
 | Check | What it holds | Where it runs |
 | --- | --- | --- |
@@ -260,7 +260,7 @@ So it runs on request with a receipt, and the gates hold the decisions it produc
 ## 9. Open Owner Decisions
 
 The assessment’s eight
-[open questions](docs/project/research/research-2026-10-11-evand-regularization-assessment.md#open-owner-questions)
+[open questions](../research/research-2026-10-11-evand-regularization-assessment.md#open-owner-questions)
 stay open. Until each is answered, the policy applies the default in its line, chosen so
 the automated pass can run without overstepping:
 
@@ -285,7 +285,7 @@ the automated pass can run without overstepping:
 8. **Retention of the solve:** kept.
    The solved points and contact structures go in a pinned packet or release asset
    outside Git
-   ([OR-18](operating-rules.md#or-18-keep-bulk-data-out-of-git-and-never-bind-code-or-verdicts-to-a-git-commit-or-blob)),
+   ([OR-18](../../../operating-rules.md#or-18-keep-bulk-data-out-of-git-and-never-bind-code-or-verdicts-to-a-git-commit-or-blob)),
    named by digest in the receipt: they can be discarded later, and a discard cannot be
    undone.
 

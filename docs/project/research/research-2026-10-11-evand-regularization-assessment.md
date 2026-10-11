@@ -75,7 +75,7 @@ appendix’s figures. The adaptation pins `675a5ea`.
    *Amended 2026-10-11:* the plan now vendors the pinned generator at `675a5ea` under
    `vendor/evand-regularize/` with Evan Daniel’s MIT notice and credit, and reviews and
    adjusts its automated output by hand under the
-   [regularization policy](../../../regularization.md) (section 5).
+   [regularization policy](../policies/regularization-policy.md) (section 5).
 6. Recommend adopting the `conservative` variant only, in the source orientation, as the
    drawing layer’s generator where it is sound at the same side; keep
    `regularize_axis_components/2` as the fallback and as the non-regression reference;
@@ -653,7 +653,7 @@ The plan changes in five ways:
   admits a view.
 - **Automated, then reviewed by hand.** The run is automated, and its output is then
   reviewed and adjusted by hand under the
-  [regularization policy](../../../regularization.md); an adjusted view is decided by
+  [regularization policy](../policies/regularization-policy.md); an adjusted view is decided by
   the same checkers and meets the obligations of section 3 like a generated one.
 
 Slices, each a lane with its own deliverable and validation (OR-6), each landing in its
@@ -780,7 +780,7 @@ runbook or a change to the drawing layer only.
    The owner should pick from a gallery of the few records where it matters (`face` and
    `orient` flags, `sym_dropped_for_coincidence`), before the run is frozen.
    *Amended 2026-10-11:* the owner wants the automated run followed by manual review and
-   adjustment under the [regularization policy](../../../regularization.md), so these
+   adjustment under the [regularization policy](../policies/regularization-policy.md), so these
    tie-breaks can also be settled in that review, after the run.
 7. **Credit for the method.** The `regularizations` field has one `by`; for this run it
    is `project`, with `method` naming Evan Daniel’s algorithm, variant and pin.
