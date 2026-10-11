@@ -1259,6 +1259,7 @@ def overview_page() -> Page:
         "OTHER_PROJECTS": overview_sections.other_project_cards(overview),
         "ARROW_RIGHT": overview_sections.arrow_icon("right"),
         "ARROW_DOWNLOAD": overview_sections.arrow_icon("download"),
+        "ATLAS_PDF": overview_sections.PDF_CARD_SPECS[1][0],
     }
     markdown = _template_markdown(OVERVIEW_ARTICLE, values)
     return kpress_page(

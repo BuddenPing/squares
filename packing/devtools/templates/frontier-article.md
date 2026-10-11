@@ -31,8 +31,7 @@ cleaned transcription and the unedited extraction it was checked against, and th
 [evidence inventory]({{INVENTORY_URL}}) shows what each claim rests on and who did the
 work.
 
-**Recent results.** A star marks a recent verified lower bound, one proved since
-{{RECENT_SINCE}}, when this project’s work began.
+**Recent results.** Red indicates a recent result, since {{RECENT_SINCE}}.
 {{SURVEY_COUNTS}}
 {{CORRECTIONS}}
 
@@ -59,7 +58,7 @@ here found a defect, and that no verified bound reaches, says *defect recorded* 
 its credit. A finite-precision result is numerically checked and never enters a verified
 column.
 
-**The other columns.** *Recent* holds the star.
+**The other columns.** *Recent* sorts recent verified bounds first.
 The *gap* is the verified upper bound minus the verified lower bound, exact where both
 are closed forms and zero where the case is solved.
 *Records* links each case file.
@@ -71,5 +70,7 @@ decimal, the sources, how its bounds were verified and the evidence entries behi
 The same record opens from the overview’s atlas, and has an address of its own to share.
 
 Click a column heading to sort; the filters narrow the rows.
+
+<h1 id="best-known-results" class="site-title">Best Known Results for <i>n</i> ≤ 324</h1>
 
 {{TABLE}}

@@ -35,7 +35,8 @@ def test_homepage_legend_keeps_original_rungs_in_four_icon_and_label_rows() -> N
     chips = re.findall(r'<span class="site-chip site-rung-fill"[^>]*>[^<]+</span>', home)
     assert len(chips) == 12
     assert all(chip in complete for chip in chips)
-    assert 'class="site-star"' in home
+    assert 'class="is-new-result">new result</span>' in home
+    assert "site-star" not in home + complete
     assert '<a href="#verification-ladders">What each rung means</a>' in complete
     assert complete.count("<p>") == 3
     assert "site-rung-legend-icons" not in complete
@@ -148,7 +149,9 @@ def test_atlas_preview_reuses_canonical_split_rows_and_keeps_every_case() -> Non
         assert "<img " in tile
         assert 'loading="lazy"' in tile
         assert 'class="site-star"' not in tile
-        assert ", new result" not in tile
+        recent = overview_sections.recent_contributions_by_case()[n].any
+        assert (", new result" in tile) == recent
+        assert ('class="site-atlas-n is-new-result"' in tile) == recent
         assert "evidence-badge" not in tile
     assert preview.count('id="pop-case"') == 1
     assert preview.count('role="tab"') == complete.count('role="tab"') == 8

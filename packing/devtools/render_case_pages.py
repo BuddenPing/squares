@@ -588,7 +588,7 @@ def corrected_work(corrects: Mapping[str, str]) -> str:
 
 
 def corrects_tag(corrects: Mapping[str, str] | None) -> str:
-    """The tag beside a correcting lower bound's star in a record's head, `corrects
+    """The tag beside a correcting lower bound in a record's head, `corrects
     Nagamochi 2005`, with the work linked; nothing for a bound that corrects nothing."""
     if not corrects:
         return ""
@@ -852,8 +852,8 @@ def record_head(
     """The record's head, its visual summary and the rest of its structured part, as
     one HTML block. Its links are written from the site's root, as every page's are,
     and each record file writes them again from its own directory (`rebase_links`). A
-    recent lower bound's star in the head is followed, where the bound corrects a
-    published result, by the tag naming that work (`corrects_tag`)."""
+    recent result's count uses the shared recency ink. Where the bound corrects a
+    published result, the status row names that work (`corrects_tag`)."""
     from devtools.overview_sections import (  # noqa: PLC0415
         SERIF_MATH,
         arrow_icon,
@@ -868,8 +868,10 @@ def record_head(
     reported = ""
     if case["reported_status"] != status:
         reported = f' <span class="site-credit">reported {_esc(case["reported_status"])}</span>'
-    star = ' <span class="site-star" title="Recent lower bound">\u2605</span>' if recent else ""
-    star += corrects_tag(corrects)
+    count = _math(f"n = {n}")
+    if recent:
+        count = f'<span class="is-new-result" title="Recent result">{count}</span>'
+    correction = corrects_tag(corrects)
     previous = (
         f'<a href="{case_url(n - 1)}" rel="prev" data-case-step="{n - 1}">'
         f"{arrow_icon('left')}n = {n - 1}</a>"
@@ -893,8 +895,8 @@ def record_head(
         f'<nav class="site-case-steps" aria-label="Cases">{previous}{following}</nav>'
         '<span class="site-card-label site-case-eyebrow">Case record</span>'
         f"{packing_figure(n, upper=upper)}"
-        f'<p class="site-case-title" {SERIF_MATH}>{_math(f"n = {n}")}</p>'
-        f'<p class="site-case-status">{case_badges(n)}{star}{reported}{chip}</p>'
+        f'<p class="site-case-title" {SERIF_MATH}>{count}</p>'
+        f'<p class="site-case-status">{case_badges(n)}{correction}{reported}{chip}</p>'
         f'<p class="site-case-interval" {SERIF_MATH}>{_math(interval_tex(case))}</p></header>'
         f"{visual_summary(n, drawing=False)}"
         '<div class="site-case-data" data-kpress-prose-font="sans">'

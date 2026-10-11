@@ -22,6 +22,9 @@ verified and published locally.
 The full 7497 × 5361 preview uses a content-versioned asset; both poster families passed
 export checks and visual legend review.
 PDF drawing scale remains unchanged while the separate Row comparison is reviewed.
+The latest Atlas heading changes (`think-077n`) and red-only web/print recency
+(`think-7j48`, `think-kg7a`) are in progress; their focused verification and final-head
+CI remain pending.
 
 **Tracking:** `think-2u4x` (epic), `think-s54c` (planning)
 
@@ -230,8 +233,8 @@ needed. The register currently contains six qualifying entries; the twelve-row l
 allows the preview to grow as results qualify.
 Each headline links to its canonical result page.
 The atlas preview preserves the per-case SVG drawings, colors, and case destinations.
-Web labels show only the case number; recency stars remain in case and result records,
-and the PDF retains its additional labels.
+Web labels show only the case number, and the PDF retains its additional labels.
+The legend explains recency once: “Red indicates a recent result.”
 Both pages use the same overview, controls, legend, tile markup, row and segment
 placement, responsive default sizing, Row drawing scale, and shared Atlas layout and
 animation engine. Complete rows center when they fit and pan horizontally on narrow
@@ -246,13 +249,16 @@ Atlas exposes all 324 cases.
 
 Publish the complete interactive atlas at `atlas.html`, reusing its existing drawings,
 view controls, and case-record behavior.
+Omit the introductory paragraph below the Atlas title.
+Use shared H1 titles for **The Frontier Survey** and **Best Known Results for
+$n ≤ 324$**, preserving the survey’s canonical and legacy anchors (`think-077n`).
 Triangle is the default; Grid is explicitly selectable with `?atlas=grid`, and existing
 `?atlas=triangle` links remain valid.
 Collapsed coverage is approximately 100 cases: Grid ends on a complete rectangular row
 for its current width and size; Triangle ends on a complete square-number group.
 Recompute the count on width, size, and view changes.
-Web Atlas tiles show only their case number; recency stars, bounds and evidence marks
-remain in case and result records or the popover.
+Web Atlas tiles show only their case number; bounds and evidence marks remain in case
+and result records or the popover.
 PDF labels retain their full metadata.
 The homepage uses the same **Show More** and **Show Less** controls as the Atlas page.
 
@@ -294,7 +300,7 @@ Result pages and popovers share this ordering (`think-jl9q`, `think-pfbo`). Give
 sticky destination-button footer equal padding above and below its buttons.
 
 Center the compact **Case Record** label above a prominent typeset $n = N$ count.
-Place case icons first, followed by any recent-result star and notes, then status tags.
+Place case icons first, followed by notes and status tags.
 Remove **All cases** from the case steps.
 The sticky footer offers separate Case Record, Frontier row, and Atlas diagram links,
 each with the same right arrow.
@@ -378,8 +384,8 @@ to that preview.
 | L11: Align the navigation gear | `think-675d` | P1 | Gear follows GitHub in the shared track and aligns with navigation text across desktop and mobile shells. |
 | L12: Separate and place media cards | `think-erq7` | P1 | PDF cards on homepage and Papers; click-to-play inline video on homepage and full player on Visualize. Separate groups; no autoplay or initial video download on homepage; no media cards on Atlas. |
 | L14: Hero popover and expanded Atlas case navigation | `think-h3ms` | P1 | A single centered native hero packing for 53 uses the requested best-known caption and opens its case popover; separate record/Frontier/Atlas actions follow current case. Atlas targets fully expand before revealing the matching tile, including n=291/324. |
-| L17: Case popover hierarchy and Atlas directory | `think-g28m` | P1 | Centered Case Record eyebrow and larger mathematical count; icons, star/notes, then tags; shared right-arrow destination buttons; remove All cases and forward directory URLs to Atlas. |
-| L18: Web Atlas labels and shared controls | `think-ngcg` | P2 | Web graphic shows only case number and applicable star, PDF detail preserved; homepage uses the shared Small/Fixed Triangle geometry and Show More/Show Less controls through 36 → 100 → 324 → 36. |
+| L17: Case popover hierarchy and Atlas directory | `think-g28m` | P1 | Centered Case Record eyebrow and larger mathematical count; icons, notes, then tags; shared right-arrow destination buttons; remove All cases and forward directory URLs to Atlas. |
+| L18: Web Atlas labels and shared controls | `think-ngcg` | P2 | Web graphic shows only the case number, PDF detail preserved; homepage uses the shared Small/Fixed Triangle geometry and Show More/Show Less controls through 36 → 100 → 324 → 36. |
 | L19: Subtle shared scrollbars | `think-7y0v` | P2 | Thin theme-aware thumbs and transparent tracks across shared screen surfaces. |
 | L20: Shared evidence tooltips | `think-tg0p` | P2 | Meaningful styled hover/focus tooltips for case-property icons and S/V/C levels, including fetched popovers; standard motion and reduced-motion support. |
 | L21: Readable introduction | `think-8xzs` | P2 | Restore both owner-provided explanatory paragraphs with prepared math and upper/lower-bound examples. |

@@ -415,11 +415,10 @@ def test_papers_groups_every_reading_and_the_resources_keep_detail_reachable(
     assert 'class="site-homepage-media"' in media_section
     media_cards = _media_cards(page, "visuals")
     assert len(media_cards) == 1
-    for (href, hero, label, _, note), (actual_href, body) in zip(
+    for (href, _hero, label, _, note), (actual_href, body) in zip(
         overview_sections.PDF_CARD_SPECS[1:], media_cards, strict=True
     ):
         assert actual_href == href
-        assert f'<img src="{hero}" alt=""' in body
         assert f'<span class="site-card-label">{label}</span>' in body
         assert html.escape(note, quote=False) in body
     assert page.index('id="recent-results"') < page.index('id="papers"')
@@ -1082,48 +1081,56 @@ def test_overview_tiles_omit_stars_and_frontier_keeps_lower_recency(
     tiles = _atlas_template(page, "first") + _atlas_template(page, "rest")
     found = re.findall(
         r'<a class="site-atlas-cell" [^>]*data-atlas-n="(\d+)"[^>]*aria-label="([^"]+)"[^>]*>'
-        r'<img [^>]*><span class="site-atlas-n">(.*?)</span></a>',
+        r'<img [^>]*><span class="site-atlas-n( is-new-result)?">(.*?)</span></a>',
         tiles,
     )
-    assert [int(n) for n, _, _ in found] == list(range(1, 325))
+    assert [int(n) for n, _, _, _ in found] == list(range(1, 325))
     lower_recent = frontier.recent_lower_bounds()
     frontier_page = atlas_page
     rows = dict(re.findall(r'<tr id="n-(\d+)"[^>]*data-recent="(true|false)"', frontier_page))
     assert sorted(int(n) for n in rows) == list(range(1, 325))
-    for n, name, number in found:
+    for n, name, ink, number in found:
         starred = recent[int(n)]
         assert lower_recent[int(n)] == (rows[n] == "true"), n
         assert not lower_recent[int(n)] or starred, n
         assert number == n, n
-        assert overview_sections.STAR not in number, n
-        assert overview_sections.NEW_RESULT not in name, n
+        assert "★" not in number, n
+        assert (overview_sections.NEW_RESULT in name) == starred, n
+        assert bool(ink) == starred, n
     assert sum(recent.values()) > 0
     assert not lower_recent[1]
     assert not lower_recent[25]
 
 
-def test_upper_only_recent_stars_stay_in_case_facts_without_atlas_tile_marks(
+def test_upper_only_recent_contributions_use_ink_without_recency_glyphs(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     from devtools.result_status import RecentContributions  # noqa: PLC0415
 
-    # Prime immutable real-case facts before patching the star provider.
+    # Prime immutable real-case facts before patching the recency provider.
     result_overview.film_facts()
     flags = {
         n: RecentContributions(upper=False, lower=False, optimal=False) for n in range(1, 325)
     }
     flags[1] = RecentContributions(upper=True, lower=False, optimal=False)
+    from devtools import result_status  # noqa: PLC0415
+
     monkeypatch.setattr(overview_sections, "recent_contributions_by_case", lambda: flags)
+    monkeypatch.setattr(result_status, "recent_contributions_by_case", lambda: flags)
     page = overview_sections.atlas_grid()
     first = _atlas_template(page, "first")
     tile = re.search(r'<a class="site-atlas-cell" [^>]*data-atlas-n="1"[^>]*>.*?</a>', first)
     assert tile is not None
-    assert ', new result"' not in tile.group()
-    assert overview_sections.STAR not in page
+    assert ', new result"' in tile.group()
+    assert 'class="site-atlas-n is-new-result"' in tile.group()
+    assert "★" not in page
     facts = overview_sections.atlas_film_facts()
     assert facts[0]["star"] is True
     assert sum(bool(fact["star"]) for fact in facts) == 1
-    assert "★" in result_overview.film_facts_html(facts[0])
+    assert "★" not in result_overview.film_facts_html(facts[0])
+    assert 'class="is-upper is-new-result is-exact-value"' in result_overview.film_bound(
+        facts[0]
+    )
 
 
 def test_the_atlas_key_explains_only_angle_colors_and_contact_shades() -> None:
@@ -1138,7 +1145,7 @@ def test_the_atlas_key_explains_only_angle_colors_and_contact_shades() -> None:
         assert f'data-atlas-legend-key="{removed}"' not in key
     assert "colors indicate distinct tilt angles" in key
     assert "shade indicates number of full-side contacts" in key
-    assert overview_sections.STAR not in key
+    assert "★" not in key
     assert re.search(r"\(\d+/\d+\)", key) is None
     swatches = re.findall(
         r'<span class="site-atlas-swatch" data-value="(\d+)"[^>]*>([^<]*)</span>', key
@@ -1858,8 +1865,8 @@ def test_a_table_of_results_has_a_legend_of_every_rungs_mark_under_it(
         assert f'title="{html.escape(meanings[label], quote=True)}"' in legend, label
     assert legend.startswith('<div class="site-rung-legend"')
     assert '<a href="#verification-ladders">What each rung means</a>' in legend
-    words = f"<span>{overview_sections.NEW_RESULT}</span>"
-    assert f"{overview_sections.STAR}</span> {words}" in legend
+    assert f'<span class="is-new-result">{overview_sections.NEW_RESULT}</span>' in legend
+    assert "site-star" not in legend
     assert "site-ladders-key" not in page
 
 
@@ -1922,9 +1929,21 @@ def test_the_frontier_survey_is_an_atlas_section_without_duplicate_cards(
     for page in (about, papers):
         assert 'href="atlas.html#the-frontier-survey"' not in page
     assert "<title>The Atlas of Square Packings · The Squares Project</title>" in atlas_page
-    survey = '<h2 id="the-frontier-survey">The Frontier Survey<a id="the-survey"></a></h2>'
+    survey = (
+        '<h1 id="the-frontier-survey" class="site-title">'
+        'The Frontier Survey<a id="the-survey"></a></h1>'
+    )
     assert survey in atlas_page
     assert atlas_page.index("data-atlas-grid") < atlas_page.index(survey)
+    bounds = '<h1 id="best-known-results" class="site-title">'
+    assert atlas_page.index(survey) < atlas_page.index(bounds)
+    assert atlas_page.index(bounds) < atlas_page.index('id="frontier-table"')
+    bound_heading = atlas_page.split(bounds, 1)[1].split("</h1>", 1)[0]
+    assert _seen(bound_heading).strip() == "Best Known Results for n ≤ 324"
+    assert "$" not in bound_heading
+    assert r"\le" not in bound_heading
+    intro = atlas_page.split("</h1>", 1)[1].split("data-atlas-grid", 1)[0]
+    assert _rendered_text(intro) == ""
     assert "frontier.html" not in render_overview.PAGES
 
 
@@ -1935,12 +1954,12 @@ def test_the_frontier_page_opens_with_the_surveys_account(
     section carried until 2026-10-02, refined, the survey's account first and the key to
     the table's columns last, beside the table: what the survey records with the case
     counts; the audit of its sources, with the $s(7) = 3$ example and the archive and
-    inventory links; the star and the survey's four counts, every number from the record
+    inventory links; the recency key and the survey's four counts, every number from the record
     and the date written once; the seven authors' seventeen-square bounds before this
     project, replayed as T-015 and T-016; then the columns, with the external
     certificate's rule where the verified columns are defined. The run-in heads are the
-    page's own device, so the account groups without a sub-heading. The star's count
-    over every case is not written beside the starred cases' count among the first
+    page's own device, so the account groups without a sub-heading. The recent count
+    over every case is not written beside the recent cases' count among the first
     hundred, since the two were the one number, 27, on 2026-10-02, and read as a
     stutter."""
     from devtools.render_frontier_page import (  # noqa: PLC0415
@@ -1952,8 +1971,8 @@ def test_the_frontier_page_opens_with_the_surveys_account(
     )
 
     page = rendered("atlas.html")
-    prose = page.split('id="the-frontier-survey"', 1)[1].split("</h2>", 1)[1]
-    prose = prose.split('<div class="site-table-tools', 1)[0]
+    prose = page.split('id="the-frontier-survey"', 1)[1].split("</h1>", 1)[1]
+    prose = prose.split('<h1 id="best-known-results"', 1)[0]
     text = _rendered_text(prose)
     heads = re.findall(r"<p><strong>([^<]+)</strong>", prose)
     assert heads == [
@@ -1983,14 +2002,11 @@ def test_the_frontier_page_opens_with_the_surveys_account(
         assert (
             f'<a href="{repo_url(path)}" target="_blank" rel="noopener noreferrer">{words}</a>'
         ) in prose, words
-    # The star's date is written once, and the counts run "since then".
+    # The recency date is written once, and the counts run "since then".
     assert since_prose() == "22 August 2026"
     assert text.count("22 August 2026") == 1
-    assert (
-        "A star marks a recent verified lower bound, one proved since 22 August 2026, "
-        "when this project\u2019s work began."
-    ) in text
-    assert "Recent holds the star." in text
+    assert ("Red indicates a recent result, since 22 August 2026.") in text
+    assert "Recent sorts recent verified bounds first." in text
     counts = render_recent_results.recent_counts(render_recent_results.recent_rows())
     assert overview.counts == counts
     sentence = survey_counts(counts)
@@ -2000,7 +2016,7 @@ def test_the_frontier_page_opens_with_the_surveys_account(
         f"Of the first hundred cases, {counts.cases} have a lower bound published or "
         "proved since then"
     )
-    assert f"{counts.verified} of those have a recent verified one, the starred cases" in text
+    assert f"{counts.verified} of those have a recent verified one" in text
     assert sentence in text
     starred = sum(recent_lower_bounds().values())
     assert f"one of the {starred} verified" not in text
@@ -2337,7 +2353,7 @@ def test_the_document_cards_lead_with_readme_and_epistemics(
     frontier = rendered("atlas.html")
     assert '<a href="cases/17.html" data-case="17">seventeen-square record</a>' in frontier
     assert '<a href="cases/7.html" data-case="7">record for seven squares</a>' in frontier
-    frontier_prose = frontier.split('id="the-frontier-survey"', 1)[1].split("</h2>", 1)[1]
+    frontier_prose = frontier.split('id="the-frontier-survey"', 1)[1].split("</h1>", 1)[1]
     frontier_prose = frontier_prose.split('<div class="site-table-tools', 1)[0]
     overview_prose = re.sub(
         r'<div class="site-popover.*?</div>\s*</div>', "", about, flags=re.DOTALL
@@ -4542,11 +4558,16 @@ def test_a_date_cell_leads_with_the_date_and_then_says_what_it_dates(
         assert kind in {"published", "established"}
         cell = f'{dated} <span class="site-date-kind">{kind}</span>'
         assert overview_sections.date_cell(result) == cell
+        table_cell = overview_sections.date_cell(
+            result, recent_label=overview_sections.new_result_label(result, overview)
+        )
         row = _row(table, result.id)
-        assert f'<td class="site-col-date" data-value="{dated}">{cell}</td>' in row, result.id
+        assert f'<td class="site-col-date" data-value="{dated}">{table_cell}</td>' in row, (
+            result.id
+        )
         if f'data-result="{result.id.lower()}"' in recent:
             row = _recent_row(recent, result.id)
-            assert f'<td class="site-col-date" data-value="{dated}">{cell}</td>' in row, (
+            assert f'<td class="site-col-date" data-value="{dated}">{table_cell}</td>' in row, (
                 result.id
             )
         assert f'data-date="{overview_sections.first_day(dated)}"' in row, result.id
@@ -4557,92 +4578,53 @@ def test_a_date_cell_leads_with_the_date_and_then_says_what_it_dates(
     assert ".site-results .site-date-kind {\n    display: inline;" in css
 
 
-#: A new result's star as a row carries it, straight after the result's text: an image
-#: whose name and tooltip are one label.
-ROW_STAR = re.compile(
-    '<span class="site-star" role="img" aria-label="([^"]+)" title="([^"]+)">\u2605</span>'
-)
-
-
-def test_a_new_result_is_starred_in_both_tables_by_case_recency(
+def test_a_recent_result_uses_red_dates_and_keeps_its_significance_marks(
     page: str, results: str, overview: overview_data.Overview
 ) -> None:
-    """A row is starred where its case record is recent: the result holds a case's
-    verified lower bound now, and that bound is recent (`starred_results`). The starred
-    cases are the ones a case's visual summary and the film call a new result, each starred
-    result is a current best in scope, and the star is read as well as seen: it has a
-    label, the row's name says so, and the prose above each table says what it marks."""
-    atlas = {n for n, fact in result_overview.film_facts().items() if fact["star"]}
-    assert atlas == set(overview.recent_lower)
-    starred = overview.starred
-    assert {n for cases in starred.values() for n in cases} == atlas
+    """Recent verified results retain names and dates; red ink replaces recency glyphs."""
+    recent_cases = {n for n, fact in result_overview.film_facts().items() if fact["star"]}
+    assert recent_cases == set(overview.recent_lower)
+    recent_results = overview.starred
+    assert {n for cases in recent_results.values() for n in cases} == recent_cases
     by_id = {result.id: result for result in overview.results}
-    for result_id, cases in starred.items():
+    for result_id, cases in recent_results.items():
         result = by_id[result_id]
         assert result.standing == render_recent_results.HOLDS, result_id
         assert set(cases) <= set(scope_values(dict(result.record["scope"]))), result_id
-    # T-060 settles n = 11 and T-093 holds n = 17 (T-043 until 2026-10-05). T-037 is as
-    # new and is superseded, T-007 holds its cases and is from 2005, and T-057 is a new
-    # upper bound, which the lower-bound recency rule does not star.
-    assert starred["T-060"] == (11,)
-    assert starred["T-093"] == (17,)
-    assert not {"T-037", "T-007", "T-057", "T-043"} & set(starred)
-
+    assert recent_results["T-060"] == (11,)
+    assert recent_results["T-093"] == (17,)
+    assert not {"T-037", "T-007", "T-057", "T-043"} & set(recent_results)
     table = overview_sections.results_table(overview)
     recent = overview_sections.recent_table(overview)
     for result in overview.results:
-        # Each row, and where its star stands: after the result's own text, the last
-        # thing in its cell, since its records are a Details column (think-e4o3).
-        # The star follows the significance mark, in the significance cell, since
-        # 2026-10-03 (`think-m3m4`); the result's cell holds its text alone.
         level = overview_sections.significance(result)
         mark = overview_sections.significance_mark(
             level, overview_sections.rung_meanings()[f"S{level}"]
         )
-        placed_here = mark + "{star}</td>"
-        rows = [(row, placed_here) for row in _result_rows(table, recent, result.id)]
-        for row, placed in rows:
+        for row in _result_rows(table, recent, result.id):
+            assert f'<td class="site-col-s" data-value="{level}">{mark}</td>' in row
+            assert "site-star" not in row
             name = re.search(r' aria-label="([^"]*)"', row)
             assert name
-            if result.id not in starred:
-                assert "site-star" not in row, result.id
-                assert not name.group(1).endswith("new result"), result.id
-                continue
-            label = html.escape(overview_sections.new_result_label(result, overview))
-            assert label.startswith("New result: holds the verified lower bound for n = ")
-            star = ROW_STAR.search(row)
-            assert star, result.id
-            assert star.groups() == (label, label), result.id
-            assert row.count("site-star") == 1, result.id
-            assert placed.replace("{star}", star.group(0)) in row, result.id
-            assert name.group(1).endswith(", new result"), result.id
+            assert name.group(1).endswith(", new result") is (result.id in recent_results)
+            label = overview_sections.new_result_label(result, overview)
+            if label:
+                assert label.startswith("New result: holds the verified lower bound for n = ")
+                assert (
+                    f'<span class="is-new-result" title="{html.escape(label)}">'
+                    f"{result.dated[1]}</span>"
+                ) in row
+            else:
+                assert 'class="is-new-result"' not in row
     assert overview_sections.new_result_label(by_id["T-060"], overview).endswith("n = 11")
-
-    recent_starred = set(starred) & {r.id for r in _recent_entries(overview)}
-    assert len(ROW_STAR.findall(recent)) == len(recent_starred)
-    assert len(ROW_STAR.findall(table)) == len(starred)
-    # Each page retains its row stars; the complete Results account defines them.
-    legend = re.sub(r"<[^>]+>", "", overview_sections.star_legend())
-    assert legend == (
-        "A star (\u2605) marks a new result: the verified lower bound of a "
-        "case rests on it now, and it was proved or published on or after 22 August 2026."
-    )
-    for served, expected in ((page, recent_starred), (results, starred)):
-        assert len(ROW_STAR.findall(served)) == len(expected)
-    words = f"<span>{overview_sections.NEW_RESULT}</span>"
-    assert f"{overview_sections.STAR}</span> {words}" in _legend(results)
+    assert "site-star" not in table + recent + page + results
+    legend = overview_sections.star_legend()
+    assert legend == "Red indicates a recent result."
+    assert legend in _rendered_text(results)
+    assert results.index(legend) < results.index('<div class="site-table-tools')
+    assert legend not in _rendered_text(page)
+    assert '<span class="is-new-result">new result</span>' in _legend(results)
     assert "site-rung-legend" not in page
-    # The complete account remains before the Results table.
-    assert legend in re.sub(r"<[^>]+>", "", results)
-    assert results.index("marks a new result") < results.index('<div class="site-table-tools')
-    assert legend not in re.sub(r"<[^>]+>", "", page)
-    css = render_overview.SITE_CSS.read_text(encoding="utf-8")
-    # The star's colour is a token (`think-zhlc`), and it sits after the significance
-    # mark's bars in the significance cell, no longer hung after the result's text.
-    assert ".site-star {\n  color: var(--site-new-result);\n}" in css
-    assert ".site-results .site-col-s .site-star {" in css
-    assert ".site-col-result .site-star" not in css
-    assert "td.site-col-result:has(.site-star)" not in css
     assert "\u00a0" not in table + recent
 
 
@@ -6605,8 +6587,8 @@ def test_no_page_links_an_address_a_paper_used_to_have(
     the reader documents, whose links to the site are written in full. A link to the
     directory the optimality paper was in, to an old Markdown or PDF, and to the
     deployed site's own old address are all found, which a pattern over the pages' paths
-    alone (`test_site_documents`) does not read. The explicit homepage download
-    alone keeps its registered, live Atlas PDF copy address."""
+    alone (`test_site_documents`) does not read. The homepage download uses the
+    canonical dated Atlas PDF; registered old copies remain available for compatibility."""
     old = _old_addresses()
     assert "explainer.html" in old
     assert "n11-optimality/" in old
@@ -6628,22 +6610,15 @@ def test_no_page_links_an_address_a_paper_used_to_have(
     bodies = {name: rendered(name) for name in render_overview.PAGES}
     bodies |= {f"the overview of {result}": body for result, body in result_bodies.items()}
     for name, body in bodies.items():
-        checked_body = body
         if name == "index.html":
-            anchors = re.findall(rf'<a\b[^>]*\shref="{re.escape(download_alias)}"[^>]*>', body)
-            assert len(anchors) == 1
-            assert re.search(r"\sdownload(?:\s|=|>)", anchors[0])
-            # Exempt only this native href. Other address attributes on the same
-            # anchor, and every other reference to a legacy path, remain checked.
-            checked_anchor = re.sub(
-                rf'(\s)href="{re.escape(download_alias)}"', r"\1", anchors[0], count=1
-            )
-            checked_body = body.replace(anchors[0], checked_anchor, 1)
+            anchors = re.findall(rf'<a\b[^>]*\shref="{re.escape(copied_pdf)}"[^>]*>', body)
+            downloads = [
+                anchor for anchor in anchors if re.search(r"\sdownload(?:\s|=|>)", anchor)
+            ]
+            assert len(downloads) == 1
         links = {
             html.unescape(link).partition("#")[0].partition("?")[0]
-            for link in re.findall(
-                r'\b(?:href|src|data-pop-src|poster)="([^"]+)"', checked_body
-            )
+            for link in re.findall(r'\b(?:href|src|data-pop-src|poster)="([^"]+)"', body)
         }
         assert not links & old, (name, sorted(links & old))
     # The papers are linked, where they are served, from the pages that card them.

@@ -1427,11 +1427,12 @@ def test_poster_grid_markers_fit_the_separator_or_the_all_grid_margin() -> None:
 
 
 @pytest.mark.parametrize("index", [0, 1])
-def test_print_cards_suppress_recent_stars_and_keep_independent_accents(index: int) -> None:
+def test_print_cards_color_recent_numbers_and_keep_independent_accents(index: int) -> None:
     canvas = known_best_builder.resolved_composites()[index]
     root = ET.Element("svg")
     append = known_best_builder._append_summary_card  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
     flags = {
+        9: RecentContributions(upper=False, lower=False, optimal=False),
         11: RecentContributions(upper=False, lower=True, optimal=True),
         17: RecentContributions(upper=True, lower=True, optimal=False),
     }
@@ -1445,6 +1446,12 @@ def test_print_cards_suppress_recent_stars_and_keep_independent_accents(index: i
         )
     assert not root.findall(".//svg:polygon[@data-feature='legend-star']", SVG)
     cards = {int(card.attrib["data-n"]): card for card in root}
+    for n, card in cards.items():
+        number = card.find("svg:text[@data-feature='packing-label']", SVG)
+        assert number is not None
+        assert number.attrib["fill"] == (
+            FIRST_PARTY_ACCENT_COLOR if flags[n].any else known_best_builder.LABEL_MUTED_COLOR
+        )
     optimal = cards[11].find("svg:rect[@data-evidence='proved optimal']", SVG)
     assert optimal is not None
     assert optimal.attrib["fill"] == FIRST_PARTY_ACCENT_COLOR
@@ -2112,8 +2119,8 @@ def test_poster_accents_recent_contributions_independently_in_svg_and_pdf() -> N
         colored = [span for span in line if span.attrib.get("fill") == FIRST_PARTY_ACCENT_COLOR]
         assert len(colored) == 1
         assert re.fullmatch(r"[0-9.]+", colored[0].text or "")
-    # Isolate the actual emblem and upper caption before rasterization: the recent
-    # star cannot satisfy the PDF accent assertion on behalf of an unaccented emblem.
+    # Isolate the emblem and upper caption so a red case number cannot satisfy
+    # the PDF accent assertion on behalf of an unaccented emblem.
     emblem_svg = ET.Element(f"{{{SVG['svg']}}}svg", root.attrib)
     emblem_svg.append(copy.deepcopy(optimal))
     caption_svg = ET.Element(f"{{{SVG['svg']}}}svg", root.attrib)
@@ -2335,7 +2342,7 @@ def test_print_legend_spells_counts_without_changing_web_fractions() -> None:
 def test_shared_atlas_legend_has_the_same_eight_items_in_four_and_four_rows() -> None:
     descriptor = atlas_legend(AtlasLegendCounts(77, 292, 32, 22, 297, 324))
     assert [item.marker for item in descriptor.left] == ["O", "=", "≈", "R"]
-    assert [item.marker for item in descriptor.right] == ["star", "angles", "shades", None]
+    assert [item.marker for item in descriptor.right] == [None, "angles", "shades", None]
     assert [item.text for item in descriptor.items] == [
         "proved optimal (77/324)",
         "exact value known (292/324)",
@@ -3175,17 +3182,9 @@ def test_known_rigid_keeps_verified_and_catalogue_assurance_distinct_in_metadata
 
 
 def test_only_the_bound_numeral_carries_the_new_result_accent() -> None:
-    """The star marks the case; the accent marks what is new about it.
+    """Only the bound value takes the recent-result accent.
 
-    A first-party lower bound is new in the number it reaches, not in the function it
-    bounds, so `s(n) >=` keeps the caption colour every other card sets it in and the
-    numeral alone takes the accent that matches the star in the badge row above. The
-    record decides which cases are starred; this decides how a starred one is set, and
-    reads it off the drawing rather than the record so the two must agree.
-
-    The separating space is asserted too. It is the one part of the line that a split
-    into coloured runs can silently drop, and losing it would leave the drawing right
-    and every reader that takes the text rather than the ink wrong.
+    Splitting the colored runs must preserve the separating space for text readers.
     """
     root = ET.fromstring(_committed_composite_svg())
     record = json.loads((ATLAS / "composite-figure.json").read_text(encoding="utf-8"))
@@ -3210,8 +3209,7 @@ def test_only_the_bound_numeral_carries_the_new_result_accent() -> None:
         assert re.fullmatch(r"[0-9.]+", value), value
         assert line.endswith(" " + value), line
 
-    # A starred case that is proved, s(32) = 6 among them, says so in the equality above
-    # and draws no lower-bound line to accent; its star is still on the card.
+    # Proved cases such as s(32) = 6 state equality and omit the lower-bound line.
     drawn = [
         entry
         for entry in record["figure"]["entries"]

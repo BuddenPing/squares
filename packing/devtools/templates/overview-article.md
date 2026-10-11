@@ -23,7 +23,7 @@ can exist, such as the reported $s(29) \ge 5.81$).
 
 {{ATLAS_GRID}}
 
-<p class="site-action-row site-more site-homepage-atlas-actions"><a class="site-action" href="known-best-1-324.pdf" download>Download PDF{{ARROW_DOWNLOAD}}</a><a class="site-action" href="atlas.html">Explore the atlas{{ARROW_RIGHT}}</a></p>
+<p class="site-action-row site-more site-homepage-atlas-actions"><a class="site-action" href="{{ATLAS_PDF}}" download>Download PDF{{ARROW_DOWNLOAD}}</a><a class="site-action" href="atlas.html">Explore the atlas{{ARROW_RIGHT}}</a></p>
 
 <h2 id="recent-results" class="site-title">Recent Major Results</h2>
 

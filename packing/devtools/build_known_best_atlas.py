@@ -73,7 +73,7 @@ from devtools import squish_second_update_house_links as squish_house
 from devtools import squish_second_update_packets as squish_second
 from devtools import squish_upper_bound_packets as squish_packets
 from devtools import upper_bound_packets as packets
-from devtools.atlas_legend import AtlasLegendCounts, LegendItem, atlas_legend, recent_label
+from devtools.atlas_legend import AtlasLegendCounts, LegendItem, atlas_legend
 from devtools.atlas_orientation import orient_atlas_witness
 from devtools.build_composite_figure_data import load_record as load_figure_record
 from devtools.result_status import RecentContributions, recent_contributions_by_case
@@ -241,27 +241,6 @@ SUMMARY_BOUND_BASELINE = Decimal(220)
 # above carries the extra 17px, so the whitespace between a caption and the packing
 # below it is what it always was.
 SUMMARY_LOWER_BASELINE = Decimal(237)
-# A five-pointed star, apex up, drawn as a polygon about its own centre. Not a glyph:
-# Helvetica and its metric substitutes have no star, and the PNG and PDF rasterisers
-# both render U+2605 as a replacement box, which would ship tofu in two of the three
-# formats.
-SUMMARY_STAR_POINTS = (
-    (Decimal(0), Decimal(-6)),
-    (Decimal("1.411"), Decimal("-1.942")),
-    (Decimal("5.706"), Decimal("-1.854")),
-    (Decimal("2.283"), Decimal("0.742")),
-    (Decimal("3.527"), Decimal("4.854")),
-    (Decimal(0), Decimal("2.4")),
-    (Decimal("-3.527"), Decimal("4.854")),
-    (Decimal("-2.283"), Decimal("0.742")),
-    (Decimal("-5.706"), Decimal("-1.854")),
-    (Decimal("-1.411"), Decimal("-1.942")),
-)
-SUMMARY_STAR_INSET = Decimal(6)
-#: The star's reference size: the size of the caption it was drawn for, so a star beside
-#: larger type scales by the ratio and stays the same weight against its text.
-SUMMARY_STAR_REFERENCE_SIZE = Decimal(14)
-SUMMARY_STAR_TEXT_INSET = Decimal(17)
 SUMMARY_BADGE_SIZE = Decimal(19)
 #: Color keys match the adjacent font size, as the square web legend swatches do.
 SUMMARY_LEGEND_SWATCH_LEADING = Decimal(1)
@@ -334,10 +313,6 @@ SUMMARY_BADGE_FONT_SIZE = Decimal(15)
 #: Where a math symbol sits in a badge. `=` and `≈` centre on the math axis rather than
 #: on the cap line, so they are placed by measurement rather than by the rule below.
 SUMMARY_MATH_GLYPH_BASELINE = Decimal(14)
-#: How much of the badge box the star fills. A five-pointed star reads smaller than a
-#: filled square of the same span, so it is drawn larger to carry the same weight in the
-#: row beside the lettered badges.
-SUMMARY_BADGE_STAR_SPAN = Decimal("0.92")
 SUMMARY_CREDIT = "Diagram by Joshua Levy with assistance from Claude and Codex"
 SUMMARY_REPOSITORY = "github.com/jlevy/squares"
 #: Where the bounds on the cards are cited, under the explainer and above the credit.
@@ -874,7 +849,8 @@ SUMMARY_PROSE: dict[str, tuple[str, str]] = {
             "corpus-wide construction, lower-bound and optimality credits sit below it, "
             "followed by the diagram credit and "
             "dated edition. Every counted legend item includes the depicted total. "
-            "Case counts are gray and ordinary bounds and annotations are black. "
+            "Case counts are crimson for recent results and gray otherwise; ordinary bounds "
+            "and annotations are black. "
             f"{POSTER_CITATIONS}: {SUMMARY_REPOSITORY}."
         ),
     ),
@@ -901,7 +877,8 @@ SUMMARY_PROSE: dict[str, tuple[str, str]] = {
             "2026. Badges mark which side lengths are proved "
             "optimal, and whether a side length is pinned exactly by a radical or a "
             f"minimal polynomial rather than only by a decimal. "
-            "Case counts are gray; the title, two-line definition, other explanatory "
+            "Case counts are crimson for recent results and gray otherwise; the title, "
+            "two-line definition, other explanatory "
             "text and ordinary bound captions are black. Every counted legend item "
             "includes the depicted total. The same corpus-wide construction, lower-bound "
             "and optimality credit paragraphs name contributors oldest first, "
@@ -2031,7 +2008,9 @@ def _append_summary_card(
             "font-size": "29",
             "font-weight": "700",
             "letter-spacing": "-0.5",
-            "fill": LABEL_MUTED_COLOR,
+            "fill": FIRST_PARTY_ACCENT_COLOR
+            if recent is not None and recent.any
+            else LABEL_MUTED_COLOR,
         },
     ).text = str(n)
 
@@ -2124,10 +2103,8 @@ def _append_lower_bound(
     """The certified floor, under the best known side.
 
     A proved case says `s(n) = ...` on the line above and gets nothing here. Where the
-    floor is a recent result, the accent falls on the numeral alone, the same
-    colour as the star in the badge row above it: what is new about the case is the
-    bound, not the function it bounds, so the `s(n) >=` that introduces it stays in the
-    caption colour it carries on every other card. The legend counts how many there are.
+    floor is a recent result, the accent falls on the value alone, matching the
+    case numeral. The `s(n) >=` prefix keeps the ordinary caption colour.
     """
     entry = _figure_entries()[n]["lower"]
     if not entry["shown"]:
@@ -2155,14 +2132,6 @@ def _append_lower_bound(
         if (entry["recent_result"] if recent is None else recent)
         else None,
     )
-
-
-#: What the star means, in the legend and on each card's badge: a recent result, whoever
-#: proved it (the owner, 2026-09-27). It used to read "lower bound first proved here", and
-#: so went out at n = 11 when Kleddamag's 3.875, developed from T-026, became the bound.
-#: The month is read from `RECENT_SINCE`, so the label cannot name another; it is the
-#: old label's width.
-RECENT_LABEL = recent_label()
 
 
 @cache
@@ -2232,46 +2201,6 @@ def _append_function_text(
     sub(parent, "tspan", {"fill": accent}).text = value
 
 
-def _star_center_y(baseline: Decimal, size: str) -> Decimal:
-    """Half a cap height above the baseline: where a mark sits level with its text.
-
-    Aligning by eye drifts as soon as a line changes size, so both the height and the
-    scale come from the type. Helvetica's cap height is `SUMMARY_LABEL_CAP_RATIO` of the
-    em, and a glyph reads as level with a line of capitals when its own centre is at
-    half of that above the baseline.
-    """
-    return baseline - Decimal(size) * SUMMARY_LABEL_CAP_RATIO / 2
-
-
-def _star_scale(size: str) -> Decimal:
-    """How much to grow the star for type larger than the caption it was drawn for."""
-    return Decimal(size) / SUMMARY_STAR_REFERENCE_SIZE
-
-
-def _append_star(
-    parent: ET.Element,
-    *,
-    center_x: Decimal,
-    center_y: Decimal,
-    feature: str,
-    label: str = "",
-    scale: Decimal = Decimal(1),
-) -> None:
-    """Draw the new-result star about a centre, in the figure's one accent colour."""
-    attributes = {
-        "data-feature": feature,
-        "points": " ".join(
-            f"{format_svg_number(center_x + dx * scale)},"
-            f"{format_svg_number(center_y + dy * scale)}"
-            for dx, dy in SUMMARY_STAR_POINTS
-        ),
-        "fill": FIRST_PARTY_ACCENT_COLOR,
-    }
-    if label:
-        attributes["data-evidence"] = label
-    sub(parent, "polygon", attributes)
-
-
 def _badge_baseline(glyph: str) -> Decimal:
     top, bottom = _print_ink_bounds(glyph, str(SUMMARY_BADGE_FONT_SIZE))
     return SUMMARY_BADGE_SIZE / 2 - (top + bottom) / 2
@@ -2296,19 +2225,6 @@ def _append_badge(
     sit its badges flush with the top of the big number.
     """
     size = SUMMARY_BADGE_SIZE * type_scale
-    if style == "star":
-        # The legend's star is the same polygon the cards carry, centred in a badge box
-        # so the row lays out as if it were one. `glyph` is unused: there is no star to
-        # typeset, which is the point.
-        _append_star(
-            parent,
-            center_x=x + size / 2,
-            center_y=top + size / 2,
-            feature="legend-star",
-            label=label,
-            scale=size * SUMMARY_BADGE_STAR_SPAN / (SUMMARY_STAR_INSET * 2),
-        )
-        return
     glyph_left, _glyph_top, glyph_right, _glyph_bottom = atlas_print_font.ink_bounds(
         glyph, SUMMARY_BADGE_FONT_SIZE * type_scale
     )
@@ -2558,8 +2474,8 @@ def _append_summary_legend(
             ]
         else:
             mark = (
-                "" if item.marker == "star" else item.marker,
-                "star" if item.marker == "star" else "muted" if item.marker == "≈" else "solid",
+                item.marker,
+                "muted" if item.marker == "≈" else "solid",
                 item.label,
             )
         return mark, label(item)
@@ -4709,9 +4625,7 @@ def summary_square_polygons(root: ET.Element) -> list[ET.Element]:
     A composite that carries per-square `data-*` names each polygon `square-fill`; one
     that has dropped them names the group instead, and the polygons inside it are the
     squares. Reading both is what lets one measurement, and one test, cover both
-    families rather than one per encoding. The star a card may carry is a polygon too
-    and is not a square, which is why this asks what a polygon is rather than counting
-    the tag.
+    families rather than one per encoding, without counting unrelated polygons.
     """
     squares = [
         node

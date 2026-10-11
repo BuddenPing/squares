@@ -322,11 +322,12 @@ def test_a_case_diagram_precedes_its_count_and_ordered_status_row() -> None:
     figure = markup.index('class="site-case-figure"')
     title = markup.index('class="site-case-title" data-math-face="serif"')
     badges = markup.index('class="site-case-badges"')
-    star = markup.index('class="site-star"')
+    recent = markup.index('class="is-new-result"')
     correction = markup.index('class="site-corrects"')
     reported = markup.index('class="site-credit"')
     status = markup.index('class="site-chip"')
-    assert eyebrow < figure < title < badges < star < correction < reported < status
+    assert eyebrow < figure < title < recent < badges < correction < reported < status
+    assert "site-star" not in markup
     assert markup.count('<figure class="site-case-figure"') == 1
     assert 'class="site-case-interval" data-math-face="serif"' in markup
     assert math_html("n = 15") in markup

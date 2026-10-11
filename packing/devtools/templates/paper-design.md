@@ -193,14 +193,14 @@ never reads as a link; it is light in dark mode.
 The rung is its letter and level, `S4`, at the sans medium weight, then as many short
 bars in the same ink as its level, one to five, so a column of them reads as a meter
 (`overview_sections.significance_mark`). It is the second column of a table of results,
-narrow, with a new result’s star after the bars, and it stands first among the rungs in
-a result’s overview, a case record and the rating ladders.
+narrow, and it stands first among the rungs in a result’s overview, a case record and
+the rating ladders.
 
-The recent-bound star is the one warm mark, `--site-new-result`, lighter in dark mode so
-it keeps its contrast there.
+Recent contributions use the warm `--site-new-result` text ink, lighter in dark mode.
+The legend states: “Red indicates a recent result.”
 `devtools.rung_scale` measures both inks against the page’s background in each theme,
-and `tests/test_rung_scale.py` holds this table to its output: the significance ink is
-text, held to 4.5:1, and the star a symbol, held to 3:1, both inside sRGB.
+and `tests/test_rung_scale.py` holds this table to its output.
+Both inks stay inside sRGB and exceed 4.5:1 against the page in each theme.
 
 | Ink | Light | Against the page | Dark | Against the page |
 | --- | --- | --- | --- | --- |
@@ -1539,9 +1539,8 @@ it.
   PDF drawing scales stay fixed.
 
 - **Atlas marks.** Homepage and dedicated Atlas tiles carry only the centered case
-  count. Recent-result stars remain in case records and result tables.
-  Triangle’s grid segment starts with the ordinary count and its accessible name says
-  “first grid packing in row”.
+  count. Triangle’s grid segment starts with the ordinary count and its accessible name
+  says “first grid packing in row”.
   Dimension and `GRID` captions belong to the print diagrams.
   Counts use one size, including at the start of a grid segment.
   Drawing sizes follow the same selected scale in both views.
@@ -1725,11 +1724,11 @@ it.
   $\lceil\sqrt{n}\,\rceil$ to two above it, the integers and the values of $\sqrt{n}$
   and $\sqrt{n} + 1$ marked, the two bounds as bold rules with their values above and
   the open span between them shaded); under PROVEN the bound as one statement, the
-  proved lower bound in scarlet and the best known side in green, with the star for a
-  recent lower bound; the badges; the citation, one line per bound with this project’s
-  note; and what is OPEN. A citation line is a table row of two cells, the label
-  (“lower” or “upper”) and the source, so the label column is as wide as the wider label
-  however it is drawn, and the source wraps between words beside it.
+  proved lower bound in scarlet and the best known side in green; the badges; the
+  citation, one line per bound with this project’s note; and what is OPEN. A citation
+  line is a table row of two cells, the label (“lower” or “upper”) and the source, so
+  the label column is as wide as the wider label however it is drawn, and the source
+  wraps between words beside it.
   A case record opens with the centered Case Record eyebrow, its packing diagram, then
   the large $n = N$ heading, badges and main bound formula.
   Result case panels use the same diagram-before-count order.
@@ -1760,7 +1759,6 @@ it.
   (the owner, `think-7aar`, `think-necq`).
 
 - **Web Atlas labels.** Tiles show only the case number.
-  Recent-result stars remain in case and result records.
   Bounds, algebraic degrees, and evidence icons belong in the case popover.
   The PDF graphics retain their full labels.
   Homepage and dedicated Atlas expansion controls share **Show More**/**Show Less**
@@ -1769,8 +1767,8 @@ it.
 - **Case badges.** A case’s properties have one mark on the site, the film’s badges:
   optimal (O), exact (=), numerical (≈) and known rigid (one dark R), each its glyph in
   a small square, solid or outlined (`.site-atlas-badge`,
-  `result_overview.badge_glyph`); a new result is the star and what is open the outlined
-  “?”. The visual summary lists them with their words.
+  `result_overview.badge_glyph`); an open bound uses the outlined “?”. The visual
+  summary lists them with their words.
   Recent upper constructions, verified lower proofs and optimality each have independent
   flags from `result_status.recent_contributions_by_case`, rendered in the new-result
   ink. An optimality proof can therefore make O red while the historic upper construction
@@ -1812,8 +1810,8 @@ it.
     (`render_case_pages.case_popover`). Atlas tiles, Frontier rows and `a[data-case]`
     links open the matching canonical record there.
     Its centered compact **Case Record** label sits above a larger typeset $n = N$ count
-    (`think-g28m`). Case-property icons come first on the status line, followed by any
-    recent-result star and notes, then textual tags such as “proved”.
+    (`think-g28m`). Case-property icons come first on the status line, followed by notes
+    and textual tags such as “proved”.
     The close control, Escape, outside click, and focus return remain shared behavior.
     Previous and next controls and left/right arrow keys change the case in place.
     There is no **All cases** control.
@@ -1929,20 +1927,19 @@ it.
   table: one header (`result_head`) and one row (`result_table_row`), so the same
   columns in the same order.
   They are the date; the significance, S, its mark (**Significance and the Other Inks**,
-  above) and a new result’s star after it; the result, its summary whole, method and
-  all; the cases, n; the credit, the finder first and “after …”, what the result builds
-  on, quiet after it, in full; the rungs, verification and confirmation, with the kind
-  on a line under them; the status line, its chips one under another (**Chips**, above);
-  the details, the result’s records (its case link, the register, its evidence, source
-  and reviews), a link to a line; and the id, the last column and the row’s trigger, as
-  narrow as an id, under the 6rem KPress keeps a cell to.
+  above); the result, its summary whole, method and all; the cases, n; the credit, the
+  finder first and “after …”, what the result builds on, quiet after it, in full; the
+  rungs, verification and confirmation, with the kind on a line under them; the status
+  line, its chips one under another (**Chips**, above); the details, the result’s
+  records (its case link, the register, its evidence, source and reviews), a link to a
+  line; and the id, the last column and the row’s trigger, as narrow as an id, under the
+  6rem KPress keeps a cell to.
   The owner set that order on 2026-10-02: the id led and the date closed the row until
   then (`think-t090`); the status line stood under the kind (`think-ybt5`); and the
   records stood on a quiet line under the summary, a dot between two links, where the
   result’s cell holds the claim alone now (`think-e4o3`). Significance left the rungs
-  for a column of its own, the second, on 2026-10-03, and a new result’s star left the
-  result’s text for it (`think-m3m4`). The status cell sorts on the status word; the
-  details do not sort.
+  for a column of its own, the second, on 2026-10-03 (`think-m3m4`). The status cell
+  sorts on the status word; the details do not sort.
   On a phone each row is a card that places its cells by class, not by column, so the
   card reads as before: the id, the cases and the rungs on its first line, the
   significance under the id and the status under the rungs, the claim with its details
@@ -1960,12 +1957,10 @@ it.
   The widths follow from each column’s floor and from what the n column asks for.
   The id, the significance, the rungs, the status, the details and the date are as
   narrow as what they hold.
-  The significance is as wide as its widest mark, S5’s five bars and a star, 77 pixels
-  with the cell’s 0.2rem padding either side: its bars are 0.36em wide, 0.2em after the
-  label, and the star takes the cell’s end padding (trimmed on 2026-10-03, `think-r3rd`,
-  from 90 pixels, which set the table 7.8 past its frame at 1280). The details are as
-  wide as their widest link, “evidence 10”, 102 pixels, and a result with many records
-  is the tallest row: T-075’s sixteen links stand 410 pixels.
+  The significance is as wide as its widest mark, S5’s five bars, with the cell’s 0.2rem
+  padding either side: its bars are 0.36em wide, 0.2em after the label.
+  The details are as wide as their widest link, “evidence 10”, 102 pixels, and a result
+  with many records is the tallest row: T-075’s sixteen links stand 410 pixels.
   The rungs column is as wide as its widest chip, since no chip wraps: the two rungs
   share a line, and the widest kind, “restricted optimality”, sets it at 180 where a row
   with one shows. The kind takes a line under the rungs, and the status column is as wide
@@ -2037,17 +2032,9 @@ it.
   the date and then says what it dates, `published` or `established`, in the support
   colour (`date_cell`): under the date on a wide table, which keeps the column narrow,
   and beside it on a phone.
-  In both tables of results a new result’s star follows its significance mark, in the S
-  column (`new_result_star`, `significance_cell`), where it hung after the result’s text
-  until 2026-10-03 (`think-m3m4`). The rule is the atlas’s, asked of a result instead of
-  a case (`overview_data.starred_results`): the verified lower bound of a case rests on
-  the result now, and that bound is recent, so a superseded result and an upper bound
-  carry no star. The star is never the only signal: it is an image whose name and tooltip
-  say “New result” and the cases, the row’s own name ends “new result”, the legend under
-  each table of results shows it as “new result” (`rung_legend`), and the Results page’s
-  prose says what it marks (`star_legend`). A superseded result’s row reads quieter, its
-  text in the support colour, in every site table, by one rule on
-  `tr[data-current="false"]`; its chips keep their fills.
+  The Results legend defines the red recency text once.
+  A superseded result’s row reads quieter, its text in the support colour, in every site
+  table, by one rule on `tr[data-current="false"]`; its chips keep their fills.
   A row reached by its address (`atlas.html#n-11`, `results.html#t-018`) takes the wash,
   in every site table.
 
@@ -2079,8 +2066,8 @@ it.
     The Records cell is the case file on GitHub, `n-011.md`, over a quiet link to the
     record, “Record”. Until 2026-10-03 each row opened a popover of its own, behind
     “Details” in that cell; what it said is in the record (`think-necq`).
-  - **Recent** holds the star of a recent verified lower bound, third, as narrow as its
-    heading. It sorts, and “recent only” filters on it.
+  - **Recent** records whether a verified lower bound is recent.
+    It sorts, and “recent only” filters on it.
   - **Centring.** Every body cell is centred on its row’s height
     (`vertical-align: middle`), so a value of one line sits level with the drawing and
     with the middle of a neighbour of three lines.
@@ -2102,7 +2089,7 @@ it.
   - **Widths.** The table fits the 1200 pixels a 1280-pixel window gives it, with 6 to
     spare, and scrolls sideways in its wrap below that, on a phone too: it has no card
     layout. Every column is as wide as what it holds, without KPress’s 6rem floor, which
-    set n and the star in 96 pixels each.
+    made short columns unnecessarily wide.
     A cell keeps 0.4rem at either side (`--site-frontier-cell-inline`) where the other
     tables keep 0.5rem, and the Records cell half a rem more at its start, which keeps a
     decimal in the gap clear of the case file’s name.
@@ -2343,15 +2330,13 @@ pointer and by keyboard, and measures its label at 1280, 768 and 390 pixels.
   Frontier page’s counts, its audit of its sources, the seventeen-square history before
   this project, and when a bound by others counts as verified, which is the rule its
   verified columns apply.
-  Each table of results keeps its own key to the star, since a star without one reads as
-  decoration: the legend under it shows the star as “new result” (`rung_legend`), and
-  the Results page’s prose says what it marks (`star_legend`). The Frontier page opens
-  with the survey’s account, its audit, its recent counts and the seventeen-square
-  history, and ends its prose with the key to its columns, beside the table.
-  The way onward follows the section’s shape: a section whose key element is a table or
-  a grid ends in the one action button (**Action under a table or grid**, below), and a
-  section that is prose leads on with direct cards (**Cards**, above), as The Squares
-  Project does with its page cards.
+  The Results legend defines recency once: “Red indicates a recent result.”
+  The Frontier page opens with the survey’s account, its audit, its recent counts and
+  the seventeen-square history, and ends its prose with the key to its columns, beside
+  the table. The way onward follows the section’s shape: a section whose key element is a
+  table or a grid ends in the one action button (**Action under a table or grid**,
+  below), and a section that is prose leads on with direct cards (**Cards**, above), as
+  The Squares Project does with its page cards.
   The page cards under The Squares Project are the site’s reading and working pages, the
   Frontier page alone on the first line, then the three papers and the workbench two to
   a line (**Card sizes**, above); the Results page is reached from Recent Results.

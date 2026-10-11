@@ -637,21 +637,17 @@ def result_fragment(result_id: str) -> str:
     return f"{RESULT_FRAGMENTS}/{result_id.lower()}.html"
 
 
-#: The site's one star, the mark of a recent lower bound (paper-design.md), as an escape.
-STAR = "\u2605"
-
-#: What a starred result is called, as the film and a case's visual summary call a starred
-#: case.
+#: Accessible wording for a recent result.
 NEW_RESULT = "new result"
 
 
 def new_result_label(result: Result, overview: Overview) -> str:
-    """What a result's star says, or nothing where the result has no star: that it is a
+    """A recent result's accessible label, or nothing for a historical result: it is a
     new result, and the cases whose verified lower bound it holds now.
 
     The rule is the atlas's (`overview_data.starred_results`): the result is the one a
     case's verified lower bound rests on, and that bound is recent, proved or published
-    since `RECENT_SINCE`. It is the star and the "new result" of the film and of a case's
+    since `RECENT_SINCE`. It is the "new result" of the film and of a case's
     visual summary, asked of the result instead of the case.
     """
     cases = overview.starred.get(result.id)
@@ -663,31 +659,9 @@ def new_result_label(result: Result, overview: Overview) -> str:
     )
 
 
-def new_result_star(result: Result, overview: Overview) -> str:
-    """The red star of a new result in a table of results, or nothing
-    (`new_result_label`): in the significance cell, after the significance mark's bars
-    (`significance_cell`), where it stood after the result's text until 2026-10-03
-    (`think-m3m4`). The glyph is an image whose name and tooltip are the label, so it is
-    read and not only seen, and the row's own name says "new result" too
-    (`result_row`)."""
-    label = new_result_label(result, overview)
-    if not label:
-        return ""
-    return (
-        f'<span class="site-star" role="img" aria-label="{_esc(label)}" '
-        f'title="{_esc(label)}">{STAR}</span>'
-    )
-
-
 def star_legend() -> str:
-    """The sentence that says what the star in a table of results marks, with the star
-    itself, for the prose above the Results page's table (`{{STAR_LEGEND}}` in its
-    article); the homepage's table keys the star in its legend alone (`rung_legend`)."""
-    return (
-        f'A star (<span class="site-star" aria-hidden="true">{STAR}</span>) marks a '
-        f"{NEW_RESULT}: the verified lower bound of a case rests on it "
-        f"now, and it was proved or published on or after {_since()}."
-    )
+    """The concise recency-color key above the complete Results table."""
+    return "Red indicates a recent result."
 
 
 def result_row(result: Result, *, trigger: str, starred: bool = False) -> RowDetail:
@@ -696,8 +670,8 @@ def result_row(result: Result, *, trigger: str, starred: bool = False) -> RowDet
     which the script replaces with the whole overview, fetched from `result_fragment`
     when the popover first opens. It has no button: the row pressed is the result's
     row, in either table, and a button from one table to the same row of the other
-    leads nowhere new. A `starred` row's name ends ", new result", what its star says
-    (`new_result_star`)."""
+    leads nowhere new. A recent row's name ends ", new result", its accessible
+    recency label."""
     name = f"{result.id}: {plain_text(result.summary)}"
     detail = row_detail(
         f"pop-result-{result.id.lower()}",
@@ -921,7 +895,7 @@ def result_filters(
 
 def result_head() -> str:
     """The header row of a table of results: the one set of columns both tables carry,
-    in one order. The date; the significance, with a new result's star; the result; the
+    in one order. The date; the significance; the result; the
     cases; the credit; the verification and confirmation rungs, with the kind under
     them; the status; and the id, which is the row's trigger. The owner set this order
     on 2026-10-02: the id led and the date closed the row until then (`think-t090`);
@@ -936,8 +910,7 @@ def result_head() -> str:
         "<thead><tr>"
         '<th data-sort="text" title="Published, for a result by others; established, for '
         f'this project{APOSTROPHE}s">Date</th>'
-        '<th data-sort="num" class="site-col-s" title="Significance, S1 to S5, and a star '
-        'on a new result">S</th>'
+        '<th data-sort="num" class="site-col-s" title="Significance, S1 to S5">S</th>'
         '<th class="site-col-result">Result</th>'
         '<th data-sort="num" class="num site-col-n">n</th>'
         '<th data-sort="text">Credit</th>'
@@ -1005,14 +978,17 @@ def credit_cell(credit: str) -> str:
     return f'{_esc(finder)} <span class="site-cell-quiet">after {_esc(after)}</span>'
 
 
-def date_cell(result: Result) -> str:
+def date_cell(result: Result, *, recent_label: str = "") -> str:
     """What a result's date cell holds, in both tables of results: the date first, then
     what it dates, `published` or `established`, quiet (`.site-date-kind`). The cell
     sorts and filters on the date alone, its `data-value` and the row's `data-date`.
     A result's overview sets its date, and each date of its chain, with this too
     (`result_overview.head`, `step`), so the order has one definition."""
     kind, dated = result.dated
-    return f'{_esc(dated)} <span class="site-date-kind">{_esc(kind)}</span>'
+    shown = _esc(dated)
+    if recent_label:
+        shown = f'<span class="is-new-result" title="{_esc(recent_label)}">{shown}</span>'
+    return f'{shown} <span class="site-date-kind">{_esc(kind)}</span>'
 
 
 def result_cells(
@@ -1023,7 +999,7 @@ def result_cells(
     replacement_dates: Mapping[str, str],
 ) -> str:
     """A result's cells, one for each column of `result_head`, the same on both tables:
-    its date (`date_cell`), its significance with the star a new result earns
+    its date (`date_cell`), accented for a recent result; its significance
     (`significance_cell`), its summary (`result_text`), its cases (`case_list`), its
     credit (`credit_cell`), its verification and confirmation chips with its kind on a
     line under them (`ladder_chips`, `kind_chip`), its status line (`status_marks`), and
@@ -1036,8 +1012,8 @@ def result_cells(
     )
     return (
         f'<td class="site-col-date" data-value="{_esc(result.dated[1])}">'
-        f"{date_cell(result)}</td>"
-        f"{significance_cell(result, overview)}"
+        f"{date_cell(result, recent_label=new_result_label(result, overview))}</td>"
+        f"{significance_cell(result)}"
         f'<td class="site-col-result">{result_text(result)}</td>'
         f'<td class="{case_cell_class(result)}" data-value="{result.first_n}">'
         f"{case_list(result)}</td>"
@@ -1164,7 +1140,7 @@ LADDERS_SECTION = "verification-ladders"
 
 def rung_legend(*, here: bool, heading: str = "") -> str:
     """The legend under a table of results, boxed, three short lines: every significance
-    mark, S1 to S5; every verification and confirmation chip, V0 to C5; and the star,
+    mark, S1 to S5; every verification and confirmation chip, V0 to C5; and recency,
     with a link to where the ladders define each rung in full, on the results page
     (`here`) or from another page. Each mark and chip is titled with the rubric's
     meaning. It took the place, on 2026-10-03, of the whole ladder grid the overview
@@ -1187,7 +1163,7 @@ def rung_legend(*, here: bool, heading: str = "") -> str:
         significance_mark(level, meanings[f"S{level}"]) for level, _ in sorted(levels["S"])
     )
     href = f"#{LADDERS_SECTION}" if here else f"{RESULTS_PAGE}#{LADDERS_SECTION}"
-    star = f'<span class="site-star" aria-hidden="true" title="{NEW_RESULT}">{STAR}</span>'
+    recent = f'<span class="is-new-result">{NEW_RESULT}</span>'
 
     def group(scale: str, shown: str) -> str:
         return (
@@ -1195,8 +1171,6 @@ def rung_legend(*, here: bool, heading: str = "") -> str:
             f'<span class="site-rung-legend-name">{_esc(names[scale])}</span> {shown}</span>'
         )
 
-    # The star's words are a span of their own: no shipped face carries the star, and a
-    # run that held both would be drawn, and measured, as the star's host face.
     title = f'<h2 class="site-rung-legend-heading">{_esc(heading)}</h2>' if heading else ""
     checks = (
         f"<p>{group('V', chips('V'))}</p><p>{group('C', chips('C'))}</p>"
@@ -1217,14 +1191,14 @@ def rung_legend(*, here: bool, heading: str = "") -> str:
             'aria-label="Legend: what the significance, verification and confirmation '
             'ratings mean">'
             f"{title}{row(names['S'], marks)}{row(names['V'], chips('V'))}"
-            f"{row(names['C'], chips('C'))}{row(NEW_RESULT, star)}</a>"
+            f"{row(names['C'], chips('C'))}{row(NEW_RESULT, recent)}</a>"
         )
     return (
         '<div class="site-rung-legend" role="note" aria-label="What a row\u2019s marks mean">'
         f"{title}"
         f"<p>{group('S', marks)}</p>"
         f"{checks}"
-        f'<p><span class="site-rung-legend-group">{star} <span>{NEW_RESULT}</span></span> '
+        f'<p><span class="site-rung-legend-group">{recent}</span> '
         f'<a href="{href}">What each rung means</a></p>'
         "</div>"
     )
@@ -1441,16 +1415,13 @@ def significance(result: Result) -> int:
     return int(result.record["significance"]["score"])
 
 
-def significance_cell(result: Result, overview: Overview) -> str:
+def significance_cell(result: Result) -> str:
     """A result's significance cell, the second of its row in both tables of results:
-    its mark (`significance_mark`), titled with the rubric's meaning, then the star a
-    new result earns (`new_result_star`). The column is narrow and sorts on the level."""
+    its mark (`significance_mark`), titled with the rubric's meaning. The column is
+    narrow and sorts on the level."""
     level = significance(result)
     mark = significance_mark(level, rung_meanings()[f"S{level}"])
-    return (
-        f'<td class="site-col-s" data-value="{level}">'
-        f"{mark}{new_result_star(result, overview)}</td>"
-    )
+    return f'<td class="site-col-s" data-value="{level}">{mark}</td>'
 
 
 def result_rungs(result: Result) -> tuple[str, str, str]:
@@ -2597,7 +2568,7 @@ def atlas_film_facts() -> list[dict[str, object]]:
     and `load_citations`).
 
     From the atlas figure's record: the bound as one statement, its values as the record
-    displays them, the badges, a star for any recent displayed contribution, and what
+    displays them, the badges, recency for any recent displayed contribution, and what
     is open (rigidity never is, as in the film). From `bound-citations.json`: the frontier
     record and each bound's source with this project's note.
     """
@@ -2843,6 +2814,7 @@ def _atlas_cell(
     status: str,
     *,
     regularized: bool = False,
+    recent: bool = False,
     side: float | None = None,
     grid_from: int | None = None,
     segment: PackingSegment | None = None,
@@ -2851,7 +2823,7 @@ def _atlas_cell(
 
     The first retained grid packing in a square-bound row identifies its grid
     suffix for layout and accessibility. Derived drawing provenance stays in the atlas
-    index. Recent-result markers belong in the case and result records.
+    index. Recent case numbers use the shared recency ink.
     """
     from devtools import render_frontier_page as frontier  # noqa: PLC0415
     from devtools.render_case_pages import case_url  # noqa: PLC0415
@@ -2872,11 +2844,14 @@ def _atlas_cell(
     drawing = frontier.drawing_img(n, regularized=regularized, size=ATLAS_UNITS)
     meaning = f", first grid packing in row {row}" if first_grid else ""
     name = f"n = {n}, {_esc(status)}{meaning}"
+    if recent:
+        name += f", {NEW_RESULT}"
+    number_class = "site-atlas-n is-new-result" if recent else "site-atlas-n"
     return (
         f'<a class="site-atlas-cell" id="atlas-n-{n}" href="{case_url(n)}" data-case="{n}" '
         f'data-atlas-n="{n}" data-atlas-side="{side}"{square}{grid}{reference} '
         f'data-status="{_esc(status)}" aria-label="{name}"{position}>'
-        f'{drawing}<span class="site-atlas-n">{n}</span></a>'
+        f'{drawing}<span class="{number_class}">{n}</span></a>'
     )
 
 
@@ -3039,6 +3014,7 @@ def _atlas_rows(first: int) -> tuple[list[str], str]:
     transitions = grid_transitions(manifest["atlas"]["entries"])
     sides = atlas_enclosing_sides()
     by_n = {case["n"]: case for case in cases}
+    recent = recent_contributions_by_case()
     rows: list[str] = []
     for transition in transitions:
         groups: list[str] = []
@@ -3048,6 +3024,7 @@ def _atlas_rows(first: int) -> tuple[list[str], str]:
                     n,
                     by_n[n]["status"],
                     regularized=n in regularized,
+                    recent=recent[n].any,
                     side=sides[n],
                     grid_from=transition.grid.first_n,
                     segment=segment,

@@ -70,21 +70,21 @@ FRONTIER_INPUTS: tuple[Path, ...] = (
 def since_prose() -> str:
     """`RECENT_SINCE`, the first day of this project's work, as the site's prose writes a
     date: 22 August 2026. The one place the day is written out, so the Frontier page's
-    star sentence and the results tables' star legend read the same date."""
+    recency account and the result tables read the same date."""
     return f"{RECENT_SINCE.day} {RECENT_SINCE:%B %Y}"
 
 
 def survey_counts(counts: RecentCounts) -> str:
     """The survey's four counts as one Markdown sentence, for the Frontier page's Recent
-    results paragraph, which has just said what the star marks and the date it runs
+    results paragraph, which has just said what red indicates and the date it runs
     from: of the first hundred cases, how many have a recent lower bound in either lane,
-    how many of those a recent verified one, which are the starred cases, and of those
+    how many of those a recent verified one, which carry recent verified bounds, and of those
     how many are this project's and how many new exact values
     (`render_recent_results.recent_counts`)."""
     return (
         f"Of the first hundred cases, {counts.cases} have a lower bound published or proved "
         f"since then, reported or verified; {counts.verified} of those have a recent "
-        f"verified one, the starred cases; {counts.ours} of the {counts.verified} are this "
+        f"verified one; {counts.ours} of the {counts.verified} are this "
         f"project\u2019s, and {counts.exact} are new exact values."
     )
 
@@ -510,7 +510,7 @@ def lower_citations() -> dict[int, dict[str, Any] | None]:
 
 
 def recent_lower_bounds() -> dict[int, bool]:
-    """Whether each case's verified lower bound is recent, as the atlas figure stars it."""
+    """Whether each case's verified lower bound is recent, as the recency filter records it."""
     return {n: bool(lower and lower["recent"]) for n, lower in lower_citations().items()}
 
 
@@ -525,7 +525,7 @@ def corrected_lower_bounds() -> dict[int, dict[str, str]]:
 
 
 def corrections_prose() -> str:
-    """The sentence that says once what the tag beside a star means, linking the result it
+    """The sentence that says once what a correction tag means, linking the result it
     names, for the Recent results paragraph (`{{CORRECTIONS}}`): the rows repeat the tag
     without a link, and the page states the reason the corrected work failed once, in the
     register's own words (`corrects.what` in `frontier/results.yaml`)."""
@@ -548,7 +548,8 @@ def corrections_prose() -> str:
         if record.get("corrects")
     }
     return " ".join(
-        f"Beside {count} of the stars, *corrects {credit}* says the bound stands in for a "
+        f"For {count} recent verified bounds, *corrects {credit}* says the bound "
+        f"stands in for a "
         f"published result found unsound, the register\u2019s [{result}]"
         f"({result_url(result)}): {what[result]}."
         for (credit, result), count in sorted(corrected.items())
@@ -556,7 +557,7 @@ def corrections_prose() -> str:
 
 
 def corrects_html(corrects: Mapping[str, str]) -> str:
-    """The tag a correcting lower bound carries beside its star, `corrects Nagamochi
+    """The tag a correcting lower bound carries, `corrects Nagamochi
     2005`: one short span, with no link, since the table repeats it in most of its rows
     and the page's introduction links the corrected result once."""
     return f'<span class="site-corrects">{html.escape(corrects_tag(corrects) or "")}</span>'
@@ -634,10 +635,10 @@ def case_row(
     `n` is a link to that record, which is where a reader without scripts goes. The
     minimal popover each row opened until 2026-10-03, with the construction, the lower
     bound's kind and the verification notes, went then (think-necq): the record carries
-    all of it. The cells are in `HEADERS`' order: the drawing, `n`, the star, and then
+    all of it. The cells are in `HEADERS`' order: the drawing, `n`, recency, and then
     what is known.
 
-    A verified lower bound that corrects a published result keeps its star and carries
+    A recent verified lower bound that corrects a published result carries
     the tag beside it in the same cell (`corrects_html`), and the row names the corrected
     result in `data-corrects`, the register's id for it (the owner, 2026-10-02)."""
     from devtools.overview_sections import case_status_chip  # noqa: PLC0415
@@ -652,21 +653,20 @@ def case_row(
     if case["reported_status"] != status:
         shown_status += f" (reported {html.escape(case['reported_status'])})"
     gap_html, gap_value = gap(case, native=True)
-    star = (
-        '<span class="site-star" title="New result: a recent verified lower bound">★</span>'
-        if recent
-        else ""
-    )
-    if corrects:
-        star += corrects_html(corrects)
+    correction = corrects_html(corrects) if corrects else ""
     cells = [
         _cell(thumbnail_svg(n), classes="site-thumb"),
         _cell(
-            case_link(n, str(n), label=f"n = {n}: open its case record"),
+            case_link(
+                n,
+                str(n),
+                classes="is-new-result" if recent else "",
+                label=f"n = {n}: {'recent result; ' if recent else ''}open its case record",
+            ),
             value=str(n),
             classes="num site-col-n",
         ),
-        _cell(star, value="1" if recent else "0"),
+        _cell(correction, value="1" if recent else "0"),
         _cell(f"{shown_status}{case_badges(n)}", value=status),
         _bound_cell(
             upper,
@@ -706,7 +706,7 @@ def case_row(
 #: The drawing's column has no heading to read; this is its name for a screen reader.
 THUMB_LABEL = "Packing"
 #: The columns: heading, sort type (none for a column that does not sort), classes. The
-#: drawing comes first, under no heading, then `n`, then the star, so the left edge of the
+#: drawing comes first, under no heading, then `n`, then recency, so the left edge of the
 #: table says which case a row is and whether its bound is new; what is known follows.
 HEADERS: tuple[tuple[str, str, str], ...] = (
     ("", "", "site-thumb"),
@@ -722,8 +722,8 @@ HEADERS: tuple[tuple[str, str, str], ...] = (
 )
 
 
-#: What a heading's tooltip says where its one word does not: the star's column, whose
-#: rows carry the star and, beside it, what a correcting bound corrects.
+#: What a heading's tooltip says where its one word does not: the recency column, whose
+#: rows identify what a correcting bound corrects.
 HEADER_TITLES = {
     "Recent": "A recent lower bound, and the published result it corrects where it does",
 }
@@ -781,8 +781,8 @@ def table_html(cases: list[dict[str, Any]], *, include_popover: bool = True) -> 
 def frontier_markdown(fill: Callable[..., str], *, embedded: bool = False) -> str:
     """The article with every count and link filled from the record: the case counts
     from the case records, the survey's four counts from `render_recent_results`, and
-    the two documents the prose links at their addresses on `main`. The star's own
-    count over every case is not written: the prose counts the starred cases among the
+    the two documents the prose links at their addresses on `main`. The recency
+    count over every case is not written: the prose counts recent verified cases among the
     first hundred, and the bar's "recent only" counts them all. Embedded after the Atlas
     graphics, the survey is a section and uses the Atlas's shared case popover."""
     cases = frontier_cases()
@@ -806,7 +806,8 @@ def frontier_markdown(fill: Callable[..., str], *, embedded: bool = False) -> st
             raise SystemExit("frontier-article.md: the survey title block is missing")
         template = template.replace(
             title,
-            '<h2 id="the-frontier-survey">The Frontier Survey<a id="the-survey"></a></h2>',
+            '<h1 id="the-frontier-survey" class="site-title">'
+            'The Frontier Survey<a id="the-survey"></a></h1>',
             1,
         )
     return fill(template, values, where=FRONTIER_ARTICLE.name)

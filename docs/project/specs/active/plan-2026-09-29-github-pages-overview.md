@@ -142,7 +142,7 @@ The recent merges the page has to reflect:
   lineage.
 - PR #241: Evan Daniel’s $s(21) = 5$ and $s(45) = 7$, Guzhou0806’s R068 at
   $s(17) > 116511/25000$, and wand125’s rectangle bounds to $n = 95$.
-- PRs #239 and #240: the v0.4.2 edition, the starred recent results on the atlas, and
+- PRs #239 and #240: the v0.4.2 edition, recent-result highlighting on the atlas, and
   the ascent films.
 
 ## Design
@@ -366,7 +366,7 @@ No value on the page is typed by hand or read from `STATUS.md`.
 | Reported lower | `reported_lower_bound`: `exact_form`, `kind`, `proved_by`, `proved_year`, `source_key` |
 | Verified lower | `verified_lower_bound`: `exact_form`, else `value` |
 | Gap | verified upper minus verified lower, computed exactly where both are exact |
-| Recent | a star when the verified lower bound is recent, from `bound-citations.json`, as on the atlas figure |
+| Recent | a recent verified lower bound from `bound-citations.json`, highlighted in red |
 | Records | the case file, and each `evidence` id on the bounds, linked |
 
 **Rendering values cleanly.** Exact forms are shown as mathematics, not as ASCII: `31/8`

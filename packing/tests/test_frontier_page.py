@@ -172,10 +172,10 @@ def test_every_value_cell_carries_the_records_value(rows, cases) -> None:
             )
 
 
-def test_the_columns_run_drawing_case_star_and_then_what_is_known(parsed: Rows) -> None:
+def test_the_columns_run_drawing_case_recency_and_then_what_is_known(parsed: Rows) -> None:
     """The drawing has the first column to itself, under a header with no words that a
     screen reader is told is the packing; `n` is next and holds the number alone, the
-    link to the case record; the star follows, ahead of the status and the bounds, so the
+    link to the case record; recency follows, ahead of the status and the bounds, so the
     table's left edge says which case a row is and whether its bound is new."""
     assert [heading for heading, _, _ in frontier.HEADERS] == COLUMNS
     assert [(cell["words"] or "").strip() for cell in parsed.head] == COLUMNS
@@ -211,17 +211,17 @@ def test_the_columns_run_drawing_case_star_and_then_what_is_known(parsed: Rows) 
         assert number["tags"] == "a", n
         assert number["words"] == n
         # The star, and after it the tag of a bound that corrects a published result.
-        shown = "★" if attributes["data-recent"] == "true" else ""
+        shown = ""
         if "data-corrects" in attributes:
             shown += "corrects Nagamochi 2005"
         assert star["words"] == shown, n
 
 
-def test_a_correcting_bound_keeps_its_star_and_names_what_it_corrects(
+def test_a_correcting_bound_keeps_its_recency_and_names_what_it_corrects(
     rows, parsed: Rows
 ) -> None:
     """A verified lower bound that corrects a published result is still recent, so its
-    row keeps the star, and the same cell says which work it corrects, in one short span
+    row keeps its recency, and the same cell says which work it corrects, in one short span
     with no link; the row names the register's record of that work in `data-corrects`
     (the owner, 2026-10-02). Which bounds those are is the citation record's to say."""
     corrected = frontier.corrected_lower_bounds()
@@ -243,8 +243,8 @@ def test_a_correcting_bound_keeps_its_star_and_names_what_it_corrects(
         assert attributes["data-corrects"] == corrected[n]["result"] == "T-007", n
         assert attributes["data-recent"] == "true", n
         assert star["data-value"] == "1", n
-        assert star["tags"] == "span span", n
-        assert star["words"] == f"★corrects {corrected[n]['credit']}", n
+        assert star["tags"] == "span", n
+        assert star["words"] == f"corrects {corrected[n]['credit']}", n
     assert seen == len(corrected)
     # n = 38 was the example until the merge of 2026-10-03 put wand125's replayed
     # certificate (T-074) above its corrected floor, and n = 82 until the third merge that
@@ -253,18 +253,16 @@ def test_a_correcting_bound_keeps_its_star_and_names_what_it_corrects(
     case = next(case for case in tables.load_cases() if case["n"] == 106)
     row = frontier.case_row(case, recent=True, corrects=corrected[106])
     assert (
-        '<td data-value="1"><span class="site-star" '
-        'title="New result: a recent verified lower bound">★</span>'
-        '<span class="site-corrects">corrects Nagamochi 2005</span></td>'
+        '<td data-value="1"><span class="site-corrects">corrects Nagamochi 2005</span></td>'
     ) in row
     assert ' data-recent="true" data-corrects="T-007" ' in row
     plain = frontier.case_row(case, recent=True)
-    assert (
-        '<td data-value="1"><span class="site-star" '
-        'title="New result: a recent verified lower bound">★</span></td>'
-    ) in plain
+    assert '<td data-value="1"></td>' in plain
+    assert 'class="is-new-result"' in plain
+    assert 'aria-label="n = 106: recent result; open its case record"' in plain
+    assert "site-star" not in row + plain
     assert "data-corrects" not in plain
-    # The heading still explains the correction tags; each star now has its meaning.
+    # The heading still explains the correction tags; each recency marker now has its meaning.
     (recent,) = [cell for cell in parsed.head if (cell["words"] or "").strip() == "Recent"]
     assert recent["title"] == frontier.HEADER_TITLES["Recent"]
     assert all("title" not in cell for cell in parsed.head if cell is not recent)
@@ -278,14 +276,16 @@ def test_the_page_says_once_what_the_tag_means_and_links_the_corrected_result(
     corrected work linked to its row, and the register's words for what failed."""
     sentence = frontier.corrections_prose()
     assert sentence == (
-        "Beside 219 of the stars, *corrects Nagamochi 2005* says the bound stands in for "
+        "For 219 recent verified bounds, *corrects Nagamochi 2005* says the bound "
+        "stands in for "
         "a published result found unsound, the register\u2019s "
         "[T-007](results.html#t-007): "
         "Lemma 1, on which Theorem 2\u2019s proof rests, is false."
     )
     prose = page[: page.index('id="frontier-table"')]
     assert (
-        "Beside 219 of the stars, <em>corrects Nagamochi 2005</em> says the bound stands in"
+        "For 219 recent verified bounds, <em>corrects Nagamochi 2005</em> "
+        "says the bound stands in"
     ) in prose
     assert '<a href="results.html#t-007">T-007</a>' in prose
     table = page[page.index("<tbody>") : page.index("</tbody>")]
@@ -547,7 +547,7 @@ def test_the_page_fetches_only_assets_and_the_survey_retains_its_ceiling(page: s
     assert_fetches_only_assets("atlas.html", page)
     # Each file it names is one the build writes beside it.
     assert site_assets.shared().assets.referenced([page])
-    start = page.index('<h2 id="the-frontier-survey"')
+    start = page.index('<h1 id="the-frontier-survey"')
     survey = page[start : page.index("</article>", start)]
     size = len(survey.encode("utf-8"))
     assert size < PAGE_CEILING_BYTES, f"the Frontier Survey is {size:,} bytes"
@@ -569,7 +569,7 @@ def test_the_complete_survey_follows_the_graphics_and_shares_one_case_popover(
     page: str,
 ) -> None:
     graphic = page.index("data-atlas-grid")
-    survey = page.index('<h2 id="the-frontier-survey"')
+    survey = page.index('<h1 id="the-frontier-survey"')
     table = page.index('id="frontier-table"')
     assert graphic < survey < table
     assert 'id="the-survey"' in page
@@ -643,11 +643,11 @@ def test_no_math_is_left_as_source_text_in_the_table(
         == frontier_math_counts[0]
         > 0
     )
-    start = page.index('<h2 id="the-frontier-survey"')
+    start = page.index('<h1 id="the-frontier-survey"')
     end = page.index("</article>", start)
     prose = page[start : page.index("<tbody>")] + page[page.index("</tbody>") : end]
-    assert prose.count('data-kpress-math="inline"') == 9
-    assert page[:start].count('data-kpress-math="inline"') == 2
+    assert 'data-kpress-math="inline"' in prose
+    assert "$" not in prose
     assert 'class="katex"' in prose
     assert r"\(\dfrac{7943}{2000}\)" not in table
 

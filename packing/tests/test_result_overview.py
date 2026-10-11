@@ -282,12 +282,7 @@ def _assert_case_values(cases: list[int], overview: overview_data.Overview, body
             n, "lower"
         ).removeprefix("is-")
         assert cells[1].text == lower
-        stars = cells[1].findall("span[@class='site-star']")
-        assert bool(stars) is fact["star"]
-        if stars:
-            assert len(stars) == 1
-            assert stars[0].attrib == {"class": "site-star", "title": "Recent result"}
-            assert stars[0].text == "★"
+        assert cells[1].findall("span[@class='site-star']") == []
         assert cells[2].attrib["class"] == result_overview.contribution_class(
             n, "upper"
         ).removeprefix("is-")

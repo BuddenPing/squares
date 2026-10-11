@@ -45,6 +45,7 @@ import pytest
 from devtools import check_site_rendering, preview_site
 from devtools import measure_atlas_views as atlas
 from devtools.measure_atlas_views import LAYOUT, MOVE, SETTLED
+from devtools.result_status import recent_contributions_by_case
 from sqpack.known_best import grid_transitions
 from sqpack.probes import applied, probe
 from tests import site_browser, site_renders
@@ -203,7 +204,7 @@ class _SurveySection(HTMLParser):
                 assert self.prose_depth is None
                 self.prose_depth = self.depth
         if values.get("id") == "the-frontier-survey":
-            assert tag == "h2"
+            assert tag == "h1"
             assert self.start is None
             assert self.prose_depth == self.depth
             self.start = self.source_offset()
@@ -221,7 +222,7 @@ def _graphics_only(source: str) -> str:
     """Keep the canonical graphic shell; the full Survey has dedicated browser tests."""
     # Validate the actual complete producer first, including every native formula and
     # all 324 row identities. Only the repeated legacy graphic snapshots are bounded.
-    site_renders.count_frontier_math(source, prose_formulas=11)
+    site_renders.count_frontier_math(source)
     section = _SurveySection(source)
     section.feed(source)
     section.close()
@@ -261,6 +262,22 @@ def graphics_files(atlas_files: Path) -> Path:
     (root / "index.html").symlink_to(atlas_files / "index.html")
     assert (atlas_files / "atlas.html").read_text(encoding="utf-8") == source
     return root
+
+
+def test_graphics_fixture_keeps_native_math_without_fixing_prose_formula_count(
+    atlas_files: Path, graphics_files: Path
+) -> None:
+    source = (atlas_files / "atlas.html").read_text(encoding="utf-8")
+    graphics = (graphics_files / "atlas.html").read_text(encoding="utf-8")
+    assert 'id="frontier-table"' in source
+    assert 'id="frontier-table"' not in graphics
+    assert graphics.count('class="site-atlas-cell"') == 324
+    native, total = site_renders.count_frontier_math(source)
+    extra = '<span class="kpress-math"><math><mi>x</mi></math></span>'
+    assert source.count("</body>") == 1
+    changed = source.replace("</body>", extra + "</body>")
+    assert site_renders.count_frontier_math(changed) == (native, total + 1)
+    assert _graphics_only(changed) == graphics.replace("</body>", extra + "</body>")
 
 
 @pytest.fixture(scope="module")
@@ -1695,12 +1712,13 @@ def test_a_linked_size_is_that_size_before_a_tile_is_drawn(seen: Readings) -> No
 def test_atlas_tiles_show_only_counts_and_omit_layer_indicators(
     seen: Readings, name: str
 ) -> None:
-    """Web Atlas drawings show counts, with recency and details in their records."""
+    """Web Atlas counts convey recency without decorative layer indicators."""
+    recent = recent_contributions_by_case()
     tiles = seen[name]["tiles"]
     for tile in tiles:
         n = tile["n"]
         assert tile["star"] is None, n
-        assert "new result" not in tile["name"], n
+        assert ("new result" in tile["name"]) == recent[n].any, n
         assert tile["mark"] is None, n
         assert "regularized" not in tile["name"], n
         assert tile["grid_from"] == (n == FIRST_GRIDS[atlas.row_of(n)]), n

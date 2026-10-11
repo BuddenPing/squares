@@ -367,13 +367,12 @@ def gap_bar(fact: dict[str, Any]) -> str:
 
 def film_bound(fact: dict[str, Any]) -> str:
     """The bound as one statement, as the film writes it (`drawBound`): the proved lower
-    bound and the best known side in their colours, or the exact value, after the star a
-    recent lower bound earns."""
+    bound and the best known side in their colours, or the exact value. Recent
+    contributions use the shared recency ink."""
     from devtools.overview_sections import SERIF_MATH  # noqa: PLC0415
 
     n = int(fact["n"])
-    star = "\u2605" if fact["star"] else ""
-    parts = [f'<span class="site-atlas-pop-star" aria-hidden="true">{star}</span>']
+    parts: list[str] = []
     if fact["exact"]:
         parts.append(math_html(f"s({n}) ={{}}"))
         parts.append(
@@ -435,7 +434,7 @@ def case_badges(n: int) -> str:
 
 def film_facts_html(fact: dict[str, Any]) -> str:
     """The badges, the citation and what is open, as the film lists them (`drawFacts`)."""
-    badges = [_badge("\u2605", "star", "new result", "is-new-result")] if fact["star"] else []
+    badges: list[str] = []
     from devtools.result_status import recent_contributions_by_case  # noqa: PLC0415
 
     flags = recent_contributions_by_case()[int(fact["n"])]
@@ -645,17 +644,12 @@ def case_list(cases: Sequence[int], overview: Overview) -> str:
         _, gap_value = frontier.gap(case)
         gap = frontier.decimal_text(Decimal(gap_value).normalize()) if gap_value != "0" else "0"
         status = case["status"]
-        star = (
-            '<span class="site-star" title="Recent result">\u2605</span>'
-            if fact["star"]
-            else ""
-        )
         rows.append(
             (
                 n,
                 [
                     f'<a href="{case_url(n)}">{n}</a>',
-                    _esc(lower) + star,
+                    _esc(lower),
                     _esc(fact["upper"]),
                     _esc(gap),
                     case_status_chip(status) + case_badges(n),

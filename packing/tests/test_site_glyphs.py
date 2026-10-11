@@ -93,9 +93,6 @@ KNOWN: dict[str, dict[str, str]] = {
             "the homepage's hero caption is set at 0.85 of the sans base, written as a "
             "number in site.css, where every other caption is the note size, 0.92"
         ),
-        r"other \(span in \.site-star\) `★`: drawn from .* \(host\)": (
-            "the recent-bound star is a text character no shipped face carries"
-        ),
     },
 }
 #: The site's sheets whose every rule that sets the sans face must set its weight. The

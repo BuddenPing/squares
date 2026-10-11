@@ -698,7 +698,7 @@ def test_homepage_order_chrome_and_single_card_rows_keep_the_shared_design(
         assert action["transform"] == "uppercase", action
     download = seen[width]["download"]
     assert download["order"] == ["Download PDF", "Explore the atlas"]
-    assert download["href"] == "known-best-1-324.pdf"
+    assert download["href"] == overview_sections.PDF_CARD_SPECS[1][0]
     assert download["download"]
     assert download["uppercase"] == "uppercase"
     assert download["icon"].startswith("url(")
