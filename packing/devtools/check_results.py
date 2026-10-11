@@ -354,9 +354,9 @@ def confirmation_code(
     return strongest(pool)
 
 
-#: The word whose kind the prose rule asks for, as a verb or a participle; a novelty label
-#: or a status in code is not the word.
-_CONFIRMED = re.compile(r"(?<![\w`])confirmed(?![\w`-])", re.IGNORECASE)
+#: The word whose kind the prose rule asks for, as a verb or a participle; a novelty label,
+#: a status in code, or a hypothesis a run bears out (``confirms H-219``) is not the word.
+_CONFIRMED = re.compile(r"(?<![\w`])confirm(?:ed|s)(?![\w`-])(?!\s+H-\d)", re.IGNORECASE)
 #: The phrases that say which kind of confirmation a sentence means (epistemics.md,
 #: Confirmation): the producer's own code re-run, a re-implementation sharing its named
 #: components, or an independent re-implementation.
@@ -370,8 +370,8 @@ _SENTENCE_END = re.compile(r"(?<=[.;:])\s+(?=[A-Z`(\[])")
 
 
 def confirmation_prose_problems(record: Mapping[str, Any]) -> list[str]:
-    """Sentences of a result's `claim`, `composition` or `next_rung` that say "confirmed"
-    without saying which kind of confirmation: the producer's code re-run, shared
+    """Sentences of a result's `claim`, `composition` or `next_rung` that say "confirmed" or
+    "confirms" without saying which kind of confirmation: the producer's code re-run, shared
     components, or an independent re-implementation. `notes` is history and exempt."""
     return [
         f"{record['id']}: {name} says confirmed without saying how: {sentence[:90]}"

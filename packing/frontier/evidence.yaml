@@ -29082,6 +29082,8 @@ evidence:
       - V-sqpack-verify
       - V-check-rational-witness-independent
       - V-check-half-angle-area
+      - V-evand-exact-certificates
+      - V-evand-arrangement-receipts
     independence_record: docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md
     external_review:
       state: informally-verified
@@ -29311,6 +29313,8 @@ evidence:
       - V-sqpack-verify
       - V-check-rational-witness-independent
       - V-check-half-angle-area
+      - V-evand-exact-certificates
+      - V-evand-arrangement-receipts
     independence_record: docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md
     external_review:
       state: informally-verified
@@ -29409,6 +29413,8 @@ evidence:
       - V-sqpack-verify
       - V-check-rational-witness-independent
       - V-check-half-angle-area
+      - V-evand-exact-certificates
+      - V-evand-arrangement-receipts
     independence_record: docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md
     external_review:
       state: informally-verified
@@ -29604,7 +29610,7 @@ evidence:
         to 7, GN-6); the receipts named in replay.
       assumptions:
         - The density is nonnegative and exact, of total mass 3999/100 < 40, which admission recomputes from the derived input; the derived input is the retained density's 480 positive rows with the net in its certificate metadata, which the first-party audit regenerates and binds to the digest both release receipts name.
-        - Every angle and legal centre is covered by the 401-direction net the metadata sets, at core side 9977/10000 with format T's centre domain, whose premises (B(1 + D) = 798988091/800000000 < 1, the last tangent 83/200 past tan(pi/8) and at most 1/2) admission checks in exact rationals, under lemma N0.
+        - Every legal centre at each of the 401 net directions the metadata sets is covered, and lemma N0's net premises hold, at core side 9977/10000 with format T's centre domain, whose premises (B(1 + D) = 798988091/800000000 < 1, the last tangent 83/200 past tan(pi/8) and at most 1/2) admission checks in exact rationals, under lemma N0.
         - The transfer's finite steps, the density's essential supremum at most 2818711359413/10^9, the upper node's reference inside its parent, the clipped-corner loss bound and the counting margin, which E-n040-guzhou-clipped-corner-finite-audit decides in exact rationals; and the transfer's argument, which the 10 October review re-derived.
         - Binary64 arithmetic has IEEE-754 semantics with directed rounding per operation, as SOUNDNESS.md's Floating Point section uses it.
       audit_record: docs/project/reviews/review-2026-10-10-guzhou-n40-clipped-corner-bound.md
@@ -29774,6 +29780,7 @@ evidence:
       - V-evand-arrangement-receipts
       - V-upper-bound-reports
       - V-check-half-angle-area
+      - V-evand-exact-certificates
     independence_record: docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
     external_review:
       state: informally-verified
@@ -29872,6 +29879,7 @@ evidence:
       - V-evand-arrangement-receipts
       - V-upper-bound-reports
       - V-check-half-angle-area
+      - V-evand-exact-certificates
     independence_record: docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
     external_review:
       state: informally-verified
@@ -29969,6 +29977,7 @@ evidence:
       - V-evand-arrangement-receipts
       - V-upper-bound-reports
       - V-check-half-angle-area
+      - V-evand-exact-certificates
     independence_record: docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
     external_review:
       state: informally-verified
@@ -30068,6 +30077,7 @@ evidence:
       - V-evand-arrangement-receipts
       - V-upper-bound-reports
       - V-check-half-angle-area
+      - V-evand-exact-certificates
     independence_record: docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
     external_review:
       state: informally-verified
@@ -30170,6 +30180,7 @@ evidence:
       - V-evand-arrangement-receipts
       - V-upper-bound-reports
       - V-check-half-angle-area
+      - V-evand-exact-certificates
     independence_record: docs/project/reviews/review-2026-10-10-upper-bound-imports-470-and-trio126.md
     external_review:
       state: informally-verified
@@ -30269,6 +30280,7 @@ evidence:
       - V-evand-arrangement-receipts
       - V-upper-bound-reports
       - V-check-half-angle-area
+      - V-evand-exact-certificates
     independence_record: docs/project/reviews/review-2026-10-10-upper-bound-imports-470-and-trio126.md
     external_review:
       state: informally-verified
@@ -30363,6 +30375,7 @@ evidence:
       - V-evand-arrangement-receipts
       - V-upper-bound-reports
       - V-check-half-angle-area
+      - V-evand-exact-certificates
     independence_record: docs/project/reviews/review-2026-10-10-upper-bound-imports-488-489.md
     external_review:
       state: informally-verified
@@ -30464,6 +30477,7 @@ evidence:
       - V-evand-arrangement-receipts
       - V-upper-bound-reports
       - V-check-half-angle-area
+      - V-evand-exact-certificates
     independence_record: docs/project/reviews/review-2026-10-10-upper-bound-imports-488-489.md
     external_review:
       state: informally-verified

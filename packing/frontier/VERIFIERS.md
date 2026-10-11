@@ -109,7 +109,7 @@ second implementation agrees.
 | [`V-audit-clipped-corner-transfer`](#v-audit-clipped-corner-transfer) | devtools.audit_clipped_corner_transfer | Squares Project (Levy) | first-party | decides | 2 | 1 |
 | [`V-audit-continuous-pose`](#v-audit-continuous-pose) | devtools.audit_continuous_pose | Squares Project (Levy) | first-party | decides | 3 | 1 |
 | [`V-check-half-angle-area`](#v-check-half-angle-area) | devtools.check_half_angle_area | Squares Project (Levy) | first-party | decides | 12 | 12 |
-| [`V-evand-exact-certificates`](#v-evand-exact-certificates) | devtools.evand_exact_certificates | Squares Project (Levy) | first-party | premises | 5 | 3 |
+| [`V-evand-exact-certificates`](#v-evand-exact-certificates) | devtools.evand_exact_certificates | Squares Project (Levy) | first-party | premises | 16 | 14 |
 | [`V-check-n11-final-composition`](#v-check-n11-final-composition) | devtools.check_n11_final_composition | Squares Project (Levy) | first-party | premises | 2 | 2 |
 | [`V-audit-n11-lean`](#v-audit-n11-lean) | devtools.audit_n11_lean | Squares Project (Levy) | first-party | premises | 2 | 1 |
 | [`V-audit-n17-endpoint-receipt`](#v-audit-n17-endpoint-receipt) | devtools.audit_n17_endpoint_receipt | Squares Project (Levy) | first-party | premises | 1 | 1 |
@@ -134,7 +134,7 @@ second implementation agrees.
 | [`V-squish-upper-bound-packets`](#v-squish-upper-bound-packets) | devtools.squish_upper_bound_packets | Squares Project (Levy) | first-party | premises | 2 | 2 |
 | [`V-squish-followup-packets`](#v-squish-followup-packets) | devtools.squish_followup_packets | Squares Project (Levy) | first-party | premises | 1 | 1 |
 | [`V-squish-second-update-confirmation`](#v-squish-second-update-confirmation) | devtools.squish_second_update_confirmation | Squares Project (Levy) | first-party | premises | 1 | 1 |
-| [`V-evand-arrangement-receipts`](#v-evand-arrangement-receipts) | devtools.evand_arrangement_reports | Squares Project (Levy) | first-party | premises | 10 | 10 |
+| [`V-evand-arrangement-receipts`](#v-evand-arrangement-receipts) | devtools.evand_arrangement_reports | Squares Project (Levy) | first-party | premises | 13 | 13 |
 | [`V-upper-bound-reports`](#v-upper-bound-reports) | devtools.upper_bound_reports | Squares Project (Levy) | first-party | premises | 9 | 9 |
 | [`V-rehwaldt-n68-verify`](#v-rehwaldt-n68-verify) | verify.py | Seth Rehwaldt | external | decides | 1 | 1 |
 | [`V-rehwaldt-n68-independent-support-check`](#v-rehwaldt-n68-independent-support-check) | independent_support_check.py | Seth Rehwaldt | external | decides | 1 | 1 |
@@ -1609,6 +1609,17 @@ Reads Evan Daniel's rational certificates, refusing anything the format does not
 | `E-evand-exact-optima-2026-10-05-source-replay` | replayed here | producer’s code | T-098 |
 | `E-evand-exact-ceilings-2026-10-05-exact-replay` | replayed here | independent | T-101 |
 | `E-evand-exact-ceilings-2026-10-05-source-replay` | replayed here | producer’s code | T-101 |
+| `E-couzo-451-exact-feasibility` | replayed here | independent | T-128 |
+| `E-couzo-460-followup-exact-feasibility` | replayed here | independent | T-130 |
+| `E-evand-465-record-hunt-exact-feasibility` | replayed here | independent | T-128, T-131 |
+| `E-couzo-476-exact-feasibility` | replayed here | independent | T-134 |
+| `E-fang-484-exact-feasibility` | replayed here | independent | T-135 |
+| `E-squish-481-exact-feasibility` | replayed here | independent | T-136 |
+| `E-deleeuw-483-exact-feasibility` | replayed here | independent | T-137 |
+| `E-mishapolk-470-exact-feasibility` | replayed here | independent | T-138 |
+| `E-evand-trio126-exact-feasibility` | replayed here | independent | T-139 |
+| `E-couzo-488-exact-feasibility` | replayed here | independent | T-140 |
+| `E-evand-489-exact-feasibility` | replayed here | independent | T-141 |
 | `E-evand-regularized-exact-feasibility` | replayed here | independent | T-146 |
 
 ### `V-check-n11-final-composition`
@@ -2093,6 +2104,9 @@ Binds all three complete source certificates and all nine full deciding inputs/n
 | evidence | run | code | results |
 | --- | --- | --- | --- |
 | `E-evand-399-exact-feasibility` | audited here | independent | T-119 |
+| `E-couzo-451-exact-feasibility` | replayed here | independent | T-128 |
+| `E-couzo-460-followup-exact-feasibility` | replayed here | independent | T-130 |
+| `E-evand-465-record-hunt-exact-feasibility` | replayed here | independent | T-128, T-131 |
 | `E-couzo-476-exact-feasibility` | replayed here | independent | T-134 |
 | `E-fang-484-exact-feasibility` | replayed here | independent | T-135 |
 | `E-squish-481-exact-feasibility` | replayed here | independent | T-136 |

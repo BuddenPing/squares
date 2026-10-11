@@ -4852,8 +4852,7 @@ results:
     composition: >-
       Compound, and the minimum is set by the lower half. The lower half is
       E-n021-wand125-point-endpoint-source-replay (exact-algebraic, the source's runner
-      replayed here), the upper half the grid (E-basic-grid-upper); the equality is C3. The
-      runner is the source's, so the replay confirms the source's run rather than adding a
+      replayed here), the upper half the grid (E-basic-grid-upper); the equality is C3. The runner is the source's, so the replay, reproduced with the producer's code, confirms the source's run rather than adding a
       second method, and the Lean reduction, not built here, adds nothing to the rung.
     produced_by:
       session: session-161
@@ -6503,9 +6502,7 @@ results:
     composition: >-
       Sixteen primary certificates. The nine other counts take a smaller count's
       certificate directly, its mass being below them, so no step is added. One
-      interval-certified method, replayed here: C3. The replay decides coverage with the
-      source's own checker, so it confirms the source's run rather than adding a second
-      method.
+      interval-certified method, replayed here: C3. The replay decides coverage with the source's own checker, so it confirms the source's run, reproduced with the producer's code, rather than adding a second method.
     evidence:
       - E-wand125-rectangle-2026-09-28-source-replay
     artifacts:
@@ -6940,8 +6937,7 @@ results:
     composition: >-
       Twenty-nine primary certificates. n = 57 and 58 take the n = 56 certificate directly,
       its mass being below those counts, so no step is added. One interval-certified method,
-      replayed here: C3. The replay decides coverage with the source's own checker, so it
-      confirms the source's run rather than adding a second method.
+      replayed here: C3. The replay decides coverage with the source's own checker, so it confirms the source's run, reproduced with the producer's code, rather than adding a second method.
     evidence:
       - E-wand125-rectangle-2026-10-01-source-replay
     reviews:
@@ -9465,8 +9461,7 @@ results:
 
       squarepacker's indep_check.cpp, replayed here too, is a second implementation of
       the sweep's method and the producer's own, and its range-restricted copy was the
-      search's stopping rule, so it is producer evidence and confirms nothing beyond the
-      other two (review F3). The exact audit of the file is a premise check and decides
+      search's stopping rule, so it is producer evidence, reproduced with the producer's code, and confirms nothing beyond the other two (review F3). The exact audit of the file is a premise check and decides
       nothing. All rest on the certificate, the counting step and the shrink lemma on the
       net N = 96000, and the native rows are the sweep's bins and sigma_k by design (review
       F9).
@@ -12304,7 +12299,7 @@ results:
     kind: upper-bound
     registered: '2026-10-07'
     headline: Exact rational ceiling refinements at n = 105, 292
-    claim: Complete exact replay confirms the finite rational upper-bound refinement at n = 105, 292.
+    claim: Complete exact replay, independently re-implemented, confirms the finite rational upper-bound refinement at n = 105, 292.
       Only finite feasibility enters; no optimality claim is registered.
     scope:
       n_values:
@@ -12358,7 +12353,7 @@ results:
     kind: upper-bound
     registered: '2026-10-07'
     headline: Exact rational ceiling refinements at n = 68
-    claim: Complete exact replay confirms the finite rational upper-bound refinement at n = 68. Only
+    claim: Complete exact replay, reproduced with the producer's code, confirms the finite rational upper-bound refinement at n = 68. Only
       finite feasibility enters; no optimality claim is registered.
     scope:
       n_values:
@@ -12874,8 +12869,7 @@ results:
     kind: upper-bound
     registered: '2026-10-08'
     headline: Complete rational construction reports at 25 counts
-    claim: Complete independently reviewed exact replay confirms finite feasibility of all 25 rational
-      source certificates. Superseded configurations retain their complete inputs and outcomes; no optimality
+    claim: Complete independently reviewed exact replay, independently re-implemented, confirms finite feasibility of all 25 rational source certificates. Superseded configurations retain their complete inputs and outcomes; no optimality
       or local-minimum theorem.
     scope:
       n_values:
@@ -12955,8 +12949,7 @@ results:
     kind: upper-bound
     registered: '2026-10-08'
     headline: Undilated n51 construction over Q(sqrt2)
-    claim: Complete independently reviewed exact replay confirms the undilated 51-square construction
-      ceiling s(51) <= (16+5sqrt(2))/3. This is finite feasibility, not equality with the optimum or
+    claim: Complete independently reviewed exact replay, independently re-implemented, confirms the undilated 51-square construction ceiling s(51) <= (16+5sqrt(2))/3. This is finite feasibility, not equality with the optimum or
       the unconfirmed source contact count.
     scope:
       n_values:
@@ -13117,9 +13110,17 @@ results:
     confirmation: C3
     significance:
       score: 3
-      rationale: Eight smaller finite construction sides; no lower bound or optimum.
-      scored: '2026-10-08'
-      by: think-edo8 Couzo refinement import
+      rationale: >-
+        Eight smaller finite construction sides at n = 105, 108, 127, 131, 155, 180, 228
+        and 306, 9.79e-07 to 6.60e-04 below the case ceilings, each an earlier packing
+        refined to a new optimum by basin hopping and refine_packing; no lower bound or
+        optimum.
+      scored: '2026-10-11'
+      by: >-
+        the 11 October final reviews
+        (docs/project/reviews/review-2026-10-11-final-upper-bounds.md and
+        docs/project/reviews/review-2026-10-11-final-asymptotic-and-grading.md),
+        confirming the draft of think-edo8 Couzo refinement import
     novelty: previously-published
     attribution:
       source_keys:
@@ -13178,9 +13179,9 @@ results:
       selected. No house moves until jlevy/squares#403, which rewrites every case record,
       lands.
     next_rung: >-
-      V4 and C4 need a second accepted adversarial review of this replay by a distinct
-      reviewer and a retained human oversight record; the 10 October review is one, by an
-      AI agent. Separately, once jlevy/squares#403 lands, adopt T-128 as the house at 108,
+      V4 and C4 need a retained human oversight record: two accepted adversarial
+      reviews by distinct AI reviewers are retained, the 10 October review and the 11 October
+      final review (docs/project/reviews/review-2026-10-11-final-upper-bounds.md). Separately, once jlevy/squares#403 lands, adopt T-128 as the house at 108,
       127, 155, 180, 228 and 306 with each earlier house kept as history.
     reviews:
     - path: docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md
@@ -13202,6 +13203,22 @@ results:
       - T-128
       - T-130
       - T-131
+    - path: docs/project/reviews/review-2026-10-11-final-upper-bounds.md
+      kind: adversarial
+      reviewer: AI agent (Claude, at maximum reasoning effort), lane F2 of the final mathematical review of PR 487, prompted separately from the import, replay and stage 4 review lanes, with no shared context
+      reviewer_kind: ai
+      relation: project
+      date: '2026-10-11'
+      scope: >-
+        Finite feasibility of the certificates the entry cites: every printed side
+        parsed and held to the exact certificate side, every comparison with the
+        record recomputed exactly, the credit held to the bibliography, the routes'
+        mathematics re-derived (closed unit squares with disjoint interiors, the
+        half-angle map, the containment, separating-axis and clipped-area criteria),
+        receipt admission on every packet, the third route on the entry's inputs, and
+        an independent check in exact rationals of a sample of certificates.
+      verdict: accepted
+      covers: [T-128]
   - id: T-129
     kind: upper-bound
     registered: '2026-10-08'
@@ -13222,8 +13239,12 @@ results:
     significance:
       score: 1
       rationale: Historical certificate custody without a current frontier improvement.
-      scored: '2026-10-08'
-      by: think-tiou dated375 source import
+      scored: '2026-10-11'
+      by: >-
+        the 11 October final reviews
+        (docs/project/reviews/review-2026-10-11-final-upper-bounds.md and
+        docs/project/reviews/review-2026-10-11-final-asymptotic-and-grading.md),
+        confirming the draft of think-tiou dated375 source import
     novelty: previously-published
     attribution:
       source_keys:
@@ -13283,9 +13304,16 @@ results:
     confirmation: C3
     significance:
       score: 3
-      rationale: Five smaller finite construction sides; no lower bound or optimum.
-      scored: '2026-10-09'
-      by: think-88r0 Couzo follow-up import
+      rationale: >-
+        Five smaller finite construction sides at n = 84, 86, 105, 175 and 270, 3.03e-05
+        to 1.74e-03 below the case ceilings, each an earlier packing refined to a new
+        optimum; no lower bound or optimum.
+      scored: '2026-10-11'
+      by: >-
+        the 11 October final reviews
+        (docs/project/reviews/review-2026-10-11-final-upper-bounds.md and
+        docs/project/reviews/review-2026-10-11-final-asymptotic-and-grading.md),
+        confirming the draft of think-88r0 Couzo follow-up import
     novelty: previously-published
     attribution:
       source_keys:
@@ -13338,9 +13366,9 @@ results:
       there and is not selected, and Evan Daniel's T-119 certificate stays the case's
       ceiling until then. No house moves until jlevy/squares#403 lands.
     next_rung: >-
-      V4 and C4 need a second accepted adversarial review of this replay by a distinct
-      reviewer and a retained human oversight record; the 10 October review is one, by an
-      AI agent. Separately, once jlevy/squares#403 lands and this packet's private-worker
+      V4 and C4 need a retained human oversight record: two accepted adversarial
+      reviews by distinct AI reviewers are retained, the 10 October review and the 11 October
+      final review (docs/project/reviews/review-2026-10-11-final-upper-bounds.md). Separately, once jlevy/squares#403 lands and this packet's private-worker
       custody is on file (RD-5), adopt T-130 as the house at 84, 86 and 105 with each
       earlier house kept as history.
     reviews:
@@ -13363,6 +13391,22 @@ results:
       - T-128
       - T-130
       - T-131
+    - path: docs/project/reviews/review-2026-10-11-final-upper-bounds.md
+      kind: adversarial
+      reviewer: AI agent (Claude, at maximum reasoning effort), lane F2 of the final mathematical review of PR 487, prompted separately from the import, replay and stage 4 review lanes, with no shared context
+      reviewer_kind: ai
+      relation: project
+      date: '2026-10-11'
+      scope: >-
+        Finite feasibility of the certificates the entry cites: every printed side
+        parsed and held to the exact certificate side, every comparison with the
+        record recomputed exactly, the credit held to the bibliography, the routes'
+        mathematics re-derived (closed unit squares with disjoint interiors, the
+        half-angle map, the containment, separating-axis and clipped-area criteria),
+        receipt admission on every packet, the third route on the entry's inputs, and
+        an independent check in exact rationals of a sample of certificates.
+      verdict: accepted
+      covers: [T-130]
   - id: T-131
     kind: upper-bound
     registered: '2026-10-09'
@@ -13399,8 +13443,12 @@ results:
       score: 3
       rationale: A smaller finite construction side, 4.23e-3 below the case's ceiling; no lower bound
         or optimum.
-      scored: '2026-10-09'
-      by: think-iyij Daniel record-hunt import
+      scored: '2026-10-11'
+      by: >-
+        the 11 October final reviews
+        (docs/project/reviews/review-2026-10-11-final-upper-bounds.md and
+        docs/project/reviews/review-2026-10-11-final-asymptotic-and-grading.md),
+        confirming the draft of think-iyij Daniel record-hunt import
     novelty: previously-published
     attribution:
       source_keys:
@@ -13454,9 +13502,9 @@ results:
       The author's KKT, reduced-Hessian and jamming statements are numerical and not
       checked. No two independent methods, human oversight or optimality is claimed.
     next_rung: >-
-      V4 and C4 need a second accepted adversarial review of this replay by a distinct
-      reviewer and a retained human oversight record; the 10 October review is one, by an
-      AI agent. No house move is due: at 132 issue 489's smaller side (T-141) is the one the
+      V4 and C4 need a retained human oversight record: two accepted adversarial
+      reviews by distinct AI reviewers are retained, the 10 October review and the 11 October
+      final review (docs/project/reviews/review-2026-10-11-final-upper-bounds.md). No house move is due: at 132 issue 489's smaller side (T-141) is the one the
       later review of issues 488 and 489 recommends adopting.
     reviews:
     - path: docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md
@@ -13479,6 +13527,22 @@ results:
       - T-130
       - T-131
 
+    - path: docs/project/reviews/review-2026-10-11-final-upper-bounds.md
+      kind: adversarial
+      reviewer: AI agent (Claude, at maximum reasoning effort), lane F2 of the final mathematical review of PR 487, prompted separately from the import, replay and stage 4 review lanes, with no shared context
+      reviewer_kind: ai
+      relation: project
+      date: '2026-10-11'
+      scope: >-
+        Finite feasibility of the certificates the entry cites: every printed side
+        parsed and held to the exact certificate side, every comparison with the
+        record recomputed exactly, the credit held to the bibliography, the routes'
+        mathematics re-derived (closed unit squares with disjoint interiors, the
+        half-angle map, the containment, separating-axis and clipped-area criteria),
+        receipt admission on every packet, the third route on the entry's inputs, and
+        an independent check in exact rationals of a sample of certificates.
+      verdict: accepted
+      covers: [T-131]
   - id: T-132
     kind: lower-bound
     registered: '2026-10-10'
@@ -13522,8 +13586,11 @@ results:
         record at n = 29, 0.01 above T-108, by the certificate kind and declared net of
         T-102 and T-103, with no new technique, at S3 as T-102 to T-111 are. V0/C0 says how far it
         stands, and the score gates nothing.
-      scored: '2026-10-10'
-      by: think-r333 (repository; draft)
+      scored: '2026-10-11'
+      by: >-
+        the 11 October final review
+        (docs/project/reviews/review-2026-10-11-final-asymptotic-and-grading.md),
+        confirming the draft of think-r333 (repository; draft)
     novelty: previously-published
     attribution:
       source_keys: ['[wand125 fine-net n29 2026-10-10]']
@@ -13559,13 +13626,16 @@ results:
         link: think-r333
         estimated_cost:
           cpu_hours: 4.3
+          cpu_hours_high: 5.5
           basis: >-
-            The eight-direction sqverify-fast sample of 10 October (directions 0, 296, ...,
-            2072; 27.3 CPU-s, 0.613 of the source's CPU on them) applied to the source's
-            12,616 CPU-s over the net: a complete capture about 7,740 CPU-s and the
-            whole-net controls about 7,750
+            The eight-direction sqverify-fast sample of 10 October (directions 0, 296,
+            ..., 2072; 27.3 CPU-s, 0.613 of the source's CPU on them) applied to the
+            source's 12,616 CPU-s over the net: a complete capture about 7,740 CPU-s and
+            the whole-net controls about 7,750
             (packing/resources/web/wand125-fine-net-n29-2026-10-10/README.md and
-            receipts/sample-diagnostic.json).
+            receipts/sample-diagnostic.json). The preparation lane's smoke run of 11
+            October (two directions, think-r333) revised the price upward to the upper
+            end; its receipts are not retained.
           priced: '2026-10-10'
     notes: >-
       V0 because the cited entry is the source's public claim: assurance reported, replay
@@ -13637,8 +13707,14 @@ results:
         with a finer net to any format T certificate it holds, but it is one count and not
         yet a bound family. S3 by the precedent of T-099, a finer net on a certificate kind
         the record holds, with the technique noted, as the 10 October review suggested.
-      scored: '2026-10-10'
-      by: 'think-3oi5 import, registering lane (repository; draft, as the 10 October review suggests)'
+      scored: '2026-10-11'
+      by: >-
+        the 11 October final reviews
+        (docs/project/reviews/review-2026-10-11-final-lower-bounds.md, which compared it
+        with T-095, T-099, T-100, T-102 to T-111 and the S4 set, and
+        docs/project/reviews/review-2026-10-11-final-asymptotic-and-grading.md),
+        confirming the draft of think-3oi5 import, registering lane (repository; draft,
+        as the 10 October review suggests)
     novelty: previously-published
     attribution:
       source_keys: ['[Guzhou0806 n40 clipped corner 2026-10-10]']
@@ -13672,6 +13748,20 @@ results:
           Guzhou0806's s(40) > 335427/50000 and the full-core s(40) > 67000 sqrt(6400006889)/798988091, pinned at e5abeb4d: the argument from wand125's rect_n40_L67 density to the bound, re-derived (the D4 fold, the case split, the legality of both references, the clipped-corner bound and its monotonicity, the density peak, the counting and the strict endpoint); every finite quantity recomputed in exact rationals with the reviewer's own code; six of the 401 directions reproduced on the reviewed build and four controls run; the checkers' hypotheses and trust boundaries; the replay contract; and the drafted significance.
         verdict: accepted
         covers: [T-133]
+      - path: docs/project/reviews/review-2026-10-11-final-lower-bounds.md
+        kind: adversarial
+        reviewer: AI agent (Claude, at maximum reasoning effort), lane F1 of the final mathematical review of PR 487, prompted separately from the import, replay and stage 4 review lanes, with no shared context
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-11'
+        scope: >-
+          the transfer re-derived from the certificate to the strict bound, every finite
+          quantity recomputed by independent code, the four first-party audits re-run to
+          byte-identical receipts, four of the 401 directions reproduced on the reviewed
+          crate build with exact captures at the tightest boxes checked by an
+          independent clipper, and control A refused.
+        verdict: accepted
+        covers: [T-133]
     artifacts:
       - packing/resources/web/guzhou-n40-clipped-corner-2026-10-10/README.md
       - packing/resources/web/guzhou-n40-clipped-corner-2026-10-10/source/PROOF.md
@@ -13694,8 +13784,9 @@ results:
       - packing/resources/web/guzhou-n40-clipped-corner-2026-10-10/receipts/control-selection.json
       - packing/tests/test_audit_clipped_corner_transfer.py
     next_rung: >-
-      V4 and C4 need a second adversarial AI review of this result by a distinct reviewer
-      and a human oversight record; the 10 October review is one. A method-distinct
+      V4 and C4 need a human oversight record: the two adversarial AI reviews by distinct
+      reviewers are retained, the 10 October review and the 11 October final review
+      (docs/project/reviews/review-2026-10-11-final-lower-bounds.md), both accepting. A method-distinct
       decision of the nodal statement would stand beside the rung: Tokoharu's verify.cpp
       at all 401 directions, about twice its 201-direction cost on this density (6,521 s of
       wall time upstream), once an input generator for a finer net exists, a W7 slice and a
@@ -13714,8 +13805,9 @@ results:
       metadata-net path (GN-6); and n-040.md's stale paragraph on 6.695 was corrected with
       the case's move (GN-7).
 
-      n = 40's reported and verified lower bounds move from T-068's 67/10, which the case
-      record keeps as history, to 335427/50000. The full-core bound, weaker, is a corollary
+      n = 40's reported and verified lower bounds moved from T-068's 67/10 to 335427/50000
+      at registration, and T-145, registered the same day on the same density, raised both
+      lanes to 1340000/199529; the case record keeps this entry as history. The full-core bound, weaker, is a corollary
       the case records do not hold. wand125's comment on the issue reporting a third run
       and an exact check of the transfer is a third party's report and is not retained as a
       replay. Ids here are provisional until merged.
@@ -13765,8 +13857,12 @@ results:
       rationale: >-
         Smaller finite construction sides at n = 132, 237, 263, 267, 270 and 303, 5.33e-06
         to 4.37e-03 below the case ceilings; no lower bound or optimum.
-      scored: '2026-10-10'
-      by: think-m8ck Francisco Couzo import
+      scored: '2026-10-11'
+      by: >-
+        the 11 October final reviews
+        (docs/project/reviews/review-2026-10-11-final-upper-bounds.md and
+        docs/project/reviews/review-2026-10-11-final-asymptotic-and-grading.md),
+        confirming the draft of think-m8ck Francisco Couzo import
     novelty: previously-published
     attribution:
       source_keys: ['[Couzo exact certificates 2026-10-09]']
@@ -13837,9 +13933,9 @@ results:
       The source's own checkers were not run here. No two independent methods, human
       oversight or optimality is claimed.
     next_rung: >-
-      V4 and C4 need a second accepted adversarial review of this replay by a distinct
-      reviewer and a retained human oversight record; the 10 October review is one, by an
-      AI agent. Separately, once jlevy/squares#403 lands and private-worker custody is on
+      V4 and C4 need a retained human oversight record: two accepted adversarial
+      reviews by distinct AI reviewers are retained, the 10 October review and the 11 October
+      final review (docs/project/reviews/review-2026-10-11-final-upper-bounds.md). Separately, once jlevy/squares#403 lands and private-worker custody is on
       file (RI-5), adopt this entry as the house at 267, with the earlier house kept as
       history.
     reviews:
@@ -13864,6 +13960,22 @@ results:
         verdict: accepted
         covers: [T-134, T-135, T-136, T-137]
 
+      - path: docs/project/reviews/review-2026-10-11-final-upper-bounds.md
+        kind: adversarial
+        reviewer: AI agent (Claude, at maximum reasoning effort), lane F2 of the final mathematical review of PR 487, prompted separately from the import, replay and stage 4 review lanes, with no shared context
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-11'
+        scope: >-
+          Finite feasibility of the certificates the entry cites: every printed side
+          parsed and held to the exact certificate side, every comparison with the
+          record recomputed exactly, the credit held to the bibliography, the routes'
+          mathematics re-derived (closed unit squares with disjoint interiors, the
+          half-angle map, the containment, separating-axis and clipped-area criteria),
+          receipt admission on every packet, the third route on the entry's inputs, and
+          an independent check in exact rationals of a sample of certificates.
+        verdict: accepted
+        covers: [T-134]
   - id: T-135
     kind: upper-bound
     registered: '2026-10-10'
@@ -13911,8 +14023,12 @@ results:
       rationale: >-
         A smaller finite construction side at n = 308, 6.90e-04 below the case ceiling; no
         lower bound or optimum.
-      scored: '2026-10-10'
-      by: think-ar8g Kevin Fang import
+      scored: '2026-10-11'
+      by: >-
+        the 11 October final reviews
+        (docs/project/reviews/review-2026-10-11-final-upper-bounds.md and
+        docs/project/reviews/review-2026-10-11-final-asymptotic-and-grading.md),
+        confirming the draft of think-ar8g Kevin Fang import
     novelty: previously-published
     attribution:
       source_keys: ['[Fang two-wedge certificates 2026-10-10]']
@@ -13965,9 +14081,9 @@ results:
       The source's own checkers were not run here. No two independent methods, human
       oversight or optimality is claimed.
     next_rung: >-
-      V4 and C4 need a second accepted adversarial review of this replay by a distinct
-      reviewer and a retained human oversight record; the 10 October review is one, by an
-      AI agent. No house move is due: at 308 issue 489's smaller side (T-141) is the one the
+      V4 and C4 need a retained human oversight record: two accepted adversarial
+      reviews by distinct AI reviewers are retained, the 10 October review and the 11 October
+      final review (docs/project/reviews/review-2026-10-11-final-upper-bounds.md). No house move is due: at 308 issue 489's smaller side (T-141) is the one the
       later review of issues 488 and 489 recommends adopting.
     reviews:
       - path: docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
@@ -13991,6 +14107,22 @@ results:
         verdict: accepted
         covers: [T-134, T-135, T-136, T-137]
 
+      - path: docs/project/reviews/review-2026-10-11-final-upper-bounds.md
+        kind: adversarial
+        reviewer: AI agent (Claude, at maximum reasoning effort), lane F2 of the final mathematical review of PR 487, prompted separately from the import, replay and stage 4 review lanes, with no shared context
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-11'
+        scope: >-
+          Finite feasibility of the certificates the entry cites: every printed side
+          parsed and held to the exact certificate side, every comparison with the
+          record recomputed exactly, the credit held to the bibliography, the routes'
+          mathematics re-derived (closed unit squares with disjoint interiors, the
+          half-angle map, the containment, separating-axis and clipped-area criteria),
+          receipt admission on every packet, the third route on the entry's inputs, and
+          an independent check in exact rationals of a sample of certificates.
+        verdict: accepted
+        covers: [T-135]
   - id: T-136
     kind: upper-bound
     registered: '2026-10-10'
@@ -14079,8 +14211,12 @@ results:
         Smaller finite construction sides at n = 131, 153, 154, 207, 209, 232, 236, 237,
         259, 263, 269, 270, 292, 302, 303, 305 and 307, 1.68e-04 to 1.12e-02 below the case
         ceilings; no lower bound or optimum.
-      scored: '2026-10-10'
-      by: think-ac4h Nate Chaoweeraprasit import
+      scored: '2026-10-11'
+      by: >-
+        the 11 October final reviews
+        (docs/project/reviews/review-2026-10-11-final-upper-bounds.md and
+        docs/project/reviews/review-2026-10-11-final-asymptotic-and-grading.md),
+        confirming the draft of think-ac4h Nate Chaoweeraprasit import
     novelty: previously-published
     attribution:
       source_keys: ['[SQUISH third request 2026-10-09]']
@@ -14183,9 +14319,9 @@ results:
       not imported. The source's own checkers were not run here. No two independent
       methods, human oversight or optimality is claimed.
     next_rung: >-
-      V4 and C4 need a second accepted adversarial review of this replay by a distinct
-      reviewer and a retained human oversight record; the 10 October review is one, by an
-      AI agent. Separately, once jlevy/squares#403 lands and private-worker custody is on
+      V4 and C4 need a retained human oversight record: two accepted adversarial
+      reviews by distinct AI reviewers are retained, the 10 October review and the 11 October
+      final review (docs/project/reviews/review-2026-10-11-final-upper-bounds.md). Separately, once jlevy/squares#403 lands and private-worker custody is on
       file (RI-5), adopt this entry as the house at 131, 154, 207, 232, 259 and 307, the six
       counts where it is the smallest, with each earlier house kept as history. At 153, 236,
       263, 269, 292, 302 and 303 the house recommendation goes to T-146, whose 11 October
@@ -14212,6 +14348,22 @@ results:
         verdict: accepted
         covers: [T-134, T-135, T-136, T-137]
 
+      - path: docs/project/reviews/review-2026-10-11-final-upper-bounds.md
+        kind: adversarial
+        reviewer: AI agent (Claude, at maximum reasoning effort), lane F2 of the final mathematical review of PR 487, prompted separately from the import, replay and stage 4 review lanes, with no shared context
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-11'
+        scope: >-
+          Finite feasibility of the certificates the entry cites: every printed side
+          parsed and held to the exact certificate side, every comparison with the
+          record recomputed exactly, the credit held to the bibliography, the routes'
+          mathematics re-derived (closed unit squares with disjoint interiors, the
+          half-angle map, the containment, separating-axis and clipped-area criteria),
+          receipt admission on every packet, the third route on the entry's inputs, and
+          an independent check in exact rationals of a sample of certificates.
+        verdict: accepted
+        covers: [T-136]
   - id: T-137
     kind: upper-bound
     registered: '2026-10-10'
@@ -14253,8 +14405,12 @@ results:
       rationale: >-
         A smaller finite construction side at n = 70, 1.43e-10 below the case ceiling; no
         lower bound or optimum.
-      scored: '2026-10-10'
-      by: think-8m3u Eric Deleeuw import
+      scored: '2026-10-11'
+      by: >-
+        the 11 October final reviews
+        (docs/project/reviews/review-2026-10-11-final-upper-bounds.md and
+        docs/project/reviews/review-2026-10-11-final-asymptotic-and-grading.md),
+        confirming the draft of think-8m3u Eric Deleeuw import
     novelty: previously-published
     attribution:
       source_keys: ['[Deleeuw n70 refinement 2026-10-10]']
@@ -14300,9 +14456,9 @@ results:
       The source's own checker was not run here. No two independent methods, human
       oversight or optimality is claimed.
     next_rung: >-
-      V4 and C4 need a second accepted adversarial review of this replay by a distinct
-      reviewer and a retained human oversight record; the 10 October review is one, by an
-      AI agent. No house move is due for this entry: the house recommendation at 70 goes to
+      V4 and C4 need a retained human oversight record: two accepted adversarial
+      reviews by distinct AI reviewers are retained, the 10 October review and the 11 October
+      final review (docs/project/reviews/review-2026-10-11-final-upper-bounds.md). No house move is due for this entry: the house recommendation at 70 goes to
       T-146, whose side there is smaller and whose 11 October review accepted it, and this
       entry stays verified, as the smallest side the record held before it.
     reviews:
@@ -14327,6 +14483,22 @@ results:
         verdict: accepted
         covers: [T-134, T-135, T-136, T-137]
 
+      - path: docs/project/reviews/review-2026-10-11-final-upper-bounds.md
+        kind: adversarial
+        reviewer: AI agent (Claude, at maximum reasoning effort), lane F2 of the final mathematical review of PR 487, prompted separately from the import, replay and stage 4 review lanes, with no shared context
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-11'
+        scope: >-
+          Finite feasibility of the certificates the entry cites: every printed side
+          parsed and held to the exact certificate side, every comparison with the
+          record recomputed exactly, the credit held to the bibliography, the routes'
+          mathematics re-derived (closed unit squares with disjoint interiors, the
+          half-angle map, the containment, separating-axis and clipped-area criteria),
+          receipt admission on every packet, the third route on the entry's inputs, and
+          an independent check in exact rationals of a sample of certificates.
+        verdict: accepted
+        covers: [T-137]
   - id: T-138
     kind: upper-bound
     registered: '2026-10-10'
@@ -14388,10 +14560,15 @@ results:
       rationale: >-
         Smaller finite construction sides at sixteen counts, 1.15e-12 (258) to 4.37e-03 (132)
         below the case ceilings; the smallest known when published at 103, 132, 258, 267, 302
-        and 303, and still at 103 (1.49e-10 below the case) and 258 (1.15e-12), each an earlier
-        packing refined. No lower bound or optimum.
-      scored: '2026-10-10'
-      by: think-jpre Mishapolk import (draft; rationale after the 10 October review of issue 470)
+        and 303, and, until Evan Daniel's regularized certificates of 10 October (T-146), at 103
+        (1.49e-10 below the case) and 258 (1.15e-12), each an earlier packing refined. No lower bound or optimum.
+      scored: '2026-10-11'
+      by: >-
+        the 11 October final reviews
+        (docs/project/reviews/review-2026-10-11-final-upper-bounds.md and
+        docs/project/reviews/review-2026-10-11-final-asymptotic-and-grading.md),
+        confirming the draft of think-jpre Mishapolk import (draft; rationale after the
+        10 October review of issue 470)
     novelty: previously-published
     attribution:
       source_keys: ['[Mishapolk decimal poses 2026-10-09]']
@@ -14469,8 +14646,9 @@ results:
       half-angle conversion, Fraction arithmetic and the separating-axis method. No KKT, local
       or global optimality is claimed.
     next_rung: >-
-      V4 and C4 need a second accepted adversarial review of this replay by a distinct reviewer
-      and a retained human oversight record; the 10 October review is one, by an AI agent.
+      V4 and C4 need a retained human oversight record: two accepted adversarial
+      reviews by distinct AI reviewers are retained, the 10 October review and the 11 October
+      final review (docs/project/reviews/review-2026-10-11-final-upper-bounds.md).
       No house move is due for this entry: the house recommendation at 103 and 258 goes to
       T-146, whose sides there are smaller and whose 11 October review accepted it, and this
       entry stays verified and not selected.
@@ -14495,6 +14673,22 @@ results:
         verdict: accepted
         covers: [T-138, T-139]
 
+      - path: docs/project/reviews/review-2026-10-11-final-upper-bounds.md
+        kind: adversarial
+        reviewer: AI agent (Claude, at maximum reasoning effort), lane F2 of the final mathematical review of PR 487, prompted separately from the import, replay and stage 4 review lanes, with no shared context
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-11'
+        scope: >-
+          Finite feasibility of the certificates the entry cites: every printed side
+          parsed and held to the exact certificate side, every comparison with the
+          record recomputed exactly, the credit held to the bibliography, the routes'
+          mathematics re-derived (closed unit squares with disjoint interiors, the
+          half-angle map, the containment, separating-axis and clipped-area criteria),
+          receipt admission on every packet, the third route on the entry's inputs, and
+          an independent check in exact rationals of a sample of certificates.
+        verdict: accepted
+        covers: [T-138]
   - id: T-139
     kind: upper-bound
     registered: '2026-10-10'
@@ -14538,8 +14732,12 @@ results:
       rationale: >-
         A smaller finite construction side at n = 126, 9.25e-11 below the case ceiling, a more
         precise certificate of the same arrangement; no lower bound or optimum.
-      scored: '2026-10-10'
-      by: think-ilwc Evan Daniel import
+      scored: '2026-10-11'
+      by: >-
+        the 11 October final reviews
+        (docs/project/reviews/review-2026-10-11-final-upper-bounds.md and
+        docs/project/reviews/review-2026-10-11-final-asymptotic-and-grading.md),
+        confirming the draft of think-ilwc Evan Daniel import
     novelty: previously-published
     attribution:
       source_keys: ['[Daniel trio126 2026-10-09]']
@@ -14586,8 +14784,9 @@ results:
       run here, and its local-minimum, jamming and closed-form statements are not decided. No
       two independent methods, human oversight or optimality is claimed.
     next_rung: >-
-      V4 and C4 need a second accepted adversarial review of this replay by a distinct reviewer
-      and a retained human oversight record; the 10 October review is one, by an AI agent.
+      V4 and C4 need a retained human oversight record: two accepted adversarial
+      reviews by distinct AI reviewers are retained, the 10 October review and the 11 October
+      final review (docs/project/reviews/review-2026-10-11-final-upper-bounds.md).
       Separately, once jlevy/squares#403 lands and private-worker custody is on file (RK-10),
       adopt this certificate as the house at 126, crediting Ryan Xu's arrangement and Evan
       Daniel's reconstruction, with T-125 kept as history. The source's local minimum at 15/2 +
@@ -14614,6 +14813,22 @@ results:
         verdict: accepted
         covers: [T-138, T-139]
 
+      - path: docs/project/reviews/review-2026-10-11-final-upper-bounds.md
+        kind: adversarial
+        reviewer: AI agent (Claude, at maximum reasoning effort), lane F2 of the final mathematical review of PR 487, prompted separately from the import, replay and stage 4 review lanes, with no shared context
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-11'
+        scope: >-
+          Finite feasibility of the certificates the entry cites: every printed side
+          parsed and held to the exact certificate side, every comparison with the
+          record recomputed exactly, the credit held to the bibliography, the routes'
+          mathematics re-derived (closed unit squares with disjoint interiors, the
+          half-angle map, the containment, separating-axis and clipped-area criteria),
+          receipt admission on every packet, the third route on the entry's inputs, and
+          an independent check in exact rationals of a sample of certificates.
+        verdict: accepted
+        covers: [T-139]
   - id: T-140
     kind: upper-bound
     registered: '2026-10-10'
@@ -14662,8 +14877,12 @@ results:
       rationale: >-
         Smaller finite construction sides at n = 132, 175, 209, 237, 270 and 305, 7.27e-04
         to 8.03e-03 below the case ceilings; no lower bound or optimum.
-      scored: '2026-10-10'
-      by: think-6uv7 Francisco Couzo import
+      scored: '2026-10-11'
+      by: >-
+        the 11 October final reviews
+        (docs/project/reviews/review-2026-10-11-final-upper-bounds.md and
+        docs/project/reviews/review-2026-10-11-final-asymptotic-and-grading.md),
+        confirming the draft of think-6uv7 Francisco Couzo import
     novelty: previously-published
     attribution:
       source_keys: ['[Couzo certificates 2026-10-10]']
@@ -14730,9 +14949,9 @@ results:
       The source's own checkers were not run here. No two independent methods, human
       oversight or optimality is claimed.
     next_rung: >-
-      V4 and C4 need a second accepted adversarial review of this replay by a distinct
-      reviewer and a retained human oversight record; the 10 October review is one, by an
-      AI agent. Separately, once jlevy/squares#403 lands and private-worker custody is on
+      V4 and C4 need a retained human oversight record: two accepted adversarial
+      reviews by distinct AI reviewers are retained, the 10 October review and the 11 October
+      final review (docs/project/reviews/review-2026-10-11-final-upper-bounds.md). Separately, once jlevy/squares#403 lands and private-worker custody is on
       file (RL-6), adopt this entry as the house at 175, 209, 237, 270 and 305, with each
       earlier house kept as history.
     reviews:
@@ -14755,6 +14974,22 @@ results:
         verdict: accepted
         covers: [T-140, T-141]
 
+      - path: docs/project/reviews/review-2026-10-11-final-upper-bounds.md
+        kind: adversarial
+        reviewer: AI agent (Claude, at maximum reasoning effort), lane F2 of the final mathematical review of PR 487, prompted separately from the import, replay and stage 4 review lanes, with no shared context
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-11'
+        scope: >-
+          Finite feasibility of the certificates the entry cites: every printed side
+          parsed and held to the exact certificate side, every comparison with the
+          record recomputed exactly, the credit held to the bibliography, the routes'
+          mathematics re-derived (closed unit squares with disjoint interiors, the
+          half-angle map, the containment, separating-axis and clipped-area criteria),
+          receipt admission on every packet, the third route on the entry's inputs, and
+          an independent check in exact rationals of a sample of certificates.
+        verdict: accepted
+        covers: [T-140]
   - id: T-141
     kind: upper-bound
     registered: '2026-10-10'
@@ -14805,8 +15040,12 @@ results:
       rationale: >-
         Smaller finite construction sides at n = 132 and 308, 1.73e-03 to 5.65e-03 below the
         case ceilings; no lower bound or optimum.
-      scored: '2026-10-10'
-      by: think-xm4h Evan Daniel import
+      scored: '2026-10-11'
+      by: >-
+        the 11 October final reviews
+        (docs/project/reviews/review-2026-10-11-final-upper-bounds.md and
+        docs/project/reviews/review-2026-10-11-final-asymptotic-and-grading.md),
+        confirming the draft of think-xm4h Evan Daniel import
     novelty: previously-published
     attribution:
       source_keys: ['[Daniel record hunt 3 2026-10-10]']
@@ -14865,9 +15104,9 @@ results:
       The source's own checkers were not run here. No two independent methods, human
       oversight or optimality is claimed.
     next_rung: >-
-      V4 and C4 need a second accepted adversarial review of this replay by a distinct
-      reviewer and a retained human oversight record; the 10 October review is one, by an
-      AI agent. Separately, once jlevy/squares#403 lands and private-worker custody is on
+      V4 and C4 need a retained human oversight record: two accepted adversarial
+      reviews by distinct AI reviewers are retained, the 10 October review and the 11 October
+      final review (docs/project/reviews/review-2026-10-11-final-upper-bounds.md). Separately, once jlevy/squares#403 lands and private-worker custody is on
       file (RL-6), adopt this entry as the house at 132 and 308, with each earlier house
       kept as history.
     reviews:
@@ -14890,6 +15129,22 @@ results:
         verdict: accepted
         covers: [T-140, T-141]
 
+      - path: docs/project/reviews/review-2026-10-11-final-upper-bounds.md
+        kind: adversarial
+        reviewer: AI agent (Claude, at maximum reasoning effort), lane F2 of the final mathematical review of PR 487, prompted separately from the import, replay and stage 4 review lanes, with no shared context
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-11'
+        scope: >-
+          Finite feasibility of the certificates the entry cites: every printed side
+          parsed and held to the exact certificate side, every comparison with the
+          record recomputed exactly, the credit held to the bibliography, the routes'
+          mathematics re-derived (closed unit squares with disjoint interiors, the
+          half-angle map, the containment, separating-axis and clipped-area criteria),
+          receipt admission on every packet, the third route on the entry's inputs, and
+          an independent check in exact rationals of a sample of certificates.
+        verdict: accepted
+        covers: [T-141]
   - id: T-142
     kind: lower-bound
     registered: '2026-10-10'
@@ -14934,8 +15189,11 @@ results:
         record at n = 28, 3/400 above T-107, by the certificate kind and declared net of
         T-102, T-103 and T-132, with no new technique, at S3 as T-102 to T-111 and T-132 are.
         V0/C0 says how far it stands, and the score gates nothing.
-      scored: '2026-10-10'
-      by: think-i85v (repository; draft)
+      scored: '2026-10-11'
+      by: >-
+        the 11 October final review
+        (docs/project/reviews/review-2026-10-11-final-asymptotic-and-grading.md),
+        confirming the draft of think-i85v (repository; draft)
     novelty: previously-published
     attribution:
       source_keys: ['[wand125 fine-net n28 n30 2026-10-10]']
@@ -14971,13 +15229,16 @@ results:
         link: think-i85v
         estimated_cost:
           cpu_hours: 3.28
+          cpu_hours_high: 4.5
           basis: >-
-            The eight-direction sqverify-fast sample of 10 October (directions 0, 296, ...,
-            2072; 21.19 CPU-s here against the source's 33.05, ratio 0.641) applied to the
-            source's 9,204 CPU-s over the net: a complete capture 5,903 CPU-s and the
-            whole-net controls 5,911
+            The eight-direction sqverify-fast sample of 10 October (directions 0, 296,
+            ..., 2072; 21.19 CPU-s here against the source's 33.05, ratio 0.641) applied
+            to the source's 9,204 CPU-s over the net: a complete capture 5,903 CPU-s and
+            the whole-net controls 5,911
             (packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/README.md and
-            receipts/sample-diagnostic-n28.json).
+            receipts/sample-diagnostic-n28.json). The preparation lane's smoke run of 11
+            October (two directions, think-i85v) revised the price upward to the upper
+            end; its receipts are not retained.
           priced: '2026-10-10'
     notes: >-
       V0 because the cited entry is the source's public claim: assurance reported, replay
@@ -15031,8 +15292,11 @@ results:
         record at n = 30, 9/1000 above T-109, by the certificate kind and declared net of
         T-102, T-103 and T-132, with no new technique, at S3 as T-102 to T-111 and T-132 are.
         V0/C0 says how far it stands, and the score gates nothing.
-      scored: '2026-10-10'
-      by: think-i85v (repository; draft)
+      scored: '2026-10-11'
+      by: >-
+        the 11 October final review
+        (docs/project/reviews/review-2026-10-11-final-asymptotic-and-grading.md),
+        confirming the draft of think-i85v (repository; draft)
     novelty: previously-published
     attribution:
       source_keys: ['[wand125 fine-net n28 n30 2026-10-10]']
@@ -15055,25 +15319,29 @@ results:
     next_rung: >-
       C3 needs a complete sqverify-fast census run at all 2,073
       directions from a retained candidate, with its whole-net control receipt (the 99/100
-      mutant at every direction, FC-1) and a review that reads this certificate. The
-      eight-direction sample prices the run and its controls at about 4.5 CPU-hours, so it
+      mutant at every direction, FC-1) and a review that reads this certificate, by the checklist of the 6 October declared-net
+      soundness review. The eight-direction sample prices the run and its controls at about 4.5 CPU-hours, so it
       waits in think-i85v for a budget.
     unfinished_confirmations:
       - what: >-
           a complete sqverify-fast census at all 2,073 directions from a retained
           candidate, with its whole-net control receipt (the 99/100 mutant at every
-          direction, FC-1) and a review that reads this certificate
+          direction, FC-1) and a review that reads this certificate, by the checklist of
+          the 6 October declared-net soundness review
         rung: C3
         link: think-i85v
         estimated_cost:
           cpu_hours: 4.49
+          cpu_hours_high: 6.1
           basis: >-
-            The eight-direction sqverify-fast sample of 10 October (directions 0, 296, ...,
-            2072; 29.65 CPU-s here against the source's 52.60, ratio 0.564) applied to the
-            source's 14,335 CPU-s over the net: a complete capture 8,080 CPU-s and the
-            whole-net controls 8,092
+            The eight-direction sqverify-fast sample of 10 October (directions 0, 296,
+            ..., 2072; 29.65 CPU-s here against the source's 52.60, ratio 0.564) applied
+            to the source's 14,335 CPU-s over the net: a complete capture 8,080 CPU-s
+            and the whole-net controls 8,092
             (packing/resources/web/wand125-fine-net-n28-n30-2026-10-10/README.md and
-            receipts/sample-diagnostic-n30.json).
+            receipts/sample-diagnostic-n30.json). The preparation lane's smoke run of 11
+            October (two directions, think-i85v) revised the price upward to the upper
+            end; its receipts are not retained.
           priced: '2026-10-10'
     notes: >-
       V0 because the cited entry is the source's public claim: assurance reported, replay
@@ -15127,8 +15395,11 @@ results:
         Nagamochi's closed form, by T-080's certificate kind, net and checker at a new size,
         with no new technique, at S3 as T-080 is. V0/C0 says how far it stands, and the
         score gates nothing.
-      scored: '2026-10-10'
-      by: think-nd7g (repository; draft)
+      scored: '2026-10-11'
+      by: >-
+        the 11 October final review
+        (docs/project/reviews/review-2026-10-11-final-asymptotic-and-grading.md),
+        confirming the draft of think-nd7g (repository; draft)
     novelty: previously-published
     attribution:
       source_keys: ['[wand125 linear n122 2026-10-10]']
@@ -15240,8 +15511,14 @@ results:
         the density peak, and applies as it stands to every format T certificate the record holds,
         with the side and threshold as its parameters; it is one count and not yet a bound family.
         S3 by the precedent of T-133, with the technique noted, as the 10 October review suggests.
-      scored: '2026-10-10'
-      by: 'think-xms6 import, registering lane (repository; draft, as the 10 October review suggests)'
+      scored: '2026-10-11'
+      by: >-
+        the 11 October final reviews
+        (docs/project/reviews/review-2026-10-11-final-lower-bounds.md, which compared it
+        with T-095, T-099, T-100, T-102 to T-111 and the S4 set, and
+        docs/project/reviews/review-2026-10-11-final-asymptotic-and-grading.md),
+        confirming the draft of think-xms6 import, registering lane (repository; draft,
+        as the 10 October review suggests)
     novelty: previously-published
     attribution:
       source_keys: ['[Guzhou0806 n40 continuous pose 2026-10-10]']
@@ -15286,6 +15563,20 @@ results:
           replay contract; and the drafted significance.
         verdict: accepted
         covers: [T-145]
+      - path: docs/project/reviews/review-2026-10-11-final-lower-bounds.md
+        kind: adversarial
+        reviewer: AI agent (Claude, at maximum reasoning effort), lane F1 of the final mathematical review of PR 487, prompted separately from the import, replay and stage 4 review lanes, with no shared context
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-11'
+        scope: >-
+          the kernel's lemmas re-derived and the kernel read line by line, both binaries
+          rebuilt to the CI digests, the axis certificate and slabs 0 and 42 replayed,
+          contract controls B to E and a real-density refusal control of the reviewer's
+          own run, the crate's axis and 401-direction checks reproduced, and the finite
+          steps recomputed independently.
+        verdict: accepted
+        covers: [T-145]
     artifacts:
       - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/README.md
       - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/PROOF.md
@@ -15308,8 +15599,9 @@ results:
       - packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/receipts/control-G-release.json
       - packing/tests/test_audit_continuous_pose.py
     next_rung: >-
-      V4 and C4 need a second adversarial AI review of this result by a distinct reviewer and a
-      human oversight record; the 10 October review is one. A method-distinct decision of the
+      V4 and C4 need a human oversight record: the two adversarial AI reviews by distinct
+      reviewers are retained, the 10 October review and the 11 October final review
+      (docs/project/reviews/review-2026-10-11-final-lower-bounds.md), both accepting. A method-distinct decision of the
       continuous cover would stand beside the rung: a first-party interval kernel with the angle
       as an interval dimension (GC-4 of the review, its specification), a W7 slice and a budget
       the owner sets.
@@ -15416,7 +15708,12 @@ results:
         citable detail of each case that moves no theorem, S2 as T-098 is; no lower bound,
         optimum or priority.
       scored: '2026-10-11'
-      by: the 11 October review (docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md)
+      by: >-
+        the 11 October review
+        (docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md),
+        confirmed by the 11 October final reviews
+        (docs/project/reviews/review-2026-10-11-final-upper-bounds.md and
+        docs/project/reviews/review-2026-10-11-final-asymptotic-and-grading.md)
     novelty: previously-published
     attribution:
       source_keys: ['[Daniel regularized lists 2026-10-10]']
@@ -15752,9 +16049,9 @@ results:
       certificate parsing, half-angle conversion, Fraction arithmetic and the separating-axis
       method. No two independent methods, human oversight or optimality is claimed.
     next_rung: >-
-      V4 and C4 need a second accepted adversarial review of this replay by a distinct
-      reviewer and a retained human oversight record; the 11 October review is one, by an
-      AI agent. Separately, once jlevy/squares#403 lands and private-worker custody is on
+      V4 and C4 need a retained human oversight record: two accepted adversarial
+      reviews by distinct AI reviewers are retained, the 11 October review and the 11 October
+      final review (docs/project/reviews/review-2026-10-11-final-upper-bounds.md). Separately, once jlevy/squares#403 lands and private-worker custody is on
       file (RG-7), adopt this entry as the house at all fifteen counts, each earlier house
       kept as history and each packing credited as the review decided (RG-2). Final
       exact-head CI remains required.
@@ -15777,5 +16074,24 @@ results:
           exact side, the claim comparison re-derived with the holders' sides read again,
           each route's trust boundary, and the credit of each certificate measured against
           the packing it would be credited to.
+        verdict: accepted
+        covers: [T-146]
+
+      - path: docs/project/reviews/review-2026-10-11-final-upper-bounds.md
+        kind: adversarial
+        reviewer: AI agent (Claude, at maximum reasoning effort), lane F2 of the final mathematical review of PR 487, prompted separately from the import, replay and stage 4 review lanes, with no shared context
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-11'
+        scope: >-
+          Finite feasibility of the certificates the entry cites: every printed side
+          parsed and held to the exact certificate side, every comparison with the
+          record recomputed exactly, the credit held to the bibliography, the routes'
+          mathematics re-derived (closed unit squares with disjoint interiors, the
+          half-angle map, the containment, separating-axis and clipped-area criteria),
+          receipt admission on every packet, the third route on the entry's inputs, and
+          an independent check in exact rationals of a sample of certificates, with the
+          fifteen regularizations items recomputed from the retained JSONs and an
+          optimal assignment under the eight symmetries.
         verdict: accepted
         covers: [T-146]

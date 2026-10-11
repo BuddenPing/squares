@@ -179,7 +179,8 @@ lower_bounds:
       k >= 10^13 formula gives s(k^2 - c) = k once log k > (30.147c - 0.3819)/0.99977:
       log k > 120.24 for c = 4 (Remark 7.4), log k > 150.39 for c = 5. With the upper
       bound W(x) = O(x^{3/5}) applied below k, c*(k) lies between order log k and
-      O(k^{3/5}).
+      O(k^{3/5}). As of 2026-10-05; the October 2026 upper bounds of order k^{3/8},
+      reported, are in deficiency_upper_bounds.
     complementary_case: >
       Roth and Vaughan's bound, the entry above, is (||x|| x)^{1/2} up to an
       unevaluated constant and tends to 0 as x -> k^-, where ||x|| -> 0; this bound is
@@ -421,7 +422,8 @@ deficiency_upper_bounds:
       Section 9 and sharing no code with the source, which reproduces N and c of Table 2
       at every k with the waste identity exact and refuses six mutations at 10^5 and 10^8.
     complementary_case: >-
-      Below 1.6*10^7 only Theorem 1.4 and the five certificates apply.
+      Below 1.6*10^7 only Theorem 1.4 and the three certificates at k = 10^5, 10^6 and
+      10^7 apply.
     note: >-
       Issue #471 (v1.0) and #486 (v1.1, unchanged). A staircase of columns with one common
       tilt after Bui (arXiv:2508.04603v2, Section 3); the proof is self-contained and was
@@ -546,8 +548,9 @@ related_results:
     local: papers/erdos-graham-1975-on-packing-squares-with-equal-squares
 
 relevance_to_small_n: >
-  None. These are asymptotic statements with unspecified or astronomically weak
-  constants -- Roth and Vaughan's Vinogradov relation leaves its absolute constant
-  implicit -- describing behaviour as x -> infinity. They carry no information at
-  x ~ 3.88. The small-case and asymptotic branches share an origin and a moral
+  None. The bounds on W(x) are asymptotic statements with unspecified or astronomically
+  weak constants -- Roth and Vaughan's Vinogradov relation leaves its absolute constant
+  implicit -- describing behaviour as x -> infinity; the deficiency bounds are explicit
+  from k = 6 but weaker than every atlas value for k <= 18 (deficiency_upper_bounds).
+  They carry no information at x ~ 3.88. The small-case and asymptotic branches share an origin and a moral
   (tilting helps) but are methodologically disjoint.

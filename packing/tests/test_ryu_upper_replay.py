@@ -7,13 +7,16 @@ are the packets' ``receipts/replay/`` records. These tests are offline and fast.
 from __future__ import annotations
 
 import threading
+from pathlib import Path
 from typing import Any
 
 from cases.asymptotic.ryu_upper_replay import (
     PACKETS,
     Job,
+    assemble,
     differences,
     jobs,
+    named_inputs,
     normalise_text,
     rank,
     schedule,
@@ -121,3 +124,20 @@ def test_cheap_jobs_run_first_and_merges_after_their_slices() -> None:
     entries = schedule(table, 2, work, lambda entry: done.append(entry["job"]))
     assert [entry["job"] for entry in entries] == [job.name for job in table]
     assert sorted(done) == sorted(job.name for job in table)
+
+
+def test_a_tree_leaves_out_the_hosted_certificates_no_selected_job_reads(
+    tmp_path: Path,
+) -> None:
+    selected = [job for job in jobs() if job.name.startswith("const_stair")]
+    assert selected
+    tree = assemble("v1.1", tmp_path, named_inputs(selected, "v1.1"))
+    assert (tree / "code").is_dir()
+    assert not (tree / "data/stair_k100000000.json.gz").exists()
+    assert not (tree / "data/stair_k38250000.json.gz").exists()
+
+
+def test_a_job_that_reads_a_hosted_certificate_names_it() -> None:
+    stair = [job for job in jobs() if job.name == "stair_check_k100000000"]
+    assert stair
+    assert "data/stair_k100000000.json.gz" in named_inputs(stair, stair[0].version)

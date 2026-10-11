@@ -662,6 +662,18 @@ So version 1.1 has three further coverings per tier, as issue #486, the register
 version 1.1 row and the 10 October packet say.
 No finding, rung or verdict changes.
 
+## Correction of 11 October 2026: the mpmath Version and a Corollary’s Number
+
+Added by the coordinator of the session that continued the intake pass, from finding
+F3-3 of the
+[final review of 11 October](review-2026-10-11-final-asymptotic-and-grading.md); the
+text above is unchanged.
+Section 5 says `cert3e.py` ran under mpmath 1.4.1; the project pins mpmath 1.3.0, which
+the receipts record and under which the covering was replayed again on 11 October with
+the recorded output.
+Section 6’s “Corollary 8.3 or 8.12” reads “Corollary 8.10 or 8.12” in version 1.1’s
+numbering. No finding, rung or verdict changes.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->

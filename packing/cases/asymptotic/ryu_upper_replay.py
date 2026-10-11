@@ -117,12 +117,24 @@ def hosted_path(name: str) -> Path:
     return require(relative, HOSTED)
 
 
-def assemble(version: str, root: Path) -> Path:
+def named_inputs(selected: Iterable[Job], version: str) -> frozenset[str]:
+    """The tree paths the selected jobs of ``version`` read, from their arguments."""
+    names: set[str] = set()
+    for job in selected:
+        if job.version == version:
+            names.update(a.removeprefix("@tree/") for a in job.args if a.startswith("@tree/"))
+            names.update(job.cwd_inputs)
+    return frozenset(names)
+
+
+def assemble(version: str, root: Path, named: frozenset[str] | None = None) -> Path:
     """Write the version's complete upstream tree under ``root`` and return it.
 
     Retained files come from the version's packet; a file the packet pins because another
     packet retains it comes from that copy; a certificate neither packet retains comes from
-    the hosted manifest. Every file of the version's subtree manifest is written.
+    the hosted manifest. Every file of the version's subtree manifest is written, except
+    that when ``named`` is given a hosted certificate no selected job reads is left out,
+    so the jobs that do not read one replay in a checkout without the hosted data.
     """
     packet = PACKETS[version]
     (entry,) = _record(packet)["sources"]
@@ -135,20 +147,25 @@ def assemble(version: str, root: Path) -> Path:
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(path, target)
     v10_source = V10 / "source"
+    skipped = 0
     for item in entry["pinned_only"]:
         target = tree / item["path"]
-        target.parent.mkdir(parents=True, exist_ok=True)
         if "identical_to" in item:
             origin = REPO / item["identical_to"]
         elif (v10_source / item["path"]).is_file():
             origin = v10_source / item["path"]
+        elif named is not None and item["path"] not in named:
+            skipped += 1
+            continue
         else:
             origin = hosted_path(Path(item["path"]).name)
+        target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(origin, target)
     written = sum(1 for p in tree.rglob("*") if p.is_file())
-    if written != entry["subtree_file_count"]:
+    if written + skipped != entry["subtree_file_count"]:
         raise RuntimeError(
-            f"{version}: wrote {written} files, manifest has {entry['subtree_file_count']}"
+            f"{version}: wrote {written} files and left out {skipped} hosted, "
+            f"manifest has {entry['subtree_file_count']}"
         )
     return tree
 
@@ -760,7 +777,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
     scratch = args.scratch or Path(tempfile.mkdtemp(prefix="ryu-upper-replay-"))
     scratch.mkdir(parents=True, exist_ok=True)
-    trees = {v: assemble(v, scratch / "trees") for v in sorted({j.version for j in selected})}
+    trees = {
+        v: assemble(v, scratch / "trees", named_inputs(selected, v))
+        for v in sorted({j.version for j in selected})
+    }
     env = environment()
     run = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     start = time.monotonic()
