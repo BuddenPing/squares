@@ -186,7 +186,7 @@ alone is not full pre-merge evidence.
 | --- | --- | ---: | ---: | --- |
 | `--records` | contributor, before touching a registry; also every pull request | 49 of 107 | 300 s | 11.0 s |
 | `--edit` | contributor, in the edit loop | 65 of 107 | 240 s | 59.4 s |
-| `--push` | contributor, once before a push — the edit tier plus tests reachable from the diff (`--since`) | varies with the diff | 1800 s | about a minute for a narrow code change; an implicitly configured broad diff selects the whole suite and assigns one outer job so pytest can use the host, see below |
+| `--push` | contributor, once before a push — the edit-tier prerequisites the diff can affect, plus tests reachable from it (`--since`) | varies with the diff | 1800 s | about a minute for a narrow code change; an implicitly configured broad diff selects the whole suite and assigns one outer job so pytest can use the host, see below |
 | `--fast` | contributor, at a block boundary; the union of the ten tiers below | 94 of 107 | 600 s | record cleared 2026-09-07 when the corpus widened; 229.1 s locally, only the ceiling applies |
 | `--checks` | **CI, on every pull request**, in the `validate` job | 68 of 107 | 150 s | 103.70 s, the geometric mean of thirty-three hosted readings on 2026-09-30 and 10-01, with the band 59.4–137.1 s (2.31x) the runner pool spanned on unchanged steps; the 114.34 s two-attempt record stays in the register as history |
 | `--frontend` | **CI, on every pull request**, in the `frontend` job, concurrently | 4 of 107 | 165 s | 104.74 s, the geometric mean of 32 hosted readings from 27 to 30 September (70.97–134.86 s, 1.90x); 85.25 s from two readings stays in the register as history |
@@ -820,6 +820,14 @@ reachable behavioral tests from one changed-path snapshot, including old and new
 paths and deleted files.
 Unclaimed inputs and an empty diff retain the complete prerequisite floor; checks
 without declared inputs always run.
+Scoping is only as sound as each check’s declared inputs (`Step.touches`), so a contract
+test (`test_every_attributed_step_claims_the_modules_it_runs`) derives the Python
+modules every attributed check runs, follows their static import closure, lazy imports
+included, and fails on any file the check does not claim.
+The site renderers import one another, so the checks that reach them claim
+`packing/devtools/*` as a group; a change under `devtools/` therefore selects more
+prerequisites than its own name suggests.
+Under `--format json` the selection banners go to stderr, leaving stdout one document.
 For behavioral tests, `devtools.reachable_tests` computes the test files the change can
 reach — import closure over `src/sqpack`, `devtools`, `cases` and `tests`, text mention
 of a changed module or file, repository walkers always included — and errs toward
@@ -1524,7 +1532,18 @@ The live command reports phase timings, unique transport requests, retries, and 
 requests to stderr during execution.
 URL fragments share a transport request while query strings remain distinct; every
 original link retains its own verdict.
-Persistent HTTP errors fail verification after bounded retries.
+Persistent HTTP errors fail verification after bounded retries; a connection that times
+out, resets or answers malformed headers is retried as unreachable rather than ending
+the audit.
+
+In the Pages workflow the `verify-deployment` job runs under a 30-minute
+`timeout-minutes` ceiling, and the checker’s own `--deadline-minutes 25` stops it first.
+At the deadline it prints every verdict it has, one failing line naming the phase it
+interrupted, and the summary, so a throttled audit still leaves its diagnosis in the
+log.
+The five minutes between them cover the job’s setup and teardown, which took 41–72 s
+and 2–6 s across forty measured jobs; the slowest healthy audit took 388 s. Run locally,
+the check has no deadline unless one is passed.
 A successful Pages deploy with a failed link audit remains incomplete publication
 verification; preserve the failed receipt and rerun only verification after diagnosing
 the external response.
