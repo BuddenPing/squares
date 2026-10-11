@@ -718,7 +718,7 @@ it.
   fails a page whose name or links are off by more than half a pixel
   (`baseline_problems`); and `tests/test_site_wide_blocks.py` holds it in a browser.
   Narrower than 56rem, where the bar with the name would wrap, the name gives way and
-  the mark alone leads home, labelled “Square Packing home” for a screen reader.
+  the mark alone leads home, labelled “The Squares Project home” for a screen reader.
   Every item takes the cards’ gentle wash on hover and nothing underlines on hover; the
   current page alone is underlined in the accent.
   The edition appears only in the closing credit (below).

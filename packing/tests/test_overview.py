@@ -271,7 +271,7 @@ def test_the_bar_leads_with_case_11_beside_the_name(page: str) -> None:
     link = page.split('<a class="site-name"', 1)[1].split("</a>", 1)[0]
     assert '<svg class="site-logo" ' in link
     assert 'aria-hidden="true"' in link.split("<svg", 1)[1].split(">", 1)[0]
-    assert '<span class="site-name-text">Square Packing</span>' in link
+    assert '<span class="site-name-text">The Squares Project</span>' in link
     assert render_overview.site_logo() in link
 
 

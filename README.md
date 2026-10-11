@@ -1,16 +1,16 @@
 # The Squares Project
 
-**[Square Packing](https://jlevy.github.io/squares/) is this project’s website and a
-full archive of every known result on the square packing problem**, including the many
-new results since August 2026, several of them first found here and since built on by
-many others. It holds an atlas of the frontier, with the best known packing and the
-current upper and lower bounds for every case $n = 1\ldots324$, each with its source and
-credit, along with comprehensive documentation, papers, a large set of tools, and
-agent-based third-party validation that rates how far each new result has been verified.
+**[The Squares Project website](https://jlevy.github.io/squares/) is a full archive of
+every known result on the square packing problem**, including the many new results since
+August 2026, several of them first found here and since built on by many others.
+It holds an atlas of the frontier, with the best known packing and the current upper and
+lower bounds for every case $n = 1\ldots324$, each with its source and credit, along
+with comprehensive documentation, papers, a large set of tools, and agent-based
+third-party validation that rates how far each new result has been verified.
 Its homepage links every other major resource on square packing.
 All of it is generated from the record in this repository.
 
-[![The best known packings of n = 1 to 324 unit squares, one row for each perfect square, from the atlas on the Square Packing website](docs/images/atlas-triangle-1-324.png)](https://jlevy.github.io/squares/)
+[![The best known packings of n = 1 to 324 unit squares, one row for each perfect square, from the atlas on The Squares Project website](docs/images/atlas-triangle-1-324.png)](https://jlevy.github.io/squares/)
 
 > [!IMPORTANT]
 > **Report your results!** If you have new results of any kind for square packing (a

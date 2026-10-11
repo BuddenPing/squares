@@ -131,11 +131,12 @@ OUTPUT = PACKING / "site"
 #: canonical URL and every address in a link preview is built from it (`canonical_url`,
 #: `head_tags`), and `render_n11_lower_bounds_explainer.SITE_URL` is this constant.
 SITE_URL = "https://jlevy.github.io/squares/"
-SITE_NAME = "Square Packing"
-#: The project's formal name (the owner, 2026-10-01). The name in the bar stays the
-#: shorter `SITE_NAME`; a page's title and its link preview carry the formal name
-#: (`page_title`, `head_tags`; think-3w07).
+#: The project's formal name (the owner, 2026-10-01). A page's title and its link
+#: preview carry it (`page_title`, `head_tags`; think-3w07), and since 2026-10-11 the
+#: bar's name in `site-nav.html` does too: the owner renamed the site from "Square
+#: Packing".
 PROJECT_NAME = "The Squares Project"
+SITE_NAME = PROJECT_NAME
 #: What stands between a page's own name and the project's in `<title>`.
 TITLE_SEPARATOR = " \u00b7 "
 #: The picture a shared link to any page of the site shows: the homepage's hero, the
