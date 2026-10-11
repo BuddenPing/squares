@@ -887,11 +887,12 @@ RECORDED: dict[int, tuple[tuple[str, str, str] | None, tuple[str, str, str] | No
     22: (None, ("Bentz 2016, arXiv:1606.03746", "external", "verified")),
     33: (None, ("Bentz 2016, arXiv:1606.03746 (confirmed T-064)", "external", "verified")),
     # A published proof and this project's audit of it are one source's bound, and the
-    # audit's two results are named on the line; the article number gives way so they fit.
+    # audit's two results are named on the line, with T-064's replays beside them since
+    # 2026-10-11 (k = 7); the journal gives way so the three fit.
     46: (
         None,
         (
-            "Bentz 2010, Electron. J. Combin. 17 (confirmed T-004, T-008)",
+            "Bentz 2010 (confirmed T-004, T-008, T-064)",
             "external",
             "verified",
         ),
@@ -1034,8 +1035,9 @@ def test_n29_credits_finder_and_optimizer_and_takes_the_registers_verdict() -> N
 RECORDED_LINKS: dict[tuple[int, str], tuple[list[str], list[str]]] = {
     # Trump's packing, exactly replayed here.
     (11, "upper"): (["T-011"], ["T-011"]),
-    # The audit of Bentz's Theorem 8, and the equality it settles.
-    (46, "lower"): (["T-004", "T-008"], ["T-004", "T-008"]),
+    # The audit of Bentz's Theorem 8, and the equality it settles; since 2026-10-11 also
+    # T-064's replays of Daniel's s(k^2 - 3) = k family at k = 7.
+    (46, "lower"): (["T-004", "T-008", "T-064"], ["T-004", "T-008", "T-064"]),
     # Two results cite Bentz 2010 at n = 13 -- one of them says a lemma is false as
     # printed. Since 2026-10-06 the lane also cites T-006's replays of Daniel's case-free
     # cover, so T-006 confirms the bound and T-005, which replays nothing, does not.
