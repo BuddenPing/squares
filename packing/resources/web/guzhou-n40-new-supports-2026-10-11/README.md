@@ -138,8 +138,11 @@ first-party tool, written without opening the release’s `verifier/exact.py`,
 Its receipts are in [receipts/](receipts).
 
 **The finite audit** (`check`, [receipts/finite-audit.json](receipts/finite-audit.json),
-`FINITE_STEPS_HOLD`, 66 checks, about ten seconds), in exact rationals on the retained
-bytes:
+`FINITE_STEPS_HOLD`, 67 checks, about ten seconds), in exact rationals on the retained
+bytes.
+After the orbit facts, its checks are the ones
+[`devtools.audit_continuous_pose`](../../../devtools/audit_continuous_pose.py) makes of
+`T-145`’s release, made of this one, not copies of them:
 
 - The density’s orbits: 685 sites, all positive, 522 `inherited` and 163 `generated`;
   every box a proper rectangle in $K$; each inherited box equal to its `source_index`
@@ -154,24 +157,28 @@ bytes:
   where `T-145`’s wrote a decimal one), and the axis input `10dd46b0…`, 5,480 rows each
   dominated by its term, none dropped, quarter-turn invariant, of mass
   $M - 2.57 \times 10^{-6}$; the int128 guard
-  $627444222088298915573283512797161984 < 2^{125}$; the $3293 \times 3293$ grid; the
-  dominated measure’s capture at the receipts’ minimiser $(3490012394, 6201340682)/10^9$,
-  evaluated again in integers, equal to the axis minimum, and the density’s own capture
-  there $1.0014864996\ldots$.
+  $627444222088298915573283512797161984 < 2^{125}$; the $3293 \times 3293$ grid, of
+  which the receipts’ minimiser $(3490012394, 6201340682)/10^9$ is a vertex; the
+  dominated measure’s capture there, evaluated again in integers, equal to the axis
+  minimum, and the density’s own capture there $1.0014864996\ldots$.
 - The scalar chain: $X = L/B = 3359/500$, $217911/99764500$ above `T-145`;
   $40\tau - M = 1/500$; $L > B \cdot 1414213562373096/10^{15}$; $T^2 + 2T - 1 =
   89/40000$; the 44 endpoints partitioning $[10^{-6}, 83/200]$; the kernel’s threshold
-  $\mathrm{up}(\mathrm{fl}(\tau))$ at least $\tau$, and the receipts’ least leaf bound
-  at least that, by $2.0 \times 10^{-10}$; $B - AW(\varepsilon) =
+  $\mathrm{up}(\mathrm{fl}(\tau))$ at least $\tau$, whose terms are inside the kernel’s
+  input bounds, and the receipts’ least leaf bound at least that, by
+  $2.0 \times 10^{-10}$; $B - AW(\varepsilon) =
   424025836324581/839750000000839750000000$, `PROOF.md`’s value; the axis minimum above
   $\tau$ by $1.69 \times 10^{-3}$.
 - Every `parameters`, `scalar`, `admission`, `coverage` and `axis` block of both receipts,
-  every slab row as the contract runs it, the fourteen control stages’ exits, and the 30
-  source digests each receipt lists, which are the retained files’.
+  every slab row as the contract runs it (exit 0, an empty stderr, the inputs, source
+  and binary it names), the fourteen control stages’ exits, and the 30 source digests
+  each receipt lists, which are the retained files’.
 - Controls, each refused: $A$ one step of $1/250000000$ larger (the near-axis
   containment fails); $\tau = 3999/4000$; $T = 41/100$; $\varepsilon = 10^{-5}$; a
   generated site moved onto a pool rectangle’s mirror image; one weight scaled by
-  $99/100$.
+  $99/100$; and a hundredth of one site’s weight moved to another, which keeps every
+  orbit fact and the mass, so only the digests binding the density to both kernels’
+  inputs refuse it.
 
 **The axis stage** (`run-axis`, [receipts/axis-stage.json](receipts/axis-stage.json),
 judged in [receipts/axis-check.json](receipts/axis-check.json), `AXIS_STAGE_HOLDS`):
@@ -182,11 +189,14 @@ every field equal to both receipts’, in 1.9 s; at $\tau = 1.001488$, just abov
 minimum, it refused (`AXIS_TEST_REFUSED`, exit 2), and at $\tau = 1.001486$, just below,
 it proved. `sqverify-fast`, built with `cargo build --release --locked -j 1` (rustc
 1.98.0) from crate source `d97758bb…`, which `sqverify_fast_census --source-digest` names
-as reviewed for declared nets, decided the near-axis statement a second way, on the
-original density with its weights scaled by $5000/4999$ (mass $199950/4999 < 40$) and
-threshold 1: `verified` by the exact axis-vertex sweep over 10,929,636 vertices, least
-certified 1.0016868361671276, in 2.8 s. That decision shares no code with the axis kernel
-and reads the original density rather than the dominated one.
+as reviewed for declared nets, decided the near-axis statement a second way, on the new
+685-orbit density itself, undominated, with its weights scaled by $5000/4999$ (mass
+$199950/4999 < 40$; 5,424 distinct rectangles once expanded) and threshold 1: `verified`
+by the exact axis-vertex sweep over 10,929,636 vertices, least certified
+1.0016868361671276, in 2.8 s. That decision shares no code with the axis kernel and reads
+the density itself rather than the dominated measure.
+`check-axis` refuses an axis stage whose record lacks this decision unless it is told
+`--without-crate`.
 
 **Not run here:** the 43 slabs of the continuous-pose kernel, the release’s
 `run.py` controls, its tests and its two dual programs. The `price` block of the finite

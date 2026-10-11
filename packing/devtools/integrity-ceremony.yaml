@@ -309,12 +309,16 @@ allowlist:
   - path: packing/devtools/audit_n40_new_supports.py
     kind: download
     boundary: >-
-      Guzhou0806's #485 release of 11 October: the original pool's digest the release
-      pins, held against the copy the 2026-10-01 packet retains; the two kernel-input
-      digests both downloaded receipts name, held against the inputs derived here from
-      the retained density; each downloaded receipt's slab and axis records against the
-      digests it states for them and the source, input and binary it says it ran; and the
-      CI run's axis binary, which a build here with the CI compiler must reproduce. Every
+      Guzhou0806's #485 release of 11 October: the density's digest as the release's
+      SOURCES.md and SHA256SUMS state it, held against the retained candidate; the
+      original pool's digest the release pins, held against the copy the 2026-10-01
+      packet retains; the two kernel-input digests both downloaded receipts name, held
+      against the inputs derived here from the retained density; each downloaded
+      receipt's slab and axis records against the digests it states for them and the
+      source, input and binary it says it ran; the CI run's two binaries, its pose
+      binary T-145's and its axis binary the one a build here with the CI compiler must
+      reproduce; and the shared kernel files against T-145's packet manifest. The checks
+      after the orbit facts are audit_continuous_pose's, made of this release. Every
       finite value and the axis stage's output are recomputed and compared whole; no run
       is refused on a digest.
   - path: packing/devtools/audit_evand_mixed_covers.py
