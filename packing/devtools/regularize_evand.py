@@ -8,6 +8,7 @@ Usage, from `packing/`, each after
         [--frame kkt|witness] [--variant conservative|fewest] [--orient 0|best|K]
     input --n N --output FILE
     reclassify --run-dir DIR [--n N ...]
+    layer --run-dir DIR [DIR ...] --repo-root TREE [--select admitted|preview]
     report --run-dir DIR [--json]
 
 This is the automated pass of the regularization policy
@@ -1709,6 +1710,174 @@ def reclassify(run_dir: Path, counts: Sequence[int] | None = None) -> dict[str, 
     return receipt
 
 
+# --------------------------------------------------------------------------------------
+# The layer: a run's views written where the atlas reads them
+# --------------------------------------------------------------------------------------
+
+#: The selections `layer` knows. `admitted` is the policy's: row 10 alone, and the only
+#: one that may write into this checkout. `preview` is every view that would change the
+#: drawing, passes the maintained exact routes, pairs one to one, and loses no contact in
+#: total under either rule; it is for a scratch tree, to see the atlas before the owner
+#: decides the held and refused rows.
+SELECTIONS = ("admitted", "preview")
+VIEW_KIND = "regularized-view"
+DRAWING_LABEL = "regularized"
+LAYER_DIR = "packing/atlas/known-best/regularized"
+
+
+def total_contacts(counts: Sequence[int]) -> int:
+    """Full sides shared, over a histogram of squares with 0 to 4 of them."""
+    return sum(k * count for k, count in enumerate(counts))
+
+
+def layer_candidate(report: Mapping[str, Any], select: str) -> str | None:
+    """Which view of a decided count `select` takes, `same` or `solved`, or None."""
+    decision = report.get("decision") or {}
+    outputs = report.get("outputs") or {}
+    if select == "admitted":
+        return "same" if decision.get("decision") == "admit" and outputs.get("same") else None
+    chosen = "same" if outputs.get("same") else "solved" if outputs.get("solved") else None
+    if chosen is None or decision.get("decision") in {None, "no-view", "no-change"}:
+        return None
+    routes = outputs[chosen].get("routes") or {}
+    if not (routes.get("exact_verify") and routes.get("independent")):
+        return None
+    if not (report.get("identity") or {}).get("one_to_one"):
+        return None
+    shaded = report.get("shades") or {}
+    for rule in RULE_NAMES:
+        counts = shaded.get(rule) or {}
+        before, after = counts.get("before") or [], counts.get("after") or []
+        if total_contacts(after) < total_contacts(before):
+            return None
+    return chosen
+
+
+def source_id(report: Mapping[str, Any]) -> str:
+    """The source witness's id; reports written before the driver stored it name the
+    known-best witness by its count."""
+    return (report.get("source") or {}).get("id") or f"W-known-best-n{int(report['n']):03d}"
+
+
+def layer_view(report: Mapping[str, Any], document: Mapping[str, Any]) -> dict[str, Any]:
+    """A run's view as the atlas layer holds one: the renderer's certificate fields, with
+    the driver's provenance and the regularization record kept beside them."""
+    view = dict(document)
+    view["certificate"] = {
+        "kind": VIEW_KIND,
+        "label": DRAWING_LABEL,
+        "derived_from": source_id(report),
+        "generator": dict(view.get("certificate") or {}),
+        "regularization": report.get("regularization"),
+        "decision": report.get("decision"),
+    }
+    return view
+
+
+def layer_entry(
+    report: Mapping[str, Any], view_path: str, view_text: str, chosen: str
+) -> dict[str, Any]:
+    """The index entry for a written view, in the layer's terms plus the run's record."""
+    source = report.get("source") or {}
+    block = (report.get("outputs") or {})[chosen]
+    routes = block.get("routes") or {}
+    shaded = report.get("shades") or {}
+    return {
+        "n": report["n"],
+        "status": "regularized",
+        "generator": GENERATED_BY,
+        "source": {
+            "witness": source.get("path"),
+            "id": source_id(report),
+            "scalar_kind": source.get("kind"),
+            "sha256": source.get("sha256"),
+        },
+        "side": {
+            "reported": source.get("s_W"),
+            "relation": block.get("relation"),
+            "view_minus_reported": block.get("minus_s_W"),
+            "view_minus_verified_upper_bound": block.get("minus_U"),
+        },
+        "view": {"path": view_path, "sha256": sha256_of(view_text.encode("utf-8"))},
+        "shades": {rule: shaded.get(rule) for rule in RULE_NAMES},
+        "exact_verification": {
+            "repository_verifier": bool(routes.get("exact_verify")),
+            "independent_checker": bool(routes.get("independent")),
+            "passed": bool(routes.get("exact_verify") and routes.get("independent")),
+        },
+        "decision": report.get("decision"),
+        "regularization": report.get("regularization"),
+    }
+
+
+def replaces_current(
+    entry: Mapping[str, Any] | None, root: Path, report: Mapping[str, Any]
+) -> bool:
+    """Whether a new view replaces the layer's current one at its count: only when it
+    shares at least as many full sides in total under the house rule."""
+    if entry is None or entry.get("status") != "regularized" or not entry.get("view"):
+        return True
+    text = gzip.decompress((root / entry["view"]["path"]).read_bytes()).decode("utf-8")
+    current = histogram(contact_partners(load_yaml(text)["witness"])["house"])
+    after = ((report.get("shades") or {}).get("house") or {}).get("after") or []
+    return total_contacts(after) >= total_contacts(current)
+
+
+def write_layer(run_dirs: Sequence[Path], root: Path, select: str) -> dict[str, Any]:
+    """Write the selected views of finished runs into the layer under `root`, merged with
+    the index already there, a later run winning at a count two runs decided. Returns
+    what was written, what kept the current view, and what was left out."""
+    if select not in SELECTIONS:
+        raise EvandRunError(f"unknown selection {select!r}")
+    root = root.resolve()
+    if root == REPO.resolve() and select != "admitted":
+        raise EvandRunError("only the admitted selection may write into this checkout")
+    index_path = root / LAYER_DIR / "index.json"
+    index = read_json(index_path)
+    entries = {int(entry["n"]): entry for entry in index["entries"]}
+    found: dict[int, tuple[Path, dict[str, Any]]] = {}
+    for run_dir in run_dirs:
+        for path in sorted(Path(run_dir).glob("n-*/report.json")):
+            report = read_json(path)
+            found[int(report["n"])] = (path.parent, report)
+    written: list[int] = []
+    kept: list[int] = []
+    left_out: list[int] = []
+    for n in sorted(found):
+        directory, report = found[n]
+        chosen = layer_candidate(report, select)
+        if chosen is None:
+            left_out.append(n)
+            continue
+        if not replaces_current(entries.get(n), root, report):
+            kept.append(n)
+            continue
+        document = load_yaml((directory / f"view-{chosen}.yaml").read_text(encoding="utf-8"))
+        text = witness_document(layer_view(report, document["witness"]))
+        view_path = f"{LAYER_DIR}/n-{n:03d}-regularized.yaml.gz"
+        target = root / view_path
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(gzip.compress(text.encode("utf-8"), mtime=0))
+        entries[n] = layer_entry(report, view_path, text, chosen)
+        written.append(n)
+    ordered = [entries[n] for n in sorted(entries)]
+    statuses: dict[str, int] = {}
+    for entry in ordered:
+        statuses[entry["status"]] = statuses.get(entry["status"], 0) + 1
+    index["entries"] = ordered
+    index.setdefault("totals", {})["statuses"] = statuses
+    index["generated_by"] = (
+        f"{index.get('generated_by')}; {GENERATED_BY} layer --select {select}"
+    )
+    if select != "admitted":
+        index["preview"] = (
+            f"a {select} layer from devtools.regularize_evand, not the record's: it includes "
+            "views the policy holds or refuses, for the owner to see before deciding"
+        )
+    write_json(index_path, index)
+    return {"select": select, "written": written, "kept_current": kept, "left_out": left_out}
+
+
 def write_receipt(
     run_dir: Path,
     reports: Mapping[int, Mapping[str, Any]],
@@ -1871,6 +2040,12 @@ def parser() -> argparse.ArgumentParser:
     )
     reclassify_command.add_argument("--run-dir", type=Path, required=True)
     reclassify_command.add_argument("--n", nargs="+", default=None, help="counts or a-b")
+    layer_command = sub.add_parser(
+        "layer", help="write finished runs' selected views into a layer under a tree"
+    )
+    layer_command.add_argument("--run-dir", type=Path, nargs="+", required=True)
+    layer_command.add_argument("--repo-root", type=Path, required=True)
+    layer_command.add_argument("--select", choices=SELECTIONS, default="admitted")
     report_command = sub.add_parser("report", help="print a run's receipt as a table")
     report_command.add_argument("--run-dir", type=Path, required=True)
     report_command.add_argument("--json", action="store_true")
@@ -1887,6 +2062,10 @@ def main(argv: list[str] | None = None) -> int:
         counts = None if arguments.n is None else parse_counts(arguments.n)
         receipt = reclassify(arguments.run_dir, counts)
         print(report_table(receipt))
+        return 0
+    if arguments.command == "layer":
+        summary = write_layer(arguments.run_dir, arguments.repo_root, arguments.select)
+        print(json.dumps(summary))
         return 0
     if arguments.command == "report":
         receipt = read_json(arguments.run_dir / "receipt.json")

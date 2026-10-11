@@ -350,6 +350,69 @@ def test_no_view_has_no_regularization_record() -> None:
     assert drive.regularization_record({**REPORT, "identity": None}) is None
 
 
+ROUTES_OK = {"exact_verify": True, "independent": True, "half_angle": True}
+DECIDED = {
+    "n": 26,
+    "outputs": {"same": {"relation": "same", "routes": ROUTES_OK}, "solved": None},
+    "identity": {"one_to_one": True},
+    "shades": {
+        "house": {"before": [0, 1, 12, 6, 7], "after": [0, 0, 13, 5, 8]},
+        "stage": {"before": [0, 1, 12, 6, 7], "after": [0, 0, 13, 5, 8]},
+    },
+    "decision": {"row": 10, "decision": "admit"},
+}
+
+
+def test_the_admitted_selection_takes_row_10_alone() -> None:
+    assert drive.layer_candidate(DECIDED, "admitted") == "same"
+    held = {**DECIDED, "decision": {"row": 4, "decision": "held"}}
+    assert drive.layer_candidate(held, "admitted") is None
+
+
+def test_the_preview_takes_visible_exact_one_to_one_views_that_lose_no_contact() -> None:
+    held = {**DECIDED, "decision": {"row": 4, "decision": "held"}}
+    assert drive.layer_candidate(held, "preview") == "same"
+    for word in ("no-change", "no-view"):
+        assert (
+            drive.layer_candidate({**DECIDED, "decision": {"decision": word}}, "preview")
+            is None
+        )
+    refused_route = {
+        **DECIDED,
+        "outputs": {
+            "same": {"relation": "same", "routes": {**ROUTES_OK, "independent": False}}
+        },
+    }
+    assert drive.layer_candidate(refused_route, "preview") is None
+    assert (
+        drive.layer_candidate({**DECIDED, "identity": {"one_to_one": False}}, "preview") is None
+    )
+    fewer = {"before": [0, 0, 13, 5, 8], "after": [0, 1, 12, 6, 7]}
+    lost = {**DECIDED, "shades": {"house": fewer, "stage": DECIDED["shades"]["stage"]}}
+    assert drive.layer_candidate(lost, "preview") is None
+
+
+def test_only_the_admitted_selection_may_write_into_this_checkout(tmp_path: Path) -> None:
+    with pytest.raises(drive.EvandRunError, match="only the admitted selection"):
+        drive.write_layer([tmp_path], drive.REPO, "preview")
+
+
+def test_a_written_view_carries_the_renderers_fields_and_the_record() -> None:
+    view = drive.layer_view(
+        {**REPORT, "decision": {"decision": "admit"}, "regularization": {"by": "project"}},
+        {
+            "id": "W-known-best-n026-regularized",
+            "n": 26,
+            "certificate": {"kind": "same-side-view"},
+        },
+    )
+    certificate = view["certificate"]
+    assert (certificate["kind"], certificate["label"]) == ("regularized-view", "regularized")
+    assert certificate["derived_from"] == "W-known-best-n026"
+    assert certificate["generator"] == {"kind": "same-side-view"}
+    assert certificate["regularization"] == {"by": "project"}
+
+
 # --------------------------------------------------------------------------------------
 # One count, end to end
 # --------------------------------------------------------------------------------------
