@@ -902,6 +902,31 @@ REGULARIZED_WITNESSES = frozenset(
     (ROOT / "atlas/known-best/regularized").glob(REGULARIZED_WITNESS_PATTERN)
 )
 PRUNE |= REGULARIZED_WITNESSES | HISTORICAL_SNAPSHOT_OUTPUTS | UNREAD_WORKER_OUTPUTS
+# 2026-10-11, #511 (the regularization tools layer): the driver of Evan Daniel's vendored
+# regularizer, the same-side re-solve, the review gallery and their tests took the
+# snapshot to 209,779,702 bytes, 64,502 over the cap. They run on request, outside any
+# gate, and only on run directories outside the checkout. `--audit-snapshot` with these
+# eight paths as candidates finds no registered mention and no inline or result rescue;
+# nothing else in the repository imports them (they import each other and their tests
+# import them). The one control that runs the whole suite points `testpaths` at a missing
+# directory and expects pytest to stop at configuration, before any test is collected,
+# so the consumer contract's declarations of the driver and the gallery are never read
+# in a worker. Left out, the snapshot measures 209,536,887 bytes, 178,313 under the
+# unchanged cap.
+REGULARIZATION_TOOLS = frozenset(
+    ROOT / relative
+    for relative in (
+        "devtools/regularize_evand.py",
+        "devtools/regularize_evand_shim.py",
+        "devtools/regularize_same_side.py",
+        "devtools/regularize_gallery.py",
+        "devtools/regularize_gallery.css",
+        "tests/test_regularize_evand.py",
+        "tests/test_regularize_same_side.py",
+        "tests/test_regularize_gallery.py",
+    )
+)
+PRUNE |= REGULARIZATION_TOOLS
 # Build caches: excluded from the counted surface and from every worker tree, by
 # NAME at any depth. Not a prune, and the distinction is the point. Every entry in
 # `PRUNE` is a committed path that a worker does not need; these are generated
