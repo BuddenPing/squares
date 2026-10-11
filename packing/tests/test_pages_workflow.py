@@ -821,13 +821,14 @@ def test_live_verification_waits_for_the_exact_deployed_revision() -> None:
     # killed at the ceiling prints no verdict, so the checker stops itself first and
     # prints what it checked. Over the 40 verify jobs measured on 2026-10-10 (PR #496,
     # review F) the steps before the audit took 41 to 72 s and those after it 2 to 6 s, so
-    # the four minutes kept between the two is over three times what they need; the
-    # slowest healthy audit was 388 s, and 25 minutes is about 3.9 times that. Both values
-    # are pinned exactly: changing either, or the margin, is a deliberate edit to this test.
-    ceiling_minutes, deadline_minutes, margin_minutes = 30, 25, 4
+    # the five minutes kept between the two, the margin the workflow comment and
+    # development.md derive, are nearly four times what they need; the slowest healthy
+    # audit was 388 s, and 25 minutes is about 3.9 times that. All three values are pinned
+    # exactly: changing the ceiling, the deadline or the margin is a deliberate edit here.
+    ceiling_minutes, deadline_minutes = 30, 25
     assert verify["timeout-minutes"] == ceiling_minutes
     assert f"--deadline-minutes {deadline_minutes}" in commands
-    assert deadline_minutes <= ceiling_minutes - margin_minutes
+    assert ceiling_minutes - deadline_minutes == 5
     assert "python -m devtools.check_published_site" in commands
     assert '--site "${{ needs.deploy.outputs.page-url }}"' in commands
     assert '--commit "${{ github.sha }}"' in commands

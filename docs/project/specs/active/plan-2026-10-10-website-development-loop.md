@@ -201,9 +201,12 @@ review (E), a performance review (F) and a correctness review (G). The follow-up
   attributed steps imported 171 files they did not claim, and `*.py` being claimed by
   the lint floor left no fallback.
   Every attributed step now claims the static import closure of what it runs; a contract
-  test enforces it in about 3 seconds.
-  The site renderers form one 138-file import cycle, so 19 steps claim
-  `packing/devtools/*`, and a `devtools` change selects more prerequisites than before.
+  test enforces it in 3 to 20 seconds, depending on the host and disk.
+  The site renderers form one 138-file import cycle, so 17 steps claim it as a group and
+  21 claim `packing/devtools/*` in all, against 6 before.
+  A one-file `devtools` change now selects 21 of 65 prerequisites instead of 10; most of
+  the added time is `exact verification` (118 s), which reaches the cycle through one
+  function-local import (`think-2cuz`, review A4 on PR #507).
 - **Bounded audit (F1, F2).** The 30-minute job ceiling killed the checker before it
   printed anything. The checker now stops itself at `--deadline-minutes 25` and prints
   what it reached. Timeouts and dropped connections are retried rather than ending the

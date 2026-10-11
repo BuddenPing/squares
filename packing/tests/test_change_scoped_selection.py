@@ -21,6 +21,7 @@ module its patterns do not claim.
 
 from __future__ import annotations
 
+import inspect
 import os
 import re
 import subprocess
@@ -362,6 +363,8 @@ def test_browser_floor_inputs_select_the_browser_floor() -> None:
 
 _RUN_MODULE = re.compile(r"^(?:devtools|cases|sqpack|benchmarks|workbench_tools)(?:\.\w+)+$")
 _RUN_SCRIPT = re.compile(r"^(?:tests|devtools|cases|benchmarks)/[\w/.-]+\.py(?:::.*)?$")
+#: Where pytest targets live; a target under it loads every `conftest.py` from here down.
+TESTS = (ROOT / "tests").resolve()
 #: The subprocess runners. Their own constants name the two modules they treat specially
 #: (`devtools.reachable_tests`, `devtools.run_negative_controls`), which are not modules
 #: every step runs, so the walk through the gate's helpers stops at them.
@@ -385,12 +388,16 @@ _RUNS_NO_MAPPED_PYTHON = frozenset(
 
 
 def _strings_and_names(code: types.CodeType) -> tuple[set[str], set[str]]:
-    """String constants and referenced names of a code object, nested functions included."""
+    """String constants and referenced names of a code object, nested functions included.
+    The compiler folds a literal tuple of constants into one constant, so a command
+    written as `("pytest", "tests/x.py")` is read through it."""
     strings: set[str] = set()
     names = set(code.co_names)
     for constant in code.co_consts:
         if isinstance(constant, str):
             strings.add(constant)
+        elif isinstance(constant, tuple | frozenset):
+            strings.update(item for item in constant if isinstance(item, str))
         elif isinstance(constant, types.CodeType):
             inner_strings, inner_names = _strings_and_names(constant)
             strings |= inner_strings
@@ -406,13 +413,31 @@ def _module_files(name: str, files: Mapping[str, Path]) -> set[Path]:
     return {files[prefix] for prefix in prefixes if prefix in files}
 
 
+def _conftests_loaded_for(target: Path) -> set[Path]:
+    """The `conftest.py` files pytest loads for a target under `packing/tests/`: the one
+    in its directory and in each directory above it up to the tests root. pytest loads
+    them without an import edge, so the closure cannot reach them from the target."""
+    if TESTS not in target.parents:
+        return set()
+    found: set[Path] = set()
+    directory = target.parent
+    while True:
+        conftest = directory / "conftest.py"
+        if conftest.is_file():
+            found.add(conftest)
+        if directory == TESTS:
+            return found
+        directory = directory.parent
+
+
 def _run_targets(step: Step) -> set[Path]:
     """The mapped Python files `step.action` runs.
 
     Read from the string constants of the action and of the gate helpers it calls: the
     `-m` modules, the pytest targets, and the scripts, whether written whole or joined
     from `PROJECT_ROOT / "devtools" / "x.py"`. Module-level strings and tuples of strings
-    the action names count too, which is how the site tests' list is seen.
+    the action names count too, which is how the site tests' list is seen. A pytest
+    target brings the `conftest.py` files pytest loads for it (PR 507 review A6).
     """
     strings: set[str] = set()
     seen: set[types.FunctionType] = set()
@@ -450,6 +475,8 @@ def _run_targets(step: Step) -> set[Path]:
             ]
             if len(scripts) == 1:
                 targets.add(scripts[0].resolve())
+    for target in tuple(targets):
+        targets |= _conftests_loaded_for(target)
     return targets
 
 
@@ -535,8 +562,11 @@ def test_the_run_derivation_sees_modules_pytest_targets_and_scripts() -> None:
         },
         # A module held in a local variable.
         "basin event record and replay": {"packing/cases/campaign_smoke/basin_events.py"},
-        # pytest targets from a module-level tuple.
-        "site table layout in Chromium": {"packing/tests/test_site_homepage.py"},
+        # pytest targets from a module-level tuple, and the conftest pytest loads for them.
+        "site table layout in Chromium": {
+            "packing/tests/test_site_homepage.py",
+            "packing/tests/conftest.py",
+        },
         # A script joined from path parts.
         "lint floor (rust)": {"packing/devtools/check_rust_floor.py"},
     }
@@ -566,6 +596,71 @@ def test_an_unclaimed_import_is_detected() -> None:
         "synthetic", step.action, touches=("packing/devtools/*", "packing/src/sqpack/*")
     )
     assert _unclaimed_closure(claimed) == []
+
+
+def test_every_step_that_runs_pytest_claims_the_conftests_pytest_loads() -> None:
+    """pytest loads `conftest.py` without an import edge, so the closure could not see
+    it from a test target: the three steps that run pytest targets did not claim it, and
+    a change to it selected none of them (PR 507 review A6). `_run_targets` now adds each
+    conftest pytest loads for a target, which the closure contract holds; this is the
+    readable statement of what that covers, with its negative control."""
+    conftest = "packing/tests/conftest.py"
+    assert (REPO / conftest).is_file()
+    running_pytest = {
+        step.name
+        for step in STEPS
+        if step.touches and any(TESTS in target.parents for target in _run_targets(step))
+    }
+    assert running_pytest >= {
+        "browser floor liveness tests",
+        "site table layout in Chromium",
+        "n17 branch-and-bound native (Rust)",
+    }
+    selected = {step.name for step in select_for_paths([conftest]).steps}
+    assert running_pytest <= selected, sorted(running_pytest - selected)
+    # The negative control: a step that claims its test file and not the conftest.
+    step = Step(
+        "synthetic",
+        lambda context: validate._run(context, ("pytest", "tests/test_site_homepage.py")),  # noqa: SLF001
+        touches=("packing/tests/test_site_homepage.py",),
+    )
+    targets = {path.relative_to(reachable_tests.REPO).as_posix() for path in _run_targets(step)}
+    assert targets == {"packing/tests/test_site_homepage.py", conftest}
+    assert conftest in (_unclaimed_closure(step) or [])
+    claimed = Step("synthetic", step.action, touches=("packing/tests/*",))
+    assert conftest not in (_unclaimed_closure(claimed) or [])
+
+
+def _defined_in(step: Step) -> str:
+    """The repository-relative file of the module `step.action` is defined in."""
+    action: object = getattr(step.action, "func", step.action)  # a partial's function
+    module = inspect.getmodule(action)
+    assert module is not None, f"{step.name}: its action has no module"
+    assert module.__file__, f"{step.name}: its action's module has no file"
+    return Path(module.__file__).resolve().relative_to(reachable_tests.REPO).as_posix()
+
+
+def test_every_attributed_step_claims_the_module_that_defines_its_action() -> None:
+    """An edit to a step's action -- its command list, what it requires of the output --
+    must select the step, so every attributed step claims the module its action is
+    defined in. The steps that run mapped Python reach `validate.py` through `_CORE` or
+    `*.py`; the four that run none claimed only their inputs, and an edit to
+    `_browser_floor`'s command list passed `--push` without running it (PR 507 review A7).
+    """
+    unclaimed = {
+        step.name: _defined_in(step)
+        for step in STEPS
+        if step.touches and not step.reachable_from(_defined_in(step))
+    }
+    assert unclaimed == {}, (
+        f"steps whose `touches` miss the module defining their action: {unclaimed}"
+    )
+    # The negative control: the browser floor's action, claiming only an input.
+    step = Step("synthetic", validate._browser_floor, touches=("biome.json",))  # noqa: SLF001
+    assert _defined_in(step) == "packing/src/sqpack/cli/validate.py"
+    assert not step.reachable_from(_defined_in(step))
+    claimed = Step("synthetic", step.action, touches=("biome.json", *validate._GATE))  # noqa: SLF001
+    assert claimed.reachable_from(_defined_in(claimed))
 
 
 def test_the_three_under_selections_review_g_reproduced() -> None:

@@ -20,9 +20,10 @@ heads and links between papers without fetching the network. --partial requires 
 or more --producer names and checks every output of those producers; missing files
 never select partial mode. --local DIR --inventory reports heads without validation.
 
---deadline-minutes bounds the live audit's wall: once it has passed, no request, retry
-or phase is started, every verdict collected so far is printed, and the run fails. A
-hosted job that is killed at its ceiling prints nothing, so the deadline sits below it.
+--deadline-minutes bounds the live audit's wall: once it has passed, no request, retry,
+forwarder visit or phase is started, every verdict collected so far is printed, and the
+run fails. A hosted job that is killed at its ceiling prints nothing, so the deadline
+sits below it.
 
 The live deployment check is separate from the required source registry/history gate.
 Tests cover the parsing and failure controls with fixtures.
@@ -1390,15 +1391,29 @@ def visited_address(old: str) -> str:
 
 
 def forwarder_arrivals(
-    browser: Browser | BrowserContext, site: str, *, timeout: float
+    browser: Browser | BrowserContext,
+    site: str,
+    *,
+    timeout: float,
+    before_visit: Callable[[], object] | None = None,
+    results: list[tuple[bool, str]] | None = None,
 ) -> list[tuple[bool, str]]:
     """Visit each address a page used to have in `browser`, with a query string and a
     fragment, and require it to arrive where the page is now with both: a page of the
     site, or for a page that left it the address off the site it is sent to. The arrival
     is the address the browser commits to, so a slow page at the far end is not waited
-    for."""
-    results: list[tuple[bool, str]] = []
+    for.
+
+    Each visit waits up to twice `timeout`, so `before_visit` is called before each one:
+    the audit's deadline check, which raises to stop the phase between visits rather than
+    after all of them. Verdicts are appended to `results` where the caller gives one, so
+    a visit sequence the deadline stops keeps those it reached, and the list is returned.
+    """
+    if results is None:
+        results = []
     for old, new in render_overview.MOVED_PAGES:
+        if before_visit is not None:
+            before_visit()
         start = site + visited_address(old) + FORWARDED_SUFFIX
         arrival = (
             new if new.startswith("https://") else site + site_urls.canonical_path(new)
@@ -1417,20 +1432,32 @@ def forwarder_arrivals(
     return results
 
 
-def forwarders_followed(site: str, *, timeout: float) -> list[tuple[bool, str]]:
+def forwarders_followed(
+    site: str,
+    *,
+    timeout: float,
+    before_visit: Callable[[], object] | None = None,
+    results: list[tuple[bool, str]] | None = None,
+) -> list[tuple[bool, str]]:
     """`forwarder_arrivals` in the pinned browser. `SQPACK_CHROMIUM` names a browser the
-    environment supplies, as the other browser tools read it."""
+    environment supplies, as the other browser tools read it. What `before_visit` raises
+    closes the browser and propagates; only the browser's own errors become a verdict."""
+    if results is None:
+        results = []
     try:
         with sync_playwright() as playwright:
             browser = playwright.chromium.launch(
                 executable_path=os.environ.get(BROWSER_OVERRIDE)
             )
             try:
-                return forwarder_arrivals(browser, site, timeout=timeout)
+                forwarder_arrivals(
+                    browser, site, timeout=timeout, before_visit=before_visit, results=results
+                )
             finally:
                 browser.close()
     except PlaywrightError as error:
-        return [(False, f"the forwarders could not be visited: {error}")]
+        results.append((False, f"the forwarders could not be visited: {error}"))
+    return results
 
 
 def deployed_registry_checks(
@@ -1544,9 +1571,9 @@ def local_site_checks(
 
 
 class _DeadlineError(Exception):
-    """The audit's wall deadline passed: raised before the request, retry or phase that
-    would have followed it, naming the phase it passed in. `main` prints what `check`
-    had collected by then and fails the run."""
+    """The audit's wall deadline passed: raised before the request, retry, forwarder
+    visit or phase that would have followed it, naming the phase it passed in. `main`
+    prints what `check` had collected by then and fails the run."""
 
     def __init__(self, phase: str, deadline: float) -> None:
         super().__init__(f"the audit's deadline of {deadline:g}s passed during {phase!r}")
@@ -1571,10 +1598,12 @@ def check(
     cache hits, including HEAD requests satisfied by a GET, add no request.
 
     `deadline` is a wall budget in seconds from the start. Once it has passed, no
-    request, retry or phase is started: `_DeadlineError` is raised instead, with
-    every verdict so far in `results`. The browser phases keep their own timeouts, so
-    the boundary before each is what bounds them. With no deadline nothing here
-    changes: the same requests, retries, verdicts and progress, in the same order.
+    request, retry, forwarder visit or phase is started: `_DeadlineError` is raised
+    instead, with every verdict so far in `results`. The forwarder visits read it
+    before each visit, so that phase overruns it by at most one visit; the workbench
+    startup keeps its own timeouts, so the boundary before it is what bounds it. With
+    no deadline nothing here changes: the same requests, retries, visits, verdicts and
+    progress, in the same order.
     """
     if results is None:
         results = []
@@ -1644,13 +1673,8 @@ def check(
         for row in registered
         if row.kind == "record" and (match := re.fullmatch(r"cases/(\d+)\.html", row.path))
     )
-    # The walk appends as it goes, so a deadline in this phase keeps what it reached; a
-    # walk that answers with a list of its own instead is added whole.
-    walked = deployed_registry_checks(
-        site, read, timeout=timeout, rows=registered, results=results
-    )
-    if walked is not results:
-        results.extend(walked)
+    # The walk appends as it goes, so a deadline in this phase keeps what it reached.
+    deployed_registry_checks(site, read, timeout=timeout, rows=registered, results=results)
     phase("content")
     site = site.rstrip("/") + "/"
 
@@ -1990,7 +2014,10 @@ def check(
         results.append((same, line))
     if browser:
         phase("browser forwarders")
-        results.extend(forwarders_followed(site, timeout=timeout))
+        # Each visit waits up to twice the timeout, so the deadline is read before each
+        # one, and the visits append as they go: a deadline in this phase keeps the
+        # arrivals it reached.
+        forwarders_followed(site, timeout=timeout, before_visit=expired, results=results)
 
     phase("workbench")
     workbench_url = site + WORKBENCH_PATH

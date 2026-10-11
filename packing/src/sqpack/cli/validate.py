@@ -4008,6 +4008,17 @@ _CORE = (
     "packing/cases/__init__.py",
     *_TOOLCHAIN,
 )
+# The gate's own module, where every step's action is defined. An attributed step that
+# runs no mapped Python claims it by hand: an edit to its command list must select it,
+# and until PR 507 review A7 four such steps passed `--push` unselected. The others reach
+# it through `_CORE` or `*.py`, and
+# `test_every_attributed_step_claims_the_module_that_defines_its_action` holds every one.
+_GATE = ("packing/src/sqpack/cli/validate.py",)
+# pytest loads `conftest.py` without an import edge, so the run-module derivation cannot
+# see it from a test target. Every step that runs a pytest target claims it by hand, and
+# `test_every_attributed_step_claims_the_modules_it_runs` adds each conftest on the path
+# to a target to the closure it holds the step to (PR 507 review A6).
+_PYTEST_CONFTESTS = ("packing/tests/conftest.py",)
 _ENGINE_SRC = ("packing/sqsearch/*",)
 _MEASURE_VERIFIER_SRC = (
     *_CORE,
@@ -4037,7 +4048,8 @@ _RESULTS = ("packing/campaign/series/*",)
 # whose import closure enters that family claims the family whole: a list of its members
 # would move with every renderer edit, and the closure test holds the step to the
 # closure, not to the path its own run happens to take through it. Measured over the
-# static graph on 2026-10-10: 138 files from any member, 96 of them under `devtools/`.
+# static graph from `render_overview` on 2026-10-11, with the closure test's own helpers
+# (PR 507 review A3): 138 files, 97 of them under `devtools/`.
 _RENDERER_HUB = (
     "packing/devtools/*",
     "packing/cases/gobel10/*",
@@ -4248,6 +4260,7 @@ STEPS: tuple[Step, ...] = (
             # `*.json` is claimed by `retained JSON`, so without this there is no
             # whole-gate fallback for a fixture edit (PR 496 review G2).
             "packages/workbench/*.json",
+            *_GATE,
         ),
     ),
     Step(
@@ -4266,6 +4279,7 @@ STEPS: tuple[Step, ...] = (
             # The contract test imports the gate, the bead reader and the explainer.
             *_CORE,
             *_RENDERER_HUB,
+            *_PYTEST_CONFTESTS,
         ),
     ),
     # 2.5s locally for 892 Python files and 188 probes: the guard parses every Python file
@@ -4332,7 +4346,7 @@ STEPS: tuple[Step, ...] = (
         broad=True,
         frontend=True,
         start_early=True,
-        touches=(*_CORE, *_SITE_INPUTS, *_RENDERER_HUB),
+        touches=(*_CORE, *_SITE_INPUTS, *_RENDERER_HUB, *_PYTEST_CONFTESTS),
     ),
     # 9.63s.
     Step(
@@ -4795,7 +4809,7 @@ STEPS: tuple[Step, ...] = (
         fast=True,
         broad=True,
         needs_engine=True,
-        touches=_ENGINE_SRC,
+        touches=(*_ENGINE_SRC, *_GATE),
     ),
     Step(
         "lint floor (rust)",
@@ -4806,6 +4820,7 @@ STEPS: tuple[Step, ...] = (
             *_ENGINE_SRC,
             "packing/devtools/check_rust_floor.py",
             "packing/tests/test_rust_floor_contract.py",
+            *_GATE,
         ),
     ),
     # The clean-room measure verifier (think-gpe0): its crate's lint, tests and release
@@ -4839,6 +4854,7 @@ STEPS: tuple[Step, ...] = (
             "packing/tests/test_n17_bb_native.py",
             "packing/tests/test_n17_bb_native_edges.py",
             "packing/tests/test_build_n17_bb_native.py",
+            *_PYTEST_CONFTESTS,
             "packing/devtools/check_rust_floor.py",
             "packing/tests/test_rust_floor_contract.py",
             # What the pilot and its replay tests import beneath the names above.
@@ -5115,7 +5131,7 @@ STEPS: tuple[Step, ...] = (
         fast=True,
         records=True,
         # The mirrored list is a Make variable, so the Makefile is part of the contract.
-        touches=("Makefile", ".agents/*", ".claude/*"),
+        touches=("Makefile", ".agents/*", ".claude/*", *_GATE),
     ),
     Step(
         "X-027 mathematics parses with pinned KaTeX",
