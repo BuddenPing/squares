@@ -4074,7 +4074,7 @@ def test_the_sites_own_statement_follows_readmes_introduction(about: str, result
         _markdown_text(
             "Independently, Evan Daniel has proved the optimality of an infinite family, "
             r"$s(k^2 - 3) = k$ for every $k \ge 6$, along with exact values at "
-            "21, 32 and 45 squares."
+            "21, 32, 45 and 60 squares."
         ),
     ]
     text = _rendered_text(narrative)
@@ -4100,7 +4100,7 @@ def test_the_sites_own_statement_follows_readmes_introduction(about: str, result
         ("cases/11.html", "eleven squares"),
         ("results.html#t-064", "an infinite family"),
         ("results.html#verification-ladders", "AI-assisted verification"),
-        *((f"cases/{n}.html", str(n)) for n in (21, 32, 45)),
+        *((f"cases/{n}.html", str(n)) for n in (21, 32, 45, 60)),
     ):
         assert re.search(
             rf'<a href="{re.escape(address)}"[^>]*>{re.escape(label)}</a>', narrative
@@ -4117,7 +4117,7 @@ def test_the_sites_own_statement_follows_readmes_introduction(about: str, result
     assert by_id["T-060"].group == groups["builds-on-project"]
     assert by_id["T-037"].credit.startswith("Kleddamag")
     assert by_id["T-037"].group == groups["builds-on-project"]
-    exact = {"T-064": None, "T-052": [21], "T-051": [32], "T-053": [45]}
+    exact = {"T-064": None, "T-052": [21], "T-051": [32], "T-053": [45], "T-062": [60]}
     for result, n_values in exact.items():
         record = by_id[result].record
         assert by_id[result].credit.startswith("Daniel"), result

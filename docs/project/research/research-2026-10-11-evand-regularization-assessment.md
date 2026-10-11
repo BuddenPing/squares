@@ -446,10 +446,11 @@ Three cases follow for this register:
   ceiling as its verified bound: 59 cite
   `E-evand-exact-ceilings-2026-10-05-exact-replay` and 15 other evidence (the Göbel
   family’s exact forms, the $\mathbb{Q}(\sqrt{2})$ and $\mathbb{Q}(\sqrt{7})$ lifts, and
-  per-count certificates at $n = 11$, 17, 29 and 51), each read from its
-  `frontier/n-NNN.md` `verified_upper_bound`. A solved view there lands within about
-  $10^{-14}$ of the verified bound, so what the regularization can add there is at most
-  a T-146-sized refinement, not a hundred new bounds.
+  per-count certificates at $n = 11$, 17, 29 and 51), each read from its case record’s
+  verified upper bound.
+  A solved view there lands within about $10^{-14}$ of the verified bound, so what the
+  regularization can add there is at most a T-146-sized refinement, not a hundred new
+  bounds.
 
 - **$S'$ above the verified bound by a relative $10^{-20}$.** Where the register already
   verifies the exact optimum (every exact-form record, e.g. $n = 10$ at
