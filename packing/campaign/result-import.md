@@ -44,10 +44,19 @@ W1 phase on one branch:
 5. **Open one draft pull request** with `tbd shortcut create-or-update-pr-simple`. It
    lists each item with its bead and the stage it reached, and every source under Not
    Checked.
-6. **Draft the replies** each issue is owed, in its answer bead.
+6. **Render the announcement** of the results the pass registered, from `packing/`:
+   `uv run --frozen --all-extras --group dev python -m devtools.render_announcement
+   --since YYYY-MM-DD --github`, with the day the pass began, or `--ids` and the pass’s
+   `T-NNN`. [The tool](../devtools/render_announcement.py) prints a dated header and one
+   short line per result, crediting each person by an X handle the record or their
+   GitHub profile declares and by name otherwise, and says on stderr what it left out
+   and where each handle came from.
+   Put its output in the pull request description under **Announcement**, for the owner
+   to post; an agent never posts it.
+7. **Draft the replies** each issue is owed, in its answer bead.
    They are posted after the merge, from `main`, by the owner or at the owner’s request
    ([stage 7](#stage-7-answer)).
-7. **Sweep again** with `make intake`, after the branch’s changes to the records.
+8. **Sweep again** with `make intake`, after the branch’s changes to the records.
    The pass is done when nothing needs action, or when the pull request says why each
    remaining item waits.
 
@@ -92,13 +101,18 @@ claude/intake-YYYY-MM-DD, with today's date.
 6. Commit, push the branch, and open one draft pull request with
    `tbd shortcut create-or-update-pr-simple`. List every item with its bead and the
    stage it reached, and every source the sweep could not check.
-7. Draft each reply an issue is owed in its answer bead. Do not post it.
-8. Run `make intake` again and report every item that still needs action.
+7. From packing/, run `uv run --frozen --all-extras --group dev python -m
+   devtools.render_announcement --since YYYY-MM-DD --github` with the day this pass
+   began, and add its output to the pull request description under "Announcement",
+   for the owner to post. Do not post it.
+8. Draft each reply an issue is owed in its answer bead. Do not post it.
+9. Run `make intake` again and report every item that still needs action.
 
 Never merge, never push to main, never post, edit or close anything on a GitHub issue
-without the owner's word, and never start a replay measured in CPU-hours without a
-budget the owner has set. If github.com, kingbird.myphotos.cc or evand.github.io is
-unreachable, say so in the pull request and continue with the rest.
+without the owner's word, never post the announcement, and never start a replay
+measured in CPU-hours without a budget the owner has set. If github.com,
+kingbird.myphotos.cc or evand.github.io is unreachable, say so in the pull request and
+continue with the rest.
 ```
 
 ## Intake Sources
