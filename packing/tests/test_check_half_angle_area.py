@@ -1119,3 +1119,143 @@ def test_the_n207_certificate_is_two_placed_patches_of_the_n70_and_the_n153_is_n
     n153 = lineage["#504 n=153 from regularized n=70"]
     assert max(patch["squares"] for patch in n153) == 31
     assert max(patch["exact"] for patch in n153) == 1
+
+
+# --------------------------------------------------------------------------- #500
+
+SQUISH_500 = (176, 181, 238, 239, 270, 271, 272, 304, 305)
+#: The 15-digit sides issue #500 prints: each is its exact side cut, below it by less
+#: than one unit in the last place, so none is a bound the route would admit.
+SQUISH_500_ISSUE_DISPLAYS = {
+    176: "13.812856253277056",
+    181: "13.950819531022924",
+    238: "15.924106785321494",
+    239: "15.948443327300499",
+    270: "16.928196993329016",
+    271: "16.949116687815009",
+    272: "16.965586474837671",
+    304: "17.929657042170880",
+    305: "17.950544853925636",
+}
+#: How many square-to-wall clearances the third route finds exactly zero at each count.
+SQUISH_500_WALL_CONTACTS = {
+    176: 30,
+    181: 30,
+    238: 18,
+    239: 38,
+    270: 37,
+    271: 43,
+    272: 41,
+    304: 10,
+    305: 19,
+}
+
+
+def test_the_500_roster_is_nine_derived_facts() -> None:
+    found = route.import_cases(("#500",))
+    assert [(case.issue, case.n, case.read) for case in found] == [
+        ("#500", n, f"facts/n-{n:03d}.yaml") for n in SQUISH_500
+    ]
+    assert found[0].side == Fraction(
+        305005022674381157367132529416905207296020948646520876053762749858683599318120744,
+        22081242074898135703849455266036121393870562834861102970956326327326447327968587,
+    )
+    assert found[-1].side == Fraction(
+        176574386584524522718242075735181894343653439251445905894414633471908824717084407,
+        9836714596766635588546138051753839920746733217534271639970138607199828771763358,
+    )
+    # Every side is the one the packet's own HOUSES reader rebuilds for the register.
+    for case in found:
+        assert case.side == upper.house_side("[SQUISH fourth request 2026-10-11]", case.n)
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize("n", SQUISH_500)
+def test_the_500_imports_agree_with_their_receipt_plan_and_print_to_every_digit(
+    n: int,
+) -> None:
+    """Each certificate touches the box (a least wall clearance of exactly 0, the far
+    wall among the walls touched) and clears every pair by the 10^-32 the source states;
+    its side, poses and margins are the maintained routes' and the plan's."""
+    case = next(case for case in route.import_cases(("#500",)) if case.n == n)
+    row = route.decide_import(case)
+    packet = route.WEB / case.packet
+    maintained = upper.check_certification(packet)[n]
+    claims = dict(
+        route.PLAN_CLAIM.findall(upper.register_plan(packet)["results.yaml"]["claim"])
+    )
+    frozen = next(r for r in upper.check_claims(packet)["results"] if r["n"] == n)
+    assert row["passed"]
+    assert (row["wall_clearance"], row["far_wall_clearance"]) == ("0", "0")
+    assert row["wall_contacts"] == SQUISH_500_WALL_CONTACTS[n]
+    assert row["least_distance"] == "1.000000e-32"
+    assert all(row["controls"].values())
+    assert (
+        route.compare_import(
+            row, maintained, literal(claims[str(n)]), frozen, frozen["offered_side"]
+        )
+        == []
+    )
+    # The issue's 15-digit display is the exact side cut, so it is no ceiling and the
+    # route's admission by rounding up refuses it; the exact fraction is admitted.
+    assert not admitted(case.side, SQUISH_500_ISSUE_DISPLAYS[n])
+    assert admitted(case.side, frozen["offered_side"])
+
+
+def test_couzos_451_certificate_is_read_as_t128_states_it() -> None:
+    side, placements = route.couzo_451_packing(127)
+    assert side == upper.house_side("[Couzo exact refinements 2026-10-08]", 127)
+    assert len(placements) == 127
+    assert decide_placed(side, placements).passed
+    assert route.parent_packing("T-128", 127) == (side, placements)
+    assert route.parent_packing("#481", 209)[0] == upper.house_side(
+        "[SQUISH third request 2026-10-09]", 209
+    )
+
+
+def test_a_lineage_at_a_coarser_nearness_counts_a_moved_square() -> None:
+    """One grid square moved by a thousandth leaves three by pose, below the floor of
+    four, so nothing is reported at `NEAR`; at a hundredth the moved square counts."""
+    side = Fraction(2)
+    parent = tuple(placed(GRID))
+    x, y, c, s = parent[3]
+    moved = (*parent[:3], (x + Fraction(1, 1000), y, c, s))
+    assert route.patch_lineage((side, moved), (side, parent), Fraction(1)) == []
+    coarse = route.patch_lineage(
+        (side, moved), (side, parent), Fraction(1), near=Fraction(1, 100)
+    )
+    assert (coarse[0]["squares"], coarse[0]["exact"]) == (4, 3)
+    with pytest.raises(AreaRouteError):
+        route.patch_lineage((side, moved), (side, parent), Fraction(1), near=Fraction(0))
+
+
+@pytest.mark.slow
+def test_the_500_pieces_reappear_to_the_eye_and_not_by_pose() -> None:
+    """The source names Couzo's 127 (T-128) less six squares as a piece of the 176 and
+    SQUISH's #481 209 whole as a piece of the 270 and the 304. Within a tenth of a unit
+    most of each piece reappears, under a reflection of the 127's box and the identity
+    for the 209; within 10^-9 only upright squares at lattice positions do, and no
+    tilted square of either piece keeps its pose."""
+    found = route.import_cases(("#500",))
+    lineage = route.lineage_gaps(found)
+    by_pose = {name: patches[0] for name, patches in lineage.items()}
+    assert {
+        name: (p["symmetry"], p["squares"], p["turned_beyond_1e-6"], p["exact"])
+        for name, p in by_pose.items()
+    } == {
+        "#500 n=176 from T-128 n=127": (4, 20, 0, 1),
+        "#500 n=270 from #481 n=209": (0, 99, 0, 1),
+        "#500 n=304 from #481 n=209": (0, 98, 0, 1),
+    }
+    coarse = {}
+    for case in found:
+        named = route.LINEAGE.get((case.issue, case.n))
+        if named is None:
+            continue
+        key, m, dilation = named
+        parent = route.parent_packing(key, m)
+        best = route.patch_lineage(
+            (case.side, case.placements), parent, dilation, near=Fraction(1, 10)
+        )[0]
+        coarse[case.n] = (best["symmetry"], best["squares"], best["turned_beyond_1e-6"])
+    assert coarse == {176: (4, 115, 59), 270: (0, 180, 36), 304: (0, 188, 43)}
