@@ -39,8 +39,12 @@ by the policy's decision table. Per count, in order:
    `regularize.json` with the result's poses at 50 digits. It starts from the solve's KKT
    point (`--frame kkt`, the default, upstream's own input) or, with `--frame witness`,
    from the witness's own exact pose at `s_W` to 80 digits beside the solve's free-square
-   list, so that the regularizer keeps the witness's side and rotations; the KKT point
-   moves both by about `10^-10` at a rational witness whose side has slack.
+   list, so that the regularizer keeps the witness's side and rotations. At a rational
+   witness whose side has slack the KKT point lowers the side by about `10^-10` and can
+   turn a tilted band by hundredths of a degree (0.0115 degrees at n = 70), which no
+   exact rotation of the witness matches. In the pilot of 11 October 2026 the witness
+   frame did not rescue those counts (70, 129, 146): upstream's 80-digit verification
+   finds overlaps of about `10^-10` at `s_W` and its certificate is invalid.
 5. **Import.** The dilated certificate becomes `view-solved.yaml`, a rational
    centre-basis Witness/v2, through `devtools.evand_exact_certificates` (`parse`,
    `basis_witness`), decided by `sqpack.witness.exact_verify`, the independent checker and
@@ -61,9 +65,11 @@ by the policy's decision table. Per count, in order:
    its own; the first row that matches decides. The count's decision is the same-side
    view's where stage 6 produced one, else the solved view's. Row 1's "no output" is a
    solve that did not certify or timed out, or a regularization that raised, timed out,
-   found its placement infeasible, failed its 80-digit verification or wrote a
-   certificate upstream's checker refused; a placement LP that merely stalled
-   (`place: stalled`) still yields a verified output and is not row 1.
+   found its placement infeasible, or wrote no certificate upstream's own checker accepts.
+   A placement LP that merely stalled (`place: stalled`) still yields an output and is not
+   row 1, and neither is a failed 80-digit verification (`verify_ok: false`) beside a
+   certificate upstream accepted: upstream's checks are evidence and never decide, so that
+   certificate goes to this project's routes like any other.
 
 Every count writes `RUN/n-NNN/report.json`, and the run writes `RUN/receipt.json`: the
 generator (name, pin, local patches, interpreter), the parameters, one row per count with
@@ -741,10 +747,8 @@ def regularize_failure(document: Mapping[str, Any]) -> str | None:
         return f"regularize error: {document['error']}"
     if document.get("place") == "infeasible":
         return "regularize: infeasible placement"
-    if not (document.get("verify") or {}).get("ok"):
-        return "regularize: the 80-digit verification failed"
     if not document.get("cert_ok"):
-        return "regularize: the certificate did not verify"
+        return "regularize: upstream's checker refused the certificate"
     return None
 
 

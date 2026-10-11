@@ -787,12 +787,20 @@ def resolve(
         )
     n = len(view)
     generator = [(rounded_fraction(pose.x), rounded_fraction(pose.y)) for pose in view]
+    # The generator's own box, from each view square's own angle: before matching, the
+    # view's rotations need not be the witness's, nor in the witness's square order.
     box = max(
         max(
-            abs(float(pose.x)) + support_f((float(fx), float(fy)), (1.0, 0.0)),
-            abs(float(pose.y)) + support_f((float(fx), float(fy)), (0.0, 1.0)),
+            abs(float(pose.x)) + support_f(own, (1.0, 0.0)),
+            abs(float(pose.y)) + support_f(own, (0.0, 1.0)),
         )
-        for pose, (fx, fy) in zip(view, frame.rotations, strict=True)
+        for pose in view
+        for own in [
+            (
+                math.cos(math.radians(float(pose.degrees))),
+                math.sin(math.radians(float(pose.degrees))),
+            )
+        ]
     )
     report["source"] = {
         "id": source_witness.get("id"),

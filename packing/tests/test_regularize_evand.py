@@ -101,6 +101,19 @@ def test_input_agrees_with_upstreams_batch_input(n: int) -> None:
         assert min(turn, 90 - turn) < 1e-12
 
 
+def test_witness_frame_is_the_exact_pose_at_s_w_to_eighty_digits() -> None:
+    """`--frame witness` hands the regularizer the policy's frame: here n = 70's exact pose."""
+    source = witness(70)
+    frame = drive.source_frame(source)
+    assert frame.side is not None
+    n, side, rows = drive.read_input(drive.frame_text(source, frame))
+    assert n == 70
+    assert abs(Fraction(side) - frame.side) < Fraction(1, 10**78)
+    for (x, y, _degrees), (cx, cy, _c, _s) in zip(rows, frame.placements, strict=True):
+        assert abs(Fraction(x) - cx) < Fraction(1, 10**78)
+        assert abs(Fraction(y) - cy) < Fraction(1, 10**78)
+
+
 # --------------------------------------------------------------------------------------
 # Stage 2: the replica
 # --------------------------------------------------------------------------------------
