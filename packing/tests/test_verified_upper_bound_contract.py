@@ -90,6 +90,21 @@ DECLARED_CONSUMER_TREES = {
 }
 
 DECLARED_CONSUMERS = {
+    "packing/devtools/regularize_evand.py": (
+        "the regularization driver reads each case's verified bound as U, the ceiling a "
+        "regularized view's exact side is compared with (policy rows 3 and 4): a side below "
+        "it is a register-result candidate, a side above it is not a drawing frame. It never "
+        "reads the field as s(n) or as the witness's side, which it takes from the witness"
+    ),
+    "packing/devtools/regularize_gallery.py": (
+        "the regularization review gallery prints U from a run's report beside the view's "
+        "side, labelled as the certified upper bound; a ceiling shown for comparison, never "
+        "s(n)"
+    ),
+    "packing/tests/test_regularize_gallery.py": (
+        "a synthetic run report for the gallery's tests carries U as the driver writes it; "
+        "the test checks it is printed, and reads no value from it"
+    ),
     "vendor/evand-regularize/search/exact/batch/register.py": (
         "Evan Daniel's vendored batch builder (third-party bytes at a pin, changed only by "
         "a recorded patch): copies the frontier's verified value beside the reported one into "
