@@ -714,6 +714,7 @@ def test_check_accepts_the_deployed_lazy_record_links_without_refetching(
         *,
         timeout: float,
         rows: Sequence[site_urls.SiteURL],
+        results: list[tuple[bool, str]] | None = None,  # noqa: ARG001 - the seam's signature
     ) -> list[tuple[bool, str]]:
         assert rows
         for address in OVERVIEWS:
