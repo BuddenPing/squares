@@ -3660,6 +3660,16 @@ def _regularized_atlas_drawings(context: Context) -> str:
     return output
 
 
+def _vendored_evand(context: Context) -> str:
+    # About 0.2s: `vendor/evand-regularize`, Evan Daniel's regularizer copied at a pin, is
+    # held to its manifest -- each file's size and SHA-256 at the upstream commit, each
+    # recorded local change, and no file beside them. The digests cross a real boundary
+    # (downloaded third-party code, OR-16); nothing but this step reads them.
+    output = _module(context, "devtools.check_vendored_evand")
+    _require_text(output, "vendored copy check passed")
+    return output
+
+
 def _chelokot_lean_replay(context: Context) -> str:
     # Milliseconds: the retained receipt of the Lean replay that s(k^2-2) = k rests on
     # (think-ym34) is re-read offline -- the pinned commit, toolchain and Mathlib, the
@@ -5356,6 +5366,17 @@ STEPS: tuple[Step, ...] = (
         ),
     ),
     Step(
+        "the vendored regularizer matches its pin",
+        _vendored_evand,
+        fast=True,
+        records=True,
+        touches=(
+            *_CORE,
+            "vendor/evand-regularize/*",
+            "packing/devtools/check_vendored_evand.py",
+        ),
+    ),
+    Step(
         "the register's reliance on T-007 is inventoried",
         _t007_consumer_audit,
         fast=True,
@@ -5982,6 +6003,9 @@ TREE_REUSABLE_FAST_STEPS = frozenset(
         "regularized atlas views match their index",
         "regularized atlas drawings match their index",
         "the Lean replay receipt for s(k^2-2) = k holds",
+        # The vendored files and their manifest, compared byte for byte; git is asked only
+        # which files the tree holds. No clock, no network, no history.
+        "the vendored regularizer matches its pin",
         "the inventory agrees with the register",
         "results rungs are earned and the view agrees",
         "the synopsis headline carries every result",
