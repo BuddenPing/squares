@@ -42,7 +42,11 @@ HUNT3 = "evand-record-hunt3-2026-10-10"
 REGULARIZED = "evand-regularized-2026-10-10"
 #: Issue #500, SQUISH's fourth request, kept as derived facts; #506 is smaller at 304 and 305.
 SQUISH_500 = "squish-500-fourth-request-2026-10-11"
-EVERY = (*PACKETS, *DERIVED, MISHAPOLK, COUZO_488, HUNT3, REGULARIZED, SQUISH_500)
+#: Issue #506: Couzo's next release, two counts in the corpus and nine beyond it.
+COUZO_506 = "couzo-certificates-2026-10-11"
+#: How a declaration cites a beyond-horizon row of the source register.
+COVERAGE_URL = "packing/frontier/source-coverage.yaml"
+EVERY = (*PACKETS, *DERIVED, MISHAPOLK, COUZO_488, HUNT3, REGULARIZED, SQUISH_500, COUZO_506)
 
 
 def _packet(name: str) -> Path:
@@ -602,6 +606,50 @@ def test_the_beyond_horizon_record_is_what_the_coverage_check_reparses() -> None
     assert claims == {343: "18.994903529220497", 344: "18.995489275430816"}
 
 
+def test_the_506_claims_hold_each_count_against_its_case_or_tracked_row() -> None:
+    rows = _rows(COUZO_506)
+    requested = [n for n, row in rows.items() if row["requested"]]
+    assert requested == [304, 305, 338, 339, 344, 375, 376, 378, 379, 380, 381]
+    assert all(rows[n]["smallest"] == reports.THIS for n in requested)
+    assert [rows[n]["case"]["result"] for n in (304, 305)] == ["T-098", "T-098"]
+    # Issue #500's prints, the Mondrian packings both start from, allow nothing smaller.
+    for n in (304, 305):
+        (squish,) = [other for other in rows[n]["pending"] if other["report"] == "#500"]
+        assert squish["relation"] == "below"
+    # Beyond the corpus, each requested count is below the row the register tracked there
+    # when the issue was read, and 380 and 381 had none.
+    tracked = {
+        n: [other["relation"] for other in rows[n]["pending"] if other["url"] == COVERAGE_URL]
+        for n in requested[2:]
+    }
+    assert all(rows[n]["case"] is None for n in tracked)
+    assert {n for n, relations in tracked.items() if relations == ["below"]} == {
+        338,
+        339,
+        344,
+        375,
+        376,
+        378,
+        379,
+    }
+    assert tracked[380] == tracked[381] == []
+    # The four the issue does not name: 175 and 340 are the smallest known, 308 and 343 not.
+    assert [n for n, row in rows.items() if not row["requested"]] == [175, 308, 340, 343]
+    assert {n: rows[n]["smallest"] for n in (175, 308, 340, 343)} == {
+        175: reports.THIS,
+        308: "T-141 (#489)",
+        340: reports.THIS,
+        343: "evand-record-hunt3-2026-10-10",
+    }
+    claims = coverage_check.load_claims(_packet(COUZO_506) / reports.BEYOND)
+    assert sorted(claims) == requested[2:]
+    assert claims[344] == "18.994353244944"
+    # A later import reads these sides exactly, by the packet's source key.
+    assert reports.house_side("[Couzo certificates 2026-10-11]", 304) == Fraction(
+        8964782973424250487190982671787, 5 * 10**29
+    )
+
+
 @pytest.mark.parametrize(
     "mutation", ["house-side", "pending-relation", "dropped-row", "beyond-removed"]
 )
@@ -878,6 +926,7 @@ def test_the_register_plan_states_each_bound_as_check_standing_reads_it(name: st
         PINGYOU_503: "2026-10-11",
         PINGYOU_504: "2026-10-11",
         SQUISH_500: "2026-10-11",
+        COUZO_506: "2026-10-11",
     }
     assert result["attribution"]["published"] == published.get(name, "2026-10-10")
     evidence = plan["evidence.yaml"]
