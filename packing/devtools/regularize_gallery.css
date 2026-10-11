@@ -414,7 +414,8 @@ tbody th {
 
 .hist {
   display: inline-grid;
-  grid-template-columns: repeat(5, 3.4ch);
+  grid-template-columns: repeat(5, 4ch);
+  column-gap: 1ch;
   font-family: var(--font-data);
   text-align: right;
 }

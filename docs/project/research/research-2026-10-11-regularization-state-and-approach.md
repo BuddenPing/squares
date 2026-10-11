@@ -182,6 +182,102 @@ reach only the precision band (34 squares then, 65 now), so it was never pursued
 - **The website shows regularized drawings only, with no badges**, and its legend keeps
   only tilt colours and contact shades (owner, 5 and 9 October 2026).
 
+### The Spikes of 11 October 2026
+
+**The pipeline.** `devtools.regularize_evand` drives the vendored code at `675a5ea`: the
+witness written at full precision as upstream’s input, the exact solve, the regularizer
+(`conservative`, `coincide`, source orientation), the certificate imported and decided
+on three exact routes, `devtools.regularize_same_side` to bring the view to the
+witness’s own side over $\mathbb{Q}$, identity by `arrangement_gap`, the house and stage
+contact histograms, and the policy’s decision table.
+`devtools.regularize_gallery` draws each count’s source, regularized view and current
+layer view with the house renderer.
+Run outputs stay outside the repository; nothing in the record changed.
+
+**Pilot 1: the policy’s edge cases.** Fifteen counts: the epic’s pilot set (10, 26, 70,
+101, 129, 146, 200, 324), the refused-kind controls (5, 10, 11, 17, 37, 51), the T-146
+counts whose identity failed one to one (129, 292), and the generator’s known failure
+(261). “Light” below means squares that share at most one whole side, as the house
+renderer counts them.
+
+| $n$ | Witness | Outcome (policy row) | Angle classes | Light squares | Four-side squares | What moved |
+| --- | --- | --- | --- | --- | --- | --- |
+| 5, 10 | decimal, Göbel family | refused (4): same side impossible | 2 | unchanged | unchanged | nothing visible |
+| 11 | decimal | admit (10) | 2 → 2 | 6 → 6 | 1 → 1 | nothing visible |
+| 17 | decimal | candidate (3), side $10^{-22}$ below the bound | 3 → 3 | unchanged | unchanged | nothing visible |
+| 26 | decimal | admit (10) | 2 → 2 | 1 → 0 | 7 → 8 | one rattler, 0.31, onto the grid |
+| 37 | decimal | candidate (3), $9.9 \times 10^{-15}$ below | 4 → 4 | unchanged | unchanged | 7 squares, up to 0.16 |
+| 51 | $\mathbb{Q}(\sqrt{2})$ | refused (4): no rational frame | 2 | unchanged | unchanged | nothing visible |
+| 70 | rational (Xu) | candidate (3), solved view $1.5 \times 10^{-10}$ below | 6 → 4 | 21 → 16 | 33 → 35 | 10 moved, 6 turned |
+| 101, 200 | decimal | candidate (3), about $10^{-14}$ below | 2 → 2 | unchanged | unchanged | nothing |
+| 129 | rational | candidate (3), solved $1.3 \times 10^{-10}$ below | 8 → 6 | 27 → 19 | 79 → 79 | 20 moved (up to 0.87), 2 turned |
+| 146 | rational | candidate (3), solved $9.8 \times 10^{-11}$ below | 3 → 3 | 38 → 35 | 80 → 80 | 24 moved |
+| 261 | rational (Xu) | refused (1): the exact solve finds it not jammed | 2 | unchanged | unchanged | nothing |
+| 292 | rational (Rehwaldt after Couzo) | **admit (10)** | **24 → 9** | **132 → 54** | **84 → 198** | 102 moved (up to 0.42), 17 turned |
+| 324 | grid | unchanged (5) | 1 | 0 | 324 | nothing |
+
+Identity was one to one at every count that produced a view.
+The run cost 857 CPU-seconds and 670 seconds of wall time at two workers.
+At $n = 292$ the stages took 240 s (exact solve), 49 s (regularizer), 22 to 32 s (each
+exact route), 170 to 206 s (same-side re-solve) and 72 s (`arrangement_gap`).
+
+**What the pilot shows.**
+
+- **Where the packing has a tilted band assembled by an optimizer, the change is large
+  and exactly what the colour conventions need.** At $n = 292$ the band’s 24 hue classes
+  become 9, the light squares fall from 132 to 54, and squares with all four sides
+  shared rise from 84 to 198, at the record’s exact side.
+  The current layer reaches 124 there.
+- **Where the packing is a Göbel-style 45-degree family or a clean grid, there is little
+  to do.** At 5, 10, 11, 17, 51, 101, 200 and 324 nothing visible moves.
+  Those drawings already read cleanly, and their refusals cost nothing visually.
+- **Re-solving finds a lower packing nearby.** At 70, 129 and 146 the exact solve lowers
+  the side by about $10^{-10}$ and turns a tilted band by up to 0.0115 degrees.
+  No exact rotation of the witness matches the turned band, so the same-side re-solve
+  refuses, and the regularized view is a `solved` certificate below the case record’s
+  bound. Those three sides equal T-146’s registered certificates, which the case records
+  have not yet adopted as their bound.
+  Starting the regularizer from the witness’s own pose instead (`--frame witness`) did
+  not help: upstream’s 80-digit verification finds overlaps of about $10^{-10}$ there.
+- **Row 3 is mostly rounding.** At 17, 37, 101 and 200 the same-side view is exact at
+  the witness’s printed side, which lies $10^{-22}$ to $10^{-14}$ below a verified bound
+  that is an exact certificate’s side rounded up at fourteen decimals.
+  Each is technically a new verified bound, so the policy holds the drawing until it is
+  registered.
+
+<!-- PILOT-2 -->
+
+## Key Insights
+
+1. **The record’s side is the binding constraint, and it sorts the 324 counts into four
+   kinds.** A rational witness (217) can be regularized at its own side over
+   $\mathbb{Q}$. A decimal witness whose printed side is at or above its optimum can be
+   regularized at its printed side.
+   A Göbel-family decimal witness, whose printed side truncates an irrational optimum,
+   has no rational packing at that side at all.
+   The algebraic witness at $n = 51$ needs its own field.
+   The same-side re-solve’s survey of $n = 1..80$ shows this split exactly: every
+   rational witness reaches `same`, 15 of 25 decimal witnesses do, and the 10 that do
+   not are the Göbel family.
+2. **The house renderer is strict, so regularization must be exact.** It counts a shared
+   side only when both ends match within $2 \times 10^{-6}$ and merges angle classes
+   only within $10^{-6}$ rad.
+   A float snap would leave squares one rounding away from contact.
+   An exact re-solve over $\mathbb{Q}$ closes contacts with residual zero and makes
+   equal angles literally equal, which is what the renderer rewards.
+3. **Most of the visible gain is in optimizer-packet records**, the same ones X-049
+   found slack in. The Kingbird and Göbel-family drawings are already regular.
+4. **Some “candidates” are the register’s own results seen again.** A regularization run
+   rediscovers registered-but-unadopted refinements (T-146) and the rounding gap between
+   a printed side and its verified bound.
+   Both should be settled in the record before a full run, so the run’s candidate list
+   means something.
+5. **Two generators are complementary.** Evan Daniel’s reaches tilted structure,
+   symmetry and angle merges; the project’s tool measures non-regression square by
+   square. At $n = 292$ Evan Daniel’s view has fewer light squares than the project’s
+   current view (54 against 87) and more four-side squares (198 against 124); at 70 and
+   129 the project’s current view changes nothing visible.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->
