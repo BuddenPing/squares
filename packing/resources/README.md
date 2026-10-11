@@ -1107,6 +1107,31 @@ bound; T-146 records the sides at V3/C3 on the review of 11 October, which accep
 fifteen for finite feasibility only, and as regularizations of the packings the record
 credits to their finders; each is pending adoption.
 
+## PingYou Ltd’s exact certificates, 11 October 2026
+
+**[PingYou n207 certificate 2026-10-11]**: PingYou Ltd’s exact rational certificate for
+n = 207, two placed patches of Ryan Xu’s n70 construction from Evan Daniel’s exact n70
+certificate with two upright grids, pinned at
+`9dc93b6ac2f8fefe038062a74c9a75bf05afdba6`, kept as a derived exact fact, no upstream
+byte retained; [packet](web/pingyou-n207-certificate-2026-10-11/README.md).
+Both project exact routes accept the replayed certificate and refuse both controls, and
+a third exact route agrees and held the fact to the pinned certificate and witness.
+T-147 records the side at V3/C3 on the
+[review of 11 October](../../docs/project/reviews/review-2026-10-11-upper-bound-imports-503-504.md),
+pending adoption. The first commit disclosed OpenAI Codex assistance, and the pinned
+commit removed the disclosure.
+
+**[PingYou n153 certificate 2026-10-11]**: PingYou Ltd’s exact rational certificate for
+n = 153, by its account Ryan Xu’s n70 construction composed with its reflection and an
+upright completion, its contacts reclosed at a new angle, pinned at
+`bc328a7d727aedd0eabebd6ea80285f572b65d2d`, kept as a derived exact fact, no upstream
+byte retained; [packet](web/pingyou-n153-certificate-2026-10-11/README.md).
+Both project exact routes accept the replayed certificate and refuse both controls, and
+a third exact route agrees and held the fact to the pinned certificate and witness.
+T-148 records the side at V3/C3 on the same review, pending adoption; the lineage from
+the n70 is by construction, not by pose.
+The release makes no statement about AI assistance.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->

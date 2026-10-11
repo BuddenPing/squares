@@ -1867,6 +1867,43 @@ sources:
       for the orientations fitted to this project's witnesses, which change no packing.
       MIT-licensed certificates and JSON retained; Claude assistance disclosed. The source claims no record; no KKT,
       same-packing, local or global optimality is admitted.
+  - key: '[PingYou n207 certificate 2026-10-11]'
+    authors: [PingYou Ltd]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-11'
+    lineage: builds-on-project
+    credit: PingYou Ltd after Xu, Daniel, Levy
+    short_credit: PingYou Ltd after Xu et al.
+    note: >-
+      One complete exact certificate at 9dc93b6ac2f8fefe038062a74c9a75bf05afdba6, reported
+      on jlevy/squares#503, composing two placed patches of Xu's #432 n70 construction,
+      taken from Daniel's exact n70 certificate, with two upright grids, centres and
+      container dilated by 1 + 1e-10; the n207 assembly is PingYou Ltd's, and the patches
+      were measured here exactly where the source places them. The source checks with
+      Squares Project (Levy) verification code and supplies a corners Witness/v2. Derived
+      exact facts only; no upstream byte is retained. OpenAI Codex assistance was disclosed
+      in the first commit, 0d8b9c1, and the disclosure removed at the pin. No local or
+      global optimality claim.
+  - key: '[PingYou n153 certificate 2026-10-11]'
+    authors: [PingYou Ltd]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-11'
+    lineage: builds-on-project
+    credit: PingYou Ltd after Xu, Daniel, Levy
+    short_credit: PingYou Ltd after Xu et al.
+    note: >-
+      One complete exact certificate at bc328a7d727aedd0eabebd6ea80285f572b65d2d, reported
+      on jlevy/squares#504: by the source's account, Xu's #432 n70 construction, taken from
+      Daniel's exact n70 certificate, with its reflection and an upright completion, its
+      contacts reclosed at an angle from a degree-seven equation, centres and container
+      dilated by 1 + 2e-13. The lineage is by construction, not by pose: measured here, no
+      placement of the n70 puts more than one of its squares exactly on one of these. The
+      source checks with Squares Project (Levy) verification code
+      and supplies a corners Witness/v2. Derived exact facts only; no upstream byte is
+      retained. No AI-assistance statement; the same author's n207 release disclosed OpenAI
+      Codex assistance and removed it. No local or global optimality claim.
 credited_names:
   Nate Chaoweeraprasit (itsnaka): Chaoweeraprasit
   Siddharth Gupta: Gupta

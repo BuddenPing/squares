@@ -4373,3 +4373,95 @@ issues:
     replies: []
     close_when: The certificates are admitted to certified-sub-patterns.yaml or declined with a reason, and the
       owner has posted the resulting state.
+  - number: 503
+    title: 's(207) ≤ 14.880960373044: registration request'
+    author: BuddenPing
+    opened: '2026-10-11'
+    state: open
+    kind: result-report
+    triage: done
+    summary: >-
+      PingYou Ltd reports an exact rational upper bound at n = 207 in
+      BuddenPing/square-packing-certificates at 9dc93b6ac2f8fefe038062a74c9a75bf05afdba6: rational
+      centre and half-angle rows with a corners Witness/v2, two differently placed patches of Ryan
+      Xu's n70 construction, taken from Evan Daniel's exact n70 certificate, with upright grids of
+      42 and 36 squares, 4.55e-3 below SQUISH's #481. Its own three exact checkers and this
+      repository's two exact checkers at 5b0eb012 are reported to accept it; no optimality is
+      claimed. Imported on 11 October 2026: the certificate kept as a derived exact fact in the
+      pingyou-n207-certificate-2026-10-11 packet, replayed on both maintained exact routes and
+      decided again by a third exact route in the review of the same day, which held the fact to
+      its pinned certificate and witness, measured the two patches where the source places them and
+      found no blocking defect. Registered as T-147 at V3/C3; the case record's house adoption is
+      the next layer. The first commit, 0d8b9c1, and the issue as first posted disclosed OpenAI
+      Codex assistance; the pinned commit and the edited issue removed it without a reason, and
+      which account stands is the author's to say.
+    read_through: '2026-10-11T10:27:00Z'
+    results:
+    - key: n207-exact-certificate
+      claim: s(207) <= 148809603730436756319360591381170501178639/10^40 =
+        14.8809603730436756319360591381170501178639, by n207.cert.json (SHA-256
+        1c334f3170ece68cf2c2f16341660f7a80ef44bf7a9cdb083940d1b99756c071) and its corners Witness/v2
+        pingyou-n207-rational.yaml (SHA-256 09e6d0dff17ae71ae84bde1466b805a67f3b1592496f9ca438b02bde603f6182).
+      source: body
+      register:
+      - T-147
+      evidence:
+      - E-pingyou-503-certificate-report
+      - E-pingyou-503-exact-feasibility
+    beads:
+    - think-0zd4
+    - think-720n
+    answer_bead: think-0zd4
+    replies: []
+    close_when: The import and its disposition are on main, the house adoption at 207 has landed or
+      is owned, the author has been asked which AI-assistance account stands, and the owner has
+      posted the resulting state; optimality is outside this request.
+  - number: 504
+    title: 's(153) ≤ 12.870013850408: registration request'
+    author: BuddenPing
+    opened: '2026-10-11'
+    state: open
+    kind: result-report
+    triage: done
+    summary: >-
+      PingYou Ltd reports an exact rational upper bound at n = 153 in
+      BuddenPing/square-packing-certificates at bc328a7d727aedd0eabebd6ea80285f572b65d2d: rational
+      centre and half-angle rows with a corners Witness/v2, by its account Ryan Xu's n70
+      construction, taken from Evan Daniel's exact n70 certificate, composed with its reflection by
+      the boundary-patch approach of #503 and reclosed at a new angle, exactly
+      0.002015998674135970992348937968 below Evan Daniel's T-146. Its own three exact checkers and
+      this repository's two exact checkers at 5b0eb012 are reported to accept it; no optimality is
+      claimed. Imported on 11 October 2026: the certificate kept as a derived exact fact in the
+      pingyou-n153-certificate-2026-10-11 packet, replayed on both maintained exact routes and
+      decided again by a third exact route in the review of the same day, which held the fact to
+      its pinned certificate and witness and found no blocking defect; the lineage from the n70 is
+      by construction, not by pose. Registered as T-148 at V3/C3; the case record's house adoption
+      is the next layer. The issue omits the template's AI-assistance section; the same author's
+      #503 disclosed OpenAI Codex assistance and then removed it.
+    read_through: '2026-10-11T20:26:51Z'
+    results:
+    - key: n153-exact-certificate
+      claim: s(153) <= 6435006925203522001385040447/500000000000000000000000000 =
+        12.870013850407044002770080894, by n153.cert.json (SHA-256
+        31b3fb3cba73528fab21d085a34f3209684a868e7116059ea5c21e664bca1ff2) and its corners Witness/v2
+        pingyou-n153-rational.yaml (SHA-256 963d6ca7cce053e7ff22baf6438bdf5776b7b06d01e1509e654c73966b9e4d41).
+      source: body
+      register:
+      - T-148
+      evidence:
+      - E-pingyou-504-certificate-report
+      - E-pingyou-504-exact-feasibility
+    beads:
+    - think-4znu
+    - think-720n
+    answer_bead: think-4znu
+    replies:
+    - url: https://github.com/jlevy/squares/issues/504#issuecomment-6113387339
+      date: '2026-10-11'
+      by: jlevy
+      kind: acknowledgement
+      reported:
+      - result: n153-exact-certificate
+    close_when: The import and its disposition are on main, the house adoption at 153 has landed or
+      is owned, and the owner has posted the resulting state; optimality and the undilated contact
+      solution are outside this request.

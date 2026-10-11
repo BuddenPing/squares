@@ -1901,6 +1901,14 @@ OTHER_PROJECTS: tuple[tuple[str, str, str], ...] = (
         ),
     ),
     (
+        "https://github.com/BuddenPing/square-packing-certificates",
+        "PingYou Ltd",
+        (
+            "Exact rational packings of 207 and 153 squares built from Ryan Xu's packing of"
+            " 70, both replayed here (T-147, T-148)."
+        ),
+    ),
+    (
         "https://github.com/griffcass/square-packing",
         "Griffin Casson",
         "Improved packings for n = 103, 105 and other cases.",

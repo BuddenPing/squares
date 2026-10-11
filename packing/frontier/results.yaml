@@ -16096,3 +16096,340 @@ results:
           optimal assignment under the eight symmetries.
         verdict: accepted
         covers: [T-146]
+  - id: T-147
+    kind: upper-bound
+    registered: '2026-10-11'
+    headline: A packing of 207 squares from two placed patches of Ryan Xu's packing of 70
+    claim: >-
+      One complete rational source certificate by PingYou Ltd, reported on
+      jlevy/squares#503, proves a finite upper bound at the exact side it states: s(207) <=
+      14.8809603730436756319360591381170501178639, the fraction
+      148809603730436756319360591381170501178639/10^40 the issue prints.
+
+      The certificate gives a rational side and, for each unit square, a rational centre
+      and the tangent of its half-angle, in SQUISH's JSON rows; its side and centres already
+      carry the guard dilation 10000000001/10000000000 it states, and every square keeps
+      side 1.
+
+      The author reports that three exact Fraction checkers of its own, by vertex
+      projections, by centre and support-radius separating axes and by rational polygon
+      clipping, accept all 21,321 pairs and every wall; that its reconstruction script
+      rebuilds every pose and the side from the n70 parent; and that this repository's
+      sqpack exact_verify and check_rational_witness_independent, run unchanged, accept its
+      corners Witness/v2. The checkers, the reconstruction and the conversion were prepared
+      in one workflow. Those statements are the author's; no source program ran here.
+
+      All three retained jobs, the positive with its duplicate-square and
+      outside-container controls, were decided again here on 11 October 2026 by both
+      maintained exact routes, from an exact fact derived from the pinned certificate, and
+      equal their retained rows. A third exact route, half-extent containment and exact
+      intersection area, decided it with six controls and found the fact to be the packing
+      the pinned certificate and the pinned witness state. The source ran the two
+      maintained routes on its own witness, but neither is its generator's code, and it
+      did not run the third route, so the replay is independently re-implemented. The 11
+      October review found no blocking defect.
+
+      The side is 7.03e-03 below the ceiling the case holds (T-127) and 4.55e-03 below
+      SQUISH's pending T-136; the case record is unchanged until a house is adopted, so it
+      is pending adoption.
+
+      Credit PingYou Ltd (https://github.com/BuddenPing/square-packing-certificates) for
+      the n207 assembly, as the source asks: two differently placed patches of Ryan Xu's
+      n70 construction (issue 432), keeping 60 and 69 whole squares, with upright grids of
+      42 and 36 squares. The patches come from Evan Daniel's exact n70 certificate
+      (https://github.com/evand/square-packing, the regularized n-070 certificate T-146
+      retains), credited to him for its exact retention. Measured pose by pose against
+      that certificate, 60 of its squares reappear exactly in place and 69 under its
+      reflection about the n70's box, transposed and moved by (6, 6), as the source says.
+      The source names SQUISH's n207 of issue 481 only as its comparison, and claims
+      neither the n70 packing nor patch composition in general.
+
+      The source as pinned makes no statement about AI assistance. As first published on 11
+      October 2026, its README and the issue said that the verification, the comparison
+      review and the package preparation were assisted by OpenAI Codex; minutes later a
+      revision titled "Correct attribution in submission materials", the one the issue
+      names, removed that sentence, and the issue was edited to match, with no reason
+      given. The record keeps both accounts until the author says which stands.
+    scope:
+      n_values: [207]
+    verification: V3
+    confirmation: C3
+    significance:
+      score: 3
+      rationale: >-
+        A smaller finite construction side at n = 207, 7.03e-03 below the case ceiling and
+        4.55e-03 below the smallest pending side, by placed boundary patches of an existing
+        packing, a method the record had not seen; no lower bound or optimum.
+      scored: '2026-10-11'
+      by: >-
+        the 11 October review
+        (docs/project/reviews/review-2026-10-11-upper-bound-imports-503-504.md),
+        confirming the draft of think-0zd4 PingYou Ltd import
+    novelty: previously-published
+    attribution:
+      source_keys: ['[PingYou n207 certificate 2026-10-11]']
+      published: '2026-10-11'
+    evidence:
+      - E-pingyou-503-certificate-report
+      - E-pingyou-503-exact-feasibility
+    artifacts:
+      - packing/resources/web/pingyou-n207-certificate-2026-10-11/README.md
+      - packing/resources/web/pingyou-n207-certificate-2026-10-11/acquisition/claims.json
+      - packing/resources/web/pingyou-n207-certificate-2026-10-11/facts/n-207.yaml.gz
+      - packing/resources/web/pingyou-n207-certificate-2026-10-11/receipts/exact-certification.json.xz
+      - packing/devtools/upper_bound_reports.py
+      - packing/devtools/check_half_angle_area.py
+      - docs/project/reviews/review-2026-10-11-upper-bound-imports-503-504.md
+    controls:
+      - packing/tests/test_upper_bound_reports.py
+      - packing/tests/test_upper_bound_reports_503_504.py
+      - packing/tests/test_check_half_angle_area.py
+    notes: >-
+      A separate complete repository replay is retained for n = 207: 1 positive and 2
+      duplicate-square and outside-container controls passed their required outcomes on
+      both routes, 127926 pair decisions; summed over the 3 jobs, the receipt records 54.66
+      route CPU seconds and 103.49 job wall seconds, the longest job 40.08 seconds. Every
+      positive clears every wall by at least 5.00e-11, exactly 1/(2*10^10), and every pair
+      by at least 9.99e-11; the third route finds a least Euclidean distance of 1.00e-10 and
+      no square touching a wall.
+
+      V3 and C3 rest on the 11 October review
+      (docs/project/reviews/review-2026-10-11-upper-bound-imports-503-504.md) and the
+      replay it reproduced (E-pingyou-503-exact-feasibility). Its findings here are
+      non-blocking: the AI-assistance disclosure was removed at the pin (RV-1); the source
+      ran both maintained routes itself, so the independence rests on their authorship,
+      which predates the source, and on the third route (RV-2); no retained check binds the
+      derived fact to its upstream bytes, which the review closed once by fetching the
+      certificate and the witness at the pin (RV-3); the kernel's controls are gross (RV-4);
+      no private-worker custody is on file (RV-6); and the certificate's unread metadata
+      prints a comparison side, 14.885506208841678, that is not SQUISH's (RV-7).
+
+      At n = 207 the certificate is below the case's ceiling (Nate Chaoweeraprasit
+      (itsnaka), improved by Siddharth Gupta, T-127) by exactly
+      70318852589817493681897946459498821361/10^40, about 7.03e-03, and below T-136 (issue
+      481, Nate Chaoweeraprasit) by 4.5459357980020505e-03, the margin the issue gives. No
+      other report of 11 October names 207, so it is the smallest known.
+
+      The review recommends this entry as the house at 207, crediting PingYou Ltd after Ryan
+      Xu's n70 and Evan Daniel's exact certificate of it, then T-136; it replaces the 10
+      October review's recommendation of T-136 there. The earlier houses stay as history,
+      and no house moves until private-worker custody is on file (RV-6).
+
+      The source's own checkers, reconstruction and conversion were not run here. The two
+      maintained routes, the sqpack rational witness verifier and the independent rational
+      corner checker, share certificate parsing, half-angle conversion, Fraction arithmetic
+      and the separating-axis method. No two independent methods, human oversight or
+      optimality is claimed.
+    next_rung: >-
+      V4 and C4 need a second accepted adversarial review by a distinct reviewer and a
+      retained human oversight record; one AI review, of 11 October, is retained.
+      Separately, the next layer of the 2026-10-11 intake stack adopts this entry as the
+      house at 207 once private-worker custody is on file (RV-6), with each earlier house
+      kept as history.
+    activity:
+      state: in-analysis
+      what: >-
+        House adoption at n = 207 in the next layer of the 2026-10-11 intake stack, the
+        case-record adoption lane, with private-worker custody first (RV-6).
+      since: '2026-10-11'
+      link: think-fvz4
+    reviews:
+      - path: docs/project/reviews/review-2026-10-11-upper-bound-imports-503-504.md
+        kind: adversarial
+        reviewer: >-
+          AI agent (Claude, at extra-high reasoning effort, a different model from the
+          import lane's), the stage 4 review lane (W2) of the 2026-10-11 intake pass under
+          think-720n, prompted separately from the import lane that built the two packets,
+          with no shared context beyond their committed notes
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-11'
+        scope: >-
+          Finite feasibility of the two certificates the imports' entries cite: issue 503
+          at 207 and issue 504 at 153. Both retained receipts replayed on both maintained
+          routes, the third exact route extended for the source's two formats with its
+          sharp controls, each derived fact held to its pinned certificate and witness
+          fetched at the pin, admission against each print, the claim comparisons, each
+          route's trust boundary, and the credited lineage measured pose by pose against
+          the exact n70 certificate T-146 retains.
+        verdict: accepted
+        covers: [T-147, T-148]
+  - id: T-148
+    kind: upper-bound
+    registered: '2026-10-11'
+    headline: A packing of 153 squares built from Ryan Xu's packing of 70, its contacts reclosed at a new angle
+    claim: >-
+      One complete rational source certificate by PingYou Ltd, reported on
+      jlevy/squares#504, proves a finite upper bound at the exact side it states: s(153) <=
+      6435006925203522001385040447/500000000000000000000000000 =
+      12.870013850407044002770080894.
+
+      The certificate gives a rational side and, for each unit square, a rational centre
+      and the tangent of its half-angle, in SQUISH's JSON rows; its side and centres already
+      carry the guard dilation 5000000000001/5000000000000 it states, and every square
+      keeps side 1.
+
+      The author reports that three exact Fraction checkers of its own, by vertex
+      projections, by centre and support-radius separating axes and by rational polygon
+      clipping, accept all 11,628 pairs and every wall; that its reconstruction script
+      rebuilds the certificate exactly from an explicit rational construction table and
+      recomputes the guard; and that this repository's sqpack exact_verify and
+      check_rational_witness_independent, run unchanged, accept its corners Witness/v2.
+
+      It reports that a SymPy script checks the symbolic identity behind the chosen angle
+      and isolates the root of u^7-9u^6+3u^5-u^4-u^3+u^2-3u+1, and that the construction
+      table comes from an exploratory selection and a floating-point solve that the release
+      does not repeat. Those statements are the author's; no source program ran here.
+
+      All three retained jobs, the positive with its duplicate-square and
+      outside-container controls, were decided again here on 11 October 2026 by both
+      maintained exact routes, from an exact fact derived from the pinned certificate, and
+      equal their retained rows. A third exact route, half-extent containment and exact
+      intersection area, decided it with six controls and found the fact to be the packing
+      the pinned certificate and the pinned witness state. The source ran the two
+      maintained routes on its own witness, but neither is its generator's code, and it
+      did not run the third route, so the replay is independently re-implemented. The 11
+      October review found no blocking defect.
+
+      The side is 9.67e-03 below the ceiling the case holds (T-127), below Evan Daniel's
+      pending T-146 by exactly 0.002015998674135970992348937968, the figure the issue gives,
+      and below SQUISH's pending T-136 by 2.02e-03; the case record is unchanged until a
+      house is adopted, so it is pending adoption.
+
+      Credit PingYou Ltd (https://github.com/BuddenPing/square-packing-certificates) for
+      the n153 construction, as the source asks: by its account, Ryan Xu's n70 construction
+      (issue 432) and its reflection, composed by the boundary-patch approach of the
+      source's n207 (issue 503, T-147) with a different choice of surviving squares and
+      contacts and reclosed at a new angle, giving 121 upright squares and tilted
+      populations of 17 and 15.
+
+      The n70 geometry it started from is Evan Daniel's exact n70
+      certificate (https://github.com/evand/square-packing, the regularized n-070
+      certificate T-146 retains), credited to him for its exact retention. The source
+      credits the previous n153 packing to Nate Chaoweeraprasit (SQUISH, issue 481) and its
+      refined exact certificate to Evan Daniel (T-146), as comparisons, and claims neither
+      the n70 packing nor patch composition in general.
+
+      That lineage is the source's account of its construction and was not measured by
+      pose: no placement of the n70 lands more than 31 of its squares within 1e-9 of a
+      square of this packing, nor more than one exactly, which fits the source's account of
+      contacts reclosed at a new angle.
+
+      The source and the issue make no statement about AI assistance; the issue omits the
+      template's section on it. The same author published it on 11 October 2026, minutes
+      after the n207 release of issue 503 (T-147), under the same workflow. That release as
+      first published, and its issue as first posted, said that the verification, the
+      comparison review and the package preparation were assisted by OpenAI Codex; minutes
+      later a revision titled "Correct attribution in submission materials" removed that
+      sentence, and the issue was edited to match, with no reason given. The record keeps
+      both accounts until the author says which stands.
+    scope:
+      n_values: [153]
+    verification: V3
+    confirmation: C3
+    significance:
+      score: 3
+      rationale: >-
+        A smaller finite construction side at n = 153, 9.67e-03 below the case ceiling and
+        2.02e-03 below the smallest pending side, a new construction that reclosed the
+        contacts of boundary patches of an existing packing at a new angle; no lower bound
+        or optimum.
+      scored: '2026-10-11'
+      by: >-
+        the 11 October review
+        (docs/project/reviews/review-2026-10-11-upper-bound-imports-503-504.md),
+        confirming the draft of think-4znu PingYou Ltd import
+    novelty: previously-published
+    attribution:
+      source_keys: ['[PingYou n153 certificate 2026-10-11]']
+      published: '2026-10-11'
+    evidence:
+      - E-pingyou-504-certificate-report
+      - E-pingyou-504-exact-feasibility
+    artifacts:
+      - packing/resources/web/pingyou-n153-certificate-2026-10-11/README.md
+      - packing/resources/web/pingyou-n153-certificate-2026-10-11/acquisition/claims.json
+      - packing/resources/web/pingyou-n153-certificate-2026-10-11/facts/n-153.yaml.gz
+      - packing/resources/web/pingyou-n153-certificate-2026-10-11/receipts/exact-certification.json.xz
+      - packing/devtools/upper_bound_reports.py
+      - packing/devtools/check_half_angle_area.py
+      - docs/project/reviews/review-2026-10-11-upper-bound-imports-503-504.md
+    controls:
+      - packing/tests/test_upper_bound_reports.py
+      - packing/tests/test_upper_bound_reports_503_504.py
+      - packing/tests/test_check_half_angle_area.py
+    notes: >-
+      A separate complete repository replay is retained for n = 153: 1 positive and 2
+      duplicate-square and outside-container controls passed their required outcomes on
+      both routes, 69768 pair decisions; summed over the 3 jobs, the receipt records 24.09
+      route CPU seconds and 70.27 job wall seconds, the longest job 24.79 seconds. Every
+      positive clears every wall by at least 1.00e-13, exactly 1/10^13, and every pair by
+      at least 1.88e-13; the third route finds a least Euclidean distance of 1.885826e-13
+      and no square touching a wall.
+
+      V3 and C3 rest on the 11 October review
+      (docs/project/reviews/review-2026-10-11-upper-bound-imports-503-504.md) and the
+      replay it reproduced (E-pingyou-504-exact-feasibility). Its findings here are
+      non-blocking: the same author's n207 disclosure of AI assistance was removed at its
+      pin and this release makes none (RV-1); the source ran both maintained routes itself,
+      so the independence rests on their authorship, which predates the source, and on the
+      third route (RV-2); no retained check binds the derived fact to its upstream bytes,
+      which the review closed once by fetching the certificate and the witness at the pin
+      (RV-3); the kernel's controls are gross (RV-4); the lineage from the n70 is by
+      construction, not by pose (RV-5); and no private-worker custody is on file (RV-6).
+
+      At n = 153 the certificate is below the case's ceiling (Nate Chaoweeraprasit
+      (itsnaka), improved by Siddharth Gupta, T-127) by exactly
+      1933104584454118261245856857/(2*10^29), about 9.67e-03; below T-146 (Evan Daniel,
+      regularizing Nate Chaoweeraprasit's packing) by exactly
+      125999917133498187021808623/(6.25*10^28); and below T-136 (issue 481, Nate
+      Chaoweeraprasit) by 2.0159986741368190e-03. No other report of 11 October names 153,
+      so it is the smallest known.
+
+      The review recommends this entry as the house at 153, crediting PingYou Ltd after Ryan
+      Xu's n70 and Evan Daniel's exact certificate of it, then T-146, then T-136; it
+      replaces the recommendation of T-146 there. The earlier houses stay as history, and
+      no house moves until private-worker custody is on file (RV-6).
+
+      The release package also holds an intermediate control, cycle-hit-153.cert.json,
+      above the case's ceiling, and analysis files at n = 178 that state no side; the
+      source offers neither, and neither is imported. The source's own checkers,
+      reconstruction, conversion and SymPy derivation were not run here. The two maintained
+      routes, the sqpack rational witness verifier and the independent rational corner
+      checker, share certificate parsing, half-angle conversion, Fraction arithmetic and
+      the separating-axis method. No two independent methods, human oversight or
+      optimality is claimed.
+    next_rung: >-
+      V4 and C4 need a second accepted adversarial review by a distinct reviewer and a
+      retained human oversight record; one AI review, of 11 October, is retained.
+      Separately, the next layer of the 2026-10-11 intake stack adopts this entry as the
+      house at 153 once private-worker custody is on file (RV-6), with each earlier house
+      kept as history.
+    activity:
+      state: in-analysis
+      what: >-
+        House adoption at n = 153 in the next layer of the 2026-10-11 intake stack, the
+        case-record adoption lane, with private-worker custody first (RV-6).
+      since: '2026-10-11'
+      link: think-fvz4
+    reviews:
+      - path: docs/project/reviews/review-2026-10-11-upper-bound-imports-503-504.md
+        kind: adversarial
+        reviewer: >-
+          AI agent (Claude, at extra-high reasoning effort, a different model from the
+          import lane's), the stage 4 review lane (W2) of the 2026-10-11 intake pass under
+          think-720n, prompted separately from the import lane that built the two packets,
+          with no shared context beyond their committed notes
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-11'
+        scope: >-
+          Finite feasibility of the two certificates the imports' entries cite: issue 503
+          at 207 and issue 504 at 153. Both retained receipts replayed on both maintained
+          routes, the third exact route extended for the source's two formats with its
+          sharp controls, each derived fact held to its pinned certificate and witness
+          fetched at the pin, admission against each print, the claim comparisons, each
+          route's trust boundary, and the credited lineage measured pose by pose against
+          the exact n70 certificate T-146 retains.
+        verdict: accepted
+        covers: [T-147, T-148]
