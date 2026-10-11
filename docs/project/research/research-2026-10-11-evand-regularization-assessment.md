@@ -6,7 +6,8 @@ read in full under `search/regularize/`, `search/exact/` and `search/exact/batch
 nothing under the checkout was modified.
 Three counts (n = 10, 26, 70) were run through the whole pipeline in a scratch replica
 tree under a scratch virtualenv, with `python -I`; the timings and the cross-tabulation
-are in the appendix, [Measurements](#appendix-measurements); the cross-tabulation was a scratch script, and the regularization pull request builds it as a tool (OR-1).
+are in the appendix, [Measurements](#appendix-measurements); the cross-tabulation was a
+scratch script, and the regularization pull request builds it as a tool (OR-1).
 
 ## Conclusions in brief
 
@@ -132,8 +133,8 @@ later layer (270 exact forms committed) that the regularizer does not use.
 The certificate proves s(n) <= S’ over Q; it proves nothing at S* itself, where
 feasibility is known only to 80 digits.
 
-Measured here (appendix): 0.3 s at n = 10, 0.5 s at n = 26, 3.0 s at n = 70;
-the README says ~5 s at n = 110 and “a few minutes” at n = 300.
+Measured here (appendix): 0.3 s at n = 10, 0.5 s at n = 26, 3.0 s at n = 70; the README
+says ~5 s at n = 110 and “a few minutes” at n = 300.
 
 ### 1.3 Angle groups and the translation LP
 
@@ -515,11 +516,11 @@ not beside the views.
 | Changes, of 324 | 68 (182 unchanged) | 147 (30 rattlers only, 117 level 2) plus 48 re-orientations; rotation groups 2400 -> 1172 at 116 records; symmetry imposed at 101 |
 | Identity | by construction the same squares at the same angles, slid along axes into contact | the sampled path test; the T-146 review’s measurement found three of fifteen views not one to one |
 
-The cross-tabulation (a scratch cross-tabulation, to be built as a tool): every one of the project’s 68 changed records
-upstream also changes; upstream also changes 72 of the project’s 74 refused and 7 of its
-unchanged (40, 65, 82, 101, 122, 145, 308). At n = 26 both slide the same rattler by
-0.31 onto the grid; upstream also turns two rattlers from 44.994 to exactly 45 degrees,
-which no rational frame can hold.
+The cross-tabulation (a scratch cross-tabulation, to be built as a tool): every one of
+the project’s 68 changed records upstream also changes; upstream also changes 72 of the
+project’s 74 refused and 7 of its unchanged (40, 65, 82, 101, 122, 145, 308). At n = 26
+both slide the same rattler by 0.31 onto the grid; upstream also turns two rattlers from
+44.994 to exactly 45 degrees, which no rational frame can hold.
 At n = 70 (Ryan Xu’s rational witness) the project’s view is 153 snaps of 6.5e-12, noise
 removal of a rational pose; upstream, on its older DeVincentis input here, slid 13
 squares by up to 0.11 with no angle change.
@@ -728,14 +729,14 @@ Certificate sides: n = 10, S’ = 3707106781186547524437915429917/10^30 =
 3.7071067811865475244379 …, against S_exact = 3.70710678118654752440084... = 3 +
 sqrt(2)/2 (the register’s verified bound): S’ exceeds the exact side by 3.7e-20.
 
-Cross-tab (a scratch script, to be built as a tool, on upstream `lists/best.json` and the project’s index.json):
-upstream levels 0/1/2 = 177/30/117; variants conservative 310, fewest 14; orientation
-kept at 276, changed at 48; inputs: exact batch 272, store-refreshed 52; rotation groups
-2400 -> 1172, fewer at 116 records; symmetry imposed at 101. Project status x upstream
-level: refused/0: 2, refused/1: 29, refused/2: 43; regularized/1: 1, regularized/2: 67;
-unchanged/0: 175, unchanged/2: 7. Every record the project changes (68) upstream also
-changes; upstream changes 79 more: 72 of the project’s 74 refused and 7 of its unchanged
-(40, 65, 82, 101, 122, 145, 308).
+Cross-tab (a scratch script, to be built as a tool, on upstream `lists/best.json` and
+the project’s index.json): upstream levels 0/1/2 = 177/30/117; variants conservative
+310, fewest 14; orientation kept at 276, changed at 48; inputs: exact batch 272,
+store-refreshed 52; rotation groups 2400 -> 1172, fewer at 116 records; symmetry imposed
+at 101. Project status x upstream level: refused/0: 2, refused/1: 29, refused/2: 43;
+regularized/1: 1, regularized/2: 67; unchanged/0: 175, unchanged/2: 7. Every record the
+project changes (68) upstream also changes; upstream changes 79 more: 72 of the
+project’s 74 refused and 7 of its unchanged (40, 65, 82, 101, 122, 145, 308).
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
