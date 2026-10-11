@@ -16,8 +16,10 @@ sides it shares whole with a wall or a same-angle neighbour.
 Under those two conventions a packing’s regular structure (rows, blocks, strips,
 symmetric tilted bands) should read at a glance as a few uniform hue families in dark,
 even shades. It often does not, because the witnesses the record holds carry slack and
-noise the drawing makes visible: a row a few hundredths off its wall renders light, and
-a tilted band whose angles differ in the twelfth place splits into several hues.
+noise the drawing makes visible: a row a few hundredths off its wall renders light, a
+square tilted a few hundredths of a degree off the axis leaves the axis hue altogether,
+and a tilted band whose angles differ by more than a microradian splits into several
+hues.
 
 **Regularization** redraws a packing the record already holds so that it reads cleanly,
 without changing its side, its evidence tier or its credit.
@@ -55,6 +57,130 @@ for a full run.
 **Out of scope:** new upper bounds as such (a certificate below the verified bound is a
 register result and goes through the import runbook, not this document); proofs of local
 optimality; the renderer’s palette.
+
+## Findings
+
+### How the House Conventions Read a Packing
+
+Two renderers draw packings, and they decide hue and shade differently.
+
+|  | House renderer (atlas, website, case pages) | Stage rule (workbench) |
+| --- | --- | --- |
+| Code | `packing/src/sqpack/render/color.py` | `packages/workbench/src/core/geometry.ts` `contactFacts` |
+| Hue | Angle classes seeded at $10^{-6}$ rad and merged where full-side contacts link them; right angles pinned to hue 0 (green), 45 degrees to hue 1, the rest by class size | Half-degree angle classes |
+| Shade | 4 minus the number of sides shared whole with a wall or a same-class neighbour, both ends within $2 \times 10^{-6}$ | Centres a side apart within 0.01, angles within half a degree |
+| What it exposes | Any slack above $2 \times 10^{-6}$, and any tilt above a microradian | Slack above a hundredth; tilts above half a degree |
+
+So the house drawing is strict: it shows the witness exactly as retained.
+A row 0.03 off its wall is light; an “axis” square tilted 0.01 degrees is not green; two
+squares of one tilted band that differ by $10^{-5}$ rad are two hues.
+Nothing in the drawing distinguishes a real gap from representation noise, which is why
+the layer exists.
+
+### Why Drawings Look Irregular
+
+The census of 2 October 2026 (X-049, “Why Grid Squares Render Light”) settled the first
+question: light shading is not inexact arithmetic.
+Of 45,468 green (axis-aligned) squares in the atlas, 7,725 rendered light:
+
+- **5,272 structural:** they border a tilted square, a hole or a staggered row, and
+  should stay light.
+- **2,419 slack:** they sit beside a real gap or sideways shift of $2 \times 10^{-5}$ to
+  0.5 in the retained coordinates.
+  Almost all are in records that came from optimizer packets (Couzo, de Winter): at
+  $n = 102$ every one of 69 green squares was light, with the top row 0.0298 from the
+  wall.
+- **34 in the precision band**, missing contact by less than ten times the renderer’s
+  tolerance.
+
+Where squares do touch, the arithmetic is fine (median contact residual 0, largest
+$2 \times 10^{-6}$). The slack is in the packings as retained: optimizers stop when the
+side stops improving, and a square that carries no load is left wherever it was.
+
+Three other sources of irregularity matter for hue rather than shade:
+
+- **Near-axis tilts.** Float optimizers almost never return an exactly zero angle: at
+  $n = 301$, 131 squares sit between $10^{-6}$ rad and 0.68 degrees.
+  Each leaves the green class; 265 squares atlas-wide are not green for this reason
+  alone.
+- **Angle noise inside tilted bands.** Evan Daniel’s exact solve groups angles by exact
+  equality and finds 2,400 distinct rotation groups over the 324 records, 1,172 after
+  merging; $n = 66$ goes from 31 groups to 2. Not every split is noise: $n = 175$ has a
+  true 0.801-degree column, and whether $n = 71$’s two-class split is load-bearing is
+  open (H-050).
+- **Decimal witnesses.** 106 of the 324 witnesses are decimal (most from the Kingbird
+  catalogue). Rounded to 36-digit rationals, 73 of them overlap by a sliver, so no exact
+  frame exists at the record’s side without changing it.
+
+### What Has Been Tried
+
+**`regularize_axis_components/2`** (this project, 2 October 2026, X-049 “Exact
+Regularization”). Straighten every square within $10^{-4}$ rad of the axis, slide each
+axis square one axis at a time toward its lattice slot until it meets an exact contact,
+hold any move that lowers a house or stage count (its own or a neighbour’s), and verify
+the result twice over $\mathbb{Q}$ at the witness’s side.
+It is sound at the same side by construction, and it is the only generator that measures
+non-regression. Today it changes 68 records, leaves 182 unchanged and refuses 74; on the
+68 it changes, light green squares fall from 4,666 to 2,609 with no regression, and 149
+squares are held. It cannot touch tilted structure, impose symmetry, merge hue classes,
+or frame a decimal witness that overlaps at dilation 1.
+
+**Dilation** (`--smallest-dilation`, measured 2 October 2026). Scaling the decimal
+witnesses’ rational poses by $1 + 10^{-p}$ until they verify frames all 89 then refused,
+but changes the side, and changed only two squares’ shading.
+The atlas README’s ruling of that day refused it: a dilated view certifies a side the
+register does not hold, which is a tier promotion under a drawing’s name.
+
+**Evan Daniel’s regularizer** (`search/regularize`, 9 and 10 October 2026, vendored here
+at `675a5ea`). Re-solve the packing to an 80-digit KKT point of minimizing the side;
+hold the angles and side fixed and move the centres by a translation LP, so every LP
+point is a packing; impose the largest container symmetry; choose coincident faces with
+a MILP; merge free squares’ angles into existing groups, and undetermined groups too
+(`conservative` path-tests each merge; `fewest` also merges determined groups within 5
+degrees); refine and verify at 80 digits; write a rational certificate dilated by
+$1 + 10^{-20}$. It reaches tilted structure, symmetry and the decimal records, and its
+lists change 147 records (the project’s tool, 68). Its cost in the record’s terms: its
+side is never the witness’s; its “same packing” is a sampled numerical path test; and at
+three of T-146’s fifteen counts no symmetry pairs its squares one to one with the
+credited packing.
+
+**T-146** (10 October 2026). Fifteen of Evan Daniel’s regularized certificates were
+below the register’s bound and became register results, the first to carry a typed
+`regularizations` credit.
+The review accepted them for finite feasibility only and measured 10 to 239 squares
+moved beyond $10^{-3}$.
+
+**Same-side exact re-solve** (planned in the assessment’s slice 3, built in this
+session). Take the regularized view’s angles in the witness’s own exact rotation frame,
+find the contacts tight at the generator’s point, and solve them over $\mathbb{Q}$ at
+the witness’s own side.
+Where every rotation is rational in the witness’s frame this turns Evan Daniel’s view
+into a `same`-side view; it is the step that lets “clean” and “no side changed” hold
+together.
+
+**Proposed, not built:** exact compaction of the remaining slack squares inside a fixed
+tilted structure (think-qun0), releasing the 149 held squares by joint moves
+(think-mkyx), and views over $\mathbb{Q}(\sqrt{2})$ and other fields for the refused
+decimal records (think-yk2h). A renderer-side fix, loosening the house tolerance, would
+reach only the precision band (34 squares then, 65 now), so it was never pursued.
+
+### Rules Already Decided
+
+- **A regularized drawing changes no side, frontier value, evidence tier or credit**,
+  and never replaces the witness (epic think-los0, 2 October 2026; the index’s policy
+  line; the regularization policy, section 1).
+- **Non-regression:** no square’s house or stage count may fall (X-049; policy
+  obligation 4).
+- **No dilated frames** (atlas README, 2 October 2026; policy decision-table row 4).
+- **A certificate below the verified bound is a register result first** (policy section
+  1, row 3).
+- **Identity is measured, not asserted:** the record says “the same packing” in its own
+  voice only with a `measured` basis (results schema; policy section 2).
+- **Credit:** the packing stays its finder’s; the regularization is credited by
+  `regularizations` items; Evan Daniel’s method is credited whenever his code made the
+  view (policy section 7; the vendored README).
+- **The website shows regularized drawings only, with no badges**, and its legend keeps
+  only tilt colours and contact shades (owner, 5 and 9 October 2026).
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
