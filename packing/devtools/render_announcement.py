@@ -1,36 +1,42 @@
 """Render an intake pass's new results as an announcement: one short line per result.
 
 The owner announces new results from this (2026-10-11): a header with the date and a
-count, then one line per register entry, short enough to post, crediting people by
-their X handles where the record has evidence of one and by their credited names
-otherwise. Agents render it into the intake pull request's description; only the owner
-posts it (`campaign/result-import.md`, Running an Intake Pass).
+count, then one brief line per register entry, at most `BRIEF_LIMIT` characters before
+its link, crediting the result's finders by their X handles where the record has
+evidence of one and by name otherwise:
 
-Every fact on a line is read from the record, and the wording is chosen not to overstate
-it:
+    s(267) ≤ 16.83882, new best known (verified): Francisco Couzo https://…#t-134
+
+Agents render it into the intake pull request's description; only the owner posts it
+(`campaign/result-import.md`, Running an Intake Pass). Every fact on a line is read
+from the record, and the wording is chosen not to overstate it:
 
 - **The bound.** The bounds an entry states, as `devtools.check_standing` reads them
   from its headline or claim, are held at each count against every other bound on record
   there: the case record's, in both lanes, and every other entry's. An upper bound is
   printed rounded up and a lower bound rounded down, so the printed number is itself a
   true bound, to as many places as it takes to stay strictly better than the previous
-  best. An entry that states no bound but holds its case's bound prints that bound.
-- **New best known.** Said of a verified entry (`V3` or above) only at the counts where
+  best. An entry that states no bound but holds its case's bound prints that bound. A
+  line about several counts elides their bounds, and past `LISTED_COUNTS` gives how many
+  and their range.
+- **New best known**, or **new best lower bound**: said only at the counts where
   nothing on record is as good: the case record holds this entry's bound or a worse one,
   and no other entry states a better bound, or an equal one registered first. That is
   the case's house, or an entry pending adoption that is still below every other. A
   regularization of the entry's own packing (`regularizations`) is the same packing and
-  does not count against it. A report below `V3` is "reported", never "verified" and
-  never the best known. The margin is how far the bound passes the best one on record
-  before the entry was registered, cut to two significant figures; the previous holder
-  is not named, so a line never credits a bound to the wrong person.
-- **Verified.** Said at `V3` and above, with the rungs; "not yet replayed here" where no
-  confirming replay is on file (`result_status.status`). Which code confirmed it is left
-  to the result's row, which the line links, to keep the line short enough to post.
-- **Credit.** Every person the register's credit line names for the result, in its order
-  (`result_credit.credit_line`): the finder or refiner, then those whose work it rests on;
-  where a count's certificate is a regularization (`regularizations`), the packings'
-  finders as their own results credit them.
+  does not count against it. `--margins` adds how far the bound passes the best one on
+  record before the entry was registered, cut to two significant figures; the previous
+  holder is never named, so a line never credits a bound to the wrong person.
+- **(verified)** at `V3` and above, and **(reported)** below, which is never called
+  verified. The rungs, and which code confirmed the result, are on its row, which the
+  line links.
+- **Credit.** The result's finders: the names before `after` in the register's credit
+  line (`result_credit.credit_line`), each by its full name where the bibliography's
+  `credited_names` or a contributor profile gives one, and whose packing it refines or
+  regularizes, as its `regularizations` or its headline says. `--lineage` adds the names
+  after `after`. The project's owner (`result_credit.PROJECT_AUTHOR`) is never credited
+  or tagged: the announcement is the owner's own post, and `after Levy` is this
+  project's lineage, not a finding.
 
 The results are selected by `--ids`, or by `--since`, the date the register received
 them (`registered`, the field an intake pass sets), and by `--min-significance`, 3 by
@@ -44,12 +50,11 @@ A handle comes only from evidence, in this order, and never from a user name:
    and whose `links` include one of kind `twitter`;
 2. with `--github`, the `twitter_username` a GitHub account declares on its profile,
    read through `gh api users/<login>` and stored nowhere. The account is tied to the
-   credited name by a contributor profile's `github` link; by the requests record's
-   `owner`, who is credited as `result_credit.PROJECT_AUTHOR`; by the bibliography's
+   credited name by a contributor profile's `github` link; by the bibliography's
    `credited_names`, as `Full Name (login)` or by the full name the profile declares; by
    a login that is itself the credited name; or by issues in
    `campaign/result-requests.yaml` whose every mapped result credits that one person
-   first;
+   first. The requests record's owner is never a candidate;
 3. a handle the record states with its source (`RECORD_HANDLES`), which is checked
    against the file that states it.
 
@@ -57,7 +62,8 @@ stderr says where each handle came from, and which credited names have none.
 
 Usage, from `packing/`:
     uv run --frozen --all-extras --group dev python -m devtools.render_announcement \\
-        --since 2026-10-11 [--github] [--min-significance 3] [--all] [--date YYYY-MM-DD]
+        --since 2026-10-11 [--github] [--min-significance 3] [--all] [--lineage] \\
+        [--margins] [--date YYYY-MM-DD]
     uv run --frozen --all-extras --group dev python -m devtools.render_announcement \\
         --ids T-147 T-148 [--github]
 """
@@ -79,6 +85,7 @@ from urllib.parse import urlsplit
 
 from devtools.check_results import scope_values
 from devtools.check_standing import (
+    EN_DASH,
     KIND_DIRECTIONS,
     LOWER,
     UPPER,
@@ -88,6 +95,7 @@ from devtools.check_standing import (
 )
 from devtools.render_overview import RESULTS_PAGE, SITE_URL
 from devtools.render_recent_results import (
+    ELLIPSIS,
     SUPERSEDED,
     Records,
     lane_holders,
@@ -98,7 +106,6 @@ from devtools.render_recent_results import (
     superseding,
 )
 from devtools.result_credit import PROJECT_AUTHOR, credit_line
-from devtools.result_status import CONFIRMED, status
 from sqpack.yamlio import safe_load
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -110,7 +117,7 @@ BIBLIOGRAPHY = ROOT / "resources" / "bibliography.yaml"
 CONTRIBUTORS = ROOT / "contributors"
 
 #: The fewest decimal places a bound is printed to, and the most.
-PLACES = 8
+PLACES = 5
 MAX_PLACES = 40
 #: The significance a result needs by default to be announced (epistemics.md, Significance).
 MIN_SIGNIFICANCE = 3
@@ -135,7 +142,14 @@ MONTHS = (
 #: A GitHub login, checked before it is put into an API path.
 LOGIN = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$")
 #: A `credited_names` key that carries its person's login: `Nate Chaoweeraprasit (itsnaka)`.
-NAMED_LOGIN = re.compile(r"^.+ \(([A-Za-z0-9-]+)\)$")
+NAMED_LOGIN = re.compile(r"^(.+) \(([A-Za-z0-9-]+)\)$")
+#: A headline's own words for whose packing an entry refines: `refinement of Ryan Xu's
+#: packing`, `refining Ryan Xu's packing`.
+REFINED = re.compile(r"\brefin(?:ement of|ing) ((?:[A-Z][\w.-]*\s)*[A-Z][\w.-]*)'s packing")
+#: What a line says a bound is, where it is the best on record.
+NEWS = {UPPER: "new best known", LOWER: "new best lower bound"}
+#: The most characters a line holds before its link (the owner, 2026-10-11).
+BRIEF_LIMIT = 140
 #: The separators of a credit line: sources, `after`, names. A credited name never holds one.
 SEPARATORS = re.compile(r"(; | after |, | and )")
 ET_AL = " et al."
@@ -414,31 +428,66 @@ def credit_text(record: Mapping[str, Any], sources: Mapping[str, Mapping[str, An
     return credit_line(record, sources).replace(r"\|", "|")
 
 
-def credit_names(credit: str) -> list[str]:
-    """The names a credit line credits, in its order, each once: `Ahmed et al. after
-    Levy, Daniel` is Ahmed, Levy, Daniel."""
-    tokens = SEPARATORS.split(credit)[::2]
-    return list(dict.fromkeys(token.removesuffix(ET_AL) for token in tokens if token))
-
-
-def with_handles(credit: str, handles: Mapping[str, Handle]) -> str:
-    """The credit line with each name that has a handle written as `@handle`, separators
-    and order unchanged."""
-    parts = SEPARATORS.split(credit)
-    for i in range(0, len(parts), 2):
-        name = parts[i].removesuffix(ET_AL)
-        if name in handles:
-            parts[i] = f"@{handles[name].handle}" + parts[i][len(name) :]
-    return "".join(parts)
+def credit_parts(credit: str) -> tuple[list[str], list[str]]:
+    """A credit line's finders, before `after`, and the lineage after it, each in the
+    register's order and once: `Ahmed et al. after Levy, Daniel` is `Ahmed et al.`, then
+    Levy and Daniel."""
+    finders: list[str] = []
+    lineage: list[str] = []
+    for line in credit.split("; "):
+        first, _, rest = line.partition(" after ")
+        finders.extend(SEPARATORS.split(first)[::2])
+        if rest:
+            lineage.extend(SEPARATORS.split(rest)[::2])
+    return list(dict.fromkeys(finders)), list(dict.fromkeys(lineage))
 
 
 def primary_names(credit: str) -> list[str]:
     """The names a credit line credits first, before `after`, from each source's line."""
-    names: list[str] = []
-    for line in credit.split("; "):
-        first = line.partition(" after ")[0]
-        names.extend(SEPARATORS.split(first)[::2])
-    return list(dict.fromkeys(names))
+    return credit_parts(credit)[0]
+
+
+def _bare(token: str) -> str:
+    return token.removesuffix(ET_AL)
+
+
+def people(tokens: Iterable[str]) -> list[str]:
+    """Credit tokens less the project's owner, whom an announcement never credits: it is
+    the owner's own post, and `after Levy` is this project's lineage, not a finding."""
+    return [token for token in tokens if token and _bare(token) != PROJECT_AUTHOR]
+
+
+@dataclass(frozen=True)
+class Names:
+    """How a line names a credited person: by an X handle where the evidence gives one,
+    else by the full name the bibliography's `credited_names` or a contributor profile
+    prints for the credited name, else as the register credits them."""
+
+    handles: Mapping[str, Handle] = field(default_factory=dict[str, Handle])
+    full: Mapping[str, str] = field(default_factory=dict[str, str])
+
+    def show(self, token: str) -> str:
+        name = _bare(token)
+        suffix = token[len(name) :]
+        if name in self.handles:
+            return f"@{self.handles[name].handle}{suffix}"
+        return self.full.get(name, name) + suffix
+
+
+def full_names(credited: Mapping[str, str], profiles: Sequence[Profile] = ()) -> dict[str, str]:
+    """Each credited name's full name, where the record gives exactly one: the
+    bibliography's `credited_names` (`Francisco Couzo: Couzo`, a login in parentheses
+    dropped), then a contributor profile's `real_name`."""
+    found: dict[str, set[str]] = {}
+    for full, name in credited.items():
+        match = NAMED_LOGIN.match(full)
+        found.setdefault(name, set()).add(match.group(1) if match else full)
+    for profile in profiles:
+        if profile.real_name:
+            for name in profile.names:
+                if name not in credited.values():
+                    found.setdefault(name, set()).add(profile.real_name)
+    return {name: next(iter(fulls)) for name, fulls in found.items() if len(fulls) == 1}
 
 
 def frontmatter(text: str) -> str:
@@ -465,13 +514,15 @@ def _x_handle(link: Mapping[str, Any]) -> str | None:
 
 @dataclass(frozen=True)
 class Profile:
-    """A contributor profile: the names it answers to, its GitHub logins and X handles."""
+    """A contributor profile: the names it answers to, its real name where it gives one,
+    its GitHub logins and X handles."""
 
     id: str
     path: str
     names: frozenset[str]
     github: tuple[str, ...] = ()
     twitter: tuple[str, ...] = ()
+    real_name: str = ""
 
 
 def load_profiles(directory: Path = CONTRIBUTORS) -> list[Profile]:
@@ -502,6 +553,7 @@ def load_profiles(directory: Path = CONTRIBUTORS) -> list[Profile]:
                 names=frozenset(name for name in names if name and name != "None"),
                 github=tuple(github),
                 twitter=tuple(twitter),
+                real_name=str(person.get("real_name") or ""),
             )
         )
     return profiles
@@ -569,9 +621,10 @@ class GitHub:
         return self.read[login]
 
     def candidates(self) -> list[str]:
-        """The logins the requests record knows: its owner and every issue's author."""
-        logins = [self.owner, *(str(issue["author"]) for issue in self.issues)]
-        return list(dict.fromkeys(login for login in logins if login))
+        """The logins the requests record knows, every issue's author, less its owner,
+        whom an announcement never credits."""
+        logins = (str(issue["author"]) for issue in self.issues)
+        return list(dict.fromkeys(login for login in logins if login and login != self.owner))
 
     def by_issue(self) -> dict[str, tuple[str, list[int]]]:
         """Logins tied to one person by their issues: each issue whose every mapped result
@@ -607,12 +660,8 @@ class GitHub:
                 "its contributor profile's github link",
             ),
             lambda: (
-                [self.owner] if name == PROJECT_AUTHOR and self.owner else [],
-                f"the requests record's owner, credited as {PROJECT_AUTHOR} (PROJECT_AUTHOR)",
-            ),
-            lambda: (
                 [
-                    match.group(1)
+                    match.group(2)
                     for full, surname in self.credited_names.items()
                     if surname == name and (match := NAMED_LOGIN.match(full))
                 ],
@@ -661,10 +710,11 @@ def resolve_handles(
     stated: Mapping[str, Handle],
 ) -> tuple[dict[str, Handle], list[str]]:
     """Each credited name's handle from the evidence, in the module docstring's order,
-    and the warnings met on the way: a name tied to two handles gets none."""
+    and the warnings met on the way: a name tied to two handles gets none, and the
+    project's owner none at all."""
     handles: dict[str, Handle] = {}
     warnings: list[str] = []
-    for name in dict.fromkeys(names):
+    for name in dict.fromkeys(people(names)):
         matched = [p for p in profiles if name in p.names]
         found = sorted({h for p in matched for h in p.twitter})
         if len(found) == 1:
@@ -715,15 +765,14 @@ def _strict(record: Mapping[str, Any], direction: str) -> bool:
     return bool(pattern.search(" ".join(text.split())))
 
 
-def rungs_text(record: Mapping[str, Any], records: Records) -> str:
-    """How far the result is checked, never more than its rungs say."""
-    verification, confirmation = str(record["verification"]), str(record["confirmation"])
-    rungs = f"{verification}/{confirmation}"
-    if int(verification[1:]) < VERIFIED_FROM:
-        return f"not yet verified ({rungs})"
-    if status(dict(record), records.register.evidence) != CONFIRMED:
-        return f"verified {rungs}, not yet replayed here"
-    return f"verified {rungs}"
+def verified(record: Mapping[str, Any]) -> bool:
+    return int(str(record["verification"])[1:]) >= VERIFIED_FROM
+
+
+def tag(record: Mapping[str, Any]) -> str:
+    """How far the result is checked, in a word: verified at `V3` and above, reported,
+    and not yet verified, below."""
+    return "(verified)" if verified(record) else "(reported)"
 
 
 def result_link(result_id: str) -> str:
@@ -743,25 +792,20 @@ def margins(group: Sequence[Count]) -> str:
     return f"{gap} {way} the previous {best}"
 
 
-def statement(record: Mapping[str, Any], group: Sequence[Count], news: str) -> str:
-    """What the line says is bounded, after `news` where there is any: one bound, one
-    bound at several counts, or the counts alone."""
+def statement(record: Mapping[str, Any], group: Sequence[Count]) -> str:
+    """What the line says is bounded: one bound, one bound at several counts, or the
+    counts alone, their bounds elided (`s(n) ≤ … at n = 108, 127`)."""
     direction = group[0].direction
     relation = RELATIONS[(direction, _strict(record, direction))]
     values = {shown(c.bound, direction, c.previous) for c in group}
-    lead = f"{news}: " if news else ""
     if len(group) == 1:
-        return f"{lead}s({group[0].n}) {relation} {values.pop()}"
+        return f"s({group[0].n}) {relation} {values.pop()}"
     found = sorted(c.n for c in group)
     cases = f"n = {compress(found)}"
     if len(found) > LISTED_COUNTS:
-        cases = f"{len(found)} counts from n = {found[0]} to {found[-1]}"
-    if len(values) == 1:
-        return f"{lead}s(n) {relation} {values.pop()} for {cases}"
-    side = "upper" if direction == UPPER else "lower"
-    if news:
-        return f"{news} {side} bounds for {cases}"
-    return f"{side.capitalize()} bounds for {cases}"
+        cases = f"{len(found)} counts, n = {found[0]}{EN_DASH}{found[-1]}"
+    value = values.pop() if len(values) == 1 else ELLIPSIS
+    return f"s(n) {relation} {value} at {cases}"
 
 
 def posted_length(line: str) -> int:
@@ -806,25 +850,95 @@ def regularized(
             names.extend(
                 primary_names(credit_text(records.results[str(item["of"])], records.sources))
             )
-    return list(dict.fromkeys(names))
+    return people(dict.fromkeys(names))
+
+
+def refined(record: Mapping[str, Any], sources: Mapping[str, Mapping[str, Any]]) -> str:
+    """Whose packing the entry refines, in its headline's own words (`refinement of Ryan
+    Xu's packing`), where that person is in its credit line; else nothing."""
+    match = REFINED.search(plain(str(record.get("headline") or "")))
+    if match is None:
+        return ""
+    finders, lineage = credit_parts(credit_text(record, sources))
+    credited = {_bare(token) for token in (*finders, *lineage)}
+    name = match.group(1)
+    return name if name.split()[-1] in credited else ""
+
+
+def worked_on(
+    record: Mapping[str, Any], group: Sequence[Count], records: Records, names: Names
+) -> str:
+    """Whose packing the entry regularizes at the listed counts (`regularizations`), or
+    refines (`refined`), as the record says it: `regularizing Ryan Xu's packing`."""
+    finders = [names.show(token) for token in regularized(record, group, records)]
+    if len(finders) == 1:
+        return f"regularizing {finders[0]}'s packing"
+    if finders:
+        return f"regularizing packings by {listed(finders)}"
+    name = refined(record, records.sources)
+    if not name:
+        return ""
+    surname = name.split()[-1]
+    return f"refining {names.show(surname) if surname in names.handles else name}'s packing"
+
+
+def credit_phrase(
+    record: Mapping[str, Any],
+    group: Sequence[Count],
+    records: Records,
+    names: Names,
+    *,
+    lineage: bool = False,
+) -> str:
+    """Who the line credits: the result's finders, the names before `after` in its credit
+    line, as `Names` shows them; whose packing it refines or regularizes; and with
+    `lineage`, the names after `after`. Never the project's owner."""
+    finders, after = credit_parts(credit_text(record, records.sources))
+    phrase = listed([names.show(token) for token in people(finders)])
+    chain = [names.show(token) for token in people(after)]
+    if lineage and chain:
+        phrase = f"{phrase} after {listed(chain)}" if phrase else f"after {listed(chain)}"
+    work = worked_on(record, group, records, names)
+    if work:
+        phrase = f"{phrase}, {work}" if phrase else work
+    return phrase
+
+
+def credited_people(record: Mapping[str, Any], records: Records, *, lineage: bool) -> list[str]:
+    """Every name a line about `record` may print, for handles to be found for."""
+    finders, after = credit_parts(credit_text(record, records.sources))
+    found = [*finders, *(after if lineage else ())]
+    for item in record.get("regularizations") or ():
+        found.extend(
+            primary_names(credit_text(records.results[str(item["of"])], records.sources))
+        )
+    if name := refined(record, records.sources):
+        found.append(name.split()[-1])
+    return list(dict.fromkeys(_bare(token) for token in people(found)))
 
 
 def render_line(
     record: Mapping[str, Any],
     records: Records,
     index: Mapping[tuple[int, str], Sequence[tuple[str, Span]]],
-    handles: Mapping[str, Handle],
+    names: Names,
     *,
     keep_all: bool = False,
+    lineage: bool = False,
+    show_margins: bool = False,
 ) -> Line:
-    """One result's line: what it bounds, who is credited, how it stands, its rungs and
-    its row on the site; or, for a bound best known nowhere, why it is left out."""
+    """One result's line: what it bounds, how it stands and how far it is checked, who
+    found it, and its row on the site; or, for a bound best known nowhere, why it is left
+    out."""
     entry = str(record["id"])
-    credit = with_handles(credit_text(record, records.sources), handles)
-    tail = f"; {rungs_text(record, records)} {result_link(entry)}"
-    headline = f"{plain(str(record['headline']))} by {credit}{tail}"
+    link = result_link(entry)
+
+    def line(claim: str, group: Sequence[Count]) -> Line:
+        credit = credit_phrase(record, group, records, names, lineage=lineage)
+        return Line(entry, f"{claim}: {credit} {link}" if credit else f"{claim} {link}")
+
     if str(record["kind"]) not in BOUND_KINDS:
-        return Line(entry, headline)
+        return line(f"{plain(str(record['headline']))} {tag(record)}", [])
     assessed = counts(record, records, index)
     best = [c for c in assessed if c.best]
     since = ""
@@ -844,21 +958,15 @@ def render_line(
     if since and not keep_all:
         at = compress([c.n for c in assessed]) if assessed else "no count it states"
         return Line(entry, "", f"the best known at no count (n = {at}): {since}")
-    shown_counts = best or assessed
-    if not shown_counts:
-        return Line(entry, headline)
-    finders = regularized(record, shown_counts, records)
-    if finders:
-        credit += ", regularizing packings by " + ", ".join(
-            f"@{handles[name].handle}" if name in handles else name for name in finders
-        )
+    group = best or assessed
+    if not group:
+        return line(f"{plain(str(record['headline']))} {tag(record)}", [])
+    what = statement(record, group)
+    if show_margins and not since and (gap := margins(group)):
+        what += f" ({gap})"
     if since:
-        what = statement(record, shown_counts, "")
-        return Line(entry, f"{what} by {credit}; since {since}{tail}")
-    verified = int(str(record["verification"])[1:]) >= VERIFIED_FROM
-    what = statement(record, shown_counts, "New best known" if verified else "Reported")
-    gap = margins(shown_counts)
-    return Line(entry, f"{what}{f' ({gap})' if gap else ''} by {credit}{tail}")
+        return line(f"{what} {tag(record)}, since {since}", group)
+    return line(f"{what}, {NEWS[group[0].direction]} {tag(record)}", group)
 
 
 # ---------------------------------------------------------------------------------------
@@ -902,34 +1010,55 @@ def header(day: date, count: int) -> str:
 def announcement(
     records: Records,
     chosen: Sequence[Mapping[str, Any]],
-    handles: Mapping[str, Handle],
+    names: Names,
     *,
     day: date,
     keep_all: bool = False,
+    lineage: bool = False,
+    show_margins: bool = False,
 ) -> tuple[list[str], list[Line]]:
     """The announcement's lines, header first, and the results left out of it."""
     index = rival_bounds(records)
-    rendered = [render_line(r, records, index, handles, keep_all=keep_all) for r in chosen]
+    rendered = [
+        render_line(
+            record,
+            records,
+            index,
+            names,
+            keep_all=keep_all,
+            lineage=lineage,
+            show_margins=show_margins,
+        )
+        for record in chosen
+    ]
     lines = [line.text for line in rendered if line.text]
     left = [line for line in rendered if not line.text]
     return [header(day, len(lines)), *lines], left
 
 
-def _github(records: Records, fetch: Fetch) -> GitHub:
-    requests = safe_load(REQUESTS.read_text(encoding="utf-8"))
+def credited_names() -> dict[str, str]:
+    """The bibliography's `credited_names`: each full name and the name credits print."""
     bibliography = safe_load(BIBLIOGRAPHY.read_text(encoding="utf-8"))
+    return {str(k): str(v) for k, v in (bibliography.get("credited_names") or {}).items()}
+
+
+def _github(records: Records, credited: Mapping[str, str], fetch: Fetch) -> GitHub:
+    requests = safe_load(REQUESTS.read_text(encoding="utf-8"))
     return GitHub(
         owner=str(requests.get("owner") or ""),
         issues=list(requests.get("issues") or ()),
-        credited_names={
-            str(k): str(v) for k, v in (bibliography.get("credited_names") or {}).items()
-        },
+        credited_names=credited,
         primaries={
             entry: primary_names(credit_text(record, records.sources))
             for entry, record in records.results.items()
         },
         fetch=fetch,
     )
+
+
+def before_link(line: str) -> str:
+    """A line without its link, which is what `BRIEF_LIMIT` counts."""
+    return line.rsplit(" ", 1)[0]
 
 
 def main(argv: Sequence[str] | None = None, *, fetch: Fetch = gh_user) -> int:
@@ -963,6 +1092,16 @@ def main(argv: Sequence[str] | None = None, *, fetch: Fetch = gh_user) -> int:
         help="keep bounds that are the best known at no count, saying what betters them",
     )
     parser.add_argument(
+        "--lineage",
+        action="store_true",
+        help="credit, after the finders, the work each result rests on (`after …`)",
+    )
+    parser.add_argument(
+        "--margins",
+        action="store_true",
+        help="say how far each bound passes the previous best",
+    )
+    parser.add_argument(
         "--date",
         type=date.fromisoformat,
         default=None,
@@ -975,45 +1114,44 @@ def main(argv: Sequence[str] | None = None, *, fetch: Fetch = gh_user) -> int:
     chosen, skipped = select(
         records, ids=options.ids or (), since=since, min_significance=options.min_significance
     )
-    names = [
-        name
-        for record in chosen
-        for name in (
-            *credit_names(credit_text(record, records.sources)),
-            *(
-                name
-                for item in record.get("regularizations") or ()
-                for name in primary_names(
-                    credit_text(records.results[str(item["of"])], records.sources)
-                )
-            ),
+    people = list(
+        dict.fromkeys(
+            name
+            for record in chosen
+            for name in credited_people(record, records, lineage=options.lineage)
         )
-    ]
-    github = _github(records, fetch) if options.github else None
-    handles, warnings = resolve_handles(names, load_profiles(), github, record_handles())
+    )
+    credited, profiles = credited_names(), load_profiles()
+    github = _github(records, credited, fetch) if options.github else None
+    handles, warnings = resolve_handles(people, profiles, github, record_handles())
     lines, left = announcement(
         records,
         chosen,
-        handles,
+        Names(handles, full_names(credited, profiles)),
         day=options.date or datetime.now(UTC).date(),
         keep_all=options.keep_all,
+        lineage=options.lineage,
+        show_margins=options.margins,
     )
     print("\n".join(lines))
     for line in [*skipped, *left]:
         print(f"left out {line.id}: {line.left_out}", file=sys.stderr)
     for text in lines[1:]:
+        entry = text.rsplit("#", 1)[-1].upper()
+        if (length := len(before_link(text))) > BRIEF_LIMIT:
+            print(
+                f"warning: {entry}'s line is {length} characters before its link",
+                file=sys.stderr,
+            )
         if (length := posted_length(text)) > POST_LIMIT:
-            entry = text.rsplit("#", 1)[-1].upper()
             print(f"warning: {entry}'s line is {length} characters on X", file=sys.stderr)
     for handle in handles.values():
         print(f"@{handle.handle} for {handle.name}: {handle.source}", file=sys.stderr)
     for warning in warnings:
         print(f"warning: {warning}", file=sys.stderr)
-    unhandled = [name for name in dict.fromkeys(names) if name not in handles]
+    unhandled = [name for name in people if name not in handles]
     if unhandled:
-        print(
-            f"no handle on record, printed as credited: {', '.join(unhandled)}", file=sys.stderr
-        )
+        print(f"no handle on record, printed by name: {', '.join(unhandled)}", file=sys.stderr)
     return 0
 
 

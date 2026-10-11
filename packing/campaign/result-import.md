@@ -48,9 +48,9 @@ W1 phase on one branch:
    `uv run --frozen --all-extras --group dev python -m devtools.render_announcement
    --since YYYY-MM-DD --github`, with the day the pass began, or `--ids` and the pass’s
    `T-NNN`. [The tool](../devtools/render_announcement.py) prints a dated header and one
-   short line per result, crediting each person by an X handle the record or their
-   GitHub profile declares and by name otherwise, and says on stderr what it left out
-   and where each handle came from.
+   brief line per result, crediting its finders by an X handle the record or their
+   GitHub profile declares and by full name otherwise, never the owner, and says on
+   stderr what it left out and where each handle came from.
    Put its output in the pull request description under **Announcement**, for the owner
    to post; an agent never posts it.
 7. **Draft the replies** each issue is owed, in its answer bead.

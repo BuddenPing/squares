@@ -38,8 +38,8 @@ def exact(value: str | Fraction) -> ra.Span:
 
 
 def test_an_upper_bound_is_rounded_up_and_a_lower_bound_down() -> None:
-    assert ra.shown(exact("13.812856253277056"), UPPER) == "13.81285626"
-    assert ra.shown(exact(Fraction(1340000, 199529)), LOWER) == "6.71581574"
+    assert ra.shown(exact("13.812856253277056"), UPPER) == "13.81286"
+    assert ra.shown(exact(Fraction(1340000, 199529)), LOWER) == "6.71581"
     # Where the value ends within the places, it is printed exactly, without zeros.
     assert ra.shown(exact(Fraction(291, 50)), LOWER) == "5.82"
     assert ra.shown(exact(Fraction(2297, 400)), LOWER) == "5.7425"
@@ -52,7 +52,8 @@ def test_cut_decimals_are_rounded_up_from_the_top_of_what_they_stand_for() -> No
     stated = Stated(Fraction("11.987099332245063"), Fraction(1, 10**15))
     bound = ra.Span.of_stated(stated)
     assert bound.open_high
-    assert ra.shown(bound, UPPER) == "11.98709934"
+    # 11.98710, its zero dropped.
+    assert ra.shown(bound, UPPER) == "11.9871"
     assert Fraction(ra.shown(bound, UPPER)) >= bound.high
 
 
@@ -130,25 +131,52 @@ def handle(name: str, at: str) -> ra.Handle:
     return ra.Handle(name, at, "test")
 
 
-def test_credit_names_keep_the_register_order_and_drop_the_separators() -> None:
-    assert ra.credit_names("Ahmed et al. after Levy, Daniel") == ["Ahmed", "Levy", "Daniel"]
-    assert ra.credit_names("wand125 after Tokoharu and Levy") == ["wand125", "Tokoharu", "Levy"]
-    assert ra.credit_names("Couzo; Daniel after Couzo, Levy") == ["Couzo", "Daniel", "Levy"]
-    assert ra.primary_names("Couzo after Xu; Daniel after Couzo") == ["Couzo", "Daniel"]
+def test_a_credit_line_splits_into_its_finders_and_its_lineage_in_register_order() -> None:
+    assert ra.credit_parts("Ahmed et al. after Levy, Daniel") == (
+        ["Ahmed et al."],
+        ["Levy", "Daniel"],
+    )
+    assert ra.credit_parts("wand125 after Tokoharu and Levy") == (
+        ["wand125"],
+        ["Tokoharu", "Levy"],
+    )
+    assert ra.credit_parts("Couzo; Daniel after Couzo, Levy") == (
+        ["Couzo", "Daniel"],
+        ["Couzo", "Levy"],
+    )
     assert ra.primary_names("Wang, Li after Kleddamag, Levy") == ["Wang", "Li"]
 
 
-def test_a_handle_replaces_only_its_own_name_and_keeps_the_line_whole() -> None:
-    handles = {"Levy": handle("Levy", "ojoshe"), "Ahmed": handle("Ahmed", "ManassehA06")}
-    assert (
-        ra.with_handles("wand125 after Tokoharu and Levy", handles)
-        == "wand125 after Tokoharu and @ojoshe"
+def test_the_owner_is_never_among_the_people_a_line_credits() -> None:
+    assert ra.PROJECT_AUTHOR == "Levy"
+    assert ra.people(["Couzo", "Levy", "Levy et al.", "Daniel"]) == [
+        "Couzo",
+        "Daniel",
+    ]
+    handles, _ = ra.resolve_handles(["Levy"], [], None, {"Levy": handle("Levy", "ojoshe")})
+    assert handles == {}
+
+
+def test_a_name_shows_as_its_handle_else_its_full_name_else_as_credited() -> None:
+    full = ra.full_names(
+        {
+            "Francisco Couzo": "Couzo",
+            "Nate Chaoweeraprasit (itsnaka)": "Chaoweeraprasit",
+            "Nate Chaoweeraprasit": "Chaoweeraprasit",
+            "ry-xu": "ry-xu",
+        }
     )
-    assert (
-        ra.with_handles("Ahmed et al. after Levy, Daniel", handles)
-        == "@ManassehA06 et al. after @ojoshe, Daniel"
-    )
-    assert ra.with_handles("Levyson after Xu", handles) == "Levyson after Xu"
+    assert full == {
+        "Couzo": "Francisco Couzo",
+        "Chaoweeraprasit": "Nate Chaoweeraprasit",
+        "ry-xu": "ry-xu",
+    }
+    names = ra.Names({"Ahmed": handle("Ahmed", "ManassehA06")}, full)
+    assert names.show("Couzo") == "Francisco Couzo"
+    assert names.show("Ahmed et al.") == "@ManassehA06 et al."
+    assert names.show("Xu") == "Xu"
+    # Two full names for one credited name give neither.
+    assert ra.full_names({"Ada Smith": "Smith", "Bo Smith": "Smith"}) == {}
 
 
 PROFILE = """\
@@ -193,12 +221,12 @@ def test_a_contributor_profile_gives_its_twitter_link_and_its_github_login(
 ) -> None:
     write_profile(
         tmp_path,
-        "joshua-levy",
-        "Joshua Levy",
-        "Levy, jlevy",
+        "francisco-couzo",
+        "Francisco Couzo",
+        "Couzo, franciscouzo",
         [
-            ("github", "https://github.com/jlevy", "jlevy"),
-            ("twitter", "https://x.com/ojoshe", "ojoshe"),
+            ("github", "https://github.com/franciscouzo", "franciscouzo"),
+            ("twitter", "https://x.com/fc_test", "fc_test"),
         ],
     )
     write_profile(
@@ -209,12 +237,13 @@ def test_a_contributor_profile_gives_its_twitter_link_and_its_github_login(
         [("github", "https://github.com/evand", "evand")],
     )
     profiles = ra.load_profiles(tmp_path)
-    assert {p.id for p in profiles} == {"joshua-levy", "evan-daniel"}
-    handles, warnings = ra.resolve_handles(["Levy", "Daniel", "Xu"], profiles, None, {})
+    assert {p.id for p in profiles} == {"francisco-couzo", "evan-daniel"}
+    assert {p.id: p.github for p in profiles}["evan-daniel"] == ("evand",)
+    handles, warnings = ra.resolve_handles(["Couzo", "Daniel", "Xu"], profiles, None, {})
     assert warnings == []
-    assert handles["Levy"].handle == "ojoshe"
-    assert "joshua-levy.md" in handles["Levy"].source
-    assert set(handles) == {"Levy"}
+    assert handles["Couzo"].handle == "fc_test"
+    assert "francisco-couzo.md" in handles["Couzo"].source
+    assert set(handles) == {"Couzo"}
     assert ra.load_profiles(tmp_path / "absent") == []
 
 
@@ -280,14 +309,14 @@ def test_github_ties_a_login_to_a_credited_name_only_by_evidence() -> None:
     names = ["Levy", "ry-xu", "Xu", "Couzo", "Chaoweeraprasit", "Rehwaldt", "Daniel"]
     handles, warnings = ra.resolve_handles(names, [], github, {})
     assert warnings == []
+    # The owner is never tagged, whatever his account declares.
     assert {name: h.handle for name, h in handles.items()} == {
-        "Levy": "ojoshe",
         "ry-xu": "small_LM",
         "Couzo": "fc_x",
         "Chaoweeraprasit": "naka_x",
         "Rehwaldt": "rehwaldt_x",
     }
-    assert "PROJECT_AUTHOR" in handles["Levy"].source
+    assert "jlevy" not in github.candidates()
     assert "credited_names" in handles["Chaoweeraprasit"].source
     assert "#425" in handles["Rehwaldt"].source
     # Xu is credited by surname and nothing in the record ties it to ry-xu's login; Daniel's
@@ -337,15 +366,18 @@ def test_a_profile_wins_over_github_and_github_over_the_record(tmp_path: Path) -
         "Ahmed, ManassehA06",
         [("twitter", "https://x.com/ManassehA06", "ManassehA06")],
     )
-    stated = {"Ahmed": handle("Ahmed", "from_record"), "Levy": handle("Levy", "from_record")}
-    github, _ = fake_github({"jlevy": {"twitter_username": "ojoshe"}})
+    stated = {"Ahmed": handle("Ahmed", "from_record"), "Fang": handle("Fang", "from_record")}
+    github, _ = fake_github(
+        {"TheSnakeFang": {"name": "Fang", "twitter_username": "fang_x"}},
+        issues=[issue(484, "TheSnakeFang")],
+    )
     handles, _ = ra.resolve_handles(
-        ["Ahmed", "Levy"], ra.load_profiles(tmp_path), github, stated
+        ["Ahmed", "Fang"], ra.load_profiles(tmp_path), github, stated
     )
     assert handles["Ahmed"].handle == "ManassehA06"
-    assert handles["Levy"].handle == "ojoshe"
-    handles, _ = ra.resolve_handles(["Levy"], [], None, stated)
-    assert handles["Levy"].handle == "from_record"
+    assert handles["Fang"].handle == "fang_x"
+    handles, _ = ra.resolve_handles(["Fang"], [], None, stated)
+    assert handles["Fang"].handle == "from_record"
 
 
 def test_every_handle_the_record_states_is_still_stated_there() -> None:
@@ -407,7 +439,7 @@ def run(
     return captured.out.splitlines(), captured.err
 
 
-def test_the_announcement_of_the_sample_states_no_more_than_its_rungs(
+def test_the_announcement_of_the_sample_is_brief_and_states_no_more_than_its_rungs(
     records: Records, capsys: pytest.CaptureFixture[str]
 ) -> None:
     lines, err = run(capsys, ["--ids", *SAMPLE, "--date", "2026-10-11"])
@@ -418,11 +450,19 @@ def test_the_announcement_of_the_sample_states_no_more_than_its_rungs(
         entry = line.rsplit("#", 1)[-1].upper()
         record = records.results[entry]
         assert line.endswith(ra.result_link(entry))
-        if int(str(record["verification"])[1:]) < ra.VERIFIED_FROM:
-            assert "not yet verified" in line
-            assert "New best known" not in line
-            assert "verified V" not in line
-        assert "#" not in line.rsplit(" ", 1)[0], "no hashtags"
+        text = ra.before_link(line)
+        assert len(text) <= ra.BRIEF_LIMIT, line
+        assert "#" not in text, "no hashtags"
+        assert "Levy" not in text, "the owner is never credited"
+        assert " after " not in text, "the lineage is opt-in"
+        if ra.verified(record):
+            assert text.count("(verified)") == 1
+        else:
+            assert "(reported)" in text
+            assert "verified" not in text
+    # Full names where the bibliography gives one.
+    assert any("Francisco Couzo" in line for line in body)
+    assert "warning" not in err
     # T-129 is scored 1; every result left out is said to be, with why.
     assert "left out T-129: significance 1, below 3" in err
     left = {
@@ -438,16 +478,30 @@ def test_the_announcement_of_the_sample_states_no_more_than_its_rungs(
 def test_github_handles_reach_the_lines_and_their_sources_reach_stderr(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
-    def fetch(login: str) -> Mapping[str, Any] | None:
-        return {"jlevy": {"name": "Joshua Levy", "twitter_username": "ojoshe"}}.get(login)
-
+    users = {
+        "jlevy": {"name": "Joshua Levy", "twitter_username": "ojoshe"},
+        "franciscouzo": {"name": "Francisco Couzo", "twitter_username": "fc_test"},
+    }
     lines, err = run(
-        capsys, ["--ids", "T-128", "--date", "2026-10-11", "--github"], fetch=fetch
+        capsys,
+        ["--ids", "T-128", "--date", "2026-10-11", "--github", "--lineage"],
+        fetch=users.get,
     )
     assert len(lines) == 2
-    assert "@ojoshe" in lines[1]
-    assert " Levy" not in lines[1]
-    assert "@ojoshe for Levy: GitHub profile of jlevy" in err
+    assert ": @fc_test after " in lines[1]
+    assert "Francisco Couzo" not in lines[1]
+    assert "ojoshe" not in lines[1]
+    assert "Levy" not in lines[1]
+    assert "@fc_test for Couzo: GitHub profile of franciscouzo" in err
+
+
+def test_margins_are_opt_in_and_say_how_far_past_the_previous_best(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    lines, _ = run(capsys, ["--ids", "T-145", "--date", "2026-10-11"])
+    assert "previous best" not in lines[1]
+    lines, _ = run(capsys, ["--ids", "T-145", "--date", "2026-10-11", "--margins"])
+    assert "above the previous best)" in lines[1]
 
 
 def test_all_keeps_a_bettered_result_and_says_what_betters_it(
@@ -467,8 +521,22 @@ def test_all_keeps_a_bettered_result_and_says_what_betters_it(
     assert lines == ["11 October 2026: 0 new results"]
     assert f"left out {entry}: the best known at no count" in err
     lines, _ = run(capsys, ["--ids", entry, "--date", "2026-10-11", "--all"])
-    assert "; since " in lines[1]
-    assert "New best known" not in lines[1]
+    assert ", since " in lines[1]
+    assert "new best" not in lines[1]
+
+
+def test_a_regularization_credits_the_finder_of_the_packing_it_regularizes(
+    capsys: pytest.CaptureFixture[str], records: Records
+) -> None:
+    entry = next(
+        str(record["id"])
+        for record in records.register.results
+        if record.get("regularizations") and record["kind"] in ra.BOUND_KINDS
+    )
+    lines, _ = run(
+        capsys, ["--ids", entry, "--date", "2026-10-11", "--min-significance", "1", "--all"]
+    )
+    assert ", regularizing " in lines[1]
 
 
 def test_the_frontmatter_reader_reads_only_the_opening_block() -> None:
