@@ -533,7 +533,7 @@ issues:
       queued: true
       bead: think-x4v4
     - key: subpatterns-31-status-2026-10-08
-      claim: The author reports 31 patterns,20certificate-verified and 11 computed; row 19 newly checked
+      claim: The author reports 31 patterns, 20 certificate-verified and 11 computed; row 19 newly checked
         by the author fast verifier and rows 30/31 computed with certificates to follow.
       source: https://github.com/jlevy/squares/issues/413#issuecomment-6055253328
       not_registered: Dated progress report only. No complete new certificate packages, exact domain/frame/cap
@@ -566,7 +566,7 @@ issues:
         also passed the author fast verifier, explaining the reported rise from 21 to 22 verified rows
         across 33 patterns; 11 remain computed.'
       source: https://github.com/jlevy/squares/issues/413#issuecomment-6064272233
-      not_registered: Dated attribution correction only. No complete new row14 certificate or full standing
+      not_registered: Dated attribution correction only. No complete new row 14 certificate or full standing
         receipt is acquired or admitted here; prior report sources and outcomes remain unchanged.
       queued: true
       bead: think-bmwd
@@ -583,13 +583,13 @@ issues:
       queued: true
       bead: think-bmwd
     - key: subpatterns-33-reconciliation-2026-10-08
-      claim: 'The author reports an upstream-tool D4/premise reconciliation of all33 patterns: no overlap
-        with main''s58 admitted entries and no containment between rows; rows15/19/26 lie inside both
-        PR404 additions. The hypothetical union leaves19164states/2449orbits on either baseline, and
-        covers only the single distance-two orbit of state1965787 (8states), leaving94of95 distance-two
+      claim: 'The author reports an upstream-tool D4/premise reconciliation of all 33 patterns: no overlap
+        with main''s 58 admitted entries and no containment between rows; rows 15/19/26 lie inside both
+        PR404 additions. The hypothetical union leaves 19164 states/2449 orbits on either baseline, and
+        covers only the single distance-two orbit of state 1965787 (8 states), leaving 94 of 95 distance-two
         orbits untouched.'
       source: https://github.com/jlevy/squares/issues/413#issuecomment-6064503349
-      not_registered: Complete published reconciliation source and output are retained at89676bc9618e5724bed6a945d9711cba9ce90c6e
+      not_registered: Complete published reconciliation source and output are retained at 89676bc9618e5724bed6a945d9711cba9ce90c6e
         without executing the author script or reproducing its census. Claims remain attributed; complete
         scientific certificate/domain/frame/cap custody and an independent maintained D4/premise join
         are still required before any exclusion, orbit removal or coverage credit.
@@ -617,12 +617,12 @@ issues:
         register, and the n17 bound is unchanged.
       queued: false
     asks:
-    - what: Acquire complete packages for rows1–4 first and join exact named-cell, frame, cap, closed-domain
+    - what: Acquire complete packages for rows 1–4 first and join exact named-cell, frame, cap, closed-domain
         and receipt custody before admission.
       state: queued
       bead: think-x4v4
-      note: The owner’s request at issuecomment6047161738 identifies these missing inputs. The six-cell
-        example in367 omits interior-S and does not refute row3, which includes it.
+      note: The owner’s request at issuecomment-6047161738 identifies these missing inputs. The six-cell
+        example in issue 367 omits interior-S and does not refute row 3, which includes it.
     - what: Acquire complete immutable new source/certificate packages and exact domain/receipt bindings
         before any assurance change from the dated 31/20/11 status.
       state: queued
@@ -646,7 +646,13 @@ issues:
       by: jlevy
       kind: follow-up
       reported:
+      - result: subpatterns-31-status-2026-10-08
+        status: incomplete
+      - result: subpatterns-32-status-2026-10-08
+        status: incomplete
       - result: subpatterns-33-status-2026-10-08
+        status: incomplete
+      - result: subpatterns-33-row14-correction-2026-10-08
         status: incomplete
       - result: subpatterns-33-standing-scope-correction-2026-10-08
         status: incomplete
@@ -681,12 +687,12 @@ issues:
       32 computed; its certificate remains unpublished and no project admission changes. The separately
       dated 2026-10-08T15:02:58Z author report gives 33/22/11 and computed row 33. Its estimated 480
       GB certificate has not been generated; no new project admission changes. The separately dated
-      corrections at 2026-10-08T16:21:26Z and 16:31:11Z explain row14 and retract rows3–4''s prior unmodified
+      corrections at 2026-10-08T16:21:26Z and 16:31:11Z explain row 14 and retract rows 3–4''s prior unmodified
       standing FULL attribution. Preserve all earlier result entries and source URLs as historical reports;
-      current unmodified standing FULL attribution is only rows1–2, with rows3–4 parallel standing-node
+      current unmodified standing FULL attribution is only rows 1–2, with rows 3–4 parallel standing-node
       checks plus author fast verification. The 16:34:40Z reconciliation is retained as an author report
-      at89676bc9618e5724bed6a945d9711cba9ce90c6e; it supplies no admitted exclusion or independently
-      reproduced census. The frozen reconciliation README reflects the rows3–4 correction, while rows413.json
+      at 89676bc9618e5724bed6a945d9711cba9ce90c6e; it supplies no admitted exclusion or independently
+      reproduced census. The frozen reconciliation README reflects the rows 3–4 correction, while rows413.json
       and reconcile_413.json retain the older FULL labels; retain both bytes and use the explicit primary
       correction for current attribution. The owner''s note of 9 October 08:48 UTC reports PR452''s merge
       (c3ad5593c): rows 3 and 4 still need unmodified standing FULL receipts at current main, now under
@@ -794,8 +800,8 @@ issues:
       asks for those to be registered; the other 273 are offered as an independent exact replay of the
       upper bounds, with nothing asked. Two exact checkers of his accept every certificate; that the
       points are KKT local minima is his numerical evidence. The source states AI assistance (Claude).
-      Issue399 separately supplies changed arrangements at 266, 270 and 272, now certified in T-119;
-      this request retains its original source13ee36e poses and scope.
+      Issue 399 separately supplies changed arrangements at 266, 270 and 272, now certified in T-119;
+      this request retains its original source 13ee36e poses and scope.
     read_through: '2026-10-10T20:31:42Z'
     results:
     - key: exact-optima-48
@@ -853,8 +859,8 @@ issues:
         in favour of the exact form of #419 (n17-exact-form-2026-10-10).'
       queued: false
     - key: certificates-105-130-status-2026-10-07
-      claim: The author reports complete exact certificates at105 and130 at7eef24f, bringing the batch
-        to323/324, with both source checkers accepting.
+      claim: The author reports complete exact certificates at 105 and 130 at 7eef24f, bringing the batch
+        to 323/324, with both source checkers accepting.
       source: https://github.com/jlevy/squares/issues/375#issuecomment-6029511519
       bead: think-tiou
       register:
@@ -862,7 +868,7 @@ issues:
       evidence:
       - E-daniel-375-dated-105-130-report
     - key: certificate-292-status-2026-10-07
-      claim: The author reports exact certification of292 atf58a017 and324/324 batch completion; numerical
+      claim: The author reports exact certification of 292 at f58a017 and 324/324 batch completion; numerical
         local-minimum observations remain source claims.
       source: https://github.com/jlevy/squares/issues/375#issuecomment-6045966142
       bead: think-tiou
@@ -871,7 +877,7 @@ issues:
       evidence:
       - E-daniel-375-dated-292-report
     - key: source-valid-invalid-wrapper-correction-2026-10-07
-      claim: The author corrected verify_all.sh atcca7bf1 from grep -q VALID to an exact VALID-line match
+      claim: The author corrected verify_all.sh at cca7bf1 from grep -q VALID to an exact VALID-line match
         so INVALID no longer passes that wrapper, and reports rerunning the full batch.
       source: https://github.com/jlevy/squares/issues/375#issuecomment-6046733132
       not_registered: The exact cca7bf1 wrapper correction is retained separately in packing/resources/web/evand-batch-wrapper-2026-10-07/
@@ -974,8 +980,8 @@ issues:
       work.
     notes: 'Dated 7–8 October follow-up: n105/n130/n292 certification and the VALID/INVALID wrapper
       correction are attributed source updates, separately owned until complete named input custody
-      is established. Original13ee36e T-098/T-101 claims, poses and receipts remain historical and unchanged.
-      The held n17 object is still unimported/unreplayed under active think-00e3; the later324/324 source
+      is established. Original 13ee36e T-098/T-101 claims, poses and receipts remain historical and unchanged.
+      The held n17 object is still unimported/unreplayed under active think-00e3; the later 324/324 source
       report does not discharge that hold. On 10 October the author withdrew that certificate as a separate
       submission in favour of the exact form of #419 at evand/square-packing 8c47162 (n17-exact-form-2026-10-10),
       which stays held with the n = 17 intake under think-x4v4.'
@@ -3296,14 +3302,15 @@ issues:
       state: queued
       bead: think-r333
       note: Priced at about 4.3 CPU-hours from an eight-direction diagnostic sample (receipts in
-        wand125-fine-net-n29-2026-10-10); waits for an owner budget. The 1163/200 report and its evidence
+        wand125-fine-net-n29-2026-10-10). The owner set its budget on 11 October 2026, and the replay is
+        queued in think-r333 after the regularization work (jlevy/squares#497). The 1163/200 report and its evidence
         entry stand, and the unreported 2327/400 certificate of dd6a7cc stays with think-ndvg's
         2026-10-09 watch read.
     - what: Run a reviewed maintained-only complete seven-case native capture and whole-net v2 control
         protocol, with full input/result custody, before any lower-bound or rating promotion.
       state: queued
       bead: think-ndvg
-      note: Author32direction197/200controls are sampled reports; no replay or bound admission supplied
+      note: Author 32-direction 197/200 controls are sampled reports; no replay or bound admission supplied
         by source-only publication.
     - what: Replay and review the separate later n27 candidate at 1131/200 over all 2073 directions,
         with whole-net controls, restored positives and actual private-worker input/result custody.
@@ -3370,25 +3377,25 @@ issues:
     kind: result-report
     triage: done
     summary: Seth Rehwaldt’s five-case source offer is retained historically; T-117 confirms complete
-      finite rational witnesses at105 and292. The author’s dated correction leaves292 as the only active
-      ceiling request, while105 is superseded by Ryan Xu and130/263/272 remain historical. No restricted
+      finite rational witnesses at 105 and 292. The author’s dated correction leaves 292 as the only active
+      ceiling request, while 105 is superseded by Ryan Xu and 130/263/272 remain historical. No restricted
       dual or algebraic n68 proof is admitted by this result.
     results:
     - key: finite-refinements-105-292
-      claim: Complete exact rational constructions at105 and292;105 is now historical and292 remains
+      claim: Complete exact rational constructions at 105 and 292; 105 is now historical and 292 remains
         the only active ceiling request.
       source: body
       register:
       - T-117
     - key: historical-refinements-130-263-272
-      claim: The original offer includes130,263,272, withdrawn from the active ceiling request because
+      claim: The original offer includes 130, 263, 272, withdrawn from the active ceiling request because
         smaller public ceilings exist.
       source: body
       not_registered: Historical source evidence and complete archive custody remain retained; no current
         selected-ceiling credit is requested.
       queued: false
     - key: n105-supersession-2026-10-08
-      claim: Ryan Xu’s n105 certificate from issue432 is smaller than the earlier witness by the exact
+      claim: Ryan Xu’s n105 certificate from issue 432 is smaller than the earlier witness by the exact
         rational difference recorded in the author’s dated comparison.
       source: https://github.com/jlevy/squares/issues/425#issuecomment-6051248800
       not_registered: This is a source-status correction; the smaller Ryan Xu construction is already
@@ -3405,7 +3412,7 @@ issues:
     answer_bead: think-f3dl
     replies: []
     close_when: The retained finite-feasibility result and supersession disposition are published from
-      main, and the owner replies with the active292 and historical105/130/263/272 scopes.
+      main, and the owner replies with the active 292 and historical 105/130/263/272 scopes.
     read_through: '2026-10-08T02:58:00Z'
   - number: 438
     title: 'Exact rational ceiling refinements for 14 square-packing counts: registration request'
@@ -3420,13 +3427,13 @@ issues:
       their own current-head review and CI obligations.
     results:
     - key: precision-refinements-14
-      claim: Finite feasible upper bounds at88,130,153,154,179,180,199,207,208,209,236,237,238,239,
-        with exact rational source witnesses.
+      claim: Finite feasible upper bounds at 88, 130, 153, 154, 179, 180, 199, 207, 208, 209, 236,
+        237, 238, 239, with exact rational source witnesses.
       source: body
       register:
       - T-127
     - key: withdrawn-108-123-129
-      claim: The author withdraws108,123,129 after smaller issue432 constructions appeared; all three
+      claim: The author withdraws 108, 123, 129 after smaller issue 432 constructions appeared; all three
         original certificates remain complete.
       source: body
       not_registered: These complete inputs and their native outcomes remain historical/supporting evidence
@@ -3438,7 +3445,7 @@ issues:
       state: done
       bead: think-q3pd
       note: >-
-        Complete51-job native and actual private-worker receipts already exist; CI and source-specific
+        Complete 51-job native and actual private-worker receipts already exist; CI and source-specific
         confirming-record integration remain separate from author reports. Done on 2026-10-10 by the
         record on main, where #448 imported and #459 confirmed T-127 at V3/C3, CI passed on main at
         657cc486, and the Pages deployment 6974749559 of that commit passed its published-site check

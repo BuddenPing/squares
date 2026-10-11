@@ -29042,8 +29042,10 @@ evidence:
     limitations: 'This atom records the source author''s report. A separate complete repository replay
       is retained: eight positives and sixteen controls on both routes passed their required outcomes
       in 398.40 seconds. Actual production private-worker custody passed all complete-input and mutation-restoration
-      checks without geometric deciders. Historical source-house integration and confirmation remain
-      pending. The source author copied this repository''s sqpack verifier, so the exact_verify route
+      checks without geometric deciders. The 10 October review
+      (docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md) reproduced the replay,
+      which T-128 cites as E-couzo-451-exact-feasibility, and house integration waits on jlevy/squares#403.
+      The source author copied this repository''s sqpack verifier, so the exact_verify route
       overlaps that source checker. The second maintained rational-geometry route is a separate deciding
       implementation; both routes share certificate parsing, half-angle conversion, Fraction arithmetic
       and the separating-axis method. No two independent methods, human oversight or optimality is claimed.'
@@ -29271,8 +29273,10 @@ evidence:
       the source bytes. A separate complete repository replay is retained: five positives and ten duplicate-square
       and outside-container controls passed their required outcomes on both routes, 384846 pair decisions
       with two workers and unchanged kernel limits. Summed over the fifteen jobs, the receipt records
-      131.84 route CPU seconds and 132.22 job wall seconds; the longest job took 22.42 seconds. Independent
-      review, historical source-house integration and confirmation remain pending. Author KKT and no-descent
+      131.84 route CPU seconds and 132.22 job wall seconds; the longest job took 22.42 seconds. The 10 October
+      review (docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md) reproduced the
+      replay, which T-130 cites as E-couzo-460-followup-exact-feasibility, and house integration waits
+      on jlevy/squares#403 and this packet''s private-worker custody (RD-5). Author KKT and no-descent
       statements are not checked. The source author reports passes from Evan Daniel''s verify_cert.py
       and a copy of this repository''s sqpack verifier, so the exact_verify route overlaps that source
       checker. The second maintained rational-geometry route is a separate deciding implementation;
@@ -29368,8 +29372,12 @@ evidence:
       replay is retained: two positives and four duplicate-square and outside-container controls passed
       their required outcomes on both routes, 123486 pair decisions; summed over the six jobs, the receipt
       records 38.66 route CPU seconds and 38.79 job wall seconds, the longest job 7.72 seconds. Each positive
-      clears every wall by 1/200000000000000000000 and every pair by just under 1e-20. Independent review
-      and confirmation remain pending. The n155 side equals T-128''s n155 side exactly, from Couzo''s
+      clears every wall by 1/200000000000000000000 and every pair by just under 1e-20. The 10 October
+      review (docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md) reproduced the
+      replay, which T-131 and T-128 cite as E-evand-465-record-hunt-exact-feasibility. House integration
+      waits on jlevy/squares#403, and none rests on this certificate: at 132 T-141''s side is smaller,
+      and at 155 Couzo''s equal certificate is the one T-128 adopts. The n155 side equals T-128''s n155
+      side exactly, from Couzo''s
       issue451 certificate committed nine hours earlier, and the two certificates share 152 of 155 exact
       poses, differing only in the free and flat-motion squares the source''s report lists; T-128 cites
       this atom as an evidence update. The author''s KKT, reduced-Hessian and jamming statements are numerical and not checked.
