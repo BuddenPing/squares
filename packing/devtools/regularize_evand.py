@@ -1,0 +1,1582 @@
+#!/usr/bin/env python3
+"""Drive Evan Daniel's vendored regularizer over known-best witnesses and classify its views.
+
+Usage, from `packing/`, each after
+`uv run --frozen --all-extras --group dev python -m devtools.regularize_evand`:
+
+    run --run-dir DIR --n 10 26 70 [--workers K] [--timeout S] [--from-stage STAGE]
+    input --n N --output FILE
+    report --run-dir DIR [--json]
+
+This is the automated pass of the regularization policy
+(`docs/project/policies/regularization-policy.md`, section 4). The vendored code under
+`vendor/evand-regularize/` (evand/square-packing at the pin `vendored.yaml` records) is
+the generator; it decides nothing. Every view it yields is converted exactly, decided
+here on this project's exact routes, measured against its source witness, and classified
+by the policy's decision table. Per count, in order:
+
+1. **Input.** The witness `packing/witnesses/known-best/n-NNN.yaml` becomes upstream's text
+   input (`n S`, then `x y degrees` per square, in the witness's own order and frame) at
+   full precision: a rational witness's exact centres and side to 50 significant digits,
+   its angles from the exact edge direction by `mpmath.atan2` at 60 digits; a decimal
+   witness from its own decimal strings, an angle in radians converted at 60 digits; the
+   algebraic witness (n = 51) from its field values evaluated at 60 digits. Upstream's own
+   batch inputs reduced every witness to binary64; these do not.
+2. **Replica.** A scratch copy, under the run directory, of only the seven vendored
+   modules the pipeline runs, with a generated `search/exact/batch/results.json` (one row
+   per count: `n`, `from_: witness`, the solve's `status`, the finder as `by`, the
+   record's printed side as `register`) and `batch/work/n-N` linked to the count's solve
+   directory, which is where `reg.load` reads its 80-digit input. Nothing is written under
+   `vendor/`, and the run directory must lie outside the checkout.
+3. **Exact solve.** `exactsolve.py witness.txt --out solve -q` with `python -I`, one
+   thread, a timeout, and the count's directory as working directory. A count that does
+   not certify (not jammed, not converged, an invalid certificate, a timeout) is
+   reported and stops there; it is never polished.
+4. **Regularize.** `regularize_evand_shim.py`, beside this file, runs upstream's
+   `reg.regularize` with `coincide` placement, the `conservative` angle policy and the
+   source orientation, upstream's `atlas.level_of`, and `reg.write_cert`, and writes
+   `regularize.json` with the result's poses at 50 digits.
+5. **Import.** The dilated certificate becomes `view-solved.yaml`, a rational
+   centre-basis Witness/v2, through `devtools.evand_exact_certificates` (`parse`,
+   `basis_witness`), decided by `sqpack.witness.exact_verify`, the independent checker and
+   the half-angle route of `devtools.check_half_angle_area`. Its side is upstream's `S'`,
+   so its relation to the witness is `solved`.
+6. **Same side.** `devtools.regularize_same_side.resolve` re-solves the view's tight
+   contacts over Q at the witness's side `s_W`; when it succeeds, `view-same.yaml` is
+   decided here again on the two maintained routes and its side compared with `s_W`
+   exactly, so the relation `same` is computed, not taken from the resolver.
+7. **Measure.** Identity by `check_half_angle_area.arrangement_gap` between the chosen
+   view (the same-side view when there is one, else the solved one) and the witness's
+   exact frame, with the squares it turns beyond a sine of `10^-6`; house and stage
+   full-side contact counts per square, before and after, by the census's replicas
+   (`census_atlas_contact_shades.edge_rule_contacts` and `centre_rule_contacts` on
+   `packings_from_witness`), as histograms and per-square regressions against the witness
+   and against the project's current regularized view of the count, if it has one.
+8. **Classify.** `classify` applies rows 1 to 10 of the decision table to each output on
+   its own; the first row that matches decides. The count's decision is the same-side
+   view's where stage 6 produced one, else the solved view's. Row 1's "no output" is a
+   solve that did not certify or timed out, or a regularization that raised, timed out,
+   found its placement infeasible, failed its 80-digit verification or wrote a
+   certificate upstream's checker refused; a placement LP that merely stalled
+   (`place: stalled`) still yields a verified output and is not row 1.
+
+Every count writes `RUN/n-NNN/report.json`, and the run writes `RUN/receipt.json`: the
+generator (name, pin, local patches, interpreter), the parameters, one row per count with
+its sides, decision and seconds per stage, the register-result candidates of row 3, the
+review queue, and the run's CPU and wall seconds, children included.
+
+**What the measurements are.** Upstream's level, symmetry and moves are its own report,
+recorded as upstream's. The exact routes decide validity over Q and nothing else. The
+identity measure is a nearest-centre matching under the box's eight symmetries; it says
+how far squares moved and whether the pairing is one to one, not that two packings are
+the same in any stronger sense. Per-square regressions pair squares by index, which the
+generator preserves in the source orientation. The witness's frame for a decimal witness
+is its 36-digit rational promotion at centre dilation 1, whose exact side is `s_W`; the
+algebraic witness has no rational frame, so its identity is measured against a 55-digit
+rational approximation and no view of it can be `same`. `U` is the case record's
+`verified_upper_bound`, read by `apply_exact_ceilings.bound_value`: its exact form where
+that is rational, a closed form evaluated to 60 digits, else its printed decimal. The
+printed decimal alone would not do: at n = 51 it is the exact side rounded up at sixteen
+digits, below which every dilated certificate of the optimum falls.
+
+**Workers.** Counts run in a process pool of `sqpack.workers.worker_count` workers,
+capped at two when `--workers` is not given; each count's solve and regularization are
+further child processes with one BLAS thread.
+"""
+
+from __future__ import annotations
+
+import argparse
+import fcntl
+import gzip
+import hashlib
+import importlib
+import json
+import math
+import os
+import platform
+import resource
+import shutil
+import subprocess
+import sys
+import time
+from collections.abc import Iterable, Mapping, Sequence
+from concurrent.futures import ProcessPoolExecutor, as_completed
+from dataclasses import asdict, dataclass, field
+from decimal import ROUND_HALF_EVEN, Decimal, localcontext
+from fractions import Fraction
+from pathlib import Path
+from typing import Any, Literal
+
+import mpmath
+from strif import atomic_output_file
+
+from devtools import census_atlas_contact_shades as shades
+from devtools import check_half_angle_area as area
+from devtools import check_rational_witness_independent as independent
+from devtools import evand_exact_certificates as evand
+from devtools.apply_exact_ceilings import bound_value
+from devtools.upper_bound_packets import RATIONAL_DIGITS
+from sqpack.witness import (
+    # The 36-digit rational pose at dilation 1 is the decimal witness's exact frame, as
+    # `regularize_axis_components.exact_frame` takes it; this builds it the same way.
+    _promoted_candidate,  # pyright: ignore[reportPrivateUsage]
+    exact_verify,
+    load_witness,
+    materialize_exact_witness,
+    materialize_witness,
+    validate_witness_document,
+    witness_document,
+)
+from sqpack.workers import worker_count
+from sqpack.yamlio import load_yaml
+
+ROOT = Path(__file__).resolve().parent.parent
+REPO = ROOT.parent
+VENDOR = REPO / "vendor/evand-regularize"
+VENDORED_MANIFEST = VENDOR / "vendored.yaml"
+UPSTREAM_INPUTS = VENDOR / "search/exact/batch/inputs"
+KNOWN_BEST = ROOT / "witnesses/known-best"
+WITNESS_SCHEMA = ROOT / "witnesses/witness.schema.yaml"
+FRONTIER = ROOT / "frontier"
+LAYER_INDEX = ROOT / "atlas/known-best/regularized/index.json"
+SHIM = Path(__file__).with_name("regularize_evand_shim.py")
+POLICY = "docs/project/policies/regularization-policy.md"
+
+GENERATOR = "evand-regularize"
+GENERATED_BY = "python -m devtools.regularize_evand run"
+RECEIPT_FORMAT = "evand-regularization-receipt-v1"
+REPORT_FORMAT = "evand-regularization-report-v1"
+#: The vendored modules the pipeline runs, by their upstream directory.
+REPLICA_FILES: dict[str, tuple[str, ...]] = {
+    "search/exact": ("exactsolve.py", "geom.py", "verify_cert.py", "verify_cert2.py"),
+    "search/regularize": ("reg.py", "atlas.py", "samepacking.py"),
+}
+BATCH = Path("search/exact/batch")
+#: Significant digits of a written input value and of the evaluation behind it.
+INPUT_DIGITS = 50
+EVALUATION_DIGITS = 60
+STYLE = "coincide"
+VARIANTS = ("conservative", "fewest")
+DEFAULT_TIMEOUT = 600.0
+#: The pool's size when `--workers` is not given: the host is shared with other work.
+DEFAULT_WORKER_CAP = 2
+#: The stages a run can start from; the later stages always run after the first chosen.
+STAGES = ("input", "solve", "regularize", "import")
+#: The provisional move bound of policy section 3 and the turn named in obligation 3.
+MOVE_BOUND = Fraction(1, 2)
+TURN_BOUND = Fraction(1, 10**6)
+SOLVE_CERTIFIED = ("KKT local min", "bound only")
+SINGLE_THREAD = ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS")
+HOUSE, STAGE = shades.RULES[0], shades.RULES[1]
+RULE_NAMES = ("house", "stage")
+
+Placed = tuple[Fraction, Fraction, Fraction, Fraction]
+Output = Literal["solved", "same"]
+Corners = list[tuple[Fraction, Fraction]]
+
+
+class EvandRunError(ValueError):
+    """A request this driver refuses, or an input it cannot write."""
+
+
+# --------------------------------------------------------------------------------------
+# Small helpers
+# --------------------------------------------------------------------------------------
+
+
+def sha256_of(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def relative(path: Path) -> str:
+    """A repository-relative path for a file in the checkout, else the absolute one."""
+    resolved = path.resolve()
+    return str(resolved.relative_to(REPO)) if resolved.is_relative_to(REPO) else str(resolved)
+
+
+def decimal_text(value: Fraction, digits: int = INPUT_DIGITS) -> str:
+    """`value` to `digits` significant digits, rounded to nearest, in fixed notation."""
+    with localcontext() as context:
+        context.prec = digits
+        context.rounding = ROUND_HALF_EVEN
+        number = Decimal(value.numerator) / Decimal(value.denominator)
+    return format(number, "f")
+
+
+def mp_text(value: Any, digits: int = INPUT_DIGITS) -> str:
+    """An mpmath value to `digits` significant digits in fixed notation."""
+    return str(mpmath.nstr(value, digits, min_fixed=-mpmath.inf, max_fixed=mpmath.inf))
+
+
+def literal(value: Fraction) -> str:
+    return evand.literal(value)
+
+
+def write_json(path: Path, document: Any) -> None:
+    with atomic_output_file(path, make_parents=True) as temporary:
+        temporary.write_text(
+            json.dumps(document, indent=1, default=str) + "\n", encoding="utf-8"
+        )
+
+
+def read_json(path: Path) -> Any:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def count_dir(run_dir: Path, n: int) -> Path:
+    return run_dir / f"n-{n:03d}"
+
+
+def witness_path(n: int) -> Path:
+    return KNOWN_BEST / f"n-{n:03d}.yaml"
+
+
+def outside_checkout(path: Path) -> Path:
+    """`path`, resolved, refused when it lies inside this repository."""
+    resolved = path.resolve()
+    if resolved.is_relative_to(REPO):
+        raise EvandRunError(
+            f"{path} is inside the checkout; the replica and the solve outputs belong in a "
+            "scratch directory outside it (vendor/evand-regularize/README.md, OR-18)"
+        )
+    return resolved
+
+
+# --------------------------------------------------------------------------------------
+# The source witness: its input text, its exact frame and its side
+# --------------------------------------------------------------------------------------
+
+
+def _degrees(dy: Any, dx: Any) -> Any:
+    with mpmath.workdps(EVALUATION_DIGITS):
+        return mpmath.atan2(dy, dx) * 180 / mpmath.pi
+
+
+def _exact_rows(witness: Mapping[str, Any]) -> tuple[list[tuple[str, str, str]], str]:
+    """A rational witness: exact centres and side to 50 digits, angles from exact edges."""
+    squares, side = materialize_exact_witness(witness)
+    rows: list[tuple[str, str, str]] = []
+    for corners in squares:
+        xs = [Fraction(x) for x, _ in corners]
+        ys = [Fraction(y) for _, y in corners]
+        dx, dy = xs[1] - xs[0], ys[1] - ys[0]
+        with mpmath.workdps(EVALUATION_DIGITS):
+            angle = _degrees(
+                mpmath.mpf(dy.numerator) / dy.denominator,
+                mpmath.mpf(dx.numerator) / dx.denominator,
+            )
+            angle_text = mp_text(angle)
+        rows.append(
+            (
+                decimal_text(sum(xs, Fraction(0)) / 4),
+                decimal_text(sum(ys, Fraction(0)) / 4),
+                angle_text,
+            )
+        )
+    return rows, decimal_text(Fraction(side))
+
+
+def _decimal_rows(witness: Mapping[str, Any]) -> tuple[list[tuple[str, str, str]], str]:
+    """A decimal witness from its own strings; an angle in radians converted at 60 digits."""
+    if witness["representation"] != "center-angle":
+        raise EvandRunError("a decimal witness must be centre-angle")
+    if witness["coordinates"]["origin"] != "lower-left":
+        raise EvandRunError("a decimal witness must have a lower-left origin")
+    unit = witness["coordinates"]["angle_unit"]
+    rows: list[tuple[str, str, str]] = []
+    for square in witness["squares"]:
+        x, y = (str(value) for value in square["center"])
+        angle = str(square["angle"])
+        if unit == "radians":
+            with mpmath.workdps(EVALUATION_DIGITS):
+                angle = mp_text(mpmath.mpf(angle) * 180 / mpmath.pi)
+        elif unit != "degrees":
+            raise EvandRunError(f"angle unit {unit!r} is not degrees or radians")
+        rows.append((x, y, angle))
+    return rows, str(witness["side"])
+
+
+def _field_rows(witness: Mapping[str, Any]) -> tuple[list[tuple[str, str, str]], str]:
+    """An algebraic witness: its field values evaluated at 60 digits."""
+    squares, side = materialize_witness(witness, digits=EVALUATION_DIGITS)
+    rows: list[tuple[str, str, str]] = []
+    with mpmath.workdps(EVALUATION_DIGITS):
+        for corners in squares:
+            xs = [mpmath.mpf(x) for x, _ in corners]
+            ys = [mpmath.mpf(y) for _, y in corners]
+            angle = _degrees(ys[1] - ys[0], xs[1] - xs[0])
+            rows.append((mp_text(sum(xs) / 4), mp_text(sum(ys) / 4), mp_text(angle)))
+        side_text = mp_text(mpmath.mpf(side))
+    return rows, side_text
+
+
+def input_text(witness: Mapping[str, Any]) -> str:
+    """Upstream's text input for a witness: `n S`, then `x y degrees` per square."""
+    kind = witness["scalar"]["kind"]
+    if kind == "rational":
+        rows, side = _exact_rows(witness)
+    elif kind == "decimal":
+        rows, side = _decimal_rows(witness)
+    elif kind == "algebraic-number-field":
+        rows, side = _field_rows(witness)
+    else:
+        raise EvandRunError(f"scalar kind {kind!r} has no input form here")
+    lines = [f"{witness['n']} {side}", *(f"{x} {y} {angle}" for x, y, angle in rows)]
+    return "\n".join(lines) + "\n"
+
+
+def read_input(text: str) -> tuple[int, str, list[tuple[str, str, str]]]:
+    """Upstream's text format read back: the count, the side and each square's row."""
+    rows = [line.split() for line in text.splitlines() if line.strip()]
+    n, side = int(rows[0][0]), rows[0][1]
+    squares = [(row[0], row[1], row[2]) for row in rows[1 : n + 1]]
+    return n, side, squares
+
+
+def _placed(corners: Sequence[tuple[Any, Any]]) -> Placed:
+    """Centre and `(cos, sin)` of a square from its corners, the first edge's direction."""
+    xs = [Fraction(x) for x, _ in corners]
+    ys = [Fraction(y) for _, y in corners]
+    return sum(xs, Fraction(0)) / 4, sum(ys, Fraction(0)) / 4, xs[1] - xs[0], ys[1] - ys[0]
+
+
+@dataclass(frozen=True)
+class SourceFrame:
+    """The source witness's exact frame, its side `s_W` and how both were obtained."""
+
+    kind: str
+    side: Fraction | None
+    side_text: str
+    corners: list[Corners] | None
+    placements: list[Placed]
+    derivation: str
+
+
+def source_frame(witness: Mapping[str, Any]) -> SourceFrame:
+    kind = witness["scalar"]["kind"]
+    if kind == "rational":
+        squares, side = materialize_exact_witness(witness)
+        corners = [[(Fraction(x), Fraction(y)) for x, y in square] for square in squares]
+        exact = Fraction(side)
+        return SourceFrame(
+            kind,
+            exact,
+            decimal_text(exact, 40),
+            corners,
+            [_placed(square) for square in corners],
+            "the witness's own exact geometry",
+        )
+    if kind == "decimal":
+        squares, exact = _promoted_candidate(
+            witness, rational_digits=RATIONAL_DIGITS, dilation=Fraction(1)
+        )
+        corners = [[(Fraction(x), Fraction(y)) for x, y in square] for square in squares]
+        return SourceFrame(
+            kind,
+            exact,
+            decimal_text(exact, 40),
+            corners,
+            [_placed(square) for square in corners],
+            f"the {RATIONAL_DIGITS}-digit rational promotion at centre dilation 1",
+        )
+    squares, side = materialize_witness(witness, digits=EVALUATION_DIGITS)
+    approximate = [
+        [(Fraction(mp_text(x, 55)), Fraction(mp_text(y, 55))) for x, y in square]
+        for square in squares
+    ]
+    return SourceFrame(
+        kind,
+        None,
+        mp_text(side, 40),
+        None,
+        [_placed(square) for square in approximate],
+        "a 55-digit rational approximation of the field values, for measurement only",
+    )
+
+
+def case_facts(n: int) -> dict[str, Any]:
+    """The case record's verified upper bound, printed side and finders, read only."""
+    path = FRONTIER / f"n-{n:03d}.md"
+    if not path.is_file():
+        return {
+            "verified_upper_bound": None,
+            "exact_form": None,
+            "reported": None,
+            "found_by": [],
+        }
+    front = load_yaml(path.read_text(encoding="utf-8").split("---\n", 2)[1])["packing"]
+    verified = front.get("verified_upper_bound") or {}
+    reported = front.get("reported_upper_bound") or {}
+    return {
+        "verified_upper_bound": verified.get("value"),
+        "exact_form": verified.get("exact_form"),
+        "reported": reported.get("value"),
+        "found_by": list(reported.get("found_by") or []),
+    }
+
+
+def upper_bound(facts: Mapping[str, Any]) -> Fraction | None:
+    """`U` as a rational for comparison: the exact form where it is rational, a closed form
+    evaluated to 60 digits, else the printed decimal (`apply_exact_ceilings.bound_value`).
+
+    The printed decimal alone would not do: at n = 51 it is the exact side rounded up at
+    sixteen digits, below which every dilated certificate of the optimum falls.
+    """
+    if facts["verified_upper_bound"] is None:
+        return None
+    if facts["exact_form"] is None:
+        return Fraction(str(facts["verified_upper_bound"]))
+    return bound_value(
+        {"value": facts["verified_upper_bound"], "exact_form": facts["exact_form"]}
+    )
+
+
+# --------------------------------------------------------------------------------------
+# The replica
+# --------------------------------------------------------------------------------------
+
+
+def vendored_pin() -> dict[str, Any]:
+    manifest = load_yaml(VENDORED_MANIFEST.read_text(encoding="utf-8"))
+    commit = str(manifest["source_commit"])
+    return {
+        "name": GENERATOR,
+        "source_url": manifest["source_url"],
+        "pin": commit[:7],
+        "source_commit": commit,
+        "patches": [dict(change) for change in manifest["local_changes"]],
+        "interpreter": f"{platform.python_implementation()} {platform.python_version()}",
+    }
+
+
+def build_replica(run_dir: Path, rows: Sequence[Mapping[str, Any]]) -> Path:
+    """Copy the pipeline's vendored modules under `run_dir` and write their batch inputs.
+
+    `rows` are the batch rows for the counts of this run; rows already in the replica for
+    other counts are kept. Each count's `batch/work/n-N` links to its solve directory.
+    """
+    replica = outside_checkout(run_dir) / "replica"
+    for directory, names in REPLICA_FILES.items():
+        target = replica / directory
+        target.mkdir(parents=True, exist_ok=True)
+        for name in names:
+            shutil.copyfile(VENDOR / directory / name, target / name)
+    batch = replica / BATCH
+    (batch / "work").mkdir(parents=True, exist_ok=True)
+    results = batch / "results.json"
+    kept = {int(row["n"]): row for row in read_json(results)} if results.is_file() else {}
+    for row in rows:
+        kept[int(row["n"])] = dict(row)
+        link = batch / "work" / f"n-{row['n']}"
+        solve = count_dir(run_dir.resolve(), int(row["n"])) / "solve"
+        solve.mkdir(parents=True, exist_ok=True)
+        if link.is_symlink() or link.exists():
+            link.unlink()
+        link.symlink_to(solve, target_is_directory=True)
+    write_json(results, [kept[n] for n in sorted(kept)])
+    return replica
+
+
+def record_solve_status(replica: Path, n: int, status: str) -> None:
+    """Set one count's batch status, under a lock: the pool's workers share the file."""
+    results = replica / BATCH / "results.json"
+    with (replica / BATCH / "results.lock").open("a", encoding="utf-8") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        rows = read_json(results)
+        for row in rows:
+            if int(row["n"]) == n:
+                row["status"] = status
+        write_json(results, rows)
+
+
+def batch_row(n: int, facts: Mapping[str, Any], witness: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        "n": n,
+        "from_": "witness",
+        "status": "pending",
+        "by": facts["found_by"],
+        "register": facts["reported"] or str(witness["side"]),
+        "input": "devtools.regularize_evand input (full precision)",
+    }
+
+
+def child_environment() -> dict[str, str]:
+    environment = {
+        key: value for key, value in os.environ.items() if not key.startswith("PYTHON")
+    }
+    environment.update(dict.fromkeys(SINGLE_THREAD, "1"))
+    environment["REG_REFRESH"] = "0"
+    return environment
+
+
+# --------------------------------------------------------------------------------------
+# Stages 3 and 4: the exact solve and the regularization, as child processes
+# --------------------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class Options:
+    run_dir: Path
+    timeout: float = DEFAULT_TIMEOUT
+    regularize_timeout: float = DEFAULT_TIMEOUT
+    variant: str = "conservative"
+    orient: str = "0"
+    from_stage: str = "input"
+    same_mode: str = "relax"
+
+
+def solve_status(meta: Mapping[str, Any]) -> str:
+    """The batch's status vocabulary from one `witness.json`."""
+    if meta.get("status") in {"not jammed", "solve failed"}:
+        return str(meta["status"])
+    if not meta.get("newton_converged"):
+        return "not converged"
+    if not meta.get("cert_valid"):
+        return "certificate invalid"
+    second = str((meta.get("second_order") or {}).get("status", ""))
+    if second.startswith(("rigid", "PD", "PSD", "local minimum")):
+        return "KKT local min"
+    return "bound only"
+
+
+def run_child(
+    command: Sequence[str], cwd: Path, timeout: float, log: Path
+) -> tuple[int | None, float]:
+    """Run one child with `python -I`'s isolation; the return code is None on a timeout."""
+    started = time.perf_counter()
+    with log.open("w", encoding="utf-8") as handle:
+        try:
+            completed = subprocess.run(
+                command,
+                cwd=cwd,
+                env=child_environment(),
+                stdout=handle,
+                stderr=subprocess.STDOUT,
+                timeout=timeout,
+                check=False,
+            )
+        except subprocess.TimeoutExpired:
+            return None, time.perf_counter() - started
+    return completed.returncode, time.perf_counter() - started
+
+
+def solve(directory: Path, replica: Path, timeout: float) -> dict[str, Any]:
+    solve_dir = directory / "solve"
+    solve_dir.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(directory / "input.txt", solve_dir / "witness.txt")
+    for stale in solve_dir.glob("witness.*"):
+        if stale.name != "witness.txt":
+            stale.unlink()
+    code, seconds = run_child(
+        [
+            sys.executable,
+            "-I",
+            str(replica / "search/exact/exactsolve.py"),
+            str(solve_dir / "witness.txt"),
+            "--out",
+            str(solve_dir),
+            "-q",
+        ],
+        directory,
+        timeout,
+        directory / "solve.log",
+    )
+    if code is None:
+        return {"status": "timeout", "seconds": round(seconds, 2), "timeout": timeout}
+    meta_path = solve_dir / "witness.json"
+    if not meta_path.is_file():
+        return {"status": "error", "returncode": code, "seconds": round(seconds, 2)}
+    block = solve_block(read_json(meta_path))
+    block.update(returncode=code, seconds=round(seconds, 2))
+    return block
+
+
+def solve_block(meta: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        "status": solve_status(meta),
+        "S_exact": meta.get("S_exact"),
+        "S_cert": meta.get("S_cert"),
+        "cert_valid": meta.get("cert_valid"),
+        "newton_converged": meta.get("newton_converged"),
+        "free": meta.get("free_squares") or [],
+        "second_order": (meta.get("second_order") or {}).get("status"),
+        "why": meta.get("why"),
+        "jam_residual": meta.get("jam_residual"),
+        "solver_seconds": meta.get("seconds"),
+    }
+
+
+def regularize(directory: Path, replica: Path, n: int, options: Options) -> dict[str, Any]:
+    output, certificate = directory / "regularize.json", directory / "regularize.cert"
+    for stale in (output, certificate):
+        stale.unlink(missing_ok=True)
+    code, seconds = run_child(
+        [
+            sys.executable,
+            "-I",
+            str(SHIM),
+            "--replica",
+            str(replica),
+            "--n",
+            str(n),
+            "--output",
+            str(output),
+            "--certificate",
+            str(certificate),
+            "--variant",
+            options.variant,
+            "--style",
+            STYLE,
+            "--orient",
+            options.orient,
+        ],
+        directory,
+        options.regularize_timeout,
+        directory / "regularize.log",
+    )
+    if code is None:
+        return {"status": "timeout", "seconds": round(seconds, 2)}
+    if not output.is_file():
+        return {"status": "error", "error": f"no output, exit status {code}"}
+    document = read_json(output)
+    document["wall_seconds"] = round(seconds, 2)
+    return document
+
+
+def regularize_block(document: Mapping[str, Any]) -> dict[str, Any]:
+    verify = document.get("verify") or {}
+    return {
+        "level": document.get("level"),
+        "level_text": document.get("level_text"),
+        "moved": document.get("moved"),
+        "max_move": document.get("max_move"),
+        "symmetry": document.get("symmetry"),
+        "symmetry_dropped": document.get("symmetry_dropped"),
+        "groups_before": document.get("groups_before"),
+        "groups_after": document.get("groups_after"),
+        "merged": document.get("merged"),
+        "angle_changes": document.get("angle_changes"),
+        "changed_angles": [row["square"] for row in document.get("changed_angles") or []],
+        "place": document.get("place"),
+        "verify_ok": verify.get("ok"),
+        "min_gap": verify.get("min_gap"),
+        "cert_ok": document.get("cert_ok"),
+        "S_exact": document.get("S_exact"),
+        "S_cert": document.get("S_cert"),
+        "g": document.get("g"),
+        "seconds": document.get("seconds"),
+    }
+
+
+def regularize_failure(document: Mapping[str, Any]) -> str | None:
+    """Why a regularization yields no output (row 1), or None when it yields one."""
+    if document.get("status") == "timeout":
+        return "regularize timeout"
+    if document.get("error"):
+        return f"regularize error: {document['error']}"
+    if document.get("place") == "infeasible":
+        return "regularize: infeasible placement"
+    if not (document.get("verify") or {}).get("ok"):
+        return "regularize: the 80-digit verification failed"
+    if not document.get("cert_ok"):
+        return "regularize: the certificate did not verify"
+    return None
+
+
+# --------------------------------------------------------------------------------------
+# Stages 5 and 6: the solved view and the same-side view, decided here
+# --------------------------------------------------------------------------------------
+
+
+def square_corners(x: Fraction, y: Fraction, c: Fraction, s: Fraction) -> Corners:
+    """A unit square's corners, counter-clockwise, from its centre and rotation."""
+    half = Fraction(1, 2)
+    return [
+        (x + c * a - s * b, y + s * a + c * b)
+        for a, b in ((half, half), (-half, half), (-half, -half), (half, -half))
+    ]
+
+
+def view_geometry(witness: Mapping[str, Any]) -> tuple[Fraction, list[Placed], list[Corners]]:
+    """A rational view's side, placements and corners, read from its stated fields."""
+    side = Fraction(str(witness["side"]))
+    placements: list[Placed] = []
+    corners: list[Corners] = []
+    for square in witness["squares"]:
+        if witness["representation"] == "corners":
+            points = [(Fraction(str(x)), Fraction(str(y))) for x, y in square["corners"]]
+            corners.append(points)
+            placements.append(_placed(points))
+            continue
+        x, y = (Fraction(str(value)) for value in square["center"])
+        c, s = (Fraction(str(value)) for value in square["basis"])
+        placements.append((x, y, c, s))
+        corners.append(square_corners(x, y, c, s))
+    return side, placements, corners
+
+
+def certificate_block(
+    source: Mapping[str, Any], relation: str, options: Options, pin: Mapping[str, Any]
+) -> dict[str, Any]:
+    return {
+        "kind": "evand-regularized-view",
+        "relation": relation,
+        "derived_from": {"path": source["path"], "sha256": source["sha256"]},
+        "generator": {
+            "name": pin["name"],
+            "pin": pin["pin"],
+            "source_commit": pin["source_commit"],
+            "patches": pin["patches"],
+        },
+        "variant": options.variant,
+        "style": STYLE,
+        "orient": options.orient,
+        "driver": GENERATED_BY,
+        "policy": POLICY,
+    }
+
+
+def solved_view(
+    directory: Path, n: int, source: Mapping[str, Any], options: Options, pin: Mapping[str, Any]
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """`view-solved.yaml` from `regularize.cert`, and its three exact decisions."""
+    text = (directory / "regularize.cert").read_text(encoding="utf-8")
+    certificate = evand.parse(text, expected_n=n)
+    document = evand.basis_witness(certificate)
+    document["id"] = f"W-known-best-n{n:03d}-regularized"
+    document["claim"]["limitations"] = (
+        "A regularized display view: Evan Daniel's regularizer's dilated certificate "
+        "(the solved point scaled by 1 + 10^-20 about the origin corner, the side rounded "
+        "up), converted exactly. Its side is not the source witness's; it proves only "
+        "s(n) <= side, and is a drawing only as the regularization policy decides."
+    )
+    document["source"] = {"path": source["path"]}
+    document["certificate"] = certificate_block(source, "solved", options, pin)
+    path = directory / "view-solved.yaml"
+    write_view(path, document)
+    started = time.perf_counter()
+    decided = evand.decide(certificate)
+    side, poses = area.parse_certificate(text, n)
+    half_angle = area.decide(side, poses)
+    block = {
+        "path": path.name,
+        "id": document["id"],
+        "side": decimal_text(certificate.side, 40),
+        "side_exact": literal(certificate.side),
+        "routes": {
+            "exact_verify": bool(decided["exact_verify"]["passed"]),
+            "independent": bool(decided["independent"]["passed"]),
+            "half_angle": bool(half_angle.passed),
+        },
+        "decide_seconds": round(time.perf_counter() - started, 2),
+    }
+    return block, document
+
+
+def write_text(path: Path, text: str) -> None:
+    with atomic_output_file(path, make_parents=True) as temporary:
+        temporary.write_text(text, encoding="utf-8")
+
+
+def write_view(path: Path, document: Mapping[str, Any]) -> None:
+    """A view as a Witness/v2 file, held to the witness schema before it is written."""
+    text = witness_document(document)
+    validate_witness_document(load_yaml(text), path=path, fallback_schema=WITNESS_SCHEMA)
+    write_text(path, text)
+
+
+def same_side_module() -> tuple[Any | None, str | None]:
+    """Lane A's resolver, imported when first needed, or why it is unavailable."""
+    try:
+        return importlib.import_module("devtools.regularize_same_side"), None
+    except ImportError as error:
+        return None, f"same-side-unavailable: {error}"
+
+
+def same_view(
+    *,
+    directory: Path,
+    n: int,
+    witness: Mapping[str, Any],
+    regularized: Mapping[str, Any],
+    source: Mapping[str, Any],
+    options: Options,
+    pin: Mapping[str, Any],
+) -> tuple[dict[str, Any] | None, dict[str, Any] | None, str | None]:
+    """`view-same.yaml` from the resolver, decided here; or why there is none."""
+    (directory / "view-same.yaml").unlink(missing_ok=True)
+    module, unavailable = same_side_module()
+    if module is None:
+        return None, None, unavailable
+    poses = [
+        module.GeneratorPose(x, y, degrees) for x, y, degrees in regularized["packing"]["sq"]
+    ]
+    started = time.perf_counter()
+    try:
+        outcome = module.resolve(
+            dict(witness),
+            poses,
+            mode=options.same_mode,
+            view_id=f"W-known-best-n{n:03d}-regularized",
+        )
+    except Exception as error:  # noqa: BLE001 -- a resolver failure is recorded, not fatal
+        return None, None, f"same-side-error: {type(error).__name__}: {error}"
+    seconds = time.perf_counter() - started
+    if outcome.status != "same" or outcome.witness is None:
+        return None, None, f"same-side-refused: {outcome.reason or 'no reason given'}"
+    document = dict(outcome.witness)
+    # The resolver's own certificate fields stay; the driver's provenance fills the rest.
+    stated = dict(document.get("certificate") or {})
+    for key, value in certificate_block(source, "same", options, pin).items():
+        stated.setdefault(key, value)
+    document["certificate"] = stated
+    path = directory / "view-same.yaml"
+    write_view(path, document)
+    side, _placements, corners = view_geometry(document)
+    result, _report = exact_verify(document)
+    second = independent.check_squares(corners, side)
+    block = {
+        "path": path.name,
+        "id": document.get("id"),
+        "side": decimal_text(side, 40),
+        "side_exact": literal(side),
+        "routes": {
+            "exact_verify": bool(result["verification_passed"]),
+            "independent": bool(second["verification_passed"]),
+        },
+        "resolve": outcome.report,
+        "resolve_seconds": round(seconds, 2),
+    }
+    return block, document, None
+
+
+# --------------------------------------------------------------------------------------
+# Stage 7: identity and contact shades
+# --------------------------------------------------------------------------------------
+
+
+def turned_squares(
+    view: tuple[Fraction, Sequence[Placed]], source: tuple[Fraction, Sequence[Placed]], k: int
+) -> list[int]:
+    """The view's squares turned beyond `TURN_BOUND` from their match under symmetry `k`.
+
+    The match is `arrangement_gap`'s, nearest centre to the symmetric image; the nearest
+    is found in binary64, which agrees with the exact nearest wherever no two of the
+    source's centres are within rounding of each other, and the turn is exact.
+    """
+    other_side = source[0]
+    mapped = [area.symmetric(other_side, square, k) for square in source[1]]
+    floats = [(float(u), float(v)) for u, v, _a, _b in mapped]
+    turned: list[int] = []
+    for index, (x, y, c, s) in enumerate(view[1]):
+        fx, fy = float(x), float(y)
+        j = min(
+            range(len(floats)),
+            key=lambda m: (fx - floats[m][0]) ** 2 + (fy - floats[m][1]) ** 2,
+        )
+        a, b = mapped[j][2], mapped[j][3]
+        if min(abs(c * b - s * a), abs(c * a + s * b)) > TURN_BOUND:
+            turned.append(index)
+    return turned
+
+
+def identity(
+    view: tuple[Fraction, Sequence[Placed]],
+    source: tuple[Fraction, Sequence[Placed]],
+    named: Iterable[int],
+    of: str,
+) -> dict[str, Any]:
+    """Obligation 3's measurement of a view against the source witness."""
+    record: dict[str, Any] = {
+        "basis": "measured",
+        "measured_in": "devtools.check_half_angle_area.arrangement_gap",
+        "of": of,
+    }
+    try:
+        gap = area.arrangement_gap(view, source)
+    except area.AreaRouteError as error:
+        record.update(one_to_one=False, unmatched=str(error), unnamed_turns=[])
+        return record
+    turned = turned_squares(view, source, int(gap["symmetry"]))
+    sine = min(1.0, float(gap["largest_orientation_sine"]))
+    record.update(
+        one_to_one=True,
+        moved=gap["moved_beyond"]["1e-3"],
+        moved_beyond=gap["moved_beyond"],
+        max_move=gap["largest_displacement"],
+        max_turn_deg=f"{math.degrees(math.asin(sine)):.6g}",
+        turned=turned,
+        unnamed_turns=sorted(set(turned) - set(named)),
+        symmetry=gap["symmetry"],
+        side_difference=gap["side_difference"],
+    )
+    return record
+
+
+def contact_partners(witness: Mapping[str, Any]) -> dict[str, list[list[str]]]:
+    """Each square's full-side contacts under the house and stage rules, by the census."""
+    exact, frame, _degrees = shades.packings_from_witness(dict(witness))
+    return {
+        "house": [
+            [c.other for c in found] for found in shades.edge_rule_contacts(exact, HOUSE)
+        ],
+        "stage": [
+            [c.other for c in found] for found in shades.centre_rule_contacts(frame, STAGE)
+        ],
+    }
+
+
+def histogram(partners: Sequence[Sequence[str]]) -> list[int]:
+    counts = [min(4, len(found)) for found in partners]
+    return [counts.count(k) for k in range(5)]
+
+
+def regressions(
+    before: Mapping[str, Sequence[Sequence[str]]],
+    after: Mapping[str, Sequence[Sequence[str]]],
+    ids: Sequence[Any],
+) -> list[dict[str, Any]]:
+    """Squares whose count under a rule fell, paired by index."""
+    found: list[dict[str, Any]] = []
+    for rule in RULE_NAMES:
+        for index, (was, now) in enumerate(zip(before[rule], after[rule], strict=True)):
+            if min(4, len(now)) < min(4, len(was)):
+                found.append(
+                    {
+                        "square": index,
+                        "id": ids[index],
+                        "rule": rule,
+                        "before": min(4, len(was)),
+                        "after": min(4, len(now)),
+                    }
+                )
+    return found
+
+
+def current_view(n: int) -> tuple[str, dict[str, Any]] | None:
+    """The project's regularized view of `n` that a new view would replace, if any."""
+    if not LAYER_INDEX.is_file():
+        return None
+    entries = read_json(LAYER_INDEX)["entries"]
+    entry = next((row for row in entries if row["n"] == n), None)
+    if entry is None or entry.get("status") != "regularized" or not entry.get("view"):
+        return None
+    path = REPO / entry["view"]["path"]
+    text = gzip.decompress(path.read_bytes()).decode("utf-8")
+    return entry["view"]["path"], load_yaml(text)["witness"]
+
+
+def contact_shades(
+    n: int, witness: Mapping[str, Any], view: Mapping[str, Any], of: str
+) -> dict[str, Any]:
+    before, after = contact_partners(witness), contact_partners(view)
+    ids = [square["id"] for square in witness["squares"]]
+    record: dict[str, Any] = {
+        "of": of,
+        "measured_in": (
+            "devtools.census_atlas_contact_shades: edge_rule_contacts (house) and "
+            "centre_rule_contacts (stage) on packings_from_witness"
+        ),
+        **{
+            rule: {"before": histogram(before[rule]), "after": histogram(after[rule])}
+            for rule in RULE_NAMES
+        },
+        "regressions": regressions(before, after, ids),
+        "against_current": None,
+    }
+    current = current_view(n)
+    if current is not None:
+        path, document = current
+        record["against_current"] = {
+            "view": path,
+            "regressions": regressions(contact_partners(document), after, ids),
+        }
+    return record
+
+
+def poses_equal(view_corners: Sequence[Corners], frame: SourceFrame) -> bool:
+    """Whether every square of the view is exactly the source frame's square at its index."""
+    if frame.corners is None or len(frame.corners) != len(view_corners):
+        return False
+    return all(
+        set(mine) == set(theirs)
+        for mine, theirs in zip(view_corners, frame.corners, strict=True)
+    )
+
+
+# --------------------------------------------------------------------------------------
+# Stage 8: the decision table
+# --------------------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class Measured:
+    """What the decision table reads of one output of one count."""
+
+    output: Output
+    produced: bool
+    status: str = "ok"
+    routes: Mapping[str, bool] = field(default_factory=dict)
+    relation: Literal["same", "solved"] | None = None
+    side: Fraction | None = None
+    upper: Fraction | None = None
+    pose_equals_witness: bool = False
+    one_to_one: bool = True
+    unnamed_turns: tuple[int, ...] = ()
+    regressions: int = 0
+    variant: str = "conservative"
+    determined_merge: bool = False
+    level: int | None = None
+    max_move: Fraction | None = None
+
+
+@dataclass(frozen=True)
+class Decision:
+    row: int | None
+    decision: str
+    index_record: str | None
+    refusal: str | None
+    reason: str
+
+
+def classify(measured: Measured) -> Decision:  # noqa: PLR0911 -- one return per table row
+    """Rows 1 to 10 of the policy's decision table; the first that matches decides."""
+    m = measured
+    if not m.produced:
+        return Decision(1, "refuse", "refused", "generator-failed", f"no output: {m.status}")
+    refused = sorted(name for name, passed in m.routes.items() if not passed)
+    if refused or not m.routes:
+        names = ", ".join(refused) or "no route ran"
+        return Decision(
+            2, "refuse", "refused", "invalid", f"refused by {names}; open a defect bead"
+        )
+    if m.upper is not None and m.side is not None and m.side < m.upper:
+        return Decision(
+            3,
+            "candidate",
+            None,
+            None,
+            f"{m.relation} side below the verified upper bound by "
+            f"{float(m.upper - m.side):.3e}: a register-result candidate",
+        )
+    if m.relation != "same":
+        unknown = "; U unknown, so row 3 was not decided" if m.upper is None else ""
+        return Decision(
+            4, "refuse", "refused", "dilated-side", f"solved side, not the witness's{unknown}"
+        )
+    if m.pose_equals_witness:
+        return Decision(5, "unchanged", "unchanged", None, "the view is the witness's pose")
+    if not m.one_to_one:
+        return Decision(6, "refuse", "refused", "not-one-to-one", "no one-to-one pairing")
+    if m.unnamed_turns:
+        return Decision(
+            6,
+            "refuse",
+            "refused",
+            "unnamed-turn",
+            f"squares {list(m.unnamed_turns)} turned without a recorded angle change",
+        )
+    if m.regressions:
+        return Decision(7, "refuse", "refused", "regression", f"{m.regressions} counts fell")
+    if (m.variant == "fewest" and m.determined_merge) or m.level == 3:
+        return Decision(8, "alternate", None, None, "review only, never drawn as the packing")
+    if m.max_move is not None and m.max_move > MOVE_BOUND:
+        return Decision(
+            9, "review", None, None, f"a square moved {float(m.max_move):.4g} > 1/2"
+        )
+    if m.variant == "conservative" and (m.level is None or m.level <= 2):
+        return Decision(10, "admit", "regularized", None, "every admission condition holds")
+    return Decision(None, "review", None, None, "no row of the table matches")
+
+
+# --------------------------------------------------------------------------------------
+# One count
+# --------------------------------------------------------------------------------------
+
+
+def _measure_view(
+    *,
+    n: int,
+    witness: Mapping[str, Any],
+    frame: SourceFrame,
+    document: Mapping[str, Any],
+    named: Sequence[int],
+    of: str,
+) -> tuple[dict[str, Any], dict[str, Any], Fraction | None, bool]:
+    side, placements, corners = view_geometry(document)
+    reference = frame.side if frame.side is not None else Fraction(frame.side_text)
+    measured = identity((side, placements), (reference, frame.placements), named, of)
+    shaded = contact_shades(n, witness, document, of)
+    move = Fraction(measured["max_move"]) if measured.get("max_move") is not None else None
+    return measured, shaded, move, poses_equal(corners, frame)
+
+
+def _regression_count(shaded: Mapping[str, Any]) -> int:
+    current = shaded.get("against_current") or {}
+    return len(shaded["regressions"]) + len(current.get("regressions") or [])
+
+
+def run_count(n: int, options: Options) -> dict[str, Any]:
+    """Every stage for one count; the report is written and returned, never raised."""
+    directory = count_dir(options.run_dir, n)
+    directory.mkdir(parents=True, exist_ok=True)
+    report: dict[str, Any] = {"format": REPORT_FORMAT, "n": n, "status": "ok", "error": None}
+    wall, cpu = time.perf_counter(), _self_cpu() + _children_cpu()
+    try:
+        _run_stages(n, options, directory, report)
+    except Exception as error:  # noqa: BLE001 -- one count's failure must not stop the run
+        report["status"] = "error"
+        report["error"] = f"{type(error).__name__}: {error}"
+    # This worker's own time and its waited-for children's (the solve and the shim): the
+    # pool's workers are not the parent's children under the forkserver start method.
+    report["cost"] = {
+        "cpu_seconds": round(_self_cpu() + _children_cpu() - cpu, 2),
+        "wall_seconds": round(time.perf_counter() - wall, 2),
+    }
+    write_json(directory / "report.json", report)
+    return report
+
+
+def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any]) -> None:
+    pin = vendored_pin()
+    path = witness_path(n)
+    witness = load_witness(path, fallback_schema=WITNESS_SCHEMA)
+    frame = source_frame(witness)
+    facts = case_facts(n)
+    upper = upper_bound(facts)
+    source = {
+        "path": relative(path),
+        "sha256": sha256_of(path.read_bytes()),
+        "kind": frame.kind,
+        "s_W": frame.side_text,
+        "s_W_exact": literal(frame.side) if frame.side is not None else None,
+        "frame": frame.derivation,
+    }
+    report["source"] = source
+    report["verified_upper_bound"] = facts["verified_upper_bound"]
+    report["verified_upper_bound_exact_form"] = facts["exact_form"]
+    report["generator"] = {
+        "name": pin["name"],
+        "pin": pin["pin"],
+        "patches": pin["patches"],
+        "variant": options.variant,
+        "style": STYLE,
+        "orient": options.orient,
+    }
+    seconds: dict[str, float | None] = {}
+    report["seconds"] = seconds
+    first = STAGES.index(options.from_stage)
+    replica = options.run_dir.resolve() / "replica"
+
+    started = time.perf_counter()
+    if first <= STAGES.index("input"):
+        write_text(directory / "input.txt", input_text(witness))
+    seconds["input"] = round(time.perf_counter() - started, 3)
+
+    if first <= STAGES.index("solve"):
+        solved = solve(directory, replica, options.timeout)
+    else:
+        solved = solve_block(read_json(directory / "solve/witness.json"))
+        solved["seconds"] = solved.get("solver_seconds")
+    seconds["solve"] = solved.get("seconds")
+    report["solve"] = solved
+    record_solve_status(replica, n, str(solved["status"]))
+    no_output = {"solved": None, "same": None, "same_refusal": None}
+    if solved["status"] not in SOLVE_CERTIFIED:
+        report["status"] = "timeout" if solved["status"] == "timeout" else "generator-failed"
+        report["outputs"] = no_output
+        _decide(report, Measured("solved", produced=False, status=f"solve {solved['status']}"))
+        return
+
+    if first <= STAGES.index("regularize"):
+        regularized = regularize(directory, replica, n, options)
+    else:
+        regularized = read_json(directory / "regularize.json")
+    seconds["regularize"] = regularized.get("wall_seconds", regularized.get("seconds"))
+    report["regularize"] = regularize_block(regularized)
+    failure = regularize_failure(regularized)
+    if failure is not None:
+        report["status"] = "timeout" if "timeout" in failure else "generator-failed"
+        report["outputs"] = no_output
+        _decide(report, Measured("solved", produced=False, status=failure))
+        return
+
+    started = time.perf_counter()
+    solved_block, solved_document = solved_view(directory, n, source, options, pin)
+    seconds["import"] = round(time.perf_counter() - started, 3)
+    started = time.perf_counter()
+    same_block, same_document, same_refusal = same_view(
+        directory=directory,
+        n=n,
+        witness=witness,
+        regularized=regularized,
+        source=source,
+        options=options,
+        pin=pin,
+    )
+    seconds["same"] = round(time.perf_counter() - started, 3)
+    report["outputs"] = {
+        "solved": solved_block,
+        "same": same_block,
+        "same_refusal": same_refusal,
+    }
+
+    started = time.perf_counter()
+    named = [row["square"] for row in regularized.get("changed_angles") or []]
+    determined = any(
+        isinstance(change, list) and change and change[0] == "determined-merge"
+        for change in regularized.get("angle_changes") or []
+    )
+    common = {
+        "upper": upper,
+        "variant": options.variant,
+        "determined_merge": determined,
+        "level": regularized.get("level"),
+    }
+    outputs: dict[Output, tuple[dict[str, Any], dict[str, Any]]] = {
+        "solved": (solved_block, solved_document)
+    }
+    if same_block is not None and same_document is not None:
+        outputs["same"] = (same_block, same_document)
+    chosen: Output = "same" if "same" in outputs else "solved"
+    measured: dict[Output, Measured] = {}
+    for name, (block, document) in outputs.items():
+        side = Fraction(block["side_exact"])
+        relation = "same" if frame.side is not None and side == frame.side else "solved"
+        block["relation"] = relation
+        block["minus_s_W"] = (
+            f"{float(side - frame.side):.3e}" if frame.side is not None else None
+        )
+        block["minus_U"] = f"{float(side - upper):.3e}" if upper is not None else None
+        fields: dict[str, Any] = {}
+        if name == chosen or relation == "same":
+            ident, shaded, move, equal = _measure_view(
+                n=n, witness=witness, frame=frame, document=document, named=named, of=name
+            )
+            if name == chosen:
+                report["identity"], report["shades"] = ident, shaded
+            else:
+                block["identity"], block["shades"] = ident, shaded
+            fields = {
+                "pose_equals_witness": equal,
+                "one_to_one": bool(ident["one_to_one"]),
+                "unnamed_turns": tuple(ident.get("unnamed_turns") or ()),
+                "regressions": _regression_count(shaded),
+                "max_move": move,
+            }
+        measured[name] = Measured(
+            name, produced=True, routes=block["routes"], relation=relation, side=side,
+            **common, **fields,
+        )  # fmt: skip
+    seconds["measure"] = round(time.perf_counter() - started, 3)
+    _decide(report, measured["solved"], measured.get("same"), same_refusal)
+
+
+def _decide(
+    report: dict[str, Any],
+    solved: Measured,
+    same: Measured | None = None,
+    same_refusal: str | None = None,
+) -> None:
+    decisions = {"solved": asdict(classify(solved)), "same": None}
+    if same is not None:
+        decisions["same"] = asdict(classify(same))
+    governing = dict(decisions["same"] or decisions["solved"])
+    if same is None and same_refusal:
+        governing["reason"] = f"{governing['reason']}; same side: {same_refusal}"
+    report["decision"] = governing
+    report["decisions"] = decisions
+
+
+# --------------------------------------------------------------------------------------
+# The run and its receipt
+# --------------------------------------------------------------------------------------
+
+
+def receipt_row(report: Mapping[str, Any]) -> dict[str, Any]:
+    outputs = report.get("outputs") or {}
+    chosen = outputs.get("same") or outputs.get("solved") or {}
+    regularized = report.get("regularize") or {}
+    identity_record = report.get("identity") or {}
+    shaded = report.get("shades") or {}
+    decision = report.get("decision") or {}
+    solved_decision = (report.get("decisions") or {}).get("solved") or {}
+    return {
+        "n": report["n"],
+        "status": report.get("status"),
+        "error": report.get("error"),
+        "kind": (report.get("source") or {}).get("kind"),
+        "solve_status": (report.get("solve") or {}).get("status"),
+        "S_exact": (report.get("solve") or {}).get("S_exact"),
+        "s_W": (report.get("source") or {}).get("s_W"),
+        "U": report.get("verified_upper_bound"),
+        "level": regularized.get("level"),
+        "moved": len(regularized.get("moved") or []),
+        "groups": [regularized.get("groups_before"), regularized.get("groups_after")],
+        "symmetry": regularized.get("symmetry"),
+        "view": identity_record.get("of"),
+        "s_V": chosen.get("side"),
+        "relation": chosen.get("relation"),
+        "same_refusal": outputs.get("same_refusal"),
+        "one_to_one": identity_record.get("one_to_one"),
+        "max_move": identity_record.get("max_move"),
+        "house": [shaded.get("house", {}).get("before"), shaded.get("house", {}).get("after")],
+        "stage": [shaded.get("stage", {}).get("before"), shaded.get("stage", {}).get("after")],
+        "row": decision.get("row"),
+        "decision": decision.get("decision"),
+        "index_record": decision.get("index_record"),
+        "refusal": decision.get("refusal"),
+        "solved_row": solved_decision.get("row"),
+        "seconds": report.get("seconds"),
+        "cost": report.get("cost"),
+    }
+
+
+def _children_cpu() -> float:
+    usage = resource.getrusage(resource.RUSAGE_CHILDREN)
+    return usage.ru_utime + usage.ru_stime
+
+
+def _self_cpu() -> float:
+    usage = resource.getrusage(resource.RUSAGE_SELF)
+    return usage.ru_utime + usage.ru_stime
+
+
+def run(counts: Sequence[int], options: Options, workers: int) -> dict[str, Any]:
+    """Every stage for every count in a process pool, then the receipt."""
+    run_dir = outside_checkout(options.run_dir)
+    options = Options(**{**asdict(options), "run_dir": run_dir})
+    wall, cpu_self = time.perf_counter(), _self_cpu()
+    rows = []
+    for n in counts:
+        witness = load_witness(witness_path(n), fallback_schema=WITNESS_SCHEMA)
+        rows.append(batch_row(n, case_facts(n), witness))
+    build_replica(run_dir, rows)
+    reports: dict[int, dict[str, Any]] = {}
+    with ProcessPoolExecutor(max_workers=workers) as pool:
+        futures = {pool.submit(run_count, n, options): n for n in counts}
+        for future in as_completed(futures):
+            report = future.result()
+            reports[report["n"]] = report
+            decision = report.get("decision") or {}
+            print(
+                f"n={report['n']}: {report['status']}, row {decision.get('row')} "
+                f"{decision.get('decision')}",
+                flush=True,
+            )
+    counted = sum(report["cost"]["cpu_seconds"] for report in reports.values())
+    driver = _self_cpu() - cpu_self
+    cost = {
+        "wall_seconds": round(time.perf_counter() - wall, 2),
+        "cpu_seconds": round(driver + counted, 2),
+        "driver_cpu_seconds": round(driver, 2),
+        "count_cpu_seconds": round(counted, 2),
+        "workers": workers,
+        "counts": len(counts),
+        "measured_by": (
+            "resource.getrusage: each count's worker RUSAGE_SELF plus RUSAGE_CHILDREN (its "
+            "solve and shim), summed, plus the driver's RUSAGE_SELF"
+        ),
+    }
+    receipt = write_receipt(run_dir, reports, options, workers, cost)
+    print(f"receipt: {run_dir / 'receipt.json'} ({cost['wall_seconds']} s wall)")
+    return receipt
+
+
+def write_receipt(
+    run_dir: Path,
+    reports: Mapping[int, Mapping[str, Any]],
+    options: Options,
+    workers: int,
+    cost: Mapping[str, Any],
+) -> dict[str, Any]:
+    path = run_dir / "receipt.json"
+    previous = read_json(path) if path.is_file() else None
+    rows = {int(row["n"]): row for row in (previous or {}).get("counts", [])}
+    rows.update({n: receipt_row(report) for n, report in reports.items()})
+    ordered = [rows[n] for n in sorted(rows)]
+    parameters = {
+        **{key: value for key, value in asdict(options).items() if key != "run_dir"},
+        "style": STYLE,
+        "dps": 80,
+        "eps": "1e-20",
+        "workers": workers,
+        "counts": sorted(reports),
+    }
+    history = list((previous or {}).get("previous_runs", []))
+    if previous is not None:
+        history.append({"parameters": previous.get("parameters"), "cost": previous.get("cost")})
+    receipt = {
+        "format": RECEIPT_FORMAT,
+        "generated_by": GENERATED_BY,
+        "policy": POLICY,
+        "generator": vendored_pin(),
+        "parameters": parameters,
+        "counts": ordered,
+        "candidates": [
+            row["n"] for row in ordered if row.get("solved_row") == 3 or row["row"] == 3
+        ],
+        "review_queue": [row["n"] for row in ordered if row.get("row") in {8, 9, None}],
+        "index_records": {
+            record: [row["n"] for row in ordered if row.get("index_record") == record]
+            for record in ("regularized", "refused", "unchanged")
+        },
+        "solve_outputs": solve_digests(run_dir, sorted(reports)),
+        "cost": dict(cost),
+        "previous_runs": history,
+    }
+    write_json(path, receipt)
+    return receipt
+
+
+def solve_digests(run_dir: Path, counts: Sequence[int]) -> dict[str, dict[str, str]]:
+    """The retained solve outputs by digest, as policy section 9's question 8 asks."""
+    names = ("solve/witness.exact.txt", "solve/witness.contacts.json", "regularize.cert")
+    found: dict[str, dict[str, str]] = {}
+    for n in counts:
+        directory = count_dir(run_dir, n)
+        present = {name: directory / name for name in names if (directory / name).is_file()}
+        if present:
+            found[str(n)] = {
+                name: sha256_of(path.read_bytes()) for name, path in present.items()
+            }
+    return found
+
+
+# --------------------------------------------------------------------------------------
+# The report table
+# --------------------------------------------------------------------------------------
+
+
+def _cell(value: Any) -> str:
+    if value is None:
+        return "-"
+    if isinstance(value, list):
+        return "/".join(_cell(item) for item in value)
+    return str(value)
+
+
+def report_table(receipt: Mapping[str, Any]) -> str:
+    """A compact table of a receipt's counts."""
+    header = (
+        "n", "kind", "solve", "lvl", "mv", "groups", "sym", "view", "1:1", "max_move",
+        "house before>after", "row", "decision", "solve s", "reg s",
+    )  # fmt: skip
+    lines = ["  ".join(header)]
+    for row in receipt["counts"]:
+        seconds = row.get("seconds") or {}
+        house = row.get("house") or [None, None]
+        cells = (
+            row["n"],
+            row.get("kind"),
+            row.get("solve_status"),
+            row.get("level"),
+            row.get("moved"),
+            f"{_cell(row['groups'][0])}>{_cell(row['groups'][1])}"
+            if row.get("groups")
+            else None,
+            row.get("symmetry"),
+            row.get("view"),
+            row.get("one_to_one"),
+            row.get("max_move"),
+            f"{_cell(house[0])}>{_cell(house[1])}",
+            row.get("row"),
+            row.get("decision"),
+            seconds.get("solve"),
+            seconds.get("regularize"),
+        )
+        lines.append("  ".join(_cell(cell) for cell in cells))
+    cost = receipt.get("cost") or {}
+    lines.append(
+        f"cost: {cost.get('cpu_seconds')} CPU s, {cost.get('wall_seconds')} wall s, "
+        f"{cost.get('workers')} workers; candidates {receipt.get('candidates')}; "
+        f"review {receipt.get('review_queue')}"
+    )
+    return "\n".join(lines)
+
+
+# --------------------------------------------------------------------------------------
+# Command line
+# --------------------------------------------------------------------------------------
+
+
+def parse_counts(values: Sequence[str]) -> list[int]:
+    """Counts as integers or inclusive ranges `a-b`, in the order given, without repeats."""
+    counts: list[int] = []
+    for value in values:
+        low, _, high = value.partition("-")
+        span = range(int(low), int(high or low) + 1)
+        counts.extend(n for n in span if n not in counts)
+    for n in counts:
+        if not witness_path(n).is_file():
+            raise EvandRunError(f"no known-best witness for n = {n}")
+    return counts
+
+
+def parser() -> argparse.ArgumentParser:
+    command = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    sub = command.add_subparsers(dest="command", required=True)
+    run_command = sub.add_parser("run", help="run the automated pass over counts")
+    run_command.add_argument("--run-dir", type=Path, required=True)
+    run_command.add_argument("--n", nargs="+", required=True, help="counts or ranges a-b")
+    run_command.add_argument("--workers", type=int, default=None)
+    run_command.add_argument("--timeout", type=float, default=DEFAULT_TIMEOUT)
+    run_command.add_argument("--regularize-timeout", type=float, default=DEFAULT_TIMEOUT)
+    run_command.add_argument(
+        "--variant",
+        choices=VARIANTS,
+        default="conservative",
+        help="upstream's angle policy; the policy runs only conservative (section 9, q1)",
+    )
+    run_command.add_argument("--orient", default="0", help="0 (the source's), best, or 1..7")
+    run_command.add_argument(
+        "--from-stage",
+        choices=STAGES,
+        default="input",
+        help="reuse the outputs of the stages before this one",
+    )
+    run_command.add_argument("--same-mode", choices=("relax", "refuse"), default="relax")
+    input_command = sub.add_parser("input", help="write one witness as upstream's input")
+    input_command.add_argument("--n", type=int, required=True)
+    input_command.add_argument("--output", type=Path, required=True)
+    report_command = sub.add_parser("report", help="print a run's receipt as a table")
+    report_command.add_argument("--run-dir", type=Path, required=True)
+    report_command.add_argument("--json", action="store_true")
+    return command
+
+
+def main(argv: list[str] | None = None) -> int:
+    arguments = parser().parse_args(argv)
+    if arguments.command == "input":
+        witness = load_witness(witness_path(arguments.n), fallback_schema=WITNESS_SCHEMA)
+        write_text(arguments.output, input_text(witness))
+        return 0
+    if arguments.command == "report":
+        receipt = read_json(arguments.run_dir / "receipt.json")
+        print(json.dumps(receipt, indent=1) if arguments.json else report_table(receipt))
+        return 0
+    counts = parse_counts(arguments.n)
+    workers = (
+        arguments.workers
+        if arguments.workers is not None
+        else min(DEFAULT_WORKER_CAP, worker_count(len(counts)))
+    )
+    options = Options(
+        run_dir=arguments.run_dir,
+        timeout=arguments.timeout,
+        regularize_timeout=arguments.regularize_timeout,
+        variant=arguments.variant,
+        orient=arguments.orient,
+        from_stage=arguments.from_stage,
+        same_mode=arguments.same_mode,
+    )
+    receipt = run(counts, options, max(1, workers))
+    failed = [row["n"] for row in receipt["counts"] if row["status"] == "error"]
+    return 1 if failed else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
