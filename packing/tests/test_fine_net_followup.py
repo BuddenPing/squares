@@ -275,6 +275,32 @@ def test_a_listed_file_that_changed_is_refused(tmp_path: Path) -> None:
     assert followup.main(premises_argv(tmp_path, asset, documents, data)) == 1
 
 
+def test_a_work_directory_the_tool_did_not_make_is_never_cleared(tmp_path: Path) -> None:
+    asset, documents, data = release(tmp_path)
+    argv = premises_argv(tmp_path, asset, documents, data)
+    work = Path(argv[argv.index("--work") + 1])
+    work.mkdir()
+    keep = work / "uncommitted.txt"
+    keep.write_text("someone's work")
+    assert followup.main(argv) == 1
+    assert keep.read_text() == "someone's work"
+    keep.unlink()
+    assert followup.main(argv) == 0
+    assert (work / followup.WORK_MARKER).is_file()
+    assert followup.main(argv) == 0
+
+
+def test_a_direction_that_runs_past_its_timeout_is_killed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    binary = tmp_path / "hangs"
+    binary.write_text(f"#!{sys.executable}\nimport time\ntime.sleep(60)\n")
+    binary.chmod(binary.stat().st_mode | stat.S_IXUSR)
+    monkeypatch.setattr(followup, "DIRECTION_TIMEOUT", 0.2)
+    with pytest.raises(followup.AuditError, match="ran past"):
+        followup.direction(binary, tmp_path / "candidate.json", 2, "3", 0)
+
+
 def test_the_price_takes_the_larger_of_its_two_estimates() -> None:
     rows = [{"r": 0, "process_cpu_seconds": 2.0}, {"r": 1, "process_cpu_seconds": 4.0}]
     price = followup.price(rows, {0: 1.0, 1: 2.0, 2: 3.0}, 3, 2)

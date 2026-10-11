@@ -408,6 +408,17 @@ def test_an_upstream_file_off_its_pin_or_another_packing_is_reported(
     assert "packet n=2: the fact is not the packing run/cert.json states" in problems
 
 
+def test_a_printed_side_whose_file_was_not_fetched_is_reported(
+    mock_packet: tuple[Path, Path],
+) -> None:
+    packet, upstream = mock_packet
+    (upstream / "run/summary.csv").unlink()
+    assert route.upstream_problems(packet, upstream) == (
+        1,
+        [f"packet: no upstream run/summary.csv in {upstream}"],
+    )
+
+
 # --------------------------------------------------------------------------- #470 and trio126
 
 #: tan(15 degrees) = 2 - sqrt 3 and tan(30 degrees) = 1/sqrt 3, rounded down at 32 places,

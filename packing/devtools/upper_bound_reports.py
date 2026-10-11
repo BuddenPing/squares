@@ -332,6 +332,12 @@ def load_declaration(packet: Path) -> Declaration:
             chosen and chosen == sorted(set(chosen)) and not set(chosen) - set(counts),
             f"{roster} must be ascending, unique declared counts",
         )
+    # The register plan compares the requested counts with the case records, which end
+    # at the horizon, so a declaration that requests nothing inside it has nothing to plan.
+    _require(
+        any(n <= HORIZON for n in declaration["requested"]),
+        f"requested must name at least one count at or below n = {HORIZON}",
+    )
     for row in declaration["certificates"]:
         _require(row["format"] in ADAPTERS, f"n={row['n']}: unknown format {row['format']}")
         _require(
@@ -1442,7 +1448,8 @@ def _floor_sci(value: Fraction) -> str:
     """Three significant digits rounded down, so a bound stated as "at least" holds."""
     if value <= 0:
         return "0"
-    exponent = math.floor(math.log10(value))
+    # Seeded from the digit counts, which a float's range never limits; the loops correct it.
+    exponent = len(str(value.numerator)) - len(str(value.denominator))
     while Fraction(10) ** exponent > value:
         exponent -= 1
     while Fraction(10) ** (exponent + 1) <= value:

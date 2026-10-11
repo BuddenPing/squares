@@ -77,6 +77,7 @@ import json
 import os
 import platform
 import shutil
+import signal
 import sys
 import tarfile
 import tempfile
@@ -119,6 +120,11 @@ MAX_MEMBER_BYTES = 64 * 1024 * 1024
 BUNDLE_SUFFIX = "-check2-bundle.tar.gz"
 #: How long one direction may run before the sample is abandoned.
 DIRECTION_TIMEOUT = 3600
+#: How often a running direction is polled for its exit, in seconds.
+DIRECTION_POLL = 0.01
+#: The file this tool writes in each work directory it makes: the one mark that lets it
+#: clear that directory again, so a ``--work`` holding anything else is refused.
+WORK_MARKER = ".fine-net-followup-work"
 #: What the check2 reader raises when it refuses: its own refusal, or a field it reads
 #: that a receipt of another shape lacks. Either is recorded as a refusal, never passed.
 READER_REFUSALS = (AuditError, KeyError, TypeError, ValueError)
@@ -156,13 +162,26 @@ def safe_members(archive: tarfile.TarFile, root: PurePosixPath) -> list[tarfile.
     return members
 
 
+def fresh_work(work: Path) -> None:
+    """Make ``work`` an empty directory of this tool's, clearing it only when it is empty
+    or carries `WORK_MARKER`, so a mistyped ``--work`` never deletes anything else."""
+    if work.exists():
+        require(
+            work.is_dir() and (not any(work.iterdir()) or (work / WORK_MARKER).is_file()),
+            f"{work} holds files this tool did not write; name a new --work directory",
+        )
+        shutil.rmtree(work)
+    work.mkdir(parents=True)
+    (work / WORK_MARKER).write_text(
+        "devtools.fine_net_followup work directory\n", encoding="utf-8"
+    )
+
+
 def unpack_asset(asset: Path, sha256: str, size: int, name: str, work: Path) -> Path:
     """The pinned asset, unpacked afresh under ``work``; the certificate directory."""
     require(asset.stat().st_size == size <= MAX_ASSET_BYTES, f"{asset} is not {size} bytes")
     require(file_digest(asset) == sha256, f"{asset} is not the pinned asset")
-    if work.exists():
-        shutil.rmtree(work)
-    work.mkdir(parents=True)
+    fresh_work(work)
     with tarfile.open(asset, "r:gz") as archive:
         safe_members(archive, PurePosixPath("certificates", name))
         archive.extractall(work, filter="data")
@@ -391,7 +410,8 @@ def source_rows(run_log: Path) -> dict[int, dict[str, Any]]:
 
 
 def direction(binary: Path, candidate: Path, n: int, side: str, index: int) -> dict[str, Any]:
-    """One direction at one thread with ``--confirm``, timed by ``wait4``."""
+    """One direction at one thread with ``--confirm``, timed by ``wait4``; a direction
+    still running after `DIRECTION_TIMEOUT` seconds is killed and the sample abandoned."""
     argv = [str(binary.resolve()), "--candidate", str(candidate), "--n", str(n)]
     argv += ["--side", side, "--directions", str(index), "--threads", "1", "--confirm"]
     with tempfile.TemporaryFile() as stdout, tempfile.TemporaryFile() as stderr:
@@ -405,7 +425,16 @@ def direction(binary: Path, candidate: Path, n: int, side: str, index: int) -> d
                 (os.POSIX_SPAWN_DUP2, stderr.fileno(), 2),
             ],
         )
-        _, status, usage = os.wait4(pid, 0)
+        while True:
+            reaped, status, usage = os.wait4(pid, os.WNOHANG)
+            if reaped:
+                break
+            if time.monotonic() - start > DIRECTION_TIMEOUT:
+                os.kill(pid, signal.SIGKILL)
+                os.wait4(pid, 0)
+                message = f"direction {index} ran past {DIRECTION_TIMEOUT} s and was killed"
+                raise AuditError(message)
+            time.sleep(DIRECTION_POLL)
         wall = time.monotonic() - start
         stdout.seek(0)
         stderr.seek(0)

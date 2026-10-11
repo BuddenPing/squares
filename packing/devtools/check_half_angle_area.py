@@ -1207,9 +1207,10 @@ def upstream_problems(
     ``directory`` holds the source's files fetched at the pinned commit. Where a count
     has a derived fact, its upstream file must have the SHA-256 the packet pins and must
     state the packing the fact states, read by this route's own reader (`UPSTREAM_READERS`)
-    or, for #470's decimal poses, derived again by `derive_decimal_pose`; where the file
-    its side is printed in is there too, at its pinned digest, the printed side must be a
-    cell of that file's row for the count. Where the packet retains the certificate, the
+    or, for #470's decimal poses, derived again by `derive_decimal_pose`; where the row
+    names the file its side is printed in, that file must be there too, at its pinned
+    digest, and the printed side must be a cell of its row for the count, as a retained
+    certificate's JSON print must be. Where the packet retains the certificate, the
     retained bytes must be the upstream file's, as stored for an upstream gzip, and a
     side printed in a JSON at the pin must be the one the row offers
     (`printed_json_side`). ``counts`` defaults to the requested ones.
@@ -1278,7 +1279,7 @@ def upstream_problems(
             )
         held += 1
         blob = _BLOB.fullmatch(row.get("printed_in", ""))
-        if blob is None or not (directory / blob.group(2)).is_file():
+        if blob is None:
             continue
         if blob.group(1) != source["source_commit"]:
             problems.append(f"{packet.name} n={n}: the side is printed at another commit")

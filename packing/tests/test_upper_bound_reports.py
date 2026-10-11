@@ -179,6 +179,31 @@ def test_the_declaration_refuses_what_it_does_not_describe(
         reports.load_declaration(packet)
 
 
+def test_the_declaration_refuses_to_request_nothing_inside_the_horizon(
+    private: Callable[[str], Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    packet = private(COUZO)
+    monkeypatch.setattr(
+        reports, "HORIZON", min(_json(packet / reports.DECLARATION)["requested"]) - 1
+    )
+    with pytest.raises(kernel.ReportError, match="at least one count at or below"):
+        reports.load_declaration(packet)
+
+
+@pytest.mark.parametrize(
+    ("value", "printed"),
+    [
+        (Fraction(1, 10**400), "1.00e-400"),
+        (Fraction(2, 10**320), "2.00e-320"),
+        (Fraction(7, 9), "7.77e-01"),
+        (Fraction(999, 1000), "9.99e-01"),
+        (Fraction(1000), "1.00e+03"),
+    ],
+)
+def test_a_margin_is_printed_rounded_down_at_any_scale(value: Fraction, printed: str) -> None:
+    assert reports._floor_sci(value) == printed  # noqa: SLF001  # pyright: ignore[reportPrivateUsage]
+
+
 # --------------------------------------------------------------------------- adapters
 
 

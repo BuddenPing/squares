@@ -451,6 +451,9 @@ def audit(t: Transfer, f: Facts) -> list[Check]:
     """Every finite premise of the claim at parameters ``t``, on the density's facts."""
     c = chain(t)
     tip = t.last * t.D
+    # An identity once D > 0, which "net: B (1 + D) < 1" and the positive step already
+    # require, since each denominator is at least 1: it stays as a named row because the
+    # retained finite-audit receipt lists it, and it is no evidence of its own.
     gaps = all(0 < t.D / (1 + j * (j + 1) * t.D * t.D) <= t.D for j in range(t.last))
     closed = CLOSED_FORM[0] ** 2 * CLOSED_FORM[1]
     c0, s0 = half_angle(t.h)
