@@ -30,7 +30,10 @@ TRIO126 = "evand-trio126-2026-10-09"
 PACKETS = (COUZO, FANG, TRIO126)
 SQUISH_481 = "squish-481-third-request-2026-10-09"
 DELEEUW = "ebdeleeuw-n70-refinement-2026-10-10"
-DERIVED = (SQUISH_481, DELEEUW)
+#: Issues #503 and #504, PingYou Ltd's certificates at 207 and 153.
+PINGYOU_503 = "pingyou-n207-certificate-2026-10-11"
+PINGYOU_504 = "pingyou-n153-certificate-2026-10-11"
+DERIVED = (SQUISH_481, DELEEUW, PINGYOU_503, PINGYOU_504)
 MISHAPOLK = "mishapolk-decimal-poses-2026-10-09"
 #: Issues #488 and #489, two retained Evan Daniel format releases of the same afternoon.
 COUZO_488 = "couzo-certificates-2026-10-10"
@@ -870,6 +873,8 @@ def test_the_register_plan_states_each_bound_as_check_standing_reads_it(name: st
         SQUISH_481: "2026-10-09",
         MISHAPOLK: "2026-10-09",
         TRIO126: "2026-10-09",
+        PINGYOU_503: "2026-10-11",
+        PINGYOU_504: "2026-10-11",
     }
     assert result["attribution"]["published"] == published.get(name, "2026-10-10")
     evidence = plan["evidence.yaml"]
@@ -1043,7 +1048,7 @@ def test_a_derived_fact_that_names_other_bytes_is_refused(derived: tuple[Path, P
         reports.read_facts(packet)
 
 
-def test_a_derived_fact_names_its_file_and_admits_no_second_format(
+def test_a_derived_fact_is_named_by_its_count(
     private: Callable[[str], Path],
 ) -> None:
     packet = private(DELEEUW)
