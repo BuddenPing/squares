@@ -437,6 +437,20 @@ Three cases follow for this register:
   catalogue’s reported value that the record has never had.
   This is the largest single consequence of running the process over every count: on the
   order of a hundred register results, not a hundred drawings.
+
+  *Amended 2026-10-11, the grid-ceiling premise.* This bullet is stale and stays as
+  written. It quotes the atlas README’s 2026-10-02 count, but T-101 (registered
+  2026-10-06) replaced the grid ceiling with Evan Daniel’s exact certificates as the
+  verified upper bound at 74 Kingbird counts.
+  On the record of 11 October none of the 74 records the layer refuses has the grid
+  ceiling as its verified bound: 59 cite
+  `E-evand-exact-ceilings-2026-10-05-exact-replay` and 15 other evidence (the Göbel
+  family’s exact forms, the $\mathbb{Q}(\sqrt{2})$ and $\mathbb{Q}(\sqrt{7})$ lifts, and
+  per-count certificates at $n = 11$, 17, 29 and 51), each read from its
+  `frontier/n-NNN.md` `verified_upper_bound`. A solved view there lands within about
+  $10^{-14}$ of the verified bound, so what the regularization can add there is at most
+  a T-146-sized refinement, not a hundred new bounds.
+
 - **$S'$ above the verified bound by a relative $10^{-20}$.** Where the register already
   verifies the exact optimum (every exact-form record, e.g. $n = 10$ at
   $3 + \sqrt{2}/2 = 3.70710678118654752440084\ldots$, against
@@ -444,6 +458,7 @@ Three cases follow for this register:
   above it. The atlas README’s 2026-10-02 ruling on dilated views refused precisely this
   ("the rest would change the side … not the author’s packing at the certified side").
   Under the policy as written, such a certificate is not a drawing frame.
+
 - **Literally the same side.** Possible only by an exact solve at the witness’s side:
   over $\mathbb{Q}$ where every rotation of the view is a rational rotation in the
   witness’s frame (every axis-aligned square, and tilted squares that keep the basis
@@ -653,8 +668,9 @@ The plan changes in five ways:
   admits a view.
 - **Automated, then reviewed by hand.** The run is automated, and its output is then
   reviewed and adjusted by hand under the
-  [regularization policy](../policies/regularization-policy.md); an adjusted view is decided by
-  the same checkers and meets the obligations of section 3 like a generated one.
+  [regularization policy](../policies/regularization-policy.md); an adjusted view is
+  decided by the same checkers and meets the obligations of section 3 like a generated
+  one.
 
 Slices, each a lane with its own deliverable and validation (OR-6), each landing in its
 own pull request after this one:
@@ -756,7 +772,10 @@ runbook or a change to the drawing layer only.
    T-146’s fifteen). The epic says a smaller exact side “enters the register, not just a
    drawing”. May the regularization’s pull requests add that many results, or do they go
    through a separate import, with the drawing layer taking only the same-side views
-   until then?
+   until then? *Amended 2026-10-11:* the “73 records at the grid ceiling” behind this
+   question has been stale since T-101 (see the amendment in section 3.2). What remains
+   is the T-146 kind: sides $10^{-22}$ to $10^{-11}$ below the verified bound, which the
+   decision table’s row 3 lists as candidates and draws nothing from.
 4. **The side policy for irrational optima.** Where the exact optimum is irrational, a
    dilated certificate is above the verified bound by a relative $10^{-20}$ and the
    atlas README refuses it as a frame.
@@ -780,8 +799,8 @@ runbook or a change to the drawing layer only.
    The owner should pick from a gallery of the few records where it matters (`face` and
    `orient` flags, `sym_dropped_for_coincidence`), before the run is frozen.
    *Amended 2026-10-11:* the owner wants the automated run followed by manual review and
-   adjustment under the [regularization policy](../policies/regularization-policy.md), so these
-   tie-breaks can also be settled in that review, after the run.
+   adjustment under the [regularization policy](../policies/regularization-policy.md),
+   so these tie-breaks can also be settled in that review, after the run.
 7. **Credit for the method.** The `regularizations` field has one `by`; for this run it
    is `project`, with `method` naming Evan Daniel’s algorithm, variant and pin.
    Is a bibliography credit to the method’s author wanted as well, and where (the
