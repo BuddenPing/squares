@@ -1,0 +1,297 @@
+# Regularization Policy
+
+A **regularization** redraws a packing the record already holds so that it reads
+cleanly: near-axis squares straightened, contacts closed, sub-blocks aligned, symmetric
+where the packing allows it.
+This policy governs every regularized drawing and every regularization the register
+records, whichever generator made it: this project’s `regularize_axis_components/2`,
+Evan Daniel’s regularizer as vendored here, or a reviewed adjustment of either.
+It says what a regularized view must satisfy, what the automated pass decides by itself,
+what a reviewer decides, and how each decision is recorded and credited.
+
+Neighbouring documents own the rest.
+[`epistemics.md`](epistemics.md#parallel-projects-and-their-credit) owns credit and the
+rungs; the [atlas README](packing/atlas/known-best/README.md#the-regularized-views)
+describes the layer and how to rebuild it;
+[`development.md`](development.md#the-deep-gate-the-deferred-surface-before-the-merge)
+places the gates; and the
+[assessment of Evan Daniel’s process](docs/project/research/research-2026-10-11-evand-regularization-assessment.md)
+is the evidence behind the rules below.
+
+## 1. Purpose and Scope
+
+Regularization is for drawings.
+It never changes a side, a frontier value, an evidence tier or a credit under a
+drawing’s name.
+A drawing made from a regularized view carries the record’s tier from the
+source witness, never the view’s own verification, and the view never replaces the
+witness.
+
+A run produces two kinds of output, and they take different paths:
+
+| Output | What it is | Where it lives | Path in |
+| --- | --- | --- | --- |
+| **Regularized view** | An exact packing of the credited arrangement at the side the record already states | `packing/atlas/known-best/regularized/` and its `index.json`; the atlas and site drawings made from it | The automated pass ([section 4](#4-the-automated-pass)), then review ([section 5](#5-manual-review-and-adjustment)) |
+| **Register result** | An exact certificate whose side is below the case’s verified upper bound: a new verified upper bound, however it was made | An entry in [`results.yaml`](packing/frontier/results.yaml) with one `regularizations` item per count | The [import runbook’s](packing/campaign/result-import.md#stage-3-record) record and validate stages, as `T-146` took |
+
+A certificate that proves more than the record holds is registered as a result first,
+and its drawing enters the layer only after that.
+
+## 2. Definitions
+
+| Term | Meaning |
+| --- | --- |
+| Source witness | The atlas witness `packing/witnesses/known-best/n-NNN.yaml` a view is derived from |
+| $s_W$ | The source witness’s side: its exact side, or for a decimal witness the printed side of its stated rational promotion, the 36-digit pose at dilation 1 |
+| $U$ | The case’s verified upper bound when the view is decided |
+| $s_V$ | The view’s exact certified side |
+| Generator | The code that made a view: `regularize_axis_components/2` in `packing/devtools/regularize_axis_components.py`, or Evan Daniel’s exact solver and regularizer vendored under `vendor/evand-regularize/`, driven by `packing/devtools/regularize_evand.py` and brought to the witness’s side by `packing/devtools/regularize_same_side.py`. A generator’s version is its own version, or for the vendored code the pin plus its ordered local patches. |
+| `same` | Side relation: $s_V = s_W$ exactly, in the witness’s frame or a recorded isometry of it |
+| `solved` | Side relation: any other exact side, including Evan Daniel’s certificate, which scales the solved point by $1 + 10^{-20}$ and rounds the side up. Never written as `same`. |
+| Identity | Whether the view is still the credited packing, measured by `arrangement_gap` in `packing/devtools/check_half_angle_area.py` between view and source witness under the best of the box’s eight symmetries: `one_to_one`, `moved` (beyond $10^{-3}$), `max_move` and `max_turn_deg`, recorded as `identity: {basis: measured, measured_in, …}` in the register’s terms |
+| Non-regression | No square’s contact count falls under the house rule (gap $2 \times 10^{-6}$) or the stage rule (gap $0.01$, half a degree), as `census_atlas_contact_shades.witness_shades` measures it |
+| Free square | A square with no load-bearing contact in the exact solve: a rattler, or a force-free square |
+| Level | Evan Daniel’s classification of a run, recorded as his: 0, nothing moved; 1, only free squares touched; 2, the same packing by his sampled path test; 3, that test blocked. It informs review and decides nothing. |
+| Alternate | An arrangement at the record’s side that this project does not draw as the credited packing |
+
+## 3. Admission Obligations
+
+A view enters the drawing layer only if every obligation holds.
+They are checked in this order, and the first that fails is the refusal the index
+records.
+
+1. **Exact validity.** The retained view is decided valid over $\mathbb{Q}$ by both
+   maintained exact routes, `sqpack.witness.exact_verify` and the independent checker
+   `packing/devtools/check_rational_witness_independent.py`; a view converted from Evan
+   Daniel’s format is also decided by the third route, `check_half_angle_area.py`. His
+   own checkers may be replayed as evidence about the source and never decide.
+   A view that two routes here cannot decide, such as a pose over a number field today,
+   is not admitted. The index’s digest binds the verdict to the view’s bytes.
+2. **Side relation.** $s_V$ is computed exactly and the relation recorded.
+   A drawing needs `same` and $s_V \ge U$. A view with $s_V < U$ is a register-result
+   candidate, and a `solved` view with $s_V \ge U$ is not a drawing frame
+   ([the decision table](#the-decision-table)).
+3. **Identity.** Measured and recorded for every view, from every generator.
+   The view pairs one to one with the witness, and every square turned by more than
+   $10^{-6}$ (as a sine) is one the run’s recorded angle changes name; a view that fails
+   either is not drawn as the packing.
+   A view in which some square moves by more than $1/2$ is admitted only by review.
+4. **Non-regression.** No square’s house or stage count falls, against the source
+   witness or against the admitted view it would replace.
+5. **Labelling.** The index entry says `label: regularized`, the view’s id ends in
+   `-regularized`, the drawing’s title and description say “regularized”, the container
+   drawn is the view’s certified side, and the credit line of [section 7](#7-credit) is
+   carried.
+6. **Provenance.** The index entry names the generator and its version; the method and
+   every parameter that differs from the generator’s defaults; the inputs by digest (the
+   source witness and, for the vendored generator, the exact-solve input); the run
+   receipt; the review record, if any; and the measurements of obligations 2 to 4. The
+   index header cites this policy.
+
+**The move bound is provisional.** One-to-one pairing and named turns are the rule.
+The bound of $1/2$ on any square’s move for automatic admission has not been measured
+over the corpus. It comes from the fifteen views `T-146` measured, where no view that
+paired one to one moved a square more than $0.496$ and each of the three that did not
+needed a move of at least $0.589$, and from the current layer’s largest move, $0.421$ at
+$n = 181$. The owner re-sets it from the first full run’s distribution, and the decision
+is recorded here.
+
+## 4. The Automated Pass
+
+### What Runs
+
+| Stage | Tool | Default |
+| --- | --- | --- |
+| 1. Input | `regularize_evand.py` writes each witness as the generator’s text input | Full precision: a rational witness printed exactly, never reduced to binary64 |
+| 2. Exact solve | The vendored exact solver, through the driver | 80 digits and a timeout per count; a count that will not certify is reported, never polished |
+| 3. Regularize | The vendored regularizer, through the driver | `conservative`, `coincide` placement, the source orientation |
+| 4. Import | The driver converts each certificate to a rational Witness/v2 view | Decided on three routes; identity and shades measured |
+| 5. Same side | `regularize_same_side.py` re-solves the view’s tight contacts over $\mathbb{Q}$ at $s_W$ | Wherever every rotation in the view is rational in the witness’s frame |
+| 6. Reference | `regularize_axis_components/2` | Unchanged: the fallback, and the reference for non-regression |
+| 7. Classify | The driver applies the table below | Index entries, the review queue, the candidate list and the receipt |
+
+The generator runs on request, never as a gate ([section 8](#8-gates)). Every run writes
+a receipt: the generator version, the interpreter, each count’s status, sides and
+seconds, and the run’s cost.
+
+### The Decision Table
+
+A count can yield two outputs, each classified on its own: the vendored generator’s
+certificate at its own side, and, where stage 5 succeeds, a same-side view at $s_W$. The
+first row that matches decides.
+
+| Row | Measured outcome | Decision | Index record |
+| --- | --- | --- | --- |
+| 1 | No output: no valid certificate, an infeasible start, a stall or a timeout | Refuse; the current view or the witness stands | `refused`, `generator-failed`, with the status |
+| 2 | A route here refuses the output | Refuse, and open a defect bead | `refused`, `invalid` |
+| 3 | $s_V < U$, under either relation | Register-result candidate, with its identity measured for its `regularizations` item and listed in the receipt for the import runbook; no drawing until the result is registered | None; the receipt lists it |
+| 4 | `solved`, $s_V \ge U$ | Refuse as a drawing frame | `refused`, `dilated-side` |
+| 5 | `same`, and the view’s pose equals the witness’s exactly | No view | `unchanged` |
+| 6 | `same`, not one to one, or a square turned that the recorded angle changes do not name | Refuse as the packing; shown in the gallery as an alternate | `refused`, `not-one-to-one` or `unnamed-turn` |
+| 7 | `same`, a square’s house or stage count falls against the witness or the view it would replace | Refuse | `refused`, `regression` |
+| 8 | `same`, variant `fewest` with a merge of determined groups, or level 3 | Alternate: review only, never drawn as the packing | Review queue |
+| 9 | `same`, a square moved by more than $1/2$ | Review | Review queue |
+| 10 | `same`, one to one, every turn named, every move within $1/2$, no regression, `conservative`, level 2 or below | Admit | `regularized` |
+
+Row 10 is the only automatic admission.
+Views from `regularize_axis_components/2` are classified by the same table; having no
+variant or level, they meet row 10’s last two conditions by construction.
+A view in the review queue is not drawn until a review record admits it.
+
+Two kinds of admitted view are listed first in the gallery for the reviewer:
+
+- **A tie-break of taste:** the generator dropped a symmetry for a coincidence, fell
+  back from its coincidence placement, or reported an optimum that is not unique.
+- **Two candidates:** both generators yield an admissible view.
+  The vendored generator’s view is kept, and the project’s is recorded beside it as the
+  reference.
+
+## 5. Manual Review and Adjustment
+
+**Who reviews:** the owner, or a person the owner names in writing as the layer’s
+reviewer. An agent prepares the gallery and may draft a recommendation, and the review
+record names the person who decided: the rule
+[No Blind Trust](epistemics.md#no-blind-trust) sets for the rungs, evidence from an
+agent and the decision from a person.
+
+**What the reviewer sees:** a gallery the driver renders for each pass.
+For each count in the review queue or flagged, it draws the source witness and the view
+side by side with the house renderer at one scale and orientation, and gives the side
+relation and $s_V - s_W$; the identity measurements; each square’s house and stage
+counts before and after, with changed squares marked; the generator, variant, level and
+recorded angle changes; any symmetry imposed or dropped; and the other generator’s view,
+where there is one.
+
+**What a reviewer may decide:**
+
+| Decision | How it is made reproducible |
+| --- | --- |
+| Admit a row 9 view | The review record; the view is unchanged |
+| Admit a row 8 alternate | Only once question 2 is answered yes, and then labelled an alternate, never the credited packing |
+| Choose symmetry or contact, attached or separate sub-blocks, or a placement style | A per-count generator parameter in the review record, which the driver reads on every later run |
+| Choose an orientation | A recorded isometry of the witness’s frame, as `devtools/atlas_orientation.py` records them |
+| Choose between the two generators | A per-count choice in the review record |
+| Reject a view | The review record; the previous view or the witness stands |
+| Change how the generator works | A reviewed patch ([section 6](#6-forking-the-vendored-generator)) |
+
+**What a reviewer may not do:**
+
+- Edit a view’s coordinates or angles by hand.
+  Every pose comes from a generator run and, for `same`, from the exact re-solve.
+- Admit a view that fails any obligation of [section 3](#3-admission-obligations), or
+  override rows 1 to 7.
+- Change a side, a tier or a credit.
+- Draw an alternate as the credited packing.
+
+**The review record:** each decision is one record in
+`packing/atlas/known-best/regularized/reviews.yaml`, a hand-written input beside the
+index. It holds the count, the date, the reviewer, the decision and its reason; any
+parameters or generator choice; the generator version and source-witness digest it was
+made against; and the gallery it was made from.
+The index entry names its record, and the records-tier gate holds the two to each other.
+A review of a whole pass may also be written up under `docs/project/reviews/` and mapped
+in the document map.
+
+**Re-review:** a record lapses, and its count goes back through the automated pass, when
+
+- the source witness changes, by a new record at the count or a corrected witness;
+- the vendored generator is re-pinned or patched, or the project’s generator changes
+  version;
+- this policy changes an obligation or a threshold; or
+- an owner answer to an open question bears on the count.
+
+A lapsed adjustment is re-applied only if its parameters still produce a view that meets
+every obligation, and the reviewer confirms it in a new record.
+
+## 6. Forking the Vendored Generator
+
+Evan Daniel’s exact solver and regularizer, `search/exact` and `search/regularize` in
+[evand/square-packing](https://github.com/evand/square-packing), are MIT-licensed and
+vendored under `vendor/evand-regularize/` at the pin its `VENDORED.md` records, with his
+licence notice kept.
+The project may patch them, on four conditions:
+
+- **A patch is a recorded, reviewed local change.** `VENDORED.md` lists each one: an id,
+  the date, who made it, why, the files it touches and the review that accepted it, so
+  the unpatched pin can always be rebuilt.
+  An unrecorded edit under the vendored tree is a defect.
+- **The version travels with the view.** A patched generator’s version is the pin plus
+  its ordered patch ids, and every view and receipt it produces carries that version.
+- **A patch changes how views are made, not what admits them.** Section 3 applies
+  unchanged, and every view a patch could change goes back through the pass with its
+  review records lapsed.
+- **Credit stays with the method.** A view made by the vendored code, patched or not, or
+  by a port of it, credits Evan Daniel’s method ([section 7](#7-credit)).
+
+A patch that fixes a defect in the upstream code is reported to its author, as
+[`epistemics.md`](epistemics.md#parallel-projects-and-their-credit) asks of every defect
+found here.
+
+## 7. Credit
+
+| Whose work | How it is credited |
+| --- | --- |
+| The packing’s finder | Keeps the packing’s credit through the register result that holds it, which a regularization names as `of`. A regularized drawing keeps the finder’s citation line. |
+| The regularization | `by: project`, with `method` naming the generator and variant, for this project’s runs; another regularizer’s bibliography key for theirs, as `T-146` credits Evan Daniel’s lists |
+| Evan Daniel’s method | Whenever his generator or a derivative made the view: `method` names it (“Evan Daniel’s regularizer, `conservative`, `coincide`”); the index and every drawing made from the view carry the line *Regularized by the Squares Project with Evan Daniel’s regularizer (evand/square-packing, MIT)*; and a register result is credited `Levy after Daniel` through `builds_on`, which cites a bibliography key for the vendored code |
+| This project’s tool | `by: project`, `method: regularize_axis_components/2`, credited as the Squares Project |
+
+The record states a regularization as the same packing in its own voice only where the
+identity basis is `measured`. A regularization taken in from elsewhere states its
+identity as its source’s claim until a measurement here decides it.
+
+## 8. Gates
+
+The generator costs about three to four CPU-hours for $n = 1..324$, far above any
+routine gate’s wall ceiling.
+So it runs on request with a receipt, and the gates hold the decisions it produced
+([OR-13](operating-rules.md#or-13-every-fast-check-runs-in-ci-only-the-unavoidably-slow-ones-leave),
+[OR-17](operating-rules.md#or-17-every-routine-gate-has-a-wall-ceiling-and-anything-above-it-is-selected-on-purpose)).
+
+| Check | What it holds | Where it runs |
+| --- | --- | --- |
+| `regularized atlas views match their index` | The index against the manifest, the witnesses and the views, by digest; with the layer’s contract, also the generator, method, side relation, identity and review-record fields | Records tier, every pull request |
+| `regularized atlas drawings match their index` | Every drawing re-rendered from its retained view | Records tier, every pull request |
+| `results rungs are earned and the view agrees` | `devtools.check_results` on each register result’s `regularizations` items | Records tier, every pull request |
+| `regularized atlas views re-derive exactly` | Every `regularize_axis_components/2` view re-derived byte for byte | Deferred: the `regularized-views` job, under its 450 s ceiling |
+| Re-decision of vendored-generator views | Every retained view decided again over $\mathbb{Q}$ on the maintained routes, its identity and shades re-measured and its digests held | Deferred, once its cost is measured inside a ceiling; selected per invocation while it is above one |
+| The generator run | The views reproduced from the pinned code and inputs | On request only, with a receipt |
+
+## 9. Open Owner Decisions
+
+The assessment’s eight
+[open questions](docs/project/research/research-2026-10-11-evand-regularization-assessment.md#open-owner-questions)
+stay open. Until each is answered, the policy applies the default in its line, chosen so
+the automated pass can run without overstepping:
+
+1. **Variant:** `conservative` only; `fewest` is not run.
+2. **A `fewest` merge of determined groups as the same packing:** no.
+   Such views are alternates (row 8) and are not admitted.
+3. **Solved-to-smaller-side views as register results:** none is written.
+   Candidates (row 3) are listed in the receipt, neither registered nor drawn.
+4. **Irrational optima:** the status quo.
+   A dilated certificate is not a drawing frame (row 4), and views over a number field
+   are a follow-up, $\mathbb{Q}(\sqrt{2})$ first; $n = 11$, whose proved optimum lies in
+   a field of degree 8, stays drawn from its witness.
+5. **Orientation:** the source’s; any isometry is recorded as `atlas_orientation`
+   records one.
+6. **Tie-breaks of taste:** the generator’s defaults, flagged in the gallery for the
+   reviewer.
+7. **Method credit:** the owner directed on 11 October 2026 that the vendored code be
+   properly credited, so its notice and `VENDORED.md` carry Evan Daniel’s credit.
+   Until the owner says where else, the index, the drawings and a register result’s
+   `builds_on` carry it as [section 7](#7-credit) states; the atlas README and the
+   composites do not yet.
+8. **Retention of the solve:** kept.
+   The solved points and contact structures go in a pinned packet or release asset
+   outside Git
+   ([OR-18](operating-rules.md#or-18-keep-bulk-data-out-of-git-and-never-bind-code-or-verdicts-to-a-git-commit-or-blob)),
+   named by digest in the receipt: they can be discarded later, and a discard cannot be
+   undone.
+
+An answer, like any other change to this policy, is an owner decision recorded here with
+its date. It replaces the default, and the counts it bears on are re-reviewed.
+
+<!-- This document follows common-doc-guidelines.md.
+See github.com/jlevy/practical-prose and review guidelines before editing.
+-->

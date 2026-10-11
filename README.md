@@ -524,6 +524,7 @@ Changing agents changes the driver, not the record or the evidence required for 
 | This README | High-level orientation and the relationship among the layers |
 | [`SYNOPSIS.md`](SYNOPSIS.md) | Current research status and roadmap, technical state, workflow contracts, work-unit vocabulary, and handoff |
 | [`epistemics.md`](epistemics.md) | Whole-result V/C/S/N classifications and their executable boundary |
+| [`regularization.md`](regularization.md) | What a regularized drawing or register regularization must satisfy, how it is reviewed and adjusted, and how it is credited |
 | [`conventions.md`](conventions.md) | IDs, filenames, artifact shape, evidence fields, provenance, and corrections |
 | [`operating-rules.md`](operating-rules.md) | How sessions choose, divide, validate, and hand off work |
 | [Campaign runbook](packing/campaign/README.md) | Hypothesis and experiment mechanics, clocks, budgets, verdicts, and routing |
@@ -553,6 +554,7 @@ for results by others: their scope, credit, import and reply.
 ├── SYNOPSIS.md             Current research status, roadmap, results, and handoff
 ├── conventions.md          Artifact, identifier, evidence, and correction rules
 ├── epistemics.md           Whole-result verification and confirmation rubric
+├── regularization.md       Admission, review and credit rules for regularized drawings
 ├── operating-rules.md      Session conduct and workflow rules
 ├── development.md          Python setup, engineering boundaries, and validation
 ├── defects.md              Generated view of packing/defects.yaml

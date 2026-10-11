@@ -14,6 +14,21 @@ The cross-tabulation, the tilts of the refused records and the certificates’ a
 re-derived by `packing/devtools/compare_evand_regularization.py` (OR-1), whose commands
 the appendix gives.
 
+**Amended 2026-10-11, the upstream pin.** Upstream’s head has since moved to `675a5ea`
+(`675a5eaa8712542daac8b4515b0f69ad7044df44`, 2026-10-11T10:34-06:00). Between the two
+commits, `search/regularize/` and `search/exact/` gained
+`search/regularize/posted_cert.py`, `search/exact/lean_batch/run-2026-10-10b.out` and
+raw certificates under `lists/certs/raw/` for the 16 records posted after the lists
+(146, 153, 155, 156, 176, 181, 207, 211, 238, 239, 261, 270, 271, 272, 304, 305), which
+upstream draws “as posted (raw) … until they are regularized”: 15 are new files, and n =
+261’s replaces the `register_cert.py` conversion with a posted refinement.
+Nothing else there changed
+(`git diff --stat 060c1a1 675a5ea -- search/regularize search/exact`). The code the
+pipeline runs, `lists/best.json`, `lists/alternates.json` and the 324 chosen
+certificates are byte-identical, so every measurement here, made at `060c1a1`, holds at
+`675a5ea`; `crosstab` run against `675a5ea`’s `lists/best.json` reproduces the
+appendix’s figures. The adaptation pins `675a5ea`.
+
 ## Conclusions in brief
 
 1. The process is a translation-LP display regularizer over an 80-digit KKT point.
@@ -57,6 +72,10 @@ the appendix gives.
    $n = 11$), the view is a dilated certificate whose side relation the owner must rule
    on: a register result where $S'$ is below the verified bound, and otherwise not a
    drawing frame under the current atlas policy.
+   *Amended 2026-10-11:* the plan now vendors the pinned generator at `675a5ea` under
+   `vendor/evand-regularize/` with Evan Daniel’s MIT notice and credit, and reviews and
+   adjusts its automated output by hand under the
+   [regularization policy](../../../regularization.md) (section 5).
 6. Recommend adopting the `conservative` variant only, in the source orientation, as the
    drawing layer’s generator where it is sound at the same side; keep
    `regularize_axis_components/2` as the fallback and as the non-regression reference;
@@ -609,6 +628,34 @@ the outputs back. Vendoring `reg.py` and `exactsolve.py` into the Python floor (
 BasedPyright at zero findings) would cost a rewrite of 2,300 lines of prototype code and
 buy no soundness, because the checkers decide, not the generator.
 
+**Amended 2026-10-11, vendoring.** The paragraph above was this assessment’s
+recommendation and stays as written.
+The owner has since directed: “We should import and pin the inputs about the
+regularization code since we may fork or adjust it based on Evan Daniel’s code, but we
+should properly credit it.”
+The plan changes in five ways:
+
+- **Vendored at the pin.** The regularization code (`search/regularize/` and the
+  `search/exact/` modules it runs) and the committed inputs it reads are vendored at
+  `675a5ea` under `vendor/evand-regularize/`, with upstream’s MIT notice kept beside
+  them, a provenance file naming the repository, commit, date and copied paths, and
+  credit to Evan Daniel as the author of the code and the method.
+- **Third-party bytes.** The vendored tree is excluded from this project’s lint and type
+  floor and is not reformatted or tidied.
+  The argument above was against rewriting the code into the floor; vendoring it as
+  third-party bytes costs no rewrite.
+- **Forks as recorded patches.** A change to the generator is a reviewed patch on top of
+  the pinned copy, recorded with its reason, so the pinned bytes stay comparable with
+  upstream and a later pin can be diffed against them; slice 2’s `--orient 0` shim is
+  the first candidate.
+- **Soundness unchanged.** The checkers decide, not the generator.
+  Vendoring changes where the code lives and how a change to it is reviewed, not what
+  admits a view.
+- **Automated, then reviewed by hand.** The run is automated, and its output is then
+  reviewed and adjusted by hand under the
+  [regularization policy](../../../regularization.md); an adjusted view is decided by
+  the same checkers and meets the obligations of section 3 like a generated one.
+
 Slices, each a lane with its own deliverable and validation (OR-6), each landing in its
 own pull request after this one:
 
@@ -617,27 +664,28 @@ open): `witness-input` converts each `witnesses/known-best/n-NNN.yaml` to the te
 format upstream reads (a header of $n$ and $S$, then centres and degrees) at full
 precision (rational witnesses printed exactly as decimals of 40+ digits, not the float64
 reduction `batch/register.py` used, so a rational pose is re-solved from its own
-digits); `exact-solve` runs upstream `exactsolve.py` at the pin per count with a
-timeout, retains `.exact.txt`, `.json`, `.contacts.json` and `.cert` in a scratch run
-directory, and writes a receipt: pin, interpreter, per-count status, `S_exact`,
-`cert_valid`, `newton_converged`, free squares, seconds.
-Validation: the receipt’s `S_exact` against the register’s verified bound at every count
-(expect 50 or so below the printed value by $10^{-13}$ to $10^{-11}$, as upstream found,
-and the 73 Kingbird-only records far below the grid ceiling); the `.cert` decided on
-both project routes; counts that do not certify listed, not polished.
-Deliverable: the receipt and the run cost, recorded in the bead.
+digits); `exact-solve` runs upstream `exactsolve.py` at the pin (the vendored copy,
+under the amendment above) per count with a timeout, retains `.exact.txt`, `.json`,
+`.contacts.json` and `.cert` in a scratch run directory, and writes a receipt: pin,
+interpreter, per-count status, `S_exact`, `cert_valid`, `newton_converged`, free
+squares, seconds. Validation: the receipt’s `S_exact` against the register’s verified
+bound at every count (expect 50 or so below the printed value by $10^{-13}$ to
+$10^{-11}$, as upstream found, and the 73 Kingbird-only records far below the grid
+ceiling); the `.cert` decided on both project routes; counts that do not certify listed,
+not polished. Deliverable: the receipt and the run cost, recorded in the bead.
 
 **Slice 2: the regularizer stage and the import.** `regularize` runs
 `atlas.py compute --policy conservative --style coincide` (and `fewest` only if the
 owner wants alternates) per count, in the source orientation unless the owner decides
 otherwise (`--orient 0` through `reg.regularize`’s `orient` argument; `atlas.py` does
 not expose it, so the driver calls `reg.regularize` through a small shim or patches the
-argument in the replica, never in the checkout); `import` converts each certificate
-through `evand_exact_certificates`’ parse into a rational center-basis Witness/v2 view,
-decides it on both maintained routes and the third, measures identity with
-`arrangement_gap` against the source witness, measures house and stage counts before and
-after with `witness_shades`, and reads `angle_changes`, `level`, groups and symmetry
-from the run’s JSON into the index entry.
+argument in the replica, never in the checkout; under the amendment above, a recorded
+patch on the vendored copy); `import` converts each certificate through
+`evand_exact_certificates`’ parse into a rational center-basis Witness/v2 view, decides
+it on both maintained routes and the third, measures identity with `arrangement_gap`
+against the source witness, measures house and stage counts before and after with
+`witness_shades`, and reads `angle_changes`, `level`, groups and symmetry from the run’s
+JSON into the index entry.
 Validation: every imported view VALID on all three routes; non-regression counts; the
 identity table (one to one, moved, max move, max turn) for every changed view, with the
 counts that fail one-to-one listed for the owner.
@@ -731,10 +779,16 @@ runbook or a change to the drawing layer only.
    Daniel’s round-1 picks.
    The owner should pick from a gallery of the few records where it matters (`face` and
    `orient` flags, `sym_dropped_for_coincidence`), before the run is frozen.
+   *Amended 2026-10-11:* the owner wants the automated run followed by manual review and
+   adjustment under the [regularization policy](../../../regularization.md), so these
+   tie-breaks can also be settled in that review, after the run.
 7. **Credit for the method.** The `regularizations` field has one `by`; for this run it
    is `project`, with `method` naming Evan Daniel’s algorithm, variant and pin.
    Is a bibliography credit to the method’s author wanted as well, and where (the
    layer’s index, the atlas README, the bibliography entry already made for T-146)?
+   *Amended 2026-10-11:* the owner directed that the vendored code be properly credited,
+   so the MIT notice and the provenance file carry Evan Daniel’s credit with the copy
+   under `vendor/evand-regularize/`; where else the credit is printed remains open.
 8. **Retention of the solve.** Keep the 80-digit KKT points and contact structures the
    run produces (about 10 MB for 324 counts, bulk data under OR-18) as a packet or
    release asset, so that a later lane can re-measure without re-solving, or discard
@@ -743,8 +797,8 @@ runbook or a change to the drawing layer only.
 ## Appendix: Measurements
 
 Host: the session’s 4-core container, shared with other lanes; one process at a time per
-command. Upstream code at commit 060c1a1, copied into a scratch replica tree
-(`../evand-replica/`) with only
+command. Upstream code at commit 060c1a1 (every file copied below is byte-identical at
+675a5ea), copied into a scratch replica tree (`../evand-replica/`) with only
 `search/exact/{exactsolve,geom,verify_cert,verify_cert2}.py`,
 `search/exact/batch/results.json`, `search/regularize/{reg,atlas,samepacking}.py` and
 the committed `batch/inputs/n-N.txt` for $n = 10$, 26 and 70 renamed to

@@ -1556,6 +1556,7 @@ migrated:
 - packing/frontier/n-323.md
 - packing/frontier/n-324.md
 - packing/strategies/preview/README.md
+- regularization.md
 keep:
 - path: SYNOPSIS.md
   span: +W

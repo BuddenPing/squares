@@ -156,6 +156,9 @@ one bought.
 
 ## The regularized views
 
+The [regularization policy](../../../regularization.md) governs every view here: what
+admits a view, what goes to manual review, and what is a register result instead.
+
 [`regularized/`](regularized/index.json) holds exact derived views of 68 records (its
 index’s totals: 68 regularized, 182 unchanged, 74 refused), written by
 `python -m devtools.regularize_axis_components --update-atlas`, checked by digest with
