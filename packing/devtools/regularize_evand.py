@@ -822,12 +822,17 @@ def solved_view(
     )
     document["source"] = {"path": source["path"]}
     document["certificate"] = certificate_block(source, "solved", options, pin)
-    path = directory / "view-solved.yaml"
-    write_view(path, document)
     started = time.perf_counter()
     decided = evand.decide(certificate)
     side, poses = area.parse_certificate(text, n)
     half_angle = area.decide(side, poses)
+    # Decided here before it is written: a view both maintained routes accept is an
+    # exactly verified packing at its own side, which is what the house renderer's
+    # `verified` provenance says. It never says so of the source's side.
+    if decided["exact_verify"]["passed"] and decided["independent"]["passed"]:
+        document["claim"]["coordinate_provenance"] = "verified"
+    path = directory / "view-solved.yaml"
+    write_view(path, document)
     block = {
         "path": path.name,
         "id": document["id"],
