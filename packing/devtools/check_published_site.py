@@ -12,6 +12,8 @@ file copies, tombstones, sitemap and 404. Page budgets and share-preview metadat
 checked alongside repository links, paper versions, PDF source receipts, record-link
 coverage and workbench startup. Forwarder destinations agree in canonical metadata,
 refresh, script and visible link; pinned-browser arrival preserves query and fragment.
+Set `SQPACK_CHROMIUM` to use a browser the environment supplies, as the other browser
+tools do; the workbench startup and the forwarder visits both launch it.
 
 --local DIR checks the closed-world registry, required physical outputs, HTML budgets,
 heads and links between papers without fetching the network. --partial requires one
