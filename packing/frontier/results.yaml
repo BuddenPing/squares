@@ -7868,7 +7868,7 @@ results:
       entry's external_review, with no blocking defect. By monotonicity the theorem
       also gives s(k^2 - 3) = k for every k >= 5, which T-064 registers for k >= 6 and
       Bentz's s(22) = 5 holds at k = 5; it adds no entry, and T-064 gains a sentence naming
-      this route when this one is replayed. Ids here are provisional until merged.
+      this route when this one is replayed.
 
       Evidence update, 2026-10-06 (think-dsz4): wand125's independent run of ValidTilt9 is
       a second report of the finite premise (E-k2m4-wand125-validtilt9-report), reviewed
@@ -9277,8 +9277,7 @@ results:
       reviewers and a human oversight record, and T-043 stands at V3/C3 for the same want.
       R070, published the day before and superseded by this release, stays in the packet
       and the case record without an entry of its own, as a publication record never
-      replayed; it would have been the fallback had this replay failed (review RF-8). Ids
-      here are provisional until merged.
+      replayed; it would have been the fallback had this replay failed (review RF-8).
     next_rung: >-
       V4 and C4 need a second adversarial AI review by a distinct reviewer and a human
       oversight record, as T-043's next_rung says; a second machine method needs the native
@@ -9392,9 +9391,8 @@ results:
       notes; IR-1 and IR-4 are stated in the replay entries, and IR-2's amendment of
       result-import.md stage 4 lands with this exit). The first result by others moved to the
       verified lane by an independently re-implemented replay and not by the source's own
-      checker; the 26.5 CPU-hours planned for that replay were not spent. Ids here are
-      provisional until merged. The proof-bundle tarballs are pinned by digest and not
-      retained.
+      checker; the 26.5 CPU-hours planned for that replay were not spent. The proof-bundle
+      tarballs are pinned by digest and not retained.
 
   - id: T-095
     kind: lower-bound
@@ -9531,7 +9529,7 @@ results:
 
       Supersedes T-079 at n = 12, whose points and recipe this one keeps; T-079 stays true
       as stated. A later release than T-078's, from the same repository, so an entry of
-      its own. Ids here are provisional until merged.
+      its own.
 
   - id: T-096
     kind: lower-bound
@@ -9636,8 +9634,7 @@ results:
       by devtools.audit_wand125_declared_net compare after the fix for the review's
       blocking finding DN-1. The 5 October review had found no defect in the certificate,
       the declared net or lemma N0. A later revision than T-094's, and its own issue, so its
-      own entry. The proof-bundle tarball is pinned by digest and not retained. Ids here
-      are provisional until merged.
+      own entry. The proof-bundle tarball is pinned by digest and not retained.
 
   - id: T-097
     kind: lower-bound
@@ -9755,8 +9752,7 @@ results:
       directions, each REPLAYED and matching the certificate, 4,628 CPU-seconds against
       the source's 3,741 on them (receipts/n66-L843/range-*/ in the packet). The complete
       replay, priced at 15.5 CPU-hours, was not run, and the verified lower bound no longer
-      waits on it. The proof-bundle tarball is pinned by digest and not retained. Ids here
-      are provisional until merged.
+      waits on it. The proof-bundle tarball is pinned by digest and not retained.
 
   - id: T-098
     kind: upper-bound
@@ -9887,7 +9883,7 @@ results:
       bears on the packings, not on s(n).
     notes: >-
       Registered on 5 October 2026 by lane F of the evening intake (think-t6ok, under
-      think-fg6g), from jlevy/squares#375; the id is provisional until merged. A report
+      think-fg6g), from jlevy/squares#375. A report
       that lowers an earlier entry's sides at the same packings is a new entry, as for
       T-088 and T-092: T-056, T-057 and T-092 keep their claims, and the case records at
       the 48 counts now carry this one. The source's certificates at its 272 other counts,
@@ -10038,7 +10034,7 @@ results:
       n = 18's verified lower bound moves from T-096's 47/10 to 588/125; at n = 19 the
       record already holds more (T-100). A later revision than T-096's at the same count,
       so its own entry; T-096 keeps its claim. The proof-bundle tarball is pinned by digest
-      and not retained. Ids here are provisional until merged.
+      and not retained.
 
   - id: T-100
     kind: lower-bound
@@ -10158,7 +10154,7 @@ results:
       but the record holds more at n = 20. The source's pre-publication replay on a fresh
       machine is its own run of the same checker, on the bundle before its path metadata
       was made relative, and was not checked here. The proof-bundle tarball is pinned by
-      digest and not retained. Ids here are provisional until merged.
+      digest and not retained.
 
   - id: T-101
     kind: upper-bound
@@ -13615,7 +13611,9 @@ results:
       candidate, with its whole-net control receipt (the 99/100 mutant at every direction,
       FC-1) and a review that reads this certificate, by the checklist of the 6 October
       declared-net soundness review. The eight-direction sample prices the run and its
-      controls at about 4.3 CPU-hours, so it waits in think-r333 for a budget.
+      controls at about 4.3 CPU-hours. The owner set its budget on 11 October 2026, and
+      the run is queued in think-r333 after the regularization work
+      (jlevy/squares#497).
     unfinished_confirmations:
       - what: >-
           a complete sqverify-fast census at all 2,073 directions from a retained
@@ -13810,7 +13808,7 @@ results:
       lanes to 1340000/199529; the case record keeps this entry as history. The full-core bound, weaker, is a corollary
       the case records do not hold. wand125's comment on the issue reporting a third run
       and an exact check of the transfer is a third party's report and is not retained as a
-      replay. Ids here are provisional until merged.
+      replay.
 
   - id: T-134
     kind: upper-bound
@@ -15218,7 +15216,9 @@ results:
       candidate, with its whole-net control receipt (the 99/100 mutant at every direction,
       FC-1) and a review that reads this certificate, by the checklist of the 6 October
       declared-net soundness review. The eight-direction sample prices the run and its
-      controls at about 3.3 CPU-hours, so it waits in think-i85v for a budget.
+      controls at about 3.3 CPU-hours. The owner set its budget on 11 October 2026, and
+      the run is queued in think-i85v after the regularization work
+      (jlevy/squares#497).
     unfinished_confirmations:
       - what: >-
           a complete sqverify-fast census at all 2,073 directions from a retained
@@ -15320,8 +15320,9 @@ results:
       C3 needs a complete sqverify-fast census run at all 2,073
       directions from a retained candidate, with its whole-net control receipt (the 99/100
       mutant at every direction, FC-1) and a review that reads this certificate, by the checklist of the 6 October declared-net
-      soundness review. The eight-direction sample prices the run and its controls at about 4.5 CPU-hours, so it
-      waits in think-i85v for a budget.
+      soundness review. The eight-direction sample prices the run and its controls at about
+      4.5 CPU-hours. The owner set its budget on 11 October 2026, and the run is queued
+      in think-i85v after the regularization work (jlevy/squares#497).
     unfinished_confirmations:
       - what: >-
           a complete sqverify-fast census at all 2,073 directions from a retained
@@ -15424,8 +15425,9 @@ results:
       registered in devtools.audit_wand125_linear so that linear-replay writes resumable
       receipts, the route's linear-control receipt and a review that reads this certificate,
       as the 2 October review read T-080's. The two-angle sample prices the replay and
-      control at about 11.2 CPU-hours (the author's own replay suggests up to about 23), so
-      it waits in think-nd7g for a budget.
+      control at about 11.2 CPU-hours (the author's own replay suggests up to about 23).
+      The owner set its budget on 11 October 2026, and the replay is queued in
+      think-nd7g after the regularization work (jlevy/squares#497).
     unfinished_confirmations:
       - what: >-
           a complete replay of all 201 angles by the T-080 route, with the certificate
@@ -15623,7 +15625,7 @@ results:
       of 10 October records that one-line correction of its contract.
 
       n = 40's reported and verified lower bounds move from T-133's 335427/50000, which the case
-      record keeps as history, to 1340000/199529. Ids are provisional until merged to main.
+      record keeps as history, to 1340000/199529.
 
   - id: T-146
     kind: upper-bound
@@ -16053,8 +16055,7 @@ results:
       reviews by distinct AI reviewers are retained, the 11 October review and the 11 October
       final review (docs/project/reviews/review-2026-10-11-final-upper-bounds.md). Separately, once jlevy/squares#403 lands and private-worker custody is on
       file (RG-7), adopt this entry as the house at all fifteen counts, each earlier house
-      kept as history and each packing credited as the review decided (RG-2). Final
-      exact-head CI remains required.
+      kept as history and each packing credited as the review decided (RG-2).
     reviews:
       - path: docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md
         kind: adversarial
