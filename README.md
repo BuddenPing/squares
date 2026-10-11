@@ -524,6 +524,7 @@ Changing agents changes the driver, not the record or the evidence required for 
 | This README | High-level orientation and the relationship among the layers |
 | [`SYNOPSIS.md`](SYNOPSIS.md) | Current research status and roadmap, technical state, workflow contracts, work-unit vocabulary, and handoff |
 | [`epistemics.md`](epistemics.md) | Whole-result V/C/S/N classifications and their executable boundary |
+| [`docs/project/policies/regularization-policy.md`](docs/project/policies/regularization-policy.md) | What a regularized drawing or register regularization must satisfy, how it is reviewed and adjusted, and how it is credited |
 | [`conventions.md`](conventions.md) | IDs, filenames, artifact shape, evidence fields, provenance, and corrections |
 | [`operating-rules.md`](operating-rules.md) | How sessions choose, divide, validate, and hand off work |
 | [Campaign runbook](packing/campaign/README.md) | Hypothesis and experiment mechanics, clocks, budgets, verdicts, and routing |
@@ -558,6 +559,7 @@ for results by others: their scope, credit, import and reply.
 ├── defects.md              Generated view of packing/defects.yaml
 ├── docs/project/           Reports, reviews, specs, postmortems, and dated handoffs
 ├── docs/project/research/  The research reports listed above
+├── docs/project/policies/  Maintained project policies: regularization
 ├── packing/                Code, data, and the research record
 │   ├── campaign/           Hypotheses, experiments, sessions, agendas, and ledger
 │   ├── frontier/           Per-case claims, evidence, generated views, and results
