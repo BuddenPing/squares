@@ -4635,10 +4635,10 @@ def test_a_date_cell_leads_with_the_date_and_then_says_what_it_dates(
     assert ".site-results .site-date-kind {\n    display: inline;" in css
 
 
-def test_a_recent_result_uses_red_dates_and_keeps_its_significance_marks(
+def test_a_recent_result_keeps_neutral_dates_and_its_significance_marks(
     page: str, results: str, overview: overview_data.Overview
 ) -> None:
-    """Recent verified results retain names and dates; red ink replaces recency glyphs."""
+    """Recent results retain metadata and significance without coloring their dates."""
     recent_cases = {n for n, fact in result_overview.film_facts().items() if fact["star"]}
     assert recent_cases == set(overview.recent_lower)
     recent_results = overview.starred
@@ -4668,19 +4668,15 @@ def test_a_recent_result_uses_red_dates_and_keeps_its_significance_marks(
             if label:
                 assert label.startswith("New result: holds the verified lower bound for n = ")
                 assert (
-                    f'<span class="is-new-result" title="{html.escape(label)}">'
+                    f'<span title="{html.escape(label)}">'
                     f"{result.dated[1]}</span>"
                 ) in row
             else:
                 assert 'class="is-new-result"' not in row
     assert overview_sections.new_result_label(by_id["T-060"], overview).endswith("n = 11")
     assert "site-star" not in table + recent + page + results
-    legend = overview_sections.star_legend()
-    assert legend == "Red indicates a recent result."
-    assert legend in _rendered_text(results)
-    assert results.index(legend) < results.index('<div class="site-table-tools')
-    assert legend not in _rendered_text(page)
-    assert '<span class="is-new-result">new result</span>' in _legend(results)
+    assert "Red indicates a recent result." not in _rendered_text(results)
+    assert '<span class="is-new-result">new result</span>' not in _legend(results)
     assert "site-rung-legend" not in page
     assert "\u00a0" not in table + recent
 

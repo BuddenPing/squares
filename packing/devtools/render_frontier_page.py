@@ -660,7 +660,6 @@ def case_row(
             case_link(
                 n,
                 str(n),
-                classes="is-new-result" if recent else "",
                 label=f"n = {n}: {'recent result; ' if recent else ''}open its case record",
             ),
             value=str(n),

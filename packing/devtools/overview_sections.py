@@ -659,10 +659,6 @@ def new_result_label(result: Result, overview: Overview) -> str:
     )
 
 
-def star_legend() -> str:
-    """The concise recency-color key above the complete Results table."""
-    return "Red indicates a recent result."
-
 
 def result_row(result: Result, *, trigger: str, starred: bool = False) -> RowDetail:
     """A result's row popover, the same on both tables of results: its id as the caps
@@ -987,7 +983,7 @@ def date_cell(result: Result, *, recent_label: str = "") -> str:
     kind, dated = result.dated
     shown = _esc(dated)
     if recent_label:
-        shown = f'<span class="is-new-result" title="{_esc(recent_label)}">{shown}</span>'
+        shown = f'<span title="{_esc(recent_label)}">{shown}</span>'
     return f'{shown} <span class="site-date-kind">{_esc(kind)}</span>'
 
 
@@ -999,7 +995,7 @@ def result_cells(
     replacement_dates: Mapping[str, str],
 ) -> str:
     """A result's cells, one for each column of `result_head`, the same on both tables:
-    its date (`date_cell`), accented for a recent result; its significance
+    its date (`date_cell`), with a tooltip for a recent result; its significance
     (`significance_cell`), its summary (`result_text`), its cases (`case_list`), its
     credit (`credit_cell`), its verification and confirmation chips with its kind on a
     line under them (`ladder_chips`, `kind_chip`), its status line (`status_marks`), and
@@ -1163,7 +1159,6 @@ def rung_legend(*, here: bool, heading: str = "") -> str:
         significance_mark(level, meanings[f"S{level}"]) for level, _ in sorted(levels["S"])
     )
     href = f"#{LADDERS_SECTION}" if here else f"{RESULTS_PAGE}#{LADDERS_SECTION}"
-    recent = f'<span class="is-new-result">{NEW_RESULT}</span>'
 
     def group(scale: str, shown: str) -> str:
         return (
@@ -1191,14 +1186,14 @@ def rung_legend(*, here: bool, heading: str = "") -> str:
             'aria-label="Legend: what the significance, verification and confirmation '
             'ratings mean">'
             f"{title}{row(names['S'], marks)}{row(names['V'], chips('V'))}"
-            f"{row(names['C'], chips('C'))}{row(NEW_RESULT, recent)}</a>"
+            f"{row(names['C'], chips('C'))}</a>"
         )
     return (
         '<div class="site-rung-legend" role="note" aria-label="What a row\u2019s marks mean">'
         f"{title}"
         f"<p>{group('S', marks)}</p>"
         f"{checks}"
-        f'<p><span class="site-rung-legend-group">{recent}</span> '
+        '<p>'
         f'<a href="{href}">What each rung means</a></p>'
         "</div>"
     )

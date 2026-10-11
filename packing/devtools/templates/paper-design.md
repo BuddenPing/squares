@@ -197,7 +197,7 @@ narrow, and it stands first among the rungs in a result’s overview, a case rec
 the rating ladders.
 
 Recent contributions use the warm `--site-new-result` text ink, lighter in dark mode.
-The legend states: “Red indicates a recent result.”
+Bound and proof indicators use red for recent contributions.
 `devtools.rung_scale` measures both inks against the page’s background in each theme,
 and `tests/test_rung_scale.py` holds this table to its output.
 Both inks stay inside sRGB and exceed 4.5:1 against the page in each theme.
@@ -1760,6 +1760,7 @@ it.
   (the owner, `think-7aar`, `think-necq`).
 
 - **Web Atlas labels.** Tiles show only the case number, in ordinary ink.
+  Case headings, table counts, and dates also keep ordinary ink.
   Bounds, algebraic degrees, and evidence icons belong in the case popover.
   The PDF graphics retain their full labels.
   Homepage and dedicated Atlas expansion controls share **Show More**/**Show Less**
@@ -2331,7 +2332,6 @@ pointer and by keyboard, and measures its label at 1280, 768 and 390 pixels.
   Frontier page’s counts, its audit of its sources, the seventeen-square history before
   this project, and when a bound by others counts as verified, which is the rule its
   verified columns apply.
-  The Results legend defines recency once: “Red indicates a recent result.”
   The Frontier page opens with the survey’s account, its audit, its recent counts and
   the seventeen-square history, and ends its prose with the key to its columns, beside
   the table. The way onward follows the section’s shape: a section whose key element is a

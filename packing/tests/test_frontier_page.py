@@ -258,7 +258,7 @@ def test_a_correcting_bound_keeps_its_recency_and_names_what_it_corrects(
     assert ' data-recent="true" data-corrects="T-007" ' in row
     plain = frontier.case_row(case, recent=True)
     assert '<td data-value="1"></td>' in plain
-    assert 'class="is-new-result"' in plain
+    assert 'class="is-new-result"' not in plain
     assert 'aria-label="n = 106: recent result; open its case record"' in plain
     assert "site-star" not in row + plain
     assert "data-corrects" not in plain

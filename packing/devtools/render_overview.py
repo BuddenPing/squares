@@ -1350,7 +1350,6 @@ def results_page() -> Page:
     values = {
         "EPISTEMICS_URL": "epistemics.html",
         "RESULTS_TABLE": overview_sections.results_table(overview),
-        "STAR_LEGEND": overview_sections.star_legend(),
         "STATUS_COUNTS": overview_sections.status_counts(overview),
         # The rating ladders, the homepage's Verification Ladders until 2026-10-02.
         "VERIFICATION": overview_sections.verification_block(),

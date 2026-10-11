@@ -65,8 +65,6 @@ whole claim; *superseded in part* means it implies only part, so the original re
 current. The table names the most recent replacement, with “and others” when needed; the
 full record lists every replacement.
 
-{{STAR_LEGEND}}
-
 The [overview](./#recent-results) highlights recent major results.
 
 # All Results

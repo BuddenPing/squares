@@ -10,17 +10,16 @@ from datetime import timedelta
 from devtools import overview_data, overview_sections
 
 
-def test_homepage_legend_keeps_original_rungs_in_four_icon_and_label_rows() -> None:
+def test_homepage_legend_keeps_original_rungs_in_three_icon_and_label_rows() -> None:
     home = overview_sections.rung_legend(here=False, heading="Legend")
     complete = overview_sections.rung_legend(here=True)
     assert '<h2 class="site-rung-legend-heading">Legend</h2>' in home
     assert 'href="results.html#verification-ladders"' in home
-    assert home.count('<span class="site-rung-legend-icons">') == 4
+    assert home.count('<span class="site-rung-legend-icons">') == 3
     assert re.findall(r'<span class="site-rung-legend-name">([^<]+)</span>', home) == [
         "Significance",
         "Verification",
         "Confirmation",
-        "new result",
     ]
     assert "What each rung means" not in home
     meanings = overview_sections.rung_meanings()
@@ -35,7 +34,7 @@ def test_homepage_legend_keeps_original_rungs_in_four_icon_and_label_rows() -> N
     chips = re.findall(r'<span class="site-chip site-rung-fill"[^>]*>[^<]+</span>', home)
     assert len(chips) == 12
     assert all(chip in complete for chip in chips)
-    assert 'class="is-new-result">new result</span>' in home
+    assert 'class="is-new-result">new result</span>' not in home
     assert "site-star" not in home + complete
     assert '<a href="#verification-ladders">What each rung means</a>' in complete
     assert complete.count("<p>") == 3
