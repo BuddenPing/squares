@@ -391,7 +391,11 @@ def match_rotations(
                 degrees=degrees,
                 nearest_degrees=nearest[0],
             )
-        source = index if any(j == index for _d, j in candidates) else candidates[0][1]
+        # The class representative is the lowest-index witness square in the class, so
+        # a group the generator merged within the tolerance takes one rotation, as the
+        # witness's own noise within a class is not a structure worth 36 distinct
+        # rotations in one chain (n = 68 holds 36 tilted squares in 11 classes).
+        source = min(j for _d, j in candidates)
         quarter = min(
             range(4), key=lambda k: circular_distance(degrees, classes[source] + 90.0 * k)
         )
@@ -596,9 +600,18 @@ def solve_rows(
     return Solution(values, used, dependent, relaxed, free_columns)
 
 
+#: Rounds the promotion loop may take; an infeasible chain would otherwise walk them all.
+MAX_PROMOTION_ROUNDS = 16
+
+
 def settle(
-    rows: Sequence[Row], n: int, generator: Sequence[tuple[Fraction, Fraction]], *, mode: Mode
-) -> tuple[Solution, list[Row]]:
+    rows: Sequence[Row],
+    n: int,
+    generator: Sequence[tuple[Fraction, Fraction]],
+    *,
+    mode: Mode,
+    max_rounds: int = MAX_PROMOTION_ROUNDS,
+) -> tuple[Solution, list[Row], int]:
     """`solve_rows`, repeated in `relax` mode until no relaxed row would be penetrated.
 
     A relaxed row's slack has a sign, and the priority order does not know it: at a
@@ -607,19 +620,21 @@ def settle(
     order can close the wrong one, leaving the other `1e-36` inside the square. A relaxed
     row with negative slack is therefore promoted ahead of every other row and the solve
     repeated, so that one of the rows it conflicted with opens instead; the loop ends when
-    every relaxed row has non-negative slack, when a promotion would repeat, or after as
-    many rounds as there are rows. The promoted rows are returned with the solution. In
+    every relaxed row has non-negative slack, when a promotion would repeat, or after
+    `max_rounds`. Returns the solution, the promoted rows and the rounds taken. In
     `refuse` mode there is one round.
     """
     promoted: list[Row] = []
+    rounds = 0
     while True:
+        rounds += 1
         keys = {row.priority for row in promoted}
         order = [*promoted, *(row for row in rows if row.priority not in keys)]
         solution = solve_rows(order, n, generator, mode=mode)
         negative = [row for row in solution.relaxed if row.gap(solution.values) < 0]
         repeated = any(row.priority in keys for row in negative)
-        if mode == "refuse" or not negative or repeated or len(promoted) >= len(rows):
-            return solution, promoted
+        if mode == "refuse" or not negative or repeated or rounds >= max_rounds:
+            return solution, promoted, rounds
         promoted = [*negative, *promoted]
 
 
@@ -811,7 +826,7 @@ def resolve(
     seconds["tight_set"] = round(time.perf_counter() - phase, 3)
     phase = time.perf_counter()
     try:
-        solution, promoted = settle(rows, n, generator, mode=mode)
+        solution, promoted, rounds = settle(rows, n, generator, mode=mode)
     except SameSideError as error:
         report["rows"] = {
             "candidates": len(rows),
@@ -833,6 +848,7 @@ def resolve(
         "dependent": len(solution.dependent),
         "relaxed": [_row_record(row, solution.values) for row in solution.relaxed],
         "promoted": [_row_record(row) for row in promoted],
+        "rounds": rounds,
         "free_coordinates": len(solution.free_columns),
     }
     report["displacement"] = {
@@ -900,16 +916,16 @@ def perturbed(
     amount: float,
     *,
     seed: int = 0,
-    squares: Mapping[int, float] | None = None,
+    squares: Mapping[int, tuple[float, float]] | None = None,
 ) -> list[GeneratorPose]:
     """`poses` with each centre moved by up to `amount` in each coordinate, pseudo-randomly
-    from `seed`, and the squares in `squares` (zero-based) by their own amounts."""
+    from `seed`, and the squares in `squares` (zero-based) by their own `(x, y)` amounts."""
     generator = random.Random(seed)
     result: list[GeneratorPose] = []
     for index, pose in enumerate(poses):
-        scale = (squares or {}).get(index, amount)
-        dx = Fraction(generator.uniform(-scale, scale))
-        dy = Fraction(generator.uniform(-scale, scale))
+        scale_x, scale_y = (squares or {}).get(index, (amount, amount))
+        dx = Fraction(generator.uniform(-scale_x, scale_x))
+        dy = Fraction(generator.uniform(-scale_y, scale_y))
         result.append(
             GeneratorPose(
                 plain_decimal(Fraction(pose.x) + dx, 50),
