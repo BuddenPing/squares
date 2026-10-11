@@ -659,7 +659,6 @@ def new_result_label(result: Result, overview: Overview) -> str:
     )
 
 
-
 def result_row(result: Result, *, trigger: str, starred: bool = False) -> RowDetail:
     """A result's row popover, the same on both tables of results: its id as the caps
     label, its summary as the headline, then the result's short detail (`_detail`),
@@ -1193,7 +1192,7 @@ def rung_legend(*, here: bool, heading: str = "") -> str:
         f"{title}"
         f"<p>{group('S', marks)}</p>"
         f"{checks}"
-        '<p>'
+        "<p>"
         f'<a href="{href}">What each rung means</a></p>'
         "</div>"
     )
