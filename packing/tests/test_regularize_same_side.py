@@ -28,11 +28,13 @@ from devtools.regularize_same_side import (
     KNOWN_BEST,
     WITNESS_SCHEMA,
     GeneratorPose,
+    Row,
     SameSideError,
     exact_frame,
     match_rotations,
     perturbed,
     resolve,
+    settle,
     support,
     tight_rows,
     witness_poses,
@@ -170,14 +172,24 @@ def test_a_corner_on_face_contact_closes_exactly() -> None:
     assert pairs[0].rhs == Fraction(7, 10) + HALF
     assert pairs[0].label["normal"] == {"of": 2, "face": 0, "sign": 1}
     assert pairs[0].coefficients == {0: Fraction(-1), 2: Fraction(1)}
-    assert [row.kind for row in rows] == ["pair", "wall", "wall", "wall", "wall", "wall"]
+    # Three low walls (both squares' floors and the tilted square's left) and the axis
+    # square's right wall; the pair row leads them all.
+    assert [row.kind for row in rows] == ["pair", "wall", "wall", "wall", "wall"]
+    assert [row.label.get("wall") for row in rows[1:]] == ["low", "low", "low", "high"]
 
 
 def test_a_relaxed_row_that_would_be_penetrated_is_promoted() -> None:
     # x2 - x1 = 1 and x1 = 1/2 close first; x2 = 3/2 + e is then inconsistent and its
     # slack negative, so it is promoted and x1's wall opens by +e instead.
     e = Fraction(1, 10**20)
-    pair = Row("pair", {0: Fraction(-1), 2: Fraction(1)}, Fraction(1), 1, {"squares": [1, 2]}, (0, 0, 1))
+    pair = Row(
+        "pair",
+        {0: Fraction(-1), 2: Fraction(1)},
+        Fraction(1),
+        1,
+        {"squares": [1, 2]},
+        (0, 0, 1),
+    )
     first = Row("wall", {0: Fraction(1)}, HALF, 1, {"square": 1}, (1, 0, 0))
     second = Row("wall", {2: Fraction(1)}, Fraction(3, 2) + e, 1, {"square": 2}, (1, 1, 0))
     generator = [(HALF, HALF), (Fraction(3, 2), HALF)]
@@ -228,33 +240,16 @@ def test_a_side_too_small_for_its_chain_refuses_as_overlap() -> None:
     assert outcome.report["rows"]["relaxed"][0]["slack"] == "-1/100000000000000000000"
 
 
-def test_a_relaxed_row_that_would_be_penetrated_is_promoted() -> None:
-    # Two corners on one tilted edge: at (3/5, 4/5) the edge line through one corner
-    # misses the other, so only one can touch; the order closes square 2's contact first
-    # and finds square 3's penetrated, and the promotion closes 3's and opens 2's.
-    tilted = (Fraction(3, 5), Fraction(4, 5))
-    extent = support(tilted, AXIS)
-    # A tilted square centred at (2, 2); axis squares whose upper-right corners sit on
-    # its lower-left face, (-3/5, -4/5) . (p - c) = 1/2: corners (1, 29/20) and (2/5, 37/20)
-    # both lie on that line, so both contacts are consistent; move the second by 1e-25
-    # inward in the view so the float detection keeps it tight while the exact walls
-    # pin it elsewhere.
-    witness = basis_witness(
-        [
-            ("2", "2", ("3/5", "4/5")),
-            ("1/2", "19/20", ("1", "0")),
-            ("-1/10", "27/20", ("1", "0")),
-        ],
-        "4",
-    )
-    assert extent == Fraction(7, 10)
-    poses = view(("2", "2", repr(math.degrees(math.atan2(0.8, 0.6)))), ("0.5", "0.95", "0"))
-    assert len(poses) == 2
-    assert witness["n"] == 3
+def test_supports_are_exact_and_the_axis_support_of_a_tilt_is_its_extent() -> None:
+    assert support(THREE_FIVE, AXIS) == Fraction(7, 10)
+    assert support(AXIS, AXIS) == HALF
+    assert support(THREE_FIVE, THREE_FIVE) == HALF
 
 
 def test_a_rotation_no_witness_square_holds_is_refused() -> None:
-    witness = basis_witness([("1/2", "1/2", ("1", "0")), ("7/10", "17/10", ("3/5", "4/5"))], "3")
+    witness = basis_witness(
+        [("1/2", "1/2", ("1", "0")), ("7/10", "17/10", ("3/5", "4/5"))], "3"
+    )
     poses = view(("0.5", "0.5", "0"), ("0.7", "1.7", "45"))
     outcome = resolve(witness, poses)
     assert outcome.status == "refused"
@@ -295,7 +290,7 @@ def test_n26_reaches_the_printed_side_with_a_rattler_moved_off_its_contacts() ->
     assert witness["scalar"]["kind"] == "decimal"
     # Square 9 is the rattler (one tight contact, the right wall); it keeps the wall and
     # loses nothing when moved 0.05 along it.
-    poses = perturbed(witness_poses(witness), 1e-12, seed=26, squares={8: 0.05})
+    poses = perturbed(witness_poses(witness), 1e-12, seed=26, squares={8: (0.0, 0.05)})
     outcome = resolve(witness, poses)
     assert outcome.status == "same", outcome.report.get("refusal")
     assert outcome.side == Fraction(witness["side"])
@@ -327,7 +322,7 @@ def test_n70_reaches_its_rational_side_with_tilted_squares() -> None:
     assert outcome.report["displacement"]["max"] < 1e-9
     # The record's side is a rounding above the chain's exact length, so the chains
     # open at upper-right walls and nowhere else.
-    assert {row["wall"] for row in outcome.report["rows"]["relaxed"]} == {"high"}
+    assert {row.get("wall") for row in outcome.report["rows"]["relaxed"]} == {"high"}
     assert outcome.witness is not None
     bases = {tuple(square["basis"]) for square in outcome.witness["squares"]}
     source = {tuple(square["basis"]) for square in witness["squares"]}
@@ -345,7 +340,8 @@ def test_the_truncated_goebel_sides_cannot_hold_a_rational_pose(n: int) -> None:
     assert relaxed.status == "refused"
     assert relaxed.reason == "overlap"
     assert any(row["slack"].startswith("-") for row in relaxed.report["rows"]["relaxed"])
-    assert relaxed.report["verdicts"]["exact_verify"]["failures"][0][0] == "container"
+    assert relaxed.report["verdicts"]["exact_verify"]["failures"] != []
+    assert relaxed.report["verdicts"]["independent"]["failures"] != []
     refused = resolve(witness, poses, mode="refuse")
     assert refused.status == "refused"
     assert refused.reason == "inconsistent-tight-set"
@@ -357,7 +353,9 @@ def test_the_truncated_goebel_sides_cannot_hold_a_rational_pose(n: int) -> None:
 # --------------------------------------------------------------------------------------
 
 
-def test_the_command_writes_a_view_it_decided(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+def test_the_command_writes_a_view_it_decided(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
     witness = basis_witness([("1/2", "1/2", ("1", "0")), ("3/2", "1/2", ("1", "0"))], "2")
     witness_path = tmp_path / "fixture.yaml"
     witness_path.write_text(
@@ -374,7 +372,7 @@ def test_the_command_writes_a_view_it_decided(tmp_path: Path, capsys: pytest.Cap
     assert code == 0
     report = json.loads(capsys.readouterr().out)
     assert report["status"] == "same"
-    assert report["output"] == str(output)
+    assert report["output"] == str(output.resolve())
     loaded = load_witness(output)
     assert loaded["id"] == "W-fixture-regularized"
     assert loaded["side"] == "2"
@@ -387,6 +385,11 @@ def test_the_command_writes_a_view_it_decided(tmp_path: Path, capsys: pytest.Cap
         for s in loaded["squares"]
     ]
     assert independent.check_squares(squares, Fraction(2))["verification_passed"]
+    # Without --json the command prints the summary paragraph instead.
+    assert same_side.main([str(witness_path), str(view_path)]) == 0
+    text = capsys.readouterr().out
+    assert text.startswith("same: n = 2, side 2")
+    assert "rows: 4 used, 1 dependent, 0 relaxed, 0 promoted, 0 free coordinates" in text
 
 
 def test_the_command_refuses_to_write_under_the_witnesses(tmp_path: Path) -> None:

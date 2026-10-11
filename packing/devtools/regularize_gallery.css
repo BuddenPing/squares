@@ -227,8 +227,7 @@ code {
 
 .swatches {
   display: block;
-  height: 16px;
-  width: auto;
+  flex: none;
 }
 
 .section-title {
@@ -275,6 +274,12 @@ tbody th {
 .measures td {
   white-space: normal;
   min-width: 11rem;
+}
+
+.measures tbody th {
+  white-space: normal;
+  min-width: 8.5rem;
+  max-width: 13rem;
 }
 
 .count {
@@ -342,7 +347,7 @@ tbody th {
 
 .panels {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
   gap: 16px;
 }
 

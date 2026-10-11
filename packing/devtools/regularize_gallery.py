@@ -4,8 +4,9 @@
 Usage, from `packing/`, each after `uv run --frozen --all-extras --group dev`:
 
     python -m devtools.regularize_gallery --run-dir RUN --output gallery.html \
-        [--n N ...] [--with-current-layer] [--title TEXT]
-    python -m devtools.regularize_gallery --current-layer --output layer.html [--n N ...]
+        [--n N ...] [--with-current-layer] [--title TEXT] [--workers K]
+    python -m devtools.regularize_gallery --current-layer --output layer.html \
+        [--n N ...] [--title TEXT] [--workers K]
 
 The regularization policy (`docs/project/policies/regularization-policy.md`, section 5,
 "What the reviewer sees") asks for a gallery a reviewer decides from. This writes it as
@@ -50,6 +51,10 @@ the identity, the table says which, rather than the drawing hiding it.
   (`data-contact-sides`), and whether the census's float replica of that rule
   (`census_atlas_contact_shades.edge_rule_contacts`) agrees square by square;
 - stage counts: the workbench rule, `centre_rule_contacts` at gap 0.01 and half a degree;
+- sides: the policy's s_W (a rational witness's side; for a decimal witness the side of
+  its 36-digit rational promotion at dilation 1, which is not always the printed side)
+  and each view's exact `s_V - s_W`. In `--current-layer` mode the side relation is
+  derived from that difference, `same` only when it is exactly zero;
 - moves and turns: each source square matched to the nearest view centre under the best
   of the box's eight symmetries, the matching `check_half_angle_area.arrangement_gap`
   makes, here in binary64 on the drawn frames. A square moved beyond `1e-3` or turned by
@@ -72,6 +77,7 @@ import json
 import math
 import sys
 from collections.abc import Callable, Iterable, Mapping, Sequence
+from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass, replace
 from decimal import Decimal, localcontext
 from fractions import Fraction
@@ -86,9 +92,15 @@ from devtools import census_atlas_contact_shades as shades
 from devtools import render_regularized_atlas as layer
 from devtools.build_known_best_atlas import frame_from_witness
 from devtools.regularize_axis_components import ALGORITHM, HOUSE_RULE, STAGE_RULE, histogram
+from devtools.upper_bound_packets import RATIONAL_DIGITS
 from sqpack.render import render_packing_svg
 from sqpack.render.color import DIAGONAL_HUE, RIGHT_ANGLE_HUE, square_fill_palette
 from sqpack.render.model import PackingFrame, RenderSpec
+from sqpack.witness import (
+    WitnessError,
+    _promoted_candidate,  # pyright: ignore[reportPrivateUsage]
+)
+from sqpack.workers import worker_count
 from sqpack.yamlio import load_yaml
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -190,9 +202,8 @@ def field(record: Any, *keys: str) -> Any:
 
 
 def exact_side(witness: Mapping[str, Any]) -> Fraction | None:
-    """The witness's side as a rational: exact for a rational witness, the printed side
-    for a decimal one (the side of its rational promotion at dilation 1, the policy's
-    s_W), and None for a number-field side."""
+    """The side a witness states, as a rational: exact for a rational witness, the printed
+    side for a decimal one, and None for a number-field side."""
     side = witness.get("side")
     if field(witness, "scalar", "kind") == "algebraic-number-field" or not isinstance(
         side, str | int
@@ -202,6 +213,22 @@ def exact_side(witness: Mapping[str, Any]) -> Fraction | None:
         return Fraction(str(side))
     except ValueError, ZeroDivisionError:
         return None
+
+
+def source_side(witness: Mapping[str, Any]) -> Fraction | None:
+    """The policy's s_W: a rational witness's exact side, and for a decimal centre-angle
+    witness the side of its 36-digit rational promotion at centre dilation 1, which can
+    differ from the printed side in the fifteenth decimal. A decimal witness written as
+    corners has no promotion and keeps its printed side."""
+    if field(witness, "scalar", "kind") == "decimal":
+        try:
+            _squares, side = _promoted_candidate(
+                witness, rational_digits=RATIONAL_DIGITS, dilation=Fraction(1)
+            )
+        except WitnessError, KeyError, ValueError:
+            return exact_side(witness)
+        return side
+    return exact_side(witness)
 
 
 def rational(text: Any) -> Fraction | None:
@@ -535,7 +562,7 @@ def source_panel(witness: Mapping[str, Any]) -> tuple[Panel, PackingFrame]:
         role="source",
         detail=str(witness.get("id", "")),
         drawing=read_house_svg(render_packing_svg(frame, spec=SPEC)),
-        side=exact_side(witness),
+        side=source_side(witness),
         house_replica=house,
         stage=stage,
     )
@@ -600,7 +627,7 @@ def _changed_source(witness: Mapping[str, Any], recorded: Any) -> str | None:
     """Why the witness is not the one the report recorded, by the semantic identity the
     report carries (its scalar kind and s_W), or None when it agrees or nothing was
     recorded. Drift is reported beside the drawing, never refused (`OR-16`)."""
-    kind, side = field(witness, "scalar", "kind"), exact_side(witness)
+    kind, side = field(witness, "scalar", "kind"), source_side(witness)
     recorded_kind, recorded_side = field(recorded, "kind"), rational(field(recorded, "s_W"))
     if isinstance(recorded_kind, str) and recorded_kind != kind:
         return f"the run read a {recorded_kind} witness; the record now holds a {kind} one"
@@ -1280,13 +1307,14 @@ def legend() -> str:
         )
         rows.append(
             f'<span class="swatch-row"><span class="swatch-label">{label}</span>'
-            f'<svg class="swatches" viewBox="0 0 108 16" role="img" '
+            f'<svg class="swatches" width="108" height="16" viewBox="0 0 108 16" role="img" '
             f'aria-label="{label} family, shades for 4 down to 0 sides">{cells}</svg></span>'
         )
     return (
         '<div class="legend"><span>Shade by sides shared whole, 4 to 0:</span>'
         f"{''.join(rows)}"
-        '<span class="swatch-row"><svg class="swatches" viewBox="0 0 24 16" role="img" '
+        '<span class="swatch-row"><svg class="swatches" width="24" height="16" '
+        'viewBox="0 0 24 16" role="img" '
         'aria-label="outlined square"><path class="mark-halo" d="M4 2h16v12H4z"/>'
         '<path class="mark" d="M4 2h16v12H4z"/></svg>moved beyond 1e-3 or turned</span></div>'
     )
@@ -1375,8 +1403,29 @@ def render_page(
 # --------------------------------------------------------------------------------------
 
 
+def _drawn(
+    function: Callable[[Any], CountCase], units: Sequence[Any], workers: int | None
+) -> list[CountCase]:
+    """Each unit drawn and measured, in worker processes when there is more than one.
+    `workers` defaults to `sqpack.workers.worker_count`: the gate's `PACK_JOBS` cap, and
+    the whole machine from a shell."""
+    workers = worker_count(len(units)) if workers is None else workers
+    if workers > 1 and len(units) > 1:
+        with ProcessPoolExecutor(max_workers=min(workers, len(units))) as pool:
+            return list(pool.map(function, units))
+    return [function(unit) for unit in units]
+
+
+def _run_unit(unit: tuple[Path, Mapping[int, dict[str, Any]] | None]) -> CountCase:
+    return run_case(*unit)
+
+
 def run_cases(
-    run_dir: Path, numbers: Sequence[int] | None, *, with_current_layer: bool
+    run_dir: Path,
+    numbers: Sequence[int] | None,
+    *,
+    with_current_layer: bool,
+    workers: int | None = 1,
 ) -> list[CountCase]:
     directories = {
         int(path.name.removeprefix("n-")): path
@@ -1388,10 +1437,11 @@ def run_cases(
     if missing:
         print(f"no count directory in {run_dir} for n = {', '.join(map(str, missing))}")
     layer_index = index_entries() if with_current_layer else None
-    return [run_case(directories[n], layer_index) for n in wanted if n in directories]
+    units = [(directories[n], layer_index) for n in wanted if n in directories]
+    return _drawn(_run_unit, units, workers)
 
 
-def layer_cases(numbers: Sequence[int] | None) -> list[CountCase]:
+def layer_cases(numbers: Sequence[int] | None, *, workers: int | None = 1) -> list[CountCase]:
     entries = index_entries()
     if numbers:
         wanted = sorted(set(numbers))
@@ -1400,7 +1450,7 @@ def layer_cases(numbers: Sequence[int] | None) -> list[CountCase]:
     missing = [n for n in wanted if n not in entries]
     if missing:
         raise SystemExit(f"the layer's index has no record for n = {missing}")
-    return [layer_case(entries[n]) for n in wanted]
+    return _drawn(layer_case, [entries[n] for n in wanted], workers)
 
 
 def parser() -> argparse.ArgumentParser:
@@ -1422,20 +1472,29 @@ def parser() -> argparse.ArgumentParser:
         help="add the current layer's view of each count as a third panel",
     )
     command.add_argument("--title", default=DEFAULT_TITLE, help="the page's name")
+    command.add_argument(
+        "--workers",
+        type=int,
+        default=None,
+        help="processes to draw with (default: the gate's PACK_JOBS cap, or every core)",
+    )
     return command
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = parser().parse_args(argv)
+    workers: int | None = args.workers
     if args.current_layer:
-        cases = layer_cases(args.n)
+        cases = layer_cases(args.n, workers=workers)
         source = display_path(layer.INDEX)
         receipt: dict[str, Any] = {}
     else:
         run_dir: Path = args.run_dir
         if not run_dir.is_dir():
             raise SystemExit(f"{run_dir} is not a directory")
-        cases = run_cases(run_dir, args.n, with_current_layer=args.with_current_layer)
+        cases = run_cases(
+            run_dir, args.n, with_current_layer=args.with_current_layer, workers=workers
+        )
         source = display_path(run_dir)
         receipt = read_json(run_dir / "receipt.json")
     if not cases:
