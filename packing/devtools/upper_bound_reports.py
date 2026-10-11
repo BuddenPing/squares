@@ -626,6 +626,41 @@ def centred_json(raw: bytes, n: int, options: Mapping[str, str]) -> legacy.Certi
     return _certificate(n, side, rows)
 
 
+def sqcert(raw: bytes, n: int, options: Mapping[str, str]) -> legacy.Certificate:
+    """Daniil Ostashev's ``.sqcert`` (#501): ``n N``, ``s S``, then ``x y t`` per square.
+
+    As in Evan Daniel's format, centres lie in [0, S]^2 and ``t = tan(theta/2)``, and blank
+    lines and lines that begin with ``#`` are comments, so the ``# claimed_s`` and
+    ``# delta`` headers are the source's labels, read and not believed. The source's own
+    reader also takes ``n`` and ``s`` in either order and decimals beside ``p/q``; this one
+    takes the order and the integer and ``p/q`` literals every retained file uses, and
+    refuses the rest.
+    """
+    _no_options(options, "sqcert")
+    rows = [
+        line.split()
+        for line in _text(raw).splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    ]
+    _require(
+        len(rows) >= 2
+        and len(rows[0]) == 2
+        and rows[0][0] == "n"
+        and re.fullmatch(r"[1-9][0-9]*", rows[0][1]) is not None
+        and int(rows[0][1]) == n,
+        f"n={n}: the first data line must be `n {n}`",
+    )
+    _require(
+        len(rows[1]) == 2 and rows[1][0] == "s", f"n={n}: the second data line must be `s S`"
+    )
+    poses = []
+    for index, row in enumerate(rows[2:], start=1):
+        _require(len(row) == 3, f"n={n} square {index}: {len(row)} fields, not `x y t`")
+        x, y, t = (_literal(value, f"n={n} square {index}") for value in row)
+        poses.append((x, y, t))
+    return _certificate(n, _literal(rows[1][1], f"n={n} side"), poses)
+
+
 #: The two options `decimal_dilation` reads, and the bounds on the places it rounds at.
 DILATION = "dilation"
 HALF_ANGLE_PLACES = "half_angle_places"
@@ -746,6 +781,7 @@ ADAPTERS: dict[str, Adapter] = {
     "witness-corners": witness_corners,
     "centred-json": centred_json,
     "decimal-dilation": decimal_dilation,
+    "sqcert": sqcert,
 }
 
 
