@@ -3151,7 +3151,7 @@ def test_implicit_large_push_reserves_an_exclusive_test_phase(
     monkeypatch.setattr(
         validate,
         "_push_test_step",
-        lambda _base: validate.Step(
+        lambda _base, **_kwargs: validate.Step(
             name="reachable behavioral tests",
             action=lambda _context: "",
             fast=True,
@@ -5281,3 +5281,100 @@ def test_frontend_browser_workers_fit_outer_topology(
     ) in captured
     assert any("devtools.check_probes" in command for command in captured)
     assert any("devtools.check_motion_lab_pages" in command for command in captured)
+
+
+@pytest.mark.parametrize(
+    "paths",
+    [["site/style.css"], ["unknown.xyz"], [], ["site/style.css", "science/certificate.json"]],
+)
+def test_push_scopes_prerequisites_and_tests_from_one_snapshot(
+    monkeypatch: pytest.MonkeyPatch, paths: list[str]
+) -> None:
+    """Both selectors see the same Git result, even if the tree changes during the floor."""
+    prerequisites = (
+        validate.Step("unattributed", lambda _context: "ok", fast=True),
+        validate.Step("site", lambda _context: "ok", fast=True, touches=("site/*",)),
+        validate.Step("science", lambda _context: "ok", fast=True, touches=("science/*",)),
+    )
+    monkeypatch.setattr(validate, "STEPS", prerequisites)
+    reads: list[str] = []
+    original = paths.copy()
+
+    def changed(base: str) -> list[str]:
+        reads.append(base)
+        assert len(reads) == 1, "push must not re-read Git for a later phase"
+        return paths
+
+    monkeypatch.setattr(validate, "changed_paths", changed)
+    snapshots: list[list[str]] = []
+    files: list[Path] = []
+
+    def selector(
+        command: Sequence[str], **_options: object
+    ) -> subprocess.CompletedProcess[str]:
+        file = Path(command[command.index("--changed-paths-file") + 1])
+        files.append(file)
+        snapshots.append(json.loads(file.read_text()))
+        return subprocess.CompletedProcess(command, 0, stdout="narrow 1\n", stderr="")
+
+    monkeypatch.setattr(validate.subprocess, "run", selector)
+
+    def execute(_context: validate.Context, command: tuple[str, ...]) -> str:
+        selector(command)
+        return "tests passed"
+
+    monkeypatch.setattr(validate, "_run", execute)
+    monkeypatch.setattr(validate, "_begin_artifacts", lambda *_args: None)
+    selected_names: list[str] = []
+
+    def run(
+        selected: list[validate.Step], context: validate.Context, *_filters: object
+    ) -> validate.RunSummary:
+        selected_names.extend(step.name for step in selected)
+        paths.append("science/arrived-after-selection.json")
+        assert selected[-1].action(context) == "tests passed"
+        return validate.RunSummary(
+            results=[],
+            wall_seconds=0,
+            selected_count=len(selected),
+            total_count=len(prerequisites) + 1,
+        )
+
+    monkeypatch.setattr(validate, "_run_selected", run)
+    status, stdout, stderr = _invoke(
+        "--push", "--since", "base-ref", "--jobs", "1", "--inner-jobs", "1"
+    )
+    assert (status, stderr) == (0, "")
+    expected = (
+        ["unattributed", "site"]
+        if original == ["site/style.css"]
+        else ["unattributed", "site", "science"]
+    )
+    assert selected_names == [*expected, "reachable behavioral tests"]
+    assert snapshots == [original, original]
+    assert reads == ["base-ref"]
+    assert files[0] == files[1]
+    assert not files[0].exists()
+    assert "prerequisites" in stdout
+
+
+def test_push_prerequisites_keep_scientific_policy_and_browser_coverage() -> None:
+    prerequisites = validate._select_steps(only=[], fast=False, edit=True)
+    browser_floor = "browser floor (biome, eslint, tsc, node:test)"
+    inputs = {
+        "packing/src/sqpack/verify.py": "exact verification",
+        "packing/devtools/decide_certificate.py": "exact verification",
+        "packing/cases/n11_fractional_certificate/certificate.json": "exact verification",
+        "packing/src/sqpack/gate_budgets.py": "tier ceilings are declared and not slack",
+        "packing/devtools/gate-budgets.yaml": "tier ceilings are declared and not slack",
+        "packing/devtools/overview/atlas-view.js": browser_floor,
+        "packages/workbench/assets/workbench.css": browser_floor,
+        "packages/workbench/probes/atlas-transitions.d.ts": browser_floor,
+        "package-lock.json": browser_floor,
+    }
+    for path, expected in inputs.items():
+        selected = validate.select_for_paths([path], prerequisites)
+        assert expected in {step.name for step in selected.steps}, path
+        assert all(step in selected.steps for step in prerequisites if not step.touches)
+    mixed = validate.select_for_paths(list(inputs), prerequisites)
+    assert set(inputs.values()) <= {step.name for step in mixed.steps}
