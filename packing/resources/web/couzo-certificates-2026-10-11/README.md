@@ -110,6 +110,9 @@ average between 9 and 20 on four cores, so the wall times are about twice the CP
 the session’s limit on a background command; the three jobs at 381 were decided by the same
 `decide-job` command it runs, in 6 minutes, and `certify --finished` assembled and
 admitted the receipt from all 45 job outputs, as it admits any.
+A fresh serial `check --n N --replay`, run once per count, decided all 45 jobs again,
+equal to the retained rows apart from timing, in 75 minutes 16 seconds summed over the
+15 counts.
 [receipts/exact-certification.json.xz](receipts/exact-certification.json.xz) keeps every
 deciding input and both routes’ complete outputs.
 
