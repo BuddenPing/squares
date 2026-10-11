@@ -5,6 +5,7 @@ Usage, from `packing/`, each after
 `uv run --frozen --all-extras --group dev python -m devtools.regularize_evand`:
 
     run --run-dir DIR --n 10 26 70 [--workers K] [--timeout S] [--from-stage STAGE]
+        [--frame kkt|witness] [--variant conservative|fewest] [--orient 0|best|K]
     input --n N --output FILE
     report --run-dir DIR [--json]
 
@@ -35,7 +36,11 @@ by the policy's decision table. Per count, in order:
 4. **Regularize.** `regularize_evand_shim.py`, beside this file, runs upstream's
    `reg.regularize` with `coincide` placement, the `conservative` angle policy and the
    source orientation, upstream's `atlas.level_of`, and `reg.write_cert`, and writes
-   `regularize.json` with the result's poses at 50 digits.
+   `regularize.json` with the result's poses at 50 digits. It starts from the solve's KKT
+   point (`--frame kkt`, the default, upstream's own input) or, with `--frame witness`,
+   from the witness's own exact pose at `s_W` to 80 digits beside the solve's free-square
+   list, so that the regularizer keeps the witness's side and rotations; the KKT point
+   moves both by about `10^-10` at a rational witness whose side has slack.
 5. **Import.** The dilated certificate becomes `view-solved.yaml`, a rational
    centre-basis Witness/v2, through `devtools.evand_exact_certificates` (`parse`,
    `basis_witness`), decided by `sqpack.witness.exact_verify`, the independent checker and
@@ -158,6 +163,11 @@ INPUT_DIGITS = 50
 EVALUATION_DIGITS = 60
 STYLE = "coincide"
 VARIANTS = ("conservative", "fewest")
+#: What the regularizer starts from: the exact solve's KKT point, or the witness's own pose
+#: at its side `s_W` with the solve's free squares (`regularizer_frame`).
+FRAMES = ("kkt", "witness")
+#: Significant digits of the witness frame handed to the regularizer, which reads at 80.
+FRAME_DIGITS = 80
 DEFAULT_TIMEOUT = 600.0
 #: The pool's size when `--workers` is not given: the host is shared with other work.
 DEFAULT_WORKER_CAP = 2
@@ -468,14 +478,19 @@ def build_replica(run_dir: Path, rows: Sequence[Mapping[str, Any]]) -> Path:
     kept = {int(row["n"]): row for row in read_json(results)} if results.is_file() else {}
     for row in rows:
         kept[int(row["n"])] = dict(row)
-        link = batch / "work" / f"n-{row['n']}"
         solve = count_dir(run_dir.resolve(), int(row["n"])) / "solve"
         solve.mkdir(parents=True, exist_ok=True)
-        if link.is_symlink() or link.exists():
-            link.unlink()
-        link.symlink_to(solve, target_is_directory=True)
+        point_work(replica, int(row["n"]), solve)
     write_json(results, [kept[n] for n in sorted(kept)])
     return replica
+
+
+def point_work(replica: Path, n: int, target: Path) -> None:
+    """Link the replica's `batch/work/n-N`, where `reg.load` reads, to `target`."""
+    link = replica / BATCH / "work" / f"n-{n}"
+    if link.is_symlink() or link.exists():
+        link.unlink()
+    link.symlink_to(target.resolve(), target_is_directory=True)
 
 
 def record_solve_status(replica: Path, n: int, status: str) -> None:
@@ -524,6 +539,7 @@ class Options:
     orient: str = "0"
     from_stage: str = "input"
     same_mode: str = "relax"
+    frame: str = "kkt"
 
 
 def solve_status(meta: Mapping[str, Any]) -> str:
@@ -607,6 +623,51 @@ def solve_block(meta: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
+def frame_text(witness: Mapping[str, Any], frame: SourceFrame) -> str:
+    """The witness's own pose in `reg.load`'s format, at `s_W`, to 80 digits.
+
+    The policy's frame: a rational witness's exact geometry or a decimal witness's 36-digit
+    promotion, centres and side to 80 significant digits and each angle from its exact
+    rotation at 90. The algebraic witness has no rational frame and is written as its
+    input is, its field values at 60 digits.
+    """
+    if frame.side is None:
+        return input_text(witness)
+    lines = [f"{witness['n']} {decimal_text(frame.side, FRAME_DIGITS)}"]
+    with mpmath.workdps(FRAME_DIGITS + 10):
+        for x, y, c, s in frame.placements:
+            angle = mpmath.atan2(
+                mpmath.mpf(s.numerator) / s.denominator, mpmath.mpf(c.numerator) / c.denominator
+            )
+            degrees = mp_text(angle * 180 / mpmath.pi, FRAME_DIGITS)
+            lines.append(
+                f"{decimal_text(x, FRAME_DIGITS)} {decimal_text(y, FRAME_DIGITS)} {degrees}"
+            )
+    return "\n".join(lines) + "\n"
+
+
+def regularizer_frame(
+    directory: Path, witness: Mapping[str, Any], frame: SourceFrame, kind: str
+) -> Path:
+    """The directory the regularizer reads its 80-digit input from.
+
+    `kkt` is the solve's own output. `witness` is a sibling directory holding the
+    witness's pose at `s_W` as `witness.exact.txt` beside the solve's `witness.json`, whose
+    status and free squares `reg.load` still reads; the solve's outputs are left as they
+    were, since the receipt names them by digest.
+    """
+    solve_dir = directory / "solve"
+    if kind == "kkt":
+        return solve_dir
+    if kind != "witness":
+        raise EvandRunError(f"frame {kind!r} is not one of {FRAMES}")
+    target = directory / "frame-witness"
+    target.mkdir(parents=True, exist_ok=True)
+    write_text(target / "witness.exact.txt", frame_text(witness, frame))
+    shutil.copyfile(solve_dir / "witness.json", target / "witness.json")
+    return target
+
+
 def regularize(directory: Path, replica: Path, n: int, options: Options) -> dict[str, Any]:
     output, certificate = directory / "regularize.json", directory / "regularize.cert"
     for stale in (output, certificate):
@@ -641,6 +702,8 @@ def regularize(directory: Path, replica: Path, n: int, options: Options) -> dict
         return {"status": "error", "error": f"no output, exit status {code}"}
     document = read_json(output)
     document["wall_seconds"] = round(seconds, 2)
+    document["frame"] = options.frame
+    write_json(output, document)
     return document
 
 
@@ -659,6 +722,7 @@ def regularize_block(document: Mapping[str, Any]) -> dict[str, Any]:
         "angle_changes": document.get("angle_changes"),
         "changed_angles": [row["square"] for row in document.get("changed_angles") or []],
         "place": document.get("place"),
+        "refine": document.get("refine"),
         "verify_ok": verify.get("ok"),
         "min_gap": verify.get("min_gap"),
         "cert_ok": document.get("cert_ok"),
@@ -732,6 +796,7 @@ def certificate_block(
         "variant": options.variant,
         "style": STYLE,
         "orient": options.orient,
+        "frame": options.frame,
         "driver": GENERATED_BY,
         "policy": POLICY,
     }
@@ -1163,6 +1228,7 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
         "variant": options.variant,
         "style": STYLE,
         "orient": options.orient,
+        "frame": options.frame,
     }
     seconds: dict[str, float | None] = {}
     report["seconds"] = seconds
@@ -1190,10 +1256,12 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
         return
 
     if first <= STAGES.index("regularize"):
+        point_work(replica, n, regularizer_frame(directory, witness, frame, options.frame))
         regularized = regularize(directory, replica, n, options)
     else:
         regularized = read_json(directory / "regularize.json")
     seconds["regularize"] = regularized.get("wall_seconds", regularized.get("seconds"))
+    report["generator"]["frame"] = regularized.get("frame", options.frame)
     report["regularize"] = regularize_block(regularized)
     failure = regularize_failure(regularized)
     if failure is not None:
@@ -1539,6 +1607,12 @@ def parser() -> argparse.ArgumentParser:
         help="reuse the outputs of the stages before this one",
     )
     run_command.add_argument("--same-mode", choices=("relax", "refuse"), default="relax")
+    run_command.add_argument(
+        "--frame",
+        choices=FRAMES,
+        default="kkt",
+        help="regularize from the solve's KKT point, or from the witness's pose at s_W",
+    )
     input_command = sub.add_parser("input", help="write one witness as upstream's input")
     input_command.add_argument("--n", type=int, required=True)
     input_command.add_argument("--output", type=Path, required=True)
@@ -1572,6 +1646,7 @@ def main(argv: list[str] | None = None) -> int:
         orient=arguments.orient,
         from_stage=arguments.from_stage,
         same_mode=arguments.same_mode,
+        frame=arguments.frame,
     )
     receipt = run(counts, options, max(1, workers))
     failed = [row["n"] for row in receipt["counts"] if row["status"] == "error"]
