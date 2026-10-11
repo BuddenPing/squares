@@ -130,9 +130,27 @@ DASH = "\u2013"
 """An en dash: what an empty cell shows."""
 MINUS = "\u2212"
 """A minus sign, for differences written as formulas."""
-DECISIONS = ("admit", "review", "alternate", "refuse", "candidate", "unchanged")
-"""The decision table's outcomes (policy section 4), each with a chip colour."""
-LAYER_CHIPS = {"regularized": ("in layer", "admit"), "refused": ("refused", "refuse")}
+DECISION_CHIPS = {
+    "admit": ("admitted", "admit"),
+    "no-change": ("no change", "unchanged"),
+    "no-view": ("no view", "unchanged"),
+    "held": ("held", "candidate"),
+    "review": ("review", "review"),
+    "alternate": ("alternate", "alternate"),
+    "refuse": ("refused", "refuse"),
+    # The words runs wrote before the owner's reporting vocabulary of 11 October 2026.
+    "candidate": ("held", "candidate"),
+    "unchanged": ("no change", "unchanged"),
+}
+"""How each reported decision (policy section 4, "How a decision is reported") reads as a
+chip: its text and its colour class. "Refused" is red only for a view that would change
+the drawing and fails an obligation; no change and no view are neutral."""
+LAYER_CHIPS = {
+    "regularized": ("in layer", "admit"),
+    # The axis tool's "refused" means it made no view of the record: nothing was rejected.
+    "refused": ("no view", "unchanged"),
+    "unchanged": ("no change", "unchanged"),
+}
 """How an index status reads as a chip in `--current-layer` mode."""
 
 Role = Literal["source", "view", "layer"]
@@ -811,11 +829,12 @@ def chip(case: CountCase) -> tuple[str, str]:
     """The verdict chip's text and colour class."""
     if case.mode == "run":
         decision = field(case.report, "decision", "decision")
-        if isinstance(decision, str) and decision in DECISIONS:
-            return decision, decision
+        if isinstance(decision, str) and decision in DECISION_CHIPS:
+            return DECISION_CHIPS[decision]
         status = field(case.report, "status")
         if isinstance(status, str) and status != "ok":
-            return status, "refuse"
+            # A count the run could not decide made no view: neutral, never "refused".
+            return status.replace("-", " "), "unchanged"
         return "no decision", "none"
     status = case.layer_status or "absent"
     return LAYER_CHIPS.get(status, (status, "unchanged"))

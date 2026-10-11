@@ -195,26 +195,31 @@ layer view with the house renderer.
 Run outputs stay outside the repository; nothing in the record changed.
 
 **Pilot 1: the policy’s edge cases.** Fifteen counts: the epic’s pilot set (10, 26, 70,
-101, 129, 146, 200, 324), the refused-kind controls (5, 10, 11, 17, 37, 51), the T-146
-counts whose identity failed one to one (129, 292), and the generator’s known failure
-(261). “Light” below means squares that share at most one whole side, as the house
-renderer counts them.
+101, 129, 146, 200, 324), records the current layer has no view of (5, 10, 11, 17, 37,
+51), the T-146 counts whose identity failed one to one (129, 292), and the generator’s
+known failure (261). “Light” below means squares that share at most one whole side, as
+the house renderer counts them.
+Outcomes are reported in the words the owner asked for on 11 October 2026 (policy
+section 4, “How a decision is reported”): **admitted**, **held** (a visible improvement
+waiting on the record), **refused** (a visible change that fails a rule), **no change**
+(the picture would not change, whatever row matched) and **no view** (the generator
+produced nothing). The row that decided is given with each.
 
 | $n$ | Witness | Outcome (policy row) | Angle classes | Light squares | Four-side squares | What moved |
 | --- | --- | --- | --- | --- | --- | --- |
-| 5, 10 | decimal, Göbel family | refused (4): same side impossible | 2 | unchanged | unchanged | nothing visible |
-| 11 | decimal | admit (10) | 2 → 2 | 6 → 6 | 1 → 1 | nothing visible |
-| 17 | decimal | candidate (3), side $10^{-22}$ below the bound | 3 → 3 | unchanged | unchanged | nothing visible |
-| 26 | decimal | admit (10) | 2 → 2 | 1 → 0 | 7 → 8 | one rattler, 0.31, onto the grid |
-| 37 | decimal | candidate (3), $9.9 \times 10^{-15}$ below | 4 → 4 | unchanged | unchanged | 7 squares, up to 0.16 |
-| 51 | $\mathbb{Q}(\sqrt{2})$ | refused (4): no rational frame | 2 | unchanged | unchanged | nothing visible |
-| 70 | rational (Xu) | candidate (3), solved view $1.5 \times 10^{-10}$ below | 6 → 4 | 21 → 16 | 33 → 35 | 10 moved, 6 turned |
-| 101, 200 | decimal | candidate (3), about $10^{-14}$ below | 2 → 2 | unchanged | unchanged | nothing |
-| 129 | rational | candidate (3), solved $1.3 \times 10^{-10}$ below | 8 → 6 | 27 → 19 | 79 → 79 | 20 moved (up to 0.87), 2 turned |
-| 146 | rational | candidate (3), solved $9.8 \times 10^{-11}$ below | 3 → 3 | 38 → 35 | 80 → 80 | 24 moved |
-| 261 | rational (Xu) | refused (1): the exact solve finds it not jammed | 2 | unchanged | unchanged | nothing |
-| 292 | rational (Rehwaldt after Couzo) | **admit (10)** | **24 → 9** | **132 → 54** | **84 → 198** | 102 moved (up to 0.42), 17 turned |
-| 324 | grid | unchanged (5) | 1 | 0 | 324 | nothing |
+| 5, 10 | decimal, Göbel family | no change (row 4; same side impossible) | 2 | unchanged | unchanged | nothing visible |
+| 11 | decimal | no change (row 10; $10^{-33}$ off the witness) | 2 → 2 | 6 → 6 | 1 → 1 | nothing visible |
+| 17 | decimal | no change (row 3: a candidate $10^{-22}$ below the bound) | 3 → 3 | unchanged | unchanged | nothing visible |
+| 26 | decimal | **admitted** (10) | 2 → 2 | 1 → 0 | 7 → 8 | one rattler, 0.31, onto the grid |
+| 37 | decimal | held (3): register first, $9.9 \times 10^{-15}$ below | 4 → 4 | unchanged | unchanged | 7 squares, up to 0.16 |
+| 51 | $\mathbb{Q}(\sqrt{2})$ | no change (row 4; no rational frame) | 2 | unchanged | unchanged | nothing visible |
+| 70 | rational (Xu) | held (3): T-146’s side, $1.5 \times 10^{-10}$ below | 6 → 4 | 21 → 16 | 33 → 35 | 10 moved, 6 turned |
+| 101, 200 | decimal | no change (row 3: candidates about $10^{-14}$ below) | 2 → 2 | unchanged | unchanged | nothing |
+| 129 | rational | held (3): T-146’s side, $1.3 \times 10^{-10}$ below | 8 → 6 | 27 → 19 | 79 → 79 | 20 moved (up to 0.87), 2 turned |
+| 146 | rational | held (3): T-146’s side, $9.8 \times 10^{-11}$ below | 3 → 3 | 38 → 35 | 80 → 80 | 24 moved |
+| 261 | rational (Xu) | no view (1): the exact solve finds it not jammed | 2 | unchanged | unchanged | nothing |
+| 292 | rational (Rehwaldt after Couzo) | **admitted (10)** | **24 → 9** | **132 → 54** | **84 → 198** | 102 moved (up to 0.42), 17 turned |
+| 324 | grid | no change (5) | 1 | 0 | 324 | nothing |
 
 Identity was one to one at every count that produced a view.
 The run cost 857 CPU-seconds and 670 seconds of wall time at two workers.
@@ -230,7 +235,8 @@ exact route), 170 to 206 s (same-side re-solve) and 72 s (`arrangement_gap`).
   The current layer reaches 124 there.
 - **Where the packing is a Göbel-style 45-degree family or a clean grid, there is little
   to do.** At 5, 10, 11, 17, 51, 101, 200 and 324 nothing visible moves.
-  Those drawings already read cleanly, and their refusals cost nothing visually.
+  Those drawings already read cleanly, so leaving them as they are costs nothing
+  visually.
 - **Re-solving finds a lower packing nearby.** At 70, 129 and 146 the exact solve lowers
   the side by about $10^{-10}$ and turns a tilted band by up to 0.0115 degrees.
   No exact rotation of the witness matches the turned band, so the same-side re-solve
@@ -251,14 +257,14 @@ list by how many rotation groups it merges, including three the current layer re
 
 | $n$ | Witness | Outcome (policy row) | Angle classes | Light squares | Four-side squares | What moved |
 | --- | --- | --- | --- | --- | --- | --- |
-| 66 | decimal | admit (10) | 2 → 2 | 0 → 0 | 33 → 33 | 24 squares by up to 0.025, into the packing’s symmetry |
-| 86, 127 | rational | refused (1): the exact solve finds the newer witness not jammed | — | — | — | nothing |
-| 87 | decimal | candidate (3), about $10^{-14}$ below | 3 → 3 | 16 → 16 | 49 → 49 | 6 squares, up to 0.003 |
-| 102 | rational | candidate (3), solved $7.9 \times 10^{-11}$ below (T-146) | 4 → 3 | 29 → 26 | 46 → 46 | 15 moved, 1 turned |
-| 126 | rational | **admit (10)** | **5 → 2** | **26 → 7** | **51 → 55** | 15 moved, 3 turned |
-| 206 | decimal (Couzo) | refused (4): solved view at a side other than the witness’s | **44 → 4** | **135 → 26** | **32 → 144** | 96 moved, 40 turned |
-| 260 | decimal | candidate (3), about $10^{-14}$ below | 2 → 2 | 0 → 0 | 188 → 188 | nothing |
-| 267 | rational | candidate (3), solved $2.5 \times 10^{-11}$ below | 9 → 5 | 41 → 37 | 196 → 196 | 31 moved, 10 turned |
+| 66 | decimal | **admitted** (10) | 2 → 2 | 0 → 0 | 33 → 33 | 24 squares by up to 0.025, into the packing’s symmetry |
+| 86, 127 | rational | no view (1): the exact solve finds the newer witness not jammed | — | — | — | nothing |
+| 87 | decimal | held (3): register first, about $10^{-14}$ below | 3 → 3 | 16 → 16 | 49 → 49 | 6 squares, up to 0.003 |
+| 102 | rational | held (3): T-146’s side, $7.9 \times 10^{-11}$ below | 4 → 3 | 29 → 26 | 46 → 46 | 15 moved, 1 turned |
+| 126 | rational | **admitted (10)** | **5 → 2** | **26 → 7** | **51 → 55** | 15 moved, 3 turned |
+| 206 | decimal (Couzo) | held (4): its side is exactly the verified bound, not the witness’s | **44 → 4** | **135 → 26** | **32 → 144** | 96 moved, 40 turned |
+| 260 | decimal | no change (row 3: a candidate about $10^{-14}$ below) | 2 → 2 | 0 → 0 | 188 → 188 | nothing |
+| 267 | rational | held (3): register first, $2.5 \times 10^{-11}$ below | 9 → 5 | 41 → 37 | 196 → 196 | 31 moved, 10 turned |
 | 295 | rational | refused (7): 22 per-square counts fall | 2 → 2 | **62 → 3** | **101 → 166** | 122 moved |
 
 It cost 1,598 CPU-seconds and 933 seconds of wall time at three workers; the exact solve
@@ -273,8 +279,9 @@ Three cases decide how the policy should read:
   bound**: the certificate’s side and the case record’s bound are the same rational,
   $232189979115498488075628916091 / 15625000000000000000000000000$, because T-098 made
   that bound from Evan Daniel’s exact solve of this same packing.
-  Row 4 refuses it as a dilated side, but it certifies nothing the register does not
-  already hold.
+  Row 4 holds it as a side other than the witness’s, but it certifies nothing the
+  register does not already hold, and it passes every other check: no square’s count
+  falls, the pairing is one to one, and the largest move is 0.37.
 - **$n = 295$ improves on every histogram total** (light squares 62 to 3, four-side 101
   to 166) and is refused because 22 individual counts fall: one square loses a house
   contact and a row of squares loses a stage contact each.
@@ -288,9 +295,9 @@ Three cases decide how the policy should read:
 
 | $n$ | Variant | Rotation groups | Identity | Four-side squares | Outcome |
 | --- | --- | --- | --- | --- | --- |
-| 129 | `conservative` | 10 → 6 | one to one | 79 → 79 | candidate (3) |
-| 129 | `fewest` | 10 → 4 | **not one to one** | **79 → 53** | candidate (3) |
-| 292 | `conservative` | 24 → 9 | one to one | 84 → 198 | admit (10) |
+| 129 | `conservative` | 10 → 6 | one to one | 79 → 79 | held (3) |
+| 129 | `fewest` | 10 → 4 | **not one to one** | **79 → 53** | held (3) |
+| 292 | `conservative` | 24 → 9 | one to one | 84 → 198 | admitted (10) |
 | 292 | `fewest` | 24 → 7 | one to one | 84 → 198 | alternate (8) |
 
 `fewest` merges two more groups at each count and, at 129, loses 26 four-side squares
@@ -328,12 +335,13 @@ It buys little for the colour conventions and costs identity.
    current view (54 against 87) and more four-side squares (198 against 124); at 70 and
    129 the project’s current view changes nothing visible.
 6. **The decision table is right about soundness and too blunt about drawings.** Of 25
-   pilot counts it admitted 5; most of the rest were held by rounding (row 3), by
-   T-146’s refinements rediscovered (row 3), by a view exactly at the verified bound
-   (row 4, $n = 206$), or by per-square non-regression while every total improved (row
-   7, $n = 295$), none of them a soundness problem.
-   The genuine refusals were the Göbel family and $n = 51$, which need a number field,
-   and three counts whose exact solve fails (86, 127, 261).
+   pilot counts it admits 4 (26, 66, 126, 292). Eight are held: by T-146’s refinements
+   rediscovered and by rounding below the bound (row 3), or by a view exactly at the
+   verified bound (row 4, $n = 206$). One is refused for per-square regressions while
+   every total improved (row 7, $n = 295$). None of those is a soundness problem.
+   Nine change nothing visible, among them the Göbel family and $n = 51$, which would
+   need a number field, and three give no view because the exact solve fails (86, 127,
+   261).
 7. **`conservative` is the right variant.** `fewest` adds a group merge or two and, at
    $n = 129$, costs a quarter of the four-side squares and the one-to-one identity.
 

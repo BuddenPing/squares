@@ -198,11 +198,11 @@ ROWS = {
     10: (SAME, None),
 }
 EXPECTED = {
-    1: ("refuse", "refused"),
+    1: ("no-view", None),
     2: ("refuse", "refused"),
-    3: ("candidate", None),
-    4: ("refuse", "refused"),
-    5: ("unchanged", "unchanged"),
+    3: ("held", None),
+    4: ("held", None),
+    5: ("no-change", "unchanged"),
     6: ("refuse", "refused"),
     7: ("refuse", "refused"),
     8: ("alternate", None),
@@ -249,11 +249,46 @@ def test_a_fewest_merge_is_an_alternate_and_fewest_alone_is_not_admitted() -> No
     assert classify(plain).decision == "review"
 
 
-def test_a_solved_view_with_no_upper_bound_is_refused_and_says_so() -> None:
+@pytest.mark.parametrize("row", [3, 4, 7])
+def test_a_view_that_draws_the_same_picture_is_no_change_whatever_its_row(row: int) -> None:
+    """Owner, 11 October 2026: nothing is refused or held where nothing would change."""
+    measured, _refusal = ROWS[row]
+    decided = classify(replace(measured, visible_change=False))
+    assert decided.row == row
+    assert (decided.decision, decided.index_record, decided.refusal) == (
+        "no-change",
+        "unchanged",
+        None,
+    )
+    assert decided.reason.startswith("nothing visible changes (")
+
+
+@pytest.mark.parametrize("row", [1, 2])
+def test_no_view_and_an_invalid_view_are_reported_as_they_are(row: int) -> None:
+    measured, _refusal = ROWS[row]
+    decided = classify(replace(measured, visible_change=False))
+    assert (decided.decision, decided.index_record) == EXPECTED[row]
+
+
+def test_visible_change_reads_moves_turns_pairing_and_house_counts() -> None:
+    still = {"moved": 0, "turned": [], "one_to_one": True}
+    same_counts = {"house": {"before": [0, 1, 2, 3, 4], "after": [0, 1, 2, 3, 4]}}
+    assert not drive.visible_change(still, same_counts)
+    assert drive.visible_change({**still, "moved": 1}, same_counts)
+    assert drive.visible_change({**still, "turned": [3]}, same_counts)
+    assert drive.visible_change({**still, "one_to_one": False}, same_counts)
+    changed = {"house": {"before": [0, 1, 2, 3, 4], "after": [0, 0, 3, 3, 4]}}
+    assert drive.visible_change(still, changed)
+
+
+def test_a_solved_view_with_no_upper_bound_is_held_and_says_so() -> None:
     measured = Measured("solved", produced=True, routes=ALL_ROUTES, relation="solved", side=SW)
     decided = classify(measured)
     assert decided.row == 4
     assert "U unknown" in decided.reason
+    at_bound = classify(replace(measured, upper=SW))
+    assert at_bound.decision == "held"
+    assert "exactly the verified upper bound" in at_bound.reason
 
 
 # --------------------------------------------------------------------------------------
@@ -296,3 +331,10 @@ def test_n26_runs_end_to_end(tmp_path: Path) -> None:
     assert receipt["cost"]["cpu_seconds"] > 0
     assert "26" in receipt["solve_outputs"]
     assert "26" in drive.report_table(receipt).splitlines()[1]
+    # Deciding again from the written report reproduces the decision and keeps the cost.
+    decided = report["decision"]
+    again = drive.reclassify(run_dir)
+    redone = json.loads((run_dir / "n-026/report.json").read_text())
+    assert redone["decision"] == decided
+    assert again["cost"] == receipt["cost"]
+    assert again["reclassified"]["counts"] == [26]

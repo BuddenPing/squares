@@ -258,14 +258,31 @@ def test_a_report_that_disagrees_with_the_drawings_is_flagged(tmp_path: Path) ->
 
 
 def test_a_failed_count_draws_its_source_alone(tmp_path: Path) -> None:
-    decision = {"row": 1, "decision": "refuse", "index_record": "refused", "reason": "timeout"}
+    decision = {"row": 1, "decision": "no-view", "index_record": None, "reason": "timeout"}
     run = _run(tmp_path, _report(status="timeout", decision=decision), view=False)
     case = gallery.run_case(run / "n-026", None)
     page = gallery.render_page([case], title="Gallery", source="run")
     section = _section(page, 26)
     assert section.count('<svg class="drawing"') == 1
-    assert '<span class="chip chip-refuse">refuse</span>' in section
+    # A count with no view is neutral, never red: nothing was refused (owner, 11 October).
+    assert '<span class="chip chip-unchanged">no view</span>' in section
+    assert "chip-refuse" not in section
     assert "no view drawn" in section
+
+
+@pytest.mark.parametrize(
+    ("decision", "text", "tone"),
+    [
+        ("admit", "admitted", "admit"),
+        ("no-change", "no change", "unchanged"),
+        ("held", "held", "candidate"),
+        ("refuse", "refused", "refuse"),
+        ("candidate", "held", "candidate"),
+        ("unchanged", "no change", "unchanged"),
+    ],
+)
+def test_each_reported_decision_reads_as_its_chip(decision: str, text: str, tone: str) -> None:
+    assert gallery.DECISION_CHIPS[decision] == (text, tone)
 
 
 def test_moves_are_matched_under_the_best_box_symmetry() -> None:

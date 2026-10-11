@@ -7,6 +7,7 @@ Usage, from `packing/`, each after
     run --run-dir DIR --n 10 26 70 [--workers K] [--timeout S] [--from-stage STAGE]
         [--frame kkt|witness] [--variant conservative|fewest] [--orient 0|best|K]
     input --n N --output FILE
+    reclassify --run-dir DIR [--n N ...]
     report --run-dir DIR [--json]
 
 This is the automated pass of the regularization policy
@@ -70,6 +71,13 @@ by the policy's decision table. Per count, in order:
    row 1, and neither is a failed 80-digit verification (`verify_ok: false`) beside a
    certificate upstream accepted: upstream's checks are evidence and never decide, so that
    certificate goes to this project's routes like any other.
+   The decision is reported in the words the policy gives (owner, 11 October 2026):
+   `no-view` for row 1; `no-change` wherever the view would draw the same picture, whatever
+   row matched (nothing moved beyond `10^-3` or turned, the pairing one to one, the house
+   counts the source's), so nothing is refused or held that would not change; `held` for a
+   visible view at rows 3 and 4; `refuse` for rows 2, 6 and 7. A row 3 candidate is listed
+   in the receipt whatever it is reported as. `reclassify` decides a finished run again
+   from its reports, for a change to the table, without re-running a stage.
 
 Every count writes `RUN/n-NNN/report.json`, and the run writes `RUN/receipt.json`: the
 generator (name, pin, local patches, interpreter), the parameters, one row per count with
@@ -1103,6 +1111,10 @@ class Measured:
     determined_merge: bool = False
     level: int | None = None
     max_move: Fraction | None = None
+    #: Whether the view draws a different picture from the source: a square moved beyond
+    #: `10^-3` or turned, a house contact count changed, or no one-to-one pairing to say
+    #: otherwise. Unmeasured outputs count as changed.
+    visible_change: bool = True
 
 
 @dataclass(frozen=True)
@@ -1114,11 +1126,43 @@ class Decision:
     reason: str
 
 
-def classify(measured: Measured) -> Decision:  # noqa: PLR0911 -- one return per table row
+def classify(measured: Measured) -> Decision:
+    """The policy's decision table, reported in the owner's words of 11 October 2026.
+
+    The rows decide; the word reports. A view that would draw the same picture is "no
+    change" whatever row matched, since there is nothing to refuse or hold; a register
+    candidate under it is still row 3, and the receipt still lists it. Row 1 is "no
+    view"; a visible view held by rows 3 or 4 is "held"; "refuse" is left for a view that
+    changes the drawing and fails an obligation (rows 2, 6 and 7).
+    """
+    decided = table_row(measured)
+    if decided.row in {1, 2} or measured.visible_change:
+        return decided
+    return Decision(
+        decided.row,
+        "no-change",
+        "unchanged",
+        None,
+        f"nothing visible changes ({decided.reason})",
+    )
+
+
+def visible_change(ident: Mapping[str, Any], shaded: Mapping[str, Any]) -> bool:
+    """Whether a measured view draws a different picture from its source (see `Measured`)."""
+    house = shaded.get("house") or {}
+    return bool(
+        ident.get("moved")
+        or ident.get("turned")
+        or not ident.get("one_to_one", False)
+        or house.get("before") != house.get("after")
+    )
+
+
+def table_row(measured: Measured) -> Decision:  # noqa: PLR0911 -- one return per table row
     """Rows 1 to 10 of the policy's decision table; the first that matches decides."""
     m = measured
     if not m.produced:
-        return Decision(1, "refuse", "refused", "generator-failed", f"no output: {m.status}")
+        return Decision(1, "no-view", None, "generator-failed", f"no view: {m.status}")
     refused = sorted(name for name, passed in m.routes.items() if not passed)
     if refused or not m.routes:
         names = ", ".join(refused) or "no route ran"
@@ -1128,19 +1172,22 @@ def classify(measured: Measured) -> Decision:  # noqa: PLR0911 -- one return per
     if m.upper is not None and m.side is not None and m.side < m.upper:
         return Decision(
             3,
-            "candidate",
+            "held",
             None,
             None,
-            f"{m.relation} side below the verified upper bound by "
-            f"{float(m.upper - m.side):.3e}: a register-result candidate",
+            f"register first: the {m.relation} side is below the verified upper bound by "
+            f"{float(m.upper - m.side):.3e}, a register-result candidate",
         )
     if m.relation != "same":
-        unknown = "; U unknown, so row 3 was not decided" if m.upper is None else ""
-        return Decision(
-            4, "refuse", "refused", "dilated-side", f"solved side, not the witness's{unknown}"
-        )
+        if m.upper is None:
+            where = "not the witness's; U unknown, so row 3 was not decided"
+        elif m.side == m.upper:
+            where = "exactly the verified upper bound, not the witness's printed side"
+        else:
+            where = "not the witness's and above the verified upper bound"
+        return Decision(4, "held", None, "dilated-side", f"the view's side is {where}")
     if m.pose_equals_witness:
-        return Decision(5, "unchanged", "unchanged", None, "the view is the witness's pose")
+        return Decision(5, "no-change", "unchanged", None, "the view is the witness's pose")
     if not m.one_to_one:
         return Decision(6, "refuse", "refused", "not-one-to-one", "no one-to-one pairing")
     if m.unnamed_turns:
@@ -1335,7 +1382,9 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
                 report["identity"], report["shades"] = ident, shaded
             else:
                 block["identity"], block["shades"] = ident, shaded
+            ident["pose_equals_witness"] = equal
             fields = {
+                "visible_change": visible_change(ident, shaded),
                 "pose_equals_witness": equal,
                 "one_to_one": bool(ident["one_to_one"]),
                 "unnamed_turns": tuple(ident.get("unnamed_turns") or ()),
@@ -1461,6 +1510,105 @@ def run(counts: Sequence[int], options: Options, workers: int) -> dict[str, Any]
     return receipt
 
 
+def receipt_lists(ordered: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    """The receipt's lists: register candidates (row 3 on either output, whatever the
+    decision is reported as), the review queue, and the counts by index record."""
+    return {
+        "candidates": [
+            row["n"] for row in ordered if row.get("solved_row") == 3 or row["row"] == 3
+        ],
+        "review_queue": [row["n"] for row in ordered if row.get("row") in {8, 9, None}],
+        "index_records": {
+            record: [row["n"] for row in ordered if row.get("index_record") == record]
+            for record in ("regularized", "refused", "unchanged")
+        },
+    }
+
+
+def measured_from_report(report: Mapping[str, Any], name: Output) -> Measured:
+    """What the decision table reads of one output, from a written report.
+
+    Reports written before the pose comparison was stored lack `pose_equals_witness`; for
+    them it is taken as a same-side view whose largest move is zero with nothing turned.
+    """
+    outputs = report.get("outputs") or {}
+    block = outputs.get(name)
+    if not block:
+        status = (report.get("solve") or {}).get("status") or report.get("status")
+        return Measured(name, produced=False, status=f"solve {status}")
+    regularized = report.get("regularize") or {}
+    relation = block.get("relation")
+    chosen = "same" if outputs.get("same") else "solved"
+    ident: Mapping[str, Any] | None = None
+    shaded: Mapping[str, Any] | None = None
+    if name == chosen:
+        ident, shaded = report.get("identity"), report.get("shades")
+    elif relation == "same":
+        ident, shaded = block.get("identity"), block.get("shades")
+    fields: dict[str, Any] = {}
+    if ident is not None and shaded is not None:
+        move = Fraction(ident["max_move"]) if ident.get("max_move") is not None else None
+        equal = ident.get("pose_equals_witness")
+        if equal is None:
+            equal = relation == "same" and move == 0 and not ident.get("turned")
+        fields = {
+            "visible_change": visible_change(ident, shaded),
+            "pose_equals_witness": bool(equal),
+            "one_to_one": bool(ident.get("one_to_one")),
+            "unnamed_turns": tuple(ident.get("unnamed_turns") or ()),
+            "regressions": _regression_count(shaded),
+            "max_move": move,
+        }
+    return Measured(
+        name,
+        produced=True,
+        routes=block.get("routes") or {},
+        relation=relation,
+        side=Fraction(block["side_exact"]),
+        upper=upper_bound(
+            {
+                "verified_upper_bound": report.get("verified_upper_bound"),
+                "exact_form": report.get("verified_upper_bound_exact_form"),
+            }
+        ),
+        variant=(report.get("generator") or {}).get("variant", "conservative"),
+        determined_merge=any(
+            isinstance(change, list) and change and change[0] == "determined-merge"
+            for change in regularized.get("angle_changes") or []
+        ),
+        level=regularized.get("level"),
+        **fields,
+    )
+
+
+def reclassify(run_dir: Path, counts: Sequence[int] | None = None) -> dict[str, Any]:
+    """Decide a finished run again from its reports, without re-running any stage.
+
+    For a change to the decision table or to how decisions are reported: every count's
+    `decision` and `decisions` are rewritten from its stored measurements, and the
+    receipt's rows and lists follow; its cost and parameters are left as they were.
+    """
+    path = run_dir / "receipt.json"
+    receipt = read_json(path)
+    rows = {int(row["n"]): row for row in receipt.get("counts", [])}
+    chosen = sorted(rows) if counts is None else list(counts)
+    for n in chosen:
+        report_path = count_dir(run_dir, n) / "report.json"
+        report = read_json(report_path)
+        outputs = report.get("outputs") or {}
+        same = measured_from_report(report, "same") if outputs.get("same") else None
+        _decide(
+            report, measured_from_report(report, "solved"), same, outputs.get("same_refusal")
+        )
+        write_json(report_path, report)
+        rows[n] = receipt_row(report)
+    ordered = [rows[n] for n in sorted(rows)]
+    receipt.update({"counts": ordered, **receipt_lists(ordered)})
+    receipt["reclassified"] = {"policy": POLICY, "counts": chosen}
+    write_json(path, receipt)
+    return receipt
+
+
 def write_receipt(
     run_dir: Path,
     reports: Mapping[int, Mapping[str, Any]],
@@ -1491,14 +1639,7 @@ def write_receipt(
         "generator": vendored_pin(),
         "parameters": parameters,
         "counts": ordered,
-        "candidates": [
-            row["n"] for row in ordered if row.get("solved_row") == 3 or row["row"] == 3
-        ],
-        "review_queue": [row["n"] for row in ordered if row.get("row") in {8, 9, None}],
-        "index_records": {
-            record: [row["n"] for row in ordered if row.get("index_record") == record]
-            for record in ("regularized", "refused", "unchanged")
-        },
+        **receipt_lists(ordered),
         "solve_outputs": solve_digests(run_dir, sorted(reports)),
         "cost": dict(cost),
         "previous_runs": history,
@@ -1625,6 +1766,11 @@ def parser() -> argparse.ArgumentParser:
     input_command = sub.add_parser("input", help="write one witness as upstream's input")
     input_command.add_argument("--n", type=int, required=True)
     input_command.add_argument("--output", type=Path, required=True)
+    reclassify_command = sub.add_parser(
+        "reclassify", help="decide a finished run again from its reports"
+    )
+    reclassify_command.add_argument("--run-dir", type=Path, required=True)
+    reclassify_command.add_argument("--n", nargs="+", default=None, help="counts or a-b")
     report_command = sub.add_parser("report", help="print a run's receipt as a table")
     report_command.add_argument("--run-dir", type=Path, required=True)
     report_command.add_argument("--json", action="store_true")
@@ -1636,6 +1782,11 @@ def main(argv: list[str] | None = None) -> int:
     if arguments.command == "input":
         witness = load_witness(witness_path(arguments.n), fallback_schema=WITNESS_SCHEMA)
         write_text(arguments.output, input_text(witness))
+        return 0
+    if arguments.command == "reclassify":
+        counts = None if arguments.n is None else parse_counts(arguments.n)
+        receipt = reclassify(arguments.run_dir, counts)
+        print(report_table(receipt))
         return 0
     if arguments.command == "report":
         receipt = read_json(arguments.run_dir / "receipt.json")
