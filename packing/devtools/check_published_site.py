@@ -18,6 +18,10 @@ heads and links between papers without fetching the network. --partial requires 
 or more --producer names and checks every output of those producers; missing files
 never select partial mode. --local DIR --inventory reports heads without validation.
 
+--deadline-minutes bounds the live audit's wall: once it has passed, no request, retry
+or phase is started, every verdict collected so far is printed, and the run fails. A
+hosted job that is killed at its ceiling prints nothing, so the deadline sits below it.
+
 The live deployment check is separate from the required source registry/history gate.
 Tests cover the parsing and failure controls with fixtures.
 """
@@ -26,6 +30,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import http.client
 import os
 import posixpath
 import re
@@ -1247,7 +1252,16 @@ LOCAL_SITE = re.compile(r"http://(?:127\.0\.0\.1|localhost)(?::\d+)?/")
 
 
 def fetch_once(url: str, *, head: bool = False, timeout: float = 30.0) -> tuple[int, bytes]:
-    """The status and body of a GET (or the status alone of a HEAD); 0 when unreachable."""
+    """The status and body of a GET (or the status alone of a HEAD); 0 when unreachable.
+
+    Unreachable covers every way the transport fails short of an answer: a connection
+    that cannot be made (`URLError`), headers or a body that stall past `timeout`
+    (`TimeoutError`), a connection the server drops (`ConnectionResetError`, the other
+    `OSError`s) and an answer cut short (`http.client.IncompleteRead`,
+    `RemoteDisconnected`), whether `urlopen` or the read raises it. Each is transient
+    (`TRANSIENT_STATUSES`) and so asked again by `fetch`; a request that stalled once
+    used to end the whole audit with a traceback instead (#496 F2).
+    """
     if not (url.startswith("https://") or LOCAL_SITE.match(url)):
         raise ValueError(f"refusing to fetch a URL that is neither https nor local: {url}")
     request = urllib.request.Request(
@@ -1257,8 +1271,10 @@ def fetch_once(url: str, *, head: bool = False, timeout: float = 30.0) -> tuple[
         with urllib.request.urlopen(request, timeout=timeout) as response:
             return response.status, b"" if head else response.read()
     except urllib.error.HTTPError as error:
+        # An answer, before the transport errors: `HTTPError` is a `URLError` too.
         return error.code, b""
-    except urllib.error.URLError:
+    except OSError, http.client.HTTPException:
+        # `URLError` and `TimeoutError` are `OSError`s.
         return 0, b""
 
 
@@ -1416,14 +1432,19 @@ def deployed_registry_checks(
     *,
     timeout: float,
     rows: Sequence[site_urls.SiteURL] | None = None,
+    results: list[tuple[bool, str]] | None = None,
 ) -> list[tuple[bool, str]]:
     """Fetch every retained non-asset URL, including all cases and result pages.
 
     The registry owns the complete walk. The specialized paper/citation checks below
-    share its response cache and retain their stronger content assurance.
+    share its response cache and retain their stronger content assurance. Verdicts are
+    appended to `results` where the caller gives one, so a walk the audit's deadline
+    stops keeps those it reached, and the list is returned.
     """
     rows = list(rows) if rows is not None else site_urls.load_registry()
-    results = site_urls.validate_registry(rows)
+    if results is None:
+        results = []
+    results.extend(site_urls.validate_registry(rows))
     site = site.rstrip("/") + "/"
     pages: dict[str, str] = {}
     forwarded: dict[str, tuple[str, str]] = {}
@@ -1515,6 +1536,17 @@ def local_site_checks(
     )
 
 
+class _DeadlineError(Exception):
+    """The audit's wall deadline passed: raised before the request, retry or phase that
+    would have followed it, naming the phase it passed in. `main` prints what `check`
+    had collected by then and fails the run."""
+
+    def __init__(self, phase: str, deadline: float) -> None:
+        super().__init__(f"the audit's deadline of {deadline:g}s passed during {phase!r}")
+        self.phase = phase
+        self.deadline = deadline
+
+
 def check(
     site: str,
     commit: str,
@@ -1522,12 +1554,23 @@ def check(
     timeout: float,
     browser: bool = True,
     progress: Callable[[str], object] | None = None,
+    results: list[tuple[bool, str]] | None = None,
+    deadline: float | None = None,
 ) -> list[tuple[bool, str]]:
-    """Every check as (passed, line), in the order they are printed.
+    """Every check as (passed, line), in the order they are printed: appended to
+    `results` where the caller gives one, so they survive an abort, and returned.
 
     Optional progress counts cumulative HTTP identities (URL and method) and retries;
     cache hits, including HEAD requests satisfied by a GET, add no request.
+
+    `deadline` is a wall budget in seconds from the start. Once it has passed, no
+    request, retry or phase is started: `_DeadlineError` is raised instead, with
+    every verdict so far in `results`. The browser phases keep their own timeouts, so
+    the boundary before each is what bounds them. With no deadline nothing here
+    changes: the same requests, retries, verdicts and progress, in the same order.
     """
+    if results is None:
+        results = []
     cache: dict[tuple[str, bool], tuple[int, bytes]] = {}
     started = phase_started = last_report = time.monotonic()
     phase_name = ""
@@ -1542,11 +1585,17 @@ def check(
                 f"total_unique_requests={requests} total_retries={retries}"
             )
 
+    def expired() -> None:
+        """Stop here, before another request, retry or phase, once the deadline passed."""
+        if deadline is not None and time.monotonic() >= started + deadline:
+            raise _DeadlineError(phase_name, deadline)
+
     def phase(name: str | None) -> None:
         nonlocal phase_name, phase_started
         if phase_name:
             report(f"complete in {time.monotonic() - phase_started:.2f}s")
         if name is not None:
+            expired()
             phase_name, phase_started = name, time.monotonic()
             report("start")
 
@@ -1559,20 +1608,18 @@ def check(
         if head and (url, False) in cache:
             return cache[(url, False)]
         if key not in cache:
+            expired()
             requests += 1
             request_started = time.monotonic()
             method = "HEAD" if head else "GET"
 
             def retry(status: int, delay: float) -> None:
                 nonlocal retries
+                expired()
                 retries += 1
                 report(f"retry {method} {original}: HTTP {status}, waiting {delay:g}s")
 
-            cache[key] = (
-                fetch(url, head=head, timeout=timeout, on_retry=retry)
-                if progress is not None
-                else fetch(url, head=head, timeout=timeout)
-            )
+            cache[key] = fetch(url, head=head, timeout=timeout, on_retry=retry)
             elapsed = time.monotonic() - request_started
             # Report slow requests and bounded progress, not hundreds of routine URLs.
             if (
@@ -1590,7 +1637,13 @@ def check(
         for row in registered
         if row.kind == "record" and (match := re.fullmatch(r"cases/(\d+)\.html", row.path))
     )
-    results = deployed_registry_checks(site, read, timeout=timeout, rows=registered)
+    # The walk appends as it goes, so a deadline in this phase keeps what it reached; a
+    # walk that answers with a list of its own instead is added whole.
+    walked = deployed_registry_checks(
+        site, read, timeout=timeout, rows=registered, results=results
+    )
+    if walked is not results:
+        results.extend(walked)
     phase("content")
     site = site.rstrip("/") + "/"
 
@@ -2012,14 +2065,27 @@ def main(argv: Sequence[str] | None = None) -> int:
         action="store_true",
         help="with --local: print what every file's head carries, and check nothing",
     )
+    parser.add_argument(
+        "--deadline-minutes",
+        type=float,
+        metavar="MINUTES",
+        help="fail the live audit once it has run this long, printing what it checked: "
+        "past the deadline no request, retry or phase starts (default: unbounded)",
+    )
     args = parser.parse_args(argv)
     if (args.partial or args.producer) and args.local is None:
         parser.error("--partial/--producer require --local")
+    if args.deadline_minutes is not None:
+        if args.local is not None:
+            parser.error("--deadline-minutes bounds the live audit, not --local")
+        if args.deadline_minutes <= 0:
+            parser.error("--deadline-minutes must be positive")
     if args.inventory:
         if args.local is None:
             parser.error("--inventory reads a built site: give --local DIR")
         print("\n".join(head_inventory(args.local.resolve())))
         return 0
+    results: list[tuple[bool, str]] = []
     if args.local is not None:
         try:
             results = local_site_checks(
@@ -2029,13 +2095,36 @@ def main(argv: Sequence[str] | None = None) -> int:
             parser.error(str(error))
     else:
         commit = args.commit or expected_commit()
-        results = check(
-            args.site,
-            commit,
-            timeout=args.timeout,
-            browser=not args.no_browser,
-            progress=lambda line: print(line, file=sys.stderr, flush=True),
-        )
+        minutes: float | None = args.deadline_minutes
+        # `check` appends to `results` as it goes, so a run the deadline or a reader stops
+        # still prints every verdict it reached, then one failure for what it did not.
+        try:
+            check(
+                args.site,
+                commit,
+                timeout=args.timeout,
+                browser=not args.no_browser,
+                progress=lambda line: print(line, file=sys.stderr, flush=True),
+                results=results,
+                deadline=None if minutes is None else minutes * 60.0,
+            )
+        except _DeadlineError as error:
+            results.append(
+                (
+                    False,
+                    (
+                        f"audit deadline of {error.deadline / 60:g} min exceeded during phase "
+                        f'"{error.phase}" after {len(results)} checks; remaining checks not run'
+                    ),
+                )
+            )
+        except KeyboardInterrupt:
+            results.append(
+                (
+                    False,
+                    f"audit interrupted after {len(results)} checks; remaining checks not run",
+                )
+            )
     failed = 0
     for passed, line in results:
         print(f"{'ok  ' if passed else 'FAIL'} {line}", flush=True)
