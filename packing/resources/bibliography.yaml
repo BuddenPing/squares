@@ -1848,6 +1848,30 @@ sources:
       implementation, regression tests, packaging and the update under the author's direction,
       and asks that Joshua Levy / the Squares Project be credited for the concave-section
       inspiration (web/guzhou-n40-continuous-pose-2026-10-10/README.md). Dated by that commit.
+  - key: '[Guzhou0806 n40 new supports 2026-10-11]'
+    authors: [Guzhou0806]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-11'
+    credit: Guzhou0806 after wand125, Tokoharu, Levy, Stromquist, Burns, Massaccesi
+    short_credit: Guzhou0806 after wand125 et al.
+    lineage: builds-on-project
+    note: >-
+      Release n40-new-supports-6718-20261011 of Guzhou0806/n40-square-packing at
+      6a65957e6c5c51cdf267917d882dab7f5b4928dd (committed 2026-10-11T07:12:04Z), reported in a
+      comment on jlevy/squares#485: s(40) > 3359/500 by the continuous-pose and axis kernels of
+      the 10 October release, byte for byte, on a new rational density of 685 D4 rectangle
+      orbits (522 rows of wand125's rect_n40_L67 pool, 163 generated outside it, every weight
+      new), with a separate exact obstruction for the full original support family at 168/25
+      that bears on no bound. Credit is read from its SOURCES.md, which credits the original
+      density and candidate rectangles to wand125, the translation-derivative structure to
+      Tokoharu's rectangle-density method, says the concave-section calculations draw on
+      Joshua Levy's Squares Project (sqverify_fast at ef79288a4), names prior measure and
+      unavoidable-set work by Stromquist, Burns and Massaccesi, and gives Guzhou0806's
+      AI-assisted contribution as the new supports, the weight optimization, the
+      continuous-cover certificate and the obstruction; the comment asks for credit in the
+      same terms (web/guzhou-n40-new-supports-2026-10-11/README.md). Retained and its finite
+      steps audited, not registered. Dated by that commit.
   - key: '[Daniel regularized lists 2026-10-10]'
     authors: [Daniel]
     year: 2026
