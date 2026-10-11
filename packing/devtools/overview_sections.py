@@ -1909,6 +1909,22 @@ OTHER_PROJECTS: tuple[tuple[str, str, str], ...] = (
         ),
     ),
     (
+        "https://github.com/dostashev/square-packing",
+        "Daniil Ostashev",
+        (
+            "New packings of 155, 156 and 211 squares with exact certificates and a GMP"
+            " checker; the three are replayed here (T-149)."
+        ),
+    ),
+    (
+        "https://github.com/RobertBarnettProjects/square-packing-research",
+        "Robert Barnett",
+        (
+            "Exact rational refinements of Ryan Xu's packings of 146 and 261 squares,"
+            " replayed here (T-150)."
+        ),
+    ),
+    (
         "https://github.com/griffcass/square-packing",
         "Griffin Casson",
         "Improved packings for n = 103, 105 and other cases.",

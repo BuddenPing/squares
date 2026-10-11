@@ -1306,8 +1306,9 @@ verifiers:
       the closed box by each square's half-extent with no corner formed, and disjoint
       interiors by the circumscribed-disc rule, else by the exact area of one square
       clipped by the other's four closed half-planes. It reads Evan Daniel's text format,
-      SQUISH's JSON, the centred JSON of issue 483, PingYou Ltd's JSON, rational corners
-      witnesses and derived facts with readers of its own, runs six controls per certificate (two gross, and side and pair each at exact
+      SQUISH's JSON, the centred JSON of issue 483, PingYou Ltd's JSON, Daniil Ostashev's
+      sqcert files, rational corners witnesses and derived facts with readers of its own,
+      runs six controls per certificate (two gross, and side and pair each at exact
       contact and 10^-40 or 10^-30 past it), and holds every side, pose, margin and
       claimed side to the maintained routes' retained inputs and the record. For issue
       470 it also derives each witness again from its pinned decimal pose file, with its
@@ -1333,7 +1334,12 @@ verifiers:
       witnesses, --upstream checks that hold a fact to its pinned same-packing witness, and
       patch_lineage, which counts a parent packing's squares that reappear in a
       certificate under a box symmetry and translation and decides nothing; it ran it on
-      the two certificates T-147 and T-148 cite. Its author had read both
+      the two certificates T-147 and T-148 cite. The review lane of issues 505 and 501
+      (docs/project/reviews/review-2026-10-11-upper-bound-imports-505-501.md) added a
+      reader of the sqcert format, an --upstream reader of Evan Daniel's format for derived
+      facts, a check of each retained certificate's side against its README's print at the
+      pin, and credit readers for T-146, T-128 and T-098, and ran it on the five
+      certificates T-149 and T-150 cite. Its author had read both
       maintained routes, their parser and the importer's adapters before writing it, so it
       is not clean-room; it imports none of their parsing or deciding code and shares
       Fraction with every exact checker here. It is a second pair-deciding procedure
@@ -1770,8 +1776,8 @@ verifiers:
       Imports a report of rational upper-bound certificates by another author from its
       packet's declaration: admits custody through acquire_source, reads each retained
       file or derived fact by its declared adapter (Evan Daniel's text format, SQUISH's
-      JSON, centred JSON, PingYou Ltd's JSON, rational corners witnesses, decimal poses by
-      a declared dilation), holds a derived fact to any file its row names as the same
+      JSON, centred JSON, PingYou Ltd's JSON, Daniil Ostashev's sqcert files, rational
+      corners witnesses, decimal poses by a declared dilation), holds a derived fact to any file its row names as the same
       packing, admits each side only
       where it equals or rounds up to its print, rebuilds the frozen claim comparison and
       the register plan, and drives the arrangement kernel's two exact routes and two
@@ -1793,7 +1799,9 @@ verifiers:
       import lane of issues 503 and 504 added the pingyou-json and witness-corners adapters
       and the same-packing comparison in derive, and the 11 October review of those issues
       (docs/project/reviews/review-2026-10-11-upper-bound-imports-503-504.md) read them in
-      full.
+      full. The import lane of issues 505 and 501 added the sqcert adapter, which the 11
+      October review of those issues
+      (docs/project/reviews/review-2026-10-11-upper-bound-imports-505-501.md) read in full.
 
   - id: V-rehwaldt-n68-verify
     program: verify.py

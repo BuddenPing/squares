@@ -1928,6 +1928,44 @@ sources:
       and supplies a corners Witness/v2. Derived exact facts only; no upstream byte is
       retained. No AI-assistance statement; the same author's n207 release disclosed OpenAI
       Codex assistance and removed it. No local or global optimality claim.
+  - key: '[Ostashev records 2026-10-11]'
+    authors: [Ostashev]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-11'
+    lineage: builds-on-project
+    credit: Ostashev after Nakajima, Levy, Xu
+    short_credit: Ostashev after Nakajima et al.
+    note: >-
+      Three complete exact certificates at c3d17ab08bd5db65dc5ffe69e41f7b2ff0c2fc49 in the
+      source's sqcert format, reported on jlevy/squares#501, at 155, 156 and 211: packings
+      the README says were built from scratch and solved to the exact optimum of their
+      contact topologies, each dilated by 1 + 1e-60; the issue prints the larger sides of
+      41019fb, which the head replaced. Methods credited: Nakajima's soft-to-rigid
+      re-hardening, this project's fixed-angle linear program and Ryan Xu's certificate
+      construction. The author confirmed the credit name Daniil Ostashev on the issue.
+      Retained under the MIT licence with the source's C++ GMP checker and mpmath
+      cross-check, neither run here. No AI assistance stated. No local or global
+      optimality is registered.
+  - key: '[Barnett refinements 2026-10-11]'
+    authors: [Barnett]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-11'
+    lineage: credits-project
+    credit: Barnett after Xu, Daniel, Levy
+    short_credit: Barnett after Xu et al.
+    note: >-
+      Seven complete exact certificates at 2573ff51c4b160c952bbb2d1c399e7430d9f9ae2 in Evan
+      Daniel's format: the two of jlevy/squares#505, at 146 and 261, refinements of Ryan
+      Xu's packings by minimum-movement sequential linear programming and exact rational
+      contraction, measured here as his arrangements (the 146 locally re-optimized, the 261
+      refined in precision), and five the README marks superseded, at 70, 103, 123, 237 and
+      295; one more at n = 2043 is beyond the corpus. Checked by the author with Evan
+      Daniel's verify_cert.py and verify_cert2.py and two checkers of the same assisted
+      project; the comparisons are with Daniel's regularization and this project's register
+      and atlas. Derived exact facts only; no upstream byte is retained. OpenAI Codex
+      assistance disclosed. No local or global optimality claim.
 credited_names:
   Nate Chaoweeraprasit (itsnaka): Chaoweeraprasit
   Siddharth Gupta: Gupta
