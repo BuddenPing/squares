@@ -72,6 +72,7 @@ Set `SQPACK_CHROMIUM` to use a browser the environment supplies, as the other to
 from __future__ import annotations
 
 import argparse
+import io
 import itertools
 import json
 import math
@@ -120,6 +121,11 @@ FRAME_WINDOWS = ((1280, 1200), (390, 844))
 README_WINDOW, README_PIXELS = (3200, 2000), 2
 #: The margin README's picture keeps around the tiles, in CSS pixels.
 README_MARGIN = 8
+#: The colours README's picture is reduced to. The tiles are flat fills, so a palette
+#: loses nothing visible and takes the file from 1.9 MB to about 0.6 MB, which matters:
+#: `docs/` is copied whole into every negative-control worker, against its 200 MiB cap
+#: (`run_negative_controls.SNAPSHOT_MAX_BYTES`).
+README_COLORS = 256
 #: How far two edges may differ and still be one edge, in CSS pixels.
 EDGE = 0.75
 EXPANDER = "[data-atlas-toggle]"
@@ -655,8 +661,9 @@ def readme(address: str, target: Path) -> Path:
     """README's picture: every case in the triangle, the tiles alone, light, at
     `README_PIXELS` in `README_WINDOW`, once no row pans and each drawing has loaded,
     cut to the tiles' own extent and `README_MARGIN`, without the controls and key above
-    them or the frame's empty width. The pointer is moved off the tiles first, so none
-    is shown under a hover."""
+    them or the frame's empty width, and reduced to `README_COLORS`. The pointer is
+    moved off the tiles first, so none is shown under a hover."""
+    from PIL import Image  # noqa: PLC0415
     from playwright.sync_api import sync_playwright  # noqa: PLC0415
 
     target.parent.mkdir(parents=True, exist_ok=True)
@@ -685,8 +692,13 @@ def readme(address: str, target: Path) -> Path:
             "width": max(tile["right"] for tile in tiles) + README_MARGIN - left,
             "height": max(tile["bottom"] for tile in tiles) + README_MARGIN - top_edge,
         }
-        page.screenshot(path=str(target), clip=clip, animations="disabled")
+        shot = page.screenshot(clip=clip, animations="disabled")
         browser.close()
+    with Image.open(io.BytesIO(shot)) as image:
+        palette = image.convert("RGB").quantize(
+            colors=README_COLORS, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE
+        )
+        palette.save(target, optimize=True)
     return target
 
 
