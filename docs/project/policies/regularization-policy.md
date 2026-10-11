@@ -10,8 +10,9 @@ It says what a regularized view must satisfy, what the automated pass decides by
 what a reviewer decides, and how each decision is recorded and credited.
 
 Neighbouring documents own the rest.
-[`epistemics.md`](../../../epistemics.md#parallel-projects-and-their-credit) owns credit and the
-rungs; the [atlas README](../../../packing/atlas/known-best/README.md#the-regularized-views)
+[`epistemics.md`](../../../epistemics.md#parallel-projects-and-their-credit) owns credit
+and the rungs; the
+[atlas README](../../../packing/atlas/known-best/README.md#the-regularized-views)
 describes the layer and how to rebuild it;
 [`development.md`](../../../development.md#the-deep-gate-the-deferred-surface-before-the-merge)
 places the gates; and the
@@ -151,8 +152,8 @@ Two kinds of admitted view are listed first in the gallery for the reviewer:
 **Who reviews:** the owner, or a person the owner names in writing as the layer’s
 reviewer. An agent prepares the gallery and may draft a recommendation, and the review
 record names the person who decided: the rule
-[No Blind Trust](../../../epistemics.md#no-blind-trust) sets for the rungs, evidence from an
-agent and the decision from a person.
+[No Blind Trust](../../../epistemics.md#no-blind-trust) sets for the rungs, evidence
+from an agent and the decision from a person.
 
 **What the reviewer sees:** a gallery the driver renders for each pass.
 For each count in the review queue or flagged, it draws the source witness and the view
@@ -207,16 +208,19 @@ every obligation, and the reviewer confirms it in a new record.
 
 Evan Daniel’s exact solver and regularizer, `search/exact` and `search/regularize` in
 [evand/square-packing](https://github.com/evand/square-packing), are MIT-licensed and
-vendored under `vendor/evand-regularize/` at the pin its `VENDORED.md` records, with his
-licence notice kept.
+vendored under `vendor/evand-regularize/` at the pin its manifest `vendored.yaml`
+records, with his licence notice kept.
 The project may patch them, on four conditions:
 
-- **A patch is a recorded, reviewed local change.** `VENDORED.md` lists each one: an id,
-  the date, who made it, why, the files it touches and the review that accepted it, so
-  the unpatched pin can always be rebuilt.
+- **A patch is a recorded, reviewed local change.** The manifest’s `local_changes` lists
+  each one (the path, the kind of change, the date, the bead and the reason), the
+  vendored README describes it under Local Changes, and the review that accepted it is
+  the pull request that made it, so the unpatched pin can always be rebuilt.
+  `devtools.check_vendored_evand` holds the tree to the manifest.
   An unrecorded edit under the vendored tree is a defect.
 - **The version travels with the view.** A patched generator’s version is the pin plus
-  its ordered patch ids, and every view and receipt it produces carries that version.
+  its ordered local changes, and every view and receipt it produces carries that
+  version.
 - **A patch changes how views are made, not what admits them.** Section 3 applies
   unchanged, and every view a patch could change goes back through the pass with its
   review records lapsed.
@@ -224,8 +228,8 @@ The project may patch them, on four conditions:
   by a port of it, credits Evan Daniel’s method ([section 7](#7-credit)).
 
 A patch that fixes a defect in the upstream code is reported to its author, as
-[`epistemics.md`](../../../epistemics.md#parallel-projects-and-their-credit) asks of every defect
-found here.
+[`epistemics.md`](../../../epistemics.md#parallel-projects-and-their-credit) asks of
+every defect found here.
 
 ## 7. Credit
 
@@ -278,7 +282,7 @@ the automated pass can run without overstepping:
 6. **Tie-breaks of taste:** the generator’s defaults, flagged in the gallery for the
    reviewer.
 7. **Method credit:** the owner directed on 11 October 2026 that the vendored code be
-   properly credited, so its notice and `VENDORED.md` carry Evan Daniel’s credit.
+   properly credited, so its notice and the vendored README carry Evan Daniel’s credit.
    Until the owner says where else, the index, the drawings and a register result’s
    `builds_on` carry it as [section 7](#7-credit) states; the atlas README and the
    composites do not yet.
