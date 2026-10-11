@@ -27,7 +27,9 @@ from devtools.check_half_angle_area import (
     placed,
     read_centred_json,
     read_fact,
+    read_pingyou_json,
     read_squish_json,
+    read_witness_corners,
     rotation,
     unit_basis,
 )
@@ -852,3 +854,268 @@ def test_the_470_witness_at_103_is_ryan_xus_packing_square_for_square() -> None:
     assert gap["symmetry"] == 0
     assert gap["moved_beyond"]["1e-9"] == 0
     assert gap["turned_beyond_1e-6"] == 0
+
+
+# --------------------------------------------------------------------------- #503 and #504
+
+#: PingYou Ltd's JSON: SQUISH's rows with the four fields its reader leaves unread.
+PINGYOU_JSON: dict[str, Any] = {
+    **PAIR_JSON,
+    "note": "rational centers and t=tan(theta/2)",
+    "dilation_exact": "5000000000001/5000000000000",
+    "raw_side": 2.4,
+    "provenance": {"construction": "two squares", "angle": 53.13},
+}
+PAIR_SIDE = Fraction(12, 5)
+PAIR = tuple(
+    placed(
+        (
+            (Fraction(1, 2), Fraction(3, 5), Fraction(0)),
+            (Fraction(17, 10), Fraction(7, 10), HALF_TURN),
+        )
+    )
+)
+
+
+def test_the_503_and_504_rosters_are_one_derived_fact_each() -> None:
+    found = route.import_cases(("#503", "#504"))
+    assert [(case.issue, case.n, case.read) for case in found] == [
+        ("#503", 207, "facts/n-207.yaml"),
+        ("#504", 153, "facts/n-153.yaml"),
+    ]
+    assert found[0].side == Fraction(148809603730436756319360591381170501178639, 10**40)
+    assert found[1].side == Fraction(6435006925203522001385040447, 5 * 10**26)
+
+
+def test_the_pingyou_reader_reads_squish_rows_and_leaves_its_metadata_unread() -> None:
+    assert read_pingyou_json(json.dumps(PINGYOU_JSON).encode(), 2) == read_squish_json(
+        json.dumps(PAIR_JSON).encode(), 2
+    )
+    # A field the reader does not know is refused, whatever it holds; so is another count.
+    with pytest.raises(AreaRouteError):
+        read_pingyou_json(json.dumps({**PINGYOU_JSON, "s_decimal": "2.4"}).encode(), 2)
+    with pytest.raises(AreaRouteError):
+        read_pingyou_json(json.dumps(PINGYOU_JSON).encode(), 3)
+
+
+def _corner_witness(
+    side: Fraction,
+    placements: tuple[route.Placed, ...],
+    *,
+    start: int = 0,
+    frame: dict[str, str] | None = None,
+    representation: str = "corners",
+) -> str:
+    """A corners Witness/v2 in JSON syntax, each square's corners from its ``start``-th."""
+    squares = []
+    for index, (x, y, c, s) in enumerate(placements, start=1):
+        points = [
+            [str(x + (a * c - b * s) / 2), str(y + (a * s + b * c) / 2)]
+            for a, b in ((-1, -1), (1, -1), (1, 1), (-1, 1))
+        ]
+        squares.append({"id": index, "corners": points[start:] + points[:start]})
+    witness = {
+        "n": len(placements),
+        "side": str(side),
+        "square_size": "1",
+        "representation": representation,
+        "scalar": {"kind": "rational"},
+        "coordinates": dict(route.CORNER_FRAME) if frame is None else frame,
+        "squares": squares,
+    }
+    return json.dumps({"softschema": {"schema": "witness.schema.yaml"}, "witness": witness})
+
+
+def test_the_corner_witness_reader_recovers_each_pose_from_its_corners() -> None:
+    assert read_witness_corners(_corner_witness(PAIR_SIDE, PAIR).encode(), 2) == (
+        PAIR_SIDE,
+        PAIR,
+    )
+    # Corners from the next vertex are the same squares a quarter turn around, read so.
+    turned = read_witness_corners(_corner_witness(PAIR_SIDE, PAIR, start=1).encode(), 2)
+    assert turned == (PAIR_SIDE, tuple((x, y, -s, c) for x, y, c, s in PAIR))
+
+
+def _clockwise() -> str:
+    """The first pair square alone, its corners listed clockwise."""
+    document = json.loads(_corner_witness(PAIR_SIDE, PAIR[:1]))
+    document["witness"]["squares"][0]["corners"].reverse()
+    return json.dumps(document)
+
+
+@pytest.mark.parametrize(
+    ("text", "n"),
+    [
+        # Square 1's corners (0, 1/10) and (1, 1/10) moved up: no longer a unit square.
+        (_corner_witness(PAIR_SIDE, PAIR).replace('"1/10"', '"1/9"'), 2),
+        (_corner_witness(PAIR_SIDE, PAIR).replace('"id": 2', '"id": 3'), 2),
+        (
+            _corner_witness(
+                PAIR_SIDE, PAIR, frame={"origin": "lower-left", "axes": "x-right-y-up"}
+            ),
+            2,
+        ),
+        (_corner_witness(PAIR_SIDE, PAIR, representation="center-basis"), 2),
+        (_corner_witness(PAIR_SIDE, PAIR).replace('"side": "12/5"', '"side": "0"'), 2),
+        (_corner_witness(PAIR_SIDE, PAIR), 3),
+        (_clockwise(), 1),
+    ],
+)
+def test_the_corner_witness_reader_refuses_what_is_not_one_unit_square_in_order(
+    text: str, n: int
+) -> None:
+    """A moved corner, an id out of order, another frame, another representation, a
+    side that is not positive, another count and corners listed clockwise are refused."""
+    assert text != _corner_witness(PAIR_SIDE, PAIR) or n != 2
+    with pytest.raises(AreaRouteError):
+        read_witness_corners(text.encode(), n)
+
+
+@pytest.fixture
+def pingyou_packet(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> tuple[Path, Path]:
+    """A derived-fact packet of PingYou's shape: the JSON certificate and the source's
+    own corner witness, both pinned and neither retained, and the fact derived from it."""
+    monkeypatch.setattr(route, "REPO", tmp_path)
+    upstream = tmp_path / "upstream"
+    upstream.mkdir()
+    (upstream / "n2.cert.json").write_text(json.dumps(PINGYOU_JSON), encoding="utf-8")
+    (upstream / "n2-rational.yaml").write_text(
+        _corner_witness(PAIR_SIDE, PAIR), encoding="utf-8"
+    )
+    packet = tmp_path / "packet"
+    (packet / "acquisition").mkdir(parents=True)
+    (packet / "facts").mkdir()
+    _pin(packet, upstream)
+    row = {
+        "n": 2,
+        "path": "n2.cert.json",
+        "format": "pingyou-json",
+        "offered": "12/5",
+        "printed_in": "https://github.com/jlevy/squares/issues/0",
+        "same_packing": [{"path": "n2-rational.yaml", "format": "witness-corners"}],
+        "fact": "facts/n-002.yaml",
+    }
+    declaration = {"certificates": [row], "requested": [2]}
+    (packet / "acquisition/report.json").write_text(json.dumps(declaration), encoding="utf-8")
+    (packet / "facts/n-002.yaml").write_text(_fact_text(PAIR_SIDE, PAIR), encoding="utf-8")
+    return packet, upstream
+
+
+def _pin(packet: Path, upstream: Path) -> None:
+    """Write the packet's acquisition record pinning both upstream files as they are."""
+    pinned = [
+        {"path": path, "sha256": hashlib.sha256((upstream / path).read_bytes()).hexdigest()}
+        for path in ("n2.cert.json", "n2-rational.yaml")
+    ]
+    record = {"sources": [{"source_commit": "5" * 40, "pinned_only": pinned}]}
+    (packet / "acquisition/sources.json").write_text(json.dumps(record), encoding="utf-8")
+
+
+def test_a_facts_same_packing_witness_is_held_to_its_pin_and_its_packing(
+    pingyou_packet: tuple[Path, Path],
+) -> None:
+    packet, upstream = pingyou_packet
+    assert route.upstream_problems(packet, upstream) == (2, [])
+    witness = upstream / "n2-rational.yaml"
+    witness.write_bytes(witness.read_bytes() + b"\n")
+    assert route.upstream_problems(packet, upstream) == (
+        1,
+        ["packet: n2-rational.yaml is not the file the packet pins"],
+    )
+    # Re-pinned at a witness of another packing, one square moved far below binary64.
+    x, y, c, s = PAIR[1]
+    moved = (PAIR[0], (x + TINY, y, c, s))
+    witness.write_text(_corner_witness(PAIR_SIDE, moved), encoding="utf-8")
+    _pin(packet, upstream)
+    assert route.upstream_problems(packet, upstream) == (
+        2,
+        ["packet n=2: n2-rational.yaml is not the packing the fact states"],
+    )
+    # A same-packing format this route has no reader for is reported, not skipped.
+    report = packet / "acquisition/report.json"
+    report.write_text(report.read_text().replace("witness-corners", "corners-csv"))
+    assert route.upstream_problems(packet, upstream) == (
+        1,
+        ["packet n=2: no reader for corners-csv"],
+    )
+
+
+@pytest.mark.parametrize(
+    ("issue", "n", "clearance", "least_distance"),
+    [
+        ("#504", 153, "1/10000000000000", "1.885826e-13"),
+        pytest.param("#503", 207, "1/20000000000", "1.000000e-10", marks=pytest.mark.slow),
+    ],
+)
+def test_the_pingyou_imports_agree_with_their_receipts_plans_and_prints_to_every_digit(
+    issue: str, n: int, clearance: str, least_distance: str
+) -> None:
+    case = route.import_cases((issue,))[0]
+    row = route.decide_import(case)
+    packet = route.WEB / case.packet
+    maintained = upper.check_certification(packet)[n]
+    claim = route.PLAN_CLAIM.findall(upper.register_plan(packet)["results.yaml"]["claim"])
+    frozen = upper.check_claims(packet)["results"][0]
+    assert row["passed"]
+    assert row["wall_contacts"] == 0
+    assert row["wall_clearance"] == clearance
+    assert row["least_distance"] == least_distance
+    assert all(row["controls"].values())
+    assert (
+        route.compare_import(
+            row, maintained, literal(claim[0][1]), frozen, frozen["offered_side"]
+        )
+        == []
+    )
+
+
+def test_lineage_finds_a_placed_dilated_copy_of_a_packing_and_counts_a_turned_square() -> None:
+    side = Fraction(2)
+    parent = tuple(placed(GRID))
+    dilation = Fraction(10000000001, 10000000000)
+    child = tuple((dilation * (x + 1), dilation * y, c, s) for x, y, c, s in parent)
+    found = route.patch_lineage((2 * side, child), (side, parent), dilation)
+    assert found[0] == {
+        "symmetry": 0,
+        "translation": ["1", "0"],
+        "squares": 4,
+        "turned_beyond_1e-6": 0,
+        "exact": 4,
+    }
+    x, y, _c, _s = child[3]
+    turned = (*child[:3], (x, y, *rotation(Fraction(1, 1000))))
+    found = route.patch_lineage((2 * side, turned), (side, parent), dilation)
+    assert (found[0]["squares"], found[0]["turned_beyond_1e-6"], found[0]["exact"]) == (4, 1, 3)
+    # A square whose basis is written a quarter turn around is the same square, exactly.
+    quarter = (*child[:3], (x, y, Fraction(0), Fraction(1)))
+    assert route.patch_lineage((2 * side, quarter), (side, parent), dilation)[0]["exact"] == 4
+    # Nothing of the parent in a child placed far away: no placement reaches the floor.
+    apart = tuple((x + 10, y + 10, c, s) for x, y, c, s in parent[:2])
+    assert route.patch_lineage((Fraction(20), apart), (side, parent), Fraction(1)) == []
+
+
+@pytest.mark.slow
+def test_the_n207_certificate_is_two_placed_patches_of_the_n70_and_the_n153_is_not() -> None:
+    """#503's 207 holds Evan Daniel's n70 twice, 60 squares at the identity and all 69
+    of the second patch under the box's anti-diagonal reflection moved by (6, 6), as its
+    provenance states; #504's 153 is reclosed at a new angle and no placement of the n70
+    lands more than 31 of its squares within 10^-9, one of them exactly."""
+    lineage = route.lineage_gaps(route.import_cases(("#503", "#504")))
+    n207 = lineage["#503 n=207 from regularized n=70"]
+    assert n207[0] == {
+        "symmetry": 0,
+        "translation": ["0", "0"],
+        "squares": 69,
+        "turned_beyond_1e-6": 0,
+        "exact": 60,
+    }
+    assert n207[1] == {
+        "symmetry": 5,
+        "translation": ["6", "6"],
+        "squares": 69,
+        "turned_beyond_1e-6": 0,
+        "exact": 69,
+    }
+    n153 = lineage["#504 n=153 from regularized n=70"]
+    assert max(patch["squares"] for patch in n153) == 31
+    assert max(patch["exact"] for patch in n153) == 1
