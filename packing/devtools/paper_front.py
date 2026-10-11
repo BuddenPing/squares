@@ -45,12 +45,14 @@ rendered by KPress on one and written raw on the other (think-2cqu).
 from __future__ import annotations
 
 import re
+from collections.abc import Sequence
 from datetime import datetime
 from html import escape
 from typing import NamedTuple
 
 from devtools import render_overview
 from devtools.repo_links import REPO_URL
+from sqpack.release import PublicationHistoryEntry
 
 #: The placeholder an article carries where its front goes, exactly once.
 FRONT_MATTER = "FRONT_MATTER"
@@ -87,6 +89,7 @@ class Source(NamedTuple):
     author: str
     address: str
     lead: str = "From the original proof by"
+    author_url: str = ""
 
 
 class Dated(NamedTuple):
@@ -204,6 +207,12 @@ def check(front: PaperFront) -> PaperFront:
         )
     if front.source is not None and not front.source.author.strip():
         raise ValueError(f"{front.slug}: the source is credited by its author's name")
+    if (
+        front.source is not None
+        and front.source.author_url
+        and not front.source.author_url.startswith("https://")
+    ):
+        raise ValueError(f"{front.slug}: the source author's profile must use https")
     if front.history and not _ANCHOR_ID.fullmatch(front.history):
         raise ValueError(f"{front.slug}: the version history is linked by its id")
     if front.series is not None:
@@ -216,6 +225,24 @@ def check(front: PaperFront) -> PaperFront:
         if not all(part.title.strip() for part in front.series.parts):
             raise ValueError(f"{front.slug}: each part of a series is named by its title")
     return front
+
+
+def version_history_markdown(history: Sequence[PublicationHistoryEntry]) -> str:
+    """Format author-owned edition notes before inserting them into a manuscript.
+
+    The Markdown commit hook cannot reach prose stored in Python. Apply the same
+    Flowmark auto-formatting at this generated boundary, without retyping manuscript
+    quotations or archival sources.
+    """
+    from flowmark import reformat_text  # noqa: PLC0415
+
+    markdown = "\n".join(
+        f"- **{entry.version} — {entry.first_published}.** {entry.result_scope}"
+        for entry in history
+    )
+    return reformat_text(
+        markdown, semantic=True, cleanups=True, smartquotes=True, ellipses=True
+    ).rstrip("\n")
 
 
 def revised(front: PaperFront) -> str:
@@ -296,11 +323,17 @@ def _credit_lines(front: PaperFront) -> list[tuple[str, str, str]]:
     if front.source is not None:
         author = escape(front.source.author)
         address = front.source.address
+        author_html = f"<strong>{author}</strong>"
+        author_markdown = f"**{author}**"
+        if front.source.author_url:
+            profile = front.source.author_url
+            author_html = f'<a href="{escape(profile, quote=True)}">{author_html}</a>'
+            author_markdown = f"[{author_markdown}]({profile})"
         lines.append(
             (
                 "credits-source",
-                f"{escape(front.source.lead)} <strong>{author}</strong>",
-                f"{front.source.lead} **{author}**",
+                f"{escape(front.source.lead)} {author_html}",
+                f"{front.source.lead} {author_markdown}",
             )
         )
         lines.append(

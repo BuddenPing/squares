@@ -291,6 +291,14 @@ FIRST_PUBLISHED = PUBLICATION_HISTORY[-1].first_published
 #:                                            day is the one recorded
 EXPLAINER_HISTORY = (
     PublicationHistoryEntry(
+        version="v0.4.5",
+        first_published="October 10, 2026",
+        result_scope=(
+            "Use Chicago title case for bibliography titles and typographic "
+            "punctuation in the shared version-history rendering."
+        ),
+    ),
+    PublicationHistoryEntry(
         version="v0.4.4",
         first_published="October 5, 2026",
         result_scope=(
@@ -350,7 +358,7 @@ EXPLAINER_FIRST_PUBLISHED = EXPLAINER_HISTORY[-1].first_published
 #: `PUBLICATION_DATE`, the day the edition was first published, which stood still while
 #: the article changed under it: merging is the whole publish, so the text a reader sees
 #: moves between editions. Change it in the commit that changes the article.
-EXPLAINER_REVISED = "October 9, 2026"
+EXPLAINER_REVISED = "October 10, 2026"
 
 #: The optimality review's own editions, newest first, each with the day it was first
 #: published and what changed in the paper: the review's history, as `EXPLAINER_HISTORY`
@@ -464,7 +472,7 @@ OPTIMALITY_REVIEW_EDITION = " ".join(
 #: prints, by the rule `EXPLAINER_REVISED` follows -- the author date of the last commit
 #: that changed its article, `n11-optimality-review-article.md`, held to git by
 #: `devtools.artifact_dates`. Change it in the commit that changes the article.
-OPTIMALITY_REVIEW_REVISED = "October 9, 2026"
+OPTIMALITY_REVIEW_REVISED = "October 10, 2026"
 
 #: The day the proof the review explains was published by its source, which the review's
 #: "Original proof" date prints. A fact about someone else's work, so it is typed, and
@@ -504,6 +512,14 @@ THRESHOLD_PROOF_PUBLISHED = "September 22, 2026"
 #: The standalone tutorial on finding and verifying record packings. Its version and
 #: dates belong to the paper, independently of the site and n = 11 series.
 PACKING_METHODS_HISTORY = (
+    PublicationHistoryEntry(
+        version="v0.2.1",
+        first_published="October 10, 2026",
+        result_scope=(
+            "Use typographic punctuation in version histories and consistent Chicago "
+            "title case for paper titles and links."
+        ),
+    ),
     PublicationHistoryEntry(
         version="v0.2.0",
         first_published="October 10, 2026",

@@ -152,9 +152,9 @@ certificates, and its $s(50) \ge 37/5$, verified here by a complete replay, foll
 28 September. Guzhou0806’s continuation of R052, $s(17) > 4.62003$, superseded by
 `v1.1.0`, is retained as a publication record.
 The [results register](packing/frontier/RESULTS.md) and the site’s
-[results table](https://jlevy.github.io/squares/all-results.html) give the credit for
-each. The rungs above are the register’s, under the ladder in force since 2026-09-30.
-Dated sections further down keep the rungs they were written with;
+[results table](https://jlevy.github.io/squares/results.html) give the credit for each.
+The rungs above are the register’s, under the ladder in force since 2026-09-30. Dated
+sections further down keep the rungs they were written with;
 [`epistemics.md`](epistemics.md#what-changed-on-2026-09-30) says how the two ladders
 correspond.
 
@@ -700,6 +700,8 @@ case or experiment separately.
 | [The n = 17 Optimality Proof, Explained](docs/project/n17-optimality-explainer.md) | first-principles tutorial | supporting | maintained | — |
 | [N11: A Three-Paper Explainer Series](docs/project/specs/active/plan-2026-10-05-n11-explainer-series.md) | implementation plan | current | transient | — |
 | [Feature: A Static, Crawlable Site with a Registered URL Scheme](docs/project/specs/active/plan-2026-10-06-site-urls-seo-performance.md) | implementation plan | current | transient | — |
+| [Feature: Compact Homepage, Consistent Case Layouts, and Scroll-Aware Navigation](docs/project/specs/active/plan-2026-10-08-site-layout-and-navigation.md) | implementation plan | current | transient | — |
+| [Feature: A Shorter Website Development Loop](docs/project/specs/active/plan-2026-10-10-website-development-loop.md) | implementation plan | current | transient | — |
 | [Proof Review: squarepacker’s k^2 - M(k) >= 0.033 log k](docs/project/reviews/review-2026-10-05-squarepacker-k2-minus-c.md) | dated review record | record | retained | — |
 | [Delta Proof Review: Ryu’s k² − M(k) Bound, Version 1.2](docs/project/reviews/review-2026-10-08-squarepacker-k2-minus-c-v12.md) | dated review record | record | retained | — |
 | [Review of Ryu’s Quarter-Power and Cube-Root Proof Chains](docs/project/reviews/review-2026-10-08-quarter-cube-proof-chains.md) | dated review record | record | retained | — |
@@ -8095,7 +8097,7 @@ the citation keys below resolve there and in the per-case
 [`frontier/`](packing/frontier/README.md) artifacts.
 Each entry names what this project relies on it for.
 
-- Stromquist, W. (2003). *Packing 10 or 11 unit squares in a square.* Electronic Journal
+- Stromquist, W. (2003). *Packing 10 or 11 Unit Squares in a Square.* Electronic Journal
   of Combinatorics 10(1), R8. Supplies $s(10)$, states the $s(11)$ lower-bound value,
   and proves the $0^{\circ}$/`45°` class bound.
   Exp-016 refutes its printed unrestricted Figure 14 cover; exp-017 independently
@@ -8105,20 +8107,20 @@ Each entry names what this project relies on it for.
   The standing upper bound.
 - Friedman, E. (2009). *Packing Unit Squares in Squares: A Survey and New Results.*
   Electronic Journal of Combinatorics, DS7. The survey the corpus is checked against.
-- Erdős, P. and Graham, R. L. (1975). *On packing squares with equal squares.* The
+- Erdős, P. and Graham, R. L. (1975). *On Packing Squares with Equal Squares.* The
   asymptotic waste line of work.
-- Nagamochi, H. (2005). *Packing unit squares in a rectangle.* The general closed-form
+- Nagamochi, H. (2005). *Packing Unit Squares in a Rectangle.* The general closed-form
   lower bound used where the register has no stronger formal evidence.
 - Montanher, T. et al.
-  (2018). *Rigorous packing of unit squares into a circle.* The only rigorous
+  (2018). *Rigorous Packing of Unit Squares into a Circle.* The only rigorous
   computer-assisted optimality proof for rotatable unit squares in any container, and
   the scope limit on what `sqpack` claims.
-- Doye, J. P. K., Miller, M. A. and Wales, D. J. (1999). The double funnel energy
-  landscape of the 38-atom Lennard-Jones cluster.
+- Doye, J. P. K., Miller, M. A. and Wales, D. J. (1999). The Double-Funnel Energy
+  Landscape of the 38-Atom Lennard-Jones Cluster.
   The precedent behind the rarity premise.
-- Stillinger, F. H. and Weber, T. A. (1982). Inherent structures and the quench map.
+- Stillinger, F. H. and Weber, T. A. (1982). Hidden Structure in Liquids.
   The decomposition T-2 supplies a cell-exact version of.
-- Mouret, J.-B. and Clune, J. (2015). *Illuminating search spaces by mapping elites.*
+- Mouret, J.-B. and Clune, J. (2015). *Illuminating Search Spaces by Mapping Elites.*
   The precedent behind H-015.
 
 <!-- This document follows common-doc-guidelines.md.
