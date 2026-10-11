@@ -3034,7 +3034,7 @@ issues:
       and the confirmation layer has actually merged and deployed. An accurate final author reply must
       then identify the entries and assurance published on main. The progress reply is historical; a
       draft confirmation record does not close this request.
-    notes: The author moved the next nine certificates to issue422 in https://github.com/jlevy/squares/issues/401#issuecomment-6047131959,
+    notes: The author moved the next nine certificates to issue 422 in https://github.com/jlevy/squares/issues/401#issuecomment-6047131959,
       created2026-10-07T21:23:34Z. They remain a separate request and source revision. Both reviewed
       first-update PRs421/423 merged atomically through formal stack424 into main2af487e7cfe85d84b2a67fa984e2d36a77548d97
       at22:44UTC. Each final hosted head passed30 checks with26 documented inapplicable skips. The upper
@@ -3046,7 +3046,7 @@ issues:
       with strict TLS. Separate live bindings passed149/149 for all18cases/all36drawings/final T113/T114/T115
       and sourcecredit/history; desktop/mobile layouts38/38 and representative visual inspection passed.
       Final reply https://github.com/jlevy/squares/issues/401#issuecomment-6048513671 was posted before
-      manual issue closure; issue422 remains separate and open.
+      manual issue closure; issue 422 remains separate and open.
     closed: '2026-10-07'
   - number: 422
     title: '9 new packings below record for n = 88–302 (s(n) bounds 1.4e-3 to 1.2e-2 below the reported
@@ -3339,7 +3339,7 @@ issues:
     read_through: '2026-10-08T15:53:07Z'
     results:
     - key: eight-rational-refinements
-      claim: Eight complete rational source certificates report finite upper-bound improvements at 105,108,127,131,155,180,228,306.
+      claim: Eight complete rational source certificates report finite upper-bound improvements at 105, 108, 127, 131, 155, 180, 228, 306.
         Complete native feasibility outcomes are retained separately; selected standing cases are unchanged
         pending historical source-house integration and record review.
       source: body
@@ -3535,7 +3535,7 @@ issues:
     summary: Evan Daniel reports rational certificates at n=132 and n=155 below the case ceilings, in
       evand/square-packing at e008180, retained with their KKT points, inputs and solver reports. Both
       pass both maintained exact routes. The n132 side is new and recorded as T-131, whose replay the
-      review of 10 October reproduced; issue 476's n132 side is smaller. The n155 side equals Couzo's earlier issue451 certificate (T-128),
+      review of 10 October reproduced; issue 476's n132 side is smaller. The n155 side equals Couzo's earlier issue 451 certificate (T-128),
       with which it shares 152 of 155 exact poses, differing only in its free and flat-motion squares,
       so it maps to T-128 as an evidence update. Author checkers and KKT evidence
       were not run here; no optimality is claimed.
@@ -3553,7 +3553,7 @@ issues:
     - key: s155-record-hunt
       claim: s(155) <= 12.952498944014007381965850566940 by an exact rational certificate from the hunt1
         record hunt, 4.26e-6 below the register's 12.9525032026045129. Its exact side is the n155 side
-        of Couzo's issue451 certificate, registered as T-128 the day before.
+        of Couzo's issue 451 certificate, registered as T-128 the day before.
       source: body
       register:
       - T-128
