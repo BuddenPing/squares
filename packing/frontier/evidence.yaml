@@ -29044,7 +29044,7 @@ evidence:
       in 398.40 seconds. Actual production private-worker custody passed all complete-input and mutation-restoration
       checks without geometric deciders. The 10 October review
       (docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md) reproduced the replay,
-      which T-128 cites as E-couzo-451-exact-feasibility, and house integration waits on jlevy/squares#403.
+      which T-128 cites as E-couzo-451-exact-feasibility, and the case records at 108, 127, 155, 180, 228 and 306 adopted it as the house on 11 October 2026.
       The source author copied this repository''s sqpack verifier, so the exact_verify route
       overlaps that source checker. The second maintained rational-geometry route is a separate deciding
       implementation; both routes share certificate parsing, half-angle conversion, Fraction arithmetic
@@ -29275,8 +29275,7 @@ evidence:
       with two workers and unchanged kernel limits. Summed over the fifteen jobs, the receipt records
       131.84 route CPU seconds and 132.22 job wall seconds; the longest job took 22.42 seconds. The 10 October
       review (docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md) reproduced the
-      replay, which T-130 cites as E-couzo-460-followup-exact-feasibility, and house integration waits
-      on jlevy/squares#403 and this packet''s private-worker custody (RD-5). Author KKT and no-descent
+      replay, which T-130 cites as E-couzo-460-followup-exact-feasibility, and the case records at 84, 86 and 105 adopted it as the house on 11 October 2026, in the change that closed this packet''s private-worker custody (RD-5). Author KKT and no-descent
       statements are not checked. The source author reports passes from Evan Daniel''s verify_cert.py
       and a copy of this repository''s sqpack verifier, so the exact_verify route overlaps that source
       checker. The second maintained rational-geometry route is a separate deciding implementation;
@@ -29345,8 +29344,7 @@ evidence:
       maintained route is the producer's checker (RD-4) and the independently
       re-implemented relation rests on the independent rational corner checker and the
       third route. All three routes share Fraction arithmetic, and the two maintained
-      routes the separating-axis method. No private-worker custody is recorded for this
-      packet (RD-5), which a house move needs and this rung does not. The source's own
+      routes the separating-axis method. Private-worker custody (RD-5), which a house move needs and this rung does not, was closed on 11 October 2026 (packing/devtools/house-custody-2026-10-11.json). The source's own
       checkers, KKT and no-descent statements were not run or checked. Finite feasibility
       only: no lower bound, optimum, local minimum, rigidity, novelty or human oversight.
     source_reviewed: '2026-10-10'
@@ -29374,8 +29372,7 @@ evidence:
       records 38.66 route CPU seconds and 38.79 job wall seconds, the longest job 7.72 seconds. Each positive
       clears every wall by 1/200000000000000000000 and every pair by just under 1e-20. The 10 October
       review (docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md) reproduced the
-      replay, which T-131 and T-128 cite as E-evand-465-record-hunt-exact-feasibility. House integration
-      waits on jlevy/squares#403, and none rests on this certificate: at 132 T-141''s side is smaller,
+      replay, which T-131 and T-128 cite as E-evand-465-record-hunt-exact-feasibility. No case house rests on this certificate: at 132 T-141''s side is smaller,
       and at 155 Couzo''s equal certificate is the one T-128 adopts. The n155 side equals T-128''s n155
       side exactly, from Couzo''s
       issue451 certificate committed nine hours earlier, and the two certificates share 152 of 155 exact
@@ -29816,8 +29813,7 @@ evidence:
       corner checker and the third route. The maintained routes share one parse, half-angle
       conversion and the separating-axis method, and all three share Fraction arithmetic.
       The claim record compares issue 481 by printed displays that miss its exact sides by
-      up to 1.84 units in the last place, which changes no relation (RI-1). No
-      private-worker custody is on file (RI-5), and the reviewer and the producer share a
+      up to 1.84 units in the last place, which changes no relation (RI-1). Private-worker custody (RI-5) was closed on 11 October 2026 (packing/devtools/house-custody-2026-10-11.json), and the reviewer and the producer share a
       model family (RI-7). Finite feasibility only: no lower bound, optimum, local minimum,
       rigidity, novelty or human oversight.
     source_reviewed: '2026-10-10'
@@ -30015,8 +30011,7 @@ evidence:
       at the pin with the SHA-256 the packet pins, once on 2026-10-10. The kernel's
       controls are gross (RI-3). No maintained route is the producer's checker; the
       maintained routes share one parse, half-angle conversion and the separating-axis
-      method, and all three share Fraction arithmetic. No private-worker custody is on file
-      (RI-5), and the reviewer and the producer share a model family (RI-7). Finite
+      method, and all three share Fraction arithmetic. Private-worker custody (RI-5) was closed on 11 October 2026 (packing/devtools/house-custody-2026-10-11.json), and the reviewer and the producer share a model family (RI-7). Finite
       feasibility only: no lower bound, optimum, local minimum, rigidity, novelty or human
       oversight.
     source_reviewed: '2026-10-10'
@@ -30313,7 +30308,7 @@ evidence:
       maintained route is the producer's checker; the maintained routes share one parse,
       half-angle conversion and the separating-axis method, and all three share Fraction
       arithmetic. The source's checkers, exactsolve and its local-minimum and closed-form
-      statements were not run or decided, no private-worker custody is on file (RK-10), and the
+      statements were not run or decided, private-worker custody (RK-10) was closed on 11 October 2026 (packing/devtools/house-custody-2026-10-11.json), and the
       reviewer and the producer share a model family (RK-9). Finite feasibility only: no lower
       bound, optimum, local minimum, rigidity, novelty or human oversight.
     source_reviewed: '2026-10-10'
@@ -30413,8 +30408,7 @@ evidence:
       separating-axis method, and all three share Fraction arithmetic. The certificates at
       303, 338 and 340 are replayed in the receipt and were decided by the review on the
       third route as well; no entry cites them (RL-9). The claim record reads issue 481's
-      and issue 489's sides exactly from their packets (RL-2). No private-worker custody is
-      on file (RL-6), and the reviewer and the producer share a model family (RL-8). Finite
+      and issue 489's sides exactly from their packets (RL-2). Private-worker custody (RL-6) was closed on 11 October 2026 (packing/devtools/house-custody-2026-10-11.json), and the reviewer and the producer share a model family (RL-8). Finite
       feasibility only: no lower bound, optimum, local minimum, rigidity, novelty or human
       oversight.
     source_reviewed: '2026-10-10'
@@ -30515,7 +30509,7 @@ evidence:
       cites it (RL-3). The kernel's controls are gross (RL-4). No maintained route is the
       producer's checker (RL-5); the maintained routes share one parse, half-angle
       conversion and the separating-axis method, and all three share Fraction arithmetic.
-      No private-worker custody is on file (RL-6), and the reviewer and the producer share a
+      Private-worker custody (RL-6) was closed on 11 October 2026 (packing/devtools/house-custody-2026-10-11.json), and the reviewer and the producer share a
       model family (RL-8). Finite feasibility only: no lower bound, optimum, local minimum,
       rigidity, novelty or human oversight.
     source_reviewed: '2026-10-10'
@@ -30991,7 +30985,7 @@ evidence:
       each view is the same packing traversable without expansion are not decided here;
       measured pose by pose, every view differs from the certificate the entry credits,
       and at 123, 129 and 292 only an optimal assignment pairs the squares (RG-3, RG-4).
-      No private-worker custody is on file (RG-7), and the reviewer and the producer share
+      Private-worker custody (RG-7) was closed on 11 October 2026 (packing/devtools/house-custody-2026-10-11.json), and the reviewer and the producer share
       a model family (RG-6). Finite feasibility only: no lower bound, optimum, local
       minimum, same-packing connectivity, rigidity, novelty or human oversight.
     source_reviewed: '2026-10-11'
