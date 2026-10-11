@@ -2298,6 +2298,7 @@ html[data-site-atlas-size="large"]
    origin changes nothing then. */
 .kpress .site-atlas-cell {
   --site-atlas-drawing-ratio: 1;
+  isolation: isolate;
   position: relative;
   color: var(--kpress-doc-text);
   display: block;
@@ -2351,6 +2352,7 @@ html[data-site-atlas-scale="global"] .site-atlas-grid:where([data-atlas-grid]) .
   pointer-events: none;
   position: absolute;
   transform: none;
+  z-index: 0;
   width: calc(var(--site-atlas-tile) - 2 * var(--site-atlas-cell-padding));
 }
 .site-atlas-reference rect {
@@ -2379,6 +2381,8 @@ html[data-site-atlas-scale="row"]
     calc((1 - var(--site-atlas-frame-inset)) * 100%);
 }
 .site-atlas-cell :is(svg, img):not(.site-atlas-reference) {
+  position: relative;
+  z-index: 1;
   transform: scale(var(--site-atlas-drawing-ratio));
   aspect-ratio: 1;
   color: var(--kpress-doc-text);

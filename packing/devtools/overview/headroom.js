@@ -140,11 +140,9 @@
   // In-page navigation and restored history positions start with reachable navigation.
   window.addEventListener("hashchange", reset);
   window.addEventListener("popstate", reset);
-  window.addEventListener("pageshow", (event) => {
-    if (event.persisted) {
-      reset();
-    }
-  });
+  // Native initial-fragment scrolling can follow the first ResizeObserver delivery.
+  // Start from that arrival position rather than treating it as reader motion.
+  window.addEventListener("pageshow", reset);
   header.addEventListener("focusin", () => setHidden(false));
   menu?.addEventListener("beforetoggle", (event) => {
     if (event instanceof ToggleEvent && event.newState === "open") {

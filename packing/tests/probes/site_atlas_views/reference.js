@@ -37,7 +37,13 @@
           slot_width: drawing ? Number.parseFloat(getComputedStyle(drawing).width) : null,
           tile: { left: box.left, top: box.top, width: box.width, height: box.height },
           drawing: image
-            ? { left: image.left, top: image.top, width: image.width, height: image.height }
+            ? {
+                left: image.left,
+                top: image.top,
+                width: image.width,
+                height: image.height,
+                z_index: drawing ? getComputedStyle(drawing).zIndex : null,
+              }
             : null,
           reference:
             shown && outline && style
@@ -53,6 +59,7 @@
                   ink: style.stroke,
                   fill: style.fill,
                   pointer_events: getComputedStyle(reference).pointerEvents,
+                  z_index: getComputedStyle(reference).zIndex,
                 }
               : null,
         };

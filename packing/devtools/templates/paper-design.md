@@ -1761,6 +1761,7 @@ it.
 
 - **Web Atlas labels.** Tiles show only the case number, in ordinary ink.
   Case headings, table counts, and dates also keep ordinary ink.
+  Gray Row reference frames paint behind the black packing container.
   Bounds, algebraic degrees, and evidence icons belong in the case popover.
   The PDF graphics retain their full labels.
   Homepage and dedicated Atlas expansion controls share **Show More**/**Show Less**

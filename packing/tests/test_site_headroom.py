@@ -226,6 +226,51 @@ def test_initial_fragment_keeps_the_top_region_at_the_headers_document_position(
         page.close()
 
 
+def test_initial_fragment_after_header_measurement_still_starts_visible(
+    browser: Any, shells: dict[str, Path]
+) -> None:
+    """A parser-delayed target makes native fragment scrolling follow header setup."""
+    target = '<h2 id="header-target">Target</h2>'
+    document = shells["ordinary"].read_text().replace(target, "")
+    document = document.replace(
+        "</body>",
+        '<script src="parser-gate.js"></script>'
+        f'{target}<div style="height: 1600px"></div></body>',
+    )
+    page = browser.new_page(viewport={"width": 390, "height": 700}, reduced_motion="reduce")
+    pending: list[Any] = []
+
+    def serve(route: Any) -> None:
+        if route.request.url.endswith("/parser-gate.js"):
+            pending.append(route)
+        elif route.request.url.endswith("/initial.html"):
+            route.fulfill(status=200, content_type="text/html", body=document)
+        else:
+            route.fulfill(status=404, body="Unused fixture asset")
+
+    page.route("**/*", serve)
+    try:
+        page.goto("https://headroom.test/initial.html#header-target", wait_until="commit")
+        page.locator(".site-headroom").wait_for(state="attached")
+        assert page.locator("#header-target").count() == 0
+        assert len(pending) == 1
+        pending.pop().fulfill(status=200, content_type="text/javascript", body="")
+        page.wait_for_load_state("load")
+        initial = page.evaluate(STATE)
+        # Drain the real scroll/update frames without changing the native position.
+        page.evaluate(SCROLL, initial["scroll"])
+        initial = page.evaluate(STATE)
+        assert initial["scroll"] > initial["height"], initial
+        assert not initial["hidden"], initial
+        assert initial["targetTop"] >= initial["bottom"], initial
+        page.evaluate(SCROLL, initial["scroll"] + 10)
+        assert page.evaluate(STATE)["hidden"]
+        page.evaluate(SCROLL, initial["scroll"] + 7)
+        assert not page.evaluate(STATE)["hidden"]
+    finally:
+        page.close()
+
+
 def test_header_measurement_does_not_restyle_the_native_math_document(
     browser: Any, shells: dict[str, Path], tmp_path: Path
 ) -> None:

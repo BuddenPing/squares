@@ -2151,6 +2151,7 @@ def _assert_row_reference(report: Readings) -> None:
         assert drawing["width"] * span < reference["width"]
         assert reference["pointer_events"] == "none"
         assert reference["fill"] == "none"
+        assert int(reference["z_index"]) < int(drawing["z_index"])
         from devtools.overview_sections import atlas_frame_stroke_fraction  # noqa: PLC0415
 
         assert reference["stroke_width"] == pytest.approx(

@@ -721,8 +721,12 @@ def test_the_atlas_grid_arrives_with_static_sized_drawing_images(
     for content, expected in ((first, range(1, 101)), (rest, range(101, 325))):
         found = re.findall(r'data-atlas-n="(\d+)"', content)
         assert [int(n) for n in found] == list(expected)
-        assert content.count("<img ") == len(found)
-        assert content.count('width="400" height="400"') == len(found)
+        drawings = re.findall(r"<img\b[^>]*>", content)
+        assert len(drawings) == len(found)
+        assert all('width="400" height="400"' in drawing for drawing in drawings)
+        # Reference frames reserve the same SVG box but are not packing images.
+        references = re.findall(r'<svg\b[^>]*class="site-atlas-reference"[^>]*>', content)
+        assert len(references) == content.count(" data-atlas-row-smaller")
     assert "<template data-atlas-" not in atlas_page
     script = render_overview.ATLAS_GRID_SCRIPT.read_text(encoding="utf-8")
     assert "IntersectionObserver" not in script
@@ -1025,13 +1029,19 @@ def test_one_tile_a_case_is_drawn_from_its_regularized_view_where_it_has_one() -
     page = overview_sections.atlas_grid()
     regularized = overview_sections.atlas_regularized()
     tiles = _atlas_template(page, "first") + _atlas_template(page, "rest")
-    tile = re.compile(r'(<a class="site-atlas-cell" [^>]*>)(<img [^>]*>)(<span class=.*?)</a>')
+    tile = re.compile(
+        r'(<a class="site-atlas-cell" [^>]*>)(<img [^>]*>)'
+        r'(<svg\b[^>]*class="site-atlas-reference"[^>]*>.*?</svg>)?'
+        r'(<span class="site-atlas-n".*?</span>)</a>'
+    )
     drawn = {
-        int(re.findall(r'data-atlas-n="(\d+)"', a)[0]): (a, d, n)
-        for a, d, n in tile.findall(tiles)
+        int(re.findall(r'data-atlas-n="(\d+)"', a)[0]): (a, d, reference, n)
+        for a, d, reference, n in tile.findall(tiles)
     }
     assert list(drawn) == list(range(1, 325))
-    for n, (open_tag, drawing, number) in drawn.items():
+    for n, (open_tag, drawing, reference, number) in drawn.items():
+        assert bool(reference) == (" data-atlas-row-smaller" in open_tag), n
+        assert number == f'<span class="site-atlas-n">{n}</span>', n
         is_regularized = n in regularized
         assert drawing == frontier.drawing_img(n, regularized=is_regularized, size=400)
         assert "regularized" not in open_tag
@@ -1849,8 +1859,8 @@ def _legend(served: str) -> str:
 def test_a_table_of_results_has_a_legend_of_every_rungs_mark_under_it(
     page: str, results: str
 ) -> None:
-    """The complete table retains every titled rung and the new-result key; the
-    homepage links the account through actions instead of repeating its legend."""
+    """The complete table retains every titled rung, without an obsolete recency key;
+    the homepage links the account through actions instead of repeating its legend."""
     assert not hasattr(overview_sections, "rung_key")
     assert "site-rung-legend" not in page
     meanings = overview_sections.rung_meanings()
@@ -1872,7 +1882,8 @@ def test_a_table_of_results_has_a_legend_of_every_rungs_mark_under_it(
         assert f'title="{html.escape(meanings[label], quote=True)}"' in legend, label
     assert legend.startswith('<div class="site-rung-legend"')
     assert '<a href="#verification-ladders">What each rung means</a>' in legend
-    assert f'<span class="is-new-result">{overview_sections.NEW_RESULT}</span>' in legend
+    assert "is-new-result" not in legend
+    assert overview_sections.NEW_RESULT not in _seen(legend)
     assert "site-star" not in legend
     assert "site-ladders-key" not in page
 
@@ -4667,10 +4678,7 @@ def test_a_recent_result_keeps_neutral_dates_and_its_significance_marks(
             label = overview_sections.new_result_label(result, overview)
             if label:
                 assert label.startswith("New result: holds the verified lower bound for n = ")
-                assert (
-                    f'<span title="{html.escape(label)}">'
-                    f"{result.dated[1]}</span>"
-                ) in row
+                assert (f'<span title="{html.escape(label)}">{result.dated[1]}</span>') in row
             else:
                 assert 'class="is-new-result"' not in row
     assert overview_sections.new_result_label(by_id["T-060"], overview).endswith("n = 11")
