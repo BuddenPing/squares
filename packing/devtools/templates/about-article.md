@@ -2,8 +2,8 @@
 
 Work on the square packing problem has exploded in the summer of 2026 thanks to
 AI-powered research efforts.
-This Squares Project was begun by [Joshua Levy](https://x.com/ojoshe) in August 2026
-with some initial explorations that obtained
+[Joshua Levy](https://x.com/ojoshe) began the Squares Project in August 2026 with
+initial explorations that produced
 [new lower bounds](papers/n11-lower-bounds-explainer.html) for $n = 11, 17, 18, 19, 20$
 and other low values.
 

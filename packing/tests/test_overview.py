@@ -266,13 +266,13 @@ def test_the_page_fetches_only_the_shared_assets(page: str) -> None:
             render_overview.assert_fetches_only_assets("index.html", moved)
 
 
-def test_the_bar_leads_with_case_11_beside_the_name(page: str) -> None:
-    """The bar's home link carries case 11, the tab's icon, in the bar's own ink."""
+def test_the_bar_leads_with_the_full_and_compact_names(page: str) -> None:
+    """One home link carries both responsive labels with a stable accessible name."""
     link = page.split('<a class="site-name"', 1)[1].split("</a>", 1)[0]
-    assert '<svg class="site-logo" ' in link
-    assert 'aria-hidden="true"' in link.split("<svg", 1)[1].split(">", 1)[0]
-    assert '<span class="site-name-text">The Squares Project</span>' in link
-    assert render_overview.site_logo() in link
+    assert '<span class="site-name-text site-name-full">The Squares Project</span>' in link
+    assert '<span class="site-name-text site-name-short">Squares</span>' in link
+    assert 'aria-label="The Squares Project home"' in link
+    assert "<svg" not in link
 
 
 def test_the_site_icons_have_stable_same_origin_addresses(page: str) -> None:
@@ -2825,11 +2825,7 @@ def test_every_site_page_carries_the_same_bar(
     else:
         # A page in a directory of its own, the case records', reaches the root from it.
         page, root = rendered(name), "../" * name.count("/")
-    partial = (
-        render_overview.SITE_NAV.read_text(encoding="utf-8")
-        .replace("{{ROOT}}", "")
-        .replace("{{LOGO}}", render_overview.site_logo())
-    )
+    partial = render_overview.SITE_NAV.read_text(encoding="utf-8").replace("{{ROOT}}", "")
     assert _the_bar(page, root=root) == SITE_NAV_BLOCK.findall(partial)[0]
 
 
@@ -2888,21 +2884,18 @@ def test_the_bars_type_is_set_from_the_papers_scale() -> None:
 
 
 def test_the_bars_name_is_aligned_by_its_text() -> None:
-    """The bar aligns its items by their baselines, and the name's row, a mark and the
-    text, takes its baseline from the text, not from the mark that leads it, so the name
-    stands on the links' baseline at any size of either. Every item is set on one line,
+    """The bar aligns its labels by their text baselines. Every item is set on one line,
     a length, so the larger name is no taller than a link. `test_site_wide_blocks`
     measures the baselines in a browser."""
     css = render_overview.SITE_NAV_CSS.read_text(encoding="utf-8")
     inner = css[css.index("\n.site-nav-inner {") :]
     assert "  align-items: baseline;\n" in inner[: inner.index("}")]
-    assert ".site-nav .site-name-text {\n  align-self: baseline;\n}" in css
     assert "  --site-nav-line: calc(var(--site-nav-font-size) * 1.43);\n" in css
     links = css[css.index("\n.site-nav a {") :]
     assert "  line-height: var(--site-nav-line);\n" in links[: links.index("}")]
-    name = css[css.index("\n.site-nav .site-name {\n  align-items: center;") :]
+    name = css[css.index("\n.site-nav .site-name {") :]
     name = name[: name.index("}")]
-    assert "display: inline-flex;" in name
+    assert "white-space: nowrap;" in name
     for nudge in ("translate", "position: relative", "margin-block", "vertical-align"):
         assert nudge not in name, nudge
 
@@ -5046,26 +5039,23 @@ def test_every_table_stands_one_shared_space_from_the_text_around_it() -> None:
 
 
 def test_the_icon_frame_is_one_pixel_at_icon_size() -> None:
-    """The logo and the favicon draw case 11's container as one whole pixel at the size
-    each is shown, with its outer edge on the drawing's edge: (200 + w) / px = w."""
+    """The favicon draws case 11's container as one whole pixel at its display size,
+    with its outer edge on the drawing's edge: (200 + w) / px = w."""
     from devtools.render_frontier_page import packing_svg  # noqa: PLC0415
 
-    for px in (render_overview.SITE_LOGO_PX, render_overview.FAVICON_PX):
-        svg = packing_svg(11, units=200, frame_px=px)
-        view = re.search(r'viewBox="([^"]+)"', svg)
-        stroke = re.search(r'<rect [^>]*stroke-width="([\d.]+)"', svg)
-        assert view is not None
-        assert stroke is not None
-        box = [float(v) for v in view.group(1).split()]
-        width = float(stroke.group(1))
-        assert box[2] / px == pytest.approx(width, abs=1e-3)
-        assert box[0] == pytest.approx(-width / 2, abs=1e-3)
-        assert 'shape-rendering="crispEdges"' in svg
-        lines = re.search(r'<g stroke="[^"]+" stroke-width="([\d.]+)"', svg)
-        assert lines is not None
-        assert float(lines.group(1)) == pytest.approx(width / 2, abs=1e-3)
-    assert "block-size: 18px;" in render_overview.SITE_NAV_CSS.read_text(encoding="utf-8")
-    assert render_overview.SITE_LOGO_PX == 18
+    svg = packing_svg(11, units=200, frame_px=render_overview.FAVICON_PX)
+    view = re.search(r'viewBox="([^"]+)"', svg)
+    stroke = re.search(r'<rect [^>]*stroke-width="([\d.]+)"', svg)
+    assert view is not None
+    assert stroke is not None
+    box = [float(v) for v in view.group(1).split()]
+    width = float(stroke.group(1))
+    assert box[2] / render_overview.FAVICON_PX == pytest.approx(width, abs=1e-3)
+    assert box[0] == pytest.approx(-width / 2, abs=1e-3)
+    assert 'shape-rendering="crispEdges"' in svg
+    lines = re.search(r'<g stroke="[^"]+" stroke-width="([\d.]+)"', svg)
+    assert lines is not None
+    assert float(lines.group(1)) == pytest.approx(width / 2, abs=1e-3)
 
 
 def test_page_subtitles_share_one_size() -> None:
