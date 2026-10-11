@@ -844,15 +844,14 @@ def visual_summary(n: int, *, drawing: bool = True) -> str:
 def record_head(
     case: dict[str, Any],
     *,
-    recent: bool,
     first: int,
     last: int,
     corrects: Mapping[str, str] | None = None,
 ) -> str:
     """The record's head, its visual summary and the rest of its structured part, as
     one HTML block. Its links are written from the site's root, as every page's are,
-    and each record file writes them again from its own directory (`rebase_links`). A
-    recent result's count uses the shared recency ink. Where the bound corrects a
+    and each record file writes them again from its own directory (`rebase_links`). The
+    case count keeps ordinary ink. Where the bound corrects a
     published result, the status row names that work (`corrects_tag`)."""
     from devtools.overview_sections import (  # noqa: PLC0415
         SERIF_MATH,
@@ -869,8 +868,6 @@ def record_head(
     if case["reported_status"] != status:
         reported = f' <span class="site-credit">reported {_esc(case["reported_status"])}</span>'
     count = _math(f"n = {n}")
-    if recent:
-        count = f'<span class="is-new-result" title="Recent result">{count}</span>'
     correction = corrects_tag(corrects)
     previous = (
         f'<a href="{case_url(n - 1)}" rel="prev" data-case-step="{n - 1}">'
@@ -937,7 +934,6 @@ _RECORD_CLOSE = "<!-- /case-record -->"
 def record_markdown(
     case: dict[str, Any],
     *,
-    recent: bool,
     first: int,
     last: int,
     corrects: Mapping[str, str] | None = None,
@@ -948,7 +944,7 @@ def record_markdown(
     n = case["n"]
     heading, prose = _body(n)
     shown = prose_markdown(f"# {heading}\n") if heading else ""
-    head = record_head(case, recent=recent, first=first, last=last, corrects=corrects)
+    head = record_head(case, first=first, last=last, corrects=corrects)
     return (
         f"{_RECORD_OPEN.format(n=n)}\n"
         f'<section class="site-case" data-case="{n}" data-status="{_esc(case["status"])}">\n'
@@ -980,13 +976,11 @@ def cases_markdown(fill: Any) -> str:
     """The article: its prose from the template, the index and every record, each
     bracketed so it can be cut out (`_rendered`)."""
     cases = frontier.frontier_cases()
-    recent = frontier.recent_lower_bounds()
     corrected = frontier.corrected_lower_bounds()
     first, last = min(c["n"] for c in cases), max(c["n"] for c in cases)
     records = "\n\n".join(
         record_markdown(
             case,
-            recent=recent.get(case["n"], False),
             first=first,
             last=last,
             corrects=corrected.get(case["n"]),

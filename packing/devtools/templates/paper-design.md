@@ -1521,9 +1521,10 @@ it.
   the same displayed size across rows.
   Where the actual container is smaller, Row shows a thin gray outline of the grid-sized
   reference container.
-  The outline follows the normalized SVG container frame inside its image margin,
-  appears in both layouts, and disappears in Fixed and Global.
-  Global scales each drawing against the largest enclosing side among the cases
+  The outline reuses the packing renderer’s SVG frame and centered stroke, matching its
+  line width and bottom-left edges at each Row scale.
+  It sits inside the image margin, appears in both layouts, and disappears in Fixed and
+  Global. Global scales each drawing against the largest enclosing side among the cases
   currently shown, recalculating when the atlas expands or collapses.
   Row uses those logical groups in either view, independent of responsive wrapping.
   Size still controls tile slots; scale changes only drawing size, preserving count
@@ -1699,9 +1700,9 @@ it.
   The reference uses the muted-text gray for contrast; scaling anchors at the shared
   renderer’s frame inset, preserving its margins and original geometry (`think-m05q`).
   Fixed and Global scales retain their positioning.
-  Gray reference frames use a 1px stroke.
-  Web count labels use medium weight, up to 1rem, with bold perfect-square endpoints
-  (`think-ju2n`).
+  Gray reference frames use the same centered SVG stroke and displayed line width as the
+  black container (`think-y6lt`). Web count labels use medium weight, up to 1rem, with
+  bold perfect-square endpoints (`think-ju2n`).
 
 - **Page headings.** Every ordinary page H1 uses the shared centered sans-serif caps
   style and title spacing automatically.
@@ -1758,7 +1759,7 @@ it.
   which every atlas cell opened until 2026-10-03, when the case popover took its place
   (the owner, `think-7aar`, `think-necq`).
 
-- **Web Atlas labels.** Tiles show only the case number.
+- **Web Atlas labels.** Tiles show only the case number, in ordinary ink.
   Bounds, algebraic degrees, and evidence icons belong in the case popover.
   The PDF graphics retain their full labels.
   Homepage and dedicated Atlas expansion controls share **Show More**/**Show Less**

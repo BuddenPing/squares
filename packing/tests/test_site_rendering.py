@@ -361,7 +361,11 @@ def _prose_font_reading(page: Page) -> tuple[list[dict[str, float]], list[dict[s
         document = session.send("DOM.getDocument")
         selected = session.send(
             "DOM.querySelector",
-            {"nodeId": document["root"]["nodeId"], "selector": ".site-page > p"},
+            {
+                "nodeId": document["root"]["nodeId"],
+                # Measure prose, excluding a paragraph that names a file as code or math.
+                "selector": ".site-page > p:not(:has(code, .kpress-math))",
+            },
         )
         fonts = session.send("CSS.getPlatformFontsForNode", {"nodeId": selected["nodeId"]})
         return boxes, fonts["fonts"]

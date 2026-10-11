@@ -2797,6 +2797,37 @@ def atlas_frame_fractions() -> tuple[float, float]:
 
 
 @cache
+def atlas_frame_stroke_fraction() -> float:
+    """The enclosing outline's width as a fraction of its SVG viewport."""
+    from devtools.render_frontier_page import packing_svg  # noqa: PLC0415
+
+    svg = ET.fromstring(packing_svg(1, units=ATLAS_UNITS))
+    frame = svg.find("rect")
+    if frame is None:
+        raise ValueError("the compact atlas drawing has no enclosing frame")
+    return float(frame.attrib["stroke-width"]) / float(svg.attrib["viewBox"].split()[2])
+
+
+@cache
+def atlas_reference_svg() -> str:
+    """A Row reference with the same centered stroke as the packing renderer."""
+    from devtools.render_frontier_page import packing_svg  # noqa: PLC0415
+
+    svg = ET.fromstring(packing_svg(1, units=ATLAS_UNITS))
+    frame = svg.find("rect")
+    if frame is None:
+        raise ValueError("the compact atlas drawing has no enclosing frame")
+    for child in list(svg):
+        if child is not frame:
+            svg.remove(child)
+    svg.set("class", "site-atlas-reference")
+    svg.set("style", f"--site-atlas-reference-stroke:{frame.attrib['stroke-width']}px")
+    frame.set("fill", "none")
+    frame.set("stroke", "currentColor")
+    return ET.tostring(svg, encoding="unicode")
+
+
+@cache
 def atlas_frame_ink_inset() -> float:
     """The whitespace outside a compact drawing's enclosing outline, including stroke."""
     from devtools.render_frontier_page import packing_svg  # noqa: PLC0415
@@ -2823,7 +2854,7 @@ def _atlas_cell(
 
     The first retained grid packing in a square-bound row identifies its grid
     suffix for layout and accessibility. Derived drawing provenance stays in the atlas
-    index. Recent case numbers use the shared recency ink.
+    index. Case numbers keep ordinary ink.
     """
     from devtools import render_frontier_page as frontier  # noqa: PLC0415
     from devtools.render_case_pages import case_url  # noqa: PLC0415
@@ -2846,12 +2877,12 @@ def _atlas_cell(
     name = f"n = {n}, {_esc(status)}{meaning}"
     if recent:
         name += f", {NEW_RESULT}"
-    number_class = "site-atlas-n is-new-result" if recent else "site-atlas-n"
     return (
         f'<a class="site-atlas-cell" id="atlas-n-{n}" href="{case_url(n)}" data-case="{n}" '
         f'data-atlas-n="{n}" data-atlas-side="{side}"{square}{grid}{reference} '
         f'data-status="{_esc(status)}" aria-label="{name}"{position}>'
-        f'{drawing}<span class="{number_class}">{n}</span></a>'
+        f"{drawing}{atlas_reference_svg() if reference else ''}"
+        f'<span class="site-atlas-n">{n}</span></a>'
     )
 
 

@@ -404,7 +404,7 @@ def test_legacy_home_query_and_registered_fragment_reach_the_complete_filtered_t
             "age": ["180"],
         }
         with page.expect_navigation(wait_until="load"):
-            page.get_by_role("link", name="View all results", exact=True).click()
+            page.get_by_role("link", name="All Results", exact=True).click()
         landed = urlsplit(page.url)
         assert landed.path.endswith("/results.html")
         assert landed.query == destination.query
@@ -441,7 +441,7 @@ def test_unknown_home_fragments_and_unrelated_query_keys_do_not_change_the_subse
         assert found["hidden"] == []
         assert found["controls"] == 0
         destination = urlsplit(found["destination"])
-        assert destination.fragment == ""
+        assert destination.fragment == "all-results"
         assert parse_qs(destination.query) == {"current": ["false"]}
         assert urlsplit(page.url).path.endswith("/index.html"), "unknown anchors must stay put"
     finally:
@@ -552,7 +552,7 @@ def test_retired_reader_fragment_updates_the_ordinary_home_link_and_reaches_its_
         assert destination.fragment == fragment
         assert parse_qs(destination.query) == parse_qs(supported)
         with page.expect_navigation(wait_until="load"):
-            page.get_by_role("link", name="View all results", exact=True).click()
+            page.get_by_role("link", name="All Results", exact=True).click()
         assert_tombstone(page, row, fragment, supported)
     finally:
         page.close()

@@ -1920,7 +1920,7 @@ def _append_summary_card(
                 "height": format_svg_number(SUMMARY_PACKING_SIZE),
                 "fill": "none",
                 "stroke": PAPER_THEME.muted,
-                "stroke-width": format_svg_number(SUMMARY_CONTAINER_STROKE * 2),
+                "stroke-width": format_svg_number(SUMMARY_CONTAINER_STROKE * ratio),
             },
         )
     sub(

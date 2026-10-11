@@ -138,7 +138,7 @@ def test_a_frontier_row_opens_its_record_and_steps_to_the_next(
         )
         assert _shown_case(popover) == "12"
         assert row.get_attribute("aria-expanded") == "true"
-        assert popover.locator(".site-case-summary figure svg").count() == 1
+        assert popover.locator(".site-case-head > figure.site-case-figure > svg").count() == 1
         assert popover.locator(".site-case-summary .site-atlas-gap").count() == 1
         _case_actions(popover, served, 12)
         # The record's links were written from its own directory and are rebased here.
@@ -194,7 +194,7 @@ def test_an_atlas_cell_opens_the_same_record(browser: Any, served: str) -> None:
         popover = page.locator("#pop-case")
         popover.locator('[data-case-body] article.site-case[data-case="11"]').wait_for()
         assert popover.is_visible()
-        assert popover.locator(".site-case-summary figure svg").count() == 1
+        assert popover.locator(".site-case-head > figure.site-case-figure > svg").count() == 1
         page.keyboard.press("Escape")
         assert not popover.is_visible()
         sync_api.expect(cell).to_be_focused()

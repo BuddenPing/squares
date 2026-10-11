@@ -532,10 +532,11 @@ def test_the_homepage_film_is_a_native_player_started_by_the_reader(page: str) -
     assert '<figure class="site-film-frame site-homepage-film kpress-figure">' in section
     assert f'<source src="{render_overview.FILM_URL}" type="video/mp4' in section
     assert f'<a href="{render_overview.FILM_URL}"' in section
-    assert "site-card" not in section
+    assert len(_media_cards(page, "visuals")) == 1
     assert "data-autoplay" not in page
     assert re.search(r"<video\b[^>]*\sautoplay\b", page) is None
-    assert _asset_tag(render_overview.FILM_SCRIPT) not in page
+    assert page.count(_asset_tag(render_overview.FILM_SCRIPT)) == 1
+    # The shared script adds the play overlay, but only marked films autoplay.
     assert OVERVIEW_FILM_POSTER in COMPOSITE_ASSETS
     assert OVERVIEW_FILM_POSTER.is_file()
 
@@ -807,7 +808,8 @@ def test_the_atlas_is_rendered_as_small_triangle_under_its_view_tabs(
     ]
     tabs = overview_sections.atlas_view_tabs()
     assert tabs == (
-        '<div class="site-tabs site-atlas-views" role="tablist" aria-label="Atlas layout" '
+        '<div class="site-tabs site-chooser-small site-atlas-views" role="tablist" '
+        'aria-label="Atlas layout" '
         'data-atlas-views data-atlas-panel="atlas-cells">'
         '<button type="button" role="tab" id="atlas-view-grid" data-atlas-tab="grid" '
         'aria-selected="false" aria-controls="atlas-cells" tabindex="-1">Grid</button>'
@@ -816,7 +818,7 @@ def test_the_atlas_is_rendered_as_small_triangle_under_its_view_tabs(
         "</div>"
     )
     assert atlas_page.count(tabs) == 1
-    assert atlas_page.count('class="site-tabs site-atlas-views"') == 1
+    assert atlas_page.count('class="site-tabs site-chooser-small site-atlas-views"') == 1
     atlas = atlas_page.split('id="the-atlas-of-square-packings"', 1)[1].split("<h2", 1)[0]
     order = [
         atlas.index(mark)
@@ -960,7 +962,8 @@ def test_the_atlas_offers_three_sizes_under_tabs_beside_the_views(
     assert overview_sections.ATLAS_SIZE == "small"
     tabs = overview_sections.atlas_size_tabs()
     assert tabs == (
-        '<div class="site-tabs site-atlas-sizes" role="tablist" aria-label="Atlas tile size" '
+        '<div class="site-tabs site-chooser-small site-atlas-sizes" role="tablist" '
+        'aria-label="Atlas tile size" '
         "data-atlas-sizes>"
         '<button type="button" role="tab" id="atlas-size-small" data-atlas-size-tab="small" '
         'aria-selected="true" aria-controls="atlas-cells">Small</button>'
@@ -1081,7 +1084,8 @@ def test_overview_tiles_omit_stars_and_frontier_keeps_lower_recency(
     tiles = _atlas_template(page, "first") + _atlas_template(page, "rest")
     found = re.findall(
         r'<a class="site-atlas-cell" [^>]*data-atlas-n="(\d+)"[^>]*aria-label="([^"]+)"[^>]*>'
-        r'<img [^>]*><span class="site-atlas-n( is-new-result)?">(.*?)</span></a>',
+        r"<img [^>]*>(?:<svg\b.*?</svg>)?"
+        r'<span class="site-atlas-n( is-new-result)?">(.*?)</span></a>',
         tiles,
     )
     assert [int(n) for n, _, _, _ in found] == list(range(1, 325))
@@ -1096,7 +1100,7 @@ def test_overview_tiles_omit_stars_and_frontier_keeps_lower_recency(
         assert number == n, n
         assert "★" not in number, n
         assert (overview_sections.NEW_RESULT in name) == starred, n
-        assert bool(ink) == starred, n
+        assert not ink, n
     assert sum(recent.values()) > 0
     assert not lower_recent[1]
     assert not lower_recent[25]
@@ -1122,7 +1126,8 @@ def test_upper_only_recent_contributions_use_ink_without_recency_glyphs(
     tile = re.search(r'<a class="site-atlas-cell" [^>]*data-atlas-n="1"[^>]*>.*?</a>', first)
     assert tile is not None
     assert ', new result"' in tile.group()
-    assert 'class="site-atlas-n is-new-result"' in tile.group()
+    assert 'class="site-atlas-n"' in tile.group()
+    assert 'class="site-atlas-n is-new-result"' not in tile.group()
     assert "★" not in page
     facts = overview_sections.atlas_film_facts()
     assert facts[0]["star"] is True
@@ -1293,7 +1298,9 @@ def test_the_view_tabs_are_the_section_tabs_strip() -> None:
         ".site-atlas-grid .site-atlas-sizes,\n"
         ".site-atlas-grid .site-atlas-scales",
     )
-    assert "line-height: var(--site-nav-line);" in placed
+    assert "line-height: var(--site-chooser-small-leading);" in _rule(
+        nav, ".site-tabs.site-chooser-small"
+    )
     assert "margin: 0;" in placed
     hidden = (
         ".site-atlas-grid .site-atlas-views[hidden],\n"
@@ -1345,7 +1352,7 @@ def test_the_triangle_is_sized_and_timed_by_tokens_the_script_reads() -> None:
     assert "--site-atlas-tile: calc(" in shared
     compact_shared = " ".join(shared.split())
     assert (
-        "--site-atlas-number-size: clamp(0.5rem, calc(var(--site-atlas-tile) * 0.25), 0.8rem);"
+        "--site-atlas-number-size: clamp(0.65rem, calc(var(--site-atlas-tile) * 0.28), 1rem);"
         in compact_shared
     )
     assert (
@@ -2220,7 +2227,7 @@ def test_every_rung_chip_in_the_diagram_is_titled_with_the_rubrics_meaning(
     assert titled == meanings
     assert titled["V3"].startswith("Checkable: a published or audited proof")
     assert titled["C5"].startswith("Formal confirmation: replayed here, open")
-    table = results.split('<div class="site-ladders-frame', 1)[0]
+    table = results.split('id="all-results"', 1)[1]
     chips = re.findall(r'<span class="site-chip site-rung-fill"([^>]*)>([VC]\d)</span>', table)
     assert chips
     assert any(label == "V3" for _, label in chips)
@@ -2940,13 +2947,15 @@ def test_the_film_page_embeds_the_film_at_its_own_proportions(
 def test_the_film_starts_on_a_visit_to_its_page_and_nowhere_else(
     rendered: Callable[[str], str], served: Callable[[str], str]
 ) -> None:
-    """Visiting the Visualize page starts its film. The markup mutes it, which a browser
+    """Only the Visualize page marks its film for automatic playback. The markup mutes
+    it, which a browser
     requires of a film it starts unasked, keeps its controls and its inline playback, and
     marks it `data-autoplay`; `overview/film.js`, which only this page carries, starts it
     unless the reader asks for reduced motion or the page is framed in a popover
     (`tests/node/overview_film` runs it). The markup itself has no `autoplay`, so a
     reader the script leaves alone fetches nothing (`preload="none"`), and no `loop`.
-    No other page carries the script, and the explainer's film is not marked."""
+    The homepage shares the play-overlay script but never marks its film, and the
+    explainer's film is not marked."""
     page = rendered("visualize.html")
     videos = re.findall(r"<video [^>]*>", page)
     assert len(videos) == 1
@@ -2963,8 +2972,18 @@ def test_the_film_starts_on_a_visit_to_its_page_and_nowhere_else(
         if name != "visualize.html":
             # The page as it is served, with every program it links.
             other = served(name)
-            assert script not in other, name
-            assert "data-autoplay" not in other, name
+            if name == "index.html":
+                assert (
+                    site_renders.html(name).count(_asset_tag(render_overview.FILM_SCRIPT, name))
+                    == 1
+                )
+            else:
+                assert _asset_tag(render_overview.FILM_SCRIPT, name) not in site_renders.html(
+                    name
+                ), name
+            assert not re.search(r"<video\b[^>]*\sdata-autoplay\b", site_renders.html(name)), (
+                name
+            )
             assert not re.search(r"<video\b[^>]*\sautoplay\b", other), name
     explainer = re.findall(r"<video [^>]*>", EXPLAINER_ARTICLE.read_text(encoding="utf-8"))
     assert len(explainer) == 1
@@ -3358,7 +3377,13 @@ def test_every_result_shows_its_status_and_its_place_on_the_frontier(
     # names it as a confirmed result, and the words of a report are held on the same mark
     # with T-082 put back among the reports.
     t082 = f'<a href="{overview_sections.result_url("T-082")}">T-082</a>'
-    assert t082 in _row(results, "T-044")
+    newest = max(
+        by_id["T-044"].supersessions[0].by, key=lambda other: (replacement_dates[other], other)
+    )
+    assert f'<a href="{overview_sections.result_url(newest)}">{newest}</a>' in _row(
+        results, "T-044"
+    )
+    assert " and others" in _row(results, "T-044")
     assert f"{t082} (reported)" not in _row(results, "T-044")
     (mark,) = by_id["T-044"].supersessions
     shown = overview_sections.supersession_marks(by_id["T-044"])
@@ -3650,7 +3675,7 @@ def test_the_recent_table_contains_the_advertised_static_subset(
     assert 0 < len(listed) < len(overview.results)
     section = page.split('id="recent-results"', 1)[1].split('<h2 id="papers"', 1)[0]
     assert "data-filter=" not in section
-    assert 'href="results.html" data-all-results' in section
+    assert 'href="results.html#all-results" data-all-results' in section
     assert "site-recent-scope" not in section
     assert "last 180 days" not in _seen(section)
     assert "excluding superseded results" not in _seen(section)
@@ -3770,11 +3795,11 @@ def test_recent_results_has_no_lead_line(page: str) -> None:
 
 
 def _intro(page: str) -> str:
-    """The homepage's brief problem statement, before its project card."""
+    """The homepage's two-paragraph problem statement, before the shared atlas."""
     return (
         page.split('id="the-problem"', 1)[1]
         .split("</h1>", 1)[1]
-        .split('<div class="site-project-card"', 1)[0]
+        .split('<h2 id="the-atlas-of-square-packings"', 1)[0]
     )
 
 
@@ -3985,36 +4010,62 @@ SITE_STATEMENT = (
 
 
 def test_the_sites_own_statement_follows_readmes_introduction(about: str, results: str) -> None:
-    """About preserves the owner's words in four project paragraphs and two under
-    Contribute Your Results. Every named result keeps its source, attribution, and
-    verification claims, and every link stays attached to the phrase it explains."""
+    """About keeps three contributor bullets with linked names and independent credit.
+    Every named result keeps its source, attribution, and verification claims; the
+    contribution invitation retains the owner's two paragraphs."""
     own = about.split("</h1>", 1)[1].split('<h1 id="squares-project-documentation"', 1)[0]
     narrative, contribution = own.split(
         '<h1 id="contribute-your-results" class="site-title">Contribute Your Results!</h1>',
         1,
     )
-    assert len(re.findall(r"<p>", narrative)) == 4
+    assert len(re.findall(r"<p>", narrative)) == 3
     assert len(re.findall(r"<p>", contribution)) == 2
-    paragraphs = re.findall(r"<p>(.*?)</p>", own, re.DOTALL)
-    assert [_rendered_text(paragraph) for paragraph in paragraphs] == [
-        _markdown_text(text) for text in SITE_STATEMENT
-    ]
-    # An external link opens in a new tab, so its anchor carries more than its address.
-    founder = '<a href="https://x.com/ojoshe" target="_blank" rel="noopener noreferrer">'
-    for link in (
-        f"{founder}Joshua Levy</a>",
-        '<a href="papers/n11-lower-bounds-explainer.html">new lower bounds</a>',
-        '<a href="papers/n11-threshold-bound-review.html">certified lower bound of 31/8</a>',
-        '<a href="papers/n11-optimality-review.html">landmark new proof</a>',
-        f'<a href="{render_case_pages.case_url(11)}" data-case="11">case of 11 squares</a>',
-        '<a href="results.html#t-064">a whole infinite family</a>',
-        *(
-            f'<a href="{render_case_pages.case_url(n)}" data-case="{n}">{n}</a>'
-            for n in (21, 32, 45)
+    items = re.findall(r"<li>(.*?)</li>", narrative, re.DOTALL)
+    assert len(items) == 3
+    narrative_paragraphs = re.findall(r"<p>(.*?)</p>", narrative, re.DOTALL)
+    assert _rendered_text(narrative_paragraphs[0]) == _markdown_text(SITE_STATEMENT[0])
+    assert _rendered_text(narrative_paragraphs[-1]) == _markdown_text(SITE_STATEMENT[3])
+    assert [_rendered_text(item) for item in items] == [
+        "Kleddamag\u2019s certified lower bound of 31/8 for eleven squares.",
+        "Mannaseh Ahmed\u2019s proof of optimality for eleven squares.",
+        _markdown_text(
+            "Independently, Evan Daniel has proved the optimality of an infinite family, "
+            r"$s(k^2 - 3) = k$ for every $k \ge 6$, along with exact values at "
+            "21, 32 and 45 squares."
         ),
-        '<a href="results.html#verification-ladders">AI-assisted verification</a>',
+    ]
+    text = _rendered_text(narrative)
+    for claim in (
+        "Work on the square packing problem has exploded",
+        "Joshua Levy",
+        "Kleddamag",
+        "Mannaseh Ahmed",
+        "Evan Daniel",
+        "Independently",
+        "AI-assisted verification",
     ):
-        assert link in " ".join(paragraphs[:4]), link
+        assert claim in text, claim
+    founder = '<a href="https://x.com/ojoshe" target="_blank" rel="noopener noreferrer">'
+    for address, label in (
+        ("https://x.com/ojoshe", "Joshua Levy"),
+        ("https://x.com/kleddamag", "Kleddamag"),
+        ("https://x.com/ManassehA06", "Mannaseh Ahmed"),
+        ("https://x.com/evanbd", "Evan Daniel"),
+        ("papers/n11-lower-bounds-explainer.html", "new lower bounds"),
+        ("papers/n11-threshold-bound-review.html", "certified lower bound of 31/8"),
+        ("papers/n11-optimality-review.html", "proof of optimality"),
+        ("cases/11.html", "eleven squares"),
+        ("results.html#t-064", "an infinite family"),
+        ("results.html#verification-ladders", "AI-assisted verification"),
+        *((f"cases/{n}.html", str(n)) for n in (21, 32, 45)),
+    ):
+        assert re.search(
+            rf'<a href="{re.escape(address)}"[^>]*>{re.escape(label)}</a>', narrative
+        ), address
+    paragraphs = re.findall(r"<p>(.*?)</p>", contribution, re.DOTALL)
+    assert [_rendered_text(paragraph) for paragraph in paragraphs] == [
+        _markdown_text(text) for text in SITE_STATEMENT[-2:]
+    ]
     assert 'id="t-064"' in results
     # The register's own facts, as the sentences state them.
     by_id = {r.id: r for r in overview_data.load().results}
@@ -4041,9 +4092,9 @@ def test_the_sites_own_statement_follows_readmes_introduction(about: str, result
     assert render_overview.NEW_ISSUE_URL == "https://github.com/jlevy/squares/issues/new"
     assert re.search(
         rf'<a href="{re.escape(render_overview.NEW_ISSUE_URL)}"[^>]*>file an issue</a>',
-        paragraphs[4],
+        paragraphs[0],
     )
-    assert f"{founder}ojoshe</a>" in paragraphs[5]
+    assert f"{founder}ojoshe</a>" in paragraphs[1]
     # Formal proofs are invited, not claimed.
     assert "formally" not in " ".join(SITE_STATEMENT).lower()
 
@@ -4071,11 +4122,8 @@ def test_the_full_project_statement_lives_on_about_and_the_card_keeps_its_anchor
     following = about.split(heading, 1)[1].lstrip()
     assert following.startswith("<p>Work on the square packing problem")
     assert "Work on the square packing problem has exploded" not in page
-    assert page.count('id="the-squares-project"') == 1
-    assert (
-        'href="about.html"'
-        in page.split('id="the-squares-project"', 1)[1].split("</div>", 1)[0]
-    )
+    assert page.count('id="the-squares-project"') == 0
+    assert 'href="about.html"' in page
 
 
 def test_the_project_is_named_the_squares_project_wherever_it_is_named(
@@ -4244,8 +4292,10 @@ def test_the_papers_page_holds_one_large_card_for_each_paper(
         assert card_text(value) == paper.title, href
         # A formula in a description reads here as its TeX, so its opening words are held.
         assert card_text(note).startswith(paper.description[:32]), href
-    article = papers_article(page).split('<h2 id="pdfs"', 1)[0]
+    article = papers_article(page).split('id="pdfs"', 1)[0]
     for markup in POPOVER_MARKUP:
+        if markup == 'target="_blank"':
+            continue  # Contributor citations are external; paper cards stay same-tab.
         assert markup not in article, markup
     popover = render_overview.POPOVER_SCRIPT.read_text(encoding="utf-8")
     assert popover not in site_renders.served("papers.html")
@@ -4460,10 +4510,10 @@ def test_a_reported_bound_is_a_row_of_the_results_table_and_no_block_of_its_own(
             assert linked not in page
     # It stands where the statuses are defined, between their definitions and the rule
     # that the status is never set by hand.
-    prose = results.split("</h1>", 1)[1].split('<div class="site-table-tools', 1)[0]
+    prose = results.split('id="verification-ladders"', 1)[1].split('id="all-results"', 1)[0]
     text = _rendered_text(prose)
-    assert text.index("a defect found in it still open.") < text.index(opening)
-    assert text.index(opening) < text.index("The status follows the confirmation rung")
+    assert text.index("a known defect remains open") < text.index(opening)
+    assert text.index(opening) < text.index("Status follows the confirmation rung")
     assert opening not in _rendered_text(page)
 
 
@@ -4476,11 +4526,18 @@ def test_results_by_others_show_their_publication_date(
         if attribution:
             published = str(attribution["published"])
             assert result.dated == ("published", published)
-            assert f'{published} <span class="site-date-kind">published</span></td>' in row
+            date_text = _seen(
+                row.split('<td class="site-col-date"', 1)[1]
+                .split("</td>", 1)[0]
+                .split(">", 1)[1]
+            )
+            assert date_text == f"{published} published"
         else:
             assert result.dated[0] == "established"
     recent = overview_sections.recent_table(overview)
-    dates = re.findall(r'([\d-]+) <span class="site-date-kind">(\w+)</span></td>', recent)
+    dates = re.findall(
+        r'([\d-]+)(?:</span>)? <span class="site-date-kind">(\w+)</span></td>', recent
+    )
     assert dates
     assert [d for d, _ in dates] == sorted((d for d, _ in dates), reverse=True)
     assert dates == [(result.dated[1], result.dated[0]) for result in _recent_entries(overview)]
@@ -4723,7 +4780,9 @@ def test_the_page_title_style_is_upright() -> None:
     """KPress sets `h2` in italic; the title style, which the homepage's first `h2` takes
     through `site-title`, overrides it, so it reads as the frontier atlas's `h1` does."""
     css = render_overview.SITE_CSS.read_text(encoding="utf-8")
-    rule = css[css.index(".site-hero h1,\n.kpress .site-title {") :]
+    rule = css[
+        css.index(".site-hero h1,\n.kpress :where(.site-page) h1,\n.kpress .site-title {") :
+    ]
     assert "font-style: normal;" in rule[: rule.index("}")]
 
 
@@ -4732,7 +4791,9 @@ def test_card_headlines_take_the_page_titles_sans_face_and_weight() -> None:
     medium weight by the same two tokens the page title uses, which KPress's sans `h3`
     resolves to as well; no value of its own."""
     css = render_overview.SITE_CSS.read_text(encoding="utf-8")
-    title = css[css.index(".site-hero h1,\n.kpress .site-title {") :]
+    title = css[
+        css.index(".site-hero h1,\n.kpress :where(.site-page) h1,\n.kpress .site-title {") :
+    ]
     headline = css[
         css.index(".kpress .site-card .site-card-value,\n.site-popover .site-popover-value {") :
     ]
@@ -4848,9 +4909,9 @@ def test_a_page_title_stands_one_space_above_what_follows_it() -> None:
     assert css.count("--site-subtitle-space: 1.5rem;") == 1
     assert "  margin-block: var(--site-subtitle-space);\n" in css
     assert (
-        "@media screen {\n  .site-page h1 {\n"
-        "    margin-block-end: var(--site-subtitle-space);\n  }\n}\n"
-        ".kpress .site-hero:has(.subtitle) h1 {\n  margin-block-end: 0;\n}"
+        ".kpress :where(.site-page) h1,\n"
+        "  .kpress :is(h1, h2).site-title {\n"
+        "    margin-block: var(--site-title-space-above) var(--site-title-space-below);\n  }"
     ) in css
     paper = EXPLAINER_STYLE.read_text(encoding="utf-8")
     assert "  .cert-page .hero .credits {\n    margin-block-start: 2.25rem;\n  }\n}" in paper
@@ -5247,7 +5308,7 @@ def _rule(css: str, selector: str) -> str:
 def test_no_site_text_breaks_inside_a_word() -> None:
     """KPress's `overflow-wrap: break-word` cuts a run only when it is longer than a whole
     line. `anywhere` also lets a column shrink to one character, so the site puts it on
-    the two things that are long runs by nature, an exact decimal and a repository path,
+    long runs by nature: exact decimals, repository paths and displayed card URLs,
     and nowhere else; and no sheet breaks words with `word-break` or hyphenates them."""
     sheets = {
         sheet.name: re.sub(r"/\*.*?\*/", "", sheet.read_text(encoding="utf-8"), flags=re.DOTALL)
@@ -5266,6 +5327,7 @@ def test_no_site_text_breaks_inside_a_word() -> None:
     }
     assert anywhere == {
         ("site.css", ".site-case-decimal"),
+        ("site.css", ".kpress .site-card .site-card-url"),
         ("site-result.css", ".site-result-links code"),
     }
     for name, rules in sheets.items():
@@ -6045,7 +6107,7 @@ def _without_defaults(bar: str) -> str:
 def test_both_tables_of_results_carry_the_identical_filter_set(page: str, results: str) -> None:
     """The complete table exposes every filter while the static subset links to it."""
     assert "data-filter=" not in page.split('id="recent-results"', 1)[1].split("<h2", 1)[0]
-    assert 'href="results.html" data-all-results' in page
+    assert 'href="results.html#all-results" data-all-results' in page
     bar = _filter_bar(results)
     assert _controls(bar) == RESULT_FILTERS
     assert dict(_SELECTED.findall(bar)) == {
@@ -6785,6 +6847,9 @@ def test_row_reference_flags_compare_actual_sides_and_reuse_renderer_frame_bound
         float(frame.attrib["width"]) / extent,
     )
     assert overview_sections.atlas_frame_fractions() == expected
+    assert overview_sections.atlas_frame_stroke_fraction() == (
+        float(frame.attrib["stroke-width"]) / extent
+    )
     cell = overview_sections._atlas_cell  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
     for n in [5, 11, 18]:
         assert " data-atlas-row-smaller" in cell(n, "open")

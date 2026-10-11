@@ -176,13 +176,14 @@ def test_a_single_case_shows_the_films_panel_and_the_packing(
     assert '<span class="is-upper" style="left: ' in bar
     assert ">3.877</span>" in bar
     assert bar.count('class="site-atlas-gap-rule"') == 1  # exact: one rule, no lower
-    # The chained bound, as the film states it, with its star and badges.
+    # The chained bound and mathematical badges remain without a recency symbol.
     assert overview_data.math_html("s(11) ={}") in body
     assert (
         '<span class="is-upper is-exact-value">'
         f"{overview_data.math_html(fact['upper'])}</span>" in body
     )
-    assert '<span class="site-atlas-pop-star" aria-hidden="true">\u2605</span>' in body
+    assert "site-atlas-pop-star" not in body
+    assert "\u2605" not in body
     for _, _, label in fact["badges"]:
         assert f"</span>{label}</li>" in body
     for which in ("lower", "upper"):

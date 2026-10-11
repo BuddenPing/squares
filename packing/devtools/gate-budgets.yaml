@@ -1723,17 +1723,26 @@ tiers:
 
 - id: measure_verifier
   command: packing-validate --measure-verifier
-  # A new tier, so pending under think-th8p as `suite_d` is under think-t7k5: the ceiling
-  # applies from the first run, and the first complete pull-request cohort replaces the
-  # pending fields with its observed wall. 90 s is about 2x the slowest hosted reading of
-  # the one step it holds, 45.30 s inside a contended `checks` tier on run 37131940076,
-  # and the step runs alone here.
+  # The first hosted cohort of the expanded three-step tier fulfills think-th8p's
+  # pending measurement. Its 72.83 s geometric mean leaves 1.24x headroom under the
+  # existing 90 s ceiling; the ceiling is retained, not raised to the cohort's maximum.
   ceiling_seconds: 90.0
-  measured_seconds: null
-  measured_on: null
-  measured_where: null
-  pending_measurement: think-th8p
-  pending_until: '2026-10-10'
+  measured_seconds: 72.83
+  measured_on: '2026-10-11'
+  measured_where: >-
+    The geometric mean of ten completed hosted pull-request readings at the reference
+    shape (4 cpus, --jobs 1 --inner-jobs 1), all 3 of 107 steps, read on 2026-10-11 by
+    `python -m devtools.read_tier_walls --tier measure_verifier --job-id` over jobs
+    114323037673, 114324457250, 114325279634, 114327125512, 114329916203, 114330721746,
+    114331062332, 114334931017, 114336334006 and 114347133670: run 38088792292 attempt 2
+    59.12 s, 38090048925 73.08 s, 38090308796 59.92 s, 38090961202 87.66 s,
+    38091918802 71.80 s, 38092189271 74.36 s, 38092306701 72.40 s, 38093633427 73.55 s,
+    38094107625 90.06 s and 38097761292 72.30 s. The spread is 1.52x; every reading
+    falls inside the policy's point-record drift and stale bands. The separately read
+    run 38093246298 (job 114333808752) selected 3 of 110 steps and is excluded by the
+    tool's step-count grouping. These are tier walls, excluding job setup and cold
+    builds. The first observation replaces the expired pending fields; it does not
+    change the ceiling or the hosted enforcement policy (think-rpuj).
   reference: {jobs: 1, inner_jobs: 1, cpus: 4}
   argument: >-
     The clean-room measure verifier's gate (think-gpe0): cargo fmt, clippy, the crate's

@@ -151,7 +151,8 @@ def test_atlas_preview_reuses_canonical_split_rows_and_keeps_every_case() -> Non
         assert 'class="site-star"' not in tile
         recent = overview_sections.recent_contributions_by_case()[n].any
         assert (", new result" in tile) == recent
-        assert ('class="site-atlas-n is-new-result"' in tile) == recent
+        assert 'class="site-atlas-n"' in tile
+        assert 'class="site-atlas-n is-new-result"' not in tile
         assert "evidence-badge" not in tile
     assert preview.count('id="pop-case"') == 1
     assert preview.count('role="tab"') == complete.count('role="tab"') == 8

@@ -248,7 +248,9 @@ def test_the_atlas_grid_and_the_frontier_table_open_the_same_record(
         assert "regularized" not in tile[0], n
     assert grid.count(render_case_pages.case_popover()) == 1
     links = re.findall(
-        r'<a aria-label="n = \d+: open its case record" href="cases/(\d+)\.html" '
+        r'<a(?: class="is-new-result")? aria-label="n = \d+: '
+        r'(?:recent result; )?open its case record" '
+        r'href="cases/(\d+)\.html" '
         r'data-case="(\d+)"',
         frontier,
     )
@@ -313,7 +315,6 @@ def test_a_case_diagram_precedes_its_count_and_ordered_status_row() -> None:
     case["reported_status"] = "open" if case["status"] != "open" else "proved"
     markup = render_case_pages.record_head(
         case,
-        recent=True,
         first=1,
         last=324,
         corrects={"result": "T-018", "credit": "Published result"},
@@ -322,11 +323,11 @@ def test_a_case_diagram_precedes_its_count_and_ordered_status_row() -> None:
     figure = markup.index('class="site-case-figure"')
     title = markup.index('class="site-case-title" data-math-face="serif"')
     badges = markup.index('class="site-case-badges"')
-    recent = markup.index('class="is-new-result"')
     correction = markup.index('class="site-corrects"')
     reported = markup.index('class="site-credit"')
     status = markup.index('class="site-chip"')
-    assert eyebrow < figure < title < recent < badges < correction < reported < status
+    assert eyebrow < figure < title < badges < correction < reported < status
+    assert 'class="is-new-result" title="Recent result"' not in markup
     assert "site-star" not in markup
     assert markup.count('<figure class="site-case-figure"') == 1
     assert 'class="site-case-interval" data-math-face="serif"' in markup

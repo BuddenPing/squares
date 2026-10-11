@@ -1436,7 +1436,7 @@ def test_a_triangle_tile_keeps_its_ink_under_the_pointer(seen: Readings) -> None
 def test_see_all_results_and_the_expander_are_one_button(seen: Readings, name: str) -> None:
     """The link under the recent table and the button under the atlas are the site's one
     action under a table or grid: the same colours, type, padding, corners and height,
-    each centred in its row, with its icon from the one set after its label at the same
+    results links separated by the shared gap, with icons after their labels at the same
     size, the arrow right on the link and the double chevron on the button; at a desktop
     width and on a phone."""
     see_all, expander = seen[name]["see_all"], seen[name]["expander"]
@@ -1445,7 +1445,8 @@ def test_see_all_results_and_the_expander_are_one_button(seen: Readings, name: s
     for key in ("color", "background", "font_px", "weight", "family", "padding", "radius"):
         assert see_all[key] == expander[key], (name, key)
     assert see_all["box"]["height"] == pytest.approx(expander["box"]["height"], abs=0.5)
-    assert abs(see_all["centred"]) <= 1, (name, see_all["centred"])
+    assert see_all["row_gap"] is not None
+    assert float(see_all["row_gap"].removesuffix("px")) > 0
     assert abs(expander["centred"]) <= 1, (name, expander["centred"])
     assert "site-action" in see_all["classes"]
     assert "site-action" in expander["classes"]
@@ -1454,7 +1455,7 @@ def test_see_all_results_and_the_expander_are_one_button(seen: Readings, name: s
     assert see_all["icon"]["width"] == pytest.approx(expander["icon"]["width"], abs=0.5)
     assert see_all["icon"]["after_text"]
     assert expander["icon"]["after_text"]
-    assert see_all["label"] == "View all results"
+    assert see_all["label"] == "All Results"
 
 
 def test_the_expander_reads_show_more_then_show_less_with_the_chevron_turned(
@@ -2122,13 +2123,13 @@ def _assert_row_reference(report: Readings) -> None:
     inset, span = _reference_frame()
     assert report["frame"] == {"inset": inset, "span": span}
     tiles = {tile["n"]: tile for tile in report["tiles"]}
-    for n in (5, 11, 18):
+    for n in (5, 11, 18, 19):
         tile = tiles[n]
         reference = tile["reference"]
         assert tile["smaller"]
         assert reference is not None
         assert reference["width"] == pytest.approx(tile["slot_width"] * span, abs=0.03)
-        assert reference["height"] == reference["width"]
+        assert reference["height"] == pytest.approx(reference["width"], abs=0.001)
         assert reference["left"] - tile["tile"]["left"] == pytest.approx(
             tile["padding"] + tile["slot_width"] * inset, abs=0.03
         )
@@ -2149,10 +2150,12 @@ def _assert_row_reference(report: Readings) -> None:
         )
         assert drawing["width"] * span < reference["width"]
         assert reference["pointer_events"] == "none"
-        assert reference["fill"] == "rgba(0, 0, 0, 0)"
-        assert reference["box_sizing"] == "border-box"
-        assert reference["border_style"] == "solid"
-        assert 0 < reference["border_width"] <= 2
+        assert reference["fill"] == "none"
+        from devtools.overview_sections import atlas_frame_stroke_fraction  # noqa: PLC0415
+
+        assert reference["stroke_width"] == pytest.approx(
+            drawing["width"] * atlas_frame_stroke_fraction(), abs=0.001
+        )
     for n in (1, 2, 3, 4, 6, 9, 12, 16, 25, 36, 100):
         assert not tiles[n]["smaller"]
         assert tiles[n]["reference"] is None

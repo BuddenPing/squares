@@ -30,6 +30,7 @@ DOCUMENT_POPOVER = "pop-doc-conventions"
 TITLE = probe(Path(__file__).with_name("probes"), "site_result_popover/title")
 FOCUSED = probe(Path(__file__).with_name("probes"), "site_result_popover/focused")
 HEADINGS = probe(Path(__file__).with_name("probes"), "site_result_popover/headings")
+TITLE_STYLE = probe(Path(__file__).with_name("probes"), "site_result_popover/title_style")
 
 
 @pytest.fixture(scope="module")
@@ -96,7 +97,9 @@ def test_successful_article_fetch_replaces_outer_titles_and_names_the_dialog(
     try:
         page.goto(f"{served}/{PATH}", wait_until="load")
         direct = page.locator("article.site-result > h1")
-        direct_text = direct.inner_text()
+        direct_text = direct.text_content()
+        assert direct_text
+        assert direct.evaluate(TITLE_STYLE) == "uppercase"
         direct_math = direct.locator(".kpress-math-semantic mi").all_text_contents()
         assert direct_math == ["s", "n", "S", "n"]
         assert direct.get_attribute("id") == "t-115"
@@ -107,7 +110,9 @@ def test_successful_article_fetch_replaces_outer_titles_and_names_the_dialog(
         found = page.evaluate(TITLE, POPOVER)
         assert found["outerTitles"] == 0, found
         assert found["titleCount"] == 1, found
-        assert heading.inner_text() == direct_text
+        # Canonical title content survives the compact dialog's different casing.
+        assert heading.text_content() == direct_text
+        assert heading.evaluate(TITLE_STYLE) == "none"
         assert found["math"] == direct_math
         assert found["mathTransforms"]
         assert set(found["mathTransforms"]) == {"none"}

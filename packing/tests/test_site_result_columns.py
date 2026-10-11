@@ -337,14 +337,20 @@ def test_the_result_column_gives_way_to_its_floor(
 ) -> None:
     """The result column narrows to its 16.55rem floor where the window is short of
     room, well under the 411 pixels it was held to, as it is with every row showing at
-    1280 and below now the complete table has eight columns. The compact S4+ preview
-    may use the room its shorter rows leave; its floor still protects its formulas.
+    1024 and below now the complete table has eight columns. At 1280 the automatic
+    table layout may distribute spare track width beyond the floor. The compact S4+
+    preview may use the room its shorter rows leave; its floor protects its formulas.
     At 1440 the complete table has room to spare. Its widest piece of typeset math,
     the numerator of T-033's quotient, fits that floor with the cell's padding: so
     nothing the column holds is wider than it at any width."""
     for width in AT_FLOORS:
         result = _column(laid[name, width].table, "Result")
-        assert result["width"] == pytest.approx(RESULT_MIN, abs=0.5), width
+        if width in SCROLLS:
+            assert result["width"] == pytest.approx(RESULT_MIN, abs=0.5), width
+        else:
+            # A minimum is not an exact width while the table still fits its track.
+            assert RESULT_MIN <= result["width"] < RESULT_WAS, width
+        assert result["piece"]["width"] + PADDING <= result["width"], width
     assert RESULT_MIN < _column(laid[name, ROOMY].table, "Result")["width"] < RESULT_WAS
     # The compact S4+ preview has fewer competing long cells, so its result column
     # can use more of the track than the complete table's worst-case fixture.

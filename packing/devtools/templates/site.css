@@ -79,7 +79,7 @@ body {
    reads as a link, and light in dark mode (below): the colour of significance wherever
    the site shows one (`overview_sections.significance_mark`; the owner, 2026-10-03,
    `think-m3m4`), which `devtools.rung_scale` measures against the page in both themes.
-   The new-result star is the one warm mark. A popover's backdrop dims the page with a
+   Recent contributions use the warm result ink. A popover's backdrop dims the page with a
    scrim. A mix of the page's own colours keeps its mix in the rule that paints with it,
    since a token resolves where it is declared and the dark theme's page colours are set
    below the root; its ratio is the token: a plain chip's tint of the muted gray, and how
@@ -1826,11 +1826,8 @@ body {
 .site-frontier .site-col-recent {
   width: 0;
 }
-/* A recent lower bound that corrects a published result says which beside its star,
-   `corrects Nagamochi 2005`, in the support grey (the owner, 2026-10-02). In the
-   frontier table it stands under the star, a step below the cell's type and breaking
-   between its words and never inside a name, so the star's column keeps the width it
-   had: at the cell's own size "Nagamochi" alone widened it past the table's track. */
+/* Credits for corrected published bounds use the shared support gray and wrap
+   between words, preserving the table track. */
 .site-corrects {
   color: var(--site-support-color);
   font-family: var(--kpress-font-sans);
@@ -2342,31 +2339,32 @@ html:not([data-site-atlas-scale])
 html[data-site-atlas-scale="global"] .site-atlas-grid:where([data-atlas-grid]) .site-atlas-cell {
   --site-atlas-drawing-ratio: calc(var(--site-atlas-side) / var(--site-atlas-global-side));
 }
-/* A smaller Row drawing sits inside its logical grid-sized enclosing frame. The
-   inset and span come from packing_svg's actual viewBox/frame bounds, including the
-   margin around the normalized SVG. The reference has no fill or hit target. */
-html:not([data-site-atlas-scale])
-  .site-atlas-grid:where([data-atlas-grid]):where([data-atlas-scale="row"])
-  .site-atlas-cell[data-atlas-row-smaller]::before,
-html[data-site-atlas-scale="row"]
-  .site-atlas-grid:where([data-atlas-grid])
-  .site-atlas-cell[data-atlas-row-smaller]::before {
-  --site-atlas-reference-margin: calc(
-    (var(--site-atlas-tile) - 2 * var(--site-atlas-cell-padding)) *
-    var(--site-atlas-frame-inset)
-  );
+/* Row references reuse the renderer's SVG bounds and centered stroke, so their
+   bottom-left edges coincide with the packing container at every drawing scale. */
+.site-atlas-cell .site-atlas-reference {
   aspect-ratio: 1;
-  border: 1px solid var(--kpress-doc-muted);
-  box-sizing: border-box;
-  content: "";
-  inline-size: calc(
-    (var(--site-atlas-tile) - 2 * var(--site-atlas-cell-padding)) *
-    var(--site-atlas-frame-span)
-  );
-  inset-block-start: calc(var(--site-atlas-cell-padding) + var(--site-atlas-reference-margin));
-  inset-inline-start: calc(var(--site-atlas-cell-padding) + var(--site-atlas-reference-margin));
+  height: auto;
+  color: var(--kpress-doc-muted);
+  display: none;
+  inset-block-start: var(--site-atlas-cell-padding);
+  inset-inline-start: var(--site-atlas-cell-padding);
   pointer-events: none;
   position: absolute;
+  transform: none;
+  width: calc(var(--site-atlas-tile) - 2 * var(--site-atlas-cell-padding));
+}
+.site-atlas-reference rect {
+  stroke-width: calc(var(--site-atlas-reference-stroke) * var(--site-atlas-drawing-ratio));
+}
+html:not([data-site-atlas-scale])
+  .site-atlas-grid:where([data-atlas-grid]):where([data-atlas-scale="row"])
+  .site-atlas-cell[data-atlas-row-smaller]
+  .site-atlas-reference,
+html[data-site-atlas-scale="row"]
+  .site-atlas-grid:where([data-atlas-grid])
+  .site-atlas-cell[data-atlas-row-smaller]
+  .site-atlas-reference {
+  display: block;
 }
 /* Anchor Row scaling at the actual enclosing frame's bottom-left corner. */
 html:not([data-site-atlas-scale])
@@ -2380,7 +2378,7 @@ html[data-site-atlas-scale="row"]
   transform-origin: calc(var(--site-atlas-frame-inset) * 100%)
     calc((1 - var(--site-atlas-frame-inset)) * 100%);
 }
-.site-atlas-cell :is(svg, img) {
+.site-atlas-cell :is(svg, img):not(.site-atlas-reference) {
   transform: scale(var(--site-atlas-drawing-ratio));
   aspect-ratio: 1;
   color: var(--kpress-doc-text);

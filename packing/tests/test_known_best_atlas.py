@@ -1319,9 +1319,7 @@ def test_row_comparison_keeps_bottom_left_anchor_and_original_square_geometry() 
             assert {key: reference.attrib[key] for key in ("x", "y", "width", "height")} == {
                 key: fixed.attrib[key] for key in ("x", "y", "width", "height")
             }
-            assert Decimal(reference.attrib["stroke-width"]) > Decimal(
-                fixed.attrib["stroke-width"]
-            )
+            assert reference.attrib["stroke-width"] == scaled.attrib["stroke-width"]
         before = known_best_builder.summary_square_polygons(original)
         after = known_best_builder.summary_square_polygons(comparison)
         assert len(before) == len(after) == case.frontier.n
