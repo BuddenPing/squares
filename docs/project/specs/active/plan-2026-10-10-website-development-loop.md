@@ -4,7 +4,8 @@
 
 **Author:** Codex, with delegated source analysis and Astra review
 
-**Status:** Initial Repairs Merged; Follow-Up Cleanups in Progress
+**Status:** Initial Repairs Merged; Cleanup Implementation Complete; Verification
+Tracked in PR #496
 
 ## Overview
 
