@@ -1406,10 +1406,12 @@ def test_a_landed_unfinished_confirmation_fails_the_register_gate(
 
 #: The prices the 10 October packets and beads give the four imports of that day: the
 #: rung, the central estimate and the upper end in CPU-hours, and the bead that owns it.
+#: The upper ends of the three fine-net imports are the preparation lane's revised prices
+#: of 11 October, which the final review's F1-3 asked the record to carry.
 PACKET_PRICES = {
-    "T-132": ("C3", 4.3, None, "think-r333"),
-    "T-142": ("C3", 3.28, None, "think-i85v"),
-    "T-143": ("C3", 4.49, None, "think-i85v"),
+    "T-132": ("C3", 4.3, 5.5, "think-r333"),
+    "T-142": ("C3", 3.28, 4.5, "think-i85v"),
+    "T-143": ("C3", 4.49, 6.1, "think-i85v"),
     "T-144": ("C3", 11.24, 23, "think-nd7g"),
     "T-081": ("C3", 118, 435, "think-hwpr"),
 }
