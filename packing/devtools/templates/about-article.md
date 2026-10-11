@@ -19,6 +19,8 @@ Now several others have obtained results building on this work, including:
   [an infinite family](results.html#t-064), $s(k^2 - 3) = k$ for every $k \ge 6$, along
   with exact values at [21](cases/21.html), [32](cases/32.html), [45](cases/45.html) and
   [60](cases/60.html) squares.
+- As of 11 October 2026, over 140 other new results are tabulated on the
+  [Results page](results.html).
 
 This project now independently tabulates all known new results and does
 [AI-assisted verification](results.html#verification-ladders) of the proofs and

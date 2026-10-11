@@ -4047,7 +4047,7 @@ def test_the_invitation_to_report_results_is_one_text_on_about_and_the_homepage(
 
 
 def test_the_sites_own_statement_follows_readmes_introduction(about: str, results: str) -> None:
-    """About keeps three contributor bullets with linked names and independent credit.
+    """About keeps three credited highlights and a linked summary of other results.
     Every named result keeps its source, attribution, and verification claims; the
     contribution invitation retains the owner's two paragraphs."""
     own = about.split("</h1>", 1)[1].split('<h1 id="squares-project-documentation"', 1)[0]
@@ -4059,7 +4059,7 @@ def test_the_sites_own_statement_follows_readmes_introduction(about: str, result
     assert len(re.findall(r"<p>", narrative)) == 3
     assert len(re.findall(r"<p>", contribution)) == 2
     items = re.findall(r"<li>(.*?)</li>", narrative, re.DOTALL)
-    assert len(items) == 3
+    assert len(items) == 4
     narrative_paragraphs = re.findall(r"<p>(.*?)</p>", narrative, re.DOTALL)
     assert _rendered_text(narrative_paragraphs[0]) == _markdown_text(SITE_STATEMENT[0])
     assert _rendered_text(narrative_paragraphs[-1]) == _markdown_text(SITE_STATEMENT[3])
@@ -4071,6 +4071,7 @@ def test_the_sites_own_statement_follows_readmes_introduction(about: str, result
             r"$s(k^2 - 3) = k$ for every $k \ge 6$, along with exact values at "
             "21, 32, 45 and 60 squares."
         ),
+        "As of 11 October 2026, over 140 other new results are tabulated on the Results page.",
     ]
     text = _rendered_text(narrative)
     for claim in (
@@ -4095,6 +4096,7 @@ def test_the_sites_own_statement_follows_readmes_introduction(about: str, result
         ("cases/11.html", "eleven squares"),
         ("results.html#t-064", "an infinite family"),
         ("results.html#verification-ladders", "AI-assisted verification"),
+        ("results.html", "Results page"),
         *((f"cases/{n}.html", str(n)) for n in (21, 32, 45, 60)),
     ):
         assert re.search(
