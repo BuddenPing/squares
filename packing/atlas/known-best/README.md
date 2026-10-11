@@ -156,13 +156,14 @@ one bought.
 
 ## The regularized views
 
-[`regularized/`](regularized/index.json) holds exact derived views of 55 records,
-written by `python -m devtools.regularize_axis_components --update-atlas`, checked by
-digest with `--check-atlas` and re-derived with `--verify-atlas`. A view straightens
-near-axis squares and slides axis-aligned ones into exact contact at the certified side,
-verified twice over the rationals; it never replaces a witness, changes a side or
-promotes a tier. The selected website drawings use these verified views directly; the
-index and source records retain their provenance.
+[`regularized/`](regularized/index.json) holds exact derived views of 68 records (its
+index’s totals: 68 regularized, 182 unchanged, 74 refused), written by
+`python -m devtools.regularize_axis_components --update-atlas`, checked by digest with
+`--check-atlas` and re-derived with `--verify-atlas`. A view straightens near-axis
+squares and slides axis-aligned ones into exact contact at the certified side, verified
+twice over the rationals; it never replaces a witness, changes a side or promotes a
+tier. The selected website drawings use these verified views directly; the index and
+source records retain their provenance.
 Exploration
 [X-049](../../campaign/explorations/X-049-families-shading-and-the-large-n-limit.md#exact-regularization)
 explains why and what it changes.
@@ -173,8 +174,10 @@ explains why and what it changes.
 checkpoint
 ([development.md](../../../development.md#the-deep-gate-the-deferred-surface-before-the-merge)).
 
-**The 87 refused Kingbird-derived records stay refused.** Their 36-digit poses overlap
+**The 73 refused Kingbird-derived records stay refused.** Their 36-digit poses overlap
 by a rounding sliver at centre dilation 1, the only factor the layer uses.
+The index refuses one more record, $n = 51$, whose witness is exact over
+$\mathbb{Q}(\sqrt{2})$, because the layer has no field arithmetic.
 `promote_rational` would try wider ones: it scales every centre about the container’s
 centre by $1 + 10^{-p}$, $p = 31, 29, \ldots, 3$, and keeps the first exact packing
 within $10^{-9}$ of the printed side.
