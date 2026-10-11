@@ -3569,11 +3569,14 @@ sources:
   - resources/web/evand-regularized-2026-10-10/acquisition/claims.json
   evidence:
   - E-evand-regularized-certificate-report
+  - E-evand-regularized-exact-feasibility
   notes: >-
     The fifteen certificates of search/regularize/lists/certs/ below every value the record held
     are retained as their upstream gzip, with their 50-digit JSON, under the source's MIT licence;
-    each is admitted at the exact side its JSON prints as S_cert. T-146 records them at V0/C0. All 45
-    native jobs have full outcomes, and the third exact route agrees. The source claims no record:
+    each is admitted at the exact side its JSON prints as S_cert. T-146 records them at V3/C3, on
+    the 11 October review (docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md),
+    which accepted all fifteen for finite feasibility only. All 45 native jobs have full outcomes,
+    and the third exact route agrees. The source claims no record:
     each JSON calls its certificate a regularized display view at the same side and not a new bound.
     The other 314 certificates of the lists are pinned by the commit and not retained. No selected
     override or superseded claim is created while house adoption waits for jlevy/squares#403;

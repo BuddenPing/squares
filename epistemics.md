@@ -509,6 +509,20 @@ to credit it as carefully as this project’s own.
   method, solver or checker credits them in the same line
   (`wand125 after Tokoharu, Levy, Stromquist, Nagamochi, Burns, Massaccesi`). This
   project is credited as `after Levy` only where the source itself says so.
+- **A regularization leaves the packing with its finder.** A certificate that rearranges
+  a packing the record already credits, for display or after solving it to an exact
+  side, does not take the packing’s credit.
+  The finder keeps the packing through the register result that holds it, which the
+  regularized result names as `of` in its `regularizations`, one item a count.
+  The regularizer is credited with the regularization, and with the certificate where it
+  is theirs, and is typed there as `by`, with the method, the side and what the
+  regularization changed: `T-146` regularizes Ryan Xu’s, Mishapolk’s and SQUISH’s
+  packings and is credited `Daniel after Xu, Chaoweeraprasit, Mishapolk, Levy`. The
+  record never says in its own voice that a regularization is the same packing as the
+  one it was made from unless the item’s `identity.basis` is `measured`, a decision made
+  here. Otherwise it says whose claim the identity is, as `T-146` says that each view’s
+  identity rests on Evan Daniel’s sampled path test; measurements made here are recorded
+  beside the claim and decide nothing.
 - **This project’s results are credited the same way.** A result of this project is
   `Levy` in the register and on the site, by name as every other author is, and
   `Levy after …` where it rests directly on another’s proof, method or tool
@@ -585,7 +599,7 @@ gate checks it.
 | [`n-NNN.md`](packing/frontier/README.md) case records | Both lanes’ bounds for each case, with their evidence | [`STATUS.md`](packing/frontier/STATUS.md); the site’s [recent results](https://jlevy.github.io/squares/#recent-results) and [frontier survey](https://jlevy.github.io/squares/atlas.html#the-frontier-survey); the superseded mark in `RESULTS.md` and in the site’s [results table](https://jlevy.github.io/squares/results.html) |
 | [`evidence.yaml`](packing/frontier/evidence.yaml) | Who performed each check, by which method, within which limits, with which programs | [`INVENTORY.md`](packing/frontier/INVENTORY.md); each case record’s Verification Code section |
 | [`verifiers.yaml`](packing/frontier/verifiers.yaml) | Each verification program, external or first-party, with the versions that ran and where its source is retained | [`VERIFIERS.md`](packing/frontier/VERIFIERS.md); the Verification Code section of `RESULTS.md` |
-| [`results.yaml`](packing/frontier/results.yaml) | Each result’s kind, headline, claim, date, `V`/`C`/`S`, novelty, attribution and `activity` | [`RESULTS.md`](packing/frontier/RESULTS.md), grouped by lineage; the site’s [results table](https://jlevy.github.io/squares/results.html), each with the derived status |
+| [`results.yaml`](packing/frontier/results.yaml) | Each result’s kind, headline, claim, date, `V`/`C`/`S`, novelty, attribution, `activity` and `regularizations` | [`RESULTS.md`](packing/frontier/RESULTS.md), grouped by lineage; the site’s [results table](https://jlevy.github.io/squares/results.html), each with the derived status |
 | [`bibliography.yaml`](packing/resources/bibliography.yaml) | Each source’s date, credit and lineage | The atlas citation line; the holders, credit and relation in `RESULTS.md` and on the site’s [overview](https://jlevy.github.io/squares/#recent-results) |
 | [`source-coverage.yaml`](packing/frontier/source-coverage.yaml) | Which sources were read, and when | None |
 

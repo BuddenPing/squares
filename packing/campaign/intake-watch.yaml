@@ -457,8 +457,8 @@ repositories:
       exactsolve cannot certify that packing, and builds the site from the lists, with
       site/data/records2026.json crediting the 70 records newer than the catalogue to their
       first posting. Parsed exactly, the list certificates at 15 counts have a side strictly
-      below every upper bound the record holds there, each the exact optimum of the posted
-      packing: at 70 below T-137 by 1.07e-11; at 102, 123, 129, 146 and 295 below Ryan Xu's
+      below every upper bound the record holds there, each, the source says, the exact
+      optimum of the posted packing: at 70 below T-137 by 1.07e-11; at 102, 123, 129, 146 and 295 below Ryan Xu's
       #432 ceilings by 7.90e-11 to 7.82e-10; at 103 and 258 below T-138 by 6.94e-13 and
       4.21e-12; and at 153, 236, 263, 269, 292, 302 and 303 below T-136 by 2.21e-17 to
       5.05e-13. The author claims none as a record (REGULARIZE.md: the exact optimum of the

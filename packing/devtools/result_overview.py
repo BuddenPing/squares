@@ -689,7 +689,8 @@ def head(result: Result, cases: Sequence[int]) -> str:
     headline are the popover's own, above the body (`overview_sections.result_row`).
     In the details under the claim, the next rung is followed by the confirmations the
     entry lists as not yet run, each with its rung and cost
-    (`result_status.unfinished_sentence`)."""
+    (`result_status.unfinished_sentence`), and by the packings its certificate
+    regularizes, one sentence a count (`Result.regularizations`)."""
     from devtools.overview_sections import (  # noqa: PLC0415
         date_cell,
         novelty_labels,
@@ -721,6 +722,7 @@ def head(result: Result, cases: Sequence[int]) -> str:
                 for item in record.get("unfinished_confirmations") or []
             ),
         ),
+        ("Regularizations", "\n".join(result.regularizations)),
     ]
     rows = "".join(
         f"<dt>{label}</dt><dd>{prose_html(text)}</dd>" for label, text in more if text

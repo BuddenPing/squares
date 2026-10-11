@@ -31,6 +31,7 @@ from devtools.check_half_angle_area import (
     rotation,
     unit_basis,
 )
+from sqpack.yamlio import load_yaml
 
 TINY = Fraction(1, 10**30)
 #: Four axis-aligned unit squares filling the box of side 2: every pair touches.
@@ -664,13 +665,29 @@ def test_the_regularized_roster_is_its_fifteen_gzipped_certificates_read_alike()
         assert case.read == f"source/search/regularize/lists/certs/n-{case.n:03d}.cert.gz"
         assert case.side == admitted_sides[case.n].side
         assert len(case.placements) == case.n
-    # Each count is measured against the side it lies just below, 70 against both.
-    assert {n: route.CREDITED["regularized", n] for n in (70, 103, 258, 303)} == {
-        70: ("T-137", "T-125"),
+    # Each count is measured against the packing T-146's `regularizations` credit, read
+    # from the register: Ryan Xu's alone at 70, Mishapolk's refinements at 103 and 258.
+    assert {n: route.credited("regularized", n) for n in (70, 103, 258, 303)} == {
+        70: ("T-125",),
         103: ("T-138",),
         258: ("T-138",),
         303: ("T-136",),
     }
+
+
+def test_each_regularized_count_is_measured_against_the_packing_the_register_credits() -> None:
+    """The register's `regularizations` replace a hand-kept map: every count T-146 states
+    is credited to the result its item names, and that result has a reader here."""
+    register = load_yaml(route.RESULTS.read_text(encoding="utf-8"))
+    (t146,) = (result for result in register["results"] if result["id"] == "T-146")
+    named = {item["n"]: (item["of"],) for item in t146["regularizations"]}
+    assert sorted(named) == list(REGULARIZED)
+    assert {n: route.credited("regularized", n) for n in REGULARIZED} == named
+    assert {of for (of,) in named.values()} <= set(route.CREDITED_READERS)
+    # The fixed pairs of the earlier imports are not regularizations and stay as they were.
+    assert route.credited("trio126", 126) == ("T-125",)
+    assert route.credited("#470", 258) == ("T-115",)
+    assert route.credited("#476", 263) == ()
 
 
 def _gzip(text: str) -> bytes:

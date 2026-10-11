@@ -2,7 +2,7 @@ softschema:
   contract: packing.squares:FrontierEvidenceSet/v1
   schema: frontier-evidence.schema.yaml
   status: enforced
-last_reviewed: '2026-10-10'
+last_reviewed: '2026-10-11'
 evidence:
   - id: E-n017-kleddamag-rational-upper
     claim: upper-bound
@@ -30878,6 +30878,19 @@ evidence:
     certificate: packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/
     replay_status: not-attempted
     verifiers: []
+    external_review:
+      state: informally-verified
+      date: '2026-10-11'
+      reviewed_by: >-
+        AI agent (Claude), the stage 4 review lane of the 2026-10-10 intake pass under
+        think-8k76, prompted separately from the import lane
+      note: >-
+        docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md accepted
+        all fifteen certificates for finite feasibility only, with eleven non-blocking
+        findings (RG-1 to RG-11); the replay it reproduced is
+        E-evand-regularized-exact-feasibility. The source's exact-optimum and same-packing
+        statements are the source's, and at 123, 129 and 292 the arrangement's identity
+        rests on them alone.
     source_reviewed: '2026-10-10'
     limitations: >-
       This atom records the 15 exact rational certificates of the source's regularized record
@@ -30888,8 +30901,75 @@ evidence:
       both routes, 2155368 pair decisions; summed over the 45 jobs, the receipt records 413.8
       route CPU seconds and 566.29 job wall seconds, the longest job 39.16 seconds. Every
       positive clears every wall by at least 5.00e-21 and every pair by at least 9.99e-21.
-      Independent review and confirmation remain pending. The source's own checkers were not
-      run here. The two maintained routes, the sqpack rational witness verifier and the
-      independent rational corner checker, share certificate parsing, half-angle conversion,
-      Fraction arithmetic and the separating-axis method. No two independent methods, human
-      oversight or optimality is claimed.
+      The repository replay and its review are E-evand-regularized-exact-feasibility. The
+      source's own checkers were not run here. The two maintained routes, the sqpack
+      rational witness verifier and the independent rational corner checker, share
+      certificate parsing, half-angle conversion, Fraction arithmetic and the separating-axis
+      method. No two independent methods, human oversight or optimality is claimed.
+
+  - id: E-evand-regularized-exact-feasibility
+    claim: upper-bound
+    scope:
+      n_values: [70, 102, 103, 123, 129, 146, 153, 236, 258, 263, 269, 292, 295, 302, 303]
+    assurance: verified
+    method: exact-algebraic
+    performed_by: repository
+    relationship_to_generator: independent-implementation
+    origin: replayed-here
+    novelty: previously-published
+    source_key: '[Daniel regularized lists 2026-10-10]'
+    certificate: packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/
+    replay: >-
+      From packing/ with the project interpreter: python -m devtools.upper_bound_reports
+      evand-regularized-2026-10-10 check --replay decides all 45 retained jobs of the
+      fifteen-count roster again through both maintained routes, serially in one process,
+      and holds each to its retained row (all equal, 535.5 s wall on 2026-10-11 beside two
+      other runs, 476 s alone on 2026-10-10); check-claims rebuilds the frozen comparison
+      (equal, 3.0 s); python -m devtools.check_half_angle_area decide-imports --workers 2
+      --imports regularized decides the fifteen certificates by the third route with six
+      controls each, decompressing each retained gzip itself, and holds every side, pose,
+      margin, frozen claim and S_cert print to the record (no disagreement, 137.7 s on
+      2026-10-11; with --upstream evand-regularized-2026-10-10 DIR, DIR a checkout at the
+      pin, it holds each retained gzip to its upstream bytes, 30 checks).
+    replay_status: passed
+    verifiers:
+      - V-sqpack-verify
+      - V-check-rational-witness-independent
+      - V-evand-exact-certificates
+      - V-evand-arrangement-receipts
+      - V-upper-bound-reports
+      - V-check-half-angle-area
+    independence_record: docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md
+    external_review:
+      state: informally-verified
+      date: '2026-10-11'
+      reviewed_by: >-
+        AI agent (Claude), the stage 4 review lane of the 2026-10-10 intake pass under
+        think-8k76, prompted separately from the import lane
+      note: >-
+        Accepted for finite feasibility only. All 45 retained jobs reproduced on both
+        maintained routes, the frozen comparison rebuilt equal, and the third route agreed
+        with them at every side, pose, wall clearance, frozen claim and print; its 90
+        controls reached their required outcomes, as did 45 on a checker written for the
+        review. Every file of the manifest was fetched again at the pin and matched.
+        Findings RG-1 to RG-11, none blocking.
+    limitations: >-
+      All fifteen certificates pass both maintained routes and the third route; their 30
+      kernel controls are refused by both maintained routes and the 90 third-route controls
+      reach their required outcomes, four per certificate at exact contact or 10^-40 to
+      10^-30 past it. The receipt's 45 jobs hold 2155368 pair decisions, 413.8 route CPU
+      seconds and 566.29 job wall seconds; the longest job took 39.16 s. Every positive
+      clears its nearest wall by exactly 1/(2*10^20), no square touches a wall, and every
+      pair clears by a least Euclidean distance that rounds to 1.000000e-20. No route here
+      is the source's code: its checkers verify_cert.py and verify_cert2.py are pinned and
+      did not run, and neither did its solver, regularizer or path test. The maintained
+      routes share one parse, half-angle conversion and the separating-axis method, and all
+      three share Fraction arithmetic. The kernel's controls are gross (RG-5). The source's
+      statements that each side is the exact optimum of the store's best packing and that
+      each view is the same packing traversable without expansion are not decided here;
+      measured pose by pose, every view differs from the certificate the entry credits,
+      and at 123, 129 and 292 only an optimal assignment pairs the squares (RG-3, RG-4).
+      No private-worker custody is on file (RG-7), and the reviewer and the producer share
+      a model family (RG-6). Finite feasibility only: no lower bound, optimum, local
+      minimum, same-packing connectivity, rigidity, novelty or human oversight.
+    source_reviewed: '2026-10-11'

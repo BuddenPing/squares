@@ -108,3 +108,14 @@ deferrals:
       The 2026-10-10 review of issues 488 and 489 accepted the replay for finite
       feasibility, and the house adoption it recommends waits for jlevy/squares#403, which
       rewrites every case record; the coordinator recorded the deferral on think-fvz4.
+  - evidence: E-evand-regularized-exact-feasibility
+    results: [T-146]
+    bead: think-fvz4
+    blocked_on: jlevy/squares#403
+    recorded: '2026-10-11'
+    reason: >-
+      The 11 October review of Evan Daniel's regularized record lists accepted the replay
+      for finite feasibility, and the house adoption it recommends at all fifteen counts
+      waits for jlevy/squares#403, which rewrites every case record, and for private-worker
+      custody (RG-7); the records lane recorded the deferral at T-146's stage 4 exit
+      (think-8k76).

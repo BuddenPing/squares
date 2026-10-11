@@ -1103,7 +1103,9 @@ pinned at `ea1a2f23678a13bd1d252f9f4c95ca5dd2ffd2b7` and retained as their upstr
 under the source’s MIT licence; [packet](web/evand-regularized-2026-10-10/README.md).
 Both project exact routes accept all fifteen and refuse all 30 controls, and a third
 exact route agrees. The source calls each a display view at the same side and not a new
-bound; T-146 records the sides at V0/C0, pending independent review and adoption.
+bound; T-146 records the sides at V3/C3 on the review of 11 October, which accepted all
+fifteen for finite feasibility only, and as regularizations of the packings the record
+credits to their finders; each is pending adoption.
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.

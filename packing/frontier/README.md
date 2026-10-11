@@ -269,6 +269,16 @@ The process relies on these rules of the records:
   or a question is with the authors, the entry says so, dated and linked to the bead or
   issue that shows it, and the line is removed when the work lands or the answer
   arrives.
+- **`regularizations` says whose packing a regularized certificate is.** Where the
+  certificate an entry states rearranges a packing another registered result holds, the
+  entry lists each count: the result `of` whose packing it regularizes, whose finder
+  keeps the credit; the regularizer `by`, one of the entry’s source keys or `project`;
+  the regularizer’s `method`; the `side`, `same` or `solved` to an exact side first; the
+  `changes` the source reports; and what the `identity` rests on, the source’s claim or
+  a measurement here, with what was measured and where (`measured_in`).
+  [`devtools.check_results`](../devtools/check_results.py) holds each item to the
+  register, and the third exact route measures each certificate against the packing its
+  item names.
 - **Geometry is adapted once** to [`Witness/v2`](../witnesses/witness.schema.yaml), and
   then checked with `packing-witness inspect` or `check` under explicit arithmetic,
   precision, and tolerance.

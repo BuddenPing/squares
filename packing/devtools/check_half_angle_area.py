@@ -35,8 +35,9 @@ which no issue reports (``decide-imports --imports regularized``): the same text
 each retained as its upstream gzip and decompressed here. ``--upstream`` holds each
 retained gzip to its fetched bytes as stored, and each offered side to the ``S_cert``
 that the certificate's own JSON prints (`printed_json_side`). Each is measured pose by
-pose against the side it lies just below (`CREDITED`): Ryan Xu's, Eric Deleeuw's at 70,
-Mishapolk's at 103 and 258, and SQUISH's third request.
+pose against the packing the register credits it to, which T-146's `regularizations`
+name count by count (`regularized_credit`): Ryan Xu's, Mishapolk's refinements at 103
+and 258, and SQUISH's third request.
 
 The register's two maintained routes (``devtools.evand_arrangement_reports``) share one
 parse and one half-angle conversion (``devtools.evand_exact_certificates``) and both decide
@@ -672,21 +673,46 @@ WHOLE_ROSTER = frozenset({"#470"})
 #: The imported certificates measured against the certificates whose arrangements they
 #: would be credited to: n126_xu against Ryan Xu's (T-125), and #470 at the two counts
 #: where it is the smallest side, 103 against Ryan Xu's and 258 against SQUISH's (T-115).
-#: Each regularized certificate is measured against the side it lies just below: Ryan
-#: Xu's, Eric Deleeuw's refinement of it at 70 (T-137), Mishapolk's at 103 and 258
-#: (T-138) and SQUISH's third request (T-136).
+#: A certificate the register types as a regularization is measured against the packing
+#: its entry's `regularizations` name instead (`regularized_credit`).
 CREDITED: dict[tuple[str, int], tuple[str, ...]] = {
     ("trio126", 126): ("T-125",),
     ("#470", 103): ("T-125",),
     ("#470", 258): ("T-115",),
-    ("regularized", 70): ("T-137", "T-125"),
-    **{("regularized", n): ("T-125",) for n in (102, 123, 129, 146, 295)},
-    ("regularized", 103): ("T-138",),
-    ("regularized", 258): ("T-138",),
-    **{("regularized", n): ("T-136",) for n in (153, 236, 263, 269, 292, 302, 303)},
 }
 WEB = ROOT / "resources/web"
 REPO = ROOT.parent
+
+
+@functools.cache
+def regularized_credit() -> dict[tuple[str, int], tuple[str, ...]]:
+    """The packing each regularized import certificate is credited to, read from the register.
+
+    A register entry whose `artifacts` cite an import's packet and that carries
+    `regularizations` says, count by count, which result's packing (`of`) its certificate
+    regularizes; that result is what the certificate is measured against, so the third
+    route measures each view against the packing the record credits. For Evan Daniel's
+    display-regularized lists that is T-146: Ryan Xu's packings (T-125), Mishapolk's
+    refinements at 103 and 258 (T-138) and SQUISH's third request (T-136).
+    """
+    document = load_yaml(RESULTS.read_text(encoding="utf-8"))
+    credit: dict[tuple[str, int], tuple[str, ...]] = {}
+    for key, packet in ALL_IMPORTS.items():
+        prefix = f"{(WEB / packet).relative_to(REPO).as_posix()}/"
+        for result in document["results"]:
+            if not any(str(path).startswith(prefix) for path in result["artifacts"]):
+                continue
+            for item in result.get("regularizations") or ():
+                credit[key, int(item["n"])] = (str(item["of"]),)
+    return credit
+
+
+def credited(issue: str, n: int) -> tuple[str, ...]:
+    """The register entries an import's certificate at ``n`` is measured against: the
+    fixed pairs of `CREDITED`, or the packing the register's `regularizations` name."""
+    return CREDITED.get((issue, n)) or regularized_credit().get((issue, n), ())
+
+
 PLAN_CLAIM = re.compile(r"s\((\d+)\)\s*<=\s*(\d+(?:\.\d+|/\d+))")
 _DECIMALS = re.compile(r"[0-9]+\.([0-9]+)")
 _BLOB = re.compile(r"https://github\.com/[^/]+/[^/]+/blob/([0-9a-f]{40})/([^?#]+)")
@@ -1337,7 +1363,6 @@ CREDITED_READERS: dict[str, Callable[[int], tuple[Fraction, tuple[Placed, ...]]]
     "T-125": ryxu_packing,
     "T-115": squish_update_packing,
     "T-136": import_packing("#481"),
-    "T-137": import_packing("#483"),
     "T-138": import_packing("#470"),
 }
 
@@ -1420,7 +1445,7 @@ def credited_gaps(found: Sequence[Imported]) -> dict[str, dict[str, Any]]:
     """
     credit: dict[str, dict[str, Any]] = {}
     for case in found:
-        for house in CREDITED.get((case.issue, case.n), ()):
+        for house in credited(case.issue, case.n):
             other = CREDITED_READERS[house](case.n)
             try:
                 gap = arrangement_gap((case.side, case.placements), other)

@@ -2,7 +2,7 @@ softschema:
   contract: packing.squares:ResultsRegister/v1
   schema: results.schema.yaml
   status: enforced
-last_reviewed: '2026-10-10'
+last_reviewed: '2026-10-11'
 results:
   - id: T-001
     kind: lower-bound
@@ -12930,10 +12930,11 @@ results:
       code executed. Exact finite feasibility only.
 
       Evan Daniel's later regularized certificates (T-146) are smaller at 70, 102, 103, 123,
-      129, 146 and 295, by 7.90e-11 to 7.82e-10, and credit the packings there to ry-xu, at 70
-      as refined by Eric Deleeuw (T-137) and at 103 by Mishapolk (T-138). Pending that entry's
-      review, the house recommendation at those seven counts goes to it; the case records keep
-      these certificates until jlevy/squares#403 lands.
+      129, 146 and 295, by 7.90e-11 to 7.82e-10, and regularize the packings there, credited
+      to ry-xu, at 103 as refined by Mishapolk (T-138); at 70 Eric Deleeuw's refinement
+      (T-137) is named only as the smallest side the record held. The 11 October review of
+      T-146 accepted it, and the house recommendation at those seven counts goes to it; the
+      case records keep these certificates until jlevy/squares#403 lands.
     controls:
     - packing/resources/web/ry-xu-new-packings-2026-10-08/receipts/exact-certification.json.xz
     - packing/tests/test_ryxu_house_links.py
@@ -14171,9 +14172,10 @@ results:
       other thirteen, 131, 153, 154, 207, 232, 236, 259, 263, 269, 292, 302, 303 and 307,
       and stays verified, second to T-140, at those four.
 
-      Pending the review of T-146, which credits these packings at 153, 236, 263, 269, 292,
-      302 and 303, the house recommendation at those seven goes to T-146, so this entry is
-      recommended at 131, 154, 207, 232, 259 and 307. No house moves until
+      T-146 regularizes these packings at 153, 236, 263, 269, 292, 302 and 303 and credits
+      them to this entry; its 11 October review accepted it, and the house recommendation at
+      those seven goes to T-146, so this entry is recommended at 131, 154, 207, 232, 259 and
+      307. No house moves until
       jlevy/squares#403, which rewrites every case record, lands and private-worker custody
       is on file (RI-5).
 
@@ -14186,8 +14188,8 @@ results:
       AI agent. Separately, once jlevy/squares#403 lands and private-worker custody is on
       file (RI-5), adopt this entry as the house at 131, 154, 207, 232, 259 and 307, the six
       counts where it is the smallest, with each earlier house kept as history. At 153, 236,
-      263, 269, 292, 302 and 303 the house recommendation goes to T-146 pending its review,
-      and returns to this entry there should that review not support it.
+      263, 269, 292, 302 and 303 the house recommendation goes to T-146, whose 11 October
+      review accepted it.
     reviews:
       - path: docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
         kind: adversarial
@@ -14289,9 +14291,10 @@ results:
       14263000000014263/10^26, and no other pending report named that count when it was
       registered. The review recommended it as the house at 70, Ryan Xu's arrangement refined
       by Eric Deleeuw, with Ryan Xu's certificate kept as history. Evan Daniel's later
-      regularized certificate at 70 (T-146) is smaller, by 1.07e-11, and its poses lie nearer
-      Ryan Xu's than this refinement's; pending that entry's review, the house recommendation
-      at 70 goes to it. No house moves until jlevy/squares#403, which rewrites every case
+      regularized certificate at 70 (T-146) is smaller, by 1.07e-11, and regularizes Ryan
+      Xu's packing, its poses nearer Xu's than this refinement's; the 11 October review of
+      T-146 accepted it, and the house recommendation at 70 goes to it, crediting Ryan Xu,
+      with this refinement named as the smallest side the record held. No house moves until jlevy/squares#403, which rewrites every case
       record, lands and private-worker custody is on file (RI-5).
 
       The source's own checker was not run here. No two independent methods, human
@@ -14299,10 +14302,9 @@ results:
     next_rung: >-
       V4 and C4 need a second accepted adversarial review of this replay by a distinct
       reviewer and a retained human oversight record; the 10 October review is one, by an
-      AI agent. No house move is due while the review of T-146, whose side at 70 is smaller,
-      is pending: the house recommendation at 70 goes to it. Should that review not support
-      it, once jlevy/squares#403 lands and private-worker custody is on file (RI-5), adopt
-      this entry as the house at 70, Ryan Xu's T-125 certificate kept as history.
+      AI agent. No house move is due for this entry: the house recommendation at 70 goes to
+      T-146, whose side there is smaller and whose 11 October review accepted it, and this
+      entry stays verified, as the smallest side the record held before it.
     reviews:
       - path: docs/project/reviews/review-2026-10-10-upper-bound-imports-476-481-483-484.md
         kind: adversarial
@@ -14457,9 +14459,9 @@ results:
 
       The review recommended this entry as the house at 103 and 258 only, crediting Ryan Xu's
       and SQUISH's packings, each refined by Mishapolk. Evan Daniel's later regularized
-      certificates (T-146), which credit the same packings refined by Mishapolk, are smaller at
-      both; pending that entry's review, the house recommendation at 103 and 258 goes to it. No
-      house moves until jlevy/squares#403, which rewrites every case record, lands and
+      certificates (T-146), which regularize these refinements, are smaller at both; the 11
+      October review of T-146 accepted it, and the house recommendation at 103 and 258 goes to
+      it. No house moves until jlevy/squares#403, which rewrites every case record, lands and
       private-worker custody is on file (RK-10).
 
       No source program ran here. The two maintained routes, the sqpack rational witness
@@ -14469,11 +14471,9 @@ results:
     next_rung: >-
       V4 and C4 need a second accepted adversarial review of this replay by a distinct reviewer
       and a retained human oversight record; the 10 October review is one, by an AI agent.
-      No house move is due while the review of T-146, whose sides at 103 and 258 are smaller,
-      is pending: the house recommendation there goes to it. Should that review not support
-      it, once jlevy/squares#403 lands and private-worker custody is on file (RK-10), adopt
-      this entry as the house at 103 and 258 only, crediting Ryan Xu's and SQUISH's packings,
-      with each earlier house kept as history.
+      No house move is due for this entry: the house recommendation at 103 and 258 goes to
+      T-146, whose sides there are smaller and whose 11 October review accepted it, and this
+      entry stays verified and not selected.
     reviews:
       - path: docs/project/reviews/review-2026-10-10-upper-bound-imports-470-and-trio126.md
         kind: adversarial
@@ -15339,7 +15339,7 @@ results:
     headline: Exact rational certificates at fifteen counts from Evan Daniel's regularized record lists
     claim: >-
       Fifteen complete rational certificates from Evan Daniel's display-regularized record
-      lists, which no issue reports, state finite upper bounds at their exact sides: s(70)
+      lists, which no issue reports, prove finite upper bounds at their exact sides: s(70)
       <= 8.880960371555579594785501178639, s(102) <= 10.605828696431578360490734944053,
       s(103) <= 10.679232047361306442680936279997, s(123) <=
       11.591378145497698159550863183468, s(129) <= 11.872029849081179973752429831968,
@@ -15351,61 +15351,275 @@ results:
       17.704232790736030358056092972112, s(302) <= 17.872029849081179973812429831968 and
       s(303) <= 17.913065462738532305839753791206.
 
-      Each is below every value the record held or had pending at its count when read, by
-      2.21e-17 at 302 to 7.82e-10 at 295; the source claims no record. Complete native
-      feasibility outcomes are retained separately; the selected standing cases are
-      unchanged pending independent review and record review.
+      Each certificate gives a rational side and, for each unit square, a rational centre
+      and the tangent of its half-angle, in Evan Daniel's format, retained as the original
+      gzip the source publishes beside a JSON that prints the same side as S_cert. Each is
+      below every value the record held or had pending at its count when read, by 2.21e-17
+      at 302 to 7.82e-10 at 295.
 
-      REGULARIZE.md reports every one of the lists' 324 certificates VALID under the source's
-      two exact checkers, verify_cert.py and verify_cert2.py, and verified at 80 digits; the
-      checkers are byte-identical to the copies the issue-399 packet retains. It calls each
-      refreshed side the exact optimum of the store's best packing, and classes each of the
-      fifteen as level 2, same packing traversable without expansion, by a path test that
-      samples angle paths in 0.01 degree steps and that it says is not a continuous proof.
-      Those statements are the author's; no source program ran here.
+      All 45 retained jobs, the fifteen positives with their duplicate-square and
+      outside-container controls, were decided again here on 11 October 2026 by both
+      maintained exact routes and equal their retained rows, and a third exact route,
+      half-extent containment and exact intersection area, decided the fifteen with six
+      controls each, decompressing each retained gzip itself, and held each retained file
+      to its upstream bytes at the pin. No route here is the source's code, so the replay
+      is independently re-implemented. The 11 October review found no blocking defect.
 
-      Credit the packings to their finders, as the record holds them: Ryan Xu's (ry-xu,
-      https://github.com/ry-xu/square_packing, issue 432) at 70, 102, 123, 129, 146 and 295,
-      which at 70 Eric Deleeuw had refined (issue 483); Mishapolk's at 103 and 258 (issue
-      470), refinements of Ryan Xu's and of SQUISH's; and Nate Chaoweeraprasit's SQUISH
-      packings of issue 481 at 153, 236, 263, 269, 292, 302 and 303, composed from pieces of
-      Francisco Couzo's, Ryan Xu's and earlier packings. Evan Daniel
-      (https://github.com/evand/square-packing) refreshed each from his store, solved it to
-      the exact side stated, regularized it for display at that side and wrote the
-      certificate.
+      Each side is below the ceiling its case holds; the case records are unchanged until a
+      house is adopted, so each is pending adoption.
 
-      His lists name instead the finders of the arrangements the packings descend from: Joe
+      The source presents each certificate as a display view and not a new bound. Its
+      method log says every refreshed side is the exact optimum of the store's best packing
+      at its count, below the posted side only by rounding, and classes each of the fifteen
+      views as the same packing in a different arrangement, traversable without expansion,
+      by a path test that samples angle paths in 0.01 degree steps and that it says is not
+      a continuous proof; it reports all 324 certificates of the lists VALID under its two
+      exact checkers and verified at 80 digits. Those statements are the author's: no
+      source program ran here, and the solved point each view was made from is not
+      published.
+
+      Measured pose by pose, every view differs from the certificate the record credits; at
+      123, 129 and 292 nearest centres match under no symmetry and only an optimal
+      assignment pairs the squares, slid by up to 0.59, 0.83 and 0.59.
+
+      Credit the packings to their finders, as the source's provenance names them: Ryan
+      Xu's (ry-xu, https://github.com/ry-xu/square_packing, issue 432) at 70, 102, 103, 123,
+      129, 146 and 295, at 103 as Mishapolk refined it (issue 470, T-138); Nate
+      Chaoweeraprasit's SQUISH packing of issue 401 at 258, as Mishapolk refined it; and his
+      SQUISH packings of issue 481 (T-136) at 153, 236, 263, 269, 292, 302 and 303, composed
+      from pieces of Francisco Couzo's, Ryan Xu's and earlier packings. At 70 Eric
+      Deleeuw's refinement of Ryan Xu's packing in place (issue 483, T-137) was the smallest
+      side the record held.
+
+      Evan Daniel (https://github.com/evand/square-packing) refreshed each packing from his
+      store, solved it to the side he reports as its exact optimum, regularized it for
+      display at that side, at 70, 129, 153, 236, 263, 269 and 292 also merging determined
+      rotation groups by up to 2.96 degrees, and wrote the certificate.
+
+      His lists name the finders of the arrangements the packings descend from: Joe
       DeVincentis at 70, Francisco Couzo at 102, 103, 123, 236, 263, 269, 292, 302 and 303,
       David Ellsworth at 129 and 153 and David W. Cantrell at 146, and no one at 258 and
       295. The source claims no record, and its credits say the repository's work was
       produced by Claude (Anthropic) under human direction.
     scope:
       n_values: [70, 102, 103, 123, 129, 146, 153, 236, 258, 263, 269, 292, 295, 302, 303]
-    verification: V0
-    confirmation: C0
+    verification: V3
+    confirmation: C3
     significance:
       score: 2
       rationale: >-
         Smaller finite construction sides at fifteen counts from 70 to 303, 2.21e-17 to
-        7.82e-10 below the least side the record held or had pending at each (5.36e-12 to
-        9.28e-03 below the case ceilings): the exact optima of packings the record already
-        credits, a citable detail of each case that moves no theorem, S2 as T-098 is; no
-        lower bound or optimum.
-      scored: '2026-10-10'
-      by: think-8k76 Evan Daniel import (draft)
+        7.82e-10 below the least side the record held or had pending at each and 5.36e-12
+        to 9.28e-03 below the case ceilings, where the larger gaps are improvements SQUISH's
+        issue 481 (T-136) already made: display-regularized arrangements at the sides the
+        source reports as the exact optima of packings the record already credits, a
+        citable detail of each case that moves no theorem, S2 as T-098 is; no lower bound,
+        optimum or priority.
+      scored: '2026-10-11'
+      by: the 11 October review (docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md)
     novelty: previously-published
     attribution:
       source_keys: ['[Daniel regularized lists 2026-10-10]']
       published: '2026-10-10'
-    activity:
-      state: in-analysis
-      what: >-
-        The stage 4 review of the retained replay, the third route's reading and the credit
-        each certificate would take, run separately from the import lane.
-      since: '2026-10-10'
-      link: think-8k76
+    regularizations:
+      - n: 70
+        of: T-125
+        by: '[Daniel regularized lists 2026-10-10]'
+        method: fewest
+        side: solved
+        changes: {merged_rotation_groups_deg: 0.93, straightened: 0, re_angled: 3}
+        identity:
+          basis: source-claim
+          measured_in: docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md
+          one_to_one: true
+          moved: 10
+          max_move: 0.222
+          max_turn_deg: 22.5
+      - n: 102
+        of: T-125
+        by: '[Daniel regularized lists 2026-10-10]'
+        method: conservative
+        side: solved
+        changes: {merged_rotation_groups_deg: 0, straightened: 0, re_angled: 0}
+        identity:
+          basis: source-claim
+          measured_in: docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md
+          one_to_one: true
+          moved: 18
+          max_move: 0.169
+          max_turn_deg: 0.433
+      - n: 103
+        of: T-138
+        by: '[Daniel regularized lists 2026-10-10]'
+        method: conservative
+        side: solved
+        changes: {merged_rotation_groups_deg: 0, straightened: 0, re_angled: 0}
+        identity:
+          basis: source-claim
+          measured_in: docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md
+          one_to_one: true
+          moved: 15
+          max_move: 0.074
+          max_turn_deg: 0.411
+      - n: 123
+        of: T-125
+        by: '[Daniel regularized lists 2026-10-10]'
+        method: conservative
+        side: solved
+        changes: {merged_rotation_groups_deg: 0, straightened: 0, re_angled: 0}
+        identity:
+          basis: source-claim
+          measured_in: docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md
+          one_to_one: false
+          moved: 45
+          max_move: 0.591
+          max_turn_deg: 0
+      - n: 129
+        of: T-125
+        by: '[Daniel regularized lists 2026-10-10]'
+        method: fewest
+        side: solved
+        changes: {merged_rotation_groups_deg: 2.96, straightened: 16, re_angled: 5}
+        identity:
+          basis: source-claim
+          measured_in: docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md
+          one_to_one: false
+          moved: 43
+          max_move: 0.834
+          max_turn_deg: 39.4
+      - n: 146
+        of: T-125
+        by: '[Daniel regularized lists 2026-10-10]'
+        method: conservative
+        side: solved
+        changes: {merged_rotation_groups_deg: 0, straightened: 0, re_angled: 0}
+        identity:
+          basis: source-claim
+          measured_in: docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md
+          one_to_one: true
+          moved: 25
+          max_move: 0.124
+          max_turn_deg: 0
+      - n: 153
+        of: T-136
+        by: '[Daniel regularized lists 2026-10-10]'
+        method: fewest
+        side: solved
+        changes: {merged_rotation_groups_deg: 1.81, straightened: 0, re_angled: 8}
+        identity:
+          basis: source-claim
+          measured_in: docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md
+          one_to_one: true
+          moved: 80
+          max_move: 0.065
+          max_turn_deg: 2.43
+      - n: 236
+        of: T-136
+        by: '[Daniel regularized lists 2026-10-10]'
+        method: fewest
+        side: solved
+        changes: {merged_rotation_groups_deg: 0.67, straightened: 0, re_angled: 5}
+        identity:
+          basis: source-claim
+          measured_in: docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md
+          one_to_one: true
+          moved: 53
+          max_move: 0.068
+          max_turn_deg: 0.705
+      - n: 258
+        of: T-138
+        by: '[Daniel regularized lists 2026-10-10]'
+        method: conservative
+        side: solved
+        changes: {merged_rotation_groups_deg: 0, straightened: 0, re_angled: 0}
+        identity:
+          basis: source-claim
+          measured_in: docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md
+          one_to_one: true
+          moved: 48
+          max_move: 0.496
+          max_turn_deg: 1.13
+      - n: 263
+        of: T-136
+        by: '[Daniel regularized lists 2026-10-10]'
+        method: fewest
+        side: solved
+        changes: {merged_rotation_groups_deg: 1.06, straightened: 14, re_angled: 18}
+        identity:
+          basis: source-claim
+          measured_in: docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md
+          one_to_one: true
+          moved: 132
+          max_move: 0.049
+          max_turn_deg: 1.22
+      - n: 269
+        of: T-136
+        by: '[Daniel regularized lists 2026-10-10]'
+        method: fewest
+        side: solved
+        changes: {merged_rotation_groups_deg: 0.12, straightened: 4, re_angled: 11}
+        identity:
+          basis: source-claim
+          measured_in: docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md
+          one_to_one: true
+          moved: 54
+          max_move: 0.088
+          max_turn_deg: 1.16
+      - n: 292
+        of: T-136
+        by: '[Daniel regularized lists 2026-10-10]'
+        method: fewest
+        side: solved
+        changes: {merged_rotation_groups_deg: 0.03, straightened: 0, re_angled: 9}
+        identity:
+          basis: source-claim
+          measured_in: docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md
+          one_to_one: false
+          moved: 239
+          max_move: 0.589
+          max_turn_deg: 4.6
+      - n: 295
+        of: T-125
+        by: '[Daniel regularized lists 2026-10-10]'
+        method: conservative
+        side: solved
+        changes: {merged_rotation_groups_deg: 0, straightened: 0, re_angled: 0}
+        identity:
+          basis: source-claim
+          measured_in: docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md
+          one_to_one: true
+          moved: 122
+          max_move: 0.138
+          max_turn_deg: 0
+      - n: 302
+        of: T-136
+        by: '[Daniel regularized lists 2026-10-10]'
+        method: conservative
+        side: solved
+        changes: {merged_rotation_groups_deg: 0, straightened: 56, re_angled: 26}
+        identity:
+          basis: source-claim
+          measured_in: docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md
+          one_to_one: true
+          moved: 198
+          max_move: 0.102
+          max_turn_deg: 2.62
+      - n: 303
+        of: T-136
+        by: '[Daniel regularized lists 2026-10-10]'
+        method: conservative
+        side: solved
+        changes: {merged_rotation_groups_deg: 0, straightened: 1, re_angled: 0}
+        identity:
+          basis: source-claim
+          measured_in: docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md
+          one_to_one: true
+          moved: 19
+          max_move: 0.135
+          max_turn_deg: 1.21
     evidence:
       - E-evand-regularized-certificate-report
+      - E-evand-regularized-exact-feasibility
     artifacts:
       - packing/resources/web/evand-regularized-2026-10-10/README.md
       - packing/resources/web/evand-regularized-2026-10-10/acquisition/claims.json
@@ -15427,6 +15641,7 @@ results:
       - packing/resources/web/evand-regularized-2026-10-10/receipts/exact-certification.json.xz
       - packing/devtools/upper_bound_reports.py
       - packing/devtools/check_half_angle_area.py
+      - docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md
     controls:
       - packing/tests/test_upper_bound_reports.py
       - packing/tests/test_upper_bound_reports_regularized.py
@@ -15446,6 +15661,12 @@ results:
       distance between squares of 1.00e-20 at every count. Run with --upstream at the pin,
       it holds each retained gzip to its upstream bytes and each offered side to the S_cert
       its JSON prints: 30 checks, no disagreement.
+
+      V3 and C3 rest on the 11 October review
+      (docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md) and the
+      replay it reproduced (E-evand-regularized-exact-feasibility). Its findings here are
+      non-blocking: the kernel's controls are gross (RG-5), the reviewer and the producer
+      share a model family (RG-6), and no private-worker custody is on file (RG-7).
 
       At n = 70 the certificate is below the case's ceiling (Ryan Xu, T-125) by 1.53e-10 and
       T-137 (issue 483, Eric Deleeuw) by 1.07e-11. At n = 102, 123, 129, 146 and 295 it is
@@ -15469,13 +15690,40 @@ results:
       by 4.48e-16 and issue 488's uncited side by 4.30e-03. At every count it is the
       smallest.
 
-      Measured pose by pose against the certificate credited (arrangement_gap), each
-      regularized view differs from it, as display regularization is meant to: under the
-      box symmetry the lists' orientation column names, 10 to 238 squares lie more than 1e-6
-      from their counterparts, and at 123, 129 and 292 nearest centres match one to one under
-      no symmetry. At 70 the view lies nearer Ryan Xu's poses than Eric Deleeuw's refinement
-      of them, 60 squares within 1e-9 of Xu's and 50 of Deleeuw's. That each view is the same
-      packing is the source's sampled path test, not verified here.
+      Measured pose by pose against the certificate each view is credited to, by nearest
+      centres under the box's eight symmetries and by optimal assignment, every view
+      differs from it, as display regularization is meant to; the best symmetry is the
+      orientation the lists state at every count. Below, for each count, are the squares
+      within 1e-9, those moved beyond 1e-3 and beyond 1e-1, the largest move, and the
+      squares turned beyond 1e-6 with the largest turn.
+
+      At 70 (against T-125) 60 of 70, 10 and 3, 0.222, 6 up to 22.5 degrees, a caged
+      square; at 102 (T-125) 80 of 102, 18 and 6, 0.169, one by 0.43 degrees; at 103
+      (T-138) 87 of 103, 15 and 0, 0.074, one by 0.41 degrees; at 123 (T-125) 78 of 123, 45
+      and 25, 0.591, none; at 129 (T-125) 86 of 129, 43 and 31, 0.834, 26 up to about 39
+      degrees; at 146 (T-125) 121 of 146, 25 and 3, 0.124, none; at 153 (T-136) 44 of 153,
+      80 and 0, 0.065, 25 up to 2.4 degrees; and at 236 (T-136) 140 of 236, 53 and 0,
+      0.068, 15 up to 0.71 degrees.
+
+      At 258 (T-138) 186 of 258, 48 and 13, 0.496, 4 up to 1.1 degrees; at 263 (T-136) 101
+      of 263, 132 and 0, 0.049, 30 up to 1.2 degrees; at 269 (T-136) 200 of 269, 54 and 0,
+      0.088, 18 up to 1.2 degrees; at 292 (T-136) 53 of 292, 239 and 11, 0.589, 51 up to
+      about 4.6 degrees; at 295 (T-125) 105 of 295, 122 and 37, 0.138, none; at 302 (T-136)
+      46 of 302, 198 and 2, 0.102, 80 up to 2.6 degrees; and at 303 (T-136) 250 of 303, 19
+      and 1, 0.135, 7 up to 1.2 degrees.
+
+      At 103 and 258 the credited certificates are Mishapolk's refinements in place, to
+      1e-9, of Ryan Xu's and SQUISH's packings; at 70 Eric Deleeuw's certificate is Ryan
+      Xu's refined in place, every square within 1.9e-8. At 123, 129 and 292 nearest
+      centres match one to one under no symmetry, so there the arrangement's identity with
+      the credited packing is the source's statement alone (RG-3).
+
+      At 70, 129, 153, 236, 263, 269 and 292 the fewest variant merged determined rotation
+      groups, by up to 0.93, 2.96, 1.81, 0.67, 1.06, 0.12 and 0.03 degrees, a step the
+      source's log first called a different packing at the same side and now classes as
+      the same packing by its sampled path test (RG-4). The entry's regularizations record
+      each count's credited packing, the source's variant and these measurements, with the
+      identity resting on the source's claim.
 
       The author does not claim records. REGULARIZE.md says: "No refreshed side is below the
       store's best beyond rounding (2e-12 .. 8e-10, the exact optimum of the same packing;
@@ -15484,24 +15732,50 @@ results:
       at the same side; not a new bound". As for T-139 and T-137, each side is still a value
       the register did not hold.
 
-      The credit at 70 names Ryan Xu, with Eric Deleeuw's refinement (T-137) noted, since the
-      view lies nearer Xu's poses; the owner may decide otherwise. Pending this entry's
-      review, the house recommendation at its fifteen counts goes to it, and the notes of
-      T-125 (at 70, 102, 103, 123, 129, 146 and 295), T-136 (at 153, 236, 263, 269, 292, 302
-      and 303), T-137 (at 70) and T-138 (at 103 and 258) say so. No house moves until
-      jlevy/squares#403, which rewrites every case record, lands.
+      The credit follows the 11 October review and the owner's decision of the same day
+      (RG-2): each packing is its finder's, as the source's provenance files at the pin
+      name them, records2026.json and best.csv, which credit issue 432 alone at 70. Ryan Xu
+      is credited at 70, with Eric Deleeuw's refinement (T-137) named only as the smallest
+      side the record held there, since the view's sixty unmoved squares are Xu's poses to
+      1e-9 and Deleeuw's to 1e-8 only. At 103 and 258 the finders come first, Ryan Xu and
+      SQUISH, with Mishapolk's refinement. Evan Daniel is credited with the exact solve, the
+      regularized arrangement and the certificate.
+
+      The 11 October review recommends this entry as the house at all fifteen counts,
+      crediting each packing as above; no house moves until jlevy/squares#403 lands and
+      private-worker custody is on file (RG-7). The notes of T-125 (at 70, 102, 103, 123,
+      129, 146 and 295), T-136 (at 153, 236, 263, 269, 292, 302 and 303), T-137 (at 70) and
+      T-138 (at 103 and 258) say so.
 
       The source's own checkers were not run here. The two maintained routes, the sqpack
       rational witness verifier and the independent rational corner checker, share
       certificate parsing, half-angle conversion, Fraction arithmetic and the separating-axis
       method. No two independent methods, human oversight or optimality is claimed.
     next_rung: >-
-      Independently review the retained replay and the third route's reading, then weigh
-      adoption count by count. Each side lies below every value the record holds or has
-      pending, by 2.2e-17 at 302 to 7.8e-10 at 295; the source calls each the exact optimum
-      of its store's best packing, and the credit takes that packing to be the one whose side
-      lies just above. The regularized views differ from those certificates pose by pose, and
-      that each is still the same packing is the source's sampled path test, not verified
-      here; the review should decide whether the credit may rest on it. Then, once
-      jlevy/squares#403 lands, record source-specific adoption and confirming evidence. Final
+      V4 and C4 need a second accepted adversarial review of this replay by a distinct
+      reviewer and a retained human oversight record; the 11 October review is one, by an
+      AI agent. Separately, once jlevy/squares#403 lands and private-worker custody is on
+      file (RG-7), adopt this entry as the house at all fifteen counts, each earlier house
+      kept as history and each packing credited as the review decided (RG-2). Final
       exact-head CI remains required.
+    reviews:
+      - path: docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md
+        kind: adversarial
+        reviewer: >-
+          AI agent (Claude, at extra-high reasoning effort), the stage 4 review lane (W2) of
+          the 2026-10-10 intake pass under think-8k76, prompted separately from the import
+          lanes, with no shared context
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-11'
+        scope: >-
+          Finite feasibility of the fifteen certificates the entry cites, at 70, 102, 103,
+          123, 129, 146, 153, 236, 258, 263, 269, 292, 295, 302 and 303. The retained receipt
+          replayed on both maintained routes, the third exact route with its sharp controls
+          and its upstream check, a checker written for the review, every retained and
+          pinned file held to its bytes fetched at the pin, each claim print held to the
+          exact side, the claim comparison re-derived with the holders' sides read again,
+          each route's trust boundary, and the credit of each certificate measured against
+          the packing it would be credited to.
+        verdict: accepted
+        covers: [T-146]

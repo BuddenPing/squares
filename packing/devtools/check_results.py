@@ -31,7 +31,13 @@ the one hand-recorded workflow fact, an entry's `activity`, to its fields, its
 link and its age, and an entry's `unfinished_confirmations`, the confirmations it names
 and has not run, to rungs above its own, one listing each, a link that resolves and a
 price that is positive, ordered and dated no later than the register's last review
-(`unfinished_confirmations_problems`). Human review owns evidence relevance, claim
+(`unfinished_confirmations_problems`). It holds an entry's `regularizations`, the counts
+at which its certificate rearranges a packing another result holds, to counts in its
+scope, each once, to a registered result (`of`) dated no later whose scope holds the
+count, to a regularizer among the entry's own sources (or `project`, on a result of
+this project), and to measurements that are numbers no lower than zero, one at least
+where the identity was decided here (`regularizations_problems`). Human review owns
+evidence relevance, claim
 coverage, composition, significance, novelty, whether a headline says what its
 claim says, and the choice between kinds the record cannot tell apart.
 
@@ -1094,6 +1100,116 @@ def _cost_problems(
     return problems
 
 
+#: The `by` of a regularization this project made, of a result without `attribution`.
+PROJECT_REGULARIZER = "project"
+#: What a regularization's `changes` and `identity` count or measure, none below zero;
+#: the counts are whole numbers.
+REGULARIZATION_NUMBERS = {
+    "changes": ("merged_rotation_groups_deg", "straightened", "re_angled"),
+    "identity": ("moved", "max_move", "max_turn_deg"),
+}
+REGULARIZATION_COUNTS = frozenset({"straightened", "re_angled", "moved"})
+#: The measurements an identity decided here rests on; `measured` needs one at least.
+IDENTITY_MEASUREMENTS = ("one_to_one", "moved", "max_move", "max_turn_deg")
+
+
+def _regularization_number_problems(name: str, item: Mapping[str, Any]) -> list[str]:
+    """The counts and measurements of one regularization that are no number, negative, or
+    a count that is no whole number."""
+    problems: list[str] = []
+    for block, fields in REGULARIZATION_NUMBERS.items():
+        values = item.get(block) or {}
+        for field in fields:
+            if field not in values:
+                continue
+            value = values[field]
+            whole = isinstance(value, int) and not isinstance(value, bool)
+            number = whole or isinstance(value, float)
+            if not number or value < 0 or (field in REGULARIZATION_COUNTS and not whole):
+                kind = "a whole number" if field in REGULARIZATION_COUNTS else "a number"
+                problems.append(f"{name}: {block}.{field} is not {kind} of at least 0: {value}")
+    return problems
+
+
+def regularizations_problems(
+    record: Mapping[str, Any],
+    dated: Mapping[str, str],
+    scopes: Mapping[str, set[int]],
+) -> list[str]:
+    """What is wrong with a result's `regularizations`, the counts at which its certificate
+    is a regularization of a packing another registered result holds (epistemics.md,
+    Results by Others).
+
+    Each count lies in this result's scope and is listed once. The result it names as
+    `of` is registered, is not this one, holds that count in its scope and is dated no
+    later than this one (`result_date`, as `superseded_by_problems` compares them): a
+    packing is regularized after it is published. `by` is one of this result's
+    `attribution.source_keys`, or `project` on a result of this project, which has none.
+    The counts and measurements are numbers no lower than zero, `moved` is no more
+    squares than the count holds, a `measured_in` names a repository file, and an
+    identity decided here (`measured`) carries at least one measurement. `dated` and
+    `scopes` are every result's date and cases.
+    """
+    items = record.get("regularizations")
+    if not items:
+        return []
+    rid = str(record["id"])
+    keys = set((record.get("attribution") or {}).get("source_keys") or [])
+    own = scopes.get(rid, set())
+    problems: list[str] = []
+    seen: set[int] = set()
+    for item in items:
+        n = item.get("n")
+        name = f"{rid}: regularization at n = {n}"
+        if n in seen:
+            problems.append(f"{name} is listed twice")
+        seen.add(n)
+        if n not in own:
+            problems.append(f"{name} is outside this result's scope")
+        other = str(item.get("of"))
+        if other == rid:
+            problems.append(f"{name} names the result itself as the packing it regularizes")
+        elif other not in dated:
+            problems.append(f"{name} names {other}, which is not registered")
+        else:
+            if n not in scopes.get(other, set()):
+                problems.append(f"{name} names {other}, whose scope does not hold n = {n}")
+            if _earlier(dated[rid], dated[other]):
+                problems.append(
+                    f"{name} names {other}, dated {dated[other]}, after this result's "
+                    f"{dated[rid]}"
+                )
+        by = str(item.get("by"))
+        if keys and by not in keys:
+            problems.append(
+                f"{name} is by {by}, which is not among this result's attribution.source_keys"
+            )
+        elif not keys and by != PROJECT_REGULARIZER:
+            problems.append(
+                f"{name} is by {by}, but a result of this project is regularized by "
+                f"`{PROJECT_REGULARIZER}`"
+            )
+        problems.extend(_regularization_number_problems(name, item))
+        identity = item.get("identity") or {}
+        moved = identity.get("moved")
+        if isinstance(moved, int) and isinstance(n, int) and moved > n:
+            problems.append(f"{name}: identity.moved, {moved}, is more squares than n = {n}")
+        if identity.get("measured_in") and (
+            problem := repository_file_problem(str(identity["measured_in"]))
+        ):
+            problems.append(
+                f"{name}: identity.measured_in {problem}: {identity['measured_in']}"
+            )
+        if identity.get("basis") == "measured" and not any(
+            field in identity for field in IDENTITY_MEASUREMENTS
+        ):
+            problems.append(
+                f"{name}: an identity measured here carries at least one of "
+                f"{', '.join(IDENTITY_MEASUREMENTS)}"
+            )
+    return problems
+
+
 def coverage_problems(
     results: list[dict],
     evidence_index: dict[str, dict],
@@ -1327,6 +1443,7 @@ def main() -> int:
         problems.extend(
             unfinished_confirmations_problems(record, str(register["last_reviewed"]))
         )
+        problems.extend(regularizations_problems(record, dated, scopes))
         problems.extend(confirmation_prose_problems(record))
 
         for kind, value in (record.get("produced_by") or {}).items():
@@ -1410,9 +1527,10 @@ def main() -> int:
         "headline and date holds, every kind agrees with its claim and evidence, every "
         "declared supersession names a result no earlier on a shared case, never "
         "supersedes all of a result a case bound rests on and never leads back, every "
-        "unfinished confirmation lies above its result's rung, every recent case lower "
-        "bound is covered, every reader-tier mention exists; by status, "
-        + ", ".join(f"{held.count(name)} {name}" for name in STATUSES)
+        "unfinished confirmation lies above its result's rung, every regularization names "
+        "a registered packing no later on the count it regularizes, by a source of its "
+        "own, every recent case lower bound is covered, every reader-tier mention exists; "
+        "by status, " + ", ".join(f"{held.count(name)} {name}" for name in STATUSES)
     )
     return 0
 

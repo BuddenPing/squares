@@ -155,6 +155,25 @@ def test_the_head_says_what_a_declared_later_result_implies(bodies: dict[str, st
     assert successor in bodies["T-037"].split("</header>", 1)[0]
 
 
+def test_the_head_says_whose_packing_each_regularization_is(
+    overview: overview_data.Overview, bodies: dict[str, str]
+) -> None:
+    """A result whose certificate regularizes packings other results hold lists them
+    after the next rung, one sentence a count, as `RESULTS.md` prints them; T-146 is the
+    first, at fifteen counts. A result that regularizes nothing has no such row."""
+    result = _result(overview, "T-146")
+    assert len(result.regularizations) == 15
+    assert result.regularizations[0].startswith(
+        "n = 70: a regularization of T-125\u2019s packing by Daniel (fewest; solved to its"
+    )
+    head = bodies["T-146"].split("</header>", 1)[0]
+    value = result_overview.prose_html("\n".join(result.regularizations))
+    assert f"<dt>Regularizations</dt><dd>{value}</dd>" in head
+    assert head.index("<dt>Next rung</dt>") < head.index("<dt>Regularizations</dt>")
+    assert not _result(overview, "T-125").regularizations
+    assert "<dt>Regularizations</dt>" not in bodies["T-125"]
+
+
 @pytest.mark.parametrize("result_id", [SETTLED, EARLIER])
 def test_a_single_case_shows_the_films_panel_and_the_packing(
     result_id: str, bodies: dict[str, str]

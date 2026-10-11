@@ -12578,7 +12578,7 @@ urls:
   generator: devtools.render_overview:result_fragments
   producer: overview
   first_published: '2026-10-10'
-  lastmod: '2026-10-10'
+  lastmod: '2026-10-11'
   status: live
   identity:
     kind: upper-bound
@@ -12607,6 +12607,7 @@ urls:
     builds_on: null
     evidence:
     - E-evand-regularized-certificate-report
+    - E-evand-regularized-exact-feasibility
     artifacts:
     - packing/resources/web/evand-regularized-2026-10-10/README.md
     - packing/resources/web/evand-regularized-2026-10-10/acquisition/claims.json
@@ -12628,6 +12629,59 @@ urls:
     - packing/resources/web/evand-regularized-2026-10-10/receipts/exact-certification.json.xz
     - packing/devtools/upper_bound_reports.py
     - packing/devtools/check_half_angle_area.py
+    - docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md
+  amendments:
+  - date: '2026-10-11'
+    reason: Cite the replay the 11 October review reproduced (E-evand-regularized-exact-feasibility)
+      at V3/C3, with the review among the artifacts; scope, attribution and the stated sides are unchanged.
+    previous:
+      kind: upper-bound
+      scope:
+        n_values:
+        - 70
+        - 102
+        - 103
+        - 123
+        - 129
+        - 146
+        - 153
+        - 236
+        - 258
+        - 263
+        - 269
+        - 292
+        - 295
+        - 302
+        - 303
+      established: null
+      attribution:
+        source_keys:
+        - '[Daniel regularized lists 2026-10-10]'
+        published: '2026-10-10'
+      builds_on: null
+      evidence:
+      - E-evand-regularized-certificate-report
+      artifacts:
+      - packing/resources/web/evand-regularized-2026-10-10/README.md
+      - packing/resources/web/evand-regularized-2026-10-10/acquisition/claims.json
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-070.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-102.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-103.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-123.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-129.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-146.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-153.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-236.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-258.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-263.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-269.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-292.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-295.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-302.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/source/search/regularize/lists/certs/n-303.cert.gz
+      - packing/resources/web/evand-regularized-2026-10-10/receipts/exact-certification.json.xz
+      - packing/devtools/upper_bound_reports.py
+      - packing/devtools/check_half_angle_area.py
 - path: results.html
   canonical: results.html
   kind: page

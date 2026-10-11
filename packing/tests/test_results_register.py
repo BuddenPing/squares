@@ -18,6 +18,7 @@ from devtools import (
     backfill_result_registration,
     check_results,
     render_results,
+    result_credit,
     result_status,
 )
 from devtools.check_results import (
@@ -1437,7 +1438,8 @@ def test_the_registers_unfinished_confirmations_pass_and_the_schema_knows_the_fi
             high,
             link,
         ), rid
-    # T-146 is under review in the same pass, and its rung is the review's to set.
+    # T-146's next confirmation, C4, needs a second review and human oversight, which no
+    # bead has queued, so it lists none.
     assert "T-146" not in carrying
 
     schema = safe_load((check_results.FRONTIER / "results.schema.yaml").read_text("utf-8"))
@@ -1491,3 +1493,247 @@ def test_results_md_lists_each_unfinished_confirmation_under_its_next_action() -
     committed = render_results.OUTPUT.read_text(encoding="utf-8")
     assert "  - Unfinished, C3 (think-nd7g): a complete replay of all 201 angles" in committed
     assert "About 11.24 CPU-hours, up to about 23 (priced 2026-10-10)." in committed
+
+
+#: The regularizer of T-146's certificates, and the review its measurements come from.
+REGULARIZER = "[Daniel regularized lists 2026-10-10]"
+REGULARIZED_REVIEW = "docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md"
+#: The dates and cases `regularizations_problems` reads: a regularized result, the
+#: packing it regularizes, a later result, an older one on another case, and a result of
+#: this project.
+REGULARIZED_DATES = {
+    "T-146": "2026-10-10",
+    "T-125": "2026-10-08",
+    "T-147": "2026-10-12",
+    "T-001": "1979",
+    "T-148": "2026-10-11",
+}
+REGULARIZED_SCOPES = {
+    "T-146": {70, 103},
+    "T-125": {70, 103},
+    "T-147": {70},
+    "T-001": {11},
+    "T-148": {70},
+}
+
+
+def _regularization(**changes: object) -> dict[str, object]:
+    """T-146's item at n = 70, with `changes` applied; a change to `None` drops the field."""
+    item: dict[str, object] = {
+        "n": 70,
+        "of": "T-125",
+        "by": REGULARIZER,
+        "method": "fewest",
+        "side": "solved",
+        "changes": {"merged_rotation_groups_deg": 0.93, "straightened": 0, "re_angled": 3},
+        "identity": {
+            "basis": "source-claim",
+            "measured_in": REGULARIZED_REVIEW,
+            "one_to_one": True,
+            "moved": 10,
+            "max_move": 0.222,
+            "max_turn_deg": 22.5,
+        },
+    }
+    item.update(changes)
+    return {key: value for key, value in item.items() if value is not None}
+
+
+def _identity(**changes: object) -> dict[str, object]:
+    """`_regularization`'s identity with `changes` applied; `None` drops a field."""
+    identity = {**_regularization()["identity"], **changes}  # type: ignore[dict-item]
+    return {key: value for key, value in identity.items() if value is not None}
+
+
+def _regularization_problems(
+    *items: dict[str, object], rid: str = "T-146", attributed: bool = True
+) -> list[str]:
+    record: dict[str, object] = {"id": rid, "regularizations": list(items)}
+    if attributed:
+        record["attribution"] = {"source_keys": [REGULARIZER], "published": "2026-10-10"}
+    return check_results.regularizations_problems(record, REGULARIZED_DATES, REGULARIZED_SCOPES)
+
+
+def test_a_regularization_names_an_earlier_packing_on_its_count_by_its_own_source() -> None:
+    """A regularization's count is in its result's scope, once; the result it regularizes
+    is registered, is another result, holds that count and is dated no later; the
+    regularizer is one of the result's own sources, or `project` on a result of this
+    project; its counts and measurements are numbers no lower than zero, and an identity
+    decided here carries a measurement."""
+    problems = _regularization_problems
+    assert check_results.regularizations_problems({"id": "T-146"}, {}, {}) == []
+    assert problems(_regularization()) == []
+    assert problems(_regularization(), _regularization(n=103)) == []
+    assert problems(_regularization(changes=None, identity={"basis": "source-claim"})) == []
+    assert problems(_regularization(identity=_identity(basis="measured"))) == []
+    own = _regularization(by="project", identity={"basis": "measured", "one_to_one": True})
+    assert problems(own, rid="T-148", attributed=False) == []
+
+    def one(*items: dict[str, object], rid: str = "T-146", attributed: bool = True) -> str:
+        (problem,) = problems(*items, rid=rid, attributed=attributed)
+        return problem
+
+    assert one(_regularization(), _regularization()) == (
+        "T-146: regularization at n = 70 is listed twice"
+    )
+    assert problems(_regularization(n=71)) == [
+        "T-146: regularization at n = 71 is outside this result's scope",
+        "T-146: regularization at n = 71 names T-125, whose scope does not hold n = 71",
+    ]
+    assert one(_regularization(of="T-146")) == (
+        "T-146: regularization at n = 70 names the result itself as the packing it regularizes"
+    )
+    assert one(_regularization(of="T-999")) == (
+        "T-146: regularization at n = 70 names T-999, which is not registered"
+    )
+    assert one(_regularization(of="T-001")) == (
+        "T-146: regularization at n = 70 names T-001, whose scope does not hold n = 70"
+    )
+    assert one(_regularization(of="T-147")) == (
+        "T-146: regularization at n = 70 names T-147, dated 2026-10-12, after this "
+        "result's 2026-10-10"
+    )
+    assert one(_regularization(by="[Someone else 2026]")) == (
+        "T-146: regularization at n = 70 is by [Someone else 2026], which is not among this "
+        "result's attribution.source_keys"
+    )
+    assert "is by project, which is not among" in one(_regularization(by="project"))
+    assert one(_regularization(of="T-125"), rid="T-148", attributed=False) == (
+        f"T-148: regularization at n = 70 is by {REGULARIZER}, but a result of this "
+        "project is regularized by `project`"
+    )
+    assert one(_regularization(changes={"merged_rotation_groups_deg": -0.5})) == (
+        "T-146: regularization at n = 70: changes.merged_rotation_groups_deg is not a "
+        "number of at least 0: -0.5"
+    )
+    assert "changes.straightened is not a whole number" in one(
+        _regularization(changes={"straightened": 1.5})
+    )
+    assert "changes.re_angled is not a whole number" in one(
+        _regularization(changes={"re_angled": True})
+    )
+    assert "identity.max_move is not a number" in one(
+        _regularization(identity=_identity(max_move="0.2"))
+    )
+    assert "identity.max_turn_deg is not a number" in one(
+        _regularization(identity=_identity(max_turn_deg=-1))
+    )
+    assert one(_regularization(identity=_identity(moved=71))) == (
+        "T-146: regularization at n = 70: identity.moved, 71, is more squares than n = 70"
+    )
+    assert "identity.measured_in does not name a file" in one(
+        _regularization(identity=_identity(measured_in="docs/project/reviews/nothing.md"))
+    )
+    assert one(_regularization(identity={"basis": "measured"})) == (
+        "T-146: regularization at n = 70: an identity measured here carries at least one "
+        "of one_to_one, moved, max_move, max_turn_deg"
+    )
+
+
+def test_a_regularization_of_a_later_packing_fails_the_register_gate(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    register = safe_load(check_results.RESULTS.read_text(encoding="utf-8"))
+    (t146,) = (entry for entry in register["results"] if entry["id"] == "T-146")
+    items = [dict(item) for item in t146["regularizations"]]
+    items[0] = {**items[0], "of": "T-146"}
+    monkeypatch.setattr(
+        check_results, "RESULTS", _changed_result(tmp_path, "T-146", regularizations=items)
+    )
+    assert check_results.main() == 1
+    assert (
+        "T-146: regularization at n = 70 names the result itself as the packing it regularizes"
+        in capsys.readouterr().out
+    )
+
+
+#: Whose packing T-146 regularizes at each count, as its stage 4 review decided: Ryan
+#: Xu's (T-125), Mishapolk's refinements (T-138) and SQUISH's third request (T-136).
+T146_OF = {
+    **dict.fromkeys((70, 102, 123, 129, 146, 295), "T-125"),
+    **dict.fromkeys((103, 258), "T-138"),
+    **dict.fromkeys((153, 236, 263, 269, 292, 302, 303), "T-136"),
+}
+
+
+def test_t146_regularizes_each_credited_packing_and_the_schema_knows_the_field() -> None:
+    """T-146 is the first entry to carry `regularizations`: one item a count, each
+    solved to its side by Evan Daniel and regularized there, its identity the source's
+    claim with the review's measurements beside it; nearest centres pair the squares one
+    to one except at 123, 129 and 292 (RG-3)."""
+    from jsonschema_rs import Draft202012Validator  # noqa: PLC0415
+
+    register = safe_load(check_results.RESULTS.read_text(encoding="utf-8"))
+    (t146,) = (entry for entry in register["results"] if entry["id"] == "T-146")
+    items = t146["regularizations"]
+    assert {item["n"]: item["of"] for item in items} == T146_OF
+    assert [item["n"] for item in items] == t146["scope"]["n_values"]
+    assert {(item["by"], item["side"], item["identity"]["basis"]) for item in items} == {
+        (REGULARIZER, "solved", "source-claim")
+    }
+    unpaired = {item["n"] for item in items if not item["identity"]["one_to_one"]}
+    assert unpaired == {123, 129, 292}
+    merged = {item["n"] for item in items if item["changes"]["merged_rotation_groups_deg"] > 0}
+    assert merged == {item["n"] for item in items if item["method"] == "fewest"}
+    assert merged == {70, 129, 153, 236, 263, 269, 292}
+    assert t146["attribution"]["source_keys"] == [REGULARIZER]
+    sources = render_results.load_sources()
+    assert sources[REGULARIZER]["credit"] == "Daniel after Xu, Chaoweeraprasit, Mishapolk, Levy"
+
+    schema = safe_load((check_results.FRONTIER / "results.schema.yaml").read_text("utf-8"))
+    assert "regularizations" not in schema["$defs"]["result"]["required"]
+    validator = Draft202012Validator(schema)
+    payload = {key: value for key, value in register.items() if key != "softschema"}
+    assert validator.is_valid(payload)
+    t146 = next(entry for entry in payload["results"] if entry["id"] == "T-146")
+    for refused in (
+        _regularization(side="elsewhere"),
+        _regularization(by="Daniel"),
+        _regularization(of="146"),
+        _regularization(method=None),
+        _regularization(credit="Daniel"),
+        _regularization(changes={}),
+        _regularization(changes={"turned": 1}),
+        _regularization(identity=_identity(basis="believed")),
+        _regularization(identity=_identity(moved=-1)),
+        _regularization(identity=_identity(basis=None)),
+    ):
+        t146["regularizations"] = [refused]
+        assert not validator.is_valid(payload), refused
+
+
+def test_results_md_says_whose_packing_each_regularization_is() -> None:
+    """Each count is one sentence: whose packing, who regularized it, the method and the
+    side, what changed, and what the identity rests on with what was measured here."""
+    sources = render_results.load_sources()
+    assert result_credit.regularization_sentence(_regularization(), sources) == (
+        "n = 70: a regularization of T-125\u2019s packing by Daniel (fewest; solved to its "
+        "side; rotation groups merged by up to 0.93\u00b0, 3 free angles moved; identity: "
+        "the source\u2019s claim; nearest centres one to one; 10 squares moved, at most "
+        "0.222; turns up to 22.5\u00b0)."
+    )
+    plain = _regularization(
+        by="project",
+        side="same",
+        changes={"merged_rotation_groups_deg": 0, "straightened": 1},
+        identity={"basis": "measured", "one_to_one": False, "max_move": 0.5, "max_turn_deg": 0},
+    )
+    assert result_credit.regularization_sentence(plain, sources) == (
+        "n = 70: a regularization of T-125\u2019s packing by Levy (fewest; at its own side; "
+        "1 free square straightened; identity: measured here; nearest centres not one to "
+        "one; moves up to 0.5; no square turned)."
+    )
+    still = _regularization(changes={"straightened": 0}, identity={"basis": "source-claim"})
+    assert result_credit.regularization_sentence(still, sources).endswith(
+        "(fewest; solved to its side; no angle changed; identity: the source\u2019s claim)."
+    )
+    committed = render_results.OUTPUT.read_text(encoding="utf-8")
+    section = committed.split("## Regularizations\n", 1)[1].split("\n## ", 1)[0]
+    assert "- **T-146** — 15 counts:" in section
+    assert (
+        "  - n = 70: a regularization of T-125\u2019s packing by Daniel (fewest; solved to "
+        "its side; rotation groups merged by up to 0.93\u00b0, 3 free angles moved; "
+        "identity: the source\u2019s claim; nearest centres one to one; 10 squares moved, "
+        "at most 0.222; turns up to 22.5\u00b0)."
+    ) in section
+    assert section.count("  - n = ") == 15
