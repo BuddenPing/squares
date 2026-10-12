@@ -4509,6 +4509,13 @@ issues:
       - result: s40-continuous-pose
         id: E-n040-guzhou-continuous-pose-crate-axis
         status: confirmed
+    - url: https://github.com/jlevy/squares/issues/485#issuecomment-6119333366
+      date: '2026-10-12'
+      by: jlevy
+      kind: follow-up
+      reported:
+      - result: s40-new-supports
+      - result: s40-support-family-obstruction
     close_when: The import and its review disposition are on main and the owner has posted the resulting
       state; optimality and first-publication priority are outside this request.
   - number: 486
