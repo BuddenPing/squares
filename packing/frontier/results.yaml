@@ -17288,8 +17288,9 @@ results:
       The rigidity stage's finite rounds and contraction ran in the author's check.py
       (E-n017-overbeck-candidate-check-py-replay), which recomputes no capture row and no
       tree. These runs are evidence on the case record and are not cited here: each is a
-      machine-shaped replay that passed on the part it ran, so citing it would let the
-      checker derive a rung that only the complete replay can give.
+      machine-shaped replay that passed on the part it ran, so citing them would make the
+      checker derive a higher rung from parts, which this note would then have to set
+      aside, as T-081's does; the case record cites them instead.
 
       By epistemics.md's predicates: V3 needs, for every load-bearing part, a published or
       audited proof or a machine certificate whose replay passed, and the capture step and
@@ -17339,7 +17340,8 @@ results:
       since: '2026-10-12'
       link: https://github.com/jlevy/squares/issues/557
     next_rung: >-
-      V3 and C3 need every load-bearing part replayed in full here, the review's section 5:
+      V3 and C3 need every load-bearing part replayed in full, here or by a third party
+      whose replay is retained here, the review's section 5:
       the author's check.py to PASS, done on 12 October; all 98 capture statements, every
       row, with at least one of the producer's two capture checkers, compared row for row
       with the stored receipts; all 13 trees with at least one frozen checker and
