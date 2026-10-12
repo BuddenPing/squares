@@ -35,8 +35,8 @@ checkout widened at 08:30Z), from the declaration in
 Git blob at the pin. [acquisition/sources.json](acquisition/sources.json) is the
 acquisition record and
 [acquisition/upstream-subtree.sha256](acquisition/upstream-subtree.sha256) the manifest:
-856 files, 28,037,432 bytes in scope, of which 549 files (14,550,402 bytes) are retained
-under `source/` and 307 (13,487,030 bytes) are pinned by digest only.
+856 files, 28,037,432 bytes in scope, of which 548 files (14,509,766 bytes) are retained
+under `source/` and 308 (13,527,666 bytes) are pinned by digest only.
 
 The pinned tree is much larger than the scope: 71,035 files and about 20.75 GB, 68,442 of
 them under `attempts/`. The scope is the manifest in `00-README.md` section 4, read as the
@@ -63,7 +63,11 @@ Pinned by digest and not retained, each with its reason in the declaration: `LOG
 1.1 MB notebook), the 248 gzipped spine certificates of A243 (8.8 MB), three raw
 engine-row files (`rows211_raw.jsonl`, `bench238.jsonl`, `raw211_n17.jsonl` and its probe
 file), the uncited `certs/a82/`, `certs/uladder/` and one unavoidable-set certificate, and
-the committed byte code under `certs/__pycache__/`. The galleries under
+the committed byte code under `certs/__pycache__/`. The tube certificates’ verifier,
+`certs/verify_tube.py`, was retained by the import lane and is pinned by digest since
+the records layer of 12 October: one of its verdict format strings, `checker %s => %s`,
+reads as a JavaScript arrow function to `devtools.check_no_embedded_js`, which scans every
+tracked Python file and admits no exception. The galleries under
 `docs/residue_map/` and `docs/shadows/`, the figures, the tree records and the logs are
 pinned by the commit alone, as the manifest itself says they may be.
 

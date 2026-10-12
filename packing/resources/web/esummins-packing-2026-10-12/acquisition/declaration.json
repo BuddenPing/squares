@@ -132,6 +132,10 @@
     {
       "match": "certs/unavoidable_10pt_3.7416.json",
       "reason": "An A05 unavoidable-set certificate below Stromquist's bound that no outreach note cites; pinned by digest."
+    },
+    {
+      "match": "certs/verify_tube.py",
+      "reason": "The tube certificates' stdlib verifier, 977 lines. Its verdict format string 'checker %s => %s' reads as a JavaScript arrow function to devtools.check_no_embedded_js, which scans every tracked Python file and admits no exception, so it is pinned by digest rather than retained. The certificates it checks are retained."
     }
   ]
 }
