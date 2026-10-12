@@ -1802,9 +1802,8 @@ def patch_lineage(
     land at another orientation (``turned_beyond_1e-6``), and those that land on a child
     square to the digit, the centre equal and the edge direction exactly a multiple of a
     quarter turn away, however the child writes its basis (``exact``). Returns at most
-    ``limit``
-    placements with at least `PATCH_FLOOR` squares, the fullest first. A measurement for
-    credit: it decides nothing.
+    ``limit`` placements with at least `PATCH_FLOOR` squares, the fullest first. A
+    measurement for credit: it decides nothing.
     """
     parent_side, parent_squares = parent
     _child_side, child_squares = child

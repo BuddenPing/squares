@@ -1777,11 +1777,11 @@ verifiers:
       packet's declaration: admits custody through acquire_source, reads each retained
       file or derived fact by its declared adapter (Evan Daniel's text format, SQUISH's
       JSON, centred JSON, PingYou Ltd's JSON, Daniil Ostashev's sqcert files, rational
-      corners witnesses, decimal poses by a declared dilation), holds a derived fact to any file its row names as the same
-      packing, admits each side only
-      where it equals or rounds up to its print, rebuilds the frozen claim comparison and
-      the register plan, and drives the arrangement kernel's two exact routes and two
-      controls per count. It decides no geometry itself.
+      corners witnesses, decimal poses by a declared dilation), holds a derived fact to
+      any file its row names as the same packing, admits each side only where it equals
+      or rounds up to its print, rebuilds the frozen claim comparison and the register
+      plan, and drives the arrangement kernel's two exact routes and two controls per
+      count. It decides no geometry itself.
     source:
       - packing/devtools/upper_bound_reports.py
       - packing/devtools/evand_arrangement_reports.py
