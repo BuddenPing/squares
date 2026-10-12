@@ -1044,10 +1044,10 @@ derived exact facts, no upstream byte retained;
 [packet](web/squish-481-third-request-2026-10-09/README.md).
 Both project exact routes accept all 17 replayed certificates and refuse all 34
 controls, and a third exact route agrees and held each fact to its pinned upstream file.
-T-136 records the seventeen sides at V3/C3; since 11 October 2026 the cases at 131, 154,
-259 and 307 hold them as the house, and at 232 until 12 October 2026, when Daniil
-Ostashev’s smaller certificate (T-154) replaced it; smaller certificates hold the other
-twelve.
+T-136 records the seventeen sides at V3/C3; since 11 October 2026 the cases at 131, 259
+and 307 hold them as the house, and at 154 and 232 until 12 October 2026, when Evan
+Daniel’s (T-156) and Daniil Ostashev’s (T-154) smaller certificates replaced them;
+smaller certificates hold the other twelve.
 
 **[Deleeuw n70 refinement 2026-10-10]**: Eric Deleeuw’s exact rational certificate for n
 = 70, a refinement of Ryan Xu’s packing, pinned at
@@ -1231,6 +1231,23 @@ the third exact route agrees and derived it again from the layout at the pin.
 T-155 records the side at V3/C3 on the same review; the case at 102 holds a smaller
 certificate (T-146) and is unchanged.
 Claude assistance disclosed.
+
+## Evan Daniel’s n = 154 certificate, 12 October 2026
+
+**[Daniel n154 2026-10-12]**: Evan Daniel’s exact rational certificate for n = 154,
+pinned at `597e660c9a078a552991ab893cda3ab693cb5ac8`, retained as the source wrote it
+under its MIT licence with the regularized drawing of the same packing beside it;
+[packet](web/evand-n154-2026-10-12/README.md).
+Both project exact routes accept it and refuse its two controls, and the third exact
+route agrees and held the retained file to its pinned bytes.
+T-156 records the side at V3/C3 on the
+[review of 12 October](../../docs/project/reviews/review-2026-10-12-upper-bound-import-552.md),
+and the case at 154 holds it as the house since 12 October 2026, its start credited to
+Francisco Couzo’s 5 October packing of 155 squares as the author asks.
+Claude assistance disclosed.
+The data release `exact-data-2026-10-12` that #545 asked for is the sibling
+[packet](web/evand-exact-data-2026-10-12/README.md): the s(29) polynomial archive pinned
+by digest and the grade-C certificates retained as published; it registers nothing.
 
 ## E. Summins’ stratification series, 12 October 2026
 

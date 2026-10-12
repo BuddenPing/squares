@@ -1393,7 +1393,11 @@ verifiers:
       reader of Rio Calle's decimal layout, with exact decimal literals and a half-angle
       floor for radians by Taylor series in decimal arithmetic, a derivation of his
       certificate from the layout, and the roster's credit and lineage measurements, and
-      ran it on the four certificates T-154 and T-155 cite.
+      ran it on the four certificates T-154 and T-155 cite. The import and review lanes
+      of issue 552
+      (docs/project/reviews/review-2026-10-12-upper-bound-import-552.md) gave it
+      that import's roster line with its credit and lineage keys, and ran it on the
+      certificate T-156 cites.
       Its author had read both
       maintained routes, their parser and the importer's adapters before writing it, so it
       is not clean-room; it imports none of their parsing or deciding code and shares
@@ -1867,7 +1871,9 @@ verifiers:
       tangent of a radian layout by an outward-rounded interval enclosure, and HOUSES
       readers of both packets; the 12 October review of those issues
       (docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md) read them in
-      full.
+      full. The import lane of issue 552 added a HOUSES reader of its packet, which the
+      12 October review of that issue
+      (docs/project/reviews/review-2026-10-12-upper-bound-import-552.md) read.
 
   - id: V-rehwaldt-n68-verify
     program: verify.py

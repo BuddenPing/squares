@@ -5958,26 +5958,37 @@ issues:
       neither a bound: the s(29) record side is a root of an irreducible polynomial of degree 7213
       (169a827), and gradec.py's grade-C local-minimality checks report 233 of 250 configurations
       of field degree at most 4 VALID (0d0146e, e493eea). Both are retained in the
-      evand-exact-and-local-reports-2026-10-12 packet; the polynomial and the certificates are not
-      published, and the issue asks the author for them.
-    read_through: '2026-10-12T09:07:39Z'
+      evand-exact-and-local-reports-2026-10-12 packet. At the issue's request the author published
+      the data as the release exact-data-2026-10-12 (tagged at
+      31523f87316bdfda00f5459dd9077928e264f133): s29-minpoly.tar.zst (87,237,962 bytes, SHA-256
+      708e1b8b45894667f90a0d18b55bb35ed6079b84d33f9656976fd5cfa6f3729c) and gradec-233.tar.zst
+      (238,231 bytes, SHA-256 c71633f3850eb8b06c40ba04f824e9b6262b27b7996f62f69c6ad014a4ea9fa3),
+      both matching the digests the release, GitHub and the author's comment state. The evand-exact-data-2026-10-12 packet pins the s(29) archive by digest, with each
+      of its 21 members' size and digest, its README and its Krawczyk box, and reads degree 7213
+      from the polynomial; it keeps the grade-C archive as published, and gradec.py recomputed
+      the n = 10 certificate byte-identical to the published one. The s(29) replay (about 2.5
+      CPU-hours) and the full grade-C re-run (about 10.6 CPU-hours by the logs' times; 17
+      timeouts out of reach of gradec.py as written) wait for an owner budget.
+    read_through: '2026-10-12T14:15:44Z'
     results:
     - key: s29-minimal-polynomial
       claim: The s(29) record side 5.9338334626769291896894606... is a root of an irreducible integer
         polynomial of degree 7213, found by homotopy continuation; irreducibility, a Krawczyk
         enclosure and the root link are rated rigorous by the source.
       source: body
-      not_registered: Not a bound. A records decision on its shape (an algebraic_degree evidence
-        update and a paragraph in n-029.md) is pending; a replay needs the polynomial, the
-        parametrization and the enclosure box published.
+      not_registered: Not a bound. Published 12 October in the release exact-data-2026-10-12 and
+        pinned by digest; a records decision on its shape (an algebraic_degree evidence update and
+        a paragraph in n-029.md) is pending, and the source's replay, about 2.5 CPU-hours with two
+        Monte Carlo steps and no non-overlap check at the exact point, waits for a budget.
       queued: true
       bead: think-6gti
     - key: grade-c-local-minima
       claim: gradec.py's Theorem C local-minimality check is VALID for 233 of the source's 250
         configurations of field degree at most 4.
       source: body
-      not_registered: Not a bound; local minimality of packings, with the certificates unpublished.
-        A review of Theorem C and a priced re-run wait in their bead.
+      not_registered: Not a bound; local minimality of packings. The certificates are published and
+        retained (gradec-233.tar.zst); n = 10 recomputed byte-identical here. A review of Theorem C
+        and the re-run of the other 232 (about 10.6 CPU-hours) wait in their bead.
       queued: true
       bead: think-7scz
     beads:
@@ -5989,3 +6000,62 @@ issues:
     replies: []
     close_when: Both reports are recorded on main, and the replay and review are either run or
       priced with an owner decision.
+  - number: 552
+    title: 'New packing: s(154) ≤ 12.92256640193406: registration request'
+    author: evand
+    opened: '2026-10-12'
+    state: open
+    kind: result-report
+    triage: done
+    summary: >-
+      Evan Daniel reports s(154) <= 12922566401934059503377267965457/10^30 =
+      12.922566401934059503377... in evand/square-packing at
+      597e660c9a078a552991ab893cda3ab693cb5ac8 (search/packer/candidates/tt_n154.cert, the format
+      of #375, #399, #465 and #489), the 80-digit KKT point scaled by 1 + 1e-20, with a
+      regularized drawing of the same packing at the same side. The evand-n154-2026-10-12 packet
+      retains both certificates, the KKT point, the input and the solver reports under the MIT
+      licence; both maintained exact routes accept the certificate and refuse its two controls (3
+      jobs, 91 s on one worker; check --replay 75 s), with least clearances 5e-21 to the walls
+      and just under 1e-20 between squares, as the issue states, and the third route, given its
+      roster line, accepts it with all six controls. The review of 12 October accepted it for
+      finite feasibility only, with seven non-blocking findings, and recommends it as the house
+      at 154. It is 5.04e-4 below T-136 (SQUISH, #481), the case's house until then, 4.00e-3
+      below T-127 and below every other report at 154; it is registered as T-156 at V3/C3 and
+      the case at 154 adopted it on 12 October. Measured by the third route's credit tools it is
+      another arrangement than T-136's. The packing came from a time-travel test of the author's
+      size-chaining explorer restarted from the 5 October register; the comment of 14:13 UTC
+      traces it to Francisco Couzo's 5 October packing of 155 squares with one square removed,
+      and asks that the start be credited to it, which the record does as his statement.
+      Claude (Claude Code) assistance disclosed; credit name Evan Daniel (@evand).
+    read_through: '2026-10-12T14:13:35Z'
+    results:
+    - key: n154-certificate
+      claim: s(154) <= 12922566401934059503377267965457/10^30 (tt_n154.cert), 5.04e-4 below T-136.
+      source: body
+      register:
+      - T-156
+      evidence:
+      - E-evand-552-n154-report
+      - E-evand-552-exact-feasibility
+    - key: n154-regularized-drawing
+      claim: tt_n154_regularized.cert, a regularized drawing of the same packing at the same side
+        (rotation groups 24 to 16).
+      source: body
+      not_registered: The same side and the same packing up to rattlers and flat motions (112 of 154
+        poses equal; only the 8 rattlers turn); the source's display view, retained in the packet and
+        decided on all three routes as a diagnostic.
+      queued: false
+    - key: n154-local-optimality
+      claim: S* is an 80-digit KKT point (least multiplier 1.5e-4) with reduced Hessian PSD modulo 45
+        exact flat motions and all 98 corner-corner branches jammed; 8 rattlers; a different local
+        minimum from T-136's packing (RMS matching distance 0.319).
+      source: body
+      not_registered: Numerical evidence by the source's own statement, not proofs; the arrangement
+        differs from T-136's as measured here, local minimality is not established.
+      queued: false
+    beads:
+    - think-6no5
+    answer_bead: think-6no5
+    replies: []
+    close_when: The certificate is registered and adopted at 154 on main, the start is credited to
+      Couzo's 155 as the author asks, and the resulting state has been posted.

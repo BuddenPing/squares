@@ -3313,8 +3313,8 @@ sources:
     October 2026 the cases at 131, 154, 207, 232, 259 and 307 adopted these certificates, the selected
     overrides below; at the other eleven counts smaller confirmed certificates hold the cases (T-140,
     and T-146, which regularizes these packings). On 12 October 2026 issue 528's smaller certificate
-    (T-154) replaced this source's at 232. The three sources/ certificates at 155, 240 and 306 are
-    above their cases and not imported.
+    (T-154) replaced this source's at 232 and issue 552's (T-156) at 154. The three sources/
+    certificates at 155, 240 and 306 are above their cases and not imported.
 - id: ebdeleeuw-n70-refinement-2026-10-10
   title: Eric Deleeuw's n70 refinement at 24221d5, issue483
   role: source-repository
@@ -3875,6 +3875,33 @@ sources:
     native jobs, decided the certificate by a third exact route and derived it again from the
     layout fetched at the pin. Its side is above the case's selected certificate at 102 (T-146) by
     2.43e-11, so no override is selected and the case is unchanged.
+- id: evand-n154-2026-10-12
+  title: Evan Daniel's n154 certificate at 597e660, issue552
+  role: source-repository
+  url: https://github.com/evand/square-packing/tree/597e660c9a078a552991ab893cda3ab693cb5ac8
+  local: resources/web/evand-n154-2026-10-12/
+  source_key: '[Daniel n154 2026-10-12]'
+  scope:
+    n_values: [154]
+  reviewed: '2026-10-12'
+  source_date: '2026-10-12'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/results.yaml
+  - resources/web/evand-n154-2026-10-12/acquisition/claims.json
+  evidence:
+  - E-evand-552-n154-report
+  - E-evand-552-exact-feasibility
+  notes: >-
+    The 1 complete certificate at 597e660 is retained as the source wrote it under its MIT
+    licence, with the regularized drawing of the same packing beside it, admitted where its exact
+    side equals the side the issue prints. T-156 records it at V3/C3 on the review of 12 October
+    (docs/project/reviews/review-2026-10-12-upper-bound-import-552.md), which reproduced all 3 native
+    jobs, decided the certificate by a third exact route and held the retained file to its bytes
+    fetched at the pin. On 12 October 2026 the case at 154 adopted the certificate, the selected
+    override below, the packing credited to Evan Daniel and its start to Francisco Couzo's 5
+    October packing of 155 squares, as the author asks.
 selected_overrides:
 - n: 51
   source_id: ry-xu-undilated-n51-2026
@@ -4008,11 +4035,11 @@ selected_overrides:
   reason: The smallest exact side the register holds at this count, confirmed at V3/C3 by a replay
     here and an accepted review, adopted on 2026-10-11 (T-148).
 - n: 154
-  source_id: squish-481-third-request-2026-10-09
-  value: '12.9230702023011408'
-  evidence: E-squish-481-certificate-report
+  source_id: evand-n154-2026-10-12
+  value: '12.9225664019340596'
+  evidence: E-evand-552-n154-report
   reason: The smallest exact side the register holds at this count, confirmed at V3/C3 by a replay
-    here and an accepted review, adopted on 2026-10-11 (T-136).
+    here and an accepted review, adopted on 2026-10-12 (T-156).
 - n: 155
   source_id: dostashev-records-2026-10-11
   value: '12.9524254069584562'
@@ -4355,7 +4382,7 @@ superseded_reports:
   value: '12.9282936576777577'
   reason: The newer SQUISH update reports a smaller exact rational side; earlier source geometry and
     verification remain retained.
-  superseded_by: squish-481-third-request-2026-10-09
+  superseded_by: evand-n154-2026-10-12
 - n: 155
   source_id: squish-ten-packings-2026-10-07
   value: '12.9536770693532733'
@@ -4740,12 +4767,12 @@ superseded_reports:
 - n: 154
   source_id: casson-square-packing-2026
   value: '12.93166403111078111'
-  superseded_by: squish-481-third-request-2026-10-09
+  superseded_by: evand-n154-2026-10-12
   reason: The SQUISH reported new packing is smaller than this retained earlier claim.
 - n: 154
   source_id: franciscouzo-square-packing-2026
   value: '12.931663721169976'
-  superseded_by: squish-481-third-request-2026-10-09
+  superseded_by: evand-n154-2026-10-12
   reason: The SQUISH reported new packing is smaller than this retained earlier claim.
 - n: 155
   source_id: casson-square-packing-2026
@@ -5525,7 +5552,7 @@ superseded_reports:
 - n: 154
   source_id: evand-square-packing-2026-10-05
   value: '12.931663721166847019324363825319'
-  superseded_by: squish-481-third-request-2026-10-09
+  superseded_by: evand-n154-2026-10-12
   reason: The SQUISH reported new packing is smaller than this retained earlier claim.
 - n: 155
   source_id: evand-square-packing-2026-10-05
@@ -5751,7 +5778,7 @@ superseded_reports:
 - n: 154
   source_id: squish-update-2026-10-07
   value: '12.9265622458535390'
-  superseded_by: squish-481-third-request-2026-10-09
+  superseded_by: evand-n154-2026-10-12
   reason: Complete Gupta source certificate is strictly smaller.
 - n: 179
   source_id: squish-second-update-2026-10-07
@@ -5917,7 +5944,7 @@ superseded_reports:
   value: '12.9265622458523470'
   reason: The house until 2026-10-11; its certificate stays retained and verified, and T-136's exact
     side is smaller.
-  superseded_by: squish-481-third-request-2026-10-09
+  superseded_by: evand-n154-2026-10-12
 - n: 155
   source_id: squish-update-2026-10-07
   value: '12.9525032026045129'

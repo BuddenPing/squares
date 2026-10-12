@@ -3762,7 +3762,7 @@ urls:
   generator: devtools.render_case_pages:case_records
   producer: overview
   first_published: '2026-10-03'
-  lastmod: '2026-10-11'
+  lastmod: '2026-10-12'
   status: live
 - path: cases/155.html
   canonical: cases/155.html
@@ -13059,6 +13059,36 @@ urls:
     - packing/devtools/upper_bound_reports.py
     - packing/devtools/check_half_angle_area.py
     - docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md
+- path: result/t-156.html
+  canonical: result/t-156.html
+  kind: result
+  generator: devtools.render_overview:result_fragments
+  producer: overview
+  first_published: '2026-10-12'
+  lastmod: '2026-10-12'
+  status: live
+  identity:
+    kind: upper-bound
+    scope:
+      n_values:
+      - 154
+    established: null
+    attribution:
+      source_keys:
+      - '[Daniel n154 2026-10-12]'
+      published: '2026-10-12'
+    builds_on: null
+    evidence:
+    - E-evand-552-n154-report
+    - E-evand-552-exact-feasibility
+    artifacts:
+    - packing/resources/web/evand-n154-2026-10-12/README.md
+    - packing/resources/web/evand-n154-2026-10-12/acquisition/claims.json
+    - packing/resources/web/evand-n154-2026-10-12/source/search/packer/candidates/tt_n154.cert
+    - packing/resources/web/evand-n154-2026-10-12/receipts/exact-certification.json.xz
+    - packing/devtools/upper_bound_reports.py
+    - packing/devtools/check_half_angle_area.py
+    - docs/project/reviews/review-2026-10-12-upper-bound-import-552.md
 - path: results.html
   canonical: results.html
   kind: page

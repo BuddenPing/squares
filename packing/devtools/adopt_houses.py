@@ -241,6 +241,15 @@ RESULTS: dict[str, Prose] = {
             "agents wrote and ran the search, composition and verification code."
         ),
     ),
+    "T-156": Prose(
+        author="Evan Daniel",
+        reported="on [jlevy/squares#552](https://github.com/jlevy/squares/issues/552)",
+        producer_route=False,
+        ai=(
+            "The issue says the search code, the run and the request were done with Claude "
+            "(Claude Code), which Evan Daniel directed and reviewed."
+        ),
+    ),
 }
 
 XU = "ry-xu"
@@ -318,7 +327,13 @@ CREDITS: dict[int, Credit] = {
         "PingYou Ltd’s construction, after Ryan Xu’s n = 70 packing and Evan Daniel’s exact "
         "certificate of it",
     ),
-    154: Credit((SQUISH,), (), "Nate Chaoweeraprasit’s SQUISH packing"),
+    # Evan Daniel's packing; the start he names, Couzo's 155 less one square, is his
+    # statement, consistent with the measurements and not established by them (T-156).
+    154: Credit(
+        (DANIEL,),
+        (),
+        "Evan Daniel’s packing from his size-chaining explorer",
+    ),
     155: Credit((OSTASHEV,), (), "Daniil Ostashev’s packing"),
     156: Credit((OSTASHEV,), (), "Daniil Ostashev’s packing"),
     175: _composed(

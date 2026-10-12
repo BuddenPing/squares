@@ -2039,6 +2039,23 @@ sources:
       AI assistance stated: Claude wrote and ran the search, finishing, refinement and
       checking code under the author's direction. No local or global optimality is
       registered.
+  - key: '[Daniel n154 2026-10-12]'
+    authors: [Daniel]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-12'
+    lineage: builds-on-project
+    credit: Daniel after Couzo, Levy
+    note: >-
+      One complete exact certificate at 597e660c9a078a552991ab893cda3ab693cb5ac8, s(154) <=
+      12922566401934059503377267965457/10^30, from a time-travel test of the size-chaining
+      explorer of issues 465 and 489 restarted from this register as it stood on 5 October;
+      the author credits the start to Francisco Couzo's 5 October packing of 155 squares
+      less one square, which the record states as his statement. A regularized drawing of
+      the same packing at the same side is retained beside it. MIT-licensed certificate, KKT
+      point, input and solver reports retained; Claude assistance disclosed. KKT and jamming
+      statements are the author's numerical evidence; no local or global optimality claim.
+      Levy is named because the chain restarted from this register.
   - key: '[Summins stratification series 2026-10-12]'
     authors: [Summins]
     year: 2026

@@ -6,7 +6,7 @@
   "policy": "A derived drawing layer, never a witness: each view is the record's exact frame with its near-axis squares straightened and slid into exact contact, verified twice over Q at the certificate's side. It changes no side, frontier value or evidence tier, and every drawing made from it must be labelled 'regularized'.",
   "digests": "Cache keys, not integrity claims: source.sha256 says the view was derived from the witness the atlas now holds; view.sha256, of the decompressed YAML, binds the verification verdict recorded beside it to those bytes.",
   "parameters": {"angle_snap_tolerance_radians":0.0001,"snap_tolerance":"1/1000000000","rational_digits":36,"max_side_increase":"1e-9","center_dilation":"1","house_rule":{"gap":2e-06,"angle_tolerance_radians":1e-06},"stage_rule":{"gap":0.01,"angle_tolerance_degrees":0.5},"shades_measured_by":"devtools.census_atlas_contact_shades.witness_shades"},
-  "totals": {"records":324,"statuses":{"refused":71,"regularized":72,"unchanged":181},"refusals":{"promotion-overlap":70,"unsupported-scalar-kind":1},"shades":{"house":{"green_before":45433,"light_before":7576,"green_after":45481,"light_after":5693},"stage":{"green_before":45875,"light_before":6417,"green_after":45875,"light_after":5715}},"shades_of_regularized_records":{"house":{"green_before":10059,"light_before":4646,"green_after":10107,"light_after":2763},"stage":{"green_before":10501,"light_before":3487,"green_after":10501,"light_after":2785}},"residual_regressions":{"house":0,"stage":0},"held_squares":40},
+  "totals": {"records":324,"statuses":{"refused":71,"regularized":72,"unchanged":181},"refusals":{"promotion-overlap":70,"unsupported-scalar-kind":1},"shades":{"house":{"green_before":45423,"light_before":7533,"green_after":45476,"light_after":5694},"stage":{"green_before":45870,"light_before":6379,"green_after":45870,"light_after":5718}},"shades_of_regularized_records":{"house":{"green_before":10049,"light_before":4603,"green_after":10102,"light_after":2764},"stage":{"green_before":10496,"light_before":3449,"green_after":10496,"light_after":2788}},"residual_regressions":{"house":0,"stage":0},"held_squares":40},
   "entries": [
     {"n":1,"status":"unchanged","source":{"witness":"packing/witnesses/known-best/n-001.yaml","id":"W-known-best-n001","scalar_kind":"rational","sha256":"86e76492e6c04df19a39f17ef65ca043e1a4d4d07703ffadee79ba665f6af8cd"},"exact_frame":{"derivation":"the witness's own rational corners","retained_certificate":null,"matches_retained_certificate":null},"moves":{"accepted":0,"snaps":0,"compactions":0,"rejected":0,"largest_move_decimal":"0.000e+00"},"statuses":{"exact-axis":1},"non_regression":{"rounds":1,"held_slides":0,"held_pose":0,"residual_regressions":{"house":0,"stage":0}},"side":{"reported":"1","view_minus_reported":"0.000e+00","fits_reported_side":true},"shades":{"house":{"green_before":1,"light_before":0,"green_after":1,"light_after":0},"stage":{"green_before":1,"light_before":0,"green_after":1,"light_after":0}}},
     {"n":2,"status":"unchanged","source":{"witness":"packing/witnesses/known-best/n-002.yaml","id":"W-known-best-n002","scalar_kind":"rational","sha256":"3737a43bc9c8ae594f484b4c9a3e87123cd0d3333ab8ea0ce7ce2c76547b2bb9"},"exact_frame":{"derivation":"the witness's own rational corners","retained_certificate":null,"matches_retained_certificate":null},"moves":{"accepted":0,"snaps":0,"compactions":0,"rejected":0,"largest_move_decimal":"0.000e+00"},"statuses":{"exact-axis":2},"non_regression":{"rounds":1,"held_slides":0,"held_pose":0,"residual_regressions":{"house":0,"stage":0}},"side":{"reported":"2","view_minus_reported":"0.000e+00","fits_reported_side":true},"shades":{"house":{"green_before":2,"light_before":2,"green_after":2,"light_after":2},"stage":{"green_before":2,"light_before":2,"green_after":2,"light_after":2}}},
@@ -510,15 +510,15 @@
     {
       "n": 154,
       "status": "regularized",
-      "source": {"witness":"packing/witnesses/known-best/n-154.yaml","id":"W-known-best-n154","scalar_kind":"rational","sha256":"bbb287d6cac0b49447042d8568709dfd976069ebea5203b92b4224da7cb98ac1"},
+      "source": {"witness":"packing/witnesses/known-best/n-154.yaml","id":"W-known-best-n154","scalar_kind":"rational","sha256":"0e30355d52c1928a94e3dea81d2afb72bf8acdccf1001a72dd106289dc406d9a"},
       "exact_frame": {"derivation":"the witness's exact rational pose expansion","retained_certificate":"packing/witnesses/franciscouzo-2026/n-154-rational.yaml.gz","matches_retained_certificate":false},
-      "moves": {"accepted":420,"snaps":291,"compactions":129,"rejected":6,"largest_move_decimal":"6.026e-02"},
-      "statuses": {"exact-axis":113,"near-axis-untouched":1,"tilted":40},
+      "moves": {"accepted":249,"snaps":211,"compactions":38,"rejected":0,"largest_move_decimal":"1.350e-01"},
+      "statuses": {"exact-axis":108,"near-axis-untouched":1,"tilted":45},
       "non_regression": {"rounds":1,"held_slides":0,"held_pose":0,"residual_regressions":{"house":0,"stage":0}},
-      "side": {"reported":"784162558492446266593660385683137819091796768322490163735346888314210507575675725/60679277154496515024381071712664165344389803410694160363187109568787250164584599","view_minus_reported":"0.000e+00","fits_reported_side":true},
-      "changed_squares": 113,
-      "view": {"path":"packing/atlas/known-best/regularized/n-154-regularized.yaml.gz","sha256":"5660b14716c58449a00f0beeaae1627cea62d312f1e31d2836533be8ee0e047a"},
-      "shades": {"house":{"green_before":113,"light_before":104,"green_after":113,"light_after":29},"stage":{"green_before":114,"light_before":69,"green_after":114,"light_after":28}},
+      "side": {"reported":"12922566401934059503377267965457/1000000000000000000000000000000","view_minus_reported":"0.000e+00","fits_reported_side":true},
+      "changed_squares": 108,
+      "view": {"path":"packing/atlas/known-best/regularized/n-154-regularized.yaml.gz","sha256":"6724edf89b6bf368363d39fbc2a3641c0c16596b58760cae76b2cee4be30ea91"},
+      "shades": {"house":{"green_before":103,"light_before":61,"green_after":108,"light_after":30},"stage":{"green_before":109,"light_before":31,"green_after":109,"light_after":31}},
       "exact_verification": {"repository_verifier":true,"independent_checker":true,"pairs_tested_independently":11781,"passed":true}
     },
     {

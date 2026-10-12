@@ -954,19 +954,19 @@
       "url": "https://github.com/BuddenPing/square-packing-certificates/blob/bc328a7d727aedd0eabebd6ea80285f572b65d2d/n153.cert.json"
     },
     {
-      "attribution": "Nate Chaoweeraprasit, https://github.com/itsnaka/squish-certs/blob/d45669b48cc97ad3aa17a6c847a8d06630f66eac/squish-submission-2026-10-09/n154/n154.cert.json at d45669b48cc97ad3aa17a6c847a8d06630f66eac",
+      "attribution": "Evan Daniel, https://github.com/evand/square-packing/blob/597e660c9a078a552991ab893cda3ab693cb5ac8/search/packer/candidates/tt_n154.cert at 597e660c9a078a552991ab893cda3ab693cb5ac8",
       "kind": "packet-derived-facts",
-      "license_status": "no-licence-published",
+      "license_status": "MIT",
       "listed_n": [
         154
       ],
       "n": 154,
-      "path": "resources/web/squish-481-third-request-2026-10-09/facts/n-154.yaml.gz",
-      "raw_asset_retained": false,
-      "retention_policy": "Exact certificate retained as a derived fact, bound to the SHA-256 its packet pins upstream; no upstream byte is copied.",
-      "retrieved": "2026-10-10",
+      "path": "resources/web/evand-n154-2026-10-12/source/search/packer/candidates/tt_n154.cert",
+      "raw_asset_retained": true,
+      "retention_policy": "Complete source certificate retained losslessly and bound to the SHA-256 its packet pins upstream; no upstream program or prose is copied.",
+      "retrieved": "2026-10-12",
       "source_n": 154,
-      "url": "https://github.com/itsnaka/squish-certs/blob/d45669b48cc97ad3aa17a6c847a8d06630f66eac/squish-submission-2026-10-09/n154/n154.cert.json"
+      "url": "https://github.com/evand/square-packing/blob/597e660c9a078a552991ab893cda3ab693cb5ac8/search/packer/candidates/tt_n154.cert"
     },
     {
       "attribution": "Daniil Ostashev, https://github.com/dostashev/square-packing/blob/c3d17ab08bd5db65dc5ffe69e41f7b2ff0c2fc49/records/n0155.sqcert at c3d17ab08bd5db65dc5ffe69e41f7b2ff0c2fc49",

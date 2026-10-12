@@ -26,7 +26,7 @@ second implementation agrees.
 ## The Short Version
 
 - **111** programs: **40** external and **71** first-party; **81** decide claims and **30** check premises.
-- **454** of **524** evidence entries name the programs that verified them: 238 reproduced with the producer’s code, 189 independently re-implemented, 17 re-implemented, sharing the producer’s components, 10 no relation: a proof, a derivation or a report.
+- **455** of **526** evidence entries name the programs that verified them: 238 reproduced with the producer’s code, 190 independently re-implemented, 17 re-implemented, sharing the producer’s components, 10 no relation: a proof, a derivation or a report.
 
 ## Programs
 
@@ -72,8 +72,8 @@ second implementation agrees.
 | [`V-anabologyco-n17-checker`](#v-anabologyco-n17-checker) | scripts/check_certificate.py and its event pipeline | anabologyco-maker | external | decides | 1 | 0 |
 | [`V-check-basic-bounds`](#v-check-basic-bounds) | devtools.check_basic_bounds | Squares Project (Levy) | first-party | decides | 3 | 14 |
 | [`V-optimal-moduli`](#v-optimal-moduli) | cases.small_n.optimal_moduli | Squares Project (Levy) | first-party | decides | 1 | 0 |
-| [`V-sqpack-verify`](#v-sqpack-verify) | sqpack.verify | Squares Project (Levy) | first-party | decides | 43 | 33 |
-| [`V-check-rational-witness-independent`](#v-check-rational-witness-independent) | devtools.check_rational_witness_independent | Squares Project (Levy) | first-party | decides | 38 | 36 |
+| [`V-sqpack-verify`](#v-sqpack-verify) | sqpack.verify | Squares Project (Levy) | first-party | decides | 44 | 34 |
+| [`V-check-rational-witness-independent`](#v-check-rational-witness-independent) | devtools.check_rational_witness_independent | Squares Project (Levy) | first-party | decides | 39 | 37 |
 | [`V-check-nagamochi-lemma1-counterexample`](#v-check-nagamochi-lemma1-counterexample) | devtools.check_nagamochi_lemma1_counterexample | Squares Project (Levy) | first-party | decides | 1 | 1 |
 | [`V-check-karakus-strip-measure`](#v-check-karakus-strip-measure) | devtools.check_karakus_strip_measure | Squares Project (Levy) | first-party | decides | 1 | 2 |
 | [`V-upper-bound-promotion`](#v-upper-bound-promotion) | devtools.upper_bound_packets | Squares Project (Levy) | first-party | decides | 6 | 5 |
@@ -109,8 +109,8 @@ second implementation agrees.
 | [`V-audit-clipped-corner-transfer`](#v-audit-clipped-corner-transfer) | devtools.audit_clipped_corner_transfer | Squares Project (Levy) | first-party | decides | 2 | 1 |
 | [`V-audit-continuous-pose`](#v-audit-continuous-pose) | devtools.audit_continuous_pose | Squares Project (Levy) | first-party | decides | 5 | 2 |
 | [`V-audit-n40-new-supports`](#v-audit-n40-new-supports) | devtools.audit_n40_new_supports | Squares Project (Levy) | first-party | decides | 3 | 1 |
-| [`V-check-half-angle-area`](#v-check-half-angle-area) | devtools.check_half_angle_area | Squares Project (Levy) | first-party | decides | 20 | 20 |
-| [`V-evand-exact-certificates`](#v-evand-exact-certificates) | devtools.evand_exact_certificates | Squares Project (Levy) | first-party | premises | 24 | 22 |
+| [`V-check-half-angle-area`](#v-check-half-angle-area) | devtools.check_half_angle_area | Squares Project (Levy) | first-party | decides | 21 | 21 |
+| [`V-evand-exact-certificates`](#v-evand-exact-certificates) | devtools.evand_exact_certificates | Squares Project (Levy) | first-party | premises | 25 | 23 |
 | [`V-check-n11-final-composition`](#v-check-n11-final-composition) | devtools.check_n11_final_composition | Squares Project (Levy) | first-party | premises | 2 | 2 |
 | [`V-audit-n11-lean`](#v-audit-n11-lean) | devtools.audit_n11_lean | Squares Project (Levy) | first-party | premises | 2 | 1 |
 | [`V-audit-n17-endpoint-receipt`](#v-audit-n17-endpoint-receipt) | devtools.audit_n17_endpoint_receipt | Squares Project (Levy) | first-party | premises | 1 | 1 |
@@ -135,8 +135,8 @@ second implementation agrees.
 | [`V-squish-upper-bound-packets`](#v-squish-upper-bound-packets) | devtools.squish_upper_bound_packets | Squares Project (Levy) | first-party | premises | 2 | 2 |
 | [`V-squish-followup-packets`](#v-squish-followup-packets) | devtools.squish_followup_packets | Squares Project (Levy) | first-party | premises | 1 | 1 |
 | [`V-squish-second-update-confirmation`](#v-squish-second-update-confirmation) | devtools.squish_second_update_confirmation | Squares Project (Levy) | first-party | premises | 1 | 1 |
-| [`V-evand-arrangement-receipts`](#v-evand-arrangement-receipts) | devtools.evand_arrangement_reports | Squares Project (Levy) | first-party | premises | 21 | 21 |
-| [`V-upper-bound-reports`](#v-upper-bound-reports) | devtools.upper_bound_reports | Squares Project (Levy) | first-party | premises | 17 | 17 |
+| [`V-evand-arrangement-receipts`](#v-evand-arrangement-receipts) | devtools.evand_arrangement_reports | Squares Project (Levy) | first-party | premises | 22 | 22 |
+| [`V-upper-bound-reports`](#v-upper-bound-reports) | devtools.upper_bound_reports | Squares Project (Levy) | first-party | premises | 18 | 18 |
 | [`V-rehwaldt-n68-verify`](#v-rehwaldt-n68-verify) | verify.py | Seth Rehwaldt | external | decides | 1 | 1 |
 | [`V-rehwaldt-n68-independent-support-check`](#v-rehwaldt-n68-independent-support-check) | independent_support_check.py | Seth Rehwaldt | external | decides | 1 | 1 |
 | [`V-refinement-custody`](#v-refinement-custody) | devtools.refinement_custody | Squares Project (Levy) | first-party | premises | 2 | 2 |
@@ -1016,6 +1016,7 @@ Decides a packing pair by pair and wall by wall: by exact sign in a number field
 | `E-couzo-506-exact-feasibility` | replayed here | independent | T-152 |
 | `E-ostashev-528-exact-feasibility` | replayed here | independent | T-154 |
 | `E-calle-529-exact-feasibility` | replayed here | independent | T-155 |
+| `E-evand-552-exact-feasibility` | replayed here | independent | T-156 |
 
 ### `V-check-rational-witness-independent`
 
@@ -1068,6 +1069,7 @@ Decides a rational-corner witness pair by pair and wall by wall in Fraction arit
 | `E-couzo-506-exact-feasibility` | replayed here | independent | T-152 |
 | `E-ostashev-528-exact-feasibility` | replayed here | independent | T-154 |
 | `E-calle-529-exact-feasibility` | replayed here | independent | T-155 |
+| `E-evand-552-exact-feasibility` | replayed here | independent | T-156 |
 
 ### `V-check-nagamochi-lemma1-counterexample`
 
@@ -1617,7 +1619,7 @@ Decides a rational centre and half-angle certificate, or a rational centre-basis
 - Source: [`packing/devtools/check_half_angle_area.py`](../../packing/devtools/check_half_angle_area.py), [`packing/tests/test_check_half_angle_area.py`](../../packing/tests/test_check_half_angle_area.py)
 - Versions run: this repository's commits, which Git holds
 - What its authors read and used: [`packing/devtools/check_half_angle_area.py`](../../packing/devtools/check_half_angle_area.py)
-- Note: Written on 2026-10-10 by the review lane of T-128, T-130 and T-131 from the certificate formats and plane geometry, and extended the same day by the review lanes of issues 476, 481, 483 and 484 and of issue 470 and Evan Daniel's n = 126 certificate; the review lane of issues 488 and 489 ran it as retained, on the ten certificates their entries cite and, by a driver of its functions, the four the two commits hold that no entry cites. The review lane of Evan Daniel's regularized record lists ran it as retained, with its regularized roster and --upstream at the pin, on the fifteen certificates T-146 cites; it measures each against the packing T-146's regularizations name, read from the register. The review lane of issues 503 and 504 (docs/project/reviews/review-2026-10-11-upper-bound-imports-503-504.md) extended it on 2026-10-11 with readers of PingYou Ltd's JSON and of corners witnesses, --upstream checks that hold a fact to its pinned same-packing witness, and patch_lineage, which counts a parent packing's squares that reappear in a certificate under a box symmetry and translation and decides nothing; it ran it on the two certificates T-147 and T-148 cite. The review lane of issues 505 and 501 (docs/project/reviews/review-2026-10-11-upper-bound-imports-505-501.md) added a reader of the sqcert format, an --upstream reader of Evan Daniel's format for derived facts, a check of each retained certificate's side against its README's print at the pin, and credit readers for T-146, T-128 and T-098, and ran it on the five certificates T-149 and T-150 cite. The review lane of issue 500 (docs/project/reviews/review-2026-10-11-upper-bound-imports-500.md) added its roster, a reader of T-128's retained certificates and a widened nearness for patch_lineage, and ran it on the nine certificates T-151 cites; the review lane of issue 506 (docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md) ran it through a roster entry and credit keys that read another import's certificate, with no change to any decision, on the eleven certificates T-152 and its beyond-horizon rows cite. The review lane of issues 528 and 529 (docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md) added a reader of Rio Calle's decimal layout, with exact decimal literals and a half-angle floor for radians by Taylor series in decimal arithmetic, a derivation of his certificate from the layout, and the roster's credit and lineage measurements, and ran it on the four certificates T-154 and T-155 cite. Its author had read both maintained routes, their parser and the importer's adapters before writing it, so it is not clean-room; it imports none of their parsing or deciding code and shares Fraction with every exact checker here. It is a second pair-deciding procedure within one method, exact-algebraic, not a second method.
+- Note: Written on 2026-10-10 by the review lane of T-128, T-130 and T-131 from the certificate formats and plane geometry, and extended the same day by the review lanes of issues 476, 481, 483 and 484 and of issue 470 and Evan Daniel's n = 126 certificate; the review lane of issues 488 and 489 ran it as retained, on the ten certificates their entries cite and, by a driver of its functions, the four the two commits hold that no entry cites. The review lane of Evan Daniel's regularized record lists ran it as retained, with its regularized roster and --upstream at the pin, on the fifteen certificates T-146 cites; it measures each against the packing T-146's regularizations name, read from the register. The review lane of issues 503 and 504 (docs/project/reviews/review-2026-10-11-upper-bound-imports-503-504.md) extended it on 2026-10-11 with readers of PingYou Ltd's JSON and of corners witnesses, --upstream checks that hold a fact to its pinned same-packing witness, and patch_lineage, which counts a parent packing's squares that reappear in a certificate under a box symmetry and translation and decides nothing; it ran it on the two certificates T-147 and T-148 cite. The review lane of issues 505 and 501 (docs/project/reviews/review-2026-10-11-upper-bound-imports-505-501.md) added a reader of the sqcert format, an --upstream reader of Evan Daniel's format for derived facts, a check of each retained certificate's side against its README's print at the pin, and credit readers for T-146, T-128 and T-098, and ran it on the five certificates T-149 and T-150 cite. The review lane of issue 500 (docs/project/reviews/review-2026-10-11-upper-bound-imports-500.md) added its roster, a reader of T-128's retained certificates and a widened nearness for patch_lineage, and ran it on the nine certificates T-151 cites; the review lane of issue 506 (docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md) ran it through a roster entry and credit keys that read another import's certificate, with no change to any decision, on the eleven certificates T-152 and its beyond-horizon rows cite. The review lane of issues 528 and 529 (docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md) added a reader of Rio Calle's decimal layout, with exact decimal literals and a half-angle floor for radians by Taylor series in decimal arithmetic, a derivation of his certificate from the layout, and the roster's credit and lineage measurements, and ran it on the four certificates T-154 and T-155 cite. The import and review lanes of issue 552 (docs/project/reviews/review-2026-10-12-upper-bound-import-552.md) gave it that import's roster line with its credit and lineage keys, and ran it on the certificate T-156 cites. Its author had read both maintained routes, their parser and the importer's adapters before writing it, so it is not clean-room; it imports none of their parsing or deciding code and shares Fraction with every exact checker here. It is a second pair-deciding procedure within one method, exact-algebraic, not a second method.
 
 | evidence | run | code | results |
 | --- | --- | --- | --- |
@@ -1641,6 +1643,7 @@ Decides a rational centre and half-angle certificate, or a rational centre-basis
 | `E-couzo-506-exact-feasibility` | replayed here | independent | T-152 |
 | `E-ostashev-528-exact-feasibility` | replayed here | independent | T-154 |
 | `E-calle-529-exact-feasibility` | replayed here | independent | T-155 |
+| `E-evand-552-exact-feasibility` | replayed here | independent | T-156 |
 
 ### `V-evand-exact-certificates`
 
@@ -1679,6 +1682,7 @@ Reads Evan Daniel's rational certificates, refusing anything the format does not
 | `E-couzo-506-exact-feasibility` | replayed here | independent | T-152 |
 | `E-ostashev-528-exact-feasibility` | replayed here | independent | T-154 |
 | `E-calle-529-exact-feasibility` | replayed here | independent | T-155 |
+| `E-evand-552-exact-feasibility` | replayed here | independent | T-156 |
 
 ### `V-check-n11-final-composition`
 
@@ -2183,6 +2187,7 @@ Binds all three complete source certificates and all nine full deciding inputs/n
 | `E-couzo-506-exact-feasibility` | replayed here | independent | T-152 |
 | `E-ostashev-528-exact-feasibility` | replayed here | independent | T-154 |
 | `E-calle-529-exact-feasibility` | replayed here | independent | T-155 |
+| `E-evand-552-exact-feasibility` | replayed here | independent | T-156 |
 
 ### `V-upper-bound-reports`
 
@@ -2192,7 +2197,7 @@ Imports a report of rational upper-bound certificates by another author from its
 
 - Source: [`packing/devtools/upper_bound_reports.py`](../../packing/devtools/upper_bound_reports.py), [`packing/devtools/evand_arrangement_reports.py`](../../packing/devtools/evand_arrangement_reports.py), [`packing/tests/test_upper_bound_reports.py`](../../packing/tests/test_upper_bound_reports.py)
 - Versions run: this repository's commits, which Git holds
-- Note: Written for the 2026-10-10 intake pass's upper-bound imports from the formats the sources state. sqpack.verify and the independent rational corner checker decide; the 10 October reviews of issues 476, 481, 483 and 484, of issue 470 and of issues 488 and 489, and the 11 October review of Evan Daniel's regularized record lists (docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md), read it in full; for issues 488 and 489, its HOUSES readers of the issue-481, issue-484, issue-488 and issue-489 packets are the exact readers that review proposed (RL-2). For issue 470 its decimal_dilation adapter generates the exact witnesses from the source's decimal poses, so there this repository is the witness's generator. The import lane of issues 503 and 504 added the pingyou-json and witness-corners adapters and the same-packing comparison in derive, and the 11 October review of those issues (docs/project/reviews/review-2026-10-11-upper-bound-imports-503-504.md) read them in full. The import lane of issues 505 and 501 added the sqcert adapter, which the 11 October review of those issues (docs/project/reviews/review-2026-10-11-upper-bound-imports-505-501.md) read in full. The import lanes of issues 500 and 506 added HOUSES readers of their packets, which the reviews of issue 500 (docs/project/reviews/review-2026-10-11-upper-bound-imports-500.md) and of issue 506 (docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md) read in full; the second refroze issue 506's claim record against the first's exact sides. The import lane of issues 528 and 529 added the calle-txt adapter, which floors each half-angle tangent of a radian layout by an outward-rounded interval enclosure, and HOUSES readers of both packets; the 12 October review of those issues (docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md) read them in full.
+- Note: Written for the 2026-10-10 intake pass's upper-bound imports from the formats the sources state. sqpack.verify and the independent rational corner checker decide; the 10 October reviews of issues 476, 481, 483 and 484, of issue 470 and of issues 488 and 489, and the 11 October review of Evan Daniel's regularized record lists (docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md), read it in full; for issues 488 and 489, its HOUSES readers of the issue-481, issue-484, issue-488 and issue-489 packets are the exact readers that review proposed (RL-2). For issue 470 its decimal_dilation adapter generates the exact witnesses from the source's decimal poses, so there this repository is the witness's generator. The import lane of issues 503 and 504 added the pingyou-json and witness-corners adapters and the same-packing comparison in derive, and the 11 October review of those issues (docs/project/reviews/review-2026-10-11-upper-bound-imports-503-504.md) read them in full. The import lane of issues 505 and 501 added the sqcert adapter, which the 11 October review of those issues (docs/project/reviews/review-2026-10-11-upper-bound-imports-505-501.md) read in full. The import lanes of issues 500 and 506 added HOUSES readers of their packets, which the reviews of issue 500 (docs/project/reviews/review-2026-10-11-upper-bound-imports-500.md) and of issue 506 (docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md) read in full; the second refroze issue 506's claim record against the first's exact sides. The import lane of issues 528 and 529 added the calle-txt adapter, which floors each half-angle tangent of a radian layout by an outward-rounded interval enclosure, and HOUSES readers of both packets; the 12 October review of those issues (docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md) read them in full. The import lane of issue 552 added a HOUSES reader of its packet, which the 12 October review of that issue (docs/project/reviews/review-2026-10-12-upper-bound-import-552.md) read.
 
 | evidence | run | code | results |
 | --- | --- | --- | --- |
@@ -2213,6 +2218,7 @@ Imports a report of rational upper-bound certificates by another author from its
 | `E-couzo-506-exact-feasibility` | replayed here | independent | T-152 |
 | `E-ostashev-528-exact-feasibility` | replayed here | independent | T-154 |
 | `E-calle-529-exact-feasibility` | replayed here | independent | T-155 |
+| `E-evand-552-exact-feasibility` | replayed here | independent | T-156 |
 
 ### `V-rehwaldt-n68-verify`
 

@@ -686,3 +686,23 @@ repositories:
       writeup/outreach/POSTED.md (13 lines); nothing to import from it. Later commits of the
       running campaigns (A243's descent, the k0 chains) are expected and hold nothing to import
       unless a note of the series changes.
+  - url: https://github.com/evand/square-packing
+    read_through: 31523f87316bdfda00f5459dd9077928e264f133
+    read_on: '2026-10-12'
+    note: >-
+      The six commits of 12 October from 7d5cc3f to 31523f8 past the ad86d42 read. 597e660 adds
+      search/packer/candidates/tt_n154.* and tt_n154_regularized.*, s(154) <=
+      12922566401934059503377267965457/10^30, which issue #552 reports and the
+      evand-n154-2026-10-12 packet retains at 597e660 (think-6no5; T-156). 31523f8, the head and
+      the tag of the release exact-data-2026-10-12, adds one packer-log line recording the post;
+      the release's two archives, the s(29) polynomial data and the grade-C certificates of
+      #545, are release assets, not tree files, and the evand-exact-data-2026-10-12 packet pins
+      both by digest at 31523f8 (think-6gti, think-7scz). The rest is the packer's development:
+      7d5cc3f pre-registers census v4 (census_v4.py, refset.py --rule groups, the h110_J0,
+      h110_grand and h110_recnb reference sets with their starts) and the time-travel test;
+      a767047 and c90470a record census v4 batch a and the batch b predictions; c3655cc records
+      batch b (the n = 110 record re-found 8 of 8 with its count neighbourhood withheld, claim
+      C24), the time-travel result (chains from the 5 October register recover about 7% of the
+      later gains, median 0, and pass the best known only at 154) in PACKER.md, CLAIMS.md and
+      CONFUSIONS.md, and adds search/packer/timetravel.py, which the 154 packet pins by digest.
+      None states a bound or a certificate. Nothing else to import.

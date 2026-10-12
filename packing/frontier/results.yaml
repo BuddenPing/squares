@@ -14369,15 +14369,15 @@ results:
       PingYou Ltd's later certificates of issues 504 and 503 (T-148, T-147) are smaller still;
       at 270 and 305 the author's own later packings of issue 500 (T-151) are smaller than
       T-140's, at 305 Francisco Couzo's issue 506 refinement of that packing (T-152) is
-      smaller again, and at 232 Daniil Ostashev's later composition of issue 528 (T-154) is
-      smaller.
+      smaller again, at 232 Daniil Ostashev's later composition of issue 528 (T-154) is
+      smaller, and at 154 Evan Daniel's later packing of issue 552 (T-156) is smaller.
 
       On 11 October 2026 the case records adopted this entry as the house at 131, 154, 232,
       259 and 307, T-140 at 209, 237, 270 and 305, T-146 at 236, 263, 269,
       292, 302 and 303, which regularizes these packings there and credits them to this
       entry, T-147 at 207 and
-      T-148 at 153; on 12 October T-151 replaced T-140 at 270, T-152 replaced it at 305, and
-      T-154 replaced this entry at 232.
+      T-148 at 153; on 12 October T-151 replaced T-140 at 270, T-152 replaced it at 305,
+      T-154 replaced this entry at 232, and T-156 replaced it at 154.
 
       Credit Nate Chaoweeraprasit (https://github.com/itsnaka/squish-certs), using SQUISH
       and its Mondrian composition method, after Francisco Couzo, Ryan Xu, Frits Göbel,
@@ -14484,8 +14484,9 @@ results:
       its store's best packings, are smaller still, by 8.48e-16, 3.29e-16, 5.05e-13,
       6.73e-16, 2.03e-13, 2.21e-17 and 4.48e-16. At 207 PingYou Ltd's later certificate of
       issue 503 (T-147) is smaller, by 4.55e-03, and at 153 that of issue 504 (T-148) is
-      smaller than T-146's, so it is the smallest report known at 131, 154, 259 and 307; at
-      232 Daniil Ostashev's later certificate of issue 528 (T-154) is smaller, by 3.25e-03.
+      smaller than T-146's, so it is the smallest report known at 131, 259 and 307; at 232
+      Daniil Ostashev's later certificate of issue 528 (T-154) is smaller, by 3.25e-03, and
+      at 154 Evan Daniel's of issue 552 (T-156), by 5.04e-04.
 
       At 154, 207, 209, 236, 237, 263, 302 and 303 it replaces earlier SQUISH packings the
       cases hold directly or through Siddharth Gupta's refinements, and at 153 it is below
@@ -14515,6 +14516,9 @@ results:
       The review of issues 528 and 529
       (docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md) recommends T-154
       at 232, which the case holds since 12 October 2026, this entry's certificate kept as
+      history. The review of issue 552
+      (docs/project/reviews/review-2026-10-12-upper-bound-import-552.md) recommends T-156
+      at 154, which the case holds since 12 October 2026, this entry's certificate kept as
       history.
 
       The three sources/ certificates at 155, 240 and 306 are above their cases and are
@@ -17835,3 +17839,160 @@ results:
           where the record retains them.
         verdict: accepted
         covers: [T-154, T-155]
+  - id: T-156
+    kind: upper-bound
+    registered: '2026-10-12'
+    headline: A smaller packing of 154 squares from Evan Daniel's size-chaining explorer, certified exactly
+    claim: >-
+      One complete rational source certificate by Evan Daniel, reported on
+      jlevy/squares#552, proves a finite upper bound at the exact side it states: s(154) <=
+      12922566401934059503377267965457/10^30 = 12.922566401934059503377267965457.
+
+      The certificate gives a rational side and, for each of the 154 unit squares, a
+      rational centre and the tangent of its half-angle, in the author's text format: the
+      80-digit KKT point of the packing with every centre scaled by 1 + 1e-20 about the
+      origin corner and the side rounded up at 30 places.
+
+      The author reports that his two exact rational checkers, verify_cert.py by separating
+      axes and verify_cert2.py by polygon intersection, accept it with least certified
+      clearances of 1e-20 between squares and 5e-21 to the walls; he states that the KKT
+      point has positive multipliers on its load-bearing contacts, the least 1.5e-4, a
+      reduced Hessian positive semidefinite modulo 45 exact flat motions, a first-order
+      MILP jammed in all 98 corner-to-corner branches and 8 rattlers, numerical evidence by
+      his own statement and not proofs. Those statements are the author's; no source
+      program ran here.
+
+      All three retained jobs, the positive with its duplicate-square and
+      outside-container controls, were decided again here on 12 October 2026 by both
+      maintained exact routes and equal their retained rows. A third exact route,
+      half-extent containment and exact intersection area, decided the certificate with six
+      controls and held the retained file to its upstream bytes fetched at the pin. No
+      route here is the source's code, and the source ran none of them, so the replay is
+      independently re-implemented. The 12 October review found no blocking defect.
+
+      The side is 5.04e-04 below the ceiling the case held, SQUISH's third request (T-136),
+      adopted on 11 October 2026 and on main since 12 October; 4.00e-03 below T-127, issue
+      470's pose and T-115; 5.73e-03 below T-113; and 9.10e-03 below T-098 and T-056: the
+      smallest exact side the record holds or has pending at 154.
+
+      On 12 October 2026 the case record adopted this entry as the house at 154, its
+      reported and verified upper bounds moving together and T-136 kept as history, with
+      T-127, T-115 and T-113 verified and not selected; private-worker custody was closed
+      in the same change (packing/devtools/house-custody-2026-10-11.json).
+
+      Credit Evan Daniel (https://github.com/evand/square-packing) with the packing and its
+      certificate, its start credited to Francisco Couzo's 5 October packing of 155 squares
+      as the author asks. Measured here, the packing is another arrangement than T-136's:
+      no symmetry of the box pairs the two square for square, and under the best placement
+      found 32 of T-136's squares land within 1e-9 of one of these, one to the digit.
+
+      The author states that the packing came from a time-travel test of his size-chaining
+      explorer, the quality-diversity basin explorer of issues 465 and 489, restarted from
+      this register as it stood on 5 October, and that the chain never saw T-136's
+      packing; in his comment of 12 October he states that it descends from Couzo's packing
+      of 155 squares with one square removed, after 17 productive rounds at 154. The
+      measurements here are consistent with that statement and do not establish it: 43
+      squares of Couzo's 155, as T-098 solved it, reappear to the digit, but so do 45 of
+      Couzo's 154, and at a tenth of a unit the 155 is the nearer of the two, 114 squares
+      against 87; the round-by-round trace is not published.
+
+      The search code, the run and the request were done with Claude (Claude Code), which
+      Evan Daniel directed and reviewed.
+    scope:
+      n_values: [154]
+    verification: V3
+    confirmation: C3
+    significance:
+      score: 3
+      rationale: >-
+        A new arrangement of 154 squares, measured as no placement of the packing the case
+        held (T-136) or of Couzo's 154, a smaller finite construction side 5.04e-04 below
+        the case ceiling and the smallest known at the count, as T-149, T-136 and T-154 are;
+        not a re-solve, regularization or refinement of a packing the record credits; no
+        lower bound or optimum.
+      scored: '2026-10-12'
+      by: >-
+        the 12 October review
+        (docs/project/reviews/review-2026-10-12-upper-bound-import-552.md),
+        confirming the draft of think-6no5 Evan Daniel import
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Daniel n154 2026-10-12]']
+      published: '2026-10-12'
+    evidence:
+      - E-evand-552-n154-report
+      - E-evand-552-exact-feasibility
+    artifacts:
+      - packing/resources/web/evand-n154-2026-10-12/README.md
+      - packing/resources/web/evand-n154-2026-10-12/acquisition/claims.json
+      - packing/resources/web/evand-n154-2026-10-12/source/search/packer/candidates/tt_n154.cert
+      - packing/resources/web/evand-n154-2026-10-12/receipts/exact-certification.json.xz
+      - packing/devtools/upper_bound_reports.py
+      - packing/devtools/check_half_angle_area.py
+      - docs/project/reviews/review-2026-10-12-upper-bound-import-552.md
+    controls:
+      - packing/tests/test_upper_bound_reports.py
+      - packing/tests/test_check_half_angle_area.py
+    notes: >-
+      A separate complete repository replay is retained for n = 154: 1 positive and 2
+      duplicate-square and outside-container controls passed their required outcomes on
+      both routes, 70686 pair decisions; summed over the 3 jobs, the receipt records 40.97
+      route CPU seconds and 80.68 job wall seconds, the longest job 29.49 seconds. The
+      positive clears every wall by exactly 5.00e-21 at the low walls and by
+      5.0000000007e-21 at the far walls, and every pair by a separating-axis gap just under
+      1.00e-20, which the third route's least Euclidean distance equals exactly; no square
+      touches a wall.
+
+      The regularized drawing of the same packing at the same side,
+      tt_n154_regularized.cert, is retained beside the certificate as the source's display
+      view, decided here as a diagnostic on all three routes and no separate claim: it
+      keeps 112 of the 154 poses and turns only the eight rattlers.
+
+      V3 and C3 rest on the 12 October review
+      (docs/project/reviews/review-2026-10-12-upper-bound-import-552.md) and the replay
+      it reproduced (E-evand-552-exact-feasibility). Its findings are non-blocking: the
+      issue's 0.396 matching distance is to Couzo's 154, not to the parent the comment
+      names (RD-1); the lineage trace the comment names is not published (RD-2); the
+      regularizer's report at the pin lists the packing by Francisco Couzo, while the issue
+      credits it to Evan Daniel with the start to Couzo (RD-3); T-136's adoption is dated
+      11 October (RD-4); the author's statements are attributed (RD-5); the kernel's
+      controls are gross (RD-6); the measurement by pose does not identify the start
+      (RD-7).
+
+      The review recommends this entry as the house at 154, crediting Evan Daniel with the
+      start credited to Francisco Couzo's 5 October packing of 155 squares as the author
+      asks, with T-136, T-127, T-115 and T-113 kept as history. Private-worker custody was
+      closed on 12 October 2026 (packing/devtools/house-custody-2026-10-11.json), and the
+      case record adopted the house that day, T-136 kept as history.
+
+      The source's own checkers, pinned at the same revision and byte-identical to the
+      issue-399 packet's copies, were not run here. The two maintained routes, the sqpack
+      rational witness verifier and the independent rational corner checker, share
+      certificate parsing, half-angle conversion, Fraction arithmetic and the
+      separating-axis method. No two independent methods, human oversight or optimality is
+      claimed.
+    next_rung: >-
+      V4 and C4 need a second accepted adversarial review by a distinct reviewer and a
+      retained human oversight record; one AI review, of 12 October, is retained.
+    reviews:
+      - path: docs/project/reviews/review-2026-10-12-upper-bound-import-552.md
+        kind: adversarial
+        reviewer: >-
+          AI agent (Claude, at extra-high reasoning effort), the stage 4 review lane (W2) of
+          the 2026-10-12 intake continuation under the 2026-10-11 pass's epic, prompted
+          separately from the import lane that built the packet, with no shared context
+          beyond its committed notes, scratch measurements and register plan
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-12'
+        scope: >-
+          Finite feasibility of the one certificate the import's entry cites, issue 552 at
+          154. The retained receipt replayed on both maintained routes, the third exact route
+          given its roster line with its sharp controls, every file of the pinned scope
+          fetched at its pin and held to its digest and the retained certificate to its
+          upstream bytes, admission against the issue's print, the claim comparison, each
+          route's trust boundary, the certificate measured pose by pose against the packing
+          its case holds and against Couzo's 154, and the start the author names measured
+          where the record retains it.
+        verdict: accepted
+        covers: [T-156]

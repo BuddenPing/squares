@@ -833,14 +833,14 @@ together to it, each earlier certificate stayed as history, and each drawing mov
 the adopted geometry.
 Couzo’s refinements hold 84, 86, 105, 108, 127, 180, 228, 267 and 306, two more counts
 through his 10 October certificates and 304 and 305 through his 11 October refinements
-of SQUISH’s packings there, SQUISH’s packings eleven counts, seven of them Mondrian
+of SQUISH’s packings there, SQUISH’s packings ten counts, seven of them Mondrian
 compositions of its 11 October release, Daniel’s regularizations of Xu’s and SQUISH’s
-packings thirteen, Daniel’s reconstruction of Xu’s arrangement 126, Daniel’s own packing
-and his move of Fang’s construction 132 and 308, PingYou Ltd’s constructions from Xu’s n
-= 70 packing 153 and 207, Daniil Ostashev’s packings 155, 156 and 211 and his
-compositions with a 38-square rectangle 175, 232 and 264, and Robert Barnett’s
-refinements of Xu’s packings 146 and 261
-([results register](../../frontier/results.yaml)).
+packings thirteen, Daniel’s reconstruction of Xu’s arrangement 126, Daniel’s own
+packings 132 and 154, the second from his size-chaining explorer, his move of Fang’s
+construction 308, PingYou Ltd’s constructions from Xu’s n = 70 packing 153 and 207,
+Daniil Ostashev’s packings 155, 156 and 211 and his compositions with a 38-square
+rectangle 175, 232 and 264, and Robert Barnett’s refinements of Xu’s packings 146 and
+261 ([results register](../../frontier/results.yaml)).
 
 Pending source claims need their own scope.
 Daniel’s retained $n=105,130,292$ supplement, T-129, is an unreplayed historical source

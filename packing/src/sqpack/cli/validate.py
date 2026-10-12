@@ -150,8 +150,8 @@ SCREEN_EXCLUDED: dict[str, tuple[str, ...]] = {
 #: for issue 528 (T-154) the three counts it moved, 175, 232 and 264.
 SCREEN_FINDINGS: dict[str, tuple[int, int, int, int]] = {
     "n=1..100": (28, 146, 86, 659),
-    "n=1..200": (65, 530, 182, 2184),
-    "n=1..324": (121, 1497, 302, 5040),
+    "n=1..200": (65, 535, 182, 2182),
+    "n=1..324": (121, 1502, 302, 5038),
 }
 UNDETERMINED_BY_MISS = (28,)
 #: The cases the two sampled sweeps re-derive on every pull request, computed here from
