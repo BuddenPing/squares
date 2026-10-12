@@ -1724,7 +1724,9 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
     # The replica patches the kept solve ran with are this count's, and its views' too.
     pin = {**pin, "patches": [*pin["patches"], *applied_patches(solved.get("patches") or [])]}
     report["generator"]["patches"] = pin["patches"]
-    seconds["solve"] = solved.get("seconds")
+    # The stage's cost is every attempt the ladder made, not only the one it kept.
+    attempted = [row.get("seconds") or 0 for row in solved.get("attempts") or []]
+    seconds["solve"] = round(sum(attempted), 2) if attempted else solved.get("seconds")
     report["solve"] = solved
     record_solve_status(replica, n, str(solved["status"]))
     no_output = {"solved": None, "same": None, "same_refusal": None}

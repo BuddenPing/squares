@@ -542,7 +542,11 @@ def test_n26_runs_end_to_end(tmp_path: Path) -> None:
     assert report["status"] == "ok"
     assert report["source"]["path"] == "packing/witnesses/known-best/n-026.yaml"
     assert report["solve"]["status"] == "KKT local min"
+    assert report["solve"]["gate"] == "certified"
     assert report["solve"]["free"] == [8, 19, 23]
+    # One attempt, so the stage's seconds are that attempt's.
+    assert [row["rung"] for row in report["solve"]["attempts"]] == [None]
+    assert report["seconds"]["solve"] == report["solve"]["attempts"][0]["seconds"]
     assert report["regularize"]["level"] == 1
     solved = report["outputs"]["solved"]
     assert solved["relation"] == "solved"
