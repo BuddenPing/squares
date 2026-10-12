@@ -94,13 +94,13 @@ issues:
         author's rebuild costs about 10 process-hours, 14 s to about 5 minutes a count.
       source: https://github.com/jlevy/squares/issues/419#issuecomment-6104596297
       not_registered: >-
-        Evidence about the source configurations this entry already maps, T-120 to T-124 and the
-        retained catalogue, not a new bound. Not retained or built here: think-63vx owns taking the
-        Lean binding and the quadratic closed forms in as evidence, from a packet at 6bbae37 and a
-        build here. The author's per-count table at 6bbae37 (search/exact/lean_batch/results.md)
-        prices all 258 modules at 37,107 s and the 41 the ask names at 7,559 s (2.1 process-hours,
-        the longest n = 148 at 294 s); n = 129 and 146 need chunks of 10 because chunks of 25
-        exceed 14 GB.
+        Evidence about the source configurations of the forms this entry maps, T-120 to T-123 and
+        the retained catalogue, and of #420's T-124, not a new bound. Not retained or built here:
+        think-63vx owns taking the Lean binding and the quadratic closed forms in as evidence, from
+        a packet at 6bbae37 and a build here. The author's per-count table at 6bbae37
+        (search/exact/lean_batch/results.md) prices all 258 modules at 37,107 s and the 41 the ask
+        names at 7,559 s (2.1 process-hours, the longest n = 148 at 294 s); n = 129 and 146 need
+        chunks of 10 because chunks of 25 exceed 14 GB.
       queued: true
       bead: think-63vx
     asks:
