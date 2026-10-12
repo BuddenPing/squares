@@ -912,12 +912,15 @@ PRUNE |= REGULARIZED_WITNESSES | HISTORICAL_SNAPSHOT_OUTPUTS | UNREAD_WORKER_OUT
 # directory and expects pytest to stop at configuration, before any test is collected,
 # so the consumer contract's declarations of the driver and the gallery are never read
 # in a worker. Left out, the snapshot measures 209,536,887 bytes, 178,313 under the
-# unchanged cap.
+# unchanged cap. 2026-10-12: the driver's first-pass launcher and its one replica patch
+# join them on the same grounds; only the driver runs the one and applies the other.
 REGULARIZATION_TOOLS = frozenset(
     ROOT / relative
     for relative in (
         "devtools/regularize_evand.py",
         "devtools/regularize_evand_shim.py",
+        "devtools/regularize_evand_first_pass.py",
+        "devtools/regularize_evand_patches/probe-flat-stall-stop.patch",
         "devtools/regularize_same_side.py",
         "devtools/regularize_gallery.py",
         "devtools/regularize_gallery.css",

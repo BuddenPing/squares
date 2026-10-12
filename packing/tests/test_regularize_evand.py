@@ -599,12 +599,220 @@ def test_the_retry_ladder_takes_only_failed_solves_and_noise_level_jams() -> Non
     slack = {"status": "not jammed", "jam_residual": 1.5e-2, "vv_milp_dS": -0.42}
     assert drive.retry_rung(slack) is None
     assert drive.retry_rung({**noise, "vv_milp_dS": -2.2e-5}) is None
-    for status in ("timeout", "certificate invalid", "KKT local min"):
+    for status in ("certificate invalid", "KKT local min", "bound only", "not converged"):
         assert drive.retry_rung({"status": status}) is None
     printed = Fraction(1283, 100)
     assert not drive.polished({"S_exact": str(printed - Fraction(5, 10**12))}, printed)
     assert drive.polished({"S_exact": str(printed - Fraction(1, 10**9))}, printed)
     assert drive.polished({"S_exact": str(printed)}, None)
+
+
+def test_a_rung_is_never_climbed_twice_and_each_status_has_its_own_rungs() -> None:
+    """Rungs 3 and 5a (owner's overnight instruction, 12 October 2026): a timeout is
+    solved again with the stall-stop patch, then as a first pass alone (290, 302); a
+    failed active-set step after a converged first pass keeps the first pass (258)."""
+    timeout = {"status": "timeout"}
+    assert drive.retry_rung(timeout) == drive.STALL_STOP
+    assert drive.retry_rung(timeout, [drive.STALL_STOP]) == drive.FIRST_PASS
+    assert drive.retry_rung(timeout, [drive.STALL_STOP, drive.FIRST_PASS]) is None
+    active_set = {"status": "solve failed", "forced_pairs": [[108, 109]]}
+    assert drive.retry_rung(active_set) == drive.FIRST_PASS
+    assert drive.retry_rung(active_set, [drive.FIRST_PASS]) == drive.RETRY_DIGITS
+    first_pass = {"status": "solve failed", "forced_pairs": None}
+    assert drive.retry_rung(first_pass) == drive.RETRY_DIGITS
+    assert drive.retry_rung(first_pass, [drive.RETRY_DIGITS]) is None
+
+
+def test_an_attempt_accumulates_the_rungs_climbed_to_it() -> None:
+    attempt = drive.PLAIN.climb(drive.STALL_STOP).climb(drive.FIRST_PASS)
+    assert attempt.record() == {
+        "rungs": ["stall-stop", "first-pass"],
+        "arguments": [],
+        "patches": ["probe-flat-stall-stop"],
+        "first_pass": True,
+    }
+    digits = drive.PLAIN.climb(drive.FORCE_KKT).climb(drive.RETRY_DIGITS)
+    assert digits.arguments == ["--force-kkt", "--dps", "100"]
+    assert drive.PLAIN.record() == {
+        "rungs": [],
+        "arguments": [],
+        "patches": [],
+        "first_pass": False,
+    }
+
+
+def test_the_relaxed_gate_takes_a_refused_certificate_at_a_local_minimum_only() -> None:
+    """Rung 3: 258 and 302 converge to local minima whose own dilated certificates upstream
+    refused, and reach the regularizer; 155 is not a local minimum and stops."""
+    local = "local minimum of S, strict modulo 68 exact flat motions (PD on the rest)"
+    refused = {"status": "certificate invalid", "newton_converged": True, "second_order": local}
+    assert drive.solve_gate(refused) == "relaxed"
+    assert drive.solve_gate({**refused, "second_order": "PSD with 3 zero modes"}) == "relaxed"
+    descent = "NOT a local minimum: first-order descent in the corner-corner branch MILP"
+    assert drive.solve_gate({**refused, "second_order": descent}) is None
+    assert drive.solve_gate({**refused, "newton_converged": False}) is None
+    assert drive.solve_gate({"status": "KKT local min"}) == "certified"
+    assert drive.solve_gate({"status": "bound only"}) == "certified"
+    for status in ("timeout", "solve failed", "not jammed", "not converged", "error"):
+        assert drive.solve_gate({"status": status, "second_order": local}) is None
+
+
+def _fake_solves(
+    outcomes: dict[str, dict[str, Any]], monkeypatch: pytest.MonkeyPatch
+) -> list[str]:
+    """Stand `solve` in for the solver: each attempt's directory and a canned outcome."""
+    called: list[str] = []
+
+    def fake(
+        directory: Path,
+        _replica: Path,
+        _timeout: float,
+        attempt: drive.Attempt = drive.PLAIN,
+        name: str = "solve",
+    ) -> dict[str, Any]:
+        called.append(name)
+        (directory / name).mkdir(parents=True, exist_ok=True)
+        (directory / name / "witness.json").write_text(name)
+        block = dict(outcomes[name])
+        block["gate"] = drive.solve_gate(block)
+        return {**block, "seconds": 1.0, **attempt.record()}
+
+    monkeypatch.setattr(drive, "solve", fake)
+    return called
+
+
+def test_the_ladder_keeps_the_first_attempt_that_reaches_the_regularizer(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    local = "local minimum of S, strict modulo 157 exact flat motions"
+    called = _fake_solves(
+        {
+            "solve": {"status": "timeout"},
+            "solve-retry-stall-stop": {"status": "solve failed", "forced_pairs": [[111, 114]]},
+            "solve-retry-first-pass": {
+                "status": "certificate invalid",
+                "newton_converged": True,
+                "second_order": local,
+                "S_exact": "17.7",
+            },
+        },
+        monkeypatch,
+    )
+    kept = drive.solve_with_retries(tmp_path, tmp_path / "replica", 1800, Fraction(18))
+    assert called == ["solve", "solve-retry-stall-stop", "solve-retry-first-pass"]
+    assert kept["gate"] == "relaxed"
+    assert kept["rungs"] == ["stall-stop", "first-pass"]
+    assert kept["patches"] == ["probe-flat-stall-stop"]
+    assert [row["rung"] for row in kept["attempts"]] == [None, "stall-stop", "first-pass"]
+    assert [row.get("accepted") for row in kept["attempts"]] == [None, False, True]
+    assert (tmp_path / "solve/witness.json").read_text() == "solve-retry-first-pass"
+    assert (tmp_path / "solve-first/witness.json").read_text() == "solve"
+    assert (tmp_path / "solve-retry-stall-stop").is_dir()
+
+
+def test_a_first_attempt_through_the_relaxed_gate_climbs_nothing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    called = _fake_solves(
+        {
+            "solve": {
+                "status": "certificate invalid",
+                "newton_converged": True,
+                "second_order": "PD: strict local minimum",
+            }
+        },
+        monkeypatch,
+    )
+    kept = drive.solve_with_retries(tmp_path, tmp_path / "replica", 600, None)
+    assert called == ["solve"]
+    assert kept["gate"] == "relaxed"
+    assert kept["rungs"] == []
+    assert len(kept["attempts"]) == 1
+
+
+def test_a_forced_solve_that_polishes_ends_the_climb(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    printed = Fraction(1283, 100)
+    called = _fake_solves(
+        {
+            "solve": {"status": "not jammed", "jam_residual": 2e-7, "vv_milp_dS": -5e-7},
+            "solve-retry-force-kkt": {
+                "status": "KKT local min",
+                "S_exact": str(printed - Fraction(1, 10**8)),
+            },
+        },
+        monkeypatch,
+    )
+    kept = drive.solve_with_retries(tmp_path, tmp_path / "replica", 600, printed)
+    assert called == ["solve", "solve-retry-force-kkt"]
+    assert kept["status"] == "not jammed"
+    assert kept["gate"] is None
+    assert kept["attempts"][1]["polished"] is True
+    assert not (tmp_path / "solve-first").exists()
+
+
+def test_a_replica_patch_is_applied_to_a_copy_and_never_under_vendor(tmp_path: Path) -> None:
+    before = vendor_listing()
+    rows = [drive.batch_row(26, drive.case_facts(26), witness(26))]
+    replica = drive.build_replica(tmp_path / "run", rows)
+    assert drive.solver_tree(replica, []) == replica / "search/exact"
+    patched = drive.solver_tree(replica, ["probe-flat-stall-stop"])
+    assert patched == replica / "patched/probe-flat-stall-stop/search/exact"
+    assert drive.solver_tree(replica, ["probe-flat-stall-stop"]) == patched
+    assert vendor_listing() == before
+    pristine = (drive.VENDOR / "search/exact/exactsolve.py").read_text()
+    assert (replica / "search/exact/exactsolve.py").read_text() == pristine
+    text = (patched / "exactsolve.py").read_text()
+    assert text != pristine
+    assert "vendor/evand-regularize/README.md" in "".join(text.splitlines(keepends=True)[:20])
+    assert "nr > prev / 10" in text
+    for name in ("geom.py", "verify_cert.py", "verify_cert2.py"):
+        vendored = drive.VENDOR / "search/exact" / name
+        assert (patched / name).read_bytes() == vendored.read_bytes()
+    with pytest.raises(drive.EvandRunError, match="not recorded"):
+        drive.solver_tree(replica, ["no-such-patch"])
+
+
+def test_a_count_solved_with_a_replica_patch_names_it_and_the_receipt_lists_it() -> None:
+    applied = drive.applied_patches(["probe-flat-stall-stop"])
+    assert applied[0]["kind"] == "replica"
+    assert applied[0]["path"] == "search/exact/exactsolve.py"
+    assert drive.vendored_pin()["patches"] == []  # a replica patch is not every count's
+    patched = {**REPORT, "generator": {**REPORT["generator"], "patches": applied}}
+    record = drive.regularization_record(patched)
+    assert record is not None
+    assert "evand/square-packing@675a5ea+probe-flat-stall-stop," in record["method"]
+    rows = [
+        {"n": 290, "replica_patches": ["probe-flat-stall-stop"]},
+        {"n": 302, "replica_patches": ["probe-flat-stall-stop"]},
+        {"n": 258, "replica_patches": []},
+    ]
+    generator = drive.run_generator(rows)
+    assert [patch["name"] for patch in generator["patches"]] == ["probe-flat-stall-stop"]
+    assert generator["patches"][0]["counts"] == [290, 302]
+    assert drive.run_generator(rows[2:])["patches"] == []
+
+
+def test_a_first_pass_with_the_stall_stop_patch_certifies_n26_as_the_plain_solve_does(
+    tmp_path: Path,
+) -> None:
+    """The first-pass launcher and the patched solver change neither the point nor the
+    certificate where upstream's own solve certifies on its first pass."""
+    rows = [drive.batch_row(26, drive.case_facts(26), witness(26))]
+    replica = drive.build_replica(tmp_path / "run", rows)
+    directory = drive.count_dir(tmp_path / "run", 26)
+    drive.write_text(directory / "input.txt", drive.input_text(witness(26)))
+    both = drive.PLAIN.climb(drive.STALL_STOP).climb(drive.FIRST_PASS)
+    climbed = drive.solve(directory, replica, 300, both, name="solve-both")
+    plain = drive.solve(directory, replica, 300)
+    assert climbed["gate"] == plain["gate"] == "certified"
+    assert climbed["rungs"] == ["stall-stop", "first-pass"]
+    assert drive.attempt_of(directory / "solve-both") == both.record()
+    for name in ("witness.exact.txt", "witness.cert"):
+        assert (directory / "solve-both" / name).read_bytes() == (
+            directory / "solve" / name
+        ).read_bytes()
 
 
 def test_a_regularizer_refusal_keeps_its_reason_when_decided_again() -> None:
@@ -622,3 +830,14 @@ def test_a_regularizer_refusal_keeps_its_reason_when_decided_again() -> None:
     assert drive.measured_from_report(kept, "solved").status == "regularize timeout"
     unsolved = {**report, "solve": {"status": "not jammed"}, "regularize": None}
     assert drive.measured_from_report(unsolved, "solved").status == "solve not jammed"
+    # A solve through the relaxed gate reached the regularizer as a certified one does.
+    relaxed = {
+        **report,
+        "solve": {
+            "status": "certificate invalid",
+            "newton_converged": True,
+            "second_order": "PD: strict local minimum",
+        },
+    }
+    measured = drive.measured_from_report(relaxed, "solved")
+    assert measured.status == "regularize: upstream's checker refused the certificate"
