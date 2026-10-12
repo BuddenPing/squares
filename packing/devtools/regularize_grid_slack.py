@@ -1475,14 +1475,20 @@ def generator_block(settings: Mapping[str, Any]) -> dict[str, Any]:
 def run_block(run_dir: Path, run_id: str) -> tuple[dict[str, Any], dict[str, Any]]:
     """A run as the layer's index records it, and its settings: every count's decision
     by the table and the seconds its reports record. The run kept no receipt of its own
-    CPU time, so the cost is those seconds, summed, at one worker a count."""
+    CPU time, so the cost is those seconds, summed, at one worker a count. Reports another
+    version of this generator wrote into the same directory are not this run's: they are
+    counted apart, and their views are never admitted here (`admitted`)."""
     decisions: dict[str, int] = {}
     seconds = 0.0
     settings: dict[str, Any] = {}
     finished = 0.0
     counts = 0
+    others = 0
     for path in sorted(run_dir.glob("n-*/report.json")):
         report = json.loads(path.read_text(encoding="utf-8"))
+        if report.get("generator") != GENERATOR:
+            others += 1
+            continue
         n = int(report["n"])
         witness = load_source(n)
         word = decided(report, witness).decision
@@ -1495,7 +1501,7 @@ def run_block(run_dir: Path, run_id: str) -> tuple[dict[str, Any], dict[str, Any
         "id": run_id,
         "generator": GENERATOR,
         "finished": time.strftime("%Y-%m-%d", time.gmtime(finished)),
-        "parameters": settings,
+        "parameters": {**settings, **({"other_versions_left_out": others} if others else {})},
         "counts": counts,
         "decisions": dict(sorted(decisions.items())),
         "cost": {
