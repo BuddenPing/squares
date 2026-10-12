@@ -915,12 +915,15 @@ PRUNE |= REGULARIZED_WITNESSES | HISTORICAL_SNAPSHOT_OUTPUTS | UNREAD_WORKER_OUT
 # unchanged cap. 2026-10-12: the grid-slack prototype, the drawing-regularity census and
 # their tests join them on the same grounds (`--audit-snapshot` with the four as
 # candidates: no registered mention, no rescue); left out, 209,547,257 bytes, 167,943
-# under the cap.
+# under the cap. The driver's first-pass launcher and its one replica patch join them on
+# the same grounds; only the driver runs the one and applies the other.
 REGULARIZATION_TOOLS = frozenset(
     ROOT / relative
     for relative in (
         "devtools/regularize_evand.py",
         "devtools/regularize_evand_shim.py",
+        "devtools/regularize_evand_first_pass.py",
+        "devtools/regularize_evand_patches/probe-flat-stall-stop.patch",
         "devtools/regularize_same_side.py",
         "devtools/regularize_gallery.py",
         "devtools/regularize_gallery.css",
