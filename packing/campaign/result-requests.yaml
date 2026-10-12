@@ -4387,7 +4387,9 @@ issues:
       the guzhou-n40-new-supports-2026-10-11 packet with both receipts; the density's orbit facts,
       both kernel inputs and every finite step decided here by a first-party exact audit, and the
       near-axis certificate reproduced with the CI run's axis binary and decided again by
-      sqverify-fast. The 43 slabs wait for an owner budget (think-tln9).
+      sqverify-fast. The 43 slabs wait for an owner budget (think-tln9). wand125 edited the 17:14
+      UTC comment at 02:19 UTC on 12 October to link the continuous-angle mode at
+      wand125/square-packing f30cc2c (think-xzob).
     read_through: '2026-10-11T17:14:50Z'
     results:
     - key: s40-clipped-corner
@@ -4456,10 +4458,28 @@ issues:
         with the release in the guzhou-n40-new-supports-2026-10-11 packet; its two checkers were not
         run here.
       queued: false
+    - key: s40-continuous-angle-mode
+      claim: >-
+        wand125's continuous-angle mode of sqverify-fast, linked by the comment's edit of
+        2026-10-12T02:19:26Z at wand125/square-packing f30cc2cf345a3a3f6af778925f354d9ec979868b
+        (tools/sqverify_continuous, v3, source_sha256 1266a8b9...), verified the 6.718 density at
+        B = 3350/3359 and tau = 4999/5000 over all 86 root ranges and an exact axis sweep for t in
+        [0, 10^-7], and refused both controls (every weight x 985/1000, and B = 3348/3359).
+      source: https://github.com/jlevy/squares/issues/485#issuecomment-6111583905
+      not_registered: >-
+        A third party's second decision of s40-new-supports's continuous cover, not a bound of its
+        own: code distinct from the release's kernel but the same method in outline, as its author
+        says, built on this repository's sqverify-fast crate. Not retained, reviewed, built or
+        replayed here: think-xzob owns all four, and its replay waits on an owner budget. wand125's
+        runs stay a third party's report until a run directory with receipts is published or the
+        mode is replayed here.
+      queued: true
+      bead: think-xzob
     beads:
     - think-3oi5
     - think-xms6
     - think-tln9
+    - think-xzob
     answer_bead: think-3oi5
     replies:
     - url: https://github.com/jlevy/squares/issues/485#issuecomment-6116244240
@@ -4516,6 +4536,7 @@ issues:
       reported:
       - result: s40-new-supports
       - result: s40-support-family-obstruction
+      - result: s40-continuous-angle-mode
     close_when: The import and its review disposition are on main and the owner has posted the resulting
       state; optimality and first-publication priority are outside this request.
   - number: 486
