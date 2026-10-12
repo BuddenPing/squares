@@ -109,7 +109,7 @@ Every input reaches the record through one of these sources, and the sweep reads
 
 | Source | How it is read | What an item becomes |
 | --- | --- | --- |
-| GitHub issues and comments | `check_requests --github` lists the issues `result-requests.yaml` lacks, the replies missing from it, the comments after an entry’s `read_through`, and the reports without the `intake` label | A new issue: an entry with `triage: pending`, an import bead and, for a report, the `intake` label. A comment: its claims mapped into its issue’s entry, and `read_through` moved |
+| GitHub issues and comments | `check_requests --github` lists the issues `result-requests.yaml` lacks, the replies missing from it, the comments created or edited after an entry’s `read_through`, and the reports without the `intake` label | A new issue: an entry with `triage: pending`, an import bead and, for a report, the `intake` label. A comment: its claims mapped into its issue’s entry, and `read_through` moved |
 | Owner and other manual reports | Nothing reads them: a message, a link pasted to an agent, a result named in a review | A bead labelled `result-import` first, titled with `(no issue)`; then stage 1. The sweep lists the open ones |
 | The Kingbird catalogue | [`devtools.capture_kingbird_catalogue`](../devtools/capture_kingbird_catalogue.py) fetches and transcribes it into `attic/intake/`; the sweep compares the newest capture with the record’s, count by count | A count whose side drops below its record: an import, or a `pending_catalogue_intake` entry with its bead. Other changes: classified when the retained capture is refreshed. None when nothing moved |
 | Other catalogues and releases | Read by hand: the register’s other `current-catalogue` and `first-party-release` sources, UnitSquare’s release today. The sweep prints when each was last reviewed | A later release: an import. Nothing new: the source’s `reviewed` date moves |
@@ -513,7 +513,7 @@ Run each command from `packing/` as
 | `--report` | A table per issue: each result’s entries, rungs, state, how it was confirmed and whether its id is on `main`; the replies due; whether it is closeable |
 | `--backlog` | Every register entry below `V3` or `C3`, with its `next_rung`, its `activity`, the beads it names and the issues it serves |
 | `--draft N` | The status comment for issue N, ending in the Claude Code footer; it refuses unless `HEAD` is on `origin/main` |
-| `--github` | Read-only: the issues the record lacks, the replies missing from it, the comments after an entry’s `read_through` and the result reports without the `intake` label |
+| `--github` | Read-only: the issues the record lacks, the replies missing from it, the comments created or edited after an entry’s `read_through` and the result reports without the `intake` label |
 
 A reply due is reported and never fails the gate: it is the owner’s next move, not a
 broken record.

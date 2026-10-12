@@ -599,11 +599,14 @@ def test_the_draft_refuses_off_main(
     assert check_requests.main(["--draft", "1"]) == 2
 
 
-def comment(number: int, login: str, created: str, body: str = "thanks") -> Record:
+def comment(
+    number: int, login: str, created: str, body: str = "thanks", updated: str | None = None
+) -> Record:
     return {
         "html_url": URL.format(number),
         "user": {"login": login},
         "created_at": created,
+        "updated_at": updated or created,
         "body": body,
     }
 
@@ -640,7 +643,8 @@ def test_the_github_comparison_lists_missing_replies_unread_comments_and_unknown
 def test_the_github_comparison_lists_every_result_report_without_the_intake_label() -> None:
     """A result report carries `intake` on GitHub, open or closed, whatever else it
     carries; an issue of another kind needs no label. On 12 October 2026 none of the 64
-    reports carried it, and nothing listed them."""
+    reports carried it, and nothing listed them. The label and an edited comment on the
+    same issue are listed apart, each with its own step in the sweep."""
     recorded = record(
         issue(number=7),
         issue(number=8, state="closed", closed="2026-10-03"),
@@ -655,11 +659,45 @@ def test_the_github_comparison_lists_every_result_report_without_the_intake_labe
             {"number": 9, "state": "closed", "title": "Labelled", "labels": [n17, INTAKE]},
             {"number": 10, "state": "open", "title": "A defect", "labels": []},
         ],
-        **{f"repos/owner/repo/issues/{n}/comments?per_page=100": [] for n in (7, 8, 9, 10)},
+        **{f"repos/owner/repo/issues/{n}/comments?per_page=100": [] for n in (8, 9, 10)},
+        "repos/owner/repo/issues/7/comments?per_page=100": [
+            comment(1, "someone", "2026-09-30T12:00:00Z", updated="2026-10-02T09:00:00Z"),
+        ],
     }
+    edited = "(someone, 2026-09-30T12:00:00Z, edited 2026-10-02T09:00:00Z)"
     assert check_requests.compare_github(recorded, live.__getitem__) == [
         "#7 is a result report without the `intake` label",
+        f"#7: unread comment {URL.format(1)} {edited}",
         "#8 is a result report without the `intake` label",
+    ]
+
+
+def test_a_comment_read_and_then_edited_after_read_through_is_listed_as_unread() -> None:
+    """wand125's #485 review was read at its creation, then edited to link a new mode.
+
+    `read_through` holds a creation time, so an edit to a comment it already covers
+    arrived unseen: the f30cc2c link reached the record on 12 October only because the
+    comment was read again by hand. An edit at or before `read_through`, an edit to a
+    reply, and an edit to a comment already listed as unread add nothing.
+    """
+    recorded = record(
+        issue(replies=[reply(1, "2026-10-01")], read_through="2026-10-01T12:00:00Z")
+    )
+    live = {
+        "repos/owner/repo/issues?state=all&per_page=100": [
+            {"number": 7, "state": "open", "title": "A request", "labels": [INTAKE]},
+        ],
+        "repos/owner/repo/issues/7/comments?per_page=100": [
+            comment(1, "owner", "2026-10-01T10:00:00Z", updated="2026-10-03T08:00:00Z"),
+            comment(2, "someone", "2026-09-30T12:00:00Z", updated="2026-10-01T11:00:00Z"),
+            comment(3, "reviewer", "2026-10-01T12:00:00Z", updated="2026-10-02T09:00:00Z"),
+            comment(4, "someone", "2026-10-02T12:00:00Z", updated="2026-10-02T13:00:00Z"),
+        ],
+    }
+    edited = "(reviewer, 2026-10-01T12:00:00Z, edited 2026-10-02T09:00:00Z)"
+    assert check_requests.compare_github(recorded, live.__getitem__) == [
+        f"#7: unread comment {URL.format(3)} {edited}",
+        f"#7: unread comment {URL.format(4)} (someone, 2026-10-02T12:00:00Z)",
     ]
 
 

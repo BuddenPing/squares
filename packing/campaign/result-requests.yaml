@@ -9,7 +9,7 @@
 #
 # A reply is a comment by the owner, or one that ends in the Claude Code footer and is
 # not by the issue's author. `read_through` is the latest comment read into the entry;
-# `check_requests --github` lists anything later.
+# `check_requests --github` lists anything later, and any earlier comment edited later.
 softschema:
   contract: packing.squares:ResultRequests/v1
   schema: schemas/result-requests.schema.yaml
@@ -94,13 +94,13 @@ issues:
         author's rebuild costs about 10 process-hours, 14 s to about 5 minutes a count.
       source: https://github.com/jlevy/squares/issues/419#issuecomment-6104596297
       not_registered: >-
-        Evidence about the source configurations this entry already maps, T-120 to T-124 and the
-        retained catalogue, not a new bound. Not retained or built here: think-63vx owns taking the
-        Lean binding and the quadratic closed forms in as evidence, from a packet at 6bbae37 and a
-        build here. The author's per-count table at 6bbae37 (search/exact/lean_batch/results.md)
-        prices all 258 modules at 37,107 s and the 41 the ask names at 7,559 s (2.1 process-hours,
-        the longest n = 148 at 294 s); n = 129 and 146 need chunks of 10 because chunks of 25
-        exceed 14 GB.
+        Evidence about the source configurations of the forms this entry maps, T-120 to T-123 and
+        the retained catalogue, and of #420's T-124, not a new bound. Not retained or built here:
+        think-63vx owns taking the Lean binding and the quadratic closed forms in as evidence, from
+        a packet at 6bbae37 and a build here. The author's per-count table at 6bbae37
+        (search/exact/lean_batch/results.md) prices all 258 modules at 37,107 s and the 41 the ask
+        names at 7,559 s (2.1 process-hours, the longest n = 148 at 294 s); n = 129 and 146 need
+        chunks of 10 because chunks of 25 exceed 14 GB.
       queued: true
       bead: think-63vx
     asks:
@@ -169,6 +169,28 @@ issues:
       kind: follow-up
       reported:
       - result: remaining-catalogue
+    - url: https://github.com/jlevy/squares/issues/419#issuecomment-6119246619
+      date: '2026-10-12'
+      by: jlevy
+      kind: follow-up
+      reported:
+      - result: lean-packs-binding-2026-10-11
+      - result: new-exact-forms
+        id: T-120
+        verification: V0
+        confirmation: C0
+      - result: new-exact-forms
+        id: T-121
+        verification: V0
+        confirmation: C0
+      - result: new-exact-forms
+        id: T-122
+        verification: V0
+        confirmation: C0
+      - result: new-exact-forms
+        id: T-123
+        verification: V0
+        confirmation: C0
     close_when: The reported import and its disposition are on main and the owner has posted the resulting
       state; unresolved proof replays remain explicitly owned.
     notes: >-
@@ -758,6 +780,12 @@ issues:
       - result: kernel-rows-2026-10-09
       - result: subpatterns-38-status-2026-10-09
         status: incomplete
+    - url: https://github.com/jlevy/squares/issues/413#issuecomment-6119249016
+      date: '2026-10-12'
+      by: jlevy
+      kind: follow-up
+      reported:
+      - result: kernel-rows-2026-10-11
     close_when: The named owner completes or explicitly dispositions the queued work and posts the recorded
       state; source status alone grants no theorem admission.
     notes: 'The owner reply of 7 October acknowledged the then-current 17 verified / 10 computed split
@@ -4359,7 +4387,9 @@ issues:
       the guzhou-n40-new-supports-2026-10-11 packet with both receipts; the density's orbit facts,
       both kernel inputs and every finite step decided here by a first-party exact audit, and the
       near-axis certificate reproduced with the CI run's axis binary and decided again by
-      sqverify-fast. The 43 slabs wait for an owner budget (think-tln9).
+      sqverify-fast. The 43 slabs wait for an owner budget (think-tln9). wand125 edited the 17:14
+      UTC comment at 02:19 UTC on 12 October to link the continuous-angle mode at
+      wand125/square-packing f30cc2c (think-xzob).
     read_through: '2026-10-11T17:14:50Z'
     results:
     - key: s40-clipped-corner
@@ -4428,10 +4458,28 @@ issues:
         with the release in the guzhou-n40-new-supports-2026-10-11 packet; its two checkers were not
         run here.
       queued: false
+    - key: s40-continuous-angle-mode
+      claim: >-
+        wand125's continuous-angle mode of sqverify-fast, linked by the comment's edit of
+        2026-10-12T02:19:26Z at wand125/square-packing f30cc2cf345a3a3f6af778925f354d9ec979868b
+        (tools/sqverify_continuous, v3, source_sha256 1266a8b9...), verified the 6.718 density at
+        B = 3350/3359 and tau = 4999/5000 over all 86 root ranges and an exact axis sweep for t in
+        [0, 10^-7], and refused both controls (every weight x 985/1000, and B = 3348/3359).
+      source: https://github.com/jlevy/squares/issues/485#issuecomment-6111583905
+      not_registered: >-
+        A third party's second decision of s40-new-supports's continuous cover, not a bound of its
+        own: code distinct from the release's kernel but the same method in outline, as its author
+        says, built on this repository's sqverify-fast crate. Not retained, reviewed, built or
+        replayed here: think-xzob owns all four, and its replay waits on an owner budget. wand125's
+        runs stay a third party's report until a run directory with receipts is published or the
+        mode is replayed here.
+      queued: true
+      bead: think-xzob
     beads:
     - think-3oi5
     - think-xms6
     - think-tln9
+    - think-xzob
     answer_bead: think-3oi5
     replies:
     - url: https://github.com/jlevy/squares/issues/485#issuecomment-6116244240
@@ -4481,6 +4529,14 @@ issues:
       - result: s40-continuous-pose
         id: E-n040-guzhou-continuous-pose-crate-axis
         status: confirmed
+    - url: https://github.com/jlevy/squares/issues/485#issuecomment-6119333366
+      date: '2026-10-12'
+      by: jlevy
+      kind: follow-up
+      reported:
+      - result: s40-new-supports
+      - result: s40-support-family-obstruction
+      - result: s40-continuous-angle-mode
     close_when: The import and its review disposition are on main and the owner has posted the resulting
       state; optimality and first-publication priority are outside this request.
   - number: 486
@@ -4711,7 +4767,13 @@ issues:
     beads:
     - think-lkbe
     answer_bead: think-lkbe
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/494#issuecomment-6119249272
+      date: '2026-10-12'
+      by: jlevy
+      kind: acknowledgement
+      reported:
+      - result: wallchain-width1-negative
     close_when: The negative is recorded beside X-052 section 2.5 and the owner has acknowledged it on the
       issue; it asks for nothing else.
   - number: 495
@@ -4767,6 +4829,13 @@ issues:
     beads:
     - think-nmfl
     answer_bead: think-nmfl
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/495#issuecomment-6119249473
+      date: '2026-10-12'
+      by: jlevy
+      kind: acknowledgement
+      reported:
+      - result: kernel-certificates-15
+      - result: kernel-certificate-m4003392
     close_when: The certificates are admitted to certified-sub-patterns.yaml or declined with a reason, and the
       owner has posted the resulting state.

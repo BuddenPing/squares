@@ -349,16 +349,19 @@ def test_github_differences_each_need_an_owner_and_a_failure_is_not_checked() ->
 
 def test_a_report_without_the_intake_label_needs_action_and_names_the_command() -> None:
     """The pass adds the label itself, so the step is the command; a new issue's step
-    says a report gets the label when it is entered."""
+    says a report gets the label when it is entered. A comment edited after
+    `read_through` on the same issue keeps its own step: read it."""
     record = {"repository": "jlevy/squares"}
     differences = [
         "#529 is a result report without the `intake` label",
+        "#529: unread comment URL (x, 2026-10-01T00:00:00Z, edited 2026-10-02T00:00:00Z)",
         "#530 is not in the record: New result",
     ]
     section = sweep.github_section(record, offline=False, compare_github=lambda _: differences)
-    assert [i.state for i in section.items] == [sweep.NEEDS_OWNER] * 2
+    assert [i.state for i in section.items] == [sweep.NEEDS_OWNER] * 3
     assert section.items[0].step == "add the label: gh issue edit 529 --add-label intake"
-    assert section.items[1].step.endswith("a result report also gets the `intake` label")
+    assert section.items[1].step.startswith("read it:")
+    assert section.items[2].step.endswith("a result report also gets the `intake` label")
     assert sweep.needing_action([section]) == section.items
 
 
