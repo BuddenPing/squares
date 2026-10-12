@@ -1085,7 +1085,7 @@ def settle_variant(
     return Settled(rows, solution, centers, record, refusal)
 
 
-def decided(
+def verified_variant(
     variant: Settled,
     witness: Mapping[str, Any],
     frame: same.Frame,
@@ -1173,7 +1173,7 @@ def exact_view(
         tried.append(variant)
         report["settled"].append(variant.record)
         if variant.refusal is None:
-            found = decided(variant, witness, frame, matched, view_id)
+            found = verified_variant(variant, witness, frame, matched, view_id)
             if found is not None:
                 break
     report["seconds"] = round(time.perf_counter() - started, 2)
