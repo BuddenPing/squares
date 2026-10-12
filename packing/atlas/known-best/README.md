@@ -230,12 +230,18 @@ rational packings; the historical census below describes the earlier poses:
 Every view passed both exact verifiers, and none made a square lighter or needed a hold.
 The views still fail the claim boundary, for two reasons:
 
-- **Most would promote a tier.** For 73 of the 89 the register’s verified upper bound is
-  the grid ceiling, because the Kingbird catalogue is reported evidence that has never
-  been replayed. An exactly verified view there is a rational packing 0.05 to 0.46 below
-  that bound. A drawing would then carry a certificate the register does not.
-  At $n = 17$ and $n = 29$ the view lies $10^{-22}$ and $5 \times 10^{-20}$ below the
-  certified endpoint the register holds, which is the same promotion at smaller scale.
+- **Most would promote a tier.** On 2026-10-02, for 73 of the 89 the register’s verified
+  upper bound was the grid ceiling, because the Kingbird catalogue was reported evidence
+  that had never been replayed.
+  An exactly verified view there was a rational packing 0.05 to 0.46 below that bound,
+  and a drawing would have carried a certificate the register did not.
+  At $n = 17$ and $n = 29$ the view lay $10^{-22}$ and $5 \times 10^{-20}$ below the
+  certified endpoint the register held, which is the same promotion at smaller scale.
+  The grid-ceiling count no longer holds: T-101 (registered 2026-10-06) made Evan
+  Daniel’s exact certificates the verified upper bound at 74 Kingbird counts, and on 11
+  October none of the 74 records the layer then refused had the grid ceiling as its
+  verified bound. The 72 it refuses now are among those 74
+  ([the assessment, section 3.2](../../../docs/project/research/research-2026-10-11-evand-regularization-assessment.md#32-the-side-relation-same-or-solved)).
 - **The rest would change the side.** For the other 14 the register already verifies the
   reported bound, but a dilated view’s container is $2.9 \times 10^{-31}$ to
   $8.8 \times 10^{-29}$ larger than the printed side and lies above the verified bound,

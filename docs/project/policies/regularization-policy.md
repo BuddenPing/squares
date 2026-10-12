@@ -206,12 +206,15 @@ where there is one.
 - Change a side, a tier or a credit.
 - Draw an alternate as the credited packing.
 
-**The review record:** each decision is one record in
+**The review record:** each decision is to be one record in
 `packing/atlas/known-best/regularized/reviews.yaml`, a hand-written input beside the
-index. It holds the count, the date, the reviewer, the decision and its reason; any
+index.
+A record holds the count, the date, the reviewer, the decision and its reason; any
 parameters or generator choice; the generator version and source-witness digest it was
 made against; and the gallery it was made from.
-The index entry names its record, and the records-tier gate holds the two to each other.
+The index entry will name its record, and a records-tier check will hold the two to each
+other. Neither the file nor the check exists yet: the first review creates both, and
+until then no view rests on a review record.
 A review of a whole pass may also be written up under `docs/project/reviews/` and mapped
 in the document map.
 
@@ -335,9 +338,9 @@ is recorded, the default the policy applies until there is one.
     are admitted, once the case-record rewrite (#403) and `T-146`’s custody item allow,
     and after the imports in flight at the same counts land.
     A view derived from a witness that later changes is re-reviewed (section 5). The
-    intake’s #518 adopts these houses on the case records directly, citing an owner
-    decision of 11 October 2026 not to wait for #403; its counts are regularized again
-    on the new witnesses once it lands.
+    intake’s #518, merged on 12 October 2026, adopted these houses on the case records
+    directly, citing an owner decision of 11 October 2026 not to wait for #403; #559
+    regularizes its 42 counts again on the new witnesses.
 
 An answer, like any other change to this policy, is an owner decision recorded here with
 its date. It replaces the default, and the counts it bears on are re-reviewed.
@@ -353,7 +356,7 @@ None is an answer to a question of section 9 until the owner confirms it; each i
 recorded where it is implemented, and reversing one is a change to that layer.
 
 1. **Rotation matching:** a regularized view’s rotation matches the witness’s within a
-   sine of $10^{-9}$, the tolerance of #515’s re-solve, a thousand times below the turn
+   sine of $10^{-9}$, the tolerance of #511’s re-solve, a thousand times below the turn
    threshold of obligation 3 (#511).
 2. **Retrying a solve that gives no view,** once per rung and each attempt listed in the
    receipt: a failed solve at 100 digits; a witness not jammed only at noise level with
@@ -380,10 +383,10 @@ recorded where it is implemented, and reversing one is a change to that layer.
    resolved to the registered result that holds the packing; a count whose packing no
    registered result holds is listed as unregistered (#548). A drawing proves no bound,
    so no register result is made for one.
-7. **Registering exact views below the bound** (question 6’s answer, carried out): the
-   row 3 views outside #518’s counts are registered as one batch result, `T-151`, with
+7. **Registering exact views below the bound** (question 3’s answer, carried out): the
+   row 3 views outside #518’s counts are registered as one batch result, `T-154`, with
    the case records’ exact forms moved to the registered sides and their printed values
-   kept, so no citation weakens (the next layer).
+   kept, so no citation weakens (#549).
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.

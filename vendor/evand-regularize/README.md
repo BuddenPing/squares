@@ -132,7 +132,8 @@ The copy may be adjusted, and every adjustment is a reviewed patch:
 
 `LICENSE` is never changed.
 The check refuses an edit with no entry, an entry whose file is still the pinned bytes,
-a patched script with no header comment, and an entry this document does not name.
+a patched script with no header comment, and an entry Local Changes does not name.
+Only that section counts: the role table above names every file.
 
 A *replica patch* changes what runs without changing this directory.
 It is a unified diff kept outside `vendor/`, recorded with `kind: replica` and its
