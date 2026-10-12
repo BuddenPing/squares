@@ -923,7 +923,8 @@ PRUNE |= REGULARIZED_WITNESSES | HISTORICAL_SNAPSHOT_OUTPUTS | UNREAD_WORKER_OUT
 # layer join this list on the same grounds (`--audit-snapshot` with the five as
 # candidates: no registered mention, no rescue, 78,281 bytes); the index, its schema,
 # the axis tool and `regularized_drawings` stay, since the controls' validate_schemas
-# and check_results read them. Left out, 209,677,868 bytes, 37,332 under the cap.
+# and check_results read them. Left out, 209,677,868 bytes, 37,332 under the cap; with
+# the layer's documentation and this note, 209,683,636 bytes, 31,564 under it.
 REGULARIZATION_TOOLS = frozenset(
     ROOT / relative
     for relative in (
