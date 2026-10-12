@@ -5245,6 +5245,9 @@ issues:
         status: confirmed
       corrects:
       - https://github.com/jlevy/squares/issues/503#issuecomment-6125247333
+      outdated:
+      - 'the AI-assistance question is still open; the author answered on #503 on 12 October 2026,
+        for both issues, and the record carries the answer'
     close_when: The import and its disposition are on main, the house adoption at 207 has landed or
       is owned, the author has been asked which AI-assistance account stands, and the owner has
       posted the resulting state; optimality is outside this request.
@@ -5261,7 +5264,9 @@ issues:
       both packets' READMEs, their bibliography and evidence entries and the resources README now
       carry it in the author's words, and devtools.state_ai_assistance holds both case records to
       it. A short thank-you saying the record now carries the statement is owed here once that
-      change is on main (think-ckjc).
+      change is on main (think-ckjc). The final reply's "still open" statement is marked
+      `outdated`, so a reply is due here until the thank-you names that reply in `corrects`
+      (review A3 of #558).
   - number: 504
     title: 's(153) ≤ 12.870013850408: registration request'
     author: BuddenPing
@@ -5342,6 +5347,9 @@ issues:
         status: confirmed
       corrects:
       - https://github.com/jlevy/squares/issues/504#issuecomment-6125249586
+      outdated:
+      - 'the AI-assistance question is still open; the author answered on #503 on 12 October 2026,
+        for both issues, and the record carries the answer'
     close_when: The import and its disposition are on main, the house adoption at 153 has landed or
       is owned, and the owner has posted the resulting state; optimality and the undilated contact
       solution are outside this request.
@@ -5355,7 +5363,9 @@ issues:
       12 October 2026, 17:57:46Z (https://github.com/jlevy/squares/issues/503#issuecomment-6129716138);
       `read_through` is that comment's time, since it is the latest read into this entry, and no
       comment on #504 is later than it. The thank-you owed on #503 covers this issue too
-      (think-ckjc).
+      (think-ckjc). The final reply's "still open" statement is marked `outdated`, and since
+      `corrects` names replies on the same issue, a one-line pointer here to the #503 thank-you,
+      naming the final reply in `corrects`, clears the reply due (review A3 of #558).
   - number: 501
     title: New results for n=155, n=156 and n=211 to the best of my knowledge
     author: dostashev
@@ -5710,3 +5720,12 @@ issues:
       The unnamed 175 was the smallest side known at its count when the import read it; Daniil
       Ostashev's #528 has since reported a smaller one (think-em0b), and the reply says so rather
       than repeat the claim above (think-ckjc).
+
+      The reply followed `not_registered` above as it stands on main, saying 175's "own import is
+      queued", while think-9fjl records the plan of the 12 October review's RX-5: the certificate
+      stays in the couzo-certificates-2026-10-11 packet and is not registered unless the author
+      asks. The reply asked nothing, so that bead's closing condition is not met. A follow-up here
+      waits for layer 6, which registers and adopts T-154 at 175, to be on main; it says the
+      certificate stays in the packet unless he wants it registered, asks whether he does, and
+      names the final reply in `corrects` once that reply's statement is marked `outdated` (review
+      A1 of #558).
