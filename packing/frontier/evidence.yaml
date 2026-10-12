@@ -31533,8 +31533,10 @@ evidence:
       2026-10-11. The kernel's controls are gross (RX-4), and the reviewer and the
       producer's assistant share a model family (RX-7). The maintained routes share one
       parse, half-angle conversion and the separating-axis method, and all three share
-      Fraction arithmetic. No private-worker custody is on file (RX-5). Finite feasibility
-      only: no lower bound, optimum, local minimum, rigidity, novelty or human oversight.
+      Fraction arithmetic. Private-worker custody (RX-5) was closed on 12 October 2026
+      (packing/devtools/house-custody-2026-10-11.json), when the case records adopted seven
+      of these certificates as houses. Finite feasibility only: no lower bound, optimum,
+      local minimum, rigidity, novelty or human oversight.
     source_reviewed: '2026-10-11'
 
   - id: E-couzo-506-certificate-report
@@ -31646,7 +31648,8 @@ evidence:
       share a model family (RY-9). The maintained routes share one parse, half-angle
       conversion and the separating-axis method, and all three share Fraction arithmetic.
       The four unrequested certificates were decided by the review on the third route in
-      scratch, not retained (RY-10). No private-worker custody is on file (RY-7). Finite
-      feasibility only: no lower bound, optimum, local minimum, rigidity, novelty or human
-      oversight.
+      scratch, not retained (RY-10). Private-worker custody (RY-7) was closed on 12 October
+      2026 (packing/devtools/house-custody-2026-10-11.json), when the case records adopted
+      the 304 and 305 certificates as houses. Finite feasibility only: no lower bound,
+      optimum, local minimum, rigidity, novelty or human oversight.
     source_reviewed: '2026-10-12'

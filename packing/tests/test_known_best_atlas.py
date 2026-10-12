@@ -86,8 +86,9 @@ from sqpack.yamlio import safe_load
 #: Catalogue-derived witnesses above the hand-audited hundred, per corpus (think-93on).
 #: The first SQUISH update moved n = 179 and 258 onto packet-derived facts;
 #: the second also moved n = 88. Complete evand and ry-xu packets now supersede
-#: earlier catalogue sources. These inventory counts follow the current corpus.
-GOLDEN_DERIVED_ABOVE_100: dict[str, int] = {"n=1..100": 0, "n=1..200": 23, "n=1..324": 49}
+#: earlier catalogue sources. These inventory counts follow the current corpus; the house
+#: adoption of 12 October 2026 moved n = 176 onto SQUISH's issue 500 packet (think-fvz4).
+GOLDEN_DERIVED_ABOVE_100: dict[str, int] = {"n=1..100": 0, "n=1..200": 22, "n=1..324": 48}
 #: The cases whose retained upstream rendering is the UnitSquare release, per corpus.
 GOLDEN_UNITSQUARE: dict[str, set[int]] = {
     # 68, 103, 105, 110 and 131 moved onto Francisco Couzo's packet on 2026-09-29, and 69
@@ -103,17 +104,18 @@ GOLDEN_SOURCE_KINDS: dict[str, dict[str, int]] = {
         "kingbird-derived-facts": 30,
         "packet-derived-facts": 6,
     },
+    # 176 moved from Kingbird to SQUISH's issue 500 packet on 12 October 2026 (think-fvz4).
     "n=1..200": {
         "exact-grid": 114,
-        "kingbird-derived-facts": 53,
-        "packet-derived-facts": 33,
+        "kingbird-derived-facts": 52,
+        "packet-derived-facts": 34,
     },
     # 232 (from Kingbird) and 308 (from the grid) moved to packet houses in the house
-    # adoption of 11 October 2026 (think-fvz4).
+    # adoption of 11 October 2026, and 176 (from Kingbird) on 12 October (think-fvz4).
     "n=1..324": {
         "exact-grid": 175,
-        "kingbird-derived-facts": 79,
-        "packet-derived-facts": 70,
+        "kingbird-derived-facts": 78,
+        "packet-derived-facts": 71,
     },
 }
 
@@ -1985,9 +1987,10 @@ def test_poster_packing_credits_name_every_retained_construction_author_and_sour
     credit_block = information.find("svg:g[@data-feature='packing-credits']", SVG)
     assert credit_block is not None
     # The house adoption of 11 October 2026 credits Fang, Mishapolk, PingYou Ltd, Ostashev
-    # and Barnett and draws no de Winter packing, from eight more sources (think-fvz4).
+    # and Barnett and draws no de Winter packing, from eight more sources; that of 12
+    # October draws from SQUISH's and Couzo's 11 October releases (think-fvz4).
     assert len(expected_names) == 26
-    assert len(expected_sources) == 18
+    assert len(expected_sources) == 20
     assert set(json.loads(credit_block.attrib["data-credited-names"])) == expected_names
     assert set(json.loads(credit_block.attrib["data-source-keys"])) == expected_sources
     assert credit_block.find("svg:text[@data-feature='packing-credits-heading']", SVG) is None

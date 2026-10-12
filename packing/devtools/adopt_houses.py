@@ -55,6 +55,7 @@ import re
 import sys
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
+from datetime import date
 from decimal import Decimal
 from fractions import Fraction
 from functools import cache
@@ -74,12 +75,14 @@ FRONTIER = select_houses.FRONTIER
 COVERAGE = FRONTIER / "source-coverage.yaml"
 BIBLIOGRAPHY = ROOT / "resources/bibliography.yaml"
 DEFERRALS = ROOT / "devtools/certificate-citation-deferrals.yaml"
-#: The moved records as they stood before this adoption wrote them. A later pass that
-#: moves cases again retains its own, under its own date.
+#: The moved records as they stood before this adoption first wrote them, named by the
+#: day it began. A later pass of it (`upper_bound_houses.LATER_PASSES`) adds the counts it
+#: moves first and keeps the earlier text of a count it moves again; a separate adoption
+#: retains its own archive, under its own date.
 PRIOR_STATE = ROOT / f"devtools/house-adoption-prior-state-{houses.ADOPTED_ON}.json.xz"
 PRIOR_FORMAT = "house-adoption-prior-frontier-v1"
+#: The day the adoption began, which names its prior-state archive.
 DAY = houses.ADOPTED_ON
-DAY_WORDS = "11 October 2026"
 WIDTH = 96
 FINAL_REVIEW = "docs/project/reviews/review-2026-10-11-final-upper-bounds.md"
 FOOTER = "<!-- This document follows common-doc-guidelines.md."
@@ -208,6 +211,26 @@ RESULTS: dict[str, Prose] = {
             "and checker code, source review and preparation."
         ),
     ),
+    "T-151": Prose(
+        author="Nate Chaoweeraprasit",
+        reported="on [jlevy/squares#500](https://github.com/jlevy/squares/issues/500)",
+        producer_route=False,
+        ai=(
+            "The source states that SQUISH’s solver, its verification and the issue were "
+            "written with Claude Opus 5.5, and that the Mondrian composition method was "
+            "formulated by the author and implemented with Claude Opus 5.5, under his "
+            "direction."
+        ),
+    ),
+    "T-152": Prose(
+        author="Francisco Couzo",
+        reported="on [jlevy/squares#506](https://github.com/jlevy/squares/issues/506)",
+        producer_route=True,
+        ai=(
+            "The author says the search code and the request were written with Claude "
+            "under his direction."
+        ),
+    ),
 }
 
 XU = "ry-xu"
@@ -232,6 +255,13 @@ def _couzo(start: str) -> Credit:
     finder = XU if start == "Xu" else SQUISH
     whose = "Ryan Xu’s" if start == "Xu" else "Nate Chaoweeraprasit’s SQUISH"
     return Credit((finder,), (COUZO,), f"Francisco Couzo’s refinement of {whose} packing")
+
+
+def _mondrian(pieces: str) -> Credit:
+    """A SQUISH Mondrian composition, with the pieces as its source names them (T-151)."""
+    return Credit(
+        (SQUISH,), (), f"Nate Chaoweeraprasit’s SQUISH packing, composed from {pieces}"
+    )
 
 
 def _regularized(finder: str, whose: str, *, via: str | None = None) -> Credit:
@@ -276,12 +306,16 @@ CREDITS: dict[int, Credit] = {
     155: Credit((OSTASHEV,), (), "Daniil Ostashev’s packing"),
     156: Credit((OSTASHEV,), (), "Daniil Ostashev’s packing"),
     175: _couzo("Xu"),
+    176: _mondrian(
+        "Francisco Couzo’s n = 127 packing and the Kingbird catalogue’s n = 5 packing"
+    ),
     180: Credit(
         (SQUISH,),
         ("Siddharth Gupta", COUZO),
         "Francisco Couzo’s refinement of Nate Chaoweeraprasit’s SQUISH packing, "
         "as Siddharth Gupta refined it",
     ),
+    181: _mondrian("two of SQUISH’s own n = 154 packings"),
     207: Credit(
         (PINGYOU,),
         (),
@@ -294,18 +328,38 @@ CREDITS: dict[int, Credit] = {
     232: Credit((SQUISH,), (), "Nate Chaoweeraprasit’s SQUISH packing"),
     236: _regularized(SQUISH, "Nate Chaoweeraprasit’s SQUISH"),
     237: _couzo("SQUISH"),
+    238: _mondrian("SQUISH’s own n = 305 and n = 154 packings"),
+    239: _mondrian(
+        "SQUISH’s n = 209 packing as Siddharth Gupta refined it and its own n = 240 packing"
+    ),
     258: _regularized(SQUISH, "Nate Chaoweeraprasit’s SQUISH", via="Mishapolk"),
     259: Credit((SQUISH,), (), "Nate Chaoweeraprasit’s SQUISH packing"),
     261: Credit((XU,), (BARNETT,), "Robert Barnett’s refinement of Ryan Xu’s packing"),
     263: _regularized(SQUISH, "Nate Chaoweeraprasit’s SQUISH"),
     267: _couzo("Xu"),
     269: _regularized(SQUISH, "Nate Chaoweeraprasit’s SQUISH"),
-    270: _couzo("SQUISH"),
+    270: _mondrian(
+        "SQUISH’s issue 481 n = 209 packing, whole, and the Kingbird catalogue’s former "
+        "n = 19 packing"
+    ),
+    271: _mondrian("SQUISH’s own n = 305 and n = 240 packings"),
+    272: _mondrian(
+        "SQUISH’s own n = 240 packing and the Kingbird catalogue’s former n = 182 packing"
+    ),
     292: _regularized(SQUISH, "Nate Chaoweeraprasit’s SQUISH"),
     295: _regularized(XU, "Ryan Xu’s"),
     302: _regularized(SQUISH, "Nate Chaoweeraprasit’s SQUISH"),
     303: _regularized(SQUISH, "Nate Chaoweeraprasit’s SQUISH"),
-    305: _couzo("SQUISH"),
+    304: Credit(
+        (SQUISH,),
+        (COUZO,),
+        "Francisco Couzo’s refinement of Nate Chaoweeraprasit’s SQUISH Mondrian packing",
+    ),
+    305: Credit(
+        (SQUISH,),
+        (COUZO,),
+        "Francisco Couzo’s refinement of Nate Chaoweeraprasit’s SQUISH Mondrian packing",
+    ),
     306: Credit((COUZO,), (), "Francisco Couzo’s refinement of his own packing"),
     307: Credit((SQUISH,), (), "Nate Chaoweeraprasit’s SQUISH packing"),
     308: Credit(
@@ -388,9 +442,30 @@ def _bibliography() -> dict[str, Mapping[str, Any]]:
     return {str(entry["key"]): entry for entry in entries}
 
 
-def _coverage_sources() -> dict[str, Mapping[str, Any]]:
-    coverage = safe_load(COVERAGE.read_text(encoding="utf-8"))
-    return {str(source["source_key"]): source for source in coverage["sources"]}
+def _coverage_sources() -> list[Mapping[str, Any]]:
+    return list(safe_load(COVERAGE.read_text(encoding="utf-8"))["sources"])
+
+
+def coverage_source(
+    sources: Sequence[Mapping[str, Any]], key: str, n: int
+) -> Mapping[str, Any]:
+    """The coverage register's entry for the source key `key` whose scope holds `n`.
+
+    A source key can have more than one entry. Francisco Couzo's release of 11 October
+    has two: its beyond-horizon rows read a claims record that holds only the claims
+    beyond the corpus, and `check_source_coverage` holds a selected override of a source
+    with a claims record to that record's print, so its in-corpus counts are an entry of
+    their own.
+    """
+    found = [
+        source
+        for source in sources
+        if str(source["source_key"]) == key
+        and n in select_houses.scope_values(dict(source["scope"]))
+    ]
+    if len(found) != 1:
+        raise AdoptionError(f"n={n}: {len(found)} coverage entries of {key} hold this count")
+    return found[0]
 
 
 # ------------------------------------------------------------------------- the move
@@ -418,7 +493,7 @@ def _value(candidate: select_houses.Candidate) -> str:
     """
     from devtools.check_source_coverage import load_claims  # noqa: PLC0415
 
-    source = _coverage_sources()[candidate.source_key]
+    source = coverage_source(_coverage_sources(), candidate.source_key, candidate.n)
     if source.get("claims_record"):
         printed = load_claims(ROOT / str(source["claims_record"])).get(candidate.n)
         if printed is None or Fraction(Decimal(printed)) != candidate.side:
@@ -427,6 +502,12 @@ def _value(candidate: select_houses.Candidate) -> str:
             )
         return printed
     return select_houses.ceiling(candidate.side)
+
+
+def day_words(n: int) -> str:
+    """The day the count's house was adopted, as prose writes it: ``12 October 2026``."""
+    day = date.fromisoformat(houses.adopted_on(n))
+    return f"{day.day} {day:%B %Y}"
 
 
 def _sci(value: Fraction) -> str:
@@ -504,8 +585,8 @@ def plan(selections: Mapping[int, select_houses.Selection] | None = None) -> lis
     return moves
 
 
-def _source_url(key: str) -> str:
-    return str(_coverage_sources()[key]["url"])
+def _source_url(key: str, n: int) -> str:
+    return str(coverage_source(_coverage_sources(), key, n)["url"])
 
 
 def reported_bound(move: Move) -> dict[str, Any]:
@@ -547,7 +628,7 @@ def history_note(move: Move) -> dict[str, Any]:
     return {
         "claim": (
             f"Earlier house {upper['value']} from {upper['source_key']}, the case’s ceiling "
-            f"until {DAY_WORDS}; its certificate and replay remain retained."
+            f"until {day_words(move.n)}; its certificate and replay remain retained."
         ),
         "claimed_by": [str(name) for name in claimed],
         "published": upper.get("source_date"),
@@ -569,14 +650,14 @@ def _resource(move: Move) -> dict[str, Any]:
         "key": move.house.source_key,
         "role": "upper-bound-report",
         "local": f"web/{houses.source_for(move.n).packet.name}",
-        "url": _source_url(move.house.source_key),
+        "url": _source_url(move.house.source_key, move.n),
         "retrieved": True,
     }
 
 
 def front_matter(move: Move, front: str) -> str:
     packing = move.packing
-    reviewed = f"  source_reviewed: '{DAY}'"
+    reviewed = f"  source_reviewed: '{houses.adopted_on(move.n)}'"
     front = re.sub(r"^  source_reviewed: .*$", reviewed, front, count=1, flags=re.MULTILINE)
     front = _replace(front, "reported_upper_bound", reported_bound(move))
     front = _replace(front, "verified_upper_bound", verified_bound(move))
@@ -638,7 +719,7 @@ def opening(move: Move) -> str:
     n, house, credit = move.n, move.house, CREDITS[move.n]
     upper = move.packing["reported_upper_bound"]
     return (
-        f"**House adoption, {DAY_WORDS}.** {credit.phrase[0].upper()}{credit.phrase[1:]} "
+        f"**House adoption, {day_words(n)}.** {credit.phrase[0].upper()}{credit.phrase[1:]} "
         f"({house.result}) is now this case’s house: its exact certificate proves "
         f"$s({n}) \\le {select_houses.ceiling(house.side)}$, the reported and the verified "
         f"upper bound, `{_sci(move.selection.margin)}` below the ceiling the case held until "
@@ -734,18 +815,34 @@ def historical(move: Move, text: str) -> str:
     `check_case_prose` holds every `s(n) <= x` a body writes to the front matter unless
     its sentence says it is historical. The exact-optimum sections that `T-098` wrote
     state the earlier house in two fixed sentences; both say now that it was the bound
-    until this adoption.
+    until this adoption. A house an earlier pass adopted states itself in its dated
+    paragraph and its section, and both say now that it was the house until this one.
     """
-    n = move.n
+    n, until = move.n, day_words(move.n)
     text = re.sub(
         r"^Open\. The best known published packing,",
         "Open. Previously, the best known published packing,",
         text,
         flags=re.MULTILINE,
     )
+    # The records are wrapped, so a sentence may break at any space; whitespace is
+    # matched as such and the reflow is the formatter's.
+    text = re.sub(
+        r"(\*\*House adoption, [^*]+\.\*\*(?:(?!\n\n).)*?)\bis\s+now\s+this\s+case’s\s+house:",
+        rf"\1was this case’s house until {until}:",
+        text,
+        flags=re.DOTALL,
+    )
+    text = re.sub(
+        rf"(That\s+proves\s+\$s\({n}\)\s+\\le\s+[0-9.]+\$,\s+the\s+verified\s+upper\s+bound):"
+        r"\s+confirmed,",
+        rf"\1 until {until}: confirmed,",
+        text,
+    )
     return re.sub(
-        rf"(That proves \$s\({n}\) \\le [0-9.]+\\ldots\$, the verified upper bound); it says",
-        rf"\1 until {DAY_WORDS}; it says",
+        rf"(That\s+proves\s+\$s\({n}\)\s+\\le\s+[0-9.]+\\ldots\$,\s+the\s+verified\s+upper\s+bound);"
+        r"\s+it\s+says",
+        rf"\1 until {until}; it says",
         text,
     )
 
@@ -796,19 +893,19 @@ def _section_span(text: str, key: str) -> tuple[int, int]:
 def coverage(moves: Sequence[Move], text: str) -> str:
     """The coverage register with each moved count's selection and supersessions."""
     data = safe_load(text)
-    sources = {str(source["source_key"]): source for source in data["sources"]}
     claims = {str(s["id"]) for s in data["sources"] if s.get("claims_record")}
     overrides = {int(entry["n"]): entry for entry in data["selected_overrides"]}
     superseded = list(data["superseded_reports"])
     for move in moves:
         n, house = move.n, move.house
-        new = str(sources[house.source_key]["id"])
+        new = str(coverage_source(data["sources"], house.source_key, n)["id"])
         old = overrides.get(n)
         if old is not None and old["source_id"] == new:
             continue
         reason = (
             f"The smallest exact side the register holds at this count, confirmed at V3/C3 "
-            f"by a replay here and an accepted review, adopted on {DAY} ({house.result})."
+            f"by a replay here and an accepted review, adopted on {houses.adopted_on(n)} "
+            f"({house.result})."
         )
         # Every report the earlier house beat, a catalogue baseline's included, is beaten
         # by the new one, which is smaller still.
@@ -822,7 +919,8 @@ def coverage(moves: Sequence[Move], text: str) -> str:
                     "source_id": old["source_id"],
                     "value": old["value"],
                     "reason": (
-                        f"The house until {DAY}; its certificate stays retained and "
+                        f"The house until {houses.adopted_on(n)}; its certificate stays "
+                        "retained and "
                         f"verified, and {house.result}'s exact side is smaller."
                     ),
                     "superseded_by": new,
@@ -880,7 +978,8 @@ def _unaccounted(
                         "value": printed,
                         "reason": (
                             "A certificate of the same release that no register entry cites; "
-                            f"the side it prints is above the house adopted here on {DAY}."
+                            "the side it prints is above the house adopted here on "
+                            f"{houses.adopted_on(n)}."
                         ),
                         "superseded_by": selected["source_id"],
                     }

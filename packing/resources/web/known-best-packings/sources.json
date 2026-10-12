@@ -1085,18 +1085,19 @@
       "url": "https://github.com/franciscouzo/square-packing/blob/3ef76349025bf4bfa99c9c3600bcc273f4c33e02/certificates/n175.cert"
     },
     {
-      "attribution": "SVG and high-precision updates by David Ellsworth; catalogue based on Erich Friedman's original compilation.",
-      "kind": "kingbird-derived-facts",
-      "license_status": "no-express-reuse-terms-found",
+      "attribution": "Nate Chaoweeraprasit, https://github.com/itsnaka/squish-certs/blob/aeacc6c124df339074f7370e1e010bb6e8c1b5ca/squish-submission-2026-10-11/n176/n176.cert.json at aeacc6c124df339074f7370e1e010bb6e8c1b5ca",
+      "kind": "packet-derived-facts",
+      "license_status": "no-licence-published",
       "listed_n": [
         176
       ],
       "n": 176,
+      "path": "resources/web/squish-500-fourth-request-2026-10-11/facts/n-176.yaml.gz",
       "raw_asset_retained": false,
-      "retention_policy": "metadata-and-derived-numerical-facts-only",
-      "retrieved": "2026-08-26",
+      "retention_policy": "Exact certificate retained as a derived fact, bound to the SHA-256 its packet pins upstream; no upstream byte is copied.",
+      "retrieved": "2026-10-11",
       "source_n": 176,
-      "url": "https://kingbird.myphotos.cc/packing/square-176.svg"
+      "url": "https://github.com/itsnaka/squish-certs/blob/aeacc6c124df339074f7370e1e010bb6e8c1b5ca/squish-submission-2026-10-11/n176/n176.cert.json"
     },
     {
       "attribution": "Francisco Couzo, https://github.com/franciscouzo/square-packing at f3c5a529c255b546db18605702b8da298132309f",
@@ -1158,19 +1159,19 @@
       "url": "https://github.com/franciscouzo/square-packing/blob/ffd900dfff6d2674ad995359208c2f0714915c82/certificates/n180.cert"
     },
     {
-      "attribution": "Francisco Couzo, https://github.com/franciscouzo/square-packing at f3c5a529c255b546db18605702b8da298132309f",
+      "attribution": "Nate Chaoweeraprasit, https://github.com/itsnaka/squish-certs/blob/aeacc6c124df339074f7370e1e010bb6e8c1b5ca/squish-submission-2026-10-11/n181/n181.cert.json at aeacc6c124df339074f7370e1e010bb6e8c1b5ca",
       "kind": "packet-derived-facts",
       "license_status": "no-licence-published",
       "listed_n": [
         181
       ],
       "n": 181,
-      "path": "resources/web/franciscouzo-square-packing-2026-09-27/facts/n-181.yaml",
+      "path": "resources/web/squish-500-fourth-request-2026-10-11/facts/n-181.yaml.gz",
       "raw_asset_retained": false,
-      "retention_policy": "metadata-and-derived-numerical-facts-only",
-      "retrieved": "2026-09-29",
+      "retention_policy": "Exact certificate retained as a derived fact, bound to the SHA-256 its packet pins upstream; no upstream byte is copied.",
+      "retrieved": "2026-10-11",
       "source_n": 181,
-      "url": "https://github.com/franciscouzo/square-packing/blob/f3c5a529c255b546db18605702b8da298132309f/n181.txt"
+      "url": "https://github.com/itsnaka/squish-certs/blob/aeacc6c124df339074f7370e1e010bb6e8c1b5ca/squish-submission-2026-10-11/n181/n181.cert.json"
     },
     {
       "attribution": "Francisco Couzo, https://github.com/franciscouzo/square-packing at f3c5a529c255b546db18605702b8da298132309f",
@@ -1578,34 +1579,34 @@
       "url": "https://github.com/franciscouzo/square-packing/blob/3ef76349025bf4bfa99c9c3600bcc273f4c33e02/certificates/n237.cert"
     },
     {
-      "attribution": "Siddharth Gupta after Nate Chaoweeraprasit and Evan Daniel, https://github.com/SidG2k1/square-packing-refinements/blob/9643cb5a78c1d4dcfc867c80a6920c3a6219d05a/witnesses/packing-238.cert at 9643cb5a78c1d4dcfc867c80a6920c3a6219d05a",
+      "attribution": "Nate Chaoweeraprasit, https://github.com/itsnaka/squish-certs/blob/aeacc6c124df339074f7370e1e010bb6e8c1b5ca/squish-submission-2026-10-11/n238/n238.cert.json at aeacc6c124df339074f7370e1e010bb6e8c1b5ca",
       "kind": "packet-derived-facts",
       "license_status": "no-licence-published",
       "listed_n": [
         238
       ],
       "n": 238,
-      "path": "resources/web/gupta-square-packing-refinements-2026-10-08/facts/complete-certificates-and-comparators.json.xz",
-      "raw_asset_retained": true,
-      "retention_policy": "Complete factual certificates/comparators retained losslessly; unlicensed programs/prose are hash-pinned.",
-      "retrieved": "2026-10-08",
+      "path": "resources/web/squish-500-fourth-request-2026-10-11/facts/n-238.yaml.gz",
+      "raw_asset_retained": false,
+      "retention_policy": "Exact certificate retained as a derived fact, bound to the SHA-256 its packet pins upstream; no upstream byte is copied.",
+      "retrieved": "2026-10-11",
       "source_n": 238,
-      "url": "https://github.com/SidG2k1/square-packing-refinements/blob/9643cb5a78c1d4dcfc867c80a6920c3a6219d05a/witnesses/packing-238.cert"
+      "url": "https://github.com/itsnaka/squish-certs/blob/aeacc6c124df339074f7370e1e010bb6e8c1b5ca/squish-submission-2026-10-11/n238/n238.cert.json"
     },
     {
-      "attribution": "Siddharth Gupta after Nate Chaoweeraprasit and Evan Daniel, https://github.com/SidG2k1/square-packing-refinements/blob/9643cb5a78c1d4dcfc867c80a6920c3a6219d05a/witnesses/packing-239.cert at 9643cb5a78c1d4dcfc867c80a6920c3a6219d05a",
+      "attribution": "Nate Chaoweeraprasit, https://github.com/itsnaka/squish-certs/blob/aeacc6c124df339074f7370e1e010bb6e8c1b5ca/squish-submission-2026-10-11/n239/n239.cert.json at aeacc6c124df339074f7370e1e010bb6e8c1b5ca",
       "kind": "packet-derived-facts",
       "license_status": "no-licence-published",
       "listed_n": [
         239
       ],
       "n": 239,
-      "path": "resources/web/gupta-square-packing-refinements-2026-10-08/facts/complete-certificates-and-comparators.json.xz",
-      "raw_asset_retained": true,
-      "retention_policy": "Complete factual certificates/comparators retained losslessly; unlicensed programs/prose are hash-pinned.",
-      "retrieved": "2026-10-08",
+      "path": "resources/web/squish-500-fourth-request-2026-10-11/facts/n-239.yaml.gz",
+      "raw_asset_retained": false,
+      "retention_policy": "Exact certificate retained as a derived fact, bound to the SHA-256 its packet pins upstream; no upstream byte is copied.",
+      "retrieved": "2026-10-11",
       "source_n": 239,
-      "url": "https://github.com/SidG2k1/square-packing-refinements/blob/9643cb5a78c1d4dcfc867c80a6920c3a6219d05a/witnesses/packing-239.cert"
+      "url": "https://github.com/itsnaka/squish-certs/blob/aeacc6c124df339074f7370e1e010bb6e8c1b5ca/squish-submission-2026-10-11/n239/n239.cert.json"
     },
     {
       "attribution": "Francisco Couzo, https://github.com/franciscouzo/square-packing at f3c5a529c255b546db18605702b8da298132309f",
@@ -1830,49 +1831,49 @@
       "url": "https://github.com/evand/square-packing/blob/ea1a2f23678a13bd1d252f9f4c95ca5dd2ffd2b7/search/regularize/lists/certs/n-269.cert.gz"
     },
     {
-      "attribution": "Francisco Couzo, https://github.com/franciscouzo/square-packing/blob/3ef76349025bf4bfa99c9c3600bcc273f4c33e02/certificates/n270.cert at 3ef76349025bf4bfa99c9c3600bcc273f4c33e02",
+      "attribution": "Nate Chaoweeraprasit, https://github.com/itsnaka/squish-certs/blob/aeacc6c124df339074f7370e1e010bb6e8c1b5ca/squish-submission-2026-10-11/n270/n270.cert.json at aeacc6c124df339074f7370e1e010bb6e8c1b5ca",
       "kind": "packet-derived-facts",
       "license_status": "no-licence-published",
       "listed_n": [
         270
       ],
       "n": 270,
-      "path": "resources/web/couzo-certificates-2026-10-10/source/certificates/n270.cert",
-      "raw_asset_retained": true,
-      "retention_policy": "Complete source certificate retained losslessly and bound to the SHA-256 its packet pins upstream; no upstream program or prose is copied.",
-      "retrieved": "2026-10-10",
+      "path": "resources/web/squish-500-fourth-request-2026-10-11/facts/n-270.yaml.gz",
+      "raw_asset_retained": false,
+      "retention_policy": "Exact certificate retained as a derived fact, bound to the SHA-256 its packet pins upstream; no upstream byte is copied.",
+      "retrieved": "2026-10-11",
       "source_n": 270,
-      "url": "https://github.com/franciscouzo/square-packing/blob/3ef76349025bf4bfa99c9c3600bcc273f4c33e02/certificates/n270.cert"
+      "url": "https://github.com/itsnaka/squish-certs/blob/aeacc6c124df339074f7370e1e010bb6e8c1b5ca/squish-submission-2026-10-11/n270/n270.cert.json"
     },
     {
-      "attribution": "Francisco Couzo, https://github.com/franciscouzo/square-packing at f3c5a529c255b546db18605702b8da298132309f",
+      "attribution": "Nate Chaoweeraprasit, https://github.com/itsnaka/squish-certs/blob/aeacc6c124df339074f7370e1e010bb6e8c1b5ca/squish-submission-2026-10-11/n271/n271.cert.json at aeacc6c124df339074f7370e1e010bb6e8c1b5ca",
       "kind": "packet-derived-facts",
       "license_status": "no-licence-published",
       "listed_n": [
         271
       ],
       "n": 271,
-      "path": "resources/web/franciscouzo-square-packing-2026-09-27/facts/n-271.yaml",
+      "path": "resources/web/squish-500-fourth-request-2026-10-11/facts/n-271.yaml.gz",
       "raw_asset_retained": false,
-      "retention_policy": "metadata-and-derived-numerical-facts-only",
-      "retrieved": "2026-09-29",
+      "retention_policy": "Exact certificate retained as a derived fact, bound to the SHA-256 its packet pins upstream; no upstream byte is copied.",
+      "retrieved": "2026-10-11",
       "source_n": 271,
-      "url": "https://github.com/franciscouzo/square-packing/blob/f3c5a529c255b546db18605702b8da298132309f/n271.txt"
+      "url": "https://github.com/itsnaka/squish-certs/blob/aeacc6c124df339074f7370e1e010bb6e8c1b5ca/squish-submission-2026-10-11/n271/n271.cert.json"
     },
     {
-      "attribution": "Evan Daniel, https://github.com/evand/square-packing/blob/7eef24f7221b8c3371d6171dd664b52541bbd479/s12/search/exact/results/sw2/rd1_n272.cert at 7eef24f7221b8c3371d6171dd664b52541bbd479",
+      "attribution": "Nate Chaoweeraprasit, https://github.com/itsnaka/squish-certs/blob/aeacc6c124df339074f7370e1e010bb6e8c1b5ca/squish-submission-2026-10-11/n272/n272.cert.json at aeacc6c124df339074f7370e1e010bb6e8c1b5ca",
       "kind": "packet-derived-facts",
-      "license_status": "MIT",
+      "license_status": "no-licence-published",
       "listed_n": [
         272
       ],
       "n": 272,
-      "path": "resources/web/evand-new-arrangements-2026-10-07/facts/complete-certificates.json.xz",
-      "raw_asset_retained": true,
-      "retention_policy": "Complete source certificates and MIT licences retained unchanged.",
-      "retrieved": "2026-10-07",
+      "path": "resources/web/squish-500-fourth-request-2026-10-11/facts/n-272.yaml.gz",
+      "raw_asset_retained": false,
+      "retention_policy": "Exact certificate retained as a derived fact, bound to the SHA-256 its packet pins upstream; no upstream byte is copied.",
+      "retrieved": "2026-10-11",
       "source_n": 272,
-      "url": "https://github.com/evand/square-packing/blob/7eef24f7221b8c3371d6171dd664b52541bbd479/s12/search/exact/results/sw2/rd1_n272.cert"
+      "url": "https://github.com/itsnaka/squish-certs/blob/aeacc6c124df339074f7370e1e010bb6e8c1b5ca/squish-submission-2026-10-11/n272/n272.cert.json"
     },
     {
       "attribution": "Francisco Couzo, https://github.com/franciscouzo/square-packing at f3c5a529c255b546db18605702b8da298132309f",
@@ -2095,34 +2096,34 @@
       "url": "https://github.com/evand/square-packing/blob/ea1a2f23678a13bd1d252f9f4c95ca5dd2ffd2b7/search/regularize/lists/certs/n-303.cert.gz"
     },
     {
-      "attribution": "Francisco Couzo, https://github.com/franciscouzo/square-packing at f3c5a529c255b546db18605702b8da298132309f",
+      "attribution": "Francisco Couzo, https://github.com/franciscouzo/square-packing/blob/337078ca3e05153aceb099237b175cf64af5748a/certificates/n304.cert at 337078ca3e05153aceb099237b175cf64af5748a",
       "kind": "packet-derived-facts",
       "license_status": "no-licence-published",
       "listed_n": [
         304
       ],
       "n": 304,
-      "path": "resources/web/franciscouzo-square-packing-2026-09-27/facts/n-304.yaml",
-      "raw_asset_retained": false,
-      "retention_policy": "metadata-and-derived-numerical-facts-only",
-      "retrieved": "2026-09-29",
+      "path": "resources/web/couzo-certificates-2026-10-11/source/certificates/n304.cert",
+      "raw_asset_retained": true,
+      "retention_policy": "Complete source certificate retained losslessly and bound to the SHA-256 its packet pins upstream; no upstream program or prose is copied.",
+      "retrieved": "2026-10-11",
       "source_n": 304,
-      "url": "https://github.com/franciscouzo/square-packing/blob/f3c5a529c255b546db18605702b8da298132309f/n304.txt"
+      "url": "https://github.com/franciscouzo/square-packing/blob/337078ca3e05153aceb099237b175cf64af5748a/certificates/n304.cert"
     },
     {
-      "attribution": "Francisco Couzo, https://github.com/franciscouzo/square-packing/blob/3ef76349025bf4bfa99c9c3600bcc273f4c33e02/certificates/n305.cert at 3ef76349025bf4bfa99c9c3600bcc273f4c33e02",
+      "attribution": "Francisco Couzo, https://github.com/franciscouzo/square-packing/blob/337078ca3e05153aceb099237b175cf64af5748a/certificates/n305.cert at 337078ca3e05153aceb099237b175cf64af5748a",
       "kind": "packet-derived-facts",
       "license_status": "no-licence-published",
       "listed_n": [
         305
       ],
       "n": 305,
-      "path": "resources/web/couzo-certificates-2026-10-10/source/certificates/n305.cert",
+      "path": "resources/web/couzo-certificates-2026-10-11/source/certificates/n305.cert",
       "raw_asset_retained": true,
       "retention_policy": "Complete source certificate retained losslessly and bound to the SHA-256 its packet pins upstream; no upstream program or prose is copied.",
-      "retrieved": "2026-10-10",
+      "retrieved": "2026-10-11",
       "source_n": 305,
-      "url": "https://github.com/franciscouzo/square-packing/blob/3ef76349025bf4bfa99c9c3600bcc273f4c33e02/certificates/n305.cert"
+      "url": "https://github.com/franciscouzo/square-packing/blob/337078ca3e05153aceb099237b175cf64af5748a/certificates/n305.cert"
     },
     {
       "attribution": "Francisco Couzo, https://github.com/franciscouzo/square-packing/blob/ffd900dfff6d2674ad995359208c2f0714915c82/certificates/n306.cert at ffd900dfff6d2674ad995359208c2f0714915c82",

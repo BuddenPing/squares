@@ -8,26 +8,4 @@
 # its evidence (remove it in that change), a named entry stops citing it, or it is more
 # than 30 days older than the evidence register's `last_reviewed`, so the list cannot
 # outlive what it defers.
-deferrals:
-  - evidence: E-squish-500-exact-feasibility
-    results: [T-151]
-    bead: think-fvz4
-    blocked_on: think-fvz4
-    recorded: '2026-10-12'
-    reason: >-
-      The 11 October review of issue 500 accepted the replay for finite feasibility and
-      recommends T-151 as the house at 176, 181, 238, 239, 270, 271 and 272; the case
-      records' adoption, with private-worker custody first, follows this registration in
-      the same layer of the 2026-10-11 intake stack (think-fvz4), and the records lane
-      recorded the deferral when it registered T-151 (think-ekv3).
-  - evidence: E-couzo-506-exact-feasibility
-    results: [T-152]
-    bead: think-fvz4
-    blocked_on: think-fvz4
-    recorded: '2026-10-12'
-    reason: >-
-      The 12 October review of issue 506 accepted the replay for finite feasibility and
-      recommends T-152 as the house at 304 and 305; the case records' adoption, with
-      private-worker custody first, follows this registration in the same layer of the
-      2026-10-11 intake stack (think-fvz4), and the records lane recorded the deferral when
-      it registered T-152 (think-ekv3).
+deferrals: []

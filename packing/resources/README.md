@@ -1185,8 +1185,9 @@ Both project exact routes accept all nine and refuse all 18 controls, and a thir
 route agrees and held each fact to its pinned certificate and summary.csv row.
 T-151 records the exact fractions at V3/C3 on the
 [review of 11 October](../../docs/project/reviews/review-2026-10-11-upper-bound-imports-500.md),
-pending adoption; the issue’s 15-digit sides are cuts of them, and at 304 and 305
-Francisco Couzo’s certificates below, built from these packings, are smaller.
+and the cases at 176, 181, 238, 239, 270, 271 and 272 hold them as the house since 12
+October 2026; the issue’s 15-digit sides are cuts of them, and at 304 and 305 Francisco
+Couzo’s certificates below, built from these packings, are smaller.
 Claude Opus 5.5 assistance disclosed.
 
 **[Couzo certificates 2026-10-11]**: Francisco Couzo’s exact rational certificates for n
@@ -1199,9 +1200,10 @@ requested and held every file to its pinned bytes.
 T-152 records the 304 and 305 sides, refinements of SQUISH’s Mondrian packings above, at
 V3/C3 on the
 [review of 12 October](../../docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md),
-pending adoption. The nine sides beyond the case corpus are verified beyond-horizon rows
-that supersede the rows tracked at 338, 339, 344, 375, 376, 378 and 379; the four
-certificates the issue does not name, at 175, 308, 340 and 343, are registered nowhere.
+and the cases at 304 and 305 hold them as the house since 12 October 2026. The nine
+sides beyond the case corpus are verified beyond-horizon rows that supersede the rows
+tracked at 338, 339, 344, 375, 376, 378 and 379; the four certificates the issue does
+not name, at 175, 308, 340 and 343, are registered nowhere.
 Claude assistance disclosed.
 
 <!-- This document follows common-doc-guidelines.md.
