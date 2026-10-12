@@ -1955,6 +1955,11 @@ OTHER_PROJECTS: tuple[tuple[str, str, str], ...] = (
         "Certified lower bounds for seventeen squares.",
     ),
     (
+        "https://github.com/Kleddamag/the-seventeenth-square-candidate",
+        "Marc Leonard Overbeck",
+        "A candidate proof that Bidwell's packing of seventeen squares is optimal.",
+    ),
+    (
         "https://github.com/Guzhou0806/n17-square-packing",
         "Guzhou0806",
         "Strict lower bounds for seventeen squares.",
