@@ -2017,16 +2017,26 @@ def control_checks(records: list[dict[str, Any]]) -> list[Check]:
     return checks
 
 
-def crate_premises(summary: dict[str, Any], side: Fraction, step: Fraction, count: int) -> bool:
-    """Whether the crate admitted the input the contract names: format T, the 480 rows of
-    mass ``M`` scaled by `CRATE_SCALE`, and the net the metadata sets."""
+def crate_premises(
+    summary: dict[str, Any],
+    side: Fraction,
+    step: Fraction,
+    count: int,
+    *,
+    rows: int = 480,
+    expanded: int = 3792,
+    mass: Fraction = CLAIM.mass,
+) -> bool:
+    """Whether the crate admitted the input the contract names: format T, the density's
+    rows (`T-145`'s 480 by default) of mass ``M`` scaled by `CRATE_SCALE`, their expansion,
+    and the net the metadata sets."""
     given = summary.get("premises") or {}
     return (
         given.get("format") == "T"
         and given.get("net_origin") == "metadata"
-        and given.get("source_rectangles") == 480
-        and given.get("expanded_rectangles") == 3792
-        and given.get("mass_exact") == text(CLAIM.mass * CRATE_SCALE)
+        and given.get("source_rectangles") == rows
+        and given.get("expanded_rectangles") == expanded
+        and given.get("mass_exact") == text(mass * CRATE_SCALE)
         and (given.get("B"), given.get("D"), given.get("angle_count"))
         == (text(side), text(step), count)
         and summary.get("threshold") == "1"

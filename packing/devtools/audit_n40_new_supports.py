@@ -32,8 +32,10 @@ Four subcommands:
   either side of its minimum, and, given a crate binary of reviewed source, decides the
   near-axis statement a second way with ``sqverify-fast``'s exact axis sweep. These are
   the quick parts of the replay; the 43 slabs are not run here.
-- ``check-axis`` judges those receipts, and refuses them without the crate's decision
-  unless told ``--without-crate``.
+- ``check-axis`` judges those receipts: the crate's decision must be on the input derived
+  here (`crate_axis_input`), by its digest and its premises. It refuses receipts without
+  that decision unless told ``--without-crate``, and a judgement without it says
+  `KERNEL_ONLY`, never the full stage's ``AXIS_STAGE_HOLDS``.
 
 **What its author read** (its independence record, for the finite steps). Written on
 2026-10-11 by an AI agent (Claude, lane E of the 2026-10-11 intake pass, ``think-tln9``)
@@ -91,7 +93,6 @@ from devtools.audit_clipped_corner_transfer import (
 )
 from devtools.audit_continuous_pose import CLAIM as T145_CLAIM
 from devtools.audit_continuous_pose import (
-    CRATE_SCALE,
     FLAGS,
     GRID,
     KERNEL_SOURCES,
@@ -105,6 +106,7 @@ from devtools.audit_continuous_pose import (
     axis_rows,
     chain_checks,
     crate_input,
+    crate_premises,
     extent,
     facts,
     finite_controls,
@@ -117,9 +119,11 @@ from devtools.audit_continuous_pose import (
     read_receipt,
     read_slabs,
     receipt_checks,
+    retained_json,
     spawn,
     write_json,
 )
+from devtools.audit_continuous_pose import RELEASE as T145_RELEASE
 from devtools.check_sqverify_fast import crate_source_sha256
 from devtools.retained_data import read_retained_bytes
 from devtools.sqverify_fast_census import REVIEWED_SOURCES
@@ -135,10 +139,9 @@ ORIGINAL = (
     "/rect_n40_L67/certified_candidate.json"
 )
 PARAMETERS = SOURCE / "certificate/parameters.json"
-MANIFEST = PACKET / "acquisition/upstream-subtree.sha256"
 RECEIPT_DIR = PACKET / "receipts"
 #: T-145's packet: its kernels, its receipts and its replay here, the price's calibration.
-T145 = WEB / "guzhou-n40-continuous-pose-2026-10-10"
+T145 = T145_RELEASE.packet
 
 PIN = "6a65957e6c5c51cdf267917d882dab7f5b4928dd"
 CANDIDATE_SHA256 = "984fcd3acc605fe3c50a84912eed77e0192ca5b7253b19b6aa31a4e28e1bf5c2"
@@ -146,8 +149,9 @@ ORIGINAL_SHA256 = "71011d0356dd179c6e7e6e02c9a064ff30f6f13844016ce3b97463bf7ef53
 POSE_SHA256 = "6c64a2d21207e7b65ea011dc7ca7a655418840defbf017340ce44ab7fc7b94fb"
 AXIS_SHA256 = "10dd46b06f14144619bf9de03151c43215e43e34f7e60df440f4e27d6a594396"
 CI_COMPILER = "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0"
-#: The CI run's binaries. The pose binary is T-145's CI binary; the axis binary is new,
-#: since ``run.py`` now builds the unchanged axis source with the pose kernel's flags.
+#: The CI run's binaries. The pose binary is T-145's CI binary, which `kernel_checks`
+#: holds to T-145's records; the axis binary is new, since ``run.py`` now builds the
+#: unchanged axis source with the pose kernel's flags.
 CI_BINARIES = {
     "axis": "19288b2f9bcb1cfa86a0bde9db1e1fbb79d43dc8044bc7243af8f6ad405899af",
     "pose": "69bc9e6485102d3636db5377884ba6304f749be94d6ca913d82d80108f1ed4ab",
@@ -396,17 +400,42 @@ def release_admission(s: SupportFacts, f: Facts) -> dict[str, object]:
     }
 
 
-def kernel_checks() -> list[Check]:
-    """What the release keeps byte for byte from T-145's, whose review read it."""
-    ours = manifest(MANIFEST)
-    theirs = manifest(T145 / "acquisition/upstream-subtree.sha256")
-    kept = [path for path in SHARED_WITH_T145 if ours.get(path) == theirs.get(path)]
+def retained_alike(release: Release, earlier: Release, path: str, digest: str) -> bool:
+    """Whether this release's retained bytes at ``path`` have the manifest's ``digest``,
+    and the earlier release retains the same bytes there."""
+    data = read_retained_bytes(release.source / path)
+    return sha256(data) == digest and read_retained_bytes(earlier.source / path) == data
+
+
+def kernel_checks(release: Release = RELEASE, earlier: Release = T145_RELEASE) -> list[Check]:
+    """What the release keeps byte for byte from T-145's, whose review read it: each
+    shared file in both manifests with one digest, which its retained bytes have, and the
+    pose binary of its CI run, as both CI receipts and T-145's replay build record it."""
+    ours, theirs = manifest(release.manifest_path), manifest(earlier.manifest_path)
+    kept = [
+        path
+        for path in SHARED_WITH_T145
+        if path in ours
+        and ours[path] == theirs.get(path)
+        and retained_alike(release, earlier, path, ours[path])
+    ]
+    builds = retained_json(earlier.packet / "receipts/builds.json")
+    rebuilt = builds["builds"]["pose"]["binary_sha256"]
+    ran = (read_receipt(release.receipts["ci"]).get("binaries") or {}).get("pose")
+    reran = (read_receipt(earlier.receipts["ci"]).get("binaries") or {}).get("pose")
     return [
         Check(
             "kernels: byte for byte T-145's, which its review read",
             kept == list(SHARED_WITH_T145),
             f"{len(kept)} of {len(SHARED_WITH_T145)}: {', '.join(kept)}",
-        )
+        ),
+        Check(
+            "kernels: the CI run's pose binary is T-145's, which its replay rebuilt",
+            builds.get("compiler") == CI_COMPILER
+            and ran == reran == rebuilt == release.ci_binaries["pose"]
+            and release.ci_binaries["pose"] == earlier.ci_binaries["pose"],
+            f"{str(ran)[:12]}..., in both CI receipts and T-145's build with the CI compiler",
+        ),
     ]
 
 
@@ -575,6 +604,32 @@ def price() -> dict[str, Any]:
 # --------------------------------------------------------------------------- the report
 
 
+def pool_check(pool_raw: bytes) -> Check:
+    """The original pool, as the release pins it by digest."""
+    return Check(
+        "density: the pool is rect_n40_L67, as the release pins it",
+        sha256(pool_raw) == ORIGINAL_SHA256,
+        "the 2026-10-01 packet's copy",
+    )
+
+
+def statement_checks(parameters: dict[str, Any], claim: Claim = CLAIM) -> list[Check]:
+    """The claim against what the release states of it: PROOF.md's near-axis margin and
+    its retained ``parameters.json``."""
+    return [
+        Check(
+            "near-axis: B - A W(eps) is PROOF.md's margin",
+            claim.B - claim.A * extent(claim.eps) == NEAR_AXIS_MARGIN,
+            "section 6",
+        ),
+        Check(
+            "retained parameters.json is the claim",
+            parameters == claim.parameters(),
+            "all keys",
+        ),
+    ]
+
+
 def check_report() -> dict[str, Any]:
     """The finite audit: the orbit facts here, then the checks `audit_continuous_pose`
     makes of T-145's release, made of this one (`RELEASE`), and the controls."""
@@ -586,24 +641,11 @@ def check_report() -> dict[str, Any]:
     parameters = json.loads(PARAMETERS.read_text(encoding="utf-8"))
     margin = CLAIM.B - CLAIM.A * extent(CLAIM.eps)
     checks = [
-        Check(
-            "density: the pool is rect_n40_L67, as the release pins it",
-            sha256(pool_raw) == ORIGINAL_SHA256,
-            "the 2026-10-01 packet's copy",
-        ),
+        pool_check(pool_raw),
         *support_checks(s, density),
         *input_checks(f, CLAIM, RELEASE),
         *chain_checks(CLAIM, f, least, RELEASE),
-        Check(
-            "near-axis: B - A W(eps) is PROOF.md's margin",
-            margin == NEAR_AXIS_MARGIN,
-            "section 6",
-        ),
-        Check(
-            "retained parameters.json is the claim",
-            parameters == CLAIM.parameters(),
-            "all keys",
-        ),
+        *statement_checks(parameters),
     ]
     for name, folder in RECEIPTS.items():
         checks += receipt_checks(
@@ -659,10 +701,14 @@ AXIS_CONTROLS = (
 )
 
 
+#: The standard net the crate's near-axis input names: its step and its angle count.
+CRATE_NET = (Fraction(83, 40000), 201)
+
+
 def crate_axis_input(density: Density) -> bytes:
     """``sqverify-fast``'s near-axis input: the 685 rows with weights scaled by
     `CRATE_SCALE`, side ``A`` on the standard net, threshold one."""
-    return crate_input(density, CLAIM.A, Fraction(83, 40000), 201)
+    return crate_input(density, CLAIM.A, *CRATE_NET)
 
 
 def run_axis(out: Path, crate: Path | None) -> dict[str, Any]:
@@ -738,10 +784,13 @@ def json_object(value: object) -> dict[str, Any]:
 CRATE_DECISION = "crate: the near-axis statement at side A by the exact vertex sweep"
 
 
-def axis_stage_checks(record: dict[str, Any], *, require_crate: bool = True) -> list[Check]:
-    """The axis stage's receipts against both release receipts. The stage's second
-    decision of the near-axis statement is the crate's, so a record without it fails
-    `CRATE_DECISION` unless ``require_crate`` is false, for a run made without the crate."""
+def axis_stage_checks(
+    record: dict[str, Any], density: Density, *, require_crate: bool = True
+) -> list[Check]:
+    """The axis stage's receipts against both release receipts and ``density``. The
+    stage's second decision of the near-axis statement is the crate's, on the input
+    derived here from ``density``, so a record without it fails `CRATE_DECISION` unless
+    ``require_crate`` is false, for a run made without the crate."""
     build, runs = record["build"], record["runs"]
     release = [
         json.loads(str(read_receipt(folder, "axis.json")["stdout"]))
@@ -796,6 +845,7 @@ def axis_stage_checks(record: dict[str, Any], *, require_crate: bool = True) -> 
     summary = next((x for x in lines if x.get("kind")), {})
     premises = summary.get("premises") or {}
     reviewed = REVIEWED_SOURCES.get(str((summary.get("build") or {}).get("source_sha256")))
+    derived = sha256(crate_axis_input(density))
     return [
         *checks,
         Check(
@@ -806,29 +856,47 @@ def axis_stage_checks(record: dict[str, Any], *, require_crate: bool = True) -> 
         Check(
             CRATE_DECISION,
             crate["exit_code"] == 0
-            and premises.get("format") == "T"
-            and premises.get("source_rectangles") == COUNTS["sites"]
-            and premises.get("mass_exact") == text(CLAIM.mass * CRATE_SCALE)
-            and premises.get("B") == text(CLAIM.A)
-            and summary.get("threshold") == "1"
+            and crate.get("input_sha256") == premises.get("input_sha256") == derived
+            and premises.get("L") == text(CLAIM.L)
+            and premises.get("n") == CLAIM.n
+            and crate_premises(
+                summary,
+                CLAIM.A,
+                *CRATE_NET,
+                rows=COUNTS["sites"],
+                expanded=len(density.merged),
+                mass=CLAIM.mass,
+            )
             and row.get("verdict") == "verified"
             and row.get("method") == "axis-vertex-sweep"
             and float(row.get("min_certified_lower_bound", 0)) >= 1,
-            f"{row.get('verdict')}, {row.get('vertices')} vertices, least "
-            f"{row.get('min_certified_lower_bound')!r} at {row.get('argmin')}, "
-            f"{crate['wall_seconds']} s",
+            f"{row.get('verdict')} on the input derived here, {derived[:12]}..., "
+            f"{row.get('vertices')} vertices, least {row.get('min_certified_lower_bound')!r} "
+            f"at {row.get('argmin')}, {crate['wall_seconds']} s",
         ),
     ]
 
 
+#: What the axis stage's judgement says when it holds without the crate's decision, which
+#: never claims the full stage.
+KERNEL_ONLY = "AXIS_KERNEL_HOLDS_WITHOUT_CRATE"
+#: The statuses a judgement exits zero on.
+HOLDS = frozenset({"FINITE_STEPS_HOLD", "AXIS_STAGE_HOLDS", KERNEL_ONLY})
+
+
 def axis_report(folder: Path, *, require_crate: bool = True) -> dict[str, Any]:
+    """The axis stage's judgement: `AXIS_STAGE_HOLDS` only with the crate's decision on
+    this density, and `KERNEL_ONLY` when the record has none and none was required."""
     record = json.loads((folder / "axis-stage.json").read_text(encoding="utf-8"))
-    checks = axis_stage_checks(record, require_crate=require_crate)
+    checks = axis_stage_checks(
+        record, site_density(load_candidate()), require_crate=require_crate
+    )
     held = all(c.held for c in checks)
+    status = "AXIS_STAGE_HOLDS" if "crate" in record else KERNEL_ONLY
     return {
         "kind": "n40-new-supports-axis-check/v1",
         "checks": [c.as_json() for c in checks],
-        "status": "AXIS_STAGE_HOLDS" if held else "AXIS_STAGE_FAILED",
+        "status": status if held else "AXIS_STAGE_FAILED",
     }
 
 
@@ -846,7 +914,7 @@ def emit(report: dict[str, Any], output: Path | None) -> int:
     if "price" in report:
         print(json.dumps(report["price"], indent=2, sort_keys=True))
     print(report["status"])
-    return 0 if report["status"] in {"FINITE_STEPS_HOLD", "AXIS_STAGE_HOLDS"} else 1
+    return 0 if report["status"] in HOLDS else 1
 
 
 def main(argv: Sequence[str] | None = None) -> int:

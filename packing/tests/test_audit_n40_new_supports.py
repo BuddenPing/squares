@@ -13,9 +13,12 @@ import dataclasses
 import functools
 import json
 import shutil
+from collections.abc import Callable, Sequence
 from fractions import Fraction
 from pathlib import Path
 from typing import Any
+
+import pytest
 
 from devtools import audit_continuous_pose as t145
 from devtools import audit_n40_new_supports as audit
@@ -40,6 +43,11 @@ def density() -> audit.Density:
 @functools.cache
 def facts() -> audit.Facts:
     return audit.facts(density(), CLAIM, RELEASE)
+
+
+@functools.cache
+def support() -> audit.SupportFacts:
+    return audit.support_facts(raw(), pool())
 
 
 @functools.cache
@@ -132,6 +140,7 @@ def test_the_finite_checks_are_t145s_not_copies() -> None:
         "FiniteControl",
         "manifest",
         "pose_input",
+        "crate_premises",
     ):
         assert getattr(audit, name) is getattr(t145, name), name
 
@@ -142,17 +151,20 @@ def _copy_receipt(tmp_path: Path) -> Path:
     return folder
 
 
+def _failures(checks: Sequence[audit.Check]) -> list[str]:
+    return [c.name for c in checks if not c.held]
+
+
 def _receipt_failures(folder: Path) -> list[str]:
-    s = audit.support_facts(raw(), pool())
     checks = audit.receipt_checks(
         "ci",
         folder,
         CLAIM,
         facts(),
         release=RELEASE,
-        admission=audit.release_admission(s, facts()),
+        admission=audit.release_admission(support(), facts()),
     )
-    return [c.name for c in checks if not c.held]
+    return _failures(checks)
 
 
 def test_a_slab_row_with_output_on_stderr_is_refused(tmp_path: Path) -> None:
@@ -237,7 +249,11 @@ def test_the_axis_stage_receipt_is_this_run() -> None:
     assert retained == json.dumps(value, indent=1, sort_keys=True) + "\n"
 
 
-def test_an_axis_stage_without_the_crate_is_refused_unless_asked(tmp_path: Path) -> None:
+def test_an_axis_stage_without_the_crate_is_refused_unless_asked(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """Without the crate's decision the stage fails, and when told not to require it, its
+    judgement holds under its own status, never the full stage's (review B5)."""
     record = json.loads((audit.RECEIPT_DIR / "axis-stage.json").read_text())
     del record["crate"]
     (tmp_path / "axis-stage.json").write_text(json.dumps(record))
@@ -246,7 +262,9 @@ def test_an_axis_stage_without_the_crate_is_refused_unless_asked(tmp_path: Path)
     assert value["status"] == "AXIS_STAGE_FAILED"
     partial = audit.axis_report(tmp_path, require_crate=False)
     assert [c["name"] for c in partial["checks"]] == AXIS_STAGE_CHECKS[:5]
-    assert partial["status"] == "AXIS_STAGE_HOLDS"
+    assert partial["status"] == audit.KERNEL_ONLY == "AXIS_KERNEL_HOLDS_WITHOUT_CRATE"
+    assert audit.main(["check-axis", "--receipts", str(tmp_path), "--without-crate"]) == 0
+    assert capsys.readouterr().out.splitlines()[-1] == audit.KERNEL_ONLY
 
 
 def test_a_control_that_printed_no_json_fails_rather_than_raising(tmp_path: Path) -> None:
@@ -287,3 +305,478 @@ def test_the_price_is_the_receipts_scaled_by_t145s_replay() -> None:
     assert 0.5 < price["predicted_slab_cpu_hours_here"] < 1.0
     walls = price["predicted_wall_seconds_here"]
     assert walls["4"] < walls["2"] < walls["1"] < 3600
+
+
+# --------------------------------------------------------------------------- the crate
+# Review B1: the crate's second decision is bound to this density by the input it read,
+# not by its count and mass alone.
+
+
+def test_the_crate_input_is_the_one_the_facts_derive_and_the_record_names() -> None:
+    derived = audit.sha256(audit.crate_axis_input(density()))
+    assert derived == facts().crate_sha256["axis-A"]
+    crate = json.loads((audit.RECEIPT_DIR / "axis-stage.json").read_text())["crate"]
+    assert crate["input_sha256"] == derived
+
+
+#: Changes to the crate's record or to the premises it printed, each of which must fail
+#: the crate's decision: the review's reproduction first, then each field alone.
+CRATE_CHANGES: list[list[tuple[str, str, object]]] = [
+    [
+        ("record", "input_sha256", "0" * 64),
+        ("premises", "input_sha256", "1" * 64),
+        ("premises", "L", "1/1"),
+        ("premises", "n", 1),
+        ("premises", "expanded_rectangles", 1),
+    ],
+    [("record", "input_sha256", "0" * 64)],
+    [("premises", "input_sha256", "1" * 64)],
+    [("premises", "L", "1/1")],
+    [("premises", "n", 1)],
+    [("premises", "expanded_rectangles", 1)],
+    [("premises", "D", "83/80000")],
+    [("premises", "angle_count", 401)],
+    [("premises", "net_origin", "default")],
+]
+
+
+@pytest.mark.parametrize(
+    "changes",
+    CRATE_CHANGES,
+    ids=["review-B1", *(f"{c[0][0]}.{c[0][1]}" for c in CRATE_CHANGES[1:])],
+)
+def test_a_crate_decision_on_another_input_is_refused(
+    tmp_path: Path, changes: list[tuple[str, str, object]]
+) -> None:
+    record = json.loads((audit.RECEIPT_DIR / "axis-stage.json").read_text())
+    crate = record["crate"]
+    lines = crate["stdout"].splitlines()
+    at = next(i for i, line in enumerate(lines) if '"kind"' in line)
+    for where, key, value in changes:
+        if where == "record":
+            crate[key] = value
+        else:
+            lines[at] = _set(lines[at], ("premises", key), value)
+    crate["stdout"] = "\n".join(lines) + "\n"
+    (tmp_path / "axis-stage.json").write_text(json.dumps(record))
+    judged = audit.axis_report(tmp_path)
+    assert [c["name"] for c in judged["checks"] if not c["held"]] == [audit.CRATE_DECISION]
+    assert judged["status"] == "AXIS_STAGE_FAILED"
+
+
+# --------------------------------------------------------------------------- the kernels
+# Review B2, B3 and B6: the shared kernel files and the shared pose binary, each read from
+# both packets' records and each refused when one side differs.
+
+
+def _copy_kernel_records(tmp_path: Path) -> tuple[audit.Release, audit.Release]:
+    """What `kernel_checks` reads of both packets, copied, as both releases at the copies."""
+    copies: list[audit.Release] = []
+    for name, release in (("ours", RELEASE), ("t145", t145.RELEASE)):
+        packet = tmp_path / name
+        parts = [
+            "acquisition/upstream-subtree.sha256",
+            "release-ci/results/verification.json",
+            *(f"source/{path}" for path in audit.SHARED_WITH_T145),
+        ]
+        if name == "t145":
+            parts.append("receipts/builds.json")
+        for part in parts:
+            (packet / part).parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(release.packet / part, packet / part)
+        copies.append(dataclasses.replace(release, packet=packet))
+    return copies[0], copies[1]
+
+
+def _drop_oracle_from_both_manifests(root: Path) -> None:
+    for name in ("ours", "t145"):
+        path = root / name / "acquisition/upstream-subtree.sha256"
+        kept = [line for line in path.read_text().splitlines() if "tests/oracle.py" not in line]
+        path.write_text("".join(f"{line}\n" for line in kept))
+
+
+def _append_a_byte(path: Path) -> None:
+    path.write_bytes(path.read_bytes() + b"\n")
+
+
+KERNELS = "kernels: byte for byte T-145's, which its review read"
+POSE_BINARY = "kernels: the CI run's pose binary is T-145's, which its replay rebuilt"
+KERNEL_CHANGES: list[tuple[str, Callable[[Path], None], str]] = [
+    ("a shared file in neither manifest", _drop_oracle_from_both_manifests, KERNELS),
+    (
+        "our retained kernel not the manifest's",
+        lambda root: _append_a_byte(root / "ours/source/verifier/continuous_pose.cpp"),
+        KERNELS,
+    ),
+    (
+        "T-145's retained file not ours",
+        lambda root: _append_a_byte(root / "t145/source/tests/oracle.py"),
+        KERNELS,
+    ),
+    (
+        "our CI receipt's pose binary",
+        lambda root: _edit(
+            root / "ours/release-ci/results/verification.json", ("binaries", "pose"), "0" * 64
+        ),
+        POSE_BINARY,
+    ),
+    (
+        "T-145's CI receipt's pose binary",
+        lambda root: _edit(
+            root / "t145/release-ci/results/verification.json", ("binaries", "pose"), "0" * 64
+        ),
+        POSE_BINARY,
+    ),
+    (
+        "T-145's replay built another binary",
+        lambda root: _edit(
+            root / "t145/receipts/builds.json", ("builds", "pose", "binary_sha256"), "0" * 64
+        ),
+        POSE_BINARY,
+    ),
+    (
+        "T-145's replay built on another compiler",
+        lambda root: _edit(root / "t145/receipts/builds.json", ("compiler",), "g++ 15.2.0"),
+        POSE_BINARY,
+    ),
+]
+
+
+def test_the_kernel_checks_hold_on_copies_of_both_packets(tmp_path: Path) -> None:
+    ours, theirs = _copy_kernel_records(tmp_path)
+    assert _failures(audit.kernel_checks(ours, theirs)) == []
+    assert [c.name for c in audit.kernel_checks()] == [KERNELS, POSE_BINARY]
+
+
+@pytest.mark.parametrize(
+    ("change", "check"),
+    [(change, check) for _, change, check in KERNEL_CHANGES],
+    ids=[name for name, _, _ in KERNEL_CHANGES],
+)
+def test_a_kernel_or_binary_that_differs_on_one_side_is_refused(
+    tmp_path: Path, change: Callable[[Path], None], check: str
+) -> None:
+    ours, theirs = _copy_kernel_records(tmp_path)
+    change(tmp_path)
+    assert _failures(audit.kernel_checks(ours, theirs)) == [check]
+
+
+def test_the_pose_binary_literals_are_compared(tmp_path: Path) -> None:
+    ours, theirs = _copy_kernel_records(tmp_path)
+    other = dataclasses.replace(theirs, ci_binaries={**theirs.ci_binaries, "pose": "0" * 64})
+    assert _failures(audit.kernel_checks(ours, other)) == [POSE_BINARY]
+
+
+# --------------------------------------------------------------------------- mutants
+# Review B4: a mutant of each value the finite checks compare, each refused by the check
+# named for it, so that each is shown to bite and none can hold on absence.
+
+
+def _set(value: Any, keys: Sequence[str | int], new: object) -> Any:
+    """``value`` with the field at ``keys`` replaced. A string met on the way, such as a
+    record's ``stdout``, is read as the JSON it holds and written back."""
+    if not keys:
+        return new
+    if isinstance(value, str):
+        return json.dumps(_set(json.loads(value), keys, new))
+    value[keys[0]] = _set(value[keys[0]], keys[1:], new)
+    return value
+
+
+def _edit(path: Path, keys: Sequence[str | int], new: object) -> None:
+    """One field of a JSON record replaced; in JSON Lines the first key is the row."""
+    if path.suffix == ".jsonl":
+        rows = [json.loads(line) for line in path.read_text().splitlines() if line]
+        path.write_text("".join(json.dumps(row) + "\n" for row in _set(rows, keys, new)))
+    else:
+        path.write_text(json.dumps(_set(json.loads(path.read_text()), keys, new)))
+
+
+def _restate_digests(folder: Path) -> None:
+    """The receipt's digests of its slab and axis records restated for the records as
+    they now are, so that only the check of the changed field can see the change."""
+    path = folder / "verification.json"
+    receipt = json.loads(path.read_text())
+    receipt["slabs_sha256"] = audit.sha256((folder / "slabs.jsonl").read_bytes())
+    receipt["axis_sha256"] = audit.sha256((folder / "axis.json").read_bytes())
+    path.write_text(json.dumps(receipt))
+
+
+SLAB_ROWS = "ci receipt: every slab verified as the contract runs it"
+AXIS_RUN = "ci receipt: the axis run"
+#: One field of each block of the CI receipt, of one slab row and of the axis record,
+#: with the one check that must refuse it.
+RECEIPT_FIELDS: list[tuple[str, tuple[str | int, ...], object, str]] = [
+    ("verification.json", ("parameters", "threshold"), "4999/5001", "ci receipt: parameters"),
+    ("verification.json", ("scalar", "counting_margin"), "1/499", "ci receipt: scalar block"),
+    (
+        "verification.json",
+        ("admission", "pose_input_sha256"),
+        "0" * 64,
+        "ci receipt: admission block",
+    ),
+    (
+        "verification.json",
+        ("coverage", "leaves"),
+        1,
+        "ci receipt: coverage block is the slabs' totals",
+    ),
+    (
+        "verification.json",
+        ("axis", "margin"),
+        "0",
+        "ci receipt: axis block is the axis output's",
+    ),
+    (
+        "verification.json",
+        ("slabs_sha256",),
+        "0" * 64,
+        "ci receipt: slab and axis records by digest",
+    ),
+    (
+        "verification.json",
+        ("source_sha256", "verifier/continuous_pose.cpp"),
+        "0" * 64,
+        "ci receipt: the source it ran is the retained tree",
+    ),
+    ("verification.json", ("status",), "REPLAYED", "ci receipt: status and flags"),
+    ("verification.json", ("workers",), 2, "ci receipt: status and flags"),
+    (
+        "verification.json",
+        ("stages", 6, "exit_code"),
+        99,
+        "ci receipt: the fourteen stages exited as expected",
+    ),
+    ("verification.json", ("binaries", "axis"), "0" * 64, AXIS_RUN),
+    ("verification.json", ("binaries", "pose"), "0" * 64, SLAB_ROWS),
+    ("slabs.jsonl", (7, "index"), 8, SLAB_ROWS),
+    ("slabs.jsonl", (7, "arguments", 5), "29999999", SLAB_ROWS),
+    ("slabs.jsonl", (7, "exit_code"), 3, SLAB_ROWS),
+    ("slabs.jsonl", (7, "timed_out"), True, SLAB_ROWS),
+    ("slabs.jsonl", (7, "input_sha256"), "0" * 64, SLAB_ROWS),
+    ("slabs.jsonl", (7, "source_sha256"), "0" * 64, SLAB_ROWS),
+    ("slabs.jsonl", (7, "binary_sha256"), "0" * 64, SLAB_ROWS),
+    ("slabs.jsonl", (7, "stdout", "status"), "unresolved", SLAB_ROWS),
+    ("slabs.jsonl", (7, "stdout", "pl"), 2, SLAB_ROWS),
+    ("axis.json", ("exit_code",), 2, AXIS_RUN),
+    ("axis.json", ("input_sha256",), "0" * 64, AXIS_RUN),
+    ("axis.json", ("source_sha256",), "0" * 64, AXIS_RUN),
+    ("axis.json", ("stdout", "direct_sum_matches"), False, AXIS_RUN),
+    ("axis.json", ("stdout", "evaluation_abs_bound"), "1", AXIS_RUN),
+]
+
+
+@pytest.mark.parametrize(
+    ("record", "keys", "value", "check"),
+    RECEIPT_FIELDS,
+    ids=[f"{r}:{'.'.join(map(str, k))}" for r, k, _, _ in RECEIPT_FIELDS],
+)
+def test_a_changed_receipt_field_is_refused_by_its_check(
+    tmp_path: Path, record: str, keys: tuple[str | int, ...], value: object, check: str
+) -> None:
+    folder = _copy_receipt(tmp_path)
+    _edit(folder / record, keys, value)
+    if record != "verification.json":
+        _restate_digests(folder)
+    assert _receipt_failures(folder) == [check]
+
+
+def _copy_receipts(tmp_path: Path) -> audit.Release:
+    """What `identity_checks` reads of the packet, copied, as the release at the copy."""
+    for part in ("source/results", "release-ci/results"):
+        shutil.copytree(RELEASE.packet / part, tmp_path / part)
+    for part in ("source/SHA256SUMS", "release-ci/SHA256SUMS"):
+        shutil.copyfile(RELEASE.packet / part, tmp_path / part)
+    return dataclasses.replace(RELEASE, packet=tmp_path)
+
+
+LOCAL_RUN = "local receipt: the producer's run, not CI"
+CI_RUN = f"ci receipt: run {RELEASE.ci_run} on the pin, the binaries g++ 13.3.0 rebuilds"
+SUMS = "release-ci SHA256SUMS: the tree's but for the four results lines"
+SAME_SLABS = "receipts: every slab identical apart from timing and the binary"
+#: One field of either receipt that tells them apart or must agree between them, with
+#: the checks that must refuse it. A change to the CI receipt also leaves its digest out
+#: of the release's ``SHA256SUMS``.
+IDENTITY_FIELDS: list[tuple[str, tuple[str | int, ...], object, list[str]]] = [
+    ("source/results/verification.json", ("source_commit",), audit.PIN, [LOCAL_RUN]),
+    ("source/results/verification.json", ("compiler",), audit.CI_COMPILER, [LOCAL_RUN]),
+    ("release-ci/results/verification.json", ("source_commit",), "0" * 40, [CI_RUN, SUMS]),
+    ("release-ci/results/verification.json", ("binaries", "pose"), "0" * 64, [CI_RUN, SUMS]),
+    ("source/results/slabs.jsonl", (7, "stdout", "nodes"), 1, [SAME_SLABS]),
+    ("source/results/slabs.jsonl", (7, "arguments", 5), "29999999", [SAME_SLABS]),
+    (
+        "source/results/axis.json",
+        ("stdout", "x_nodes"),
+        "3292",
+        ["receipts: the axis outputs identical"],
+    ),
+]
+
+
+def test_the_identity_checks_hold_on_a_copy_and_refuse_a_changed_sums_line(
+    tmp_path: Path,
+) -> None:
+    release = _copy_receipts(tmp_path)
+    assert _failures(audit.identity_checks(release)) == []
+    sums = tmp_path / "release-ci/SHA256SUMS"
+    lines = sums.read_text().splitlines()
+    at = next(i for i, line in enumerate(lines) if line.endswith("results/slabs.jsonl"))
+    lines[at] = "0" * 64 + lines[at][64:]
+    sums.write_text("".join(f"{line}\n" for line in lines))
+    assert _failures(audit.identity_checks(release)) == [SUMS]
+
+
+@pytest.mark.parametrize(
+    ("record", "keys", "value", "checks"),
+    IDENTITY_FIELDS,
+    ids=[f"{r}:{'.'.join(map(str, k))}" for r, k, _, _ in IDENTITY_FIELDS],
+)
+def test_a_changed_receipt_field_is_refused_by_the_identity_checks(
+    tmp_path: Path, record: str, keys: tuple[str | int, ...], value: object, checks: list[str]
+) -> None:
+    release = _copy_receipts(tmp_path)
+    _edit(tmp_path / record, keys, value)
+    assert _failures(audit.identity_checks(release)) == checks
+
+
+CANDIDATE = "density: the release's candidate"
+#: A density changed past what the release states of it: a box past ``L``, a header
+#: value, and a weight of zero.
+DENSITY_FIELDS: list[tuple[tuple[str | int, ...], object, list[str]]] = [
+    (
+        ("sites", 522, "box", 2),
+        "68/10",
+        [CANDIDATE, "density: every box is a proper rectangle in K"],
+    ),
+    (("threshold",), "4999/5001", [CANDIDATE, "density: its header is the claim's"]),
+    (
+        ("sites", 0, "weight"),
+        "0",
+        [
+            CANDIDATE,
+            "density: 685 positive orbits, 522 inherited and 163 generated",
+            "density: the weights sum to M",
+        ],
+    ),
+]
+
+
+@pytest.mark.parametrize(
+    ("keys", "value", "checks"),
+    DENSITY_FIELDS,
+    ids=[".".join(map(str, k)) for k, _, _ in DENSITY_FIELDS],
+)
+def test_a_density_outside_the_releases_statement_is_refused(
+    keys: tuple[str | int, ...], value: object, checks: list[str]
+) -> None:
+    mutant = json.dumps(_set(json.loads(raw()), keys, value)).encode()
+    s = audit.support_facts(mutant, pool())
+    assert _failures(audit.support_checks(s, audit.site_density(mutant))) == checks
+
+
+def test_a_changed_pool_or_statement_is_refused() -> None:
+    """The three checks `check_report` makes beside the shared ones: the pool's digest,
+    PROOF.md's near-axis margin and the retained ``parameters.json``."""
+    assert audit.pool_check(pool()).held
+    data = json.loads(pool())
+    data["weights"][0] = "1"
+    assert not audit.pool_check(json.dumps(data).encode()).held
+    parameters = json.loads(audit.PARAMETERS.read_text())
+    assert _failures(audit.statement_checks(parameters)) == []
+    assert _failures(audit.statement_checks({**parameters, "threshold": "4999/5001"})) == [
+        "retained parameters.json is the claim"
+    ]
+    moved = dataclasses.replace(CLAIM, A=Fraction(249329658, 250000000))
+    assert _failures(audit.statement_checks(parameters, moved)) == [
+        "near-axis: B - A W(eps) is PROOF.md's margin",
+        "retained parameters.json is the claim",
+    ]
+
+
+#: A wrong value of each fact the input checks read, with the one check that must
+#: refuse it: these checks judge the inputs regenerated here, so a mutant of the density
+#: cannot reach them, and a wrong fact is how a broken builder would show.
+FACT_FIELDS: list[tuple[str, object, str]] = [
+    ("terms", 5479, "density: D4 expansion"),
+    ("distinct", 5423, "density: D4 expansion"),
+    ("invariant", False, "density: D4-invariant"),
+    ("integral", Fraction(40), "density: integral of g is M"),
+    ("pose_sha256", "0" * 64, "pose input: the receipts' input"),
+    ("pose_is_expansion", False, "pose input: its terms are the D4 expansion"),
+    ("enclosures", (27401, 27402), "pose input: every number brackets its rational"),
+    ("axis_sha256", "0" * 64, "axis input: the receipts' input"),
+    ("axis_is_expansion", False, "axis input: its terms are the D4 expansion"),
+    ("axis_dropped", 1, "axis input: 5480 rows, none dropped"),
+    ("axis_dominated", False, "axis input: dominated by g"),
+    ("axis_quarter_invariant", False, "axis input: quarter-turn invariant"),
+    ("dominated_mass", CLAIM.mass, "axis input: the dominated mass is below M"),
+    ("evaluation_bound", 2**125, "axis input: the int128 guards"),
+    ("nodes", (3293, 3294), "axis input: the grid of breakpoints"),
+    ("minimiser_is_vertex", False, "axis: the minimiser is a vertex of the quadrant"),
+    ("minimiser_capture", 0, "axis: the capture at the minimiser, evaluated here"),
+    ("minimiser_capture_g", Fraction(0), "axis: g captures at least as much there"),
+]
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "check"), FACT_FIELDS, ids=[f for f, _, _ in FACT_FIELDS]
+)
+def test_a_wrong_fact_is_refused_by_its_input_check(
+    field: str, value: object, check: str
+) -> None:
+    wrong = dataclasses.replace(facts(), **{field: value})
+    assert _failures(audit.input_checks(wrong, CLAIM, RELEASE)) == [check]
+
+
+#: The scalar chain's checks that no finite control reaches: the claimed bound, the
+#: domain, the near-axis order, and the receipts' least leaf bound and axis minimum.
+CHAIN_CHANGES: list[tuple[str, dict[str, Fraction], Fraction, int, list[str]]] = [
+    (
+        "X not L over B",
+        {"X": Fraction(3360, 500)},
+        Fraction(0),
+        0,
+        ["claim: X = L / B", "claim: X raises the earlier bound"],
+    ),
+    (
+        "B past L over sqrt 2",
+        {"B": Fraction(48, 10)},
+        Fraction(0),
+        0,
+        ["claim: X = L / B", "domain: E > 0 at every angle"],
+    ),
+    (
+        "A past B",
+        {"A": Fraction(1)},
+        Fraction(0),
+        0,
+        ["near-axis: W increases on [0, eps] and A <= B", "near-axis: A W(eps) <= B"],
+    ),
+    (
+        "least leaf bound below the threshold",
+        {},
+        Fraction(-1, 10**9),
+        0,
+        ["slabs: the receipts' least leaf bound is at least the threshold"],
+    ),
+    (
+        "axis minimum below tau",
+        {},
+        Fraction(0),
+        -(2 * 10**24),
+        ["axis: the receipts' minimum is at least tau"],
+    ),
+]
+
+
+@pytest.mark.parametrize(
+    ("changes", "shift", "drop", "checks"),
+    [(c, s, d, k) for _, c, s, d, k in CHAIN_CHANGES],
+    ids=[name for name, _, _, _, _ in CHAIN_CHANGES],
+)
+def test_a_changed_scalar_is_refused_by_the_chain(
+    changes: dict[str, Fraction], shift: Fraction, drop: int, checks: list[str]
+) -> None:
+    claim = dataclasses.replace(CLAIM, **changes)
+    f = dataclasses.replace(facts(), minimum=facts().minimum + drop)
+    assert _failures(audit.chain_checks(claim, f, least() + shift, RELEASE)) == checks
