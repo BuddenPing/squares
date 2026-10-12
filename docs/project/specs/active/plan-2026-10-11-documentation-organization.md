@@ -29,14 +29,27 @@ Re-measured against `main` at `074ac28d4`, 161 commits after the survey below.
   `figure-playbook.md`, `provenance.md` and `testing.md`, the spikes’ two `notes.md`,
   `d1-report.md` and `d2-report.md`.
 - Slice 0’s naming check, narrowed and added to `check_documentation` instead of a new
-  step: nothing loose in `docs/project/`, a dated directory’s kind and date in each
-  name, and capitals only under naming rule 5. `LAYOUT_PENDING` lists the ten documents
-  still waiting, and an entry that no longer breaks a rule fails, so the list only
-  shrinks. The rule is written into `conventions.md` section 2.
-- 309 relative links rewritten in 44 Markdown files and 111 repository-relative paths in
-  records, registers and code, by a one-off script rather than slice 0’s mover.
-  `packing/frontier/covering-values.yaml` cites a moved handoff by path, so the branch
-  is a data commit and re-pins `DATA_REVISION`.
+  step. Nothing sits loose in `docs/project/`; its subdirectories are the closed list of
+  kinds (`guides`, `policies`, `handoffs`, `postmortems`, `research`, `reviews`,
+  `specs`); a dated directory’s names carry their kind and a real date; and every mapped
+  name is lowercase kebab-case, `README.md`, `AGENTS.md`, `CLAUDE.md`, or an `H-`, `X-`
+  or `VE-` record id. `LAYOUT_PENDING` excuses the ten documents whose name or place the
+  check refuses; the other deferred moves (`conventions.md`, `development.md`, the
+  runbooks, `defects.md`) break none of its rules and are tracked only in think-xz7z. An
+  entry that no longer breaks a rule fails, and a test refuses an entry added after
+  2026-10-12, so the list only shrinks.
+  The rule is written into `conventions.md` section 2.
+- About 300 relative links rewritten in 44 Markdown files, and 111 repository-relative
+  paths in records, registers and code, by a one-off script rather than slice 0’s mover.
+  The two links in `packing/resources/web/wand125-tools-2026-09-29/README.md`, a
+  project-written README the link checker skips with the rest of the archive, were fixed
+  by hand. `packing/frontier/covering-values.yaml` cites a moved handoff by path, so the
+  branch is a data commit and re-pins `DATA_REVISION`.
+- No open pull request edits a moved file, so none meets a rename conflict.
+  Two index files take one-line conflicts: `packing/devtools/math-markup.yaml` with
+  [jlevy/squares#497](https://github.com/jlevy/squares/pull/497) and the six pull
+  requests stacked on it, and `docs/project/document-map.yaml` with
+  [jlevy/squares#514](https://github.com/jlevy/squares/pull/514).
 
 **Deferred** (think-xz7z), for reasons measured on 2026-10-12:
 
@@ -56,6 +69,8 @@ Re-measured against `main` at `074ac28d4`, 161 commits after the survey below.
   generated claim documents it renders (`t-018-proof-card.md` and four more), so a
   rename rewrites published claim documents for no reader-facing gain, and the map
   excludes templates, so the naming check does not see them.
+- **Mapping `paper-design.md`** by narrowing the templates exclusion, the last item of
+  slice 6. It renames nothing and can land at any time.
 - **The mover tool.** Slices 2 to 5 rewrite ten to thirty times as many links as this
   branch did; they should start with slice 0’s `devtools.move_documents`.
 

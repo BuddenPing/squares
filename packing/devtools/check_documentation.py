@@ -42,10 +42,11 @@ RETIRED_PHRASES = (
     "verified-construction",
 )
 
-#: Where a dated project record goes: the directory named for its kind, under a name that
-#: starts with that kind and the record's date. Nothing sits loose in `docs/project/`, since
-#: a loose file says nothing about what kind of document it is
-#: (docs/project/specs/active/plan-2026-10-11-documentation-organization.md, think-mv16).
+#: Where a project document goes: the directory under `docs/project/` named for its kind,
+#: and for a dated record a name that starts with that kind and the record's date. Nothing
+#: sits loose in `docs/project/`, since a loose file says nothing about what kind of
+#: document it is (docs/project/specs/active/plan-2026-10-11-documentation-organization.md,
+#: think-mv16). A new kind of document is a new entry here.
 PROJECT_DOCS = "docs/project"
 DATED_KINDS = {
     "handoffs": ("handoff",),
@@ -54,15 +55,21 @@ DATED_KINDS = {
     "reviews": ("review",),
     "specs": ("plan", "spike"),
 }
-DATED_NAME = re.compile(r"(?P<kind>[a-z]+)-\d{4}-\d{2}-\d{2}-[a-z0-9.-]+\.md")
-#: The capitalized names a tool or convention fixes, and a registered identifier spelled
-#: as its record's id (`H-001-…`, `X-001-…`, `VE-001-…`; conventions.md section 2).
-CAPITALIZED_NAMES = {"README.md", "AGENTS.md", "CLAUDE.md"}
-IDENTIFIER_NAME = re.compile(r"[A-Z]+-\d+-[a-z0-9.-]+\.md")
+MAINTAINED_KINDS = {"guides", "policies"}
+DATE = r"\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])"
+SLUG = r"[a-z0-9]+(?:[.-][a-z0-9]+)*"
+DATED_NAME = re.compile(rf"(?P<kind>[a-z]+)-{DATE}-{SLUG}\.md")
+#: A document's name is lowercase kebab-case, except the names a tool or convention fixes
+#: and a registered record id spelled as in its frontmatter (`H-001-…`, `X-001-…`,
+#: `VE-001-…`; conventions.md section 2).
+KEBAB_NAME = re.compile(rf"{SLUG}\.md")
+FIXED_NAMES = {"README.md", "AGENTS.md", "CLAUDE.md"}
+IDENTIFIER_NAME = re.compile(rf"(?:H|X|VE)-\d+-{SLUG}\.md")
 #: Documents that predate the layout and wait on a move every open pull request would
 #: conflict with: the root guides, the frontier's generated views and the verifier guides
-#: that `evidence.yaml` cites (think-xz7z). The list only shrinks; an entry that no longer
-#: breaks a rule fails, so a finished move takes its entry with it.
+#: that `evidence.yaml` cites (think-xz7z). The other deferred moves break no rule here.
+#: An entry that no longer breaks a rule fails, and `test_document_layout` refuses one that
+#: was not on the list when it was made, so the list only shrinks.
 LAYOUT_PENDING = frozenset(
     {
         "SYNOPSIS.md",
@@ -178,16 +185,20 @@ def _layout_problem(relative: str) -> str | None:
     name = parts[-1]
     if relative.startswith(f"{PROJECT_DOCS}/"):
         inside = parts[2:]
-        if len(inside) == 1 and name != "README.md":
-            return "sits loose in docs/project/; put it in the directory for its kind"
-        kinds = DATED_KINDS.get(inside[0], ()) if len(inside) > 1 else ()
-        match = DATED_NAME.fullmatch(name)
-        if kinds and not (match and match["kind"] in kinds):
-            names = " or ".join(f"{kind}-YYYY-MM-DD-topic.md" for kind in kinds)
-            return f"is not named {names}"
-    capitalized = name != name.lower() and name not in CAPITALIZED_NAMES
-    if capitalized and not IDENTIFIER_NAME.fullmatch(name):
-        return "has capitals in its name; use lowercase kebab-case"
+        if len(inside) == 1:
+            if name != "README.md":
+                return "sits loose in docs/project/; put it in the directory for its kind"
+        elif inside[0] not in DATED_KINDS.keys() | MAINTAINED_KINDS:
+            return f"is in docs/project/{inside[0]}/, which is not a directory for a kind"
+        elif (kinds := DATED_KINDS.get(inside[0])) and name != "README.md":
+            match = DATED_NAME.fullmatch(name)
+            if not (match and match["kind"] in kinds):
+                names = " or ".join(f"{kind}-YYYY-MM-DD-topic.md" for kind in kinds)
+                return f"is not named {names}"
+    if not (
+        name in FIXED_NAMES or KEBAB_NAME.fullmatch(name) or IDENTIFIER_NAME.fullmatch(name)
+    ):
+        return "is not named in lowercase kebab-case"
     return None
 
 

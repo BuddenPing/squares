@@ -140,10 +140,10 @@ The id in the filename must equal the id in the frontmatter.
 `postmortems/`, `research/`, `reviews/` or `specs/` (where the kind is `plan` or
 `spike`); a maintained document is an undated `topic.md` in `guides/`, or in `policies/`
 for a rule set. Nothing sits loose in `docs/project/`. Every document name is lowercase
-kebab-case, except `README.md`, `AGENTS.md`, `CLAUDE.md` and a registered id at the
-start of a record’s name.
-`check_documentation` holds both rules; its `LAYOUT_PENDING` names the documents still
-waiting to move
+kebab-case, except `README.md`, `AGENTS.md`, `CLAUDE.md` and an `H-`, `X-` or `VE-`
+record id at the start of a record’s name; a new kind of document or of id is added to
+the check first. `check_documentation` holds these rules for every mapped document; its
+`LAYOUT_PENDING` names the documents still waiting to move
 ([the plan](docs/project/specs/active/plan-2026-10-11-documentation-organization.md)).
 
 **A case-local document for a registered result is named for the result and for what it
