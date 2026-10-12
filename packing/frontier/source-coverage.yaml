@@ -2,7 +2,7 @@ softschema:
   contract: packing.squares:SourceCoverage/v1
   schema: source-coverage.schema.yaml
   status: enforced
-last_reviewed: '2026-10-10'
+last_reviewed: '2026-10-12'
 coverage_scope: 'Current public upper-bound catalogues and first-party result releases known to this
   project, the Schadt n=29 witness-contract regression source, and the September 2026 external executable
   lower-bound certificate releases. Their proof obligations and assurance are tracked by evidence.yaml;
@@ -3695,6 +3695,96 @@ sources:
     not replayed. On 11 October 2026 the cases at 146 and 261 adopted the two requested
     certificates, the selected overrides below, each packing credited to Ryan Xu with Robert
     Barnett's refinement.
+- id: squish-500-fourth-request-2026-10-11
+  title: Nate Chaoweeraprasit's SQUISH fourth request at aeacc6c, issue500
+  role: source-repository
+  url: https://github.com/itsnaka/squish-certs/tree/aeacc6c124df339074f7370e1e010bb6e8c1b5ca
+  local: resources/web/squish-500-fourth-request-2026-10-11/
+  source_key: '[SQUISH fourth request 2026-10-11]'
+  scope:
+    n_values: [176, 181, 238, 239, 270, 271, 272, 304, 305]
+  reviewed: '2026-10-11'
+  source_date: '2026-10-11'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/results.yaml
+  - resources/web/squish-500-fourth-request-2026-10-11/acquisition/claims.json
+  evidence:
+  - E-squish-500-certificate-report
+  - E-squish-500-exact-feasibility
+  notes: >-
+    All 9 complete certificates are kept as derived exact facts, no upstream byte retained, each
+    admitted only where its exact side equals the fraction the source's summary.csv prints; the
+    issue's 15-digit sides are those fractions cut, and the five sources/ certificates are pieces,
+    each above its case or the filed certificate at its count, and are not imported. T-151 records
+    the nine at V3/C3 on the review of 11 October
+    (docs/project/reviews/review-2026-10-11-upper-bound-imports-500.md), which reproduced the 12
+    native jobs at 176, 270, 271 and 272, kept the import lane's two complete decisions of all 27,
+    decided the nine by a third exact route and held each fact to its upstream certificate fetched
+    at the pin. No selected override or superseded claim is created until the case records adopt
+    the houses (think-fvz4); current cases and earlier source ownership remain unchanged.
+- id: couzo-certificates-2026-10-11-in-corpus
+  title: Francisco Couzo's exact rational certificates at 337078c, issue506, n304 and n305
+  role: source-repository
+  url: https://github.com/franciscouzo/square-packing/tree/337078ca3e05153aceb099237b175cf64af5748a
+  local: resources/web/couzo-certificates-2026-10-11/
+  source_key: '[Couzo certificates 2026-10-11]'
+  scope:
+    n_values: [304, 305]
+  reviewed: '2026-10-12'
+  source_date: '2026-10-11'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/results.yaml
+  - resources/web/couzo-certificates-2026-10-11/acquisition/claims.json
+  evidence:
+  - E-couzo-506-certificate-report
+  - E-couzo-506-exact-feasibility
+  notes: >-
+    The two in-corpus certificates of the release, at 304 and 305, retained as the source wrote
+    them, as factual data, each admitted where its exact side rounds up to the issue's 12-place
+    print; T-152 records them at V3/C3 on the review of 12 October
+    (docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md). They are a source entry of
+    their own because the release's claims record, which the beyond-horizon rows of
+    couzo-certificates-2026-10-11 are read against, holds the requested claims beyond the corpus
+    only. No selected override or superseded claim is created until the case records adopt the
+    houses (think-fvz4); current cases and earlier source ownership remain unchanged.
+- id: couzo-certificates-2026-10-11
+  title: Francisco Couzo's exact rational certificates at 337078c, issue506
+  role: source-repository
+  url: https://github.com/franciscouzo/square-packing/tree/337078ca3e05153aceb099237b175cf64af5748a
+  local: resources/web/couzo-certificates-2026-10-11/
+  source_key: '[Couzo certificates 2026-10-11]'
+  scope:
+    n_values: [338, 339, 344, 375, 376, 378, 379, 380, 381]
+  reviewed: '2026-10-12'
+  source_date: '2026-10-11'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/results.yaml
+  - resources/web/couzo-certificates-2026-10-11/acquisition/claims.json
+  evidence:
+  - E-couzo-506-certificate-report
+  - E-couzo-506-exact-feasibility
+  notes: >-
+    All 15 certificates the two source commits add or change are retained as the source wrote
+    them, as factual data, each admitted only where its exact side rounds up to the side its source
+    prints; the other 53 of the tree are pinned to the issue-476 and issue-488 packets' identical
+    copies. The review of 12 October
+    (docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md) reproduced the 12 native
+    jobs at 304, 305, 344 and 381, kept the import lane's two complete decisions of all 45, decided
+    the eleven requested certificates by a third exact route and held every file of the manifest to
+    its bytes fetched at the pin. The n338, n339, n344, n375, n376, n378, n379, n380 and n381 sides
+    are beyond-horizon rows at assurance verified from that evidence, each the issue's 12-place
+    print, the exact side rounded up; they supersede the rows tracked at 338, 339, 344, 375, 376,
+    378 and 379, Evan Daniel's verified Hunt 3 row at 344 among them. T-152 records the in-corpus
+    sides at 304 and 305 (couzo-certificates-2026-10-11-in-corpus). The four certificates the issue
+    does not name, at 175, 308, 340 and 343, are compared in the claim record and registered by no
+    entry; 175 has its own import (think-9fjl).
+  claims_record: resources/web/couzo-certificates-2026-10-11/acquisition/beyond-horizon-claims.json
 selected_overrides:
 - n: 51
   source_id: ry-xu-undilated-n51-2026
@@ -5905,15 +5995,31 @@ beyond_horizon_claims:
   claim: upper-bound
   value: '18.908632939046573'
   assurance: reported
-  disposition: tracked-outside-case-corpus
+  disposition: superseded
+  superseded_by: couzo-certificates-2026-10-11
   bead: think-1545
+- n: 338
+  source_id: couzo-certificates-2026-10-11
+  claim: upper-bound
+  value: '18.906436500552'
+  assurance: verified
+  disposition: tracked-outside-case-corpus
+  bead: think-om5l
 - n: 339
   source_id: couzo-extended-range-reports-2026-10-08
   claim: upper-bound
   value: '18.930103647693699'
   assurance: reported
-  disposition: tracked-outside-case-corpus
+  disposition: superseded
+  superseded_by: couzo-certificates-2026-10-11
   bead: think-1545
+- n: 339
+  source_id: couzo-certificates-2026-10-11
+  claim: upper-bound
+  value: '18.929433883808'
+  assurance: verified
+  disposition: tracked-outside-case-corpus
+  bead: think-om5l
 - n: 340
   source_id: couzo-extended-range-reports-2026-10-08
   claim: upper-bound
@@ -5963,8 +6069,16 @@ beyond_horizon_claims:
   claim: upper-bound
   value: '18.994450514277401521114135796864'
   assurance: verified
-  disposition: tracked-outside-case-corpus
+  disposition: superseded
+  superseded_by: couzo-certificates-2026-10-11
   bead: think-xm4h
+- n: 344
+  source_id: couzo-certificates-2026-10-11
+  claim: upper-bound
+  value: '18.994353244944'
+  assurance: verified
+  disposition: tracked-outside-case-corpus
+  bead: think-om5l
 - n: 364
   source_id: couzo-extended-range-reports-2026-10-08
   claim: upper-bound
@@ -6013,15 +6127,31 @@ beyond_horizon_claims:
   claim: upper-bound
   value: '19.907024692022954'
   assurance: reported
-  disposition: tracked-outside-case-corpus
+  disposition: superseded
+  superseded_by: couzo-certificates-2026-10-11
   bead: think-1545
+- n: 375
+  source_id: couzo-certificates-2026-10-11
+  claim: upper-bound
+  value: '19.906335145009'
+  assurance: verified
+  disposition: tracked-outside-case-corpus
+  bead: think-om5l
 - n: 376
   source_id: couzo-extended-range-reports-2026-10-08
   claim: upper-bound
   value: '19.920279652318701'
   assurance: reported
-  disposition: tracked-outside-case-corpus
+  disposition: superseded
+  superseded_by: couzo-certificates-2026-10-11
   bead: think-1545
+- n: 376
+  source_id: couzo-certificates-2026-10-11
+  claim: upper-bound
+  value: '19.910276586885'
+  assurance: verified
+  disposition: tracked-outside-case-corpus
+  bead: think-om5l
 - n: 377
   source_id: couzo-extended-range-reports-2026-10-08
   claim: upper-bound
@@ -6042,13 +6172,43 @@ beyond_horizon_claims:
   claim: upper-bound
   value: '19.946861170999796'
   assurance: reported
-  disposition: tracked-outside-case-corpus
+  disposition: superseded
+  superseded_by: couzo-certificates-2026-10-11
   bead: think-1545
+- n: 378
+  source_id: couzo-certificates-2026-10-11
+  claim: upper-bound
+  value: '19.942541777355'
+  assurance: verified
+  disposition: tracked-outside-case-corpus
+  bead: think-om5l
 - n: 379
   source_id: couzo-extended-range-reports-2026-10-08
   claim: upper-bound
   value: '19.957538882118669'
   assurance: reported
-  disposition: tracked-outside-case-corpus
+  disposition: superseded
+  superseded_by: couzo-certificates-2026-10-11
   bead: think-1545
+- n: 379
+  source_id: couzo-certificates-2026-10-11
+  claim: upper-bound
+  value: '19.953572709539'
+  assurance: verified
+  disposition: tracked-outside-case-corpus
+  bead: think-om5l
+- n: 380
+  source_id: couzo-certificates-2026-10-11
+  claim: upper-bound
+  value: '19.987440766556'
+  assurance: verified
+  disposition: tracked-outside-case-corpus
+  bead: think-om5l
+- n: 381
+  source_id: couzo-certificates-2026-10-11
+  claim: upper-bound
+  value: '19.992663288464'
+  assurance: verified
+  disposition: tracked-outside-case-corpus
+  bead: think-om5l
 pending_catalogue_intake: []

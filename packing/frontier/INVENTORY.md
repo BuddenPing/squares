@@ -8,8 +8,8 @@ ours, which rest on someone else's argument, and how far each has been checked.
 
 ## The short version
 
-- **511** evidence records. **312** are formal; **305** of those were established here.
-- **191** rest on an argument made elsewhere, of which **7** have been read by nobody here.
+- **515** evidence records. **314** are formal; **307** of those were established here.
+- **193** rest on an argument made elsewhere, of which **7** have been read by nobody here.
 - **1** formal record proves a theorem only under a hypothesis nothing here has replayed, and is verified as that implication alone: `E-k2m4-evand-bentz4-lean-build` (ValidTilt9).
 - **41** claim to be first established here. **14** make no novelty statement at all - not assessed, which is not the same as not novel.
 
@@ -534,13 +534,17 @@ results, it is a statement about what this repository has itself examined.
 | `E-ostashev-501-exact-feasibility` | 3 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-check-half-angle-area`, `V-evand-exact-certificates` |
 | `E-barnett-505-certificate-report` | 2 | upper-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | *none held* |
 | `E-barnett-505-exact-feasibility` | 2 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-check-half-angle-area`, `V-evand-exact-certificates` |
+| `E-squish-500-certificate-report` | 0 | upper-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | *none held* |
+| `E-squish-500-exact-feasibility` | 0 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-check-half-angle-area`, `V-evand-exact-certificates` |
+| `E-couzo-506-certificate-report` | 0 | upper-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | *none held* |
+| `E-couzo-506-exact-feasibility` | 0 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-check-half-angle-area`, `V-evand-exact-certificates` |
 
 ## What the register rests on
 
-- **assurance**: numerically-checked 4, reported 195, verified 312
-- **method**: exact-algebraic 131, interval-certified 165, numerical-multiprecision 4, proof-assistant-checked 5, proof-audited 4, published-proof 7, reported 195
-- **novelty**: apparently-novel 41, common-knowledge 4, not assessed 14, previously-published 452
-- **relationship to the producer's code**: generator 5, independent-implementation 183, not-applicable 22, same-implementation 278, shared-components 17, unknown-historical 6
+- **assurance**: numerically-checked 4, reported 197, verified 314
+- **method**: exact-algebraic 133, interval-certified 165, numerical-multiprecision 4, proof-assistant-checked 5, proof-audited 4, published-proof 7, reported 197
+- **novelty**: apparently-novel 41, common-knowledge 4, not assessed 14, previously-published 456
+- **relationship to the producer's code**: generator 5, independent-implementation 185, not-applicable 22, same-implementation 280, shared-components 17, unknown-historical 6
 
 The `cases` column is how many frontier records cite each piece of evidence, and it is the reason to read this table rather than count records. Ranked below are the *formal* records only: a `reported` record cited across the frontier may be a shared catalogue and is labelled as such, which is the register working rather than risk. The risk is a verified claim resting on an argument nobody has examined.
 

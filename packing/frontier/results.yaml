@@ -2,7 +2,7 @@ softschema:
   contract: packing.squares:ResultsRegister/v1
   schema: results.schema.yaml
   status: enforced
-last_reviewed: '2026-10-11'
+last_reviewed: '2026-10-12'
 results:
   - id: T-001
     kind: lower-bound
@@ -16763,3 +16763,399 @@ results:
           pose against the packing its case holds or would credit.
         verdict: accepted
         covers: [T-149, T-150]
+  - id: T-151
+    kind: upper-bound
+    registered: '2026-10-12'
+    headline: Nine exact rational packings from SQUISH's fourth request
+    claim: >-
+      Nine complete rational source certificates by Nate Chaoweeraprasit, using SQUISH,
+      reported on jlevy/squares#500, prove finite upper bounds at the exact sides they
+      state: s(176) <=
+      305005022674381157367132529416905207296020948646520876053762749858683599318120744/22081242074898135703849455266036121393870562834861102970956326327326447327968587,
+      s(181) <=
+      249935253501271447722872166122379040683260708184410574609224560771762048914945913/17915453134884420632048333509167003378124582375369499899268894615896769573805255,
+      s(238) <=
+      516829548917904437965878091074886828293320996185960477809932175908043454736320288/32455795222015655007007970530566514770773816146192500722754413705465356352461141,
+      s(239) <=
+      957883664741088666359826291012097714608415772761965190010564315177693226164065987/60061263979374471914223634546066156202761470614164034734590750736057272204798672,
+      s(270) <=
+      761203984658924994781689956746506132479479002945859948235062760911587068049389066/44966630820689093059794938239713705461989197412012889888820554168494459778549053,
+      s(271) <=
+      226641509159806817533826968807522186618590497703207479506050881660303454046913630/13371877327550822127276902291903146156943895843133007855104572641371568124309293,
+      s(272) <=
+      1114257766245565718930315998681473968716597475579279287292886911189991499936935381/65677527145799837468063782221943718992249135546143429464936478230690701220023471,
+      s(304) <=
+      510485576549308947359639122176771480874060688471611521000826585202734096682803420/28471575075230807279259985772792709540176911602103069986239820873572704667056489
+      and s(305) <=
+      176574386584524522718242075735181894343653439251445905894414633471908824717084407/9836714596766635588546138051753839920746733217534271639970138607199828771763358.
+
+      Each certificate gives a rational side and, for each unit square, a rational centre
+      and the tangent of its half-angle, in SQUISH's JSON; each side is the exact fraction
+      the source's summary.csv prints. The issue's 15-digit sides are those fractions cut,
+      below each by less than 1e-15, so they are not bounds, and each certificate's
+      s_decimal is not a rounding of it either; the record states the fractions. The author
+      reports that SQUISH's exact Fraction checker accepts all nine and David Ellsworth's
+      check_packing.py each 50-digit export at epsilon 1e-50, that each certificate was
+      drawn from a 60-digit contact solution with clearance 1e-32, and that an hour of
+      nearby search and a deep squeeze moved none by more than 7e-07. Those statements are
+      the author's; no source program ran here.
+
+      At every count squares touch the closed box, a least wall clearance of exactly 0,
+      which the record's closed-box convention admits; no two squares meet, and the bound
+      also holds if s(n) is read as an open-box infimum.
+
+      All 27 retained jobs, the nine positives with their duplicate-square and
+      outside-container controls, were decided on 11 October 2026 by both maintained exact
+      routes, from exact facts derived from the pinned certificates, twice by the import
+      lane and at 176, 270, 271 and 272 a third time by the review, each time equal to its
+      retained row. A third exact route, half-extent containment and exact intersection
+      area, decided all nine with six controls each and found each fact to be the packing
+      its pinned upstream file states. No route here is the source's code, so the replay is
+      independently re-implemented. The 11 October review found no blocking defect.
+
+      Each side is below the ceiling its case held, by 8.70e-04 at 239 to 1.00e-02 at 176,
+      and below every other report pending at its count, the author's own issue 481
+      packings (T-136) and Francisco Couzo's issue 488 refinements of them (T-140) at 270
+      and 305 among them, except at 304 and 305, where Francisco Couzo's issue 506
+      certificates (T-152), built from these packings, are smaller. The review recommends
+      this entry as the house at 176, 181, 238, 239, 270, 271 and 272; the case records'
+      adoption follows this registration.
+
+      Credit Nate Chaoweeraprasit (https://github.com/itsnaka/squish-certs), using SQUISH
+      and its Mondrian composition method, with the packings the pieces came from as the
+      source names them: Francisco Couzo's s(127) (issue 451, T-128), interlocked with the
+      Kingbird catalogue's s(5), at 176; the catalogue's former records at 11, 19 and 182,
+      at 304, 270 and 272; SQUISH's own s(209) of issue 401 as refined by Siddharth Gupta
+      (T-127) at 239, and of issue 481 (T-136), whole, at 270 and 304; and SQUISH's earlier
+      unfiled packings of 154, 240, 272 and 305 in the rest.
+
+      Measured where the record retains the piece, Couzo's 127 in the 176 and the issue 481
+      s(209) in the 270 and the 304 reappear to the eye, most of their squares within a
+      tenth of a unit under one placement, and not by pose: no tilted square keeps its pose,
+      since each composed packing was solved again as a whole, so "whole" names the
+      arrangement and not the coordinates.
+
+      The source states that SQUISH's solver, its verification and the issue were written
+      with Claude Opus 5.5 for coding and research, that the Mondrian composition method was
+      planned, ideated and formulated by the author and then implemented with Claude Opus
+      5.5, and that the project is directed, managed, reviewed and steered by Nate
+      Chaoweeraprasit.
+    scope:
+      n_values: [176, 181, 238, 239, 270, 271, 272, 304, 305]
+    verification: V3
+    confirmation: C3
+    significance:
+      score: 3
+      rationale: >-
+        Nine new arrangements composed from pieces of earlier packings, smaller finite
+        construction sides at n = 176, 181, 238, 239, 270, 271, 272, 304 and 305, 8.70e-04 to
+        1.00e-02 below the case ceilings, the smallest pending side at seven counts and the
+        starting point of issue 506 at the other two; no lower bound or optimum.
+      scored: '2026-10-11'
+      by: >-
+        the 11 October review
+        (docs/project/reviews/review-2026-10-11-upper-bound-imports-500.md),
+        confirming the draft of think-ga3m Nate Chaoweeraprasit import
+    novelty: previously-published
+    attribution:
+      source_keys: ['[SQUISH fourth request 2026-10-11]']
+      published: '2026-10-11'
+    evidence:
+      - E-squish-500-certificate-report
+      - E-squish-500-exact-feasibility
+    artifacts:
+      - packing/resources/web/squish-500-fourth-request-2026-10-11/README.md
+      - packing/resources/web/squish-500-fourth-request-2026-10-11/acquisition/claims.json
+      - packing/resources/web/squish-500-fourth-request-2026-10-11/facts/n-176.yaml.gz
+      - packing/resources/web/squish-500-fourth-request-2026-10-11/facts/n-181.yaml.gz
+      - packing/resources/web/squish-500-fourth-request-2026-10-11/facts/n-238.yaml.gz
+      - packing/resources/web/squish-500-fourth-request-2026-10-11/facts/n-239.yaml.gz
+      - packing/resources/web/squish-500-fourth-request-2026-10-11/facts/n-270.yaml.gz
+      - packing/resources/web/squish-500-fourth-request-2026-10-11/facts/n-271.yaml.gz
+      - packing/resources/web/squish-500-fourth-request-2026-10-11/facts/n-272.yaml.gz
+      - packing/resources/web/squish-500-fourth-request-2026-10-11/facts/n-304.yaml.gz
+      - packing/resources/web/squish-500-fourth-request-2026-10-11/facts/n-305.yaml.gz
+      - packing/resources/web/squish-500-fourth-request-2026-10-11/receipts/exact-certification.json.xz
+      - packing/devtools/upper_bound_reports.py
+      - packing/devtools/check_half_angle_area.py
+      - docs/project/reviews/review-2026-10-11-upper-bound-imports-500.md
+    controls:
+      - packing/tests/test_upper_bound_reports.py
+      - packing/tests/test_upper_bound_reports_500.py
+      - packing/tests/test_check_half_angle_area.py
+    notes: >-
+      A separate complete repository replay is retained for n = 176, 181, 238, 239, 270,
+      271, 272, 304 and 305: 9 positives and 18 duplicate-square and outside-container
+      controls passed their required outcomes on both routes, 1743036 pair decisions;
+      summed over the 27 jobs, the receipt records 1253.51 route CPU seconds and 2322.21 job
+      wall seconds, the longest job 202.56 seconds. In every positive squares touch the
+      box, a least wall clearance of exactly 0 with 266 zero square-to-wall clearances in
+      all, and every pair clears by 1.00e-32.
+
+      V3 and C3 rest on the 11 October review
+      (docs/project/reviews/review-2026-10-11-upper-bound-imports-500.md) and the replay it
+      reproduced (E-squish-500-exact-feasibility). Its findings here are non-blocking: the
+      issue's 15-digit sides are cuts and the claim states the exact fractions (RX-1); the
+      lineage holds to the eye and not by pose (RX-2); no retained check binds a derived
+      fact to its upstream bytes, which the review closed once by fetching each certificate
+      and summary.csv at the pin (RX-3).
+
+      The other findings: the kernel's controls are gross (RX-4); no private-worker custody
+      is on file (RX-5); at 304 and 305 the smaller sides are issue 506's (RX-6); the
+      reviewer and the producer's assistant share a model family (RX-7); and the review
+      replayed the kernel at four of the nine counts, the import lane's two complete
+      decisions standing for the other five (RX-8).
+
+      At n = 176 the certificate is below the case's ceiling (the Kingbird catalogue's
+      packing at Evan Daniel's exact ceiling, T-101) by 1.00e-02. At 181 it is below the
+      case's ceiling (Francisco Couzo, improved by Evan Daniel, T-098) and issue 476's
+      unrequested 181, equal to it, by 2.93e-03. At 238 and 239 it is below the case's
+      ceiling (SQUISH's issue 401 packings as Siddharth Gupta refined them, T-127) by
+      2.04e-03 and 8.70e-04, and below Mishapolk's issue 470 prints.
+
+      At 270 it is below the case's ceiling (Evan Daniel, T-119) by 9.61e-03, below T-140 by
+      1.58e-03, T-136 by 1.58e-03, T-134 by 8.52e-03 and T-130 and T-138 by 8.53e-03. At 271
+      it is below the case's ceiling (T-098) by 1.70e-03, and at 272 below the case's
+      ceiling (Evan Daniel, T-119) by 2.52e-03 and issue 476's 272 by 2.58e-03. So at those
+      seven counts it is the smallest side known.
+
+      At 304 it is below the case's ceiling (T-098) by 4.99e-03 and at 305 by 2.41e-03, and
+      at 305 below T-140 and issue 489's tie of it by 5.95e-04 and T-136 by 6.51e-04; but at
+      both counts Francisco Couzo's issue 506 certificates (T-152), which start from these
+      packings, are smaller by 9.11e-05 and 7.84e-05, exactly, as the 12 October review of
+      issue 506 refroze the comparison. This entry's bounds hold there and stay in its scope.
+
+      The review recommends this entry as the house at 176, 181, 238, 239, 270, 271 and 272,
+      replacing the author's own issue 401 packings as Siddharth Gupta refined them at 238
+      and 239 (T-127 stays verified), and at 270 ahead of T-140 and T-136; at 304 and 305 it
+      recommends T-152, crediting these packings as its starting points. No house moves
+      until private-worker custody is on file.
+
+      The five sources/ certificates, two at 154 and one each at 240, 272 and 305, are
+      pieces the release carries: each is above its case or above the filed certificate at
+      its count, and none is imported. The source's own checkers were not run here. The two
+      maintained routes, the sqpack rational witness verifier and the independent rational
+      corner checker, share certificate parsing, half-angle conversion, Fraction arithmetic
+      and the separating-axis method. No two independent methods, human oversight or
+      optimality is claimed.
+    next_rung: >-
+      Adopt this entry as the house at 176, 181, 238, 239, 270, 271 and 272, with
+      private-worker custody first (think-fvz4). V4 and C4 need a second accepted
+      adversarial review by a distinct reviewer and a retained human oversight record; one
+      AI review, of 11 October, is retained.
+    reviews:
+      - path: docs/project/reviews/review-2026-10-11-upper-bound-imports-500.md
+        kind: adversarial
+        reviewer: >-
+          AI agent (Claude, at extra-high reasoning effort, a different model from the
+          import lane's), the stage 4 review lane (W2) of the 2026-10-11 intake pass under
+          think-720n, prompted separately from the import lane that built the packet, with
+          no shared context beyond its committed notes and register plan
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-11'
+        scope: >-
+          Finite feasibility of the nine certificates the import's entry cites, at 176, 181,
+          238, 239, 270, 271, 272, 304 and 305. The retained receipt replayed on both
+          maintained routes at four counts with the import lane's complete replay retained
+          for the rest, the third exact route on all nine with its sharp controls, each
+          derived fact held to its certificate and summary.csv row fetched at the pin,
+          admission against each exact print, the claims comparison, each route's trust
+          boundary, and the lineage measured where the record retains the piece.
+        verdict: accepted
+        covers: [T-151]
+  - id: T-152
+    kind: upper-bound
+    registered: '2026-10-12'
+    headline: Exact rational refinements of SQUISH's Mondrian packings of 304 and 305 squares
+    claim: >-
+      Two complete rational source certificates by Francisco Couzo, reported on
+      jlevy/squares#506, prove finite upper bounds at the exact sides they state: s(304) <=
+      17.929565946848500974381965343574 and s(305) <= 17.950466482137712273488570226115.
+
+      The same release states s(338) <= 18.906436500551825926629088515923, s(339) <=
+      18.929433883807662155272760949615, s(344) <= 18.994353244943442354485256580362,
+      s(375) <= 38166979981362750351336743477/1917328312988500000000000000, s(376) <=
+      19.910276586884544180280281394636, s(378) <= 19.942541777354810533331219672476,
+      s(379) <= 19.953572709538574550151361449798, s(380) <=
+      19.987440766555387551986240574787 and s(381) <= 19.99266328846356482088565989631,
+      beyond the case corpus; the source register tracks those as beyond-horizon rows,
+      proved by the same evidence, which replace the rows it held at 338, 339, 344, 375,
+      376, 378 and 379.
+
+      Each certificate gives a rational side and, for each unit square, a rational centre
+      and the tangent of its half-angle, in Evan Daniel's format; each side rounds up to the
+      12-place print of the issue. Ten are exact optima from Evan Daniel's exact contact
+      solver; the one at 375 is a rational witness, the author's decimal packing with
+      centres dilated by 1 + 1e-11, as the issue says, about the first square's centre as
+      measured here. The author reports that all eleven pass Evan Daniel's verify_cert.py
+      and a copy of this repository's sqpack verifier in exact rational arithmetic; those
+      statements are the author's, and no source program ran here.
+
+      No square touches a wall: every exact optimum clears its walls by at least
+      1/(2*10^20) and its pairs by about 1e-20, and the witness at 375 by 1e-15 and 7.05e-12.
+
+      All 45 retained jobs of the fifteen certificates the two source commits add or
+      change, the eleven requested ones with their duplicate-square and outside-container
+      controls among them, were decided twice on 11 October 2026 by both maintained exact
+      routes, and the twelve at 304, 305, 344 and 381 again on 12 October, each time equal
+      to its retained row. A third exact route, half-extent containment and exact
+      intersection area, decided all eleven with six controls each. One maintained route is
+      the verifier the source ran; the independent rational corner checker and the third
+      route are independently re-implemented. The 12 October review found no blocking
+      defect.
+
+      Each side is below the ceiling its case held, Evan Daniel's exact optimum of Francisco
+      Couzo's packing (T-098), by 5.08e-03 at 304 and 2.49e-03 at 305, and below every other
+      report pending there: issue 500's exact sides (T-151) by 9.11e-05 and 7.84e-05, and at
+      305 T-140 and issue 489's tie of it by 6.73e-04 and T-136 by 7.30e-04. The review
+      recommends this entry as the house at both counts; the case records' adoption follows
+      this registration.
+
+      Credit Francisco Couzo (https://github.com/franciscouzo/square-packing), with the
+      packings each started from, as the author asks: Nate Chaoweeraprasit's SQUISH Mondrian
+      packings of issue 500 (T-151) at 304 and 305, improved by Evan Daniel's fq at 304 and
+      by the author's search cycle with David Ellsworth's refine_packing, basin hopping and
+      LP at 305; Evan Daniel's exact contact solver wrote both exact optima.
+
+      Measured pose by pose, both refine issue 500's arrangements rather than being new
+      ones: every square matches one of issue 500's packing one to one under a reflection of
+      the box, none moved beyond a tenth of a unit, with 243 and 257 squares moved beyond
+      1e-9 and 72 and 92 turned.
+
+      Beyond the case corpus, 344 starts from Kevin Fang's 344 (issue 484), improved by the
+      author's basin hopping, and is measured as Fang's arrangement moved, as Evan Daniel's
+      Hunt 3 344 is; 338, 339, 375, 376, 378, 379, 380 and 381 start from the author's
+      smaller packings with an L-shaped border row added and squares removed: 338 and 375
+      from his 303, itself from SQUISH's (issue 401), 339 and 376 from his earlier 304, 378
+      from 306, 379 from 342, and 380 and 381 from his 343 and 344, both from Kevin Fang's
+      344.
+
+      The issue states that the search code and the request were written with Claude
+      (Claude Code), directed and reviewed by the author.
+    scope:
+      n_values: [304, 305]
+    verification: V3
+    confirmation: C3
+    significance:
+      score: 3
+      rationale: >-
+        Smaller finite construction sides at n = 304 and 305, 5.08e-03 and 2.49e-03 below the
+        case ceilings and 9.11e-05 and 7.84e-05 below issue 500's packings they refine, every
+        square one to one under a reflection of the box and none moved beyond a tenth, as
+        T-140 refines issue 481's; the smallest sides known at both counts; no lower bound
+        or optimum.
+      scored: '2026-10-12'
+      by: >-
+        the 12 October review
+        (docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md),
+        confirming the draft of think-om5l Francisco Couzo import
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Couzo certificates 2026-10-11]']
+      published: '2026-10-11'
+    evidence:
+      - E-couzo-506-certificate-report
+      - E-couzo-506-exact-feasibility
+    artifacts:
+      - packing/resources/web/couzo-certificates-2026-10-11/README.md
+      - packing/resources/web/couzo-certificates-2026-10-11/acquisition/claims.json
+      - packing/resources/web/couzo-certificates-2026-10-11/acquisition/beyond-horizon-claims.json
+      - packing/resources/web/couzo-certificates-2026-10-11/source/certificates/n304.cert
+      - packing/resources/web/couzo-certificates-2026-10-11/source/certificates/n305.cert
+      - packing/resources/web/couzo-certificates-2026-10-11/receipts/exact-certification.json.xz
+      - packing/devtools/upper_bound_reports.py
+      - packing/devtools/check_half_angle_area.py
+      - docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md
+    controls:
+      - packing/tests/test_upper_bound_reports.py
+      - packing/tests/test_check_half_angle_area.py
+    notes: >-
+      A separate complete repository replay is retained for n = 175, 304, 305, 308, 338,
+      339, 340, 343, 344, 375, 376, 378, 379, 380 and 381: 15 positives and 30
+      duplicate-square and outside-container controls passed their required outcomes on both
+      routes, 5234106 pair decisions; summed over the 45 jobs, the receipt records 2540.17
+      route CPU seconds and 5568.25 job wall seconds, the longest job 287.72 seconds. Every
+      positive clears every wall by at least 5.00e-21 and every pair by at least 9.99e-21.
+
+      V3 and C3 rest on the 12 October review
+      (docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md) and the replay it
+      reproduced (E-couzo-506-exact-feasibility). Its findings here are non-blocking: the
+      comparison with issue 500, frozen by its prints, was refrozen against its exact sides
+      and no relation changed (RY-1); the witness at 375 is dilated by 1 + 1e-11 about the
+      point (1/2, 1/2), and the source's certificates README, which says 1 + 1e-12, does not
+      describe it (RY-2); the issue's own before column quotes the author's earlier
+      certificates, not the register's rows (RY-3); sqpack.verify is the copy the source
+      ran (RY-4); and the kernel's controls are gross (RY-5).
+
+      The other findings: no retained check binds a retained file to its upstream bytes,
+      which the review closed once by fetching all 85 files of the manifest at the pin
+      (RY-6); no private-worker custody is on file (RY-7); the review replayed the kernel at
+      four of the eleven requested counts, the import lane's two complete decisions
+      standing for the rest (RY-8); the reviewer and the producer's assistant share a model
+      family (RY-9); four unrequested certificates are registered nowhere (RY-10); the
+      beyond-horizon rows supersede seven current rows, one of them verified (RY-11); and
+      the in-corpus packings refine issue 500's arrangements (RY-12).
+
+      At n = 304 the certificate is below the case's ceiling (Francisco Couzo, improved by
+      Evan Daniel, T-098) and issue 476's 304, equal to it, by 5.08e-03, and below issue
+      500 (T-151) by 9.11e-05. At 305 it is below the case's ceiling (T-098) and issue 476's
+      305 by 2.49e-03, T-136 by 7.30e-04, T-140 and issue 489's hunt3_n305 by 6.73e-04 and
+      issue 500 (T-151) by 7.84e-05. At both it is the smallest side known.
+
+      Beyond the case corpus, with the margins the register's rows give: 338 is below
+      Couzo's tracked row by 2.20e-03 and issue 488's uncited 338 by 7.14e-04; 339 below its
+      row by 6.70e-04; 344 below Evan Daniel's verified Hunt 3 row by 9.73e-05 and Kevin
+      Fang's issue 484 side by 1.14e-03; 375 below its row by 6.90e-04; 376 by 1.00e-02;
+      378 by 4.32e-03; 379 by 3.97e-03; and 380 and 381, with no row, below the grid's 20 by
+      1.26e-02 and 7.34e-03. The 344 and Hunt 3's 344 are one arrangement of Fang's moved in
+      different directions, matched one to one under a half turn, so the verified row it
+      supersedes is a sibling of it. The issue's own before column at 338, 339, 375, 376,
+      378, 379 and 380 quotes the author's latest earlier certificate there, four of them
+      retained by no packet.
+
+      The review recommends this entry as the house at 304 and 305, crediting issue 500's
+      packings as their starting points, with issue 500 (T-151), T-140 and T-136 after it at
+      305 and T-151 at 304 kept verified and not selected. No house moves until
+      private-worker custody is on file.
+
+      The same commits hold 4 further certificates the issue does not name, at n = 175, 308,
+      340 and 343, and leave 53 byte-identical to the issue-476 and issue-488 packets'
+      copies; the packet's claim record compares the four, and each is an import of its
+      own. 175 is the smallest side known at its count and has its own import (think-9fjl);
+      340 is the smallest known at 340 and its row is the owner's decision; 308 and 343 are
+      beaten by T-141's 308 and Hunt 3's 343, and the source marks both superseded.
+
+      The source's own checkers were not run here, and its KKT statements are not decided.
+      The two maintained routes, the sqpack rational witness verifier and the independent
+      rational corner checker, share certificate parsing, half-angle conversion, Fraction
+      arithmetic and the separating-axis method. No two independent methods, human
+      oversight or optimality is claimed.
+    next_rung: >-
+      Adopt this entry as the house at 304 and 305, with private-worker custody first
+      (think-fvz4). V4 and C4 need a second accepted adversarial review by a distinct
+      reviewer and a retained human oversight record; one AI review, of 12 October, is
+      retained.
+    reviews:
+      - path: docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md
+        kind: adversarial
+        reviewer: >-
+          AI agent (Claude Fable 5.1 at extra-high reasoning effort, a different model from
+          the import lane's), the stage 4 review lane (W2, V4) of the 2026-10-11 intake pass
+          under think-720n, prompted separately from the import lane that built the packet,
+          with no shared context beyond its committed notes and register plan
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-12'
+        scope: >-
+          Finite feasibility of the eleven certificates the import's entry and its nine
+          beyond-horizon rows cite, at 304 and 305 and at 338, 339, 344, 375, 376, 378, 379,
+          380 and 381. The retained receipt replayed on both maintained routes at four
+          counts with the import lane's complete replay retained for the rest, the third
+          exact route on all eleven with its sharp controls, every file of the manifest
+          fetched at the pin and held to its digest, the comparison with issue 500 refrozen
+          against its exact sides, admission against each print, each route's trust
+          boundary, the rational witness at 375 measured against its pose file, and the
+          lineage measured where the record retains the parent.
+        verdict: accepted
+        covers: [T-152]
