@@ -31242,8 +31242,12 @@ evidence:
       80-digit mpmath cross-check, and that each side is the exact optimum of its contact
       topology with nonnegative KKT multipliers; neither program was built or run here, and
       the KKT statement is not decided. The source states nothing about AI assistance
-      (RW-2). The repository replay and its review are E-ostashev-501-exact-feasibility. No
-      local or global optimality is registered.
+      (RW-2). On 12 October 2026 the author stated on jlevy/squares#528 that AI agents
+      wrote and ran his search, composition and verification code; the verification code
+      it names is the one retained here, byte-identical at a8db6ff, and whether the
+      statement covers these three packings' search is asked (RX-4 of the 12 October
+      review, think-e59i). The repository replay and its review are
+      E-ostashev-501-exact-feasibility. No local or global optimality is registered.
     source_reviewed: '2026-10-11'
 
   - id: E-ostashev-501-exact-feasibility
@@ -31652,4 +31656,227 @@ evidence:
       2026 (packing/devtools/house-custody-2026-10-11.json), when the case records adopted
       the 304 and 305 certificates as houses. Finite feasibility only: no lower bound,
       optimum, local minimum, rigidity, novelty or human oversight.
+    source_reviewed: '2026-10-12'
+
+  - id: E-ostashev-528-certificate-report
+    claim: upper-bound
+    scope:
+      n_values: [175, 232, 264]
+    assurance: reported
+    reported_method: exact-algebraic
+    performed_by: source-author
+    relationship_to_generator: same-implementation
+    origin: external
+    novelty: previously-published
+    source_key: '[Ostashev records 2026-10-12]'
+    certificate: packing/resources/web/dostashev-records-2026-10-12/source/records/
+    replay_status: not-attempted
+    verifiers: []
+    external_review:
+      state: informally-verified
+      date: '2026-10-12'
+      reviewed_by: >-
+        AI agent (Claude), the stage 4 review lane of the 2026-10-12 intake, prompted
+        separately from the import lane
+      note: >-
+        docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md accepted the
+        three certificates for finite feasibility only, with eleven non-blocking findings
+        (RX-1 to RX-11); the replay it reproduced is E-ostashev-528-exact-feasibility.
+    limitations: >-
+      This atom records the source author's report of three exact rational certificates
+      at a8db6ff, the commit the issue names, retained byte for byte under the source's
+      MIT licence, with his C++ GMP checker and mpmath cross-check pinned at the digests
+      the issue-501 packet retains them at. The author reports that each passes his own
+      checker in GMP rationals with no dilation and no tolerance and an 80-digit mpmath
+      cross-check, and that each side is the exact optimum of its contact topology with
+      nonnegative KKT multipliers; neither program was built or run here, and the KKT
+      statement is not decided. The issue states AI assistance for the search,
+      composition and verification code. The repository replay and its review are
+      E-ostashev-528-exact-feasibility. No local or global optimality is registered.
+    source_reviewed: '2026-10-12'
+
+  - id: E-ostashev-528-exact-feasibility
+    claim: upper-bound
+    scope:
+      n_values: [175, 232, 264]
+    assurance: verified
+    method: exact-algebraic
+    performed_by: repository
+    relationship_to_generator: independent-implementation
+    origin: replayed-here
+    novelty: previously-published
+    source_key: '[Ostashev records 2026-10-12]'
+    certificate: packing/resources/web/dostashev-records-2026-10-12/source/records/
+    replay: >-
+      From packing/ with the project interpreter: python -m devtools.upper_bound_reports
+      dostashev-records-2026-10-12 check --replay decides all 9 retained jobs again through
+      both maintained routes and holds each to its retained row (all equal on 2026-10-12,
+      34 min 31 s wall on a loaded host); check-claims rebuilds the frozen comparison
+      (equal); python -m devtools.check_half_angle_area decide-imports --workers 1
+      --imports '#528' '#529' --upstream dostashev-records-2026-10-12 DIRECTORY decides
+      each certificate by the third route with six controls and holds each retained file
+      to its bytes fetched at the pin into DIRECTORY (no disagreement, 335.7 s with issue
+      529's certificate).
+    replay_status: passed
+    verifiers:
+      - V-sqpack-verify
+      - V-check-rational-witness-independent
+      - V-evand-arrangement-receipts
+      - V-upper-bound-reports
+      - V-check-half-angle-area
+      - V-evand-exact-certificates
+    independence_record: docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md
+    external_review:
+      state: informally-verified
+      date: '2026-10-12'
+      reviewed_by: >-
+        AI agent (Claude), the stage 4 review lane of the 2026-10-12 intake, prompted
+        separately from the import lane
+      note: >-
+        Accepted for finite feasibility only. All 9 retained jobs reproduced on both
+        maintained routes in full, the frozen comparison rebuilt equal, and the third route
+        agreed with them at every side, pose, wall clearance and frozen claim, held each
+        retained file to its upstream bytes and reached every one of its 18 controls'
+        required outcomes. Findings RX-1 to RX-11, none blocking.
+    limitations: >-
+      A replay of the retained certificates by two maintained exact routes that share
+      certificate parsing, half-angle conversion, Fraction arithmetic and the
+      separating-axis method, and by a third exact route that shares Fraction arithmetic
+      only; no source program ran. The receipt's nine jobs hold 460422 pair decisions,
+      647.47 route CPU seconds and 1544.83 job wall seconds; the longest job took 291.46 s.
+      Every positive clears every wall by about 5.00e-21 and every pair by a least
+      Euclidean distance of 5.000000e-21. The kernel's two controls are gross (RX-6); the
+      third route's six are sharp. No private-worker custody is on file. Finite feasibility
+      only: no local or global optimality, no rigidity, and nothing about the 38-square
+      rectangle or Friedman's piece beyond the author's statement.
+    source_reviewed: '2026-10-12'
+
+  - id: E-calle-529-certificate-report
+    claim: upper-bound
+    scope:
+      n_values: [102]
+    assurance: reported
+    reported_method: numerical-multiprecision
+    performed_by: source-author
+    relationship_to_generator: same-implementation
+    origin: external
+    novelty: previously-published
+    source_key: '[Calle n102 2026-10-12]'
+    certificate: packing/resources/web/riocalle-n102-2026-10-12/acquisition/sources.json
+    precision: {decimal_digits: 60, rounding: source-defined}
+    replay_status: not-attempted
+    verifiers: []
+    external_review:
+      state: informally-verified
+      date: '2026-10-12'
+      reviewed_by: >-
+        AI agent (Claude), the stage 4 review lane of the 2026-10-12 intake, prompted
+        separately from the import lane
+      note: >-
+        docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md accepted the
+        derived certificate for finite feasibility only, with eleven non-blocking findings
+        (RX-1 to RX-11); the replay it reproduced is E-calle-529-exact-feasibility.
+    limitations: >-
+      This atom records Rio Calle's report at 8313686: a decimal layout of 102 unit squares,
+      centres and radian rotations at 18 significant digits, at the printed side
+      10.605828696455852, accepted by his verify_exact.py, a 60-digit decimal
+      separating-axis check that rounds, and by his search engine's exact rational-interval
+      certificate, which is private and cannot be rerun; verify_exact.py was run once by
+      the import lane outside the repository and reproduced its two gaps. No upstream byte
+      is retained, the source stating no licence; the certificate field names the
+      acquisition record that pins the layout by digest. The bound rests on the separate
+      confirming entry's derived certificate, E-calle-529-exact-feasibility. The source
+      states AI assistance (Claude). No local or global optimality is claimed.
+    source_reviewed: '2026-10-12'
+
+  - id: E-calle-529-exact-feasibility
+    claim: upper-bound
+    scope:
+      n_values: [102]
+    assurance: verified
+    method: exact-algebraic
+    performed_by: repository
+    relationship_to_generator: independent-implementation
+    origin: replayed-here
+    novelty: previously-published
+    source_key: '[Calle n102 2026-10-12]'
+    certificate: packing/resources/web/riocalle-n102-2026-10-12/facts/
+    replay: >-
+      From packing/ with the project interpreter: python -m devtools.upper_bound_reports
+      riocalle-n102-2026-10-12 check --replay decides all 3 retained jobs again through
+      both maintained routes and holds each to its retained row (all equal, 2 min 0 s on
+      2026-10-12); check-claims rebuilds the frozen comparison (equal); python -m
+      devtools.check_half_angle_area decide-imports --workers 1 --imports '#528' '#529'
+      --upstream riocalle-n102-2026-10-12 DIRECTORY decides the certificate by the third
+      route with six controls and derives it again from the layout fetched at the pin into
+      DIRECTORY with the route's own reader and arithmetic (no disagreement).
+    replay_status: passed
+    verifiers:
+      - V-sqpack-verify
+      - V-check-rational-witness-independent
+      - V-evand-arrangement-receipts
+      - V-upper-bound-reports
+      - V-check-half-angle-area
+      - V-evand-exact-certificates
+    independence_record: docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md
+    external_review:
+      state: informally-verified
+      date: '2026-10-12'
+      reviewed_by: >-
+        AI agent (Claude), the stage 4 review lane of the 2026-10-12 intake, prompted
+        separately from the import lane
+      note: >-
+        Accepted for finite feasibility only. All 3 retained jobs reproduced on both
+        maintained routes in full, the frozen comparison rebuilt equal, and the third route
+        agreed with them at the side, every pose, the wall clearance and the frozen claim,
+        derived the certificate again from its pinned layout and reached every one of its 6
+        controls' required outcomes. Findings RX-1 to RX-11, none blocking.
+    limitations: >-
+      The certificate is the repository's derivation from the pinned layout, every decimal
+      as printed and each half-angle tangent rounded down at 40 places, decided by two
+      maintained exact routes that share certificate parsing, the importer's interval
+      floor, Fraction arithmetic and the separating-axis method, and by a third exact route
+      with its own reader and floor that shares Fraction arithmetic only; no source
+      program ran here. The kernel's two controls are gross (RX-6); the third route's six
+      are sharp. No retained check binds the fact to upstream bytes beyond the review's
+      one derivation at the pin (RX-7). Finite feasibility only: no local or global optimality,
+      no rigidity, and nothing about the author's private certificate or his valley
+      bottom.
+    source_reviewed: '2026-10-12'
+
+  - id: E-n011-kleddamag-3875-esummins-replay-report
+    claim: lower-bound
+    scope: {n_values: [11]}
+    assurance: reported
+    reported_method: exact-algebraic
+    performed_by: independent-external
+    relationship_to_generator: same-implementation
+    origin: external
+    novelty: previously-published
+    source_key: '[Summins stratification series 2026-10-12]'
+    certificate: resources/web/external-square-certificates-2026-09-22/kleddamag-11/global-certificate.json
+    replay_status: not-attempted
+    verifiers: [V-kleddamag-n11-verify]
+    limitations: >-
+      E. Summins' n = 11 lab, at Esummins/packing 651a9a54688341880e9c0dc9fcfc19f2c04cd3cb
+      (attempts/A242-replay-31-8/, reported on jlevy/squares#521), reports a third party's
+      re-run of Kleddamag's v1.0.2 certificate for s(11) > 31/8: the release's own exact
+      Python sweep (exact_mixed.py and integer_sweep.py, driven by the lab's rows242.py in
+      two shards, numba replaced by an identity shim) over all 12,028 rows, 0 differing
+      from both of the release's evidence files, minimum 999962528 at row 11962, budget
+      10999479944, surplus 107864, 86,299,918 slabs and 511,649,694,680 cells, 8,089 CPU
+      seconds at the lab; the release's controls and integrity check re-run; and a spot
+      check in the lab's own Fraction and integer code, spot242.py, of the scaling, the
+      budget, 3,240 exact poses and the counting margin. The lab's PIN.json names the
+      certificate and evidence file by the digests this repository's copies have. The
+      totals agree with E-n011-kleddamag-3875-source-replay. spot242.py was read and re-run
+      here from a scratch layout against the retained certificate with the lab's arguments
+      and reproduced its 3,240 rows byte for byte (the packet's receipts/spot242-rerun-*);
+      a sample of poses is a diagnostic, and the row sweep was not re-run here. The
+      deciding programs are the producer's, so this is a reproduction with the producer's
+      code, an attribute beside T-037's rung and no rung of its own; whether it is
+      recorded as a third party's retained replay (origin independently-external) is the
+      owner's decision (think-6t6q). The lab did not run the release's secondary
+      JavaScript checker. The lab states its work was produced by AI agents (Claude,
+      Anthropic) under the PI's direction.
     source_reviewed: '2026-10-12'

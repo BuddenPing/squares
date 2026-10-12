@@ -1206,6 +1206,42 @@ tracked at 338, 339, 344, 375, 376, 378 and 379; the four certificates the issue
 not name, at 175, 308, 340 and 343, are registered nowhere.
 Claude assistance disclosed.
 
+## Daniil Ostashev’s and Rio Calle’s certificates, 12 October 2026
+
+**[Ostashev records 2026-10-12]**: Daniil Ostashev’s exact rational certificates for n =
+175, 232 and 264, compositions with his new 38-square rectangle, pinned at
+`a8db6ff941fc93d1d68d4d7aed90bb2a18a3a41f` and retained as the source wrote them under
+its MIT licence; [packet](web/dostashev-records-2026-10-12/README.md).
+Both project exact routes accept all three and refuse all six controls, and a third
+exact route agrees and held every retained file to its pinned bytes.
+T-154 records the sides at V3/C3 on the
+[review of 12 October](../../docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md).
+The issue states that AI agents wrote and ran the search, composition and verification
+code.
+
+**[Calle n102 2026-10-12]**: Rio Calle’s decimal layout for n = 102, another arrangement
+of Ryan Xu’s design, pinned at `831368623f2d4dcef2e9434fd85c3e154083c97d`, kept as an
+exact certificate derived here, no upstream byte retained;
+[packet](web/riocalle-n102-2026-10-12/README.md).
+Both project exact routes accept the derived certificate and refuse both controls, and
+the third exact route agrees and derived it again from the layout at the pin.
+T-155 records the side at V3/C3 on the same review; the case at 102 holds a smaller
+certificate (T-146) and is unchanged.
+Claude assistance disclosed.
+
+## E. Summins’ stratification series, 12 October 2026
+
+**[Summins stratification series 2026-10-12]**: the outreach series of E. Summins’ n =
+11 lab, issues #521 to #527, at Esummins/packing
+`651a9a54688341880e9c0dc9fcfc19f2c04cd3cb`: the simple-square stratification and its n =
+11 Lean layer, a census at the n = 17 and n = 19 windows, a conjecture, structural
+theorems, a toolkit, and a third party’s re-run of Kleddamag’s certificate for T-037;
+[packet](web/esummins-packing-2026-10-12/README.md).
+No bound is claimed, and none is registered; the T-037 re-run is recorded beside its
+rung as the lab’s report, and its spot check was re-run here.
+Code MIT, documents and data CC BY 4.0; the lab states that AI agents (Claude) produced
+its work under the PI’s direction.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->

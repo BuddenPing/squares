@@ -1912,8 +1912,16 @@ OTHER_PROJECTS: tuple[tuple[str, str, str], ...] = (
         "https://github.com/dostashev/square-packing",
         "Daniil Ostashev",
         (
-            "New packings of 155, 156 and 211 squares with exact certificates and a GMP"
-            " checker; the three are replayed here (T-149)."
+            "New packings of 155, 156, 175, 211, 232 and 264 squares with exact"
+            " certificates and a GMP checker; all six are replayed here (T-149, T-154)."
+        ),
+    ),
+    (
+        "https://github.com/riocalle/my-repo",
+        "Rio Calle",
+        (
+            "A decimal layout of 102 squares, another arrangement of Ryan Xu's design;"
+            " certified here from the layout (T-155)."
         ),
     ),
     (

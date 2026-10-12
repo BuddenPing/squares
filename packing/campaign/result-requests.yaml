@@ -5142,8 +5142,9 @@ issues:
         13.767119024199, s(308) <= 17.998459831024, s(340) <= 18.939649632892 and s(343) <=
         18.993870589750, as certificates/README.md prints them.
       source: source
-      not_registered: Not requested. Compared in the packet's claim record; 175 is the smallest
-        side known at its count and is its own import (think-9fjl), 340 is below its tracked row
+      not_registered: Not requested. Compared in the packet's claim record; 175 was the smallest
+        side known at its count until issue 528 (T-154), 2.94e-03 below it, and stays in the
+        packet unless the author asks for it to be registered (think-9fjl), 340 is below its tracked row
         beyond the corpus and its row is the owner's decision, and 308 and 343 are above T-141's
         308 and Hunt 3's 343, marked superseded by the source.
       queued: false
@@ -5156,3 +5157,134 @@ issues:
       the house adoption at 304 and 305 has landed or is owned, and the owner has posted the
       resulting state; the four unnamed certificates are imports of their own, and optimality is
       outside this request.
+  - number: 528
+    title: 's(175) ≤ 13.764174317487, s(232) ≤ 15.764174317487, s(264) ≤ 16.774735132388: registration request'
+    author: dostashev
+    opened: '2026-10-12'
+    state: open
+    kind: result-report
+    triage: done
+    summary: >-
+      Daniil Ostashev reports new packings at n = 175, 232 and 264 in dostashev/square-packing at
+      a8db6ff941fc93d1d68d4d7aed90bb2a18a3a41f, records/n0NNN.sqcert, each an exact rational
+      certificate in the sqcert format of issue 501: compositions of a new 38-square (h + 2) x h
+      rectangle with pieces of David Ellsworth's s(171) template (Thomas Schadt's s(50)), Erich
+      Friedman's s(85) and Evan Daniel's exact optimum of Joost de Winter's s(126), each taken to
+      the exact optimum of its contact topology and dilated by 1 + 1e-60. Imported on 12 October
+      2026: the commit's new files are retained under the MIT licence in the
+      dostashev-records-2026-10-12 packet, the rest pinned against the issue-501 packet, and the
+      three certificates replayed with their controls on both maintained exact routes; the review
+      of 12 October decided them again by a third exact route, measured each as no placement of
+      a packing the record holds or has pending, and found no blocking defect. Registered as
+      T-154 at V3/C3. Each side is below its case's ceiling and every other report at its count:
+      by 2.95e-03 at 175 (T-140, and Francisco Couzo's unregistered 337078c certificate,
+      think-9fjl, by 2.94e-03), 3.25e-03 at 232 (T-136) and 3.44e-03 at 264 (the catalogue's
+      Goebel pattern, T-101). The issue also restates issue 501's sides at the same commit, which
+      are the c3d17ab certificates T-149 already carries, and states AI assistance: AI agents
+      wrote and ran the search, composition and verification code in a research loop the author
+      drove.
+    read_through: '2026-10-12T04:14:57Z'
+    results:
+    - key: three-compositions
+      claim: s(175) <= 13.76417431748659662942782322004234282577, s(232) <=
+        15.76417431748659662944782322004234282577 and s(264) <=
+        16.77473513238783284261026458732177098083, each the exact side of a retained certificate
+        rounded up at 38 places.
+      source: body
+      register:
+      - T-154
+      evidence:
+      - E-ostashev-528-certificate-report
+      - E-ostashev-528-exact-feasibility
+    - key: update-501
+      claim: The same commit stores issue 501's packings at the exact optima of their contact
+        topologies, s(155) <= 12.95242540695845613565…, s(156) <= 12.97917261364442607531… and
+        s(211) <= 14.99633672133631569465…, slightly lower than the sides issue 501 prints.
+      source: body
+      not_registered: The c3d17ab certificates, byte-identical at a8db6ff, whose exact sides T-149
+        already states; the author's answer that the record should carry them (think-e59i).
+      queued: false
+    - key: rectangle-38
+      claim: A new packing of 38 unit squares in an (h + 2) x h rectangle, h =
+        5.76417431748659662929…, found by a GPU soft-to-rigid search.
+      source: body
+      not_registered: A rectangle packing, no bound on s(n); retained in the packet as the
+        compositions' shared piece.
+      queued: false
+    - key: kkt-exact-optima
+      claim: Each packing is the exact first-order optimum of its contact topology, with
+        nonnegative KKT multipliers at a 60-digit solution.
+      source: body
+      not_registered: A local-optimality report, not a bound on s(n); recorded as reported in
+        E-ostashev-528-certificate-report and not checked here.
+      queued: false
+    beads:
+    - think-em0b
+    answer_bead: think-em0b
+    replies: []
+    close_when: The import and its disposition are on main, the house adoption at 175, 232 and
+      264 has landed or is owned, the author has said whether the AI-assistance statement also
+      covers issue 501, and the resulting state has been posted; optimality is outside this
+      request.
+  - number: 529
+    title: 'n = 102: certified s = 10.605828696455852'
+    author: riocalle
+    opened: '2026-10-12'
+    state: open
+    kind: result-report
+    triage: done
+    summary: >-
+      Rio Calle (University of New Hampshire) reports a packing of 102 squares at s =
+      10.605828696455852 in riocalle/my-repo at 831368623f2d4dcef2e9434fd85c3e154083c97d, a decimal
+      layout of ry-xu's design (T-125) found independently about ten hours after ry-xu's, with a
+      60-digit decimal checker; the author's exact certificate comes from a private engine. The
+      tree states no licence, so the riocalle-n102-2026-10-12 packet keeps digests and an exact
+      certificate derived here from the layout, every decimal as printed and each tan(theta/2)
+      rounded down at 40 places; it passed both maintained exact routes with its controls, with
+      least wall and pair clearances 2.00e-12 and 1.93e-12, as the issue states, and the review
+      of 12 October decided it again by a third exact route, derived it again from the layout at
+      the pin, measured it as another arrangement of ry-xu's design and found no blocking
+      defect. Registered as T-155 at V3/C3, dated 11 October by the source. The side is below
+      T-125 by 5.48e-11, as the issue says, but above Evan Daniel's regularization of ry-xu's
+      packing (T-146, registered 10 October and the case's house since 11 October) by 2.43e-11,
+      so it moves no case and T-155 is superseded by T-146 on arrival. Claude assistance
+      disclosed. Credit name Rio Calle; no Twitter/X handle is listed on the author's GitHub
+      profile.
+    read_through: '2026-10-12T04:32:54Z'
+    results:
+    - key: n102-layout
+      claim: s(102) <= 10.605828696455852, the side of the layout as printed, certified here by an
+        exact certificate derived from it; 5.5e-11 below T-125.
+      source: body
+      register:
+      - T-155
+      evidence:
+      - E-calle-529-certificate-report
+      - E-calle-529-exact-feasibility
+    - key: valley-bottom
+      claim: Solved to the bottom of its valley the arrangement reaches s = 10.605828696431638
+        (README).
+      source: source
+      not_registered: No layout at that side is published; an author report, not certified here,
+        and above T-146's side by 6.0e-14.
+      queued: false
+    - key: earlier-layout
+      claim: s = 10.605828708, the author's earlier layout (earlier/, and
+        Davidebyzero/packing_squares_in_squares__tools issue 6 of 2026-10-08).
+      source: source
+      not_registered: Above every ceiling at 102; retained by digest in the packet.
+      queued: false
+    - key: private-certificate
+      claim: The author's search engine's exact rational-interval certificate accepts the layout,
+        and refuses it in a box 1e-11 smaller.
+      source: body
+      not_registered: Not public and not replayable; the record's certificate is derived from the
+        layout instead.
+      queued: false
+    beads:
+    - think-s2i8
+    answer_bead: think-s2i8
+    replies: []
+    close_when: The import and its disposition are on main, the credit relation to ry-xu's
+      packing is measured and stated, and the resulting state has been posted; optimality and
+      the author's private certificate are outside this request.

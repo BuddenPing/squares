@@ -3786,8 +3786,61 @@ sources:
     378 and 379, Evan Daniel's verified Hunt 3 row at 344 among them. T-152 records the in-corpus
     sides at 304 and 305 (couzo-certificates-2026-10-11-in-corpus). The four certificates the issue
     does not name, at 175, 308, 340 and 343, are compared in the claim record and registered by no
-    entry; 175 has its own import (think-9fjl).
+    entry; 175 has its own import (think-9fjl), and since issue 528 (T-154) is 2.94e-03 below it,
+    it stays in the packet unless its author asks for it to be registered.
   claims_record: resources/web/couzo-certificates-2026-10-11/acquisition/beyond-horizon-claims.json
+- id: dostashev-records-2026-10-12
+  title: Daniil Ostashev's three composition packings at a8db6ff, issue528
+  role: source-repository
+  url: https://github.com/dostashev/square-packing/tree/a8db6ff941fc93d1d68d4d7aed90bb2a18a3a41f
+  local: resources/web/dostashev-records-2026-10-12/
+  source_key: '[Ostashev records 2026-10-12]'
+  scope:
+    n_values: [175, 232, 264]
+  reviewed: '2026-10-12'
+  source_date: '2026-10-12'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/results.yaml
+  - resources/web/dostashev-records-2026-10-12/acquisition/claims.json
+  evidence:
+  - E-ostashev-528-certificate-report
+  - E-ostashev-528-exact-feasibility
+  notes: >-
+    All 3 complete certificates at a8db6ff are retained as the source wrote them under its MIT
+    licence, with the eight files the commit adds or changes and the rest of the tree pinned at
+    the issue-501 packet's digests, each admitted where its exact side rounds up to the side the
+    issue prints. T-154 records them at V3/C3 on the review of 12 October
+    (docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md), which reproduced all 9
+    native jobs, decided the three by a third exact route and held every file to its bytes fetched
+    at the pin. Selected overrides at 175, 232 and 264 follow when the cases adopt them, each
+    packing credited to Daniil Ostashev.
+- id: riocalle-n102-2026-10-12
+  title: Rio Calle's n102 arrangement at 8313686, issue529
+  role: source-repository
+  url: https://github.com/riocalle/my-repo/tree/831368623f2d4dcef2e9434fd85c3e154083c97d
+  local: resources/web/riocalle-n102-2026-10-12/
+  source_key: '[Calle n102 2026-10-12]'
+  scope:
+    n_values: [102]
+  reviewed: '2026-10-12'
+  source_date: '2026-10-12'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/results.yaml
+  - resources/web/riocalle-n102-2026-10-12/acquisition/claims.json
+  evidence:
+  - E-calle-529-certificate-report
+  - E-calle-529-exact-feasibility
+  notes: >-
+    The one certificate is kept as a derived exact fact, no upstream byte retained, admitted at the
+    side the layout prints. T-155 records it at V3/C3 on the review of 12 October
+    (docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md), which reproduced all 3
+    native jobs, decided the certificate by a third exact route and derived it again from the
+    layout fetched at the pin. Its side is above the case's selected certificate at 102 (T-146) by
+    2.43e-11, so no override is selected and the case is unchanged.
 selected_overrides:
 - n: 51
   source_id: ry-xu-undilated-n51-2026

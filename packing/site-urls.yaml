@@ -3298,7 +3298,7 @@ urls:
   generator: devtools.render_case_pages:case_records
   producer: overview
   first_published: '2026-10-03'
-  lastmod: '2026-10-11'
+  lastmod: '2026-10-12'
   status: live
 - path: cases/103.html
   canonical: cases/103.html
@@ -3938,7 +3938,7 @@ urls:
   generator: devtools.render_case_pages:case_records
   producer: overview
   first_published: '2026-10-03'
-  lastmod: '2026-10-11'
+  lastmod: '2026-10-12'
   status: live
 - path: cases/176.html
   canonical: cases/176.html
@@ -4450,7 +4450,7 @@ urls:
   generator: devtools.render_case_pages:case_records
   producer: overview
   first_published: '2026-10-03'
-  lastmod: '2026-10-11'
+  lastmod: '2026-10-12'
   status: live
 - path: cases/233.html
   canonical: cases/233.html
@@ -4730,7 +4730,7 @@ urls:
   generator: devtools.render_case_pages:case_records
   producer: overview
   first_published: '2026-10-03'
-  lastmod: '2026-10-06'
+  lastmod: '2026-10-12'
   status: live
 - path: cases/265.html
   canonical: cases/265.html
@@ -7177,7 +7177,7 @@ urls:
   generator: devtools.render_overview:result_fragments
   producer: overview
   first_published: '2026-09-29'
-  lastmod: '2026-09-29'
+  lastmod: '2026-10-12'
   status: live
   identity:
     kind: lower-bound
@@ -7194,6 +7194,7 @@ urls:
     - E-n011-kleddamag-3875-report
     - E-n011-kleddamag-3875-source-replay
     - E-n011-kleddamag-3875-native-parent-core
+    - E-n011-kleddamag-3875-esummins-replay-report
     artifacts:
     - packing/resources/web/external-square-certificates-2026-09-22/README.md
     - packing/resources/web/external-square-certificates-2026-09-22/kleddamag-11/PROOF.md
@@ -7204,6 +7205,36 @@ urls:
     - packing/devtools/verify_kleddamag_n11_native.py
     - docs/project/reviews/review-2026-09-22-kleddamag-n11-mathematics.md
     - docs/project/reviews/review-2026-09-22-native-n11-parent-core.md
+  amendments:
+  - date: '2026-10-12'
+    reason: Cite E. Summins' n = 11 lab's re-run of the release's own sweep, reported on issue 521
+      (E-n011-kleddamag-3875-esummins-replay-report), beside the rung; scope, attribution and the
+      stated bound are unchanged.
+    previous:
+      kind: lower-bound
+      scope:
+        n_values:
+        - 11
+      established: null
+      attribution:
+        source_keys:
+        - '[Kleddamag n11 2026]'
+        published: '2026-09-22'
+      builds_on: null
+      evidence:
+      - E-n011-kleddamag-3875-report
+      - E-n011-kleddamag-3875-source-replay
+      - E-n011-kleddamag-3875-native-parent-core
+      artifacts:
+      - packing/resources/web/external-square-certificates-2026-09-22/README.md
+      - packing/resources/web/external-square-certificates-2026-09-22/kleddamag-11/PROOF.md
+      - packing/resources/web/external-square-certificates-2026-09-22/kleddamag-11/ATTRIBUTION.md
+      - packing/resources/web/external-square-certificates-2026-09-22/receipts/n11/full-replay/RESULT.json
+      - packing/resources/web/external-square-certificates-2026-09-22/receipts/n11/independent-audit.json
+      - packing/campaign/agent-sessions/session-153-native-full.json
+      - packing/devtools/verify_kleddamag_n11_native.py
+      - docs/project/reviews/review-2026-09-22-kleddamag-n11-mathematics.md
+      - docs/project/reviews/review-2026-09-22-native-n11-parent-core.md
 - path: result/t-038.html
   canonical: result/t-038.html
   kind: result
@@ -12911,6 +12942,70 @@ urls:
     - packing/devtools/upper_bound_reports.py
     - packing/devtools/check_half_angle_area.py
     - docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md
+- path: result/t-154.html
+  canonical: result/t-154.html
+  kind: result
+  generator: devtools.render_overview:result_fragments
+  producer: overview
+  first_published: '2026-10-12'
+  lastmod: '2026-10-12'
+  status: live
+  identity:
+    kind: upper-bound
+    scope:
+      n_values:
+      - 175
+      - 232
+      - 264
+    established: null
+    attribution:
+      source_keys:
+      - '[Ostashev records 2026-10-12]'
+      published: '2026-10-12'
+    builds_on: null
+    evidence:
+    - E-ostashev-528-certificate-report
+    - E-ostashev-528-exact-feasibility
+    artifacts:
+    - packing/resources/web/dostashev-records-2026-10-12/README.md
+    - packing/resources/web/dostashev-records-2026-10-12/acquisition/claims.json
+    - packing/resources/web/dostashev-records-2026-10-12/source/records/n0175.sqcert
+    - packing/resources/web/dostashev-records-2026-10-12/source/records/n0232.sqcert
+    - packing/resources/web/dostashev-records-2026-10-12/source/records/n0264.sqcert
+    - packing/resources/web/dostashev-records-2026-10-12/receipts/exact-certification.json.xz
+    - packing/devtools/upper_bound_reports.py
+    - packing/devtools/check_half_angle_area.py
+    - docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md
+- path: result/t-155.html
+  canonical: result/t-155.html
+  kind: result
+  generator: devtools.render_overview:result_fragments
+  producer: overview
+  first_published: '2026-10-12'
+  lastmod: '2026-10-12'
+  status: live
+  identity:
+    kind: upper-bound
+    scope:
+      n_values:
+      - 102
+    established: null
+    attribution:
+      source_keys:
+      - '[Calle n102 2026-10-12]'
+      published: '2026-10-11'
+    builds_on: null
+    evidence:
+    - E-calle-529-certificate-report
+    - E-calle-529-exact-feasibility
+    artifacts:
+    - packing/resources/web/riocalle-n102-2026-10-12/README.md
+    - packing/resources/web/riocalle-n102-2026-10-12/acquisition/claims.json
+    - packing/resources/web/riocalle-n102-2026-10-12/facts/n-102.yaml.gz
+    - packing/resources/web/riocalle-n102-2026-10-12/receipts/exact-certification.json.xz
+    - packing/devtools/upper_bound_reports.py
+    - packing/devtools/check_half_angle_area.py
+    - docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md
 - path: results.html
   canonical: results.html
   kind: page

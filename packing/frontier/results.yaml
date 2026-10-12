@@ -3322,6 +3322,7 @@ results:
       - E-n011-kleddamag-3875-report
       - E-n011-kleddamag-3875-source-replay
       - E-n011-kleddamag-3875-native-parent-core
+      - E-n011-kleddamag-3875-esummins-replay-report
     artifacts:
       - packing/resources/web/external-square-certificates-2026-09-22/README.md
       - packing/resources/web/external-square-certificates-2026-09-22/kleddamag-11/PROOF.md
@@ -3343,6 +3344,13 @@ results:
       (epistemics.md, No Blind Trust); none is retained for this result, so it stands at
       V3/C3: machine-checked, review record pending. The oversight record restores the
       rung.
+
+      On 12 October 2026 E. Summins' n = 11 lab reported on jlevy/squares#521 a re-run of
+      the release's own Python sweep over all 12,028 rows, none differing from the
+      release's recorded evidence, with the release's controls and a spot check of 3,240
+      poses in the lab's own arithmetic (E-n011-kleddamag-3875-esummins-replay-report). The
+      spot check was re-run here and reproduced the lab's rows. The sweep is the
+      producer's code, so the re-run is a reproduction beside the rung and moves none.
     next_rung: >-
       V4 and C4 need two adversarial AI reviews by distinct reviewers of the complete claim
       and a human oversight record. The two 2026-09-22 reviews are mapped and each reads one
@@ -16672,7 +16680,11 @@ results:
       pairs the squares with the case's packing one to one.
 
       The source and the issue make no statement about AI assistance, and the issue omits
-      the template's section on it.
+      the template's section on it. On 12 October 2026 the author stated on
+      jlevy/squares#528 that AI agents wrote and ran his search, composition and
+      verification code; the verification code it names is the one retained here, the same
+      byte for byte in both releases, and whether the statement covers these three
+      packings' search is asked (think-e59i).
     scope:
       n_values: [155, 156, 211]
     verification: V3
@@ -17303,8 +17315,9 @@ results:
       The same commits hold 4 further certificates the issue does not name, at n = 175, 308,
       340 and 343, and leave 53 byte-identical to the issue-476 and issue-488 packets'
       copies; the packet's claim record compares the four, and each is an import of its
-      own. 175 is the smallest side known at its count and has its own import (think-9fjl);
-      340 is the smallest known at 340 and its row is the owner's decision; 308 and 343 are
+      own. 175 was the smallest side known at its count until Daniil Ostashev's issue 528
+      (T-154), 2.94e-03 below it, and stays in the packet unless its author asks for it to
+      be registered (think-9fjl); 340 is the smallest known at 340 and its row is the owner's decision; 308 and 343 are
       beaten by T-141's 308 and Hunt 3's 343, and the source marks both superseded.
 
       The source's own checkers were not run here, and its KKT statements are not decided.
@@ -17338,3 +17351,309 @@ results:
           lineage measured where the record retains the parent.
         verdict: accepted
         covers: [T-152]
+  - id: T-154
+    kind: upper-bound
+    registered: '2026-10-12'
+    headline: New packings of 175, 232 and 264 squares built on a new 38-square rectangle, each certified exactly
+    claim: >-
+      Three complete rational source certificates by Daniil Ostashev, reported on
+      jlevy/squares#528, prove finite upper bounds at the exact sides they state: s(175) <=
+      27528348634973193258855646440084685651524191041221518308579027528348634973193258855646440084685651524191041221518308579/2000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+      s(232) <=
+      31528348634973193258895646440084685651524191041221518308579031528348634973193258895646440084685651524191041221518308579/2000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+      and s(264) <=
+      167747351323878328426102645873217709808239488409494842884223167747351323878328426102645873217709808239488409494842884223/10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.
+
+      Each certificate gives a rational side and, for each unit square, a rational centre
+      and the tangent of its half-angle, in the source's sqcert format: the 60-digit optimum
+      of its packing with the load-bearing squares scaled by 1 + 1e-20, then every centre
+      and the side dilated by 1 + 1e-60. Each side rounds up at 38 places to the side the
+      issue prints and at 15 to the README's.
+
+      The author reports that each packing passes his own C++ checker in GMP rational
+      arithmetic, on the shipped certificates with no dilation and no tolerance and on
+      certificates rebuilt from the 60-digit decimal packings, and an 80-digit mpmath
+      cross-check written separately, all three written with AI assistance; he also states
+      that each side is the exact first-order optimum of its packing's contact topology,
+      with nonnegative KKT multipliers at a 60-digit solution. Those statements are the
+      author's; no source program ran here.
+
+      All nine retained jobs, the three positives with their duplicate-square and
+      outside-container controls, were decided again here on 12 October 2026 by both
+      maintained exact routes and equal their retained rows. A third exact route,
+      half-extent containment and exact intersection area, decided the three with six
+      controls each and held each retained file to its upstream bytes fetched at the pin.
+      No route here is the source's code, and the source ran none of them, so the replay is
+      independently re-implemented. The 12 October review found no blocking defect.
+
+      Each side is below the ceiling its case holds, by 2.95e-03 at 175 (Francisco Couzo's
+      refinement of ry-xu's packing, T-140), 3.25e-03 at 232 (SQUISH's third request, T-136)
+      and 3.44e-03 at 264 (the catalogue's 9 + 11 sqrt(2)/2, Goebel's pattern, verified by
+      Evan Daniel's exact ceiling, T-101); at 175 it is also 2.94e-03 below Francisco
+      Couzo's certificate of 11 October, which the issue names as the previous best and
+      which the record holds in the issue-506 packet and has not registered, and 4.72e-03
+      below ry-xu's T-125. At all three counts it is the smallest exact side the record
+      holds; the case records are unchanged until a house is adopted, so each is pending
+      adoption.
+
+      Credit Daniil Ostashev (https://github.com/dostashev/square-packing) with the three
+      packings and their certificates. The issue says each is a composition: two library
+      rectangles in opposite corners of the box with aligned squares around them, each
+      using his new packing of 38 unit squares in an (h + 2) x h rectangle,
+      h = 5.7641743..., found by a GPU soft-to-rigid search after Yohei Nakajima's idea; at
+      175 in place of the pieces of David Ellsworth's s(171) template, cut from Thomas
+      Schadt's s(50); at 232 beside a 76-square piece of Erich Friedman's s(85); at 264
+      beside a 93-square piece of Evan Daniel's exact optimum of Joost de Winter's s(126);
+      each then taken to the exact optimum of its contact topology. He asks that the pieces'
+      sources be acknowledged as the record sees fit.
+
+      Measured pose by pose, none of the three is a placement of the packing its case holds
+      or of any report pending at its count: no symmetry of the box pairs the 175 square
+      for square with T-140, with Couzo's certificate of 11 October or with T-125, the 232
+      with T-136, or the 264 with T-101's certificate. Where the record retains a named
+      piece exactly, it reappears: 66 of the 171 squares of Evan Daniel's certificate of
+      Ellsworth's s(171) (T-101) land on squares of the 175 to the ninth decimal under a
+      half turn, none turned, and 88 of the 126 of his exact optimum of de Winter's s(126)
+      (T-098) on squares of the 264. Friedman's s(85) and the 38-square block are the
+      author's statement, not measured.
+
+      The issue states AI assistance: the author set up an AI-assisted research loop and
+      drove it with his own ideas, the rectangle library and composition being his; AI
+      agents wrote and ran the search, composition and verification code.
+    scope:
+      n_values: [175, 232, 264]
+    verification: V3
+    confirmation: C3
+    significance:
+      score: 3
+      rationale: >-
+        Three new packings, measured as no placement of the packings their cases hold or
+        have pending, smaller finite construction sides at n = 175, 232 and 264, 2.95e-03 to
+        3.44e-03 below the case ceilings and the smallest known at all three; no lower bound
+        or optimum.
+      scored: '2026-10-12'
+      by: >-
+        the 12 October review
+        (docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md),
+        confirming the draft of think-em0b Daniil Ostashev import
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Ostashev records 2026-10-12]']
+      published: '2026-10-12'
+    evidence:
+      - E-ostashev-528-certificate-report
+      - E-ostashev-528-exact-feasibility
+    artifacts:
+      - packing/resources/web/dostashev-records-2026-10-12/README.md
+      - packing/resources/web/dostashev-records-2026-10-12/acquisition/claims.json
+      - packing/resources/web/dostashev-records-2026-10-12/source/records/n0175.sqcert
+      - packing/resources/web/dostashev-records-2026-10-12/source/records/n0232.sqcert
+      - packing/resources/web/dostashev-records-2026-10-12/source/records/n0264.sqcert
+      - packing/resources/web/dostashev-records-2026-10-12/receipts/exact-certification.json.xz
+      - packing/devtools/upper_bound_reports.py
+      - packing/devtools/check_half_angle_area.py
+      - docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md
+    controls:
+      - packing/tests/test_upper_bound_reports.py
+      - packing/tests/test_check_half_angle_area.py
+    notes: >-
+      A separate complete repository replay is retained for n = 175, 232 and 264: 3
+      positives and 6 duplicate-square and outside-container controls passed their required
+      outcomes on both routes, 460422 pair decisions; summed over the 9 jobs, the receipt
+      records 647.47 route CPU seconds and 1544.83 job wall seconds, the longest job 291.46
+      seconds. Every positive clears every wall by at least 5.00e-21 and every pair by at
+      least 4.99e-21; the third route finds a least Euclidean distance of 5.000000e-21 at
+      every count and no square touching a wall.
+
+      The issue also restates issue 501's three sides at the same commit; those
+      certificates are byte-identical to the ones the issue-501 packet retains and T-149
+      states, and are not read again. The issue's new 38-square rectangle packing is no
+      bound on s(n) and stays in the packet, and its KKT statement is recorded as reported
+      and not decided.
+
+      V3 and C3 rest on the 12 October review
+      (docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md) and the
+      replay it reproduced (E-ostashev-528-exact-feasibility). Its findings here are
+      non-blocking: the kernel's controls are gross (RX-6); the README describes a 1e-30
+      dilation while every certificate uses 1e-60 (RX-8); the lineage is measured only
+      where the record retains the pieces (RX-11); and no private-worker custody is on
+      file.
+
+      The review recommends this entry as the house at 175, 232 and 264, crediting Daniil
+      Ostashev, with T-140, Couzo's certificate of 11 October in its packet and T-125 after
+      it at 175, T-136 at 232 and T-101 at 264 kept as history; no house moves until
+      private-worker custody is on file.
+
+      The source's own checker and cross-check, pinned at the same revision and
+      byte-identical to the issue-501 packet's copies, were not built or run here. The two
+      maintained routes, the sqpack rational witness verifier and the independent rational
+      corner checker, share certificate parsing, half-angle conversion, Fraction arithmetic
+      and the separating-axis method. No two independent methods, human oversight or
+      optimality is claimed.
+    next_rung: >-
+      V4 and C4 need a second accepted adversarial review by a distinct reviewer and a
+      retained human oversight record; one AI review, of 12 October, is retained.
+    reviews:
+      - path: docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md
+        kind: adversarial
+        reviewer: >-
+          AI agent (Claude, at extra-high reasoning effort), the stage 4 review lane (W2) of
+          the 2026-10-12 intake under the 2026-10-11 pass's epic, prompted separately from
+          the import lane that built the two packets, with no shared context beyond their
+          committed notes, scratch measurements and register plans
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-12'
+        scope: >-
+          Finite feasibility of the four certificates the two imports' entries cite: issue
+          528 at 175, 232 and 264 and issue 529 at 102. Both retained receipts replayed on
+          both maintained routes, the third exact route extended for Calle's decimal format
+          with its sharp controls, every file of both pinned scopes fetched at its pin and
+          held to its digest, the derived certificate derived again by the third route's own
+          arithmetic, admission against each print, the claim comparisons, each route's
+          trust boundary, each certificate measured pose by pose against the packing its
+          case holds and every report pending at its count, and the named pieces measured
+          where the record retains them.
+        verdict: accepted
+        covers: [T-154, T-155]
+  - id: T-155
+    kind: upper-bound
+    registered: '2026-10-12'
+    headline: Another arrangement of Ryan Xu's design for 102 squares, certified exactly from its decimal layout
+    claim: >-
+      An exact rational certificate derived here from Rio Calle's decimal layout of 102 unit
+      squares, reported on jlevy/squares#529, proves a finite upper bound at the side the
+      layout prints: s(102) <= 10.605828696455852.
+
+      The source's file is a layout, not a certificate: each centre and each rotation in
+      radians is printed to 18 significant digits, and a rotation printed in radians has no
+      rational cosine and sine. The certificate is this repository's: the printed side with
+      no dilation, every centre as printed, and each half-angle tangent rounded down at 40
+      places, which turns a square by less than 2e-40 radians against margins of 2e-12.
+
+      The author reports that a 60-digit decimal separating-axis check of his own, run once
+      here from scratch and reproducing its two gaps, finds least gaps of 1.9e-12 between
+      squares and 2.0e-12 to the walls, and that his search engine's exact rational-interval
+      certificate accepts the layout; the engine is not public and that certificate cannot
+      be rerun.
+
+      All three retained jobs, the positive with its duplicate-square and outside-container
+      controls, were decided again here on 12 October 2026 by both maintained exact routes
+      and equal their retained rows. A third exact route, half-extent containment and exact
+      intersection area, decided the certificate with six controls and derived it again
+      from the layout fetched at the pin with its own reader and arithmetic, square for
+      square. The certificate is the project's derivation and no route is the source's
+      code, so the replay is independently re-implemented. The 12 October review found no
+      blocking defect.
+
+      The side is above the certificate the case holds, Evan Daniel's regularization of
+      Ryan Xu's packing (T-146), by 2.43e-11, and below Ryan Xu's own certificate (T-125),
+      the case's ceiling until 11 October 2026 and the one the issue compares with, by
+      5.48e-11, the issue's figure; so it moves no case, the house at 102 is unchanged, and
+      the entry is superseded by T-146 from the day it was registered.
+
+      Credit Rio Calle (https://github.com/riocalle/my-repo, University of New Hampshire)
+      with this arrangement and its layout, found by his own search engine from scratch,
+      and ry-xu (T-125) with finding the design and width first, as the issue asks: ry-xu
+      published on 8 October 2026 and the author's search finished its first packing of the
+      design about ten hours later. Measured pose by pose, every square pairs with one of
+      ry-xu's under a half turn of the box, 40 within 1e-9 and none turned, and 62 moved, 19
+      of them beyond a tenth of a unit and the largest by 0.494, 11 turned by up to about 43
+      degrees: another arrangement of the design, not a refinement or a regularization of
+      ry-xu's packing.
+
+      The issue and README state AI assistance: the author designed and directed the
+      project and its experiments, and Claude wrote and ran the code, the GPU search, the
+      exact finishing step, the refinement search and both checkers.
+    scope:
+      n_values: [102]
+    verification: V3
+    confirmation: C3
+    significance:
+      score: 2
+      rationale: >-
+        A certified side at n = 102, 2.43e-11 above the case's ceiling (T-146) and 5.48e-11
+        below Ryan Xu's certificate (T-125), of another arrangement of ry-xu's design: a
+        citable detail of the case that moves no bound and no theorem, S2 as T-120, T-137
+        and T-150 are; no lower bound or optimum.
+      scored: '2026-10-12'
+      by: >-
+        the 12 October review
+        (docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md),
+        confirming the draft of think-s2i8 Rio Calle import
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Calle n102 2026-10-12]']
+      published: '2026-10-11'
+    evidence:
+      - E-calle-529-certificate-report
+      - E-calle-529-exact-feasibility
+    artifacts:
+      - packing/resources/web/riocalle-n102-2026-10-12/README.md
+      - packing/resources/web/riocalle-n102-2026-10-12/acquisition/claims.json
+      - packing/resources/web/riocalle-n102-2026-10-12/facts/n-102.yaml.gz
+      - packing/resources/web/riocalle-n102-2026-10-12/receipts/exact-certification.json.xz
+      - packing/devtools/upper_bound_reports.py
+      - packing/devtools/check_half_angle_area.py
+      - docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md
+    controls:
+      - packing/tests/test_upper_bound_reports.py
+      - packing/tests/test_check_half_angle_area.py
+    notes: >-
+      A separate complete repository replay is retained for n = 102: 1 positive and 2
+      duplicate-square and outside-container controls passed their required outcomes on
+      both routes, 30906 pair decisions; summed over the 3 jobs, the receipt records 39.06
+      route CPU seconds and 96.84 job wall seconds, the longest job 32.78 seconds. The
+      positive clears every wall by 2.002066e-12 and its closest pair by 1.932818e-12 on
+      every route, and no square touches a wall.
+
+      The README's "valley bottom", s = 10.605828696431638, is an author report with no
+      layout published, 6.0e-14 above T-146's side; it is not certified here. The author's
+      earlier layout at s = 10.605828708, first reported on 8 October 2026 on Davidebyzero's
+      tools repository, is above every ceiling and stays pinned in the packet.
+
+      The source gives 11 October 2026 as the date of the certified side; its repository's
+      only commit is of 12 October, and the bibliography key is dated by the pin.
+
+      V3 and C3 rest on the 12 October review
+      (docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md) and the
+      replay it reproduced (E-calle-529-exact-feasibility). Its findings here are
+      non-blocking: the entry moves no case and is registered as a replayed and reviewed
+      result (RX-1); the published date is the source's (RX-2); the reported atom describes
+      the source's numerical check (RX-3); the kernel's controls are gross (RX-6); no
+      retained check binds the fact to upstream bytes beyond this review's (RX-7); the
+      README's digit count and stated margin are approximate (RX-9, RX-10).
+
+      The house at 102 stays T-146; this certificate is retained and not selected, with
+      T-125 after it. The source's own checkers were not run here beyond the import lane's
+      one run of verify_exact.py outside the repository. The two maintained routes, the
+      sqpack rational witness verifier and the independent rational corner checker, share
+      certificate parsing, half-angle conversion, Fraction arithmetic and the
+      separating-axis method. No two independent methods, human oversight or optimality is
+      claimed.
+    next_rung: >-
+      V4 and C4 need a second accepted adversarial review by a distinct reviewer and a
+      retained human oversight record; one AI review, of 12 October, is retained.
+    reviews:
+      - path: docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md
+        kind: adversarial
+        reviewer: >-
+          AI agent (Claude, at extra-high reasoning effort), the stage 4 review lane (W2) of
+          the 2026-10-12 intake under the 2026-10-11 pass's epic, prompted separately from
+          the import lane that built the two packets, with no shared context beyond their
+          committed notes, scratch measurements and register plans
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-12'
+        scope: >-
+          Finite feasibility of the four certificates the two imports' entries cite: issue
+          528 at 175, 232 and 264 and issue 529 at 102. Both retained receipts replayed on
+          both maintained routes, the third exact route extended for Calle's decimal format
+          with its sharp controls, every file of both pinned scopes fetched at its pin and
+          held to its digest, the derived certificate derived again by the third route's own
+          arithmetic, admission against each print, the claim comparisons, each route's
+          trust boundary, each certificate measured pose by pose against the packing its
+          case holds and every report pending at its count, and the named pieces measured
+          where the record retains them.
+        verdict: accepted
+        covers: [T-154, T-155]
