@@ -1006,7 +1006,7 @@ Decides a packing pair by pair and wall by wall: by exact sign in a number field
 | `E-pingyou-504-exact-feasibility` | replayed here | independent | T-148 |
 | `E-ostashev-501-exact-feasibility` | replayed here | independent | T-149 |
 | `E-barnett-505-exact-feasibility` | replayed here | independent | T-150 |
-| `E-regularized-bounds-2026-10-12-exact-decision` | replayed here | producer’s code | T-151 |
+| `E-regularized-bounds-2026-10-12-exact-decision` | replayed here | producer’s code | T-154 |
 
 ### `V-check-rational-witness-independent`
 
@@ -1055,7 +1055,7 @@ Decides a rational-corner witness pair by pair and wall by wall in Fraction arit
 | `E-pingyou-504-exact-feasibility` | replayed here | independent | T-148 |
 | `E-ostashev-501-exact-feasibility` | replayed here | independent | T-149 |
 | `E-barnett-505-exact-feasibility` | replayed here | independent | T-150 |
-| `E-regularized-bounds-2026-10-12-exact-decision` | replayed here | producer’s code | T-151 |
+| `E-regularized-bounds-2026-10-12-exact-decision` | replayed here | producer’s code | T-154 |
 
 ### `V-check-nagamochi-lemma1-counterexample`
 
@@ -2264,7 +2264,7 @@ Selects the regularized views whose exact side lies below the case's verified up
 
 | evidence | run | code | results |
 | --- | --- | --- | --- |
-| `E-regularized-bounds-2026-10-12-exact-decision` | replayed here | producer’s code | T-151 |
+| `E-regularized-bounds-2026-10-12-exact-decision` | replayed here | producer’s code | T-154 |
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.

@@ -468,7 +468,7 @@ results:
       retained for this result, so it stands at V3/C3: machine-checked, review record
       pending. The oversight record restores the rung.
 
-      On 12 October 2026 the exact regularized certificate of T-151 took the exact form of
+      On 12 October 2026 the exact regularized certificate of T-154 took the exact form of
       the case's verified upper bound to the witness's own side,
       5.93383346267692918968946061635201914, 5.4e-20 below this certificate's endpoint,
       which the case record still prints. This entry stays true as stated and is
@@ -10350,14 +10350,14 @@ results:
       original source13ee36e certificates, poses, scope, credits and reviews; its
       historical decisions are not proofs of the newly adopted arrangements.
 
-      On 12 October 2026 the exact regularized certificates of T-151 took the exact form of
+      On 12 October 2026 the exact regularized certificates of T-154 took the exact form of
       the verified upper bound at 59 of these counts to exact sides 2.2e-16 to 9.9e-15
       below this entry's rounded-up ones, which the case records still print: at 34 exactly
       the side of this entry's own certificate, which the record had carried rounded up at
       the printed precision, and at 25 the witness's own side, below it. The counts
       jlevy/squares#518 re-houses and n = 17 are not among them. This entry stays true as
       stated and is superseded there as a ceiling; its certificates, credits and reviews
-      are unchanged, and T-151 names it as the result whose packings it regularizes.
+      are unchanged, and T-154 names it as the result whose packings it regularizes.
 
   - id: T-102
     kind: lower-bound
@@ -16780,7 +16780,7 @@ results:
         verdict: accepted
         covers: [T-149, T-150]
 
-  - id: T-151
+  - id: T-154
     kind: upper-bound
     registered: '2026-10-12'
     headline: Exact regularized sides at 60 counts, `5.4e-20` to `9.9e-15` below the ceilings they replace
@@ -17670,7 +17670,7 @@ results:
       closed form, each exact side lies above it, by 1.4e-36 at n = 50 to 1.8e-19, so the
       ceiling still trails the report there, as it does at n = 29.
 
-      The id is T-151 because T-147 to T-150 are held by imports in flight; a renumbering at
+      The id is T-154 because T-147 to T-150 are held by imports in flight; a renumbering at
       merge follows the register's rule.
 
       Of the views as drawings, the run's reclassification after registration admits 16,
@@ -17700,7 +17700,7 @@ regularized_drawings:
       reason: "no registered result attributes the witness's source Kingbird derived numerical facts"
   items:
     - n: 29
-      of: T-151
+      of: T-154
       by: project
       method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
       side: same
@@ -17713,7 +17713,7 @@ regularized_drawings:
         max_turn_deg: 0.0
       view: packing/atlas/known-best/regularized/n-029-regularized.yaml.gz
     - n: 37
-      of: T-151
+      of: T-154
       by: project
       method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
       side: same
@@ -17727,7 +17727,7 @@ regularized_drawings:
         max_turn_deg: 8.41808e-35
       view: packing/atlas/known-best/regularized/n-037-regularized.yaml.gz
     - n: 41
-      of: T-151
+      of: T-154
       by: project
       method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
       side: same
@@ -17741,7 +17741,7 @@ regularized_drawings:
         max_turn_deg: 0.0
       view: packing/atlas/known-best/regularized/n-041-regularized.yaml.gz
     - n: 50
-      of: T-151
+      of: T-154
       by: project
       method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
       side: same
@@ -17755,7 +17755,7 @@ regularized_drawings:
         max_turn_deg: 0.0
       view: packing/atlas/known-best/regularized/n-050-regularized.yaml.gz
     - n: 54
-      of: T-151
+      of: T-154
       by: project
       method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
       side: same
@@ -17795,7 +17795,7 @@ regularized_drawings:
         max_turn_deg: 0.0
       view: packing/atlas/known-best/regularized/n-070-regularized.yaml.gz
     - n: 71
-      of: T-151
+      of: T-154
       by: project
       method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
       side: same
@@ -17809,7 +17809,7 @@ regularized_drawings:
         max_turn_deg: 0.0
       view: packing/atlas/known-best/regularized/n-071-regularized.yaml.gz
     - n: 83
-      of: T-151
+      of: T-154
       by: project
       method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
       side: solved
@@ -17914,7 +17914,7 @@ regularized_drawings:
         max_turn_deg: 5.62003e-12
       view: packing/atlas/known-best/regularized/n-106-regularized.yaml.gz
     - n: 107
-      of: T-151
+      of: T-154
       by: project
       method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
       side: solved
@@ -18122,7 +18122,7 @@ regularized_drawings:
         max_turn_deg: 0.0
       view: packing/atlas/known-best/regularized/n-156-regularized.yaml.gz
     - n: 171
-      of: T-151
+      of: T-154
       by: project
       method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
       side: solved
@@ -18176,7 +18176,7 @@ regularized_drawings:
         max_turn_deg: 5.64624
       view: packing/atlas/known-best/regularized/n-177-regularized.yaml.gz
     - n: 178
-      of: T-151
+      of: T-154
       by: project
       method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
       side: same
@@ -18243,7 +18243,7 @@ regularized_drawings:
         max_turn_deg: 1.00929
       view: packing/atlas/known-best/regularized/n-182-regularized.yaml.gz
     - n: 198
-      of: T-151
+      of: T-154
       by: project
       method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
       side: solved
@@ -18351,7 +18351,7 @@ regularized_drawings:
         max_turn_deg: 0.0
       view: packing/atlas/known-best/regularized/n-211-regularized.yaml.gz
     - n: 227
-      of: T-151
+      of: T-154
       by: project
       method: "regularize_grid_slack/1: Evan Daniel's coincidence placement (evand/square-packing search/regularize reg.coincidences and reg.place, MIT), ported to start from the witness's exact frame and to keep its contacts, then the same-side exact re-solve, through devtools.regularize_grid_slack"
       side: same
@@ -18377,7 +18377,7 @@ regularized_drawings:
         max_turn_deg: 0.00289542
       view: packing/atlas/known-best/regularized/n-228-regularized.yaml.gz
     - n: 230
-      of: T-151
+      of: T-154
       by: project
       method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
       side: solved
@@ -18403,7 +18403,7 @@ regularized_drawings:
         max_turn_deg: 0.0
       view: packing/atlas/known-best/regularized/n-232-regularized.yaml.gz
     - n: 234
-      of: T-151
+      of: T-154
       by: project
       method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
       side: solved
@@ -18671,7 +18671,7 @@ regularized_drawings:
         max_turn_deg: 0.0
       view: packing/atlas/known-best/regularized/n-292-regularized.yaml.gz
     - n: 293
-      of: T-151
+      of: T-154
       by: project
       method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
       side: solved

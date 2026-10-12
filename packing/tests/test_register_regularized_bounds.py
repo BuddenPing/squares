@@ -1,4 +1,4 @@
-"""The regularized views registered as verified upper bounds (T-151).
+"""The regularized views registered as verified upper bounds (T-154).
 
 `devtools.register_regularized_bounds` retains each view whose exact side lies below its
 case's verified upper bound, decides it on both maintained exact routes, makes three

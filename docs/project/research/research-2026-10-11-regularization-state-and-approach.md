@@ -420,7 +420,7 @@ regularization in the register’s `regularizations` terms with identity measure
 The register gained a generated `regularized_drawings` block that lists each drawing
 under the result holding the drawn packing, and `check_results` checks the block.
 
-**The registration (#549).** T-151 registers the exact sides of 60 views that sat just
+**The registration (#549).** T-154 registers the exact sides of 60 views that sat just
 below their verified ceilings: 5.4e-20 to 9.9e-15 below, V3/C3, S1. Each case record
 keeps the decimal it printed.
 With the bounds refreshed from the records, 16 of the 23 counts held at row 3 are
@@ -441,7 +441,7 @@ The end state, with #549 on top of the stack:
   unregistered:
   - 18, 26, 66 and 85 are Kingbird and Friedman packings with verified bounds but no
     register result;
-  - 87 is drawn at the witness’s side, 4.3e-16 above T-151’s bound.
+  - 87 is drawn at the witness’s side, 4.3e-16 above T-154’s bound.
 - **Still to draw.** Every count is either drawn regularized or has a recorded reason
   for keeping its drawing:
   - the review queue goes to the owner;
@@ -622,7 +622,7 @@ and 13 counts in the review queue.
   15 counts first, and run the full pass only after the imports in flight at the same
   counts (#470, #476, #481, #483, #488, #489) land, since a changed witness lapses every
   review (think-cb34).
-- [x] Register the exact packings at printed sides in one batch (think-omqv): T-151 on
+- [x] Register the exact packings at printed sides in one batch (think-omqv): T-154 on
   #549, which merges after #516’s T-147 to T-150.
 - [x] Amend the policy’s decision table, then teach `devtools.regularize_evand.classify`
   the amendments (think-up3h): the policy on #497, the driver on #511.

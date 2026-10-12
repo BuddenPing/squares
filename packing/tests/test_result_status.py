@@ -277,7 +277,7 @@ def test_superseded_is_marked_on_a_bound_and_where_a_later_result_is_declared() 
     # took n = 105 and 292, the last verified ceilings T-056 held; fifty-four when
     # Guzhou0806's continuous-pose kernel (T-145) took both of n = 40's lower-bound lanes
     # from his clipped-corner transfer (T-133) on the same density; fifty-five on 12
-    # October, when the regularized exact certificates (T-151) took n = 29's verified
+    # October, when the regularized exact certificates (T-154) took n = 29's verified
     # ceiling from its interval certificate (T-009), the one count that held.
     # T-120..T-123 report exact side forms for historical source configurations; no
     # current frontier lane relies on these unverified catalogue assertions. Each claim
@@ -378,10 +378,10 @@ def test_superseded_is_marked_on_a_bound_and_where_a_later_result_is_declared() 
         "T-056", "T-078", "T-079", "T-087", "T-088", "T-089", "T-092",
     } <= set(derived)  # fmt: skip
     # A mark names the result the case's bound rests on now: at n = 69 that has been
-    # T-151's regularized certificate since 12 October, below T-101's.
+    # T-154's regularized certificate since 12 October, below T-101's.
     for entry in ("T-009", "T-088"):
         assert view.position_marks(records.results[entry], view.SUPERSEDED, records) == [
-            "superseded by T-151"
+            "superseded by T-154"
         ]
     assert {str(records.results[entry]["kind"]) for entry in derived} == {
         "lower-bound",

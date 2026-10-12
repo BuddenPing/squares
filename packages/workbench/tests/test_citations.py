@@ -298,9 +298,9 @@ def test_the_current_handover_does_not_label_an_earlier_ceiling_as_confirmation(
         assert entry["upper"]["confirmed_by"] == ["T-146"]
         assert cited_lines(entry)["upper"][2] == "(confirmed T-146)"
     else:
-        # T-151's regularized certificate holds n = 29's ceiling now, still above the
+        # T-154's regularized certificate holds n = 29's ceiling now, still above the
         # report, so neither it nor T-009 before it confirms the displayed bound.
-        assert entry["upper"]["results"] == ["T-151"]
+        assert entry["upper"]["results"] == ["T-154"]
         assert entry["upper"]["assurance"] == "reported"
         assert entry["upper"]["confirmed_by"] == []
         assert cited_lines(entry)["upper"][2] == "(reported)"

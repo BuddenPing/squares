@@ -1,6 +1,6 @@
 # Regularized Views Registered as Verified Upper Bounds
 
-This directory holds the certificates of T-151: the exact views of the regularization
+This directory holds the certificates of T-154: the exact views of the regularization
 run of 11 and 12 October 2026 whose sides lie below their cases’ verified upper bounds,
 registered as results under the
 [regularization policy](../../../docs/project/policies/regularization-policy.md) (row 3,

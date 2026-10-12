@@ -26,7 +26,7 @@ bound: `of` is the result the case's verified upper bound rests on
 (`build_bound_citations.results_carrying` on the bound's own evidence). A `same` view whose
 side is also exactly the verified upper bound, where no registered result attributes the
 witness's source, redraws the packing at that bound in the same way: the result the bound
-rests on holds it (T-151 certified 26 witnesses' own sides exactly from views that are
+rests on holds it (T-154 certified 26 witnesses' own sides exactly from views that are
 drawn here). Exactly one result must answer; where none does, or more than one, the count
 is listed under `unregistered`
 with the reason, and its record stays in the layer's index alone. The register holds a

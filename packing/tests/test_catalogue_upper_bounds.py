@@ -3,7 +3,7 @@
 Since 2026-10-06 Evan Daniel's exact certificates of the same packings (T-101) hold those
 counts' verified upper lanes, a layer `devtools.apply_exact_ceilings` writes over this one;
 since 2026-10-12, where a regularized view's exact side lies below that, the layer
-`devtools.register_regularized_bounds` (T-151) writes over both.
+`devtools.register_regularized_bounds` (T-154) writes over both.
 """
 
 from __future__ import annotations
@@ -62,7 +62,7 @@ def test_both_negative_controls_are_refused_by_both_checkers() -> None:
 def test_each_receipts_verified_value_trails_the_printed_side_and_was_superseded() -> None:
     """Each certificate's verified value trails the printed side, at all three; since
     2026-10-06 Evan Daniel's exact certificate of the same packing (T-101) holds the
-    verified lane below it, or since 2026-10-12 a regularized view below that (T-151), and
+    verified lane below it, or since 2026-10-12 a regularized view below that (T-154), and
     the record keeps the reported side these receipts print."""
     for n, row in catalogue.certification().items():
         text = (catalogue.ROOT / "frontier" / f"n-{n:03d}.md").read_text(encoding="utf-8")
