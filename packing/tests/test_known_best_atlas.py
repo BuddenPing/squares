@@ -2956,11 +2956,12 @@ def test_the_poster_badges_every_perfect_square_and_counts_them_in_its_legend() 
         for node in legend.findall(".//svg:text[@data-feature='legend-label']", SVG)
     ]
     # The house adoption of 11 October 2026 gave nine cases known only numerically an
-    # exact certificate (think-fvz4).
+    # exact certificate, and its pass of 12 October three more, 181, 271 and 304, whose
+    # reported lanes stated no exact form (think-fvz4).
     assert labels == [
         "proved optimal (77 of 324)",
-        "exact value known (304 of 324)",
-        "only known numerically (20 of 324)",
+        "exact value known (307 of 324)",
+        "only known numerically (17 of 324)",
         "rigid (22 of 324)",
         "colors indicate distinct tilt angles",
         "shade indicates number of full-side contacts",
