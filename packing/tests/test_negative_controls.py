@@ -3212,16 +3212,30 @@ from devtools import build_known_best_atlas as atlas
 from devtools import check_results
 from devtools import gupta_house_links as house
 from devtools import register_gupta_reports as register
+from devtools import upper_bound_houses as adopted
 reports = house.reports
 def forbidden(*args, **kwargs):
     raise AssertionError('custody admission must not call a geometric decider')
 reports.kernel.run_case = reports.run_child = forbidden
 reports.legacy.exact_verify = reports.legacy.independent.check_squares = forbidden
-assert tuple(reports.check_certification()) == reports.NUMBERS
-assert sum(len(c.poses) for c in reports.read_facts().values()) == 3017
+positives = reports.check_certification()
+assert tuple(positives) == reports.NUMBERS
+facts = reports.read_facts()
+assert sum(len(c.poses) for c in facts.values()) == 3017
 assert len(register.read_history()) == 14
-house.check_houses()
-for relative in (house.house_path(88), house.house_path(239)):
+# Since the house adoption of 11 October 2026 (think-fvz4) later sources hold some of the
+# fourteen leaves. Custody still covers every case: the leaves Gupta holds are read and
+# compared whole, and each house a later source replaced is rebuilt from the private
+# inputs, without reading the newer pose.
+held = [n for n in house.NUMBERS if n not in adopted.ADOPTED]
+replaced = [n for n in house.NUMBERS if n in adopted.ADOPTED]
+assert held and replaced
+house.check_houses(held)
+for n in replaced:
+    rebuilt = house.expected_house(facts[n], positives[n])
+    assert rebuilt['id'] == f'W-known-best-n{n:03d}'
+    assert house.shared.bounded_house(house.house_path(n)) != rebuilt
+for relative in (house.house_path(held[0]), house.house_path(held[-1])):
     name = relative.relative_to(house.REPO).as_posix()
     assert check_results.repository_file_problem(name) is None
 for kind in ('native-verdict', 'complete-input', 'original', 'comparator'):
@@ -3243,17 +3257,17 @@ for kind in ('native-verdict', 'complete-input', 'original', 'comparator'):
     try:
         reports.save_xz(target, value)
         try:
-            house.check_houses()
+            house.check_houses(held)
         except reports.kernel.ReportError:
             pass
         else:
             raise AssertionError('private deciding input mutant was admitted: ' + kind)
     finally:
         target.write_bytes(original)
-    house.check_houses()
+    house.check_houses(held)
     assert target.read_bytes() == original
-producers = (atlas.update, lambda: atlas.update_selected([88]),
-             lambda: atlas.update_selected([239]))
+producers = (atlas.update, lambda: atlas.update_selected([held[0]]),
+             lambda: atlas.update_selected([held[-1]]))
 for producer in producers:
     try:
         producer()
