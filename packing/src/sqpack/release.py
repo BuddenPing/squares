@@ -187,7 +187,7 @@ DATA_EXCLUDED: tuple[str, ...] = (
     "packing/atlas/known-best/video",
     "packing/frontier/README.md",
     "packing/atlas/known-best/README.md",
-    "packing/atlas/known-best/FIGURE-PLAYBOOK.md",
+    "packing/atlas/known-best/figure-playbook.md",
 )
 
 #: How many characters of that commit the version carries (the owner, 2026-09-22).
