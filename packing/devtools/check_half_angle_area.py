@@ -70,6 +70,16 @@ nearest it: #505 against Ryan Xu's certificates (T-125) and, at 146, Evan Daniel
 regularized view (T-146); #501 against SQUISH's update and Francisco Couzo's refinement at
 155 (T-115, T-128) and Evan Daniel's exact optima at 156 and 211 (T-098).
 
+It reads SQUISH's fourth request of 11 October too, #500's nine certificates at 176,
+181, 238, 239, 270, 271, 272, 304 and 305 (``decide-imports --imports '#500'``), in the
+review ``review-2026-10-11-upper-bound-imports-500.md``: derived facts, as for #481, read
+as their bases state, and ``--upstream`` holds each to the source's ``nNNN.cert.json``
+at the pin by `read_squish_json` and its offered side to a row of the source's
+``summary.csv``. Where the source names a packing the record retains as a whole or
+nearly whole piece (`LINEAGE`: Francisco Couzo's 127 of T-128 in the 176, SQUISH's #481
+209 in the 270 and the 304), `patch_lineage` measures it, at `NEAR` and, in its tests,
+at a tenth of a unit.
+
 The register's two maintained routes (``devtools.evand_arrangement_reports``) share one
 parse and one half-angle conversion (``devtools.evand_exact_certificates``) and both decide
 pairs by the separating-axis theorem; at T-128 and T-130 one of them, ``sqpack.verify``, is
@@ -744,6 +754,15 @@ IMPORTS_505_501 = {
     "#505": "barnett-refinements-2026-10-11",
     "#501": "dostashev-records-2026-10-11",
 }
+#: SQUISH's fourth request of 11 October (#500): nine certificates from Mondrian
+#: composition, at 176, 181, 238, 239, 270, 271, 272, 304 and 305, each kept as a
+#: derived fact beside the digest of its pinned ``nNNN.cert.json``; no upstream byte is
+#: retained, as for #481, and the same SQUISH JSON reader holds each fact to its pin.
+IMPORTS_500 = {"#500": "squish-500-fourth-request-2026-10-11"}
+#: Francisco Couzo's #506 of 11 October: eleven certificates in Evan Daniel's text format
+#: retained as factual data at 337078c, 304 and 305 in the case corpus and 338, 339, 344,
+#: 375, 376, 378, 379, 380 and 381 beyond it, each read by this route's own parser.
+IMPORTS_506 = {"#506": "couzo-certificates-2026-10-11"}
 ALL_IMPORTS = {
     **IMPORTS,
     **LATER_IMPORTS,
@@ -751,6 +770,8 @@ ALL_IMPORTS = {
     **IMPORTS_REGULARIZED,
     **IMPORTS_503_504,
     **IMPORTS_505_501,
+    **IMPORTS_500,
+    **IMPORTS_506,
 }
 #: Imports decided over their whole replayed roster rather than the counts the entry
 #: cites: #470's README-printed 132 and 267 are certified beside the issue's 28.
@@ -773,6 +794,12 @@ CREDITED: dict[tuple[str, int], tuple[str, ...]] = {
     ("#501", 155): ("T-115", "T-128"),
     ("#501", 156): ("T-098",),
     ("#501", 211): ("T-098",),
+    # Couzo's #506 says its 304 and 305 start from SQUISH's #500 Mondrian packings and
+    # its 344 from Kevin Fang's #484, whose arrangement Evan Daniel's Hunt 3 (#489) also
+    # moved; a key that is no register entry names the import whose certificate it is.
+    ("#506", 304): ("#500",),
+    ("#506", 305): ("#500",),
+    ("#506", 344): ("#484", "#489"),
 }
 WEB = ROOT / "resources/web"
 REPO = ROOT.parent
@@ -1752,7 +1779,7 @@ def credited_gaps(found: Sequence[Imported]) -> dict[str, dict[str, Any]]:
     credit: dict[str, dict[str, Any]] = {}
     for case in found:
         for house in credited(case.issue, case.n):
-            other = CREDITED_READERS[house](case.n)
+            other = parent_packing(house, case.n)
             try:
                 gap = arrangement_gap((case.side, case.placements), other)
             except AreaRouteError as error:
@@ -1770,6 +1797,19 @@ def credited_gaps(found: Sequence[Imported]) -> dict[str, dict[str, Any]]:
 LINEAGE: dict[tuple[str, int], tuple[str, int, Fraction]] = {
     ("#503", 207): ("regularized", 70, Fraction(10000000001, 10000000000)),
     ("#504", 153): ("regularized", 70, Fraction(5000000000001, 5000000000000)),
+    # SQUISH's #500 names whole or nearly whole pieces at three counts, with no dilation:
+    # Francisco Couzo's s(127) (T-128) less a 2 x 3 corner of cells in the 176, and
+    # SQUISH's own #481 s(209) whole in the 270 and the 304. Its other pieces are
+    # narrowed before composition or come from certificates no packet retains.
+    ("#500", 176): ("T-128", 127, Fraction(1)),
+    ("#500", 270): ("#481", 209, Fraction(1)),
+    ("#500", 304): ("#481", 209, Fraction(1)),
+    # Couzo's #506 starts from #500's packings of the same count at 304 and 305 and from
+    # Kevin Fang's #484 at 344; its exact optima carry the 1 + 10^-20 guard of Evan
+    # Daniel's solver, far below `NEAR`, so no dilation is undone.
+    ("#506", 304): ("#500", 304, Fraction(1)),
+    ("#506", 305): ("#500", 305, Fraction(1)),
+    ("#506", 344): ("#484", 344, Fraction(1)),
 }
 #: How near a parent square must land on a child square to be counted as reappearing:
 #: its centre within 10^-9, and its edge direction within a sine of 10^-6 modulo a
@@ -1791,25 +1831,29 @@ def patch_lineage(
     dilation: Fraction,
     *,
     limit: int = 3,
+    near: Fraction = NEAR,
 ) -> list[dict[str, Any]]:
     """The placements of ``parent`` under which most of its squares reappear in ``child``.
 
     Each child centre is divided by ``dilation`` first. For each of the eight symmetries
     of the parent's box, every parent square paired with every child square names the
     translation carrying the one onto the other; the translations named most often, read
-    to ``10^-9``, are the candidate placements. For each, the parent's squares are
-    counted that land within `NEAR` of a child centre (``squares``), those of them that
-    land at another orientation (``turned_beyond_1e-6``), and those that land on a child
-    square to the digit, the centre equal and the edge direction exactly a multiple of a
-    quarter turn away, however the child writes its basis (``exact``). Returns at most
-    ``limit``
+    to ``near`` (`NEAR`, ``10^-9``, unless a coarser scale is asked for), are the
+    candidate placements. For each, the parent's squares are counted that land within
+    ``near`` of a child centre (``squares``), those of them that land at another
+    orientation (``turned_beyond_1e-6``), and those that land on a child square to the
+    digit, the centre equal and the edge direction exactly a multiple of a quarter turn
+    away, however the child writes its basis (``exact``). Returns at most ``limit``
     placements with at least `PATCH_FLOOR` squares, the fullest first. A measurement for
-    credit: it decides nothing.
+    credit: it decides nothing. At a coarse ``near`` the count says whether a piece
+    reappears to the eye; only `NEAR` says it reappears by pose.
     """
     parent_side, parent_squares = parent
     _child_side, child_squares = child
     undone = [(x / dilation, y / dilation, c, s) for x, y, c, s in child_squares]
-    scale = 10**9
+    if near <= 0:
+        raise AreaRouteError("the nearness must be positive")
+    scale = 1 / near
     votes: dict[tuple[int, int, int], dict[tuple[Fraction, Fraction], int]] = {}
     mapped_by_symmetry: dict[int, list[Placed]] = {}
     for k in range(8):
@@ -1829,7 +1873,7 @@ def patch_lineage(
         for px, py, pc, ps in mapped_by_symmetry[k]:
             x, y = px + shift[0], py + shift[1]
             for cx, cy, cc, cs in undone:
-                if (cx - x) ** 2 + (cy - y) ** 2 > NEAR * NEAR:
+                if (cx - x) ** 2 + (cy - y) ** 2 > near * near:
                     continue
                 squares += 1
                 turn = _turn_sine(pc, ps, cc, cs)
@@ -1851,6 +1895,13 @@ def patch_lineage(
     return placements
 
 
+def parent_packing(key: str, m: int) -> tuple[Fraction, tuple[Placed, ...]]:
+    """A lineage parent at ``m``: a register entry's packing by its `CREDITED_READERS`
+    reader, or an import's certificate by the import's key."""
+    reader = CREDITED_READERS.get(key)
+    return reader(m) if reader is not None else import_packing(key)(m)
+
+
 def lineage_gaps(found: Sequence[Imported]) -> dict[str, list[dict[str, Any]]]:
     """`patch_lineage` of each certificate `LINEAGE` names against its stated parent."""
     lineage: dict[str, list[dict[str, Any]]] = {}
@@ -1859,7 +1910,7 @@ def lineage_gaps(found: Sequence[Imported]) -> dict[str, list[dict[str, Any]]]:
         if named is None:
             continue
         key, m, dilation = named
-        parent = import_packing(key)(m)
+        parent = parent_packing(key, m)
         lineage[f"{case.issue} n={case.n} from {key} n={m}"] = patch_lineage(
             (case.side, case.placements), parent, dilation
         )
