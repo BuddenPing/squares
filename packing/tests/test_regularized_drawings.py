@@ -108,6 +108,13 @@ def test_the_block_reads_back_as_the_items_it_was_written_from() -> None:
     assert (head, block) == ("results: []\n\n", text)
 
 
+def test_a_number_in_exponent_form_reads_back_as_a_number() -> None:
+    # n = 84's identity measures a turn of 1e-15 degrees, which JSON prints without a
+    # point and YAML 1.1 then reads as a string.
+    for value in (1e-15, 2e-07, 7.516648e-20, 1.5e300, 0.0, 2.35479, 3):
+        assert safe_load(f"x: {drawings.scalar(value)}\n")["x"] == value
+
+
 def test_the_checker_holds_each_item_to_the_register() -> None:
     scopes = {"T-001": {5, 6}, "T-002": {5, 6, 7, 8, 9}}
     good = drawings.item(entry(5), "T-001")

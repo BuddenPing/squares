@@ -20,6 +20,7 @@ separately for an independent check of either profile.
 from __future__ import annotations
 
 import functools
+import json
 import pathlib
 import re
 import sys
@@ -91,10 +92,28 @@ def load_schema(name: str) -> dict:
     return load_yaml((FRONTIER / name).read_text(encoding="utf-8"))
 
 
+def _unique_keys(pairs: list[tuple[str, object]]) -> dict[str, object]:
+    """A JSON object, refusing a repeated key as `load_yaml` refuses one in YAML."""
+    found: dict[str, object] = {}
+    for key, value in pairs:
+        if key in found:
+            raise ValueError(f"duplicate key {key!r}")
+        found[key] = value
+    return found
+
+
 def payload_and_meta(path: pathlib.Path) -> tuple[dict, dict]:
-    """Return (payload, softschema metadata) for either profile."""
+    """Return (payload, softschema metadata) for either profile.
+
+    A `.json` dataset is read as JSON: YAML 1.1 reads a JSON number written without a
+    point in its mantissa, such as `1e-15`, as a string."""
     text = path.read_text(encoding="utf-8")
-    doc = load_yaml(text.split("---\n")[1]) if path.suffix == ".md" else load_yaml(text)
+    if path.suffix == ".md":
+        doc = load_yaml(text.split("---\n")[1])
+    elif path.suffix == ".json":
+        doc = json.loads(text, object_pairs_hook=_unique_keys)
+    else:
+        doc = load_yaml(text)
     meta = doc.get("softschema")
     if meta is None:
         raise ValueError("no softschema metadata block")
