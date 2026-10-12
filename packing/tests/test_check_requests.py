@@ -378,6 +378,33 @@ def test_each_entry_is_held_to_the_last_reply_that_named_it() -> None:
         "bound: E-replay (verified, replayed-here): confirmed, and no reply has named it",
     ]
 
+    # The last naming holds, not the first: an entry named at an older state and later
+    # at its current one is not due.
+    early = {**register_entry, "verification": "V2", "confirmation": "C2", "status": "recorded"}
+    renamed = issue(
+        replies=[
+            reply(1, "2026-10-02", reported=[early]),
+            reply(2, "2026-10-03", reported=[register_entry]),
+            reply(3, "2026-10-04", reported=[{"result": "bound"}]),
+        ]
+    )
+    assert due(renamed) == [], "the last naming holds, not the first"
+
+    # An entry is held under its result: naming it under another result that maps the
+    # same id does not settle it here.
+    both = [
+        {"key": "bound", "claim": "s(9) >= 3", "register": ["T-001"]},
+        {"key": "other", "claim": "s(9) <= 3", "register": ["T-001"]},
+    ]
+    elsewhere = issue(
+        results=both,
+        replies=[
+            reply(1, reported=[{**register_entry, "result": "other"}]),
+            reply(2, "2026-10-03", reported=[{"result": "bound"}]),
+        ],
+    )
+    assert due(elsewhere) == ["bound: T-001 at V3/C3: confirmed, and no reply has named it"]
+
 
 def test_an_outdated_statement_is_due_until_a_later_reply_corrects_it() -> None:
     said = [{"result": "bound", "id": "T-001", "verification": "V3", "confirmation": "C3"}]
