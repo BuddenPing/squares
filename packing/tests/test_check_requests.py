@@ -316,7 +316,67 @@ def test_a_moved_rung_a_renumbered_id_and_an_unnamed_entry_are_each_due() -> Non
     assert any("named T-001 as T-058" in reason for reason in reasons)
     assert any("stated T-001 at V4/C4; it is now V3/C3" in reason for reason in reasons)
     acknowledged = due(issue(replies=[reply(1, reported=[{"result": "bound"}])]))
-    assert acknowledged == ["bound: T-001 at V3/C3: confirmed since the reply of 2026-10-02"]
+    assert acknowledged == ["bound: T-001 at V3/C3: confirmed, and no reply has named it"]
+
+
+def test_each_entry_is_held_to_the_last_reply_that_named_it() -> None:
+    """The rule `campaign/result-import.md` states: an entry is due when it has moved
+    since the last reply that spoke of it, not since the last reply that spoke of its
+    result. On 12 October the final comments on eleven issues named each register entry
+    and its rungs but not the two evidence ids that day's confirmations had named at the
+    status they still hold, and read result by result each id made a reply due on a
+    closed issue. An entry no reply has named, as #238's evidence was after its final
+    reply of 3 October, is still due, and so is one that moved after it was named."""
+    mapped = {
+        "key": "bound",
+        "claim": "s(9) >= 3",
+        "register": ["T-001"],
+        "evidence": ["E-report", "E-replay"],
+    }
+    register_entry = {
+        "result": "bound",
+        "id": "T-001",
+        "verification": "V3",
+        "confirmation": "C3",
+        "status": "confirmed",
+    }
+
+    def confirmation(replay_status: str) -> Record:
+        return reply(
+            1,
+            "2026-10-02",
+            kind="confirmation",
+            reported=[
+                register_entry,
+                {"result": "bound", "id": "E-report", "status": "recorded"},
+                {"result": "bound", "id": "E-replay", "status": replay_status},
+            ],
+        )
+
+    final = reply(2, "2026-10-03", kind="final", reported=[register_entry])
+    acknowledged = reply(3, "2026-10-04", kind="other", reported=[{"result": "bound"}])
+    held = issue(results=[mapped], replies=[confirmation("confirmed"), final])
+    assert due(held) == []
+    assert due(issue(results=[mapped], replies=[*held["replies"], acknowledged])) == []
+    assert (
+        check_requests.corrections(held, check_requests.issue_state(held, REGISTER).results)
+        == []
+    )
+
+    moved = issue(results=[mapped], replies=[confirmation("reviewed"), final])
+    assert due(moved) == [
+        "bound: the reply of 2026-10-02 stated E-replay at reviewed; it is now confirmed"
+    ]
+    text = check_requests.draft(moved, REGISTER, "owner/repo")
+    assert (
+        "- The reply of 2026-10-02 gave E-replay as reviewed; it now reads confirmed." in text
+    )
+
+    never = issue(results=[mapped], replies=[final])
+    assert due(never) == [
+        "bound: E-report (reported, external): open, and no reply has named it",
+        "bound: E-replay (verified, replayed-here): confirmed, and no reply has named it",
+    ]
 
 
 def test_an_outdated_statement_is_due_until_a_later_reply_corrects_it() -> None:

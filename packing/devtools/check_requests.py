@@ -15,9 +15,9 @@ register together and stores none of it:
 
 - each result's state: `confirmed` (every mapped entry at `V3` and `C3` or above),
   `refuted`, `defect recorded`, `open` while validation runs, or `queued` for import;
-- **reply due**, when the derived state has moved past the last reply that spoke of a
-  result: a new id, a moved rung, a renumbered id, a defect, or a statement the record
-  marks out of date;
+- **reply due**, entry by entry, when the derived state has moved past the last reply
+  that named the entry, or no reply has named it: a new id, a moved rung, a renumbered
+  id, a defect, or a statement the record marks out of date;
 - **closeable**, when every result is confirmed or refuted (a reported defect: recorded)
   and nothing the author asked for is queued.
 
@@ -385,21 +385,38 @@ def _moved(entry: Entry, item: Mapped) -> tuple[str, str] | None:
     return _stated(item), _stated({key: held[key] for key in keys})
 
 
-def _last_mention(replies: Sequence[Mapped], key: str) -> tuple[Mapped | None, list[Mapped]]:
+def _mentioned(replies: Sequence[Mapped], key: str) -> bool:
+    """Whether any reply spoke of a result, naming an entry or not."""
+    return any(
+        item.get("result") == key for reply in replies for item in reply.get("reported", ())
+    )
+
+
+def _last_named(replies: Sequence[Mapped], key: str, ident: str) -> tuple[str, Mapped] | None:
+    """The date of the last reply that named an entry under a result, and what it stated.
+
+    A reply speaks of an entry by naming its id under the result, and one that mentions
+    the result without naming the entry leaves the earlier statement standing
+    (`campaign/result-import.md`, The Requests Record). The final comments of 12 October
+    named each register entry and its rungs but not the two evidence ids beside it, which
+    that day's confirmations had named at the status they still hold; read result by
+    result, each of those ids made a reply due on eleven closed issues.
+    """
     for reply in reversed(replies):
-        items = [item for item in reply.get("reported", ()) if item.get("result") == key]
-        if items:
-            return reply, items
-    return None, []
+        for item in reversed(reply.get("reported", ())):
+            if item.get("result") == key and item.get("id") == ident:
+                return str(reply["date"]), item
+    return None
+
+
+def _entry(entry: Entry) -> str:
+    if entry.id.startswith("T-"):
+        return f"{entry.id} at {entry.rungs}"
+    return f"{entry.id} ({entry.rungs})"
 
 
 def _describe(state: ResultState) -> str:
-    named = ", ".join(
-        f"{entry.id} at {entry.rungs}"
-        if entry.id.startswith("T-")
-        else f"{entry.id} ({entry.rungs})"
-        for entry in state.entries
-    )
+    named = ", ".join(_entry(entry) for entry in state.entries)
     return f"{named}: {state.state}" if named else state.state
 
 
@@ -418,31 +435,36 @@ def corrections(issue: Mapped, states: Sequence[ResultState]) -> list[str]:
     """What earlier replies on an issue said that the record no longer holds, for the author.
 
     The same facts `replies_due` reports, in the words a follow-up uses: an outdated
-    statement, an id the result no longer has, a rung or status it no longer reads."""
+    statement, an id the result no longer has, a rung or status it no longer reads, each
+    against the last reply that named the entry."""
     replies = list(issue.get("replies", ()))
     found = [
         f"The reply of {date} said {statement}." for date, statement in _uncorrected(replies)
     ]
     for state in states:
-        reply, items = _last_mention(replies, state.key)
-        if reply is None:
-            continue
-        named = {str(item["id"]): item for item in items if "id" in item}
         for entry in state.entries:
-            item = named.get(entry.id)
-            if item is None:
+            named = _last_named(replies, state.key, entry.id)
+            if named is None:
                 continue
+            when, item = named
             if item.get("as") and item["as"] != entry.id:
-                said = f"The reply of {reply['date']}"
-                found.append(f"{said} named this result {item['as']}; it is {entry.id}.")
+                found.append(
+                    f"The reply of {when} named this result {item['as']}; it is {entry.id}."
+                )
             if moved := _moved(entry, item):
-                said = f"The reply of {reply['date']} gave {entry.id} as {moved[0]}"
+                said = f"The reply of {when} gave {entry.id} as {moved[0]}"
                 found.append(f"{said}; it now reads {moved[1]}.")
     return found
 
 
 def replies_due(issue: Mapped, states: Sequence[ResultState]) -> list[str]:
-    """Why a reply is due on an issue, one reason a line, or none."""
+    """Why a reply is due on an issue, one reason a line, or none.
+
+    Each entry a result maps to is held to the last reply that named it, as
+    `campaign/result-import.md` states the rule: it is due when no reply has named it, or
+    when it has been renumbered or has moved a rung or status since. A later reply that
+    speaks of the result without naming the entry owes nothing for it.
+    """
     replies = list(issue.get("replies", ()))
     if issue["triage"] == "pending":
         return [] if replies else ["an acknowledgement, once triage has mapped the claims"]
@@ -454,8 +476,7 @@ def replies_due(issue: Mapped, states: Sequence[ResultState]) -> list[str]:
         for date, statement in _uncorrected(replies)
     )
     for state in states:
-        reply, items = _last_mention(replies, state.key)
-        if reply is None:
+        if not _mentioned(replies, state.key):
             if state.entries:
                 due.append(f"{state.key}: {_describe(state)}, and no reply has said so")
             elif state.state == QUEUED:
@@ -463,16 +484,14 @@ def replies_due(issue: Mapped, states: Sequence[ResultState]) -> list[str]:
             else:
                 due.append(f"{state.key}: say why it is not registered ({state.reason})")
             continue
-        when = reply["date"]
-        named = {str(item["id"]): item for item in items if "id" in item}
-        if state.entries and not named:
-            due.append(f"{state.key}: {_describe(state)} since the reply of {when}")
-            continue
         for entry in state.entries:
-            item = named.get(entry.id)
-            if item is None:
-                due.append(f"{state.key}: {entry.id} was not named in the reply of {when}")
+            named = _last_named(replies, state.key, entry.id)
+            if named is None:
+                due.append(
+                    f"{state.key}: {_entry(entry)}: {entry.state}, and no reply has named it"
+                )
                 continue
+            when, item = named
             if item.get("as") and item["as"] != entry.id:
                 due.append(f"{state.key}: the reply of {when} named {entry.id} as {item['as']}")
             if moved := _moved(entry, item):
