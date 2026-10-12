@@ -674,6 +674,25 @@ def test_a_density_outside_the_releases_statement_is_refused(
     assert _failures(audit.support_checks(s, audit.site_density(mutant))) == checks
 
 
+def test_a_changed_pool_or_statement_is_refused() -> None:
+    """The three checks `check_report` makes beside the shared ones: the pool's digest,
+    PROOF.md's near-axis margin and the retained ``parameters.json``."""
+    assert audit.pool_check(pool()).held
+    data = json.loads(pool())
+    data["weights"][0] = "1"
+    assert not audit.pool_check(json.dumps(data).encode()).held
+    parameters = json.loads(audit.PARAMETERS.read_text())
+    assert _failures(audit.statement_checks(parameters)) == []
+    assert _failures(audit.statement_checks({**parameters, "threshold": "4999/5001"})) == [
+        "retained parameters.json is the claim"
+    ]
+    moved = dataclasses.replace(CLAIM, A=Fraction(249329658, 250000000))
+    assert _failures(audit.statement_checks(parameters, moved)) == [
+        "near-axis: B - A W(eps) is PROOF.md's margin",
+        "retained parameters.json is the claim",
+    ]
+
+
 #: A wrong value of each fact the input checks read, with the one check that must
 #: refuse it: these checks judge the inputs regenerated here, so a mutant of the density
 #: cannot reach them, and a wrong fact is how a broken builder would show.

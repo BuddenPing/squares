@@ -604,6 +604,32 @@ def price() -> dict[str, Any]:
 # --------------------------------------------------------------------------- the report
 
 
+def pool_check(pool_raw: bytes) -> Check:
+    """The original pool, as the release pins it by digest."""
+    return Check(
+        "density: the pool is rect_n40_L67, as the release pins it",
+        sha256(pool_raw) == ORIGINAL_SHA256,
+        "the 2026-10-01 packet's copy",
+    )
+
+
+def statement_checks(parameters: dict[str, Any], claim: Claim = CLAIM) -> list[Check]:
+    """The claim against what the release states of it: PROOF.md's near-axis margin and
+    its retained ``parameters.json``."""
+    return [
+        Check(
+            "near-axis: B - A W(eps) is PROOF.md's margin",
+            claim.B - claim.A * extent(claim.eps) == NEAR_AXIS_MARGIN,
+            "section 6",
+        ),
+        Check(
+            "retained parameters.json is the claim",
+            parameters == claim.parameters(),
+            "all keys",
+        ),
+    ]
+
+
 def check_report() -> dict[str, Any]:
     """The finite audit: the orbit facts here, then the checks `audit_continuous_pose`
     makes of T-145's release, made of this one (`RELEASE`), and the controls."""
@@ -615,24 +641,11 @@ def check_report() -> dict[str, Any]:
     parameters = json.loads(PARAMETERS.read_text(encoding="utf-8"))
     margin = CLAIM.B - CLAIM.A * extent(CLAIM.eps)
     checks = [
-        Check(
-            "density: the pool is rect_n40_L67, as the release pins it",
-            sha256(pool_raw) == ORIGINAL_SHA256,
-            "the 2026-10-01 packet's copy",
-        ),
+        pool_check(pool_raw),
         *support_checks(s, density),
         *input_checks(f, CLAIM, RELEASE),
         *chain_checks(CLAIM, f, least, RELEASE),
-        Check(
-            "near-axis: B - A W(eps) is PROOF.md's margin",
-            margin == NEAR_AXIS_MARGIN,
-            "section 6",
-        ),
-        Check(
-            "retained parameters.json is the claim",
-            parameters == CLAIM.parameters(),
-            "all keys",
-        ),
+        *statement_checks(parameters),
     ]
     for name, folder in RECEIPTS.items():
         checks += receipt_checks(
