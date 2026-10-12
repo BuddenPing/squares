@@ -78,7 +78,8 @@ It does answer the issues, by the owner’s standing instruction of 2026-10-11: 
 comments on every issue it touches and follows up each later change of its state, each
 comment posted once the pull request that carries the change has merged, and it closes
 an issue only with its final comment ([stage 7](#stage-7-answer)). The owner may post
-instead.
+instead. Beyond those comments, it edits nothing on an issue without the owner’s word,
+except adding the `intake` label under the `github-workflows` grant.
 
 ### The Prompt
 
@@ -100,7 +101,10 @@ claude/intake-YYYY-MM-DD, with today's date.
    hold nothing to import gets a read in packing/campaign/intake-watch.yaml instead,
    with a note saying what changed. A deferral whose bead has closed gets a new owner
    or is resolved. An item whose blocker has resolved is resumed on this branch, or
-   its bead says what it waits on now. Run `tbd sync`.
+   its bead says what it waits on now. An issue that reports a new item for intake
+   (a result, a counterexample or a method) and lacks the `intake` label gets it under
+   the github-workflows grant (`gh issue edit N --add-label intake`); without the
+   grant, list those issues for the owner. Run `tbd sync`.
 4. Take each new result through stages 1 to 3 of the runbook on this branch: triage,
    retain the source in a packet at a pinned revision, register it as reported. Run a
    stage 4 replay only when the source prices it at minutes; otherwise record it in
@@ -129,8 +133,9 @@ Comment on every issue the pass touches and follow up each later change of its s
 until the issue is closed with a final comment: the owner's standing instruction of
 2026-10-11. Post only after the pull request that carries the change has merged, link
 only to main, and check first that main and the deployed site say what the comment
-says. If github.com, kingbird.myphotos.cc or evand.github.io is unreachable, say so in
-the pull request and continue with the rest.
+says. Edit nothing else on an issue without the owner's word, except adding the
+`intake` label under the github-workflows grant. If github.com, kingbird.myphotos.cc or
+evand.github.io is unreachable, say so in the pull request and continue with the rest.
 ```
 
 ## Intake Sources
@@ -139,7 +144,7 @@ Every input reaches the record through one of these sources, and the sweep reads
 
 | Source | How it is read | What an item becomes |
 | --- | --- | --- |
-| GitHub issues and comments | `check_requests --github` lists the issues `result-requests.yaml` lacks, the replies missing from it, and the comments after an entry’s `read_through` | A new issue: an entry with `triage: pending` and an import bead. A comment: its claims mapped into its issue’s entry, and `read_through` moved |
+| GitHub issues and comments | `check_requests --github` lists the issues `result-requests.yaml` lacks, the replies missing from it, the comments created or edited after an entry’s `read_through`, and the `result-report` entries and entries marked `intake: true` whose issues lack the `intake` label | A new issue: an entry with `triage: pending`, an import bead and, when it reports a new item for intake, the `intake` label. A comment: its claims mapped into its issue’s entry, and `read_through` moved |
 | Owner and other manual reports | Nothing reads them: a message, a link pasted to an agent, a result named in a review | A bead labelled `result-import` first, titled with `(no issue)`; then stage 1. The sweep lists the open ones |
 | The Kingbird catalogue | [`devtools.capture_kingbird_catalogue`](../devtools/capture_kingbird_catalogue.py) fetches and transcribes it into `attic/intake/`; the sweep compares the newest capture with the record’s, count by count | A count whose side drops below its record: an import, or a `pending_catalogue_intake` entry with its bead. Other changes: classified when the retained capture is refreshed. None when nothing moved |
 | Other catalogues and releases | Read by hand: the register’s other `current-catalogue` and `first-party-release` sources, UnitSquare’s release today. The sweep prints when each was last reviewed | A later release: an import. Nothing new: the source’s `reviewed` date moves |
@@ -193,6 +198,18 @@ happened:
 
 - **A new result gets a bead** labelled `result-import` and titled by the convention
   above. Look for an open one first, since another session may have opened it.
+- **An issue that reports a new item for intake gets the `intake` label** on GitHub.
+  The item is a result, a counterexample or a method.
+  In [`result-requests.yaml`](result-requests.yaml) such an issue is a `result-report`,
+  or an entry of another kind marked `intake: true`, such as a defect report with a
+  counterexample (#295, #308) or a method report (#367). The project’s own issues that
+  track the intake of a reported item carry the label too, as #532 to #537 do; an issue
+  that tracks other work does not.
+  Under the `github-workflows` grant the pass adds the label with
+  `gh issue edit N --add-label intake`; without the grant, it lists those issues for the
+  owner. The sweep lists each `result-report` entry and each entry marked `intake: true`
+  whose issue lacks the label.
+  The owner asked for the label on 12 October 2026, when no issue carried it.
 - **A watched repository with nothing to import gets a read** in
   [`intake-watch.yaml`](intake-watch.yaml): the head, the date, and a note saying what
   the commits changed, so the next sweep starts there.
@@ -521,7 +538,10 @@ evidence ids it maps to, or why it is not registered and whether it is queued.
 A queued result or ask names the bead that does it as `bead`, and what it waits on as
 `blocked_on`. It also names the beads that track the issue, the bead that answers it,
 every reply posted with the state that reply reported, and when the issue can close.
-It records no current rung.
+An entry’s `kind` says what the record owes the author.
+An entry whose kind is not `result-report` but whose issue reports a new item for intake
+is marked `intake: true`, so that `--github` checks its label as it checks a result
+report’s. It records no current rung.
 [`devtools.check_requests`](../devtools/check_requests.py) derives each result’s state
 from the register:
 
@@ -551,7 +571,7 @@ Run each command from `packing/` as
 | `--report` | A table per issue: each result’s entries, rungs, state, how it was confirmed and whether its id is on `main`; the replies due; whether it is closeable |
 | `--backlog` | Every register entry below `V3` or `C3`, with its `next_rung`, its `activity`, the beads it names and the issues it serves |
 | `--draft N` | The status comment for issue N, ending in the Claude Code footer; it refuses unless `HEAD` is on `origin/main` |
-| `--github` | Read-only: the issues the record lacks, the replies missing from it and the comments after an entry’s `read_through` |
+| `--github` | Read-only: the issues the record lacks, the replies missing from it, the comments created or edited after an entry’s `read_through`, and the `result-report` entries and entries marked `intake: true` whose issues lack the `intake` label |
 
 A reply due is reported and never fails the gate: it is owed after the merge, not a
 broken record.

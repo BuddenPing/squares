@@ -9,7 +9,11 @@
 #
 # A reply is a comment by the owner, or one that ends in the Claude Code footer and is
 # not by the issue's author. `read_through` is the latest comment read into the entry;
-# `check_requests --github` lists anything later.
+# `check_requests --github` lists anything later, and any earlier comment edited later.
+#
+# An issue that reports a new item for intake carries the `intake` label on GitHub: each
+# `result-report`, and each entry of another kind marked `intake: true`. `--github` lists
+# any of them without the label (campaign/result-import.md, stage 0).
 softschema:
   contract: packing.squares:ResultRequests/v1
   schema: schemas/result-requests.schema.yaml
@@ -94,13 +98,13 @@ issues:
         author's rebuild costs about 10 process-hours, 14 s to about 5 minutes a count.
       source: https://github.com/jlevy/squares/issues/419#issuecomment-6104596297
       not_registered: >-
-        Evidence about the source configurations this entry already maps, T-120 to T-124 and the
-        retained catalogue, not a new bound. Not retained or built here: think-63vx owns taking the
-        Lean binding and the quadratic closed forms in as evidence, from a packet at 6bbae37 and a
-        build here. The author's per-count table at 6bbae37 (search/exact/lean_batch/results.md)
-        prices all 258 modules at 37,107 s and the 41 the ask names at 7,559 s (2.1 process-hours,
-        the longest n = 148 at 294 s); n = 129 and 146 need chunks of 10 because chunks of 25
-        exceed 14 GB.
+        Evidence about the source configurations of the forms this entry maps, T-120 to T-123 and
+        the retained catalogue, and of #420's T-124, not a new bound. Not retained or built here:
+        think-63vx owns taking the Lean binding and the quadratic closed forms in as evidence, from
+        a packet at 6bbae37 and a build here. The author's per-count table at 6bbae37
+        (search/exact/lean_batch/results.md) prices all 258 modules at 37,107 s and the 41 the ask
+        names at 7,559 s (2.1 process-hours, the longest n = 148 at 294 s); n = 129 and 146 need
+        chunks of 10 because chunks of 25 exceed 14 GB.
       queued: true
       bead: think-63vx
     asks:
@@ -169,6 +173,28 @@ issues:
       kind: follow-up
       reported:
       - result: remaining-catalogue
+    - url: https://github.com/jlevy/squares/issues/419#issuecomment-6119246619
+      date: '2026-10-12'
+      by: jlevy
+      kind: follow-up
+      reported:
+      - result: lean-packs-binding-2026-10-11
+      - result: new-exact-forms
+        id: T-120
+        verification: V0
+        confirmation: C0
+      - result: new-exact-forms
+        id: T-121
+        verification: V0
+        confirmation: C0
+      - result: new-exact-forms
+        id: T-122
+        verification: V0
+        confirmation: C0
+      - result: new-exact-forms
+        id: T-123
+        verification: V0
+        confirmation: C0
     close_when: The reported import and its disposition are on main and the owner has posted the resulting
       state; unresolved proof replays remain explicitly owned.
     notes: >-
@@ -250,7 +276,23 @@ issues:
       - think-klm7
       - think-1cvf
     answer_bead: think-klm7
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/432#issuecomment-6116242710
+      date: '2026-10-12'
+      by: jlevy
+      kind: confirmation
+      reported:
+      - result: rational-certificates
+        id: T-125
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: undilated-n51
+        id: T-126
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: source-contact-count
     close_when: >-
       The existing intake owner acquires immutable source custody, compares each claim with the
       current records, records native import and supported verdicts, and posts the resulting disposition
@@ -742,6 +784,12 @@ issues:
       - result: kernel-rows-2026-10-09
       - result: subpatterns-38-status-2026-10-09
         status: incomplete
+    - url: https://github.com/jlevy/squares/issues/413#issuecomment-6119249016
+      date: '2026-10-12'
+      by: jlevy
+      kind: follow-up
+      reported:
+      - result: kernel-rows-2026-10-11
     close_when: The named owner completes or explicitly dispositions the queued work and posts the recorded
       state; source status alone grants no theorem admission.
     notes: 'The owner reply of 7 October acknowledged the then-current 17 verified / 10 computed split
@@ -824,7 +872,14 @@ issues:
           own verdict stays queued under think-6ptr.
     beads: [think-6ptr]
     answer_bead: think-u1kq
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/414#issuecomment-6116242209
+      date: '2026-10-12'
+      by: jlevy
+      kind: import
+      reported:
+      - result: quarter-power-deficiency
+      - result: cube-root-deficiency
     close_when: >-
       The reported intake and pending proof review are answered from main, and the
       review request receives a supported verdict or explicit disposition.
@@ -853,7 +908,13 @@ issues:
         queued: false
     beads: [think-4y7u]
     answer_bead: think-4y7u
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/411#issuecomment-6116242051
+      date: '2026-10-12'
+      by: jlevy
+      kind: acknowledgement
+      reported:
+      - result: repository-consolidation
     close_when: The canonical source-discovery addition is merged and acknowledged from main.
 
   - number: 375
@@ -1045,6 +1106,30 @@ issues:
       reported:
       - result: n17-certificate
         status: incomplete
+    - url: https://github.com/jlevy/squares/issues/375#issuecomment-6116241874
+      date: '2026-10-12'
+      by: jlevy
+      kind: follow-up
+      reported:
+      - result: n17-certificate
+      - result: certificates-105-130-status-2026-10-07
+        id: T-129
+        verification: V0
+        confirmation: C0
+        status: recorded
+      - result: certificates-105-130-status-2026-10-07
+        id: E-daniel-375-dated-105-130-report
+        status: recorded
+      - result: certificate-292-status-2026-10-07
+        id: T-129
+        verification: V0
+        confirmation: C0
+        status: recorded
+      - result: certificate-292-status-2026-10-07
+        id: E-daniel-375-dated-292-report
+        status: recorded
+      - result: source-valid-invalid-wrapper-correction-2026-10-07
+      - result: n17-exact-form-2026-10-10
     close_when: >-
       T-098 is merged and the reply from main says what was registered, replayed and reviewed; the
       n = 17 object, since 10 October the exact form of #419, is taken up or declined with the n = 17
@@ -1136,6 +1221,12 @@ issues:
         kind: final
         reported:
           - result: k2-minus-c
+      - url: https://github.com/jlevy/squares/issues/368#issuecomment-6116239720
+        date: '2026-10-12'
+        by: jlevy
+        kind: follow-up
+        reported:
+          - result: k2-minus-c-v1.2
     close_when: >-
       The theorem is recorded (in the register, or beside it in
       asymptotic-waste-bounds.yaml when it settles no count n <= 324), its
@@ -1149,6 +1240,7 @@ issues:
     opened: '2026-10-05'
     state: open
     kind: other
+    intake: true
     triage: done
     summary: 'A method report and not a result: the B2 branching rule for devtools/pilot_n17_subpattern_bb.py,
       which learns each square''s weight from the closing Farkas multipliers and bisects the heaviest
@@ -1486,6 +1578,7 @@ issues:
     opened: '2026-10-05'
     state: open
     kind: other
+    intake: true
     triage: done
     summary: Two arity-7 classes have upstream reported full standing-verifier and independent Rust
       passes. The owner's retained C2 replay is INCOMPLETE after 480.468 seconds on the one-second RSS-query
@@ -1763,6 +1856,7 @@ issues:
     state: closed
     closed: '2026-10-03'
     kind: defect-report
+    intake: true
     triage: done
     summary: >-
       The sixteen points of Friedman's Figure 34, the unavoidable set behind Green's
@@ -1913,6 +2007,7 @@ issues:
     state: closed
     closed: '2026-10-06'
     kind: defect-report
+    intake: true
     triage: done
     summary: >-
       Nagamochi's Lemma 1 is false (chelokot's Lean counterexample, Karakuş's family), so
@@ -3296,7 +3391,23 @@ issues:
     - think-v42c
     - think-nv5o
     answer_bead: think-nv5o
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/428#issuecomment-6116242546
+      date: '2026-10-12'
+      by: jlevy
+      kind: confirmation
+      reported:
+      - result: finite-rational-refinement
+        id: T-118
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: v12-root-feasibility
+        id: E-rehwaldt-n68-root-feasibility-v12-report
+        status: recorded
+      - result: v12-restricted-attainment
+        id: E-rehwaldt-n68-restricted-attainment-v12-report
+        status: recorded
     close_when: Accurate imported and reviewed states have reached main and remaining proof/replay obligations
       and any owner response have explicit dispositions. Source-only publication does not close this
       request.
@@ -3393,7 +3504,44 @@ issues:
     - think-ndvg
     - think-r333
     answer_bead: think-ndvg
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/446#issuecomment-6116243055
+      date: '2026-10-12'
+      by: jlevy
+      kind: import
+      reported:
+      - result: fine-net-n19
+        id: E-wand125-fine-net-lower-bounds-446-report
+        status: recorded
+      - result: fine-net-n20
+        id: E-wand125-fine-net-lower-bounds-446-report
+        status: recorded
+      - result: fine-net-n26
+        id: E-wand125-fine-net-lower-bounds-446-report
+        status: recorded
+      - result: fine-net-n27
+        id: E-wand125-fine-net-lower-bounds-446-report
+        status: recorded
+      - result: fine-net-n28
+        id: E-wand125-fine-net-lower-bounds-446-report
+        status: recorded
+      - result: fine-net-n29
+        id: E-wand125-fine-net-lower-bounds-446-report
+        status: recorded
+      - result: fine-net-n31
+        id: E-wand125-fine-net-lower-bounds-446-report
+        status: recorded
+      - result: fine-net-n27-5655-followup
+        id: E-wand125-fine-net-n27-5655-followup-report
+        status: recorded
+      - result: fine-net-n29-582-followup
+        id: T-132
+        verification: V0
+        confirmation: C0
+        status: recorded
+      - result: fine-net-n29-582-followup
+        id: E-wand125-fine-net-n29-582-followup-report
+        status: recorded
     close_when: Accurate source-only disposition reaches main and the remaining independent native/review
       obligations have explicit dispositions. Source-byte custody alone does not close this request.
   - number: 451
@@ -3437,7 +3585,22 @@ issues:
     - think-88r0
     - think-fvz4
     answer_bead: think-edo8
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/451#issuecomment-6116243186
+      date: '2026-10-12'
+      by: jlevy
+      kind: confirmation
+      reported:
+      - result: eight-rational-refinements
+        id: T-128
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: five-follow-up-refinements-2d32a6e
+        id: T-130
+        verification: V3
+        confirmation: C3
+        status: confirmed
     close_when: The supported import and disposition are on main and the owner posts the resulting state;
       optimizer and local/global optimality remain separate claims.
   - number: 425
@@ -3481,7 +3644,20 @@ issues:
     beads:
     - think-f3dl
     answer_bead: think-f3dl
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/425#issuecomment-6116242408
+      date: '2026-10-12'
+      by: jlevy
+      kind: confirmation
+      reported:
+      - result: finite-refinements-105-292
+        id: T-117
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: historical-refinements-130-263-272
+      - result: n105-supersession-2026-10-08
+      - result: restricted-n105-dual
     close_when: The retained finite-feasibility result and supersession disposition are published from
       main, and the owner replies with the active 292 and historical 105/130/263/272 scopes.
     read_through: '2026-10-08T02:58:00Z'
@@ -3525,7 +3701,18 @@ issues:
     - think-l360
     - think-q3pd
     answer_bead: think-l360
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/438#issuecomment-6116242868
+      date: '2026-10-12'
+      by: jlevy
+      kind: confirmation
+      reported:
+      - result: precision-refinements-14
+        id: T-127
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: withdrawn-108-123-129
     close_when: The fourteen finite bounds and three withdrawals are published from main with their
       actual evidence scope, and the owner posts the final registration disposition.
     read_through: '2026-10-08T03:08:01Z'
@@ -3643,7 +3830,35 @@ issues:
     - think-iyij
     - think-fvz4
     answer_bead: think-iyij
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/465#issuecomment-6116243324
+      date: '2026-10-12'
+      by: jlevy
+      kind: confirmation
+      reported:
+      - result: s132-record-hunt
+        id: T-131
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: s132-record-hunt
+        id: E-evand-465-record-hunt-report
+        status: reviewed
+      - result: s132-record-hunt
+        id: E-evand-465-record-hunt-exact-feasibility
+        status: confirmed
+      - result: s155-record-hunt
+        id: T-128
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: s155-record-hunt
+        id: E-evand-465-record-hunt-report
+        status: reviewed
+      - result: s155-record-hunt
+        id: E-evand-465-record-hunt-exact-feasibility
+        status: confirmed
+      - result: kkt-local-minima
     close_when: T-131 and T-128 are confirmed on main after independent review and adoption, and the
       owner has posted that state; local and global optimality are outside this feasibility import.
   - number: 470
@@ -3713,7 +3928,41 @@ issues:
     - think-jpre
     - think-fvz4
     answer_bead: think-jpre
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/470#issuecomment-6116243429
+      date: '2026-10-12'
+      by: jlevy
+      kind: confirmation
+      reported:
+      - result: fourteen-below-case
+        id: T-138
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: fourteen-below-case
+        id: E-mishapolk-470-pose-report
+        status: reviewed
+      - result: fourteen-below-case
+        id: E-mishapolk-470-exact-feasibility
+        status: confirmed
+      - result: fourteen-not-below-case
+        id: E-mishapolk-470-pose-report
+        status: reviewed
+      - result: fourteen-not-below-case
+        id: E-mishapolk-470-exact-feasibility
+        status: confirmed
+      - result: readme-132-267
+        id: T-138
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: readme-132-267
+        id: E-mishapolk-470-pose-report
+        status: reviewed
+      - result: readme-132-267
+        id: E-mishapolk-470-exact-feasibility
+        status: confirmed
+      - result: n105-closed-form-withdrawn
     close_when: The import of the corrected certificates and its disposition are on main and the owner
       has posted the resulting state; optimality is outside this request.
   - number: 471
@@ -3781,7 +4030,16 @@ issues:
     beads:
     - think-rd8u
     answer_bead: think-rd8u
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/471#issuecomment-6116243584
+      date: '2026-10-12'
+      by: jlevy
+      kind: import
+      reported:
+      - result: theorem-1.1
+      - result: theorem-1.2
+      - result: theorem-1.4
+      - result: theorem-1.6
     close_when: The reported import and its review disposition are on main and the owner has posted
       the resulting state.
   - number: 472
@@ -3875,7 +4133,23 @@ issues:
     - think-m8ck
     - think-fvz4
     answer_bead: think-m8ck
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/476#issuecomment-6116243703
+      date: '2026-10-12'
+      by: jlevy
+      kind: confirmation
+      reported:
+      - result: six-exact-certificates
+        id: T-134
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: six-exact-certificates
+        id: E-couzo-476-certificate-report
+        status: reviewed
+      - result: six-exact-certificates
+        id: E-couzo-476-exact-feasibility
+        status: confirmed
     close_when: The import and its disposition are on main and the owner has posted the resulting state;
       optimality and the credit for the starting packings' constructions stay with their sources.
   - number: 481
@@ -3932,7 +4206,34 @@ issues:
     - think-ac4h
     - think-fvz4
     answer_bead: think-ac4h
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/481#issuecomment-6116243829
+      date: '2026-10-12'
+      by: jlevy
+      kind: confirmation
+      reported:
+      - result: fifteen-new-packings
+        id: T-136
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: fifteen-new-packings
+        id: E-squish-481-certificate-report
+        status: reviewed
+      - result: fifteen-new-packings
+        id: E-squish-481-exact-feasibility
+        status: confirmed
+      - result: smaller-154-237
+        id: T-136
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: smaller-154-237
+        id: E-squish-481-certificate-report
+        status: reviewed
+      - result: smaller-154-237
+        id: E-squish-481-exact-feasibility
+        status: confirmed
     close_when: The import and its disposition are on main and the owner has posted the resulting state;
       local and global optimality are outside this request.
   - number: 483
@@ -3969,7 +4270,23 @@ issues:
     - think-8m3u
     - think-fvz4
     answer_bead: think-8m3u
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/483#issuecomment-6116243966
+      date: '2026-10-12'
+      by: jlevy
+      kind: confirmation
+      reported:
+      - result: n70-exact-refinement
+        id: T-137
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: n70-exact-refinement
+        id: E-deleeuw-483-certificate-report
+        status: reviewed
+      - result: n70-exact-refinement
+        id: E-deleeuw-483-exact-feasibility
+        status: confirmed
     close_when: The import and its disposition are on main and the owner has posted the resulting state;
       optimality is outside this request.
   - number: 484
@@ -4012,7 +4329,29 @@ issues:
     - think-ar8g
     - think-fvz4
     answer_bead: think-ar8g
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/484#issuecomment-6116244122
+      date: '2026-10-12'
+      by: jlevy
+      kind: confirmation
+      reported:
+      - result: s308-two-wedge
+        id: T-135
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: s308-two-wedge
+        id: E-fang-484-certificate-report
+        status: reviewed
+      - result: s308-two-wedge
+        id: E-fang-484-exact-feasibility
+        status: confirmed
+      - result: s343-s344-two-wedge
+        id: E-fang-484-certificate-report
+        status: reviewed
+      - result: s343-s344-two-wedge
+        id: E-fang-484-exact-feasibility
+        status: confirmed
     close_when: The import and its disposition, including the beyond-horizon counts, are on main and the
       owner has posted the resulting state; optimality is outside this request.
   - number: 485
@@ -4056,7 +4395,9 @@ issues:
       the guzhou-n40-new-supports-2026-10-11 packet with both receipts; the density's orbit facts,
       both kernel inputs and every finite step decided here by a first-party exact audit, and the
       near-axis certificate reproduced with the CI run's axis binary and decided again by
-      sqverify-fast. The 43 slabs wait for an owner budget (think-tln9).
+      sqverify-fast. The 43 slabs wait for an owner budget (think-tln9). wand125 edited the 17:14
+      UTC comment at 02:19 UTC on 12 October to link the continuous-angle mode at
+      wand125/square-packing f30cc2c (think-xzob).
     read_through: '2026-10-11T17:14:50Z'
     results:
     - key: s40-clipped-corner
@@ -4125,12 +4466,85 @@ issues:
         with the release in the guzhou-n40-new-supports-2026-10-11 packet; its two checkers were not
         run here.
       queued: false
+    - key: s40-continuous-angle-mode
+      claim: >-
+        wand125's continuous-angle mode of sqverify-fast, linked by the comment's edit of
+        2026-10-12T02:19:26Z at wand125/square-packing f30cc2cf345a3a3f6af778925f354d9ec979868b
+        (tools/sqverify_continuous, v3, source_sha256 1266a8b9...), verified the 6.718 density at
+        B = 3350/3359 and tau = 4999/5000 over all 86 root ranges and an exact axis sweep for t in
+        [0, 10^-7], and refused both controls (every weight x 985/1000, and B = 3348/3359).
+      source: https://github.com/jlevy/squares/issues/485#issuecomment-6111583905
+      not_registered: >-
+        A third party's second decision of s40-new-supports's continuous cover, not a bound of its
+        own: code distinct from the release's kernel but the same method in outline, as its author
+        says, built on this repository's sqverify-fast crate. Not retained, reviewed, built or
+        replayed here: think-xzob owns all four, and its replay waits on an owner budget. wand125's
+        runs stay a third party's report until a run directory with receipts is published or the
+        mode is replayed here.
+      queued: true
+      bead: think-xzob
     beads:
     - think-3oi5
     - think-xms6
     - think-tln9
+    - think-xzob
     answer_bead: think-3oi5
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/485#issuecomment-6116244240
+      date: '2026-10-12'
+      by: jlevy
+      kind: confirmation
+      reported:
+      - result: s40-clipped-corner
+        id: T-133
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: s40-clipped-corner
+        id: E-n040-guzhou-clipped-corner-report
+        status: reviewed
+      - result: s40-clipped-corner
+        id: E-n040-guzhou-clipped-corner-sqverify-fast-replay
+        status: confirmed
+      - result: s40-clipped-corner
+        id: E-n040-guzhou-clipped-corner-finite-audit
+        status: confirmed
+      - result: s40-full-core
+        id: T-133
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: s40-full-core
+        id: E-n040-guzhou-clipped-corner-report
+        status: reviewed
+      - result: s40-full-core
+        id: E-n040-guzhou-clipped-corner-sqverify-fast-replay
+        status: confirmed
+      - result: s40-continuous-pose
+        id: T-145
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: s40-continuous-pose
+        id: E-n040-guzhou-continuous-pose-report
+        status: reviewed
+      - result: s40-continuous-pose
+        id: E-n040-guzhou-continuous-pose-kernel-replay
+        status: confirmed
+      - result: s40-continuous-pose
+        id: E-n040-guzhou-continuous-pose-finite-audit
+        status: confirmed
+      - result: s40-continuous-pose
+        id: E-n040-guzhou-continuous-pose-crate-axis
+        status: confirmed
+    - url: https://github.com/jlevy/squares/issues/485#issuecomment-6119333366
+      date: '2026-10-12'
+      by: jlevy
+      kind: follow-up
+      reported:
+      - result: s40-new-supports
+      - result: s40-support-family-obstruction
+      - result: s40-continuous-angle-mode
     close_when: The import and its review disposition are on main and the owner has posted the resulting
       state; optimality and first-publication priority are outside this request.
   - number: 486
@@ -4164,7 +4578,13 @@ issues:
     beads:
     - think-7lpw
     answer_bead: think-7lpw
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/486#issuecomment-6116244343
+      date: '2026-10-12'
+      by: jlevy
+      kind: import
+      reported:
+      - result: theorem-1.1-v1.1-tiers
     close_when: The reported import and its review disposition are on main and the owner has posted the
       resulting state.
   - number: 488
@@ -4217,7 +4637,25 @@ issues:
     beads:
     - think-6uv7
     answer_bead: think-6uv7
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/488#issuecomment-6116244574
+      date: '2026-10-12'
+      by: jlevy
+      kind: confirmation
+      reported:
+      - result: six-exact-certificates
+        id: T-140
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: six-exact-certificates
+        id: E-couzo-488-certificate-report
+        status: reviewed
+      - result: six-exact-certificates
+        id: E-couzo-488-exact-feasibility
+        status: confirmed
+      - result: kkt-no-descent
+      - result: unnamed-303-338-340
     close_when: The import and its disposition are on main and the owner has posted the resulting state;
       optimality and the credit for the starting packings' constructions stay with their sources.
   - number: 489
@@ -4272,7 +4710,30 @@ issues:
     beads:
     - think-xm4h
     answer_bead: think-xm4h
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/489#issuecomment-6116244764
+      date: '2026-10-12'
+      by: jlevy
+      kind: confirmation
+      reported:
+      - result: hunt3-132-308
+        id: T-141
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: hunt3-132-308
+        id: E-evand-489-hunt3-report
+        status: reviewed
+      - result: hunt3-132-308
+        id: E-evand-489-exact-feasibility
+        status: confirmed
+      - result: hunt3-343-344
+        id: E-evand-489-hunt3-report
+        status: reviewed
+      - result: hunt3-343-344
+        id: E-evand-489-exact-feasibility
+        status: confirmed
+      - result: kkt-local-minima
     close_when: The import and its disposition, including the beyond-horizon counts, are on main and the
       owner has posted the resulting state; Kevin Fang's credit for the two-wedge constructions and
       optimality stay with their sources.
@@ -4314,7 +4775,13 @@ issues:
     beads:
     - think-lkbe
     answer_bead: think-lkbe
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/494#issuecomment-6119249272
+      date: '2026-10-12'
+      by: jlevy
+      kind: acknowledgement
+      reported:
+      - result: wallchain-width1-negative
     close_when: The negative is recorded beside X-052 section 2.5 and the owner has acknowledged it on the
       issue; it asks for nothing else.
   - number: 495
@@ -4370,7 +4837,14 @@ issues:
     beads:
     - think-nmfl
     answer_bead: think-nmfl
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/495#issuecomment-6119249473
+      date: '2026-10-12'
+      by: jlevy
+      kind: acknowledgement
+      reported:
+      - result: kernel-certificates-15
+      - result: kernel-certificate-m4003392
     close_when: The certificates are admitted to certified-sub-patterns.yaml or declined with a reason, and the
       owner has posted the resulting state.
   - number: 503
