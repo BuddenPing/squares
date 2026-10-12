@@ -1907,8 +1907,10 @@ sources:
       were measured here exactly where the source places them. The source checks with
       Squares Project (Levy) verification code and supplies a corners Witness/v2. Derived
       exact facts only; no upstream byte is retained. OpenAI Codex assistance was disclosed
-      in the first commit, 0d8b9c1, and the disclosure removed at the pin. No local or
-      global optimality claim.
+      in the first commit, 0d8b9c1, and the disclosure removed at the pin; asked which
+      account stands, the author answered on jlevy/squares#503 on 12 October 2026, for this
+      release and the n153 one: "Both solutions were AI assisted by 'PY', an unreleased
+      agentic AI offering by PingYou Ltd." No local or global optimality claim.
   - key: '[PingYou n153 certificate 2026-10-11]'
     authors: [PingYou Ltd]
     year: 2026
@@ -1927,7 +1929,10 @@ sources:
       source checks with Squares Project (Levy) verification code
       and supplies a corners Witness/v2. Derived exact facts only; no upstream byte is
       retained. No AI-assistance statement; the same author's n207 release disclosed OpenAI
-      Codex assistance and removed it. No local or global optimality claim.
+      Codex assistance and removed it. Asked on jlevy/squares#503 which account stands, the
+      author answered there on 12 October 2026, for both releases: "Both solutions were AI
+      assisted by 'PY', an unreleased agentic AI offering by PingYou Ltd." No local or global
+      optimality claim.
   - key: '[Ostashev records 2026-10-11]'
     authors: [Ostashev]
     year: 2026
