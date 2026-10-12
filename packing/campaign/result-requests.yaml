@@ -4792,7 +4792,7 @@ issues:
       the next layer. The first commit, 0d8b9c1, and the issue as first posted disclosed OpenAI
       Codex assistance; the pinned commit and the edited issue removed it without a reason, and
       which account stands is the author's to say.
-    read_through: '2026-10-11T10:27:00Z'
+    read_through: '2026-10-11T10:31:52Z'
     results:
     - key: n207-exact-certificate
       claim: s(207) <= 148809603730436756319360591381170501178639/10^40 =
@@ -4937,7 +4937,7 @@ issues:
       T-150 at V3/C3; the case records' house adoption is the next layer. The superseded five are
       excluded by the author and registered nowhere; the n = 2043 certificate is beyond the corpus
       and not replayed.
-    read_through: '2026-10-11T14:24:18Z'
+    read_through: '2026-10-11T14:33:31Z'
     results:
     - key: n146-n261-refinements
       claim: s(146) <= 12.583782203951046204 and s(261) <= 16.678779875343207747, each the exact
