@@ -6,6 +6,9 @@ them on exact halves there, at exactly the witness's side, decided on both exact
 with no house or stage total falling and every square paired one to one. A square turned
 by `2 arctan(1/500)` (about 0.229 degrees) beside an axis square is straightened and
 slid flush. A run directory under `witnesses/` is refused before anything is written.
+When both ways of closing the tight set fail, the re-solve holds the unchanged squares at
+their exact centres and tries again, and a literal past Python's integer-text limit moves
+on to the next way rather than refusing the count.
 """
 
 from __future__ import annotations
@@ -23,8 +26,10 @@ from devtools.regularize_evand import view_geometry
 HALF = Fraction(1, 2)
 
 
-def _basis_witness(rows: list[tuple[Fraction, Fraction, Fraction, Fraction]]) -> dict[str, Any]:
-    """A rational centre-basis witness in a side-11/5 box."""
+def _basis_witness(
+    rows: list[tuple[Fraction, Fraction, Fraction, Fraction]], side: str = "11/5"
+) -> dict[str, Any]:
+    """A rational centre-basis witness, in a side-11/5 box unless `side` says otherwise."""
 
     def text(value: Fraction) -> str:
         return str(value.numerator) if value.denominator == 1 else str(value)
@@ -32,7 +37,7 @@ def _basis_witness(rows: list[tuple[Fraction, Fraction, Fraction, Fraction]]) ->
     return {
         "id": "W-fixture",
         "n": len(rows),
-        "side": "11/5",
+        "side": side,
         "square_size": "1",
         "representation": "center-basis",
         "scalar": {"kind": "rational"},
@@ -187,3 +192,92 @@ def test_no_bound_frame_below_the_witness_side() -> None:
     frame = slack.frame_for(scattered(), "same")
     assert frame is not None
     assert frame.side == Fraction(11, 5)
+
+
+def beside_a_tilted_square() -> dict[str, Any]:
+    """Two axis squares on the floor a tenth apart, and a square turned by
+    `arctan(3/4)` (about 36.9 degrees) wedged into the opposite corner of a side-3 box:
+    the placement slides the second axis square flush and leaves the tilted one alone."""
+    one, zero = Fraction(1), Fraction(0)
+    return _basis_witness(
+        [
+            (HALF, HALF, one, zero),
+            (Fraction(16, 10), HALF, one, zero),
+            (Fraction(23, 10), Fraction(23, 10), Fraction(4, 5), Fraction(3, 5)),
+        ],
+        side="3",
+    )
+
+
+def test_anchoring_substitutes_held_columns_and_keeps_every_gap() -> None:
+    row = _row({0: -1, 2: 1}, Fraction(1), (0, 0, 1))
+    values = {0: HALF, 2: Fraction(8, 5)}
+    (held,) = slack.anchor([row], {0: HALF})
+    assert held.coefficients == {2: Fraction(1)}
+    assert held.gap({2: Fraction(8, 5)}) == row.gap(values) == Fraction(1, 10)
+    (constant,) = slack.anchor([row], values)
+    assert constant.coefficients == {}
+    assert constant.gap({}) == Fraction(1, 10)
+    generator = [(HALF, HALF), (Fraction(8, 5), HALF)]
+    solution, _promoted, _rounds, _reopened = slack.settle_reopening(
+        [row], [], generator, {0: HALF, 1: HALF}
+    )
+    assert solution.values[0] == HALF
+    assert solution.values[2] == Fraction(3, 2)
+    assert 0 not in solution.free_columns
+    assert 1 not in solution.free_columns
+
+
+def test_an_anchored_way_holds_the_unchanged_tilted_square_exactly(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    real = slack.settle_variant
+
+    def refusing(rows: str, **kwargs: Any) -> Any:
+        settled = real(rows, **kwargs)
+        if rows not in slack.ANCHORED:
+            settled.refusal = settled.record["refusal"] = "penetrated: forced by the test"
+        return settled
+
+    monkeypatch.setattr(slack, "settle_variant", refusing)
+    witness = beside_a_tilted_square()
+    view, report = slack.regularize(witness, slack.Settings())
+    assert view is not None
+    settled = report["attempts"][0]["exact"]["settled"]
+    assert [variant["rows"] for variant in settled] == [
+        "witness-contacts",
+        "all-tight",
+        "anchored-tilted",
+    ]
+    assert settled[-1]["anchored"] == 1
+    assert view["certificate"]["resolve"]["rows"] == "anchored-tilted"
+    assert view["certificate"]["resolve"]["anchored_squares"] == 1
+    assert _centres(view) == [
+        (HALF, HALF),
+        (Fraction(3, 2), HALF),
+        (Fraction(23, 10), Fraction(23, 10)),
+    ]
+    verdicts = report["attempts"][0]["exact"]["verdicts"]
+    assert verdicts["exact_verify"]["passed"]
+    assert verdicts["independent"]["passed"]
+
+
+def test_a_literal_past_the_digit_limit_tries_the_next_way(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    real = slack.same.same_side_witness
+    calls: list[int] = []
+
+    def too_long_once(*args: Any, **kwargs: Any) -> Any:
+        calls.append(1)
+        if len(calls) == 1:
+            raise ValueError("Exceeds the limit (4300 digits) for integer string conversion")
+        return real(*args, **kwargs)
+
+    monkeypatch.setattr(slack.same, "same_side_witness", too_long_once)
+    view, report = slack.regularize(scattered(), slack.Settings())
+    assert view is not None
+    settled = report["attempts"][0]["exact"]["settled"]
+    assert settled[0]["refusal"].startswith("literal-too-long")
+    assert settled[1]["refusal"] is None
+    assert view["certificate"]["resolve"]["rows"] == settled[1]["rows"]
