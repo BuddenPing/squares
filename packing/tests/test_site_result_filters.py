@@ -155,7 +155,7 @@ def test_the_checkbox_starts_at_its_pages_default_and_the_table_with_it(
     }
     assert [result.id for result in kept if result.standing == "superseded"] == ["T-003"]
     pending = render_recent_results.PENDING_ADOPTION
-    assert "T-128" in [result.id for result in kept if result.standing == pending]
+    assert "T-122" in [result.id for result in kept if result.standing == pending]
     assert "t-031" not in current
     assert "t-036" in current
     assert set(found["current"]) < set(found["shown"])
