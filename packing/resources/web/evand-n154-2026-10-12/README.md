@@ -124,9 +124,9 @@ Measured here with the third route’s own credit tools, `arrangement_gap` and
 `patch_lineage`, called from scratch:
 
 - **T-136.** No symmetry of the box matches the two packings one to one by nearest
-  centre. Under any one placement at most 32 of T-136’s squares land within $10^{-9}$ of
-  a square of this packing, and one of them to the digit. This is another arrangement than
-  T-136’s, not a refinement of it.
+  centre. Under the best placement `patch_lineage` finds, 32 of T-136’s squares land
+  within $10^{-9}$ of a square of this packing, and one of them to the digit. This is
+  another arrangement than T-136’s, not a refinement of it.
 - **Couzo’s 154 and 155** (T-098’s exact optima of the 5 October packings). The 154 does
   not match this packing one to one either. Blocks of upright squares reappear to the
   digit from both: 43 squares of the 155 under one translation, and 45 of the 154.
