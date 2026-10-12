@@ -9,7 +9,7 @@ The clock is fixed at the register's reference date for deterministic age checks
 
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from datetime import datetime, time
 from pathlib import Path
 from typing import Any
@@ -84,6 +84,19 @@ def opened(
     page.clock.set_fixed_time(noon)
     page.goto(path.as_uri(), wait_until="load")
     return page
+
+
+def arrival(path: Path) -> Callable[[str], bool]:
+    """A navigation matcher for the document at `path`, under any query and fragment.
+
+    A bare `expect_navigation` takes the first navigation of any kind, and Chromium
+    reports a same-document `history.replaceState` as one. KPress's history behaviour
+    stamps the scroll offset that way 200 ms after a scroll, and a click first scrolls
+    its link into view, so on a busy runner the homepage's stamp can come before the
+    next page commits: the wait then returns at once, and the new page is read while it
+    is still parsing, before `overview/table.js` has preset its controls."""
+    uri = path.as_uri()
+    return lambda url: urlsplit(url)._replace(query="", fragment="").geturl() == uri
 
 
 def state(page: Any) -> dict[str, Any]:
@@ -403,7 +416,7 @@ def test_legacy_home_query_and_registered_fragment_reach_the_complete_filtered_t
             "s-min": ["3"],
             "age": ["180"],
         }
-        with page.expect_navigation(wait_until="load"):
+        with page.expect_navigation(url=arrival(pages["results.html"]), wait_until="load"):
             page.get_by_role("link", name="All Results", exact=True).click()
         landed = urlsplit(page.url)
         assert landed.path.endswith("/results.html")
@@ -551,7 +564,7 @@ def test_retired_reader_fragment_updates_the_ordinary_home_link_and_reaches_its_
         assert destination.path.endswith("/" + row.path)
         assert destination.fragment == fragment
         assert parse_qs(destination.query) == parse_qs(supported)
-        with page.expect_navigation(wait_until="load"):
+        with page.expect_navigation(url=arrival(pages[row.path]), wait_until="load"):
             page.get_by_role("link", name="All Results", exact=True).click()
         assert_tombstone(page, row, fragment, supported)
     finally:
