@@ -1,4 +1,4 @@
-"""The case houses adopted on 11 October 2026 from the upper-bound reports of 8 to 10 October.
+"""The case houses adopted on 11 October 2026 from the upper-bound reports of 8 to 11 October.
 
 `devtools.select_houses` derives, count by count, the smallest confirmed and reviewed exact
 side the register holds; `devtools.adopt_houses` moves each case record to it. This module
@@ -420,14 +420,19 @@ def _sources() -> dict[str, Source]:
         packet_source("T-140", "couzo-certificates-2026-10-10"),
         packet_source("T-141", "evand-record-hunt3-2026-10-10"),
         packet_source("T-146", "evand-regularized-2026-10-10"),
+        packet_source("T-147", "pingyou-n207-certificate-2026-10-11"),
+        packet_source("T-148", "pingyou-n153-certificate-2026-10-11"),
+        packet_source("T-149", "dostashev-records-2026-10-11"),
+        packet_source("T-150", "barnett-refinements-2026-10-11"),
     ]
     return {source.key: source for source in sources}
 
 
 #: The house this adoption gave each count, by the register result whose certificate it is.
 #: `devtools.select_houses` derived it from the register on 11 October 2026; `check`
-#: holds every case record named here to it, so a later adoption that moves a count again
-#: takes the count out of this table in the same change.
+#: holds every case record named here to it, so an adoption that moves a count again
+#: changes or removes its row in the same change, as the second pass of that day did at
+#: 146, 153, 155 and 207.
 ADOPTED: dict[int, str] = {
     70: "T-146",
     84: "T-130",
@@ -442,20 +447,23 @@ ADOPTED: dict[int, str] = {
     129: "T-146",
     131: "T-136",
     132: "T-141",
-    146: "T-146",
-    153: "T-146",
+    146: "T-150",
+    153: "T-148",
     154: "T-136",
-    155: "T-128",
+    155: "T-149",
+    156: "T-149",
     175: "T-140",
     180: "T-128",
-    207: "T-136",
+    207: "T-147",
     209: "T-140",
+    211: "T-149",
     228: "T-128",
     232: "T-136",
     236: "T-146",
     237: "T-140",
     258: "T-146",
     259: "T-136",
+    261: "T-150",
     263: "T-146",
     267: "T-134",
     269: "T-146",

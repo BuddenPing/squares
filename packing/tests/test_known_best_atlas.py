@@ -87,7 +87,7 @@ from sqpack.yamlio import safe_load
 #: The first SQUISH update moved n = 179 and 258 onto packet-derived facts;
 #: the second also moved n = 88. Complete evand and ry-xu packets now supersede
 #: earlier catalogue sources. These inventory counts follow the current corpus.
-GOLDEN_DERIVED_ABOVE_100: dict[str, int] = {"n=1..100": 0, "n=1..200": 23, "n=1..324": 50}
+GOLDEN_DERIVED_ABOVE_100: dict[str, int] = {"n=1..100": 0, "n=1..200": 23, "n=1..324": 49}
 #: The cases whose retained upstream rendering is the UnitSquare release, per corpus.
 GOLDEN_UNITSQUARE: dict[str, set[int]] = {
     # 68, 103, 105, 110 and 131 moved onto Francisco Couzo's packet on 2026-09-29, and 69
@@ -689,9 +689,9 @@ def _assert_witness_agrees_with_entry(entry: dict, release_by_n: dict) -> None:
         )
 
 
-@pytest.mark.parametrize("n", [51, 261, 70, 308])
+@pytest.mark.parametrize("n", [51, 70, 261, 308])
 def test_a_linked_house_manifest_refuses_a_noncanonical_house_path(n: int) -> None:
-    """An ry-xu house (51, 261) or one adopted on 11 October 2026 (70, 308) is read only
+    """An ry-xu house (51) or one adopted on 11 October 2026 (70, 261, 308) is read only
     from its canonical leaf."""
     document = json.loads((ATLAS / "manifest.json").read_text(encoding="utf-8"))
     entry = next(row for row in document["atlas"]["entries"] if row["n"] == n)
@@ -1983,8 +1983,10 @@ def test_poster_packing_credits_name_every_retained_construction_author_and_sour
     assert information is not None
     credit_block = information.find("svg:g[@data-feature='packing-credits']", SVG)
     assert credit_block is not None
-    assert len(expected_names) == 22
-    assert len(expected_sources) == 10
+    # The house adoption of 11 October 2026 credits Fang, Mishapolk, PingYou Ltd, Ostashev
+    # and Barnett and draws no de Winter packing, from eight more sources (think-fvz4).
+    assert len(expected_names) == 26
+    assert len(expected_sources) == 18
     assert set(json.loads(credit_block.attrib["data-credited-names"])) == expected_names
     assert set(json.loads(credit_block.attrib["data-source-keys"])) == expected_sources
     assert credit_block.find("svg:text[@data-feature='packing-credits-heading']", SVG) is None
@@ -4099,7 +4101,7 @@ def test_print_information_shares_content_style_and_measured_block_gaps(data_dat
     assert credit_text[0] == credit_text[1]
     assert (
         len(credit_text[0].removeprefix("Best packings due to ").removesuffix(".").split(", "))
-        == 22
+        == 26
     )
 
 

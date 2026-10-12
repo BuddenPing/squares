@@ -96,6 +96,8 @@ class Prose:
     reported: str
     producer_route: bool
     ai: str
+    #: Where the source itself ran this repository's maintained routes, what to say instead.
+    routes: str = ""
 
 
 #: Each adopted result, as its register entry and its review describe it.
@@ -163,12 +165,58 @@ RESULTS: dict[str, Prose] = {
             "(Anthropic) under human direction."
         ),
     ),
+    "T-147": Prose(
+        author="PingYou Ltd",
+        reported="on [jlevy/squares#503](https://github.com/jlevy/squares/issues/503)",
+        producer_route=False,
+        ai=(
+            "The source’s first commit and the issue as first posted said that verification, "
+            "comparison review and package preparation were assisted by OpenAI Codex; the "
+            "pinned commit removed that sentence, giving no reason."
+        ),
+        routes=(
+            "The source ran both maintained routes itself before reporting; both predate it, "
+            "and the third route is independently re-implemented."
+        ),
+    ),
+    "T-148": Prose(
+        author="PingYou Ltd",
+        reported="on [jlevy/squares#504](https://github.com/jlevy/squares/issues/504)",
+        producer_route=False,
+        ai=(
+            "The source makes no statement about AI assistance; the same author’s n207 "
+            "release, eight minutes earlier, removed a disclosure of OpenAI Codex assistance "
+            "at its pin."
+        ),
+        routes=(
+            "The source ran both maintained routes itself before reporting; both predate it, "
+            "and the third route is independently re-implemented."
+        ),
+    ),
+    "T-149": Prose(
+        author="Daniil Ostashev",
+        reported="on [jlevy/squares#501](https://github.com/jlevy/squares/issues/501)",
+        producer_route=False,
+        ai="The source states nothing about AI assistance.",
+    ),
+    "T-150": Prose(
+        author="Robert Barnett",
+        reported="on [jlevy/squares#505](https://github.com/jlevy/squares/issues/505)",
+        producer_route=False,
+        ai=(
+            "The author discloses OpenAI Codex assistance with the solver, the certificate "
+            "and checker code, source review and preparation."
+        ),
+    ),
 }
 
 XU = "ry-xu"
 SQUISH = "Nate Chaoweeraprasit (itsnaka)"
 COUZO = "Francisco Couzo"
 DANIEL = "Evan Daniel"
+PINGYOU = "PingYou Ltd"
+OSTASHEV = "Daniil Ostashev"
+BARNETT = "Robert Barnett"
 
 
 @dataclass(frozen=True)
@@ -217,10 +265,16 @@ CREDITS: dict[int, Credit] = {
     129: _regularized(XU, "Ryan Xu’s"),
     131: Credit((SQUISH,), (), "Nate Chaoweeraprasit’s SQUISH packing"),
     132: Credit((DANIEL,), (), "Evan Daniel’s record-hunt packing"),
-    146: _regularized(XU, "Ryan Xu’s"),
-    153: _regularized(SQUISH, "Nate Chaoweeraprasit’s SQUISH"),
+    146: Credit((XU,), (BARNETT,), "Robert Barnett’s refinement of Ryan Xu’s packing"),
+    153: Credit(
+        (PINGYOU,),
+        (),
+        "PingYou Ltd’s construction, after Ryan Xu’s n = 70 packing and Evan Daniel’s exact "
+        "certificate of it",
+    ),
     154: Credit((SQUISH,), (), "Nate Chaoweeraprasit’s SQUISH packing"),
-    155: _couzo("SQUISH"),
+    155: Credit((OSTASHEV,), (), "Daniil Ostashev’s packing"),
+    156: Credit((OSTASHEV,), (), "Daniil Ostashev’s packing"),
     175: _couzo("Xu"),
     180: Credit(
         (SQUISH,),
@@ -228,14 +282,21 @@ CREDITS: dict[int, Credit] = {
         "Francisco Couzo’s refinement of Nate Chaoweeraprasit’s SQUISH packing, "
         "as Siddharth Gupta refined it",
     ),
-    207: Credit((SQUISH,), (), "Nate Chaoweeraprasit’s SQUISH packing"),
+    207: Credit(
+        (PINGYOU,),
+        (),
+        "PingYou Ltd’s assembly of two placed patches of Ryan Xu’s n = 70 packing, from "
+        "Evan Daniel’s exact certificate of it",
+    ),
     209: _couzo("SQUISH"),
+    211: Credit((OSTASHEV,), (), "Daniil Ostashev’s packing"),
     228: Credit((COUZO,), (), "Francisco Couzo’s refinement of his own packing"),
     232: Credit((SQUISH,), (), "Nate Chaoweeraprasit’s SQUISH packing"),
     236: _regularized(SQUISH, "Nate Chaoweeraprasit’s SQUISH"),
     237: _couzo("SQUISH"),
     258: _regularized(SQUISH, "Nate Chaoweeraprasit’s SQUISH", via="Mishapolk"),
     259: Credit((SQUISH,), (), "Nate Chaoweeraprasit’s SQUISH packing"),
+    261: Credit((XU,), (BARNETT,), "Robert Barnett’s refinement of Ryan Xu’s packing"),
     263: _regularized(SQUISH, "Nate Chaoweeraprasit’s SQUISH"),
     267: _couzo("Xu"),
     269: _regularized(SQUISH, "Nate Chaoweeraprasit’s SQUISH"),
@@ -567,6 +628,12 @@ def _review(result: str) -> tuple[str, str]:
     return str(review["path"]), f"{day} October 2026"
 
 
+def _finally_reviewed(result: str) -> bool:
+    """Whether the final review of 11 October covered the result as well as its own."""
+    entry = next(e for e in _register() if e["id"] == result)
+    return any(r["path"] == FINAL_REVIEW for r in entry["reviews"])
+
+
 def opening(move: Move) -> str:
     n, house, credit = move.n, move.house, CREDITS[move.n]
     upper = move.packing["reported_upper_bound"]
@@ -601,13 +668,16 @@ def section(move: Move) -> str:
         if fraction
         else f"at an exact rational side, displayed upward as ${ceiling}$"
     )
-    routes = (
+    routes = prose.routes or (
         "One maintained route is the verifier the source ran; the independent rational "
         "corner checker and the third route are independently re-implemented."
         if prose.producer_route
         else "No route here is the source’s code, so the replay is independently "
         "re-implemented."
     )
+    reviews = f"[review of {reviewed}](../../{review})"
+    if _finally_reviewed(house.result):
+        reviews = f"{reviews} and the [final review of 11 October 2026](../../{FINAL_REVIEW})"
     paragraphs = [
         f"## {_title(move)}",
         (
@@ -621,11 +691,10 @@ def section(move: Move) -> str:
             "Both maintained exact routes decided it here, `sqpack`’s exact separating-axis "
             "verifier and the independent rational corner checker, with its duplicate-square "
             "and outside-container controls, and a third exact route, half-extent containment "
-            f"and exact intersection area, decided it again. {routes} The "
-            f"[review of {reviewed}](../../{review}) and the "
-            f"[final review of 11 October 2026](../../{FINAL_REVIEW}) accepted the replay for "
-            f"finite feasibility. That proves $s({n}) \\le {ceiling}$, the verified upper "
-            "bound: confirmed, independently re-implemented. It says nothing about "
+            f"and exact intersection area, decided it again. {routes} The {reviews} "
+            "accepted the replay for finite feasibility. "
+            f"That proves $s({n}) \\le {ceiling}$, the verified upper bound: confirmed, "
+            "independently re-implemented. It says nothing about "
             "optimality, rigidity or a local minimum."
         ),
     ]

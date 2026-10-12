@@ -12924,13 +12924,15 @@ results:
       to ry-xu, at 103 as refined by Mishapolk (T-138); at 70 Eric Deleeuw's refinement
       (T-137) is named only as the smallest side the record held. The 11 October review of
       T-146 accepted it, and on 11 October 2026 the case records adopted it as the house at
-      those seven counts, crediting each packing to ry-xu.
+      six of those counts, crediting each packing to ry-xu. At 146 and 261 Robert Barnett's
+      refinements of the same packings (T-150, issue 505) are smaller still, and the same
+      adoption made them the houses there, crediting the packings to ry-xu.
 
       The same adoption moved the houses at 84, 86, 105, 108, 126, 127, 131, 175 and 267 to
       smaller confirmed certificates: Francisco Couzo's refinements of these packings (T-128,
-      T-130, T-134, T-140), Evan Daniel's reconstruction of the arrangement at 126 (T-139)
-      and SQUISH's packing at 131 (T-136). This entry now holds the case record at 261, and
-      each certificate of it that was replaced stays retained and verified as history.
+      T-130, T-134, T-140), Evan Daniel's reconstruction of the arrangement at 126 (T-139) and
+      SQUISH's packing at 131 (T-136). This entry now holds no case record; each of its
+      certificates stays retained and verified as history.
     controls:
     - packing/resources/web/ry-xu-new-packings-2026-10-08/receipts/exact-certification.json.xz
     - packing/tests/test_ryxu_house_links.py
@@ -13090,9 +13092,9 @@ results:
       independent rational corner checker and the third route are independently
       re-implemented. The 10 October review found no blocking defect.
 
-      On 11 October 2026 the case records adopted six of them as the house, at 108, 127, 155,
-      180, 228 and 306. At 105 and 131 smaller certificates hold the case (T-130,
-      T-136), and these two stay verified and are not selected.
+      On 11 October 2026 the case records adopted five of them as the house, at 108, 127, 180,
+      228 and 306. At 105, 131 and 155 smaller certificates hold the case (T-130, T-136,
+      T-149), and these three stay verified and are not selected.
 
       Credit Francisco Couzo (https://github.com/franciscouzo/square-packing), refining Ryan
       Xu's packings at 105, 108, 127 and 131, Nate Chaoweeraprasit's SQUISH packings at 155
@@ -13177,13 +13179,13 @@ results:
       (E-evand-465-record-hunt-exact-feasibility); it moves no rung.
 
       The review recommended T-128 as the house at 108, 127, 155, 180, 228 and 306, Couzo's
-      n155 certificate, committed nine hours before Daniel's, holding 155. On 11 October
-      2026, the owner having lifted the wait for jlevy/squares#403, the case records adopted
-      it there, each case's reported and verified upper bounds moved together and each
+      n155 certificate, committed nine hours before Daniel's, holding 155. On 11 October 2026,
+      the owner having lifted the wait for jlevy/squares#403, the case records adopted it at
+      five of them, each case's reported and verified upper bounds moved together and each
       earlier house kept as history (devtools.select_houses derives the house per count from
-      the register, devtools.adopt_houses writes it, devtools.upper_bound_houses draws it).
-      At 105 T-130's side is smaller and at 131 issue 481's (T-136), so T-128's stay
-      verified there and are not selected.
+      the register, devtools.adopt_houses writes it, devtools.upper_bound_houses draws it). At
+      105 T-130's side is smaller, at 131 issue 481's (T-136) and at 155 Daniil Ostashev's of
+      issue 501 (T-149), so T-128's stay verified there and are not selected.
     next_rung: >-
       V4 and C4 need a retained human oversight record: two accepted adversarial
       reviews by distinct AI reviewers are retained, the 10 October review and the 11 October
@@ -14195,13 +14197,15 @@ results:
       code, so the replay is independently re-implemented. The 10 October review found no
       blocking defect.
 
-      Each side is below the ceiling its case holds, and below every other report pending
-      at its count except at 209, 237, 270 and 305, where Francisco Couzo's later
-      certificates of issue 488 (T-140) are smaller, and at 153, 236, 263, 269, 292, 302 and
-      303, where Evan Daniel's later regularized certificates (T-146) are smaller. On 11
-      October 2026 the case records adopted this entry as the house at 131, 154, 207, 232,
-      259 and 307, T-140 at the first four and T-146 at the other seven, which regularizes
-      these packings there and credits them to this entry.
+      Each side was below the ceiling its case held, and below every other report then pending
+      at its count except at 209, 237, 270 and 305, where Francisco Couzo's later certificates
+      of issue 488 (T-140) are smaller, at 153, 236, 263, 269, 292, 302 and 303, where Evan
+      Daniel's later regularized certificates (T-146) are smaller, and at 153 and 207, where
+      PingYou Ltd's later certificates of issues 504 and 503 (T-148, T-147) are smaller still.
+      On 11 October 2026 the case records adopted this entry as the house at 131, 154, 232,
+      259 and 307, T-140 at 209, 237, 270 and 305, T-146 at 236, 263, 269, 292, 302 and 303,
+      which regularizes these packings there and credits them to this entry, T-147 at 207 and
+      T-148 at 153.
 
       Credit Nate Chaoweeraprasit (https://github.com/itsnaka/squish-certs), using SQUISH
       and its Mondrian composition method, after Francisco Couzo, Ryan Xu, Frits Göbel,
@@ -14325,10 +14329,12 @@ results:
 
       T-146 regularizes these packings at 153, 236, 263, 269, 292, 302 and 303 and credits
       them to this entry; its 11 October review accepted it, and the house recommendation at
-      those seven goes to T-146, so this entry was recommended at 131, 154, 207, 232, 259 and
-      307. Private-worker custody (RI-5) was closed on 11 October 2026
-      (packing/devtools/house-custody-2026-10-11.json), and the case records adopted the houses that
-      day, each earlier house kept as history.
+      those seven goes to T-146, except at 153, where the 11 October review of issues 503 and
+      504 (docs/project/reviews/review-2026-10-11-upper-bound-imports-503-504.md) recommends
+      T-148, as it recommends T-147 at 207; so this entry was recommended at 131, 154, 232,
+      259 and 307. Private-worker custody (RI-5) was closed on 11 October 2026
+      (packing/devtools/house-custody-2026-10-11.json), and the case records adopted the
+      houses that day, each earlier house kept as history.
 
       The three sources/ certificates at 155, 240 and 306 are above their cases and are
       not imported. The source's own checkers were not run here. No two independent
@@ -16058,10 +16064,12 @@ results:
       regularized arrangement and the certificate.
 
       The 11 October review recommended this entry as the house at all fifteen counts,
-      crediting each packing as above, and the case records adopted it at all fifteen on 11
-      October 2026, each earlier house kept as history. The notes of T-125 (at 70, 102, 103,
-      123, 129, 146 and 295), T-136 (at 153, 236, 263, 269, 292, 302 and 303), T-137 (at 70)
-      and T-138 (at 103 and 258) say so.
+      crediting each packing as above. The 11 October reviews of issues 503 and 504 and of
+      issues 505 and 501 recommend T-148 at 153 and T-150 at 146, whose sides are smaller, so
+      on 11 October 2026 the case records adopted this entry at the other thirteen, each
+      earlier house kept as history, and at 146 and 153 it stays verified and is not selected.
+      The notes of T-125 (at 70, 102, 103, 123, 129, 146 and 295), T-136 (at 153, 236, 263,
+      269, 292, 302 and 303), T-137 (at 70) and T-138 (at 103 and 258) say so.
 
       The source's own checkers were not run here. The two maintained routes, the sqpack
       rational witness verifier and the independent rational corner checker, share
@@ -16144,9 +16152,12 @@ results:
       did not run the third route, so the replay is independently re-implemented. The 11
       October review found no blocking defect.
 
-      The side is 7.03e-03 below the ceiling the case holds (T-127) and 4.55e-03 below
-      SQUISH's pending T-136; the case record is unchanged until a house is adopted, so it
-      is pending adoption.
+      The side was 7.03e-03 below the ceiling the case held, Nate Chaoweeraprasit's packing as
+      Siddharth Gupta refined it (T-127), and is 4.55e-03 below SQUISH's T-136. On 11 October
+      2026 the case record adopted this entry as the house at 207, its reported and verified
+      upper bounds moving together, T-127's certificate kept as history and T-136 verified and
+      not selected; private-worker custody (RV-6) was closed in the same change
+      (packing/devtools/house-custody-2026-10-11.json).
 
       Credit PingYou Ltd (https://github.com/BuddenPing/square-packing-certificates) for
       the n207 assembly, as the source asks: two differently placed patches of Ryan Xu's
@@ -16238,16 +16249,6 @@ results:
     next_rung: >-
       V4 and C4 need a second accepted adversarial review by a distinct reviewer and a
       retained human oversight record; one AI review, of 11 October, is retained.
-      Separately, the next layer of the 2026-10-11 intake stack adopts this entry as the
-      house at 207 once private-worker custody is on file (RV-6), with each earlier house
-      kept as history.
-    activity:
-      state: in-analysis
-      what: >-
-        House adoption at n = 207 in the next layer of the 2026-10-11 intake stack, the
-        case-record adoption lane, with private-worker custody first (RV-6).
-      since: '2026-10-11'
-      link: think-fvz4
     reviews:
       - path: docs/project/reviews/review-2026-10-11-upper-bound-imports-503-504.md
         kind: adversarial
@@ -16306,10 +16307,13 @@ results:
       did not run the third route, so the replay is independently re-implemented. The 11
       October review found no blocking defect.
 
-      The side is 9.67e-03 below the ceiling the case holds (T-127), below Evan Daniel's
-      pending T-146 by exactly 0.002015998674135970992348937968, the figure the issue gives,
-      and below SQUISH's pending T-136 by 2.02e-03; the case record is unchanged until a
-      house is adopted, so it is pending adoption.
+      The side was 9.67e-03 below the ceiling the case held (T-127), and is below Evan
+      Daniel's T-146 by exactly 0.002015998674135970992348937968, the figure the issue gives,
+      and below SQUISH's T-136 by 2.02e-03. On 11 October 2026 the case record adopted this
+      entry as the house at 153, its reported and verified upper bounds moving together,
+      T-127's certificate kept as history and T-146 and T-136 verified and not selected;
+      private-worker custody (RV-6) was closed in the same change
+      (packing/devtools/house-custody-2026-10-11.json).
 
       Credit PingYou Ltd (https://github.com/BuddenPing/square-packing-certificates) for
       the n153 construction, as the source asks: by its account, Ryan Xu's n70 construction
@@ -16417,16 +16421,6 @@ results:
     next_rung: >-
       V4 and C4 need a second accepted adversarial review by a distinct reviewer and a
       retained human oversight record; one AI review, of 11 October, is retained.
-      Separately, the next layer of the 2026-10-11 intake stack adopts this entry as the
-      house at 153 once private-worker custody is on file (RV-6), with each earlier house
-      kept as history.
-    activity:
-      state: in-analysis
-      what: >-
-        House adoption at n = 153 in the next layer of the 2026-10-11 intake stack, the
-        case-record adoption lane, with private-worker custody first (RV-6).
-      since: '2026-10-11'
-      link: think-fvz4
     reviews:
       - path: docs/project/reviews/review-2026-10-11-upper-bound-imports-503-504.md
         kind: adversarial
@@ -16484,10 +16478,13 @@ results:
       so the replay is independently re-implemented. The 11 October review found no
       blocking defect.
 
-      Each side is below the ceiling its case holds, by 7.78e-05 at 155 (T-115), 2.91e-03
-      at 156 and 1.62e-03 at 211 (T-098), and at 155 below Francisco Couzo's pending T-128
-      by 7.35e-05; the case records are unchanged until a house is adopted, so each is
-      pending adoption.
+      Each side was below the ceiling its case held, by 7.78e-05 at 155 (SQUISH's update,
+      T-115), 2.91e-03 at 156 and 1.62e-03 at 211 (Evan Daniel's exact optima, T-098), and at
+      155 is below Francisco Couzo's T-128 by 7.35e-05. On 11 October 2026 the case records
+      adopted this entry as the house at all three counts, each case's reported and verified
+      upper bounds moving together and each earlier house kept as history, with T-128 verified
+      and not selected at 155; private-worker custody was closed in the same change
+      (packing/devtools/house-custody-2026-10-11.json).
 
       Credit Daniil Ostashev (https://github.com/dostashev/square-packing) with the three
       packings and their certificates, the name he agreed to on the issue on 11 October
@@ -16588,16 +16585,6 @@ results:
     next_rung: >-
       V4 and C4 need a second accepted adversarial review by a distinct reviewer and a
       retained human oversight record; one AI review, of 11 October, is retained.
-      Separately, the next layer of the 2026-10-11 intake stack adopts this entry as the
-      house at 155, 156 and 211 once private-worker custody is on file, with each earlier
-      house kept as history.
-    activity:
-      state: in-analysis
-      what: >-
-        House adoption at n = 155, 156 and 211 in the next layer of the 2026-10-11 intake
-        stack, the case-record adoption lane, with private-worker custody first.
-      since: '2026-10-11'
-      link: think-fvz4
     reviews:
       - path: docs/project/reviews/review-2026-10-11-upper-bound-imports-505-501.md
         kind: adversarial
@@ -16647,10 +16634,13 @@ results:
       here is the source's code, and the source ran none of them, so the replay is
       independently re-implemented. The 11 October review found no blocking defect.
 
-      Each side is below the ceiling its case holds, Ryan Xu's certificate (T-125), by
-      7.36e-08 at 146 and 7.35e-11 at 261, and at 146 below Evan Daniel's pending
-      regularization (T-146) by 7.35e-08; the case records are unchanged until a house is
-      adopted, so each is pending adoption.
+      Each side was below the ceiling its case held, Ryan Xu's certificate (T-125), by
+      7.36e-08 at 146 and 7.35e-11 at 261, and at 146 is below Evan Daniel's regularization
+      (T-146) by 7.35e-08. On 11 October 2026 the case records adopted this entry as the house
+      at both counts, each case's reported and verified upper bounds moving together, Ryan
+      Xu's certificates kept as history and T-146 verified and not selected at 146;
+      private-worker custody was closed in the same change
+      (packing/devtools/house-custody-2026-10-11.json).
 
       Credit Ryan Xu (ry-xu, https://github.com/ry-xu/square_packing, issue 432) with both
       packings, as the source does, and Robert Barnett
@@ -16752,16 +16742,6 @@ results:
     next_rung: >-
       V4 and C4 need a second accepted adversarial review by a distinct reviewer and a
       retained human oversight record; one AI review, of 11 October, is retained.
-      Separately, the next layer of the 2026-10-11 intake stack adopts this entry as the
-      house at 146 and 261 once private-worker custody is on file, with each earlier house
-      kept as history.
-    activity:
-      state: in-analysis
-      what: >-
-        House adoption at n = 146 and 261 in the next layer of the 2026-10-11 intake stack,
-        the case-record adoption lane, with private-worker custody first.
-      since: '2026-10-11'
-      link: think-fvz4
     reviews:
       - path: docs/project/reviews/review-2026-10-11-upper-bound-imports-505-501.md
         kind: adversarial

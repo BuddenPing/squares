@@ -478,10 +478,10 @@ def test_unaffected_ryxu_link_keeps_its_complete_private_source_owner(
     monkeypatch.setattr(ryxu.reports, "REPO", repo)
     monkeypatch.setattr(ryxu, "REPO", repo)
     monkeypatch.setattr(check_results, "REPO", repo)
-    frontier = repo / "packing/frontier/n-261.md"
+    frontier = repo / "packing/frontier/n-051.md"
     frontier.parent.mkdir(parents=True)
     frontier.write_bytes((SOURCE / frontier.relative_to(repo)).read_bytes())
-    path = ryxu.house_path(261)
+    path = ryxu.house_path(51)
     path.parent.mkdir(parents=True)
     path.symlink_to(SOURCE / path.relative_to(repo))
 

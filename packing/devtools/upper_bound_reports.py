@@ -1004,6 +1004,10 @@ HOUSES: dict[str, Callable[[int], Fraction]] = {
     "[Mishapolk decimal poses 2026-10-09]": _import("mishapolk-decimal-poses-2026-10-09"),
     "[Daniel regularized lists 2026-10-10]": _import("evand-regularized-2026-10-10"),
     "[Daniel trio126 2026-10-09]": _import("evand-trio126-2026-10-09"),
+    "[PingYou n207 certificate 2026-10-11]": _import("pingyou-n207-certificate-2026-10-11"),
+    "[PingYou n153 certificate 2026-10-11]": _import("pingyou-n153-certificate-2026-10-11"),
+    "[Ostashev records 2026-10-11]": _import("dostashev-records-2026-10-11"),
+    "[Barnett refinements 2026-10-11]": _import("barnett-refinements-2026-10-11"),
 }
 
 

@@ -37,10 +37,10 @@ def test_every_adopted_case_holds_the_derived_smallest_side(
 def test_regularizations_leave_the_packing_with_its_finder(
     selections: dict[int, select.Selection],
 ) -> None:
-    assert selections[153].candidates[0].regularizes == "T-136"
+    assert selections[236].candidates[0].regularizes == "T-136"
     assert selections[103].candidates[0].regularizes == "T-138"
     assert selections[70].candidates[0].regularizes == "T-125"
-    assert adopt.CREDITS[153].found_by == (adopt.SQUISH,)
+    assert adopt.CREDITS[236].found_by == (adopt.SQUISH,)
     assert adopt.CREDITS[70].found_by == (adopt.XU,)
     assert adopt.CREDITS[103].improved_by == ("Mishapolk", adopt.DANIEL)
 

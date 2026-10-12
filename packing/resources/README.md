@@ -871,9 +871,11 @@ Source MIT licences and the earlier #375 namespace remain unchanged.
   `8dc415296f697f5140caea27c7a0193d52deb4e6`;
   [packet](web/ry-xu-new-packings-2026-10-08/README.md).
   All 25 rational certificates have complete exact finite-feasibility replay (T-125).
-  The separate undilated n = 51 construction in $Q(\sqrt 2)$ is confirmed by T-126. The
-  atlas selects 17 rational packings and that radical construction; eight rational
-  certificates remain as nonselected evidence.
+  The separate undilated n = 51 construction in $Q(\sqrt 2)$ is confirmed by T-126.
+  Since 11 October 2026 smaller confirmed certificates hold every case the rational
+  packings held, refinements and regularizations of Xu’s packings among them, so the
+  atlas draws only the radical construction and all 25 rational certificates remain as
+  nonselected evidence.
   Native exact checks find 119 touching pairs at n = 51; the source’s count of 191
   remains unconfirmed.
   These results establish finite upper bounds, without local or global optimality.
@@ -881,9 +883,10 @@ Source MIT licences and the earlier #375 namespace remain unchanged.
   does not treat the unlicensed source programs as a licensed software bundle.
 
 - **[Gupta rational refinements 2026-10-08]** — Siddharth Gupta’s seventeen complete
-  rational source cases at `9643cb5a78c1d4dcfc867c80a6920c3a6219d05a`; fourteen selected
-  finite upper-bound improvements and three withdrawals, T-127 at V3/C3.
-  [Factual packet](web/gupta-square-packing-refinements-2026-10-08/README.md).
+  rational source cases at `9643cb5a78c1d4dcfc867c80a6920c3a6219d05a`; fourteen finite
+  upper-bound improvements and three withdrawals, T-127 at V3/C3. Since 11 October 2026
+  seven of the fourteen cases hold smaller confirmed certificates, and the other seven
+  keep these. [Factual packet](web/gupta-square-packing-refinements-2026-10-08/README.md).
   Independently re-implemented deciding code verified every complete source certificate
   and full-roster control; actual private custody admitted the complete retained
   inputs/results without repeating geometry.
@@ -934,7 +937,7 @@ pending.
   T-128 is at V3/C3 on the
   [review of 10 October](../../docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md),
   which reproduced every job and decided all eight by a third exact route; since 11
-  October 2026 the cases at 108, 127, 155, 180, 228 and 306 hold its certificates as the
+  October 2026 the cases at 108, 127, 180, 228 and 306 hold its certificates as the
   house. All 24 native jobs completed their finite-feasibility and control outcomes in
   6.64 wall minutes; actual private-worker custody passed complete stored-input and
   mutation-restoration checks.
@@ -997,9 +1000,9 @@ with their KKT points, inputs and solver reports;
 Both project exact routes accept both certificates and refuse all four controls.
 T-131 records the n = 132 side at V3/C3 on the
 [review of 10 October](../../docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md);
-issue 476’s smaller n = 132 side is the house that review recommends.
-The n = 155 side equals Couzo’s earlier issue451 certificate (T-128), with which it
-shares 152 of 155 exact poses, differing only in the free and flat-motion squares the
+since 11 October 2026 the case at 132 holds issue 489’s smaller side (T-141) as the
+house. The n = 155 side equals Couzo’s earlier issue451 certificate (T-128), with which
+it shares 152 of 155 exact poses, differing only in the free and flat-motion squares the
 source’s report lists; it is recorded as an evidence update to T-128. The source credits
 Couzo’s and Chaoweeraprasit’s packings as starting points and discloses Claude
 assistance under Daniel’s direction.
@@ -1042,8 +1045,7 @@ derived exact facts, no upstream byte retained;
 Both project exact routes accept all 17 replayed certificates and refuse all 34
 controls, and a third exact route agrees and held each fact to its pinned upstream file.
 T-136 records the seventeen sides at V3/C3; since 11 October 2026 the cases at 131, 154,
-207, 232, 259 and 307 hold them as the house, and smaller certificates hold the other
-eleven.
+232, 259 and 307 hold them as the house, and smaller certificates hold the other twelve.
 
 **[Deleeuw n70 refinement 2026-10-10]**: Eric Deleeuw’s exact rational certificate for n
 = 70, a refinement of Ryan Xu’s packing, pinned at
@@ -1118,8 +1120,8 @@ Both project exact routes accept all fifteen and refuse all 30 controls, and a t
 exact route agrees. The source calls each a display view at the same side and not a new
 bound; T-146 records the sides at V3/C3 on the review of 11 October, which accepted all
 fifteen for finite feasibility only, and as regularizations of the packings the record
-credits to their finders; since 11 October 2026 each case holds its certificate as the
-house.
+credits to their finders; since 11 October 2026 thirteen of the cases hold their
+certificates as the house, and at 146 and 153 smaller certificates do (T-150, T-148).
 
 ## PingYou Ltd’s exact certificates, 11 October 2026
 
@@ -1132,8 +1134,8 @@ Both project exact routes accept the replayed certificate and refuse both contro
 a third exact route agrees and held the fact to the pinned certificate and witness.
 T-147 records the side at V3/C3 on the
 [review of 11 October](../../docs/project/reviews/review-2026-10-11-upper-bound-imports-503-504.md),
-pending adoption. The first commit disclosed OpenAI Codex assistance, and the pinned
-commit removed the disclosure.
+and the case at 207 holds it as the house since 11 October 2026. The first commit
+disclosed OpenAI Codex assistance, and the pinned commit removed the disclosure.
 
 **[PingYou n153 certificate 2026-10-11]**: PingYou Ltd’s exact rational certificate for
 n = 153, by its account Ryan Xu’s n70 construction composed with its reflection and an
@@ -1142,8 +1144,8 @@ upright completion, its contacts reclosed at a new angle, pinned at
 byte retained; [packet](web/pingyou-n153-certificate-2026-10-11/README.md).
 Both project exact routes accept the replayed certificate and refuse both controls, and
 a third exact route agrees and held the fact to the pinned certificate and witness.
-T-148 records the side at V3/C3 on the same review, pending adoption; the lineage from
-the n70 is by construction, not by pose.
+T-148 records the side at V3/C3 on the same review, and the case at 153 holds it as the
+house since 11 October 2026; the lineage from the n70 is by construction, not by pose.
 The release makes no statement about AI assistance.
 
 ## Daniil Ostashev’s and Robert Barnett’s certificates, 11 October 2026
@@ -1157,7 +1159,8 @@ Both project exact routes accept all three and refuse all six controls, and a th
 exact route agrees and held every file to its pinned bytes.
 T-149 records the sides at V3/C3 on the
 [review of 11 October](../../docs/project/reviews/review-2026-10-11-upper-bound-imports-505-501.md),
-pending adoption; the issue prints the larger sides the head replaced.
+and the cases at all three hold them as the house since 11 October 2026; the issue
+prints the larger sides the head replaced.
 The source states nothing about AI assistance.
 
 **[Barnett refinements 2026-10-11]**: Robert Barnett’s exact rational certificates for n
@@ -1167,9 +1170,9 @@ byte retained; [packet](web/barnett-refinements-2026-10-11/README.md).
 Both project exact routes accept all seven replayed certificates, the five the README
 marks superseded among them, and refuse all 14 controls, and a third exact route agrees
 on the two requested and held each fact to its pinned certificate.
-T-150 records the two sides at V3/C3 on the same review, pending adoption; the five
-superseded certificates are registered nowhere.
-OpenAI Codex assistance disclosed.
+T-150 records the two sides at V3/C3 on the same review, and the cases at 146 and 261
+hold them as the house since 11 October 2026; the five superseded certificates are
+registered nowhere. OpenAI Codex assistance disclosed.
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.

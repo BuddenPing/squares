@@ -3535,7 +3535,11 @@ def _composite_pdf_problems(canvas: CompositeCanvas, svg_text: str) -> list[str]
 def _build_case(n: int, plan: SourcePlan) -> BuiltCase:
     case = _frontier_case(n)
     witness = _build_witness(case, plan)
-    witness = orient_atlas_witness(witness)
+    if not _adopted(case, pictured_source_key(case)):
+        # An adopted house is drawn as its certificate states it (`upper_bound_houses`);
+        # the registered n = 211 orientation belongs to de Winter's parent, which the
+        # adoption of 11 October 2026 replaced there.
+        witness = orient_atlas_witness(witness)
     problems = check_witness_semantics(witness)
     if problems:
         raise ValueError(f"{witness['id']}: {problems[0]}")

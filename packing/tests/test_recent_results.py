@@ -152,7 +152,7 @@ def test_standing_agrees_with_the_recent_rows(
         # was recorded on 2026-10-02.
         ("T-055", view.SECOND_CERTIFICATE),
         # Couzo's eight rational certificates of 8 October, pending adoption until the
-        # house adoption of 11 October 2026 took six of them into the case records.
+        # house adoption of 11 October 2026 took five of them into the case records.
         ("T-128", view.HOLDS),
         # The exact side of n = 152 cut below the rational ceiling T-098 holds there,
         # which the case records have not taken in.

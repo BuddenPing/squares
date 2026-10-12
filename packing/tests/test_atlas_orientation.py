@@ -21,7 +21,10 @@ from devtools.atlas_orientation import (
 from sqpack.witness import exact_verify, load_witness
 
 ROOT = Path(__file__).resolve().parents[1]
-SELECTED = ROOT / "witnesses/known-best/n-211.yaml"
+SCHEMA = ROOT / "witnesses/witness.schema.yaml"
+#: The n = 211 atlas witness as it stood while de Winter's parent was the house, before the
+#: adoption of 11 October 2026 drew Daniil Ostashev's certificate there unreflected.
+SELECTED = ROOT / "tests/fixtures/n211-de-winter-atlas-witness.yaml"
 
 
 def _decimal_pair() -> dict:
@@ -118,7 +121,7 @@ def test_only_the_registered_atlas_case_is_oriented() -> None:
 
 
 def test_n211_orientation_keeps_source_dates_bounds_and_feasibility() -> None:
-    source = source_orientation(load_witness(SELECTED))
+    source = source_orientation(load_witness(SELECTED, fallback_schema=SCHEMA))
     image = orient_atlas_witness(source)
     assert image["n"] == 211
     for key in ("id", "side", "square_size", "scalar", "coordinates", "source", "claim"):
@@ -147,7 +150,7 @@ def test_n211_orientation_keeps_source_dates_bounds_and_feasibility() -> None:
 
 
 def test_correcting_a_legacy_vertical_flip_rebases_on_the_original_parent() -> None:
-    source = source_orientation(load_witness(SELECTED))
+    source = source_orientation(load_witness(SELECTED, fallback_schema=SCHEMA))
     corrected = orient_atlas_witness(source)
     legacy = reflect_x_axis(source)
     legacy["certificate"]["geometry_transform"] = deepcopy(
@@ -225,7 +228,7 @@ def test_selected_atlas_cli_dispatches_the_existing_scoped_producer(
 
 @pytest.mark.parametrize("field", ["key", "path"])
 def test_n211_source_switch_cannot_inherit_the_registered_packet_lineage(field: str) -> None:
-    source = source_orientation(load_witness(SELECTED))
+    source = source_orientation(load_witness(SELECTED, fallback_schema=SCHEMA))
     source["source"][field] = "another-published-parent"
     before = deepcopy(source)
     with pytest.raises(ValueError, match=r"registered atlas orientation.*parent"):

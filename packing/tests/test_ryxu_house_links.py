@@ -270,7 +270,7 @@ def test_frontier_witness_field_parser_is_independent_of_key_order() -> None:
     assert safe_load(updated.split("---\n", 2)[1]) == original
 
 
-@pytest.mark.parametrize("n", [51, 261])
+@pytest.mark.parametrize("n", [51])
 @pytest.mark.parametrize("mutation", ["side", "credit", "body"])
 def test_source_adoption_refuses_mutable_upper_geometry_claims(
     private: Path, n: int, mutation: str

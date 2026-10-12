@@ -349,6 +349,7 @@ def test_superseded_is_marked_on_a_bound_and_where_a_later_result_is_declared() 
         "T-116",
         "T-117",
         "T-120",
+        "T-125",
         "T-129",
         "T-131",
         "T-133",
@@ -356,13 +357,14 @@ def test_superseded_is_marked_on_a_bound_and_where_a_later_result_is_declared() 
         "T-137",
         "T-138",
     }
-    # The house adoption of 11 October 2026 moved 39 case records to the smallest
+    # The house adoption of 11 October 2026 moved 42 case records to the smallest
     # confirmed and reviewed side the register held (think-fvz4): SQUISH's earlier packets
-    # (T-113, T-115, T-116) and the Rehwaldt refinements (T-117) lost their last houses,
-    # and four confirmed reports smaller than their cases were never adopted, since a
-    # smaller one was (T-131, T-135, T-137, T-138). Couzo's eight-case report of 8 October
-    # (T-128) and five-case follow-up (T-130), pending adoption until then, hold case lanes
-    # at six counts and three, and are unmarked.
+    # (T-113, T-115, T-116), the Rehwaldt refinements (T-117) and Ryan Xu's rational
+    # certificates (T-125) lost their last houses, and four confirmed reports smaller than
+    # their cases were never adopted, since a smaller one was (T-131, T-135, T-137, T-138).
+    # Couzo's eight-case report of 8 October (T-128) and five-case follow-up (T-130),
+    # pending adoption until then, hold case lanes at five counts and three, and are
+    # unmarked.
     for entry in ("T-128", "T-130"):
         assert entry not in marked
         assert view.standing(records.results[entry], records) == view.HOLDS
@@ -477,7 +479,7 @@ def test_a_bound_better_than_its_cases_hold_is_pending_adoption_not_superseded()
     them; where one it states is strictly better, nothing has replaced it, and it is
     pending adoption, with no mark. Until 9 October T-128, eight sides below every ceiling
     its cases held, read "superseded by T-098, T-115, T-125 and T-127" (think-h0d1); it was
-    pending adoption from then until the house adoption of 11 October 2026 took six of its
+    pending adoption from then until the house adoption of 11 October 2026 took five of its
     sides into the case records (think-fvz4). T-122, a report of n = 152's exact side cut
     below the outward-rounded rational T-098 holds there, is pending adoption still."""
     view = render_recent_results

@@ -1062,14 +1062,12 @@ def test_one_tile_a_case_is_drawn_from_its_regularized_view_where_it_has_one() -
         ) == frontier.packing_svg(n, units=overview_sections.ATLAS_UNITS):
             identical_thumbnails.add(n)
     # Since the house adoption of 11 October 2026 (think-fvz4), the houses that are
-    # already display-regularized packings (T-146), Couzo's n155 refinement and the
-    # remaining #432 house at 261 have unchanged tile-scale shades; 400-unit rounding
-    # hides moves visible in the full SVG.
+    # already display-regularized packings (T-146) and Robert Barnett's precision
+    # refinement of Ryan Xu's packing at 261 (T-150) have unchanged tile-scale shades;
+    # 400-unit rounding hides moves visible in the full SVG.
     assert identical_thumbnails == {
         70,
         103,
-        153,
-        155,
         236,
         258,
         261,
