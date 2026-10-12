@@ -202,6 +202,14 @@ def test_the_live_record_has_one_entry_an_issue_and_names_its_answer_bead() -> N
         ),
         (lambda r: r["issues"][0].update(state="closed"), "closed"),
         (lambda r: r["issues"][0].update(answer_bead="other-1234"), "answer_bead"),
+        (
+            lambda r: r["issues"][0].update(intake=True),
+            'issues/0: {"required":["intake"]} is not allowed',
+        ),
+        (
+            lambda r: r["issues"][0].update(kind="other", intake=False),
+            "issues/0/intake: true was expected",
+        ),
     ],
 )
 def test_the_check_refuses_an_unknown_id_a_misplaced_reply_and_a_broken_schema(
@@ -640,16 +648,23 @@ def test_the_github_comparison_lists_missing_replies_unread_comments_and_unknown
     ]
 
 
-def test_the_github_comparison_lists_every_result_report_without_the_intake_label() -> None:
-    """A result report carries `intake` on GitHub, open or closed, whatever else it
-    carries; an issue of another kind needs no label. On 12 October 2026 none of the 64
-    reports carried it, and nothing listed them. The label and an edited comment on the
-    same issue are listed apart, each with its own step in the sweep."""
+@pytest.mark.parametrize("kind", ["defect-report", "correction", "other"])
+def test_the_github_comparison_lists_every_issue_reported_for_intake_without_the_label(
+    kind: str,
+) -> None:
+    """An issue that reports a new item for intake carries `intake` on GitHub, open or
+    closed, whatever else it carries: every result report, and an entry of any other
+    kind marked `intake: true`, as #295, #308, #358 and #367 are. An entry of another
+    kind without the mark needs no label, so neither the kind alone nor the mark alone
+    decides it. The label and an edited comment on the same issue are listed apart, each
+    with its own step in the sweep."""
     recorded = record(
         issue(number=7),
         issue(number=8, state="closed", closed="2026-10-03"),
         issue(number=9, state="closed", closed="2026-10-03"),
-        issue(number=10, kind="defect-report"),
+        issue(number=10, kind=kind),
+        issue(number=11, kind=kind, intake=True),
+        issue(number=12, kind=kind, intake=True),
     )
     n17 = {"id": 2, "name": "n-17", "color": "5319e7"}
     live: dict[str, Any] = {
@@ -657,18 +672,24 @@ def test_the_github_comparison_lists_every_result_report_without_the_intake_labe
             {"number": 7, "state": "open", "title": "A request", "labels": [n17]},
             {"number": 8, "state": "closed", "title": "Closed", "labels": []},
             {"number": 9, "state": "closed", "title": "Labelled", "labels": [n17, INTAKE]},
-            {"number": 10, "state": "open", "title": "A defect", "labels": []},
+            {"number": 10, "state": "open", "title": "Unmarked", "labels": []},
+            {"number": 11, "state": "open", "title": "Marked", "labels": [n17]},
+            {"number": 12, "state": "open", "title": "Marked, labelled", "labels": [INTAKE]},
         ],
-        **{f"repos/owner/repo/issues/{n}/comments?per_page=100": [] for n in (8, 9, 10)},
+        **{
+            f"repos/owner/repo/issues/{n}/comments?per_page=100": [] for n in (8, 9, 10, 11, 12)
+        },
         "repos/owner/repo/issues/7/comments?per_page=100": [
             comment(1, "someone", "2026-09-30T12:00:00Z", updated="2026-10-02T09:00:00Z"),
         ],
     }
+    assert check_requests.problems(recorded, REGISTER) == []
     edited = "(someone, 2026-09-30T12:00:00Z, edited 2026-10-02T09:00:00Z)"
     assert check_requests.compare_github(recorded, live.__getitem__) == [
-        "#7 is a result report without the `intake` label",
+        "#7 reports an item for intake without the `intake` label",
         f"#7: unread comment {URL.format(1)} {edited}",
-        "#8 is a result report without the `intake` label",
+        "#8 reports an item for intake without the `intake` label",
+        "#11 reports an item for intake without the `intake` label",
     ]
 
 
