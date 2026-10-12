@@ -13,8 +13,9 @@ repository’s only commit), with the 12 assets of its release
 Both were retrieved at 2026-10-12T16:47Z.
 
 This packet is the stage 2 retention of the import.
-Nothing in it is a register entry: the source’s status is a candidate proof, nothing
-here has read the mathematics, and the one program run here recomputes no certificate.
+Nothing in it is a register entry, and nothing in it confirms the claim: the source’s
+status is a candidate proof, and the one program run here recomputes no certificate.
+The read of the argument is a separate review, recorded with the register entry.
 
 ## Source and Credit
 
