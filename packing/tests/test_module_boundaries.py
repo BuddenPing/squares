@@ -1218,6 +1218,10 @@ def test_the_slow_marker_is_declared_only_by_measured_nodes() -> None:
         # receipt-plan cases 549.6s (33.4s to 63.2s each) and 237.1s; the #506 parents
         # moved 628.9s and 427.0s. The load moved between runs, so these do not say
         # whether two of them share a build; each is far above the marking threshold.
+        # The deferred slow lane measured them on CI at 89cc71684 (deep gate run
+        # 38276665178, `--jobs 1 --inner-jobs 2`): 56.7s, 56.1s, 58.3s and 96.6s, 267.8s
+        # in all, and the whole lane 225 tests in 844.5s of its 1800s budget, so it
+        # stays under its ceiling with every case where it is.
         "test_check_half_angle_area.py": {
             "test_the_489_certificate_at_305_has_488s_side_in_a_quarter_turned_arrangement",
             "test_the_n207_certificate_is_two_placed_patches_of_the_n70_and_the_n153_is_not",
