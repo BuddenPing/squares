@@ -1078,7 +1078,14 @@ def _is_reply(comment: Mapped, owner: str, issue_author: str) -> bool:
 
 
 def compare_github(record: Mapped, fetch: Fetch = gh_fetch) -> list[str]:
-    """Where the live issues differ from the record: issues, states, replies, comments."""
+    """Where the live issues differ from the record: issues, states, replies, comments.
+
+    A comment that is not a reply is unread when it was created after the entry's
+    `read_through`, or created on or before it and edited after it: `read_through` is a
+    creation time, so an edit to a comment it covers is content the record has not read.
+    wand125's #485 review linked a new verifier mode that way on 12 October, nine hours
+    after posting and after the record had read the comment.
+    """
     repository, owner = str(record["repository"]), str(record["owner"])
     differences: list[str] = []
     live = [
@@ -1104,19 +1111,26 @@ def compare_github(record: Mapped, fetch: Fetch = gh_fetch) -> list[str]:
         urls = {str(reply["url"]) for reply in issue.get("replies", ())}
         author = str(issue["author"])
         live_replies = set()
+        read_through = str(issue["read_through"])
         for comment in comments:
             url = str(comment["html_url"])
+            created = str(comment["created_at"])
+            edited = str(comment.get("updated_at") or created)
             if _is_reply(comment, owner, author):
                 live_replies.add(url)
                 if url not in urls:
                     differences.append(
                         f"#{number}: reply missing from the record: {url} "
-                        f"({comment['user']['login']}, {comment['created_at'][:10]})"
+                        f"({comment['user']['login']}, {created[:10]})"
                     )
-            elif str(comment["created_at"]) > str(issue["read_through"]):
+            elif created > read_through:
+                differences.append(
+                    f"#{number}: unread comment {url} ({comment['user']['login']}, {created})"
+                )
+            elif edited > read_through:
                 differences.append(
                     f"#{number}: unread comment {url} ({comment['user']['login']}, "
-                    f"{comment['created_at']})"
+                    f"{created}, edited {edited})"
                 )
         differences.extend(
             f"#{number}: recorded reply not on the issue: {url}"

@@ -91,7 +91,8 @@ $defs:
         format: date-time
         description: >-
           The creation time of the latest comment read into this entry, or the issue's
-          own when it has none. `check_requests --github` lists later comments as unread.
+          own when it has none. `check_requests --github` lists later comments as unread,
+          and earlier ones edited after it.
       results:
         type: array
         items: {$ref: '#/$defs/result'}
