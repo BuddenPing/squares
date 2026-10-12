@@ -21,7 +21,7 @@ softschema:
   status: enforced
 repository: jlevy/squares
 owner: jlevy
-last_reviewed: '2026-10-10'
+last_reviewed: '2026-10-12'
 issues:
   - number: 420
     title: 'Lean proofs that 178 best-known packings are local minima (n ≤ 324): registration request'
@@ -4398,7 +4398,7 @@ issues:
       sqverify-fast. The 43 slabs wait for an owner budget (think-tln9). wand125 edited the 17:14
       UTC comment at 02:19 UTC on 12 October to link the continuous-angle mode at
       wand125/square-packing f30cc2c (think-xzob).
-    read_through: '2026-10-11T17:14:50Z'
+    read_through: '2026-10-12T02:19:26Z'
     results:
     - key: s40-clipped-corner
       claim: s(40) > 335427/50000 = 6.70854, by excluding a container of side exactly 335427/50000 and
@@ -5157,6 +5157,296 @@ issues:
       the house adoption at 304 and 305 has landed or is owned, and the owner has posted the
       resulting state; the four unnamed certificates are imports of their own, and optimality is
       outside this request.
+  - number: 521
+    title: 'Independent replay of T-037 (Kleddamag s(11) > 31/8, v1.0.2): confirmation record'
+    author: Esummins
+    opened: '2026-10-12'
+    state: open
+    kind: result-report
+    triage: done
+    summary: >-
+      E. Summins' n = 11 lab reports a third-party replay of Kleddamag's v1.0.2 certificate for
+      T-037: the release's exact Python sweep re-run in full under the lab's own driver (12,028
+      of 12,028 rows, 0 differing from the release's recorded evidence), the release's controls
+      and integrity check re-run, and an exact spot check in the lab's own arithmetic. No new
+      result. Retained in the esummins-packing-2026-10-12 packet; the spot check was re-run here
+      against the certificate this repository retains and reproduced the lab's rows byte for
+      byte. The row sweep is the producer's own code, so it is reproduced with the producer's
+      code and adds no independent route; recorded as the lab's report beside T-037
+      (E-n011-kleddamag-3875-esummins-replay-report), which stays at V3/C3. Claude assistance
+      disclosed.
+    read_through: '2026-10-12T04:12:24Z'
+    results:
+    - key: t037-third-party-replay
+      claim: Kleddamag's v1.0.2 sweep re-run over all 12,028 rows with 0 rows differing, minimum
+        999962528, budget 10999479944, surplus 107864, plus an exact spot check (scaling, budget,
+        3,240 poses, counting) passing.
+      source: body
+      evidence:
+      - E-n011-kleddamag-3875-esummins-replay-report
+    asks:
+    - what: Whether a confirmation of this shape earns a replayed annotation on T-037 or belongs only
+        in the packet.
+      state: queued
+      note: Owner decision; by epistemics.md a third party's retained replay is an attribute beside
+        the rung, and this one is same-implementation. Recorded meanwhile as the lab's report, origin
+        external.
+      bead: think-6t6q
+    - what: An offline copy of the secondary JavaScript checker they refused to run for network
+        reasons.
+      state: queued
+      note: The external-square-certificates-2026-09-22 packet retains the R038 reconstruction
+        hash-pinned and the source replay here ran it; the reply can say so.
+      bead: think-6t6q
+    beads:
+    - think-6t6q
+    answer_bead: think-6t6q
+    replies: []
+    close_when: The evidence entry is on main and the owner has answered the two asks.
+  - number: 522
+    title: 'Simple-square stratification of s(n): proof strategy, n = 11 scoreboard and Lean layer: registration request'
+    author: Esummins
+    opened: '2026-10-12'
+    state: open
+    kind: result-report
+    triage: done
+    summary: >-
+      A proof strategy (stratify packings by the D4 class of their lattice-slot skeleton and kill
+      classes on a side window), its n = 11 scoreboard (52 of 52 k5/k6 classes certified empty on
+      [191/50, 969271/250000] under a frozen verifier; a census theorem in Lean) and a Lean layer
+      whose main theorems rest on three named open axioms. No bound; n = 11 is settled by T-060
+      and T-112. Retained in the esummins-packing-2026-10-12 packet; nothing replayed. Claude
+      assistance disclosed.
+    read_through: '2026-10-12T04:12:28Z'
+    results:
+    - key: stratification-strategy
+      claim: The simple-square stratification as a proof strategy for s(n), for
+        proof-strategies.yaml.
+      source: body
+      not_registered: A method, not a result; a strategy-catalogue entry is the owner's decision
+        (think-3m7d holds the proposed text).
+      queued: true
+      bead: think-3m7d
+    - key: n11-census-theorem
+      claim: 1110 tuples and 163 D4 classes exhaust every packing of eleven squares at every side in
+        (3, 4), a Lean theorem on standard axioms.
+      source: body
+      not_registered: A structural theorem at a settled count, not a bound or a case exclusion the
+        record acts on; recorded in the packet, not built here.
+      queued: false
+    - key: n11-window-scoreboard
+      claim: 52 of 52 k5/k6 classes are empty on [191/50, 969271/250000] by parametric certificates
+        under verify_case.py.
+      source: body
+      not_registered: Class exclusions at a settled count; a ledger note at most, and the
+        certificates are pinned by the commit, not retained. A replay and review are priced in
+        think-3m7d.
+      queued: false
+    - key: lean-layer
+      claim: main_lower_bound, main_value and main_uniqueness in Lean from three named axioms plus
+        native_decide evaluations; no sorry.
+      source: body
+      not_registered: Conditional on three open axioms, one of which (stratum_kill) is the
+        programme's open residue; recorded as a method record in the packet. Build priced at 1 to 3
+        hours here, not run.
+      queued: false
+    - key: by-products-below-record
+      claim: s(11) >= 3.82 end to end in Lean and s(12) >= 3.90 (A33), both below the verified
+        bounds.
+      source: source
+      not_registered: Below the standing bounds (T-060 at 11; 7943/2000 at 12) and asking for no
+        work; they stay in the packet.
+      queued: false
+    asks:
+    - what: Register the strategy and name the record's vocabulary for pins, stratum kills and pads.
+      state: queued
+      bead: think-3m7d
+    beads:
+    - think-3m7d
+    answer_bead: think-3m7d
+    replies: []
+    close_when: The owner has decided on the strategy-catalogue entry and the reply states what was
+      retained and why nothing is registered.
+  - number: 523
+    title: 'The simple-square climb at n = 17 and n = 19 (2,500-class census at T-043/T-065 and T-103 windows; k = 16, 15 dead at the root): compute request'
+    author: Esummins
+    opened: '2026-10-12'
+    state: open
+    kind: result-report
+    triage: done
+    summary: >-
+      A census of 2,500 slot-set classes (632 with four corners) at the register's n = 17 and
+      n = 19 windows, the n = 17 four-corner descent (k = 16 and 15 dead at the root, k = 14
+      67 of 68) as exact-rational traces with no verifier clause, and a compute request for the
+      descent and the climb. Not a bound. Retained in the esummins-packing-2026-10-12 packet;
+      the census and verdict counts were re-read here; nothing replayed. Claude assistance
+      disclosed.
+    read_through: '2026-10-12T04:12:33Z'
+    results:
+    - key: census-2500
+      claim: 2,500 slot-set classes, 632 containing all four corners, at the windows
+        [116511/25000, 4675531/10^6] and [193/40, 4885619/10^6].
+      source: body
+      not_registered: A combinatorial census, re-counted here from the retained file (2,500 rows;
+        per-k counts as stated); a ledger note on n-017.md and n-019.md at most.
+      queued: false
+    - key: n17-descent
+      claim: At n = 17 every four-corner class with k = 16 (17) and k = 15 (35) is empty on the
+        window, and 67 of 68 with k = 14, as exact-rational traces.
+      source: body
+      not_registered: Class exclusions produced by an unreviewed engine with no verifier clause; a
+        ledger note at most. The verdict rows are retained, the spine certificates pinned by digest.
+      queued: false
+    asks:
+    - what: Run the four-corner descent at n = 17 from k = 13 to the record's k = 8 and the root,
+        then n = 19, with the climb read-off and the canary check.
+      state: queued
+      note: Priced in think-j891 at about 15 CPU-hours at the authors' walls and 150 to 300
+        CPU-hours with the re-walls, per n; needs an owner budget and a soundness review of the leaf
+        rules first. The n = 17 lane (think-x4v4) should own the decision.
+      bead: think-j891
+      blocked_on: [think-x4v4]
+    beads:
+    - think-j891
+    answer_bead: think-j891
+    replies: []
+    close_when: The owner has budgeted or declined the compute and the reply states what was
+      retained.
+  - number: 524
+    title: 'Conjecture ONE-FLUSH(n): every optimal packing below ⌈√n⌉ has a singly-met corner — statement, equivalences, evidence: registration request'
+    author: Esummins
+    opened: '2026-10-12'
+    state: open
+    kind: other
+    intake: true
+    triage: done
+    summary: >-
+      A conjecture for every n with s(n) < ceil(sqrt n), with four forms stated equivalent, an
+      extremal reduction to LOCKED-CROWD-FREE(n), refuted proof routes with witnesses and
+      measured support. Not a result. Retained in the esummins-packing-2026-10-12 packet. Claude
+      assistance disclosed.
+    read_through: '2026-10-12T04:12:37Z'
+    results:
+    - key: one-flush-conjecture
+      claim: For every n with s(n) < ceil(sqrt n), some optimal packing has a corner box met by at
+        most one square.
+      source: body
+      not_registered: A conjecture; the register holds results. The equivalences and the extremal
+        reduction are theorems for review if the owner wants the conjecture noted (think-s1ru
+        prices it).
+      queued: false
+    asks:
+    - what: A threshold-type certificate conditioned on four doubly-met corners (n = 11 first, then
+        a family indexed by n), and any angle from the charge machinery on LOCKED-CROWD-FREE(n).
+      state: queued
+      note: A research request; the owner accepts or declines it.
+      bead: think-s1ru
+    beads:
+    - think-s1ru
+    answer_bead: think-s1ru
+    replies: []
+    close_when: The owner has answered the research request and the reply states what was retained.
+  - number: 525
+    title: 'Forced double meeters on the simple-square ladder (Theorem FC, SLOT-CROWD) and the forced-cell traction finding: registration request'
+    author: Esummins
+    opened: '2026-10-12'
+    state: open
+    kind: result-report
+    triage: done
+    summary: >-
+      Lemma SLOT-CROWD and Theorem FC for any n (a packing with a class's pins but not a closed
+      extension's meets that slot box with two distinct non-pin squares), a measured traction
+      finding, a refuted cascade rule and exact statements of four local lemmas. Not a bound.
+      Retained in the esummins-packing-2026-10-12 packet. Claude assistance disclosed.
+    read_through: '2026-10-12T04:12:41Z'
+    results:
+    - key: slot-crowd-and-fc
+      claim: Lemma SLOT-CROWD and Theorem FC, with the pad pi_i = (lambda_max - 1)(i + 1 + 1/sqrt 2)
+        on the dilated page.
+      source: body
+      not_registered: Structural lemmas about strata, not bounds; slot_crowd_stmt and
+        fc_transfer_stmt are Lean theorems on standard axioms and theorem_FC itself is a Lean axiom.
+        A method record; a short review is priced in think-3nc2.
+      queued: false
+    asks:
+    - what: A k-of-m charge that prices two distinct non-pin meeters of one box, and the row cascade
+        on a bigger machine.
+      state: queued
+      note: A research request and a compute request (PARAM-FAIL at the lab); the owner accepts or
+        declines.
+      bead: think-3nc2
+    beads:
+    - think-3nc2
+    answer_bead: think-3nc2
+    replies: []
+    close_when: The owner has answered the asks and the reply states what was retained.
+  - number: 526
+    title: 'k = 0 at n = 11: the no-simple-square class — theorems, refuted routes with witnesses, measured facts: registration request'
+    author: Esummins
+    opened: '2026-10-12'
+    state: open
+    kind: result-report
+    triage: done
+    summary: >-
+      K0-FREE and SWAP/CELLS (Lean, standard axioms), the extremal reduction, ten refuted routes
+      with witnesses and measured facts about four-crowds at n = 11, where k0_00 is not closed.
+      Not a bound; n = 11 is settled by T-060 and T-112. Retained in the
+      esummins-packing-2026-10-12 packet. Claude assistance disclosed.
+    read_through: '2026-10-12T04:12:45Z'
+    results:
+    - key: k0-theorems-and-negatives
+      claim: K0-FREE, SWAP/CELLS, the extremal reduction, ten refuted routes with witnesses, and the
+        measured facts.
+      source: body
+      not_registered: Structural theorems and negatives at a settled count; a ledger of refuted
+        routes belongs in the packet, and the extremal reduction's review is shared with issue 524
+        (think-tnfo, think-s1ru).
+      queued: false
+    asks:
+    - what: A field certificate conditioned on four doubly-met corners on [31/8, s0], and the chains
+        pair3 and STRIP2.
+      state: queued
+      note: A research request and a compute request; the owner accepts or declines.
+      bead: think-tnfo
+    beads:
+    - think-tnfo
+    answer_bead: think-tnfo
+    replies: []
+    close_when: The owner has answered the asks and the reply states what was retained.
+  - number: 527
+    title: 'Geometry-before-LP toolkit for stratum trees (exact-rational leaf rules, 7.2× on closed nodes): registration request'
+    author: Esummins
+    opened: '2026-10-12'
+    state: open
+    kind: other
+    intake: true
+    triage: done
+    summary: >-
+      A toolkit for stratum trees (stage 0, a CSP on pieces, multibox cores, leaf rules, exact
+      kernels) with measured speed-ups and prose soundness lemmas; tree-node kills are exact
+      traces with no verifier clause. Not a bound. Retained in the esummins-packing-2026-10-12
+      packet. Claude assistance disclosed.
+    read_through: '2026-10-12T04:12:50Z'
+    results:
+    - key: toolkit
+      claim: The geometry-before-LP toolkit, 7.22x geometric-mean speed-up on 11 closed nodes and
+        5.0x on no-room nodes with 0 regressions over 314 replayed rows.
+      source: body
+      not_registered: A method and its measurements; a methods-survey item. A soundness review of
+        one leaf rule is priced in think-kok7.
+      queued: false
+    asks:
+    - what: A review of one leaf rule end to end (no-room with the pocket-rooted cover) and whether a
+        sqverify-fast style exact sweep can replace the lane cover.
+      state: queued
+      note: The review is a mathematics-tier W2 item of about a day; the sqverify-fast question is
+        the owner's (different object).
+      bead: think-kok7
+    beads:
+    - think-kok7
+    answer_bead: think-kok7
+    replies: []
+    close_when: The owner has decided on the review and the reply states what was retained.
   - number: 528
     title: 's(175) ≤ 13.764174317487, s(232) ≤ 15.764174317487, s(264) ≤ 16.774735132388: registration request'
     author: dostashev
@@ -5176,7 +5466,8 @@ issues:
       three certificates replayed with their controls on both maintained exact routes; the review
       of 12 October decided them again by a third exact route, measured each as no placement of
       a packing the record holds or has pending, and found no blocking defect. Registered as
-      T-154 at V3/C3. Each side is below its case's ceiling and every other report at its count:
+      T-154 at V3/C3 and adopted as the house at all three counts on 12 October 2026. Each side
+      is below its case's earlier ceiling and every other report at its count:
       by 2.95e-03 at 175 (T-140, and Francisco Couzo's unregistered 337078c certificate,
       think-9fjl, by 2.94e-03), 3.25e-03 at 232 (T-136) and 3.44e-03 at 264 (the catalogue's
       Goebel pattern, T-101). The issue also restates issue 501's sides at the same commit, which
@@ -5288,3 +5579,411 @@ issues:
     close_when: The import and its disposition are on main, the credit relation to ry-xu's
       packing is measured and stated, and the resulting state has been posted; optimality and
       the author's private certificate are outside this request.
+  - number: 532
+    title: Replay wand125's lower bounds T-142, T-143 and T-144 (with T-132) and their whole-net controls
+    author: jlevy
+    opened: '2026-10-12'
+    state: open
+    kind: other
+    intake: true
+    triage: done
+    summary: >-
+      The 2026-10-11 intake pass's tracking issue for the first-party replays, with controls and a
+      review, of four lower bounds registered at V0/C0: T-142 and T-143 by a sqverify-fast census at
+      all 2,073 directions with the whole-net control, T-144 by audit_wand125_linear's linear
+      replay and control, and T-132, reported on #446, in the same lane. Priced at 23 to 31
+      CPU-hours, within the budget the owner set on 11 October; held until the regularization of
+      every packing lands (think-ux1v), with the tooling on its own branch and two owner questions
+      open (#543).
+    read_through: '2026-10-12T07:49:51Z'
+    results: []
+    asks:
+    - what: Complete first-party replays of T-142 and T-143, with the whole-net control and a review.
+      state: queued
+      bead: think-i85v
+      blocked_on: [think-ux1v]
+    - what: The complete linear replay and control of T-144, carried to n = 122 to 126, with a
+        review.
+      state: queued
+      bead: think-nd7g
+      blocked_on: [think-ux1v]
+    - what: The complete replay of T-132 in the same lane, and a reply on issue 446.
+      state: queued
+      bead: think-r333
+      blocked_on: [think-ux1v]
+    beads:
+    - think-i85v
+    - think-nd7g
+    - think-r333
+    answer_bead: think-i85v
+    replies: []
+    close_when: >-
+      Each replay's receipts and controls are retained in its packet, a review accepts them,
+      the four register entries on main record the replays and their rungs, and #446 has a
+      reply for T-132.
+  - number: 533
+    title: Review and replay wand125's sqverify_continuous (f30cc2c) for the two n = 40 lower bounds
+    author: jlevy
+    opened: '2026-10-12'
+    state: open
+    kind: other
+    intake: true
+    triage: done
+    summary: >-
+      The 2026-10-11 intake pass's tracking issue for wand125's continuous-angle mode of
+      sqverify-fast at wand125/square-packing f30cc2c, which decides both n = 40 lower bounds,
+      T-145 and #485's unregistered s(40) > 3359/500: retain the tool, a soundness review of the
+      mode, a build at its pinned source digest, and a replay of both examples and their controls
+      here. Independent code, not an independent method; recorded beside the rung. Priced at up to
+      about 4.4 CPU-hours, waiting for an owner budget after the review.
+    read_through: '2026-10-12T07:49:52Z'
+    results: []
+    asks:
+    - what: Retain sqverify_continuous at f30cc2c, review its soundness, build it and replay both
+        n = 40 examples with their controls and this repository's own mass controls.
+      state: queued
+      bead: think-xzob
+    beads:
+    - think-xzob
+    - think-tln9
+    answer_bead: think-xzob
+    replies: []
+    close_when: >-
+      The packet and a mapped review are on main, the replay's receipts are retained beside
+      T-145 and the 6.718 entry or the review records why not, and #485 has a reply.
+  - number: 534
+    title: Import wand125's s(31) ≥ 2391/400 (mixed_n31_L59775)
+    author: jlevy
+    opened: '2026-10-12'
+    state: open
+    kind: other
+    intake: true
+    triage: done
+    summary: >-
+      The 2026-10-11 intake pass's tracking issue for wand125/square-packing 23e3186's
+      mixed_n31_L59775, a fine-net check2 certificate reporting s(31) >= 2391/400 = 5.9775 on the
+      2,073-direction net, above n = 31's recorded 2381/400 and #446's 597/100, reported on no
+      issue. It takes the route of T-142 and T-143: triage and a packet, registration at V0/C0,
+      then a stage 4 replay in #532's lane with an owner budget.
+    read_through: '2026-10-12T07:50:19Z'
+    results:
+    - key: s31-mixed-fine-net
+      claim: s(31) >= 2391/400 = 5.9775, by the fine-net check2 certificate mixed_n31_L59775 at
+        wand125/square-packing 23e3186.
+      source: body
+      not_registered: No lane has triaged or retained it yet; registration at V0/C0 and the replay
+        follow the route of T-142 and T-143.
+      queued: true
+      bead: think-wop1
+    beads:
+    - think-wop1
+    answer_bead: think-wop1
+    replies: []
+    close_when: >-
+      The result is registered on main and its replay is recorded, or priced and queued in
+      #532's lane.
+  - number: 535
+    title: Take Evan Daniel's Lean proof of s(12) ≥ 15680/3951 (S12HLower) as evidence for T-049
+    author: jlevy
+    opened: '2026-10-12'
+    state: open
+    kind: other
+    intake: true
+    triage: done
+    summary: >-
+      The 2026-10-11 intake pass's tracking issue for evand/square-packing 513bb66's Lean proof
+      s12_ge_15680_3951, retained in the evand-exact-and-local-reports-2026-10-07 packet and cited
+      by no evidence entry, while T-049's next rung says rung 5 needs a formalization: an evidence
+      entry and a corrected next rung, then a kernel build with an axiom receipt, priced at 7.3
+      CPU-hours on a host with 30.6 GB of memory, which needs an owner budget.
+    read_through: '2026-10-12T07:50:21Z'
+    results: []
+    asks:
+    - what: An evidence entry for the Lean proof and a corrected T-049 next rung, then a kernel build
+        with an axiom receipt and a read of the statement binding.
+      state: queued
+      bead: think-oyd4
+    beads:
+    - think-oyd4
+    answer_bead: think-oyd4
+    replies: []
+    close_when: The evidence entry and the corrected next rung are on main, and either the build's
+      receipt is retained or the owner declines the build.
+  - number: 536
+    title: Take wand125's Lean proof of s(59) = 8 (k2m5_n59_L8) as evidence for T-066
+    author: jlevy
+    opened: '2026-10-12'
+    state: open
+    kind: other
+    intake: true
+    triage: done
+    summary: >-
+      The 2026-10-11 intake pass's tracking issue for wand125/square-packing f9a77b7's generated
+      Lean proof s59_eq_8 on Evan Daniel's mixed-measure checker, which T-066 does not yet cite: a
+      packet of the lean/ directory, a read of the statement binding, an evidence entry, and a
+      price for a kernel rebuild from the generator, which needs an owner budget once priced.
+    read_through: '2026-10-12T07:50:22Z'
+    results: []
+    asks:
+    - what: Retain the Lean proof at f9a77b7, read its statement binding, add an evidence entry for
+        T-066 and price a kernel rebuild.
+      state: queued
+      bead: think-xk3f
+    beads:
+    - think-xk3f
+    answer_bead: think-xk3f
+    replies: []
+    close_when: The packet and the evidence entry are on main and the rebuild has a recorded price.
+  - number: 537
+    title: Take Valid7 in the Lean kernel (evand/square-packing 060c1a1) as evidence for T-064
+    author: jlevy
+    opened: '2026-10-12'
+    state: open
+    kind: other
+    intake: true
+    triage: done
+    summary: >-
+      The 2026-10-11 intake pass's tracking issue for evand/square-packing 060c1a1, which merges
+      wand125's ValidTilt7 and Valid7 decided in the Lean kernel with a bridge to box7Cover, and
+      would make T-064 kernel-checked throughout: retain the merged lean/ tree with its release,
+      read the statement binding and audit the root names, and add an evidence entry. A full
+      kernel rebuild is priced by the source at about 6,650 CPU-hours and a sample at about 70
+      process-hours; either needs an owner decision.
+    read_through: '2026-10-12T07:50:23Z'
+    results: []
+    asks:
+    - what: Retain the merged lean/ tree and its release, audit the root names, add an evidence entry
+        for T-064, and an owner decision on a sample or a full rebuild.
+      state: queued
+      bead: think-0ayk
+    beads:
+    - think-0ayk
+    answer_bead: think-0ayk
+    replies: []
+    close_when: The packet and the evidence entry are on main, and the owner has decided on a sample
+      or a full rebuild.
+  - number: 538
+    title: Workbench trajectory cost check flakes over 400 ms under CI load
+    author: jlevy
+    opened: '2026-10-12'
+    state: open
+    kind: other
+    triage: done
+    summary: >-
+      A bug the 2026-10-11 intake stack met while merging: the workbench contract times six
+      trajectory builds once each against a 400 ms ceiling and failed on a shared runner at one
+      commit and passed at the same commit on a rerun; the Animate view's play check also failed
+      twice on a loaded host. It tracks project work, not the intake of a reported item.
+    read_through: '2026-10-12T07:51:08Z'
+    results: []
+    asks:
+    - what: Compare the best of three timings with 400 ms, keep both ceilings, and attribute the play
+        message to load or to a regression.
+      state: queued
+      bead: think-1bm2
+    beads:
+    - think-1bm2
+    answer_bead: think-1bm2
+    replies: []
+    close_when: The check compares the best of three timings with 400 ms, both ceilings are
+      unchanged, the play message is attributed, and check_frontend passes.
+  - number: 539
+    title: 'check_scroll_restoration: wait for the reload''s own navigation'
+    author: jlevy
+    opened: '2026-10-12'
+    state: open
+    kind: other
+    triage: done
+    summary: >-
+      A bug found in #520's review: check_scroll_restoration waits for any navigation after a
+      reload, which KPress's scroll stamp can satisfy first, the race #520 fixed in the result
+      filter tests. It tracks project work, not the intake of a reported item.
+    read_through: '2026-10-12T07:51:09Z'
+    results: []
+    asks:
+    - what: Wait for the reload's own navigation, as the test of pull request 520 does.
+      state: queued
+      bead: think-tfil
+    beads:
+    - think-tfil
+    answer_bead: think-tfil
+    replies: []
+    close_when: The check waits for the reload's own navigation and still passes.
+  - number: 540
+    title: 'check_requests: mark a reply due on adoption, supersession and newly read comments'
+    author: jlevy
+    opened: '2026-10-12'
+    state: open
+    kind: other
+    triage: done
+    summary: >-
+      An enhancement from the owner's reply rule of 11 October: check_requests --report and the
+      intake sweep mark a reply due from ids, rungs, statuses and outdated statements, but not
+      when a result is adopted on its case, superseded, or a newly read comment changes the
+      issue. It tracks project work, not the intake of a reported item.
+    read_through: '2026-10-12T07:51:10Z'
+    results: []
+    asks:
+    - what: replies_due reports adoption, supersession and newly read comments, with tests, and a
+        reply's reported items can state the position.
+      state: queued
+      bead: think-qh9a
+    beads:
+    - think-qh9a
+    answer_bead: think-qh9a
+    replies: []
+    close_when: replies_due reports all three cases with tests, a reply's reported items can state
+      the position, and step 2 of After the Merge drops the by-hand sentence.
+  - number: 541
+    title: 'check_requests --github: check that a recorded reply states the ids it is recorded with'
+    author: jlevy
+    opened: '2026-10-12'
+    state: open
+    kind: other
+    triage: done
+    summary: >-
+      An enhancement found in #519's review: --github matches each recorded reply to its comment
+      by URL and date, and should also check that every id the record says the reply stated
+      appears in the posted text. It tracks project work, not the intake of a reported item.
+    read_through: '2026-10-12T07:51:11Z'
+    results: []
+    asks:
+    - what: >-
+        --github fails a recorded reply whose ids are missing from the posted text, with a
+        test.
+      state: queued
+      bead: think-7yqp
+    beads:
+    - think-7yqp
+    answer_bead: think-7yqp
+    replies: []
+    close_when: >-
+      --github fails a recorded reply whose ids are missing from the posted text, with a
+      test.
+  - number: 542
+    title: Apply the record and tool changes proposed by the 2026-10-11 rung reviews
+    author: jlevy
+    opened: '2026-10-12'
+    state: open
+    kind: other
+    triage: done
+    summary: >-
+      The record and tool changes the two rung reviews of 11 October propose and do not make (RR-1
+      to RR-9 of review-2026-10-11-recent-register-rungs.md and section 8 of
+      review-2026-10-11-lean-backed-rungs.md), none of which moves a rung; held until the reviews
+      are on main and the owner rules on RR-1's wording. It tracks project work, not the intake
+      of a reported item.
+    read_through: '2026-10-12T07:51:12Z'
+    results: []
+    asks:
+    - what: Each record and tool change the two reviews propose, on main or recorded as declined.
+      state: queued
+      bead: think-npvi
+    beads:
+    - think-npvi
+    - think-18b8
+    - think-66e5
+    answer_bead: think-npvi
+    replies: []
+    close_when: Each item is on main or recorded as declined, and check_results and packing-validate
+      --records pass.
+  - number: 543
+    title: Owner decisions from the 2026-10-11 intake pass
+    author: jlevy
+    opened: '2026-10-12'
+    state: open
+    kind: other
+    triage: done
+    summary: >-
+      The decisions the 2026-10-11 intake pass leaves with the owner, each with its context and
+      bead: distinct reviewers and the human oversight records for the rungs, the Lean-backed
+      claims (D1 to D6), the significance policy paragraph and three scored pairs, the lower-bound
+      replays' retention and control tolerance (#532), and the results-page overview. It tracks
+      decisions, not the intake of a reported item.
+    read_through: '2026-10-12T07:52:30Z'
+    results: []
+    asks:
+    - what: The owner's decisions listed on the issue, each recorded with its bead.
+      state: queued
+      bead: think-mq0k
+    beads:
+    - think-mq0k
+    - think-18b8
+    - think-66e5
+    - think-qh3s
+    - think-gn16
+    - think-i85v
+    - think-r333
+    - think-2z22
+    - think-8spq
+    answer_bead: think-mq0k
+    replies: []
+    close_when: Every decision on the issue is recorded, in the record or in its bead.
+  - number: 544
+    title: 'Intake pass of 2026-10-11: remaining work'
+    author: jlevy
+    opened: '2026-10-12'
+    state: open
+    kind: other
+    triage: done
+    summary: >-
+      The tracker of what remains of the intake pass of 11 and 12 October 2026 (epic think-mq0k):
+      its pull requests, the owner decisions (#543), the work with an issue of its own (#532 to
+      #542) and the work tracked on the reporters' issues (#485, #419). It tracks the pass, not
+      the intake of a reported item.
+    read_through: '2026-10-12T07:53:05Z'
+    results: []
+    asks:
+    - what: Every item the tracker lists landed, declined or handed to its own issue.
+      state: queued
+      bead: think-mq0k
+    beads:
+    - think-mq0k
+    answer_bead: think-mq0k
+    replies: []
+    close_when: Every item the tracker lists has landed, been declined or moved to an issue of its
+      own.
+  - number: 545
+    title: Evan Daniel's s(29) minimal polynomial (degree 7213) and grade-C local-minimality checks (evand/square-packing ad86d42)
+    author: jlevy
+    opened: '2026-10-12'
+    state: open
+    kind: other
+    intake: true
+    triage: done
+    summary: >-
+      The 12 October read of evand/square-packing at ad86d42 found two exact reports on no issue,
+      neither a bound: the s(29) record side is a root of an irreducible polynomial of degree 7213
+      (169a827), and gradec.py's grade-C local-minimality checks report 233 of 250 configurations
+      of field degree at most 4 VALID (0d0146e, e493eea). Both are retained in the
+      evand-exact-and-local-reports-2026-10-12 packet; the polynomial and the certificates are not
+      published, and the issue asks the author for them.
+    read_through: '2026-10-12T09:07:39Z'
+    results:
+    - key: s29-minimal-polynomial
+      claim: The s(29) record side 5.9338334626769291896894606... is a root of an irreducible integer
+        polynomial of degree 7213, found by homotopy continuation; irreducibility, a Krawczyk
+        enclosure and the root link are rated rigorous by the source.
+      source: body
+      not_registered: Not a bound. A records decision on its shape (an algebraic_degree evidence
+        update and a paragraph in n-029.md) is pending; a replay needs the polynomial, the
+        parametrization and the enclosure box published.
+      queued: true
+      bead: think-6gti
+    - key: grade-c-local-minima
+      claim: gradec.py's Theorem C local-minimality check is VALID for 233 of the source's 250
+        configurations of field degree at most 4.
+      source: body
+      not_registered: Not a bound; local minimality of packings, with the certificates unpublished.
+        A review of Theorem C and a priced re-run wait in their bead.
+      queued: true
+      bead: think-7scz
+    beads:
+    - think-6gti
+    - think-7scz
+    - think-01y3
+    - think-3ppi
+    answer_bead: think-6gti
+    replies: []
+    close_when: Both reports are recorded on main, and the replay and review are either run or
+      priced with an owner decision.
