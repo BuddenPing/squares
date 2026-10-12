@@ -14,8 +14,9 @@ Both were retrieved at 2026-10-12T16:47Z.
 
 This packet is the stage 2 retention of the import.
 Nothing in it is a register entry, and nothing in it confirms the claim: the source’s
-status is a candidate proof, and the one program run here recomputes no certificate.
-The read of the argument is a separate review, recorded with the register entry.
+status is a candidate proof, `check.py` recomputes no certificate, and the sampled
+checks in [receipts-here/](#sampled-checks-run-here) recompute a sample, not the whole.
+The read of the argument is a separate review, recorded with the register entry, T-153.
 
 ## Source and Credit
 
@@ -28,7 +29,7 @@ The read of the argument is a separate review, recorded with the register entry.
 | Human credit | `CREDITS.md`: Bidwell for the packing; Gensane and Ryckelynck; David Ellsworth for the degree-18 polynomial; this project (Joshua Levy) for the charge method, the exact certification of L, the local recipe and the plan to follow the n = 11 proof shape; Manasseh Ahmed’s 11SquaresOptimal for that proof shape; Mira-acc for the 4.613 frame; Guzhou0806 for the angle catalogue, parent-side reduction and first exact JavaScript checker |
 | AI assistance | `README.md` and `CREDITS.md`: the mathematics, engines, certificates, checkers, reviews and text were produced by AI systems under his direction, Codex (OpenAI) and Claude (Anthropic), which are named and are not authors; within the project no human has read the mathematics |
 | Licence | `README.md`, Licence: “No licence for reuse is granted yet. You may download the files and run the checks to verify the result.” |
-| Bibliography key | Drafted for the coordinator as **[Overbeck n17 candidate 2026]**; not yet defined |
+| Bibliography key | **[Overbeck n17 candidate 2026]** |
 
 `THIRD_PARTY.md` lists copies of this repository’s files inside the edition: the exp-237
 root certificate (rewritten in another layout), the exp-238 endpoint certificate, the
@@ -175,6 +176,24 @@ author’s own records, the two full recomputations `check.py` leaves out:
 `JPA_v5` is the largest tree: 2.32 and 0.49 CPU-hours, and its Node run peaked at 7.0 GB
 resident. The Python capture checker took 2.5 CPU-seconds per row at the median slice.
 A slice of 1,500 rows is about 1.1 Python and 0.9 Node CPU-hours.
+
+## Sampled Checks Run Here
+
+Lane K3 of the import ran four sets of checks on 12 October 2026 and kept JSON receipts
+only, with commands, input digests, verdict lines, derived numbers and times, in
+[receipts-here/](receipts-here/).
+Every one agrees with the source.
+
+| Receipt | What ran | Outcome |
+| --- | --- | --- |
+| [upper-bound.json](receipts-here/upper-bound.json) | The record’s two exact routes on the source’s rational seed; the record’s H-255 and H-256 checkers on it; K3’s own root isolation, a Krawczyk test and a Sturm count; the author’s `own_endpoint_enclosure.py` and its control | The seed packs at $4675530093604551/10^{15}$, $4.84 \times 10^{-17}$ above $L$; exactly one root in the stated box; $L$ inside the 20-place interval, a root of the degree-18 polynomial, $1.04 \times 10^{-22}$ below the record’s ceiling |
+| [capture-sample.json](receipts-here/capture-sample.json) | The author’s `recompute_slice.py`, both capture checkers, on 34 rows of 21 statements covering every root | All 28 calls `EQUAL` to the stored rows |
+| [capture-independent.json](receipts-here/capture-independent.json) | K3’s own exact row checker, written from `CLASS_ROW_LEMMA.md`, `PROOF.md` section 3 and `RESTRICTED_CHECKER.md`, on 34 rows of 6 statements | Every per-level minimum equal to both stored rows; a raised-$\Gamma$ control fails |
+| [trees.json](receipts-here/trees.json) | Both v3.0 tree checkers and `h_report30.py` on JQ, JPG17m_v5 and JPG15p_v5 | `PASS`, `RESULT: ACCEPTED`, reports equal to the stored ones; the ten other trees not run |
+
+K3’s own programs, `k3_capture_row.py` with `compare_independent.py`, and
+`k3_root_isolation.py`, are retained in [receipts-here/programs/](receipts-here/programs/)
+with the SHA-256 the receipts give.
 
 ## Programs
 

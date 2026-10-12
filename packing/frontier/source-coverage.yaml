@@ -767,8 +767,9 @@ sources:
     186 files the R070 and R071 commits changed or added since 815b1626, the other 141 pinned by digest:
     32 of them the R068 packet''s checker and notices byte for byte, and 109 research files that carry
     no bound and that neither bound, the replay nor the audit reads (the C028 and C029 geometry trees
-    were retained at first and pinned the same day). It carries the case''s reported lower bound,
-    18641771/4000000, and since 2026-10-05 the verified one. Its partition records are missing and
+    were retained at first and pinned the same day). It carries the case''s verified lower bound,
+    18641771/4000000, since 2026-10-05, and carried the reported one until 2026-10-12, when
+    Overbeck''s candidate equality (overbeck-n17-candidate-2026) took that lane. Its partition records are missing and
     a completion summary is retained; the source''s CI replay passed and was not observed by its publisher.
     The complete paired replay here (Guzhou0806''s C++ checker and Kleddamag''s Node BigInt checker
     through the source''s run_public.js, 3,238 CPU-seconds) found the two fresh ledgers identical
@@ -3788,6 +3789,43 @@ sources:
     does not name, at 175, 308, 340 and 343, are compared in the claim record and registered by no
     entry; 175 has its own import (think-9fjl).
   claims_record: resources/web/couzo-certificates-2026-10-11/acquisition/beyond-horizon-claims.json
+- id: overbeck-n17-candidate-2026
+  title: Seventeen unit squares, verification edition of a candidate proof that s(17) = L
+  role: source-repository
+  url: https://github.com/Kleddamag/the-seventeenth-square-candidate/tree/653b9589d0f8a152f01adc56b1d48ba53d49abc3
+  local: resources/web/kleddamag-n17-candidate-2026-10-12/
+  source_key: '[Overbeck n17 candidate 2026]'
+  scope:
+    n_values: [17]
+  reviewed: '2026-10-12'
+  source_date: '2026-10-12'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/n-017.md
+  - frontier/results.yaml
+  evidence:
+  - E-n017-overbeck-optimality-candidate-report
+  - E-n017-overbeck-candidate-check-py-replay
+  - E-n017-overbeck-capture-sample-replay
+  - E-n017-overbeck-capture-independent-sample
+  - E-n017-overbeck-tree-sample-replay
+  - E-n017-overbeck-statement-root-independent
+  notes: >-
+    Marc Leonard Overbeck's (GitHub Kleddamag) verification edition at
+    653b9589d0f8a152f01adc56b1d48ba53d49abc3 with its release large-files-v1, a candidate proof
+    that s(17) = L, Bidwell's side, conditional on 210 obligations of which 15 are mathematical
+    premises. No licence for reuse: the packet keeps no upstream byte, pins 49 files by Git blob
+    and SHA-256, the 12 release assets by SHA-256, and MANIFEST.sha256 (equal to the release
+    notes) for the rest. The statement's polynomials, isolating rectangle and side map are this
+    repository's H-255 chart exactly, so L is the side E-n017-certified-endpoint certifies. On
+    12 October 2026 the author's check.py passed here, 34 capture rows of 21 statements and
+    three of the 13 trees were reproduced with the producer's code, 34 rows of six statements
+    were decided again by a checker written here from the proof text, and the root was
+    isolated independently; the complete capture recomputation (about 2,347 CPU-hours) and ten
+    trees were not run. T-153 records the claim, read by the review of 12 October
+    (docs/project/reviews/review-2026-10-12-kleddamag-n17-candidate.md); it carries the case's
+    reported lower bound, and the verified lanes and the case status are unchanged.
 selected_overrides:
 - n: 51
   source_id: ry-xu-undilated-n51-2026

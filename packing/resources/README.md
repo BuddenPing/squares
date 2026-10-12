@@ -578,6 +578,7 @@ key remain bound to the bytes they originally named.
 | [squarepacker/k2-minus-c-upper](https://github.com/squarepacker/k2-minus-c-upper) | Ryu’s reported upper bounds on the deficiency c*(k) just below integer sides: 8⌈√(k−4)⌉ − 1 (k ≥ 6), 20.668 k^{2/5} + 0.623 (k ≥ 1.6·10⁷), O(k^{3/8}) (v1.0 from 4·10²⁶; v1.1 twelve tiers from 2.48·10¹²) and five certified values c*(10⁵) ≤ 1583 to c*(10⁸) ≤ 24790; issues #471 and #486, DOIs 10.5281/zenodo.23256655 and 10.5281/zenodo.23278927 | **[squarepacker k2-minus-c-upper 2026]**; [9 October packet](web/squarepacker-k2-minus-c-upper-2026-10-09/README.md), pinned `700668795e6b95f0bf2a2c6de104adaf3a3ebce0`, two certificates pinned by digest, to be hosted once the owner publishes their release; **[squarepacker k2-minus-c-upper v1.1 2026]**; [10 October packet](web/squarepacker-k2-minus-c-upper-v11-2026-10-10/README.md), pinned `5742311db220b4bd8e825167aeae689a1bd65ce9`; source replays and independent checks in both; [review](../../docs/project/reviews/review-2026-10-10-squarepacker-k2-minus-c-upper.md) |
 | [Kleddamag/11-squares-certified-bound](https://github.com/Kleddamag/11-squares-certified-bound) | The `s(11) > 31/8` certificate and its two source checkers | **[Kleddamag n11 2026]**; [retained source](web/external-square-certificates-2026-09-22/kleddamag-11/README.md) |
 | [Kleddamag/17-squares-certified-bound](https://github.com/Kleddamag/17-squares-certified-bound) | The `n = 17` mixed-charge certificate line through `466001/100000` | **[Kleddamag n17 4.66001]**; [27 September packet](web/n17-kleddamag-466001-2026-09-27/README.md) |
+| [Kleddamag/the-seventeenth-square-candidate](https://github.com/Kleddamag/the-seventeenth-square-candidate) | Marc Leonard Overbeck’s verification edition of a candidate proof that `s(17) = L`, Bidwell’s side | **[Overbeck n17 candidate 2026]**; [12 October packet](web/kleddamag-n17-candidate-2026-10-12/README.md) |
 | [Guzhou0806/n17-square-packing](https://github.com/Guzhou0806/n17-square-packing) | Parent-angle and mixed-charge certificates for `n = 17`, including R068 and R071 | **[Guzhou0806 n17 R068]**; [28 September packet](web/n17-guzhou-r068-2026-09-28/README.md); **[Guzhou0806 n17 R071]**; [30 September packet](web/n17-guzhou-r071-2026-09-30/README.md), pinned `8c11f6962506940c5de67a9fa73b3d1e2e151196` |
 | [Guzhou0806/n40-square-packing](https://github.com/Guzhou0806/n40-square-packing) | The clipped-corner transfer `s(40) > 335427/50000` on wand125’s `rect_n40_L67` density, with its 401-direction nodal run and exact finite checks, and then the continuous-pose kernel `s(40) > 1340000/199529` on the same density, with its 43-slab interval cover, exact axis certificate and finite checks, and the same kernels’ `s(40) > 3359/500` on a new density of 685 rectangle orbits | **[Guzhou0806 n40 clipped corner 2026-10-10]**; [10 October packet](web/guzhou-n40-clipped-corner-2026-10-10/README.md), pinned `e5abeb4d078a5c5b35df6204dd9b93378e5a7880`; **[Guzhou0806 n40 continuous pose 2026-10-10]**; [10 October continuous-pose packet](web/guzhou-n40-continuous-pose-2026-10-10/README.md), pinned `71c97d07553d7d5ff5c5c82f0c9d1c75a150a4e3`; **[Guzhou0806 n40 new supports 2026-10-11]**; [11 October new-supports packet](web/guzhou-n40-new-supports-2026-10-11/README.md), pinned `6a65957e6c5c51cdf267917d882dab7f5b4928dd` |
 | [Mira-acc/17squares](https://github.com/Mira-acc/17squares) | Exact point and weighted certificates used in the `n = 17` lineage | **[n17 weighted certificates 2026-09-20]**; [20 September packet](web/n17-weighted-certificates-2026-09-20/README.md) |
@@ -1205,6 +1206,31 @@ sides beyond the case corpus are verified beyond-horizon rows that supersede the
 tracked at 338, 339, 344, 375, 376, 378 and 379; the four certificates the issue does
 not name, at 175, 308, 340 and 343, are registered nowhere.
 Claude assistance disclosed.
+
+## Overbeck’s candidate proof that s(17) = L, 12 October 2026
+
+**[Overbeck n17 candidate 2026]**: Marc Leonard Overbeck’s (GitHub Kleddamag)
+verification edition of a candidate proof that John Bidwell’s 1998 packing of seventeen
+squares is optimal, $s(17) = L = 4.67553009360455095163\ldots$, conditional on the 210
+obligations it lists, 15 of them mathematical premises, in
+[Kleddamag/the-seventeenth-square-candidate](https://github.com/Kleddamag/the-seventeenth-square-candidate)
+at `653b9589d0f8a152f01adc56b1d48ba53d49abc3` with its release `large-files-v1`;
+[packet](web/kleddamag-n17-candidate-2026-10-12/README.md).
+The edition grants no licence for reuse, so the packet keeps digests, derived facts and
+receipts and no upstream byte.
+Its `STATEMENT.md` defines $L$ by this repository’s H-255 chart, so its upper half is
+the certified endpoint the case already holds.
+Here the author’s `check.py` passed, 34 capture rows and three of the 13 tree
+certificates were reproduced with the producer’s code, 34 rows were decided again by a
+checker written here from the proof text, and the root was isolated independently, all
+agreeing with the source; the complete capture recomputation, about 2,347 CPU-hours, and
+ten trees were not run.
+T-153 records the claim, with the
+[review of 12 October](../../docs/project/reviews/review-2026-10-12-kleddamag-n17-candidate.md)
+on file; the case’s verified bounds are unchanged.
+The source says Codex (OpenAI) and Claude (Anthropic) produced the mathematics, engines,
+certificates, checkers, reviews and text under his direction, and that within the
+project no human has read the mathematics.
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.

@@ -17188,3 +17188,217 @@ results:
           lineage measured where the record retains the parent.
         verdict: accepted
         covers: [T-152]
+
+  - id: T-153
+    kind: optimality
+    registered: '2026-10-12'
+    headline: "Candidate proof that Bidwell's 1998 packing is optimal, `s(17) = 4.67553009360455…`"
+    claim: >-
+      Marc Leonard Overbeck (Kleddamag) claims, as a candidate proof, that `s(17) = L =
+      4.67553009360455095163…`, the side of John Bidwell's 1998 packing of seventeen unit
+      squares, with the squares closed, independently rotated and allowed to touch. His
+      STATEMENT.md defines `F(t,b)=t-3t^2-t^3-t^4+(1-t-t^4+t^5)b+(-3t+t^2-t^3-t^4)b^2` and
+      `G(t,b)=-2t^3-2t^4+(-1+3t-4t^2+t^4+t^5)b+(4-2t-2t^2+2t^3-2t^4)b^2+(-1-5t+4t^2+t^4+t^5)b^3+(2t+2t^2)b^4`,
+      takes `t_0` and `b_0` to 60 places, and states: `There exists exactly one simultaneous
+      real zero $(t_*,b_*)$ in the isolating rectangle
+      $[t_0-10^{-12},t_0+10^{-12}]\times[b_0-10^{-12},b_0+10^{-12}]$.` `Set
+      $L=(6+4t_*)/(1+2t_*-t_*^2)$; its denominator is positive and
+      $4.67553009360455095163<L<4.67553009360455095164$.` `There exists a packing of seventeen
+      unit squares at side $L$, and for every $S\ge0$, existence of such a packing at side $S$
+      implies $L\le S$.` `Uniqueness of an optimal packing is not claimed.`
+
+      The claim is conditional. STATEMENT_STATUS.md says to read it as holding "if the 210
+      obligations of `OBLIGATIONS.json` hold", 15 of them mathematical premises, and calls it
+      "the claim of a candidate proof, not an established theorem". Its five steps are the
+      upper bound; capture at side at most 4675531/10^6 by 98 weighted counting certificates,
+      leaving 11 cases; admission of each case into one of 11 regions; 13 tree certificates,
+      by which ten regions hold no packing below L and the eleventh only packings in a tube
+      around the known one; and a rigidity step, 17 exact rounds and a contraction of ratio
+      159201934153319/200000000000000. Its audit was by AI sessions; Guzhou0806 read the
+      premises in an earlier state and ran a checker of his own on two of the 13 trees, and
+      nobody outside has verified the whole.
+
+      Here the argument has been read, with no mathematical defect found in what was read,
+      and parts of the computation have been run, all agreeing with the source: the author's
+      check.py; 34 capture rows and three trees, reproduced with the producer's code; 34
+      capture rows decided again by an independent implementation written from the proof
+      text; and the root, isolated independently. The complete capture recomputation and ten
+      trees have not been run. F, G, the rectangle and the side map are this repository's
+      H-255 chart, so L is the side of the certified endpoint that holds the case's verified
+      upper bound.
+
+      Marc Leonard Overbeck,
+      [the-seventeenth-square-candidate](https://github.com/Kleddamag/the-seventeenth-square-candidate/tree/653b9589d0f8a152f01adc56b1d48ba53d49abc3),
+      building on Squares Project (Joshua Levy), Ahmed's 11SquaresOptimal, Mira and
+      Guzhou0806's N17 project, as its CREDITS.md states. Its README says: "The mathematics,
+      the engines, the certificates, the checkers, the reviews and the text were produced by
+      AI systems under his direction and to his instructions: Codex (OpenAI) and Claude
+      (Anthropic). They are named and are not authors", and "Within the project no human has
+      read the mathematics."
+    scope: {n_values: [17]}
+    verification: V0
+    confirmation: C1
+    significance:
+      score: 5
+      rationale: >-
+        Scored as a claim, as T-060 was on 29 September while unverified, by the rubric's
+        anchor, movement on a central open case. n = 17 is, with n = 12, one of the two open
+        cases below n = 18; it is the case this project's own lane has worked longest, and
+        the one the owner gave priority on 12 October. The claim settles it exactly at Bidwell's 1998 side,
+        closing the whole 0.01508734360455 gap between the verified floor 4.66044275 and the
+        certified ceiling, where T-093's step was 2.75e-6. The method composes this project's
+        charge and local-isolation recipes with Ahmed's proof shape; that lineage is the
+        credit line's business, not the score's. Significance is separate from whether this
+        candidate proof is correct.
+      scored: '2026-10-12'
+      by: >-
+        Owner priority of 12 October and
+        docs/project/reviews/review-2026-10-12-kleddamag-n17-candidate.md, section 7
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Overbeck n17 candidate 2026]']
+      published: '2026-10-12'
+    evidence: [E-n017-overbeck-optimality-candidate-report]
+    composition: >-
+      One cited entry, the source's report, which claims the exact value and carries the
+      review of 12 October as its external_review; the lower half sets both rungs. The upper
+      half, a packing at side L, is the certified endpoint T-065 holds
+      (E-n017-certified-endpoint), V3/C3 here and independent of the source; the statement's
+      F, G, rectangle and side map are that chart, which
+      E-n017-overbeck-statement-root-independent decides again. Neither is cited, since
+      citing the first would make this result hold the case's verified upper bound in
+      T-065's place.
+
+      The lower half rests on five steps, and the capture step sets the minimum. Its 98
+      statements, 1,728,000 rows per checker, are the source's reported executions: 34 rows
+      of 21 statements were reproduced with the producer's code
+      (E-n017-overbeck-capture-sample-replay), 34 rows of six statements were decided again
+      by an independent implementation (E-n017-overbeck-capture-independent-sample), and a
+      sample decides no statement whole. Of the 13 trees, three were reproduced with the
+      producer's code (E-n017-overbeck-tree-sample-replay) and ten were not run. The
+      rigidity stage's finite rounds and contraction ran in the author's check.py
+      (E-n017-overbeck-candidate-check-py-replay), which recomputes no capture row and no
+      tree. These runs are evidence on the case record and are not cited here: each is a
+      machine-shaped replay that passed on the part it ran, so citing it would let the
+      checker derive a rung that only the complete replay can give.
+
+      By epistemics.md's predicates: V3 needs, for every load-bearing part, a published or
+      audited proof or a machine certificate whose replay passed, and the capture step and
+      ten trees have neither, since a partial replay of the producer's computation is not a
+      full replay and the source calls its proof a candidate. No numerical method (V1) or
+      unavailable proof (V2) fits, so the result stands at V0. C3 would need
+      confirming-origin machine evidence with a passing replay for every load-bearing part,
+      and the same parts lack it; C2 needs a method that yields no certificate, which this
+      is not. C1's predicate holds: a qualifying, dated read with its reviewer and note.
+    reviews:
+      - path: docs/project/reviews/review-2026-10-12-kleddamag-n17-candidate.md
+        kind: adversarial
+        reviewer: >-
+          AI agent (Claude, claude-fable-5-1, tbd-strong tier, reasoning xhigh), the
+          mathematical-review lane K2 of the #557 intake, prompted separately from the
+          retention lane K1 and the replay lane K3, sharing no context with either
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-12'
+        scope: >-
+          The statement and its root isolation; each of the five steps with its premises,
+          obligations, computations and trust boundary; the three places the author asks to
+          be read hardest (the class-row lemma, the root-admission geometry with distinctness
+          and the seams, and the hand-overs into the rigidity theorem); the fifteen premises;
+          what each replay would establish; and the record's rungs and significance, at
+          653b9589d. It ran no checker, and did not read the normalized 52-row gate of
+          G20S_PHYSICAL, the tree and capture checkers' code, or any certificate.
+        verdict: accepted
+        covers: [T-153]
+    artifacts:
+      - packing/resources/web/kleddamag-n17-candidate-2026-10-12/README.md
+      - packing/resources/web/kleddamag-n17-candidate-2026-10-12/facts/statement.json
+      - packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts/statement-comparison.json
+      - packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts/check-py/stdout.txt
+      - packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts/recomputation-price.json
+      - packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts-here/upper-bound.json
+      - packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts-here/capture-sample.json
+      - packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts-here/capture-independent.json
+      - packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts-here/trees.json
+      - docs/project/reviews/review-2026-10-12-kleddamag-n17-candidate.md
+    activity:
+      state: in-analysis
+      what: >-
+        A lane of the #557 intake replays the ten trees not yet run (JG, JPA_v5, G20S, HW,
+        JPG15m_v5, JPG17p_v5, JPG3m_v5, JPG3p_v5, JPW13 and JPWS_v4) with the producer's two
+        v3.0 checkers and h_report30.py.
+      since: '2026-10-12'
+      link: https://github.com/jlevy/squares/issues/557
+    next_rung: >-
+      V3 and C3 need every load-bearing part replayed in full here, the review's section 5:
+      the author's check.py to PASS, done on 12 October; all 98 capture statements, every
+      row, with at least one of the producer's two capture checkers, compared row for row
+      with the stored receipts; all 13 trees with at least one frozen checker and
+      h_report30.py, three of them done; and one mutated-input control per kind, refused.
+      That would be reproduction with the producer's code. An independent implementation of
+      the capture sweep, begun on 34 rows, and of the tree checker would be an attribute
+      beside the rung.
+
+      V4 and C4 need, on top of V3 and C3, a second adversarial AI review by a distinct
+      reviewer whose verdict accepts, one that reads the normalized 52-row gate of
+      G20S_PHYSICAL (PROOF.md P110), which this review did not read and would not count as
+      accepted for rung 4, and the owner's oversight record naming trust-boundary,
+      certificate-meaning and ai-findings. Rung 5 needs the Lean formalization the source
+      plans and has not started.
+    unfinished_confirmations:
+      - what: >-
+          all 98 capture statements recomputed in full with the producer's capture checkers,
+          1,728,000 rows each, compared row for row with the stored receipts, with a
+          mutated-certificate control refused
+        rung: C3
+        link: https://github.com/jlevy/squares/issues/557
+        estimated_cost:
+          cpu_hours: 1273
+          cpu_hours_high: 2347
+          basis: >-
+            The sum over the 1,152 selected slices of each stored output's per-row CPU
+            seconds: 1,273 CPU-hours for the Python checker, the one C3 needs, and 2,347 with
+            the Node checker as well, on the author's Linux x86_64 runners with four workers
+            per checker. Lane K3 measured the Python checker here at 1.08 times the stored
+            CPU per row
+            (packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts-here/capture-sample.json).
+          priced: '2026-10-12'
+      - what: >-
+          the ten trees not yet replayed (JG, JPA_v5, G20S, HW, JPG15m_v5, JPG17p_v5,
+          JPG3m_v5, JPG3p_v5, JPW13 and JPWS_v4) with the producer's two v3.0 checkers and
+          h_report30.py, each report compared with the stored second execution, with a
+          mutated-certificate control refused
+        rung: C3
+        link: https://github.com/jlevy/squares/issues/557
+        estimated_cost:
+          cpu_hours: 7.1
+          cpu_hours_high: 21
+          basis: >-
+            The stored second execution of these ten trees took 7.1 CPU-hours on the author's
+            macOS arm64 machine; the three trees replayed here ran up to six times slower in
+            the Node checker on this shared host, about 21 CPU-hours for the ten. JPA_v5's
+            Node run peaked at 7.0 GB resident
+            (packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts-here/trees.json).
+          priced: '2026-10-12'
+    notes: >-
+      Registered on 12 October 2026 by the fast path the owner asked for, as T-060 was on 29
+      September: at S5 before the complete replays, with the verified lanes unchanged. The
+      mathematical review was written before lane K3's receipts and proposed V0/C1; those
+      receipts move no rung, as the composition says, since each replays a part of the
+      producer's computation and not all of it, and the case record and not this entry cites
+      them. V0 is declared, with this note as the ladder
+      asks: the only entry for the whole lower half is the source's report, and the source's
+      own executions and internal audit are retained in the source and not here.
+
+      The review lists ten non-blocking defects, among them the ROOT_ADMISSION geometry,
+      written only in the proof text and a script comment (KNOWN_ISSUES.md item 1), two
+      routes with different constants for the same step of G20S_PHYSICAL, and file
+      bindings outside the proof packet; its eleven questions for the author are in its
+      section 8.
+
+      T-093 (R071) keeps the case's verified lower bound, 18641771/4000000; this entry holds
+      the reported one. The edition carries this repository's exp-237 and exp-238
+      certificates and its endpoint checker (THIRD_PARTY.md). Overbeck publishes on GitHub as
+      Kleddamag, the handle credited for T-037, T-038, T-040 and T-041. CREDITS.md lists
+      wand125's certificates, kernel and verifier as context, not as a premise. Issue #557's
+      title says n=18; the source is n = 17.

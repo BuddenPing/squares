@@ -31653,3 +31653,254 @@ evidence:
       the 304 and 305 certificates as houses. Finite feasibility only: no lower bound,
       optimum, local minimum, rigidity, novelty or human oversight.
     source_reviewed: '2026-10-12'
+
+  - id: E-n017-overbeck-optimality-candidate-report
+    claim: exact-value
+    scope: {n_values: [17]}
+    assurance: reported
+    reported_method: exact-algebraic
+    performed_by: source-author
+    relationship_to_generator: not-applicable
+    origin: external
+    novelty: previously-published
+    source_key: '[Overbeck n17 candidate 2026]'
+    replay_status: not-attempted
+    verifiers: []
+    external_review:
+      state: informally-verified
+      date: '2026-10-12'
+      reviewed_by: >-
+        Claude (claude-fable-5-1, tbd-strong tier, reasoning xhigh), the mathematical-review
+        lane K2 of the #557 intake, prompted separately from lanes K1 and K3 and sharing no
+        context with either
+      note: >-
+        docs/project/reviews/review-2026-10-12-kleddamag-n17-candidate.md read the edition at
+        653b9589d: the statement, PROOF.md in full, CLASS_ROW_LEMMA.md, the 15 premise rows and
+        most of their files of record, SPEC_v3.0.md sections 0-8 and 11, and the admission
+        scripts line by line. The class-row lemma's four links, the frame counting, the KEY_W
+        elimination, the loose-role identities, the coarse-capacity quartic, the label-12
+        marker cover, the admission geometry, the three tube hand-overs and the endpoint
+        contradiction re-derive, and no mathematical defect was found in what was read; its
+        ten listed defects are all non-blocking. Not re-proved: CHARGE_SEMANTICS through the
+        capture checkers' fidelity and the authenticity of the 1,152 slice executions,
+        LOCAL_CHECKER_SOUNDNESS through the two tree checkers and their runs, and the
+        normalized 52-row gate of G20S_PHYSICAL (PROOF.md P110), which neither the source's
+        last reader of record nor this review read. The review ran no checker and recomputed
+        no row and no tree.
+    limitations: >-
+      This entry preserves the source's claim, s(17) = L with L the side of Bidwell's 1998
+      packing, as the source states it: "the claim of a candidate proof, not an established
+      theorem", which holds if the 210 obligations of its OBLIGATIONS.json hold, 15 of them
+      mathematical premises, with no independent review of the final bytes and an audit by
+      AI sessions only (STATEMENT_STATUS.md, AUDIT.md). KNOWN_ISSUES.md item 1 says the
+      ROOT_ADMISSION geometry has no written proof outside the proof text and one script
+      comment. The source's own executions of the 98 capture statements (1,728,000 rows per
+      checker, in 1,152 slices) and of the 13 tree certificates are reported here, not
+      replayed in full. What ran here on 12 October: the author's check.py, which passed
+      (E-n017-overbeck-candidate-check-py-replay); 34 capture rows of 21 statements and three
+      of the 13 trees, reproduced with the producer's code
+      (E-n017-overbeck-capture-sample-replay, E-n017-overbeck-tree-sample-replay); 34 rows
+      of six statements decided again by an independently written checker
+      (E-n017-overbeck-capture-independent-sample); and the statement's root and L, isolated
+      independently (E-n017-overbeck-statement-root-independent). Every one agrees with the
+      source. The statement's polynomials, isolating rectangle and side map are exactly this
+      repository's H-255 chart (exp-237), so its upper half is the certified endpoint
+      E-n017-certified-endpoint. No licence for reuse: the packet keeps digests, receipts
+      and derived facts only.
+    blocker:
+      kind: mathematics
+      detail: >-
+        Replay here all 98 capture statements and the ten trees not yet replayed, each with a
+        mutated-input control, and have the normalized 52-row gate of G20S_PHYSICAL read,
+        before the verified lower bound or the case status moves.
+    source_reviewed: '2026-10-12'
+
+  - id: E-n017-overbeck-candidate-check-py-replay
+    claim: derived-structure
+    scope: {n_values: [17]}
+    assurance: verified
+    method: exact-algebraic
+    performed_by: repository
+    relationship_to_generator: same-implementation
+    origin: replayed-here
+    novelty: previously-published
+    source_key: '[Overbeck n17 candidate 2026]'
+    certificate: packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts/check-py/stdout.txt
+    replay: >-
+      Outside this repository, with a clone of Kleddamag/the-seventeenth-square-candidate at
+      653b9589d0f8a152f01adc56b1d48ba53d49abc3 as EDITION and its 12 release assets fetched
+      into EDITION/_large/ (python3 fetch_large.py, or gh release download large-files-v1),
+      each with the SHA-256 in
+      packing/resources/web/kleddamag-n17-candidate-2026-10-12/acquisition/large-files.json,
+      run PY -I EDITION/check.py in a clean environment, with PY a CPython 3.12 venv holding
+      sympy==1.14.0. The last line must be CHECK RESULT: PASS (levels 0-2; 7118 files, 22013
+      pins, 41 checks) with the MANIFEST.sha256 digest
+      9ecfa0db00fc9afaf98c6df8eeee920df8cb1e4737c88521ac3c64366ec7689e, and the exit code 0.
+      The packet's receipts/programs/run_check.sh is the wrapper that ran it.
+    replay_status: passed
+    verifiers: [V-overbeck-n17-check-py]
+    limitations: >-
+      Replayed here by lane K1 on 12 October 2026 on a shared 4-core Linux x86_64 container,
+      CPython 3.12.3 with SymPy 1.14.0, a platform the source never tested: CHECK RESULT PASS,
+      exit 0, 809.7 s of wall and 793 CPU-seconds. It establishes what CHECK.md says a PASS
+      means and no more: the 7,118 listed files, the 12 large files and 22,013 pins have their
+      digests, and MANIFEST.sha256 and check.py have the SHA-256 the release notes publish;
+      the producers' 31 cheap public checks reproduce their recorded outcomes on the files
+      they recorded reading, among them the exact endpoint feasibility, the tight enclosure
+      of L, the admission, the case partition and the rigidity stage's seventeen finite
+      rounds, transfers, stops and normalized contraction (their dual bounds, not the
+      necessity of their rows); provenance re-decides every stored row of the 98 capture
+      statements from the numbers recorded in it, with the two checkers' rows identical; and
+      the stored outputs of the second and third executions of the 13 trees say PASS and
+      ACCEPTED and name this edition's certificates. It recomputes no capture row and no
+      tree, reads no mathematics, cannot show that a stored execution ran what its record
+      says, and is the producers' own code. Structural evidence: it decides no part of
+      s(17) = L on its own.
+    source_reviewed: '2026-10-12'
+
+  - id: E-n017-overbeck-capture-sample-replay
+    claim: derived-structure
+    scope: {n_values: [17]}
+    assurance: verified
+    method: exact-algebraic
+    performed_by: repository
+    relationship_to_generator: same-implementation
+    origin: replayed-here
+    novelty: previously-published
+    source_key: '[Overbeck n17 candidate 2026]'
+    certificate: packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts-here/capture-sample.json
+    replay: >-
+      Outside this repository, with the clone and venv of
+      E-n017-overbeck-candidate-check-py-replay (numpy and numba added) and Node.js on PATH,
+      for each of the 28 calls the receipt lists, run PY -I -B EDITION/recompute_slice.py
+      STATEMENT START END --python PY --workers 1 --out OUT. Each must exit 0 with SLICE
+      RESULT: EQUAL, both checkers passing every row, agreeing with each other and with the
+      stored rows.
+    replay_status: passed
+    verifiers: [V-overbeck-n17-capture-checkers]
+    limitations: >-
+      Run here by lane K3 on 12 October 2026 on a shared 4-core Linux x86_64 container,
+      CPython 3.12.3 with numpy 2.0.2, numba 0.60.0 and SymPy 1.14.0, and Node.js v22.22.0:
+      28 calls, 34 rows of 21 of the 98 statements, chosen to cover every one of the 11
+      roots, the frame statements and KEY_W, slice boundaries, the heaviest rows and the
+      tightest row of each statement, among them C_10, Q_6 and CLASS_PS_L06_T17_ENDm_H4T4,
+      whose budgets have one unit of surplus. All 28 ended EQUAL, in 0.2 CPU-hours. It is the
+      producers' own code, and it is a sample: 34 of 1,728,000 rows per checker, no
+      statement whole. The complete recomputation is about 2,347 CPU-hours by the source's
+      slice records, 1,273 of them for the Python checker.
+    source_reviewed: '2026-10-12'
+
+  - id: E-n017-overbeck-capture-independent-sample
+    claim: derived-structure
+    scope: {n_values: [17]}
+    assurance: verified
+    method: exact-algebraic
+    performed_by: repository
+    relationship_to_generator: independent-implementation
+    origin: replayed-here
+    novelty: previously-published
+    source_key: '[Overbeck n17 candidate 2026]'
+    certificate: packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts-here/capture-independent.json
+    replay: >-
+      From packing/, with the clone of E-n017-overbeck-candidate-check-py-replay as EDITION
+      and DIR its
+      research/finishing-threshold-goal-20261007/clean-rerun-20261011/current-build-0122/capture/statements,
+      for each of the six statements and the rows the receipt lists, run .venv/bin/python3 -I
+      resources/web/kleddamag-n17-candidate-2026-10-12/receipts-here/programs/k3_capture_row.py
+      DIR/NAME/certificate.json DIR/NAME/classes.json ROW... > NAME.jsonl, then
+      .venv/bin/python3 -I
+      resources/web/kleddamag-n17-candidate-2026-10-12/receipts-here/programs/compare_independent.py
+      DIR/NAME NAME.jsonl NAME.compare.json. Every row must pass with every per-level
+      minimum equal to the stored Python and Node rows; with --control-gamma=1000000006 on
+      C_10 row 2321 the row must fail.
+    replay_status: passed
+    verifiers: [V-k3-n17-capture-row-checker]
+    limitations: >-
+      Run here by lane K3 on 12 October 2026 under CPython 3.14.7 in pure Fraction and
+      integer arithmetic: 34 rows of six statements (C_10, CLASS_PS_L06_T17_ENDm_H4T4, Q_13,
+      CLASS_PS_L16_T09, L_4 and PW_11), every row passing and every per-level minimum equal
+      to the stored rows of both of the producers' checkers; each statement's budget,
+      recomputed from its capacities, satisfies the strict inequality, and its rows chain
+      from 0 to 1. The control, Gamma raised one unit above C_10 row 2321's default-level
+      minimum, fails as it must. The checker was written from CLASS_ROW_LEMMA.md, PROOF.md
+      section 3 and RESTRICTED_CHECKER.md without reading the producers' sweep code; its own
+      cell arrangement differs from theirs, so cell counts differ and only the minima and
+      the decisions are compared. A sample: 34 of 1,728,000 rows, no statement whole. Pure
+      Python takes about 17 times the producers' CPU per row, so a complete replay with it
+      is about 22,000 CPU-hours (862 CPU-seconds for these rows).
+    source_reviewed: '2026-10-12'
+
+  - id: E-n017-overbeck-tree-sample-replay
+    claim: derived-structure
+    scope: {n_values: [17]}
+    assurance: verified
+    method: exact-algebraic
+    performed_by: repository
+    relationship_to_generator: same-implementation
+    origin: replayed-here
+    novelty: previously-published
+    source_key: '[Overbeck n17 candidate 2026]'
+    certificate: packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts-here/trees.json
+    replay: >-
+      Outside this repository, with the clone, its release assets and the venv of
+      E-n017-overbeck-candidate-check-py-replay (numpy and numba added) and Node.js, for each
+      tree the receipt lists run PY -I -B
+      EDITION/research/window-extension-20261008/checker/wxcheck_v30.py CERT --json T_C1.json,
+      node --max-old-space-size=12000
+      EDITION/research/window-extension-20261008/checker2/wxcheck2_v30.js CERT --json
+      T_C2.json, and PY -I -B EDITION/research/window-extension-20261008/acceptance/h_report30.py
+      CERT T_C1.json T_C2.json 0 0 EXPECT
+      EDITION/research/window-extension-20261008/acceptance/FROZEN_30.json, with CERT and
+      EXPECT the files and SHA-256 the receipt gives. Both checkers must print PASS first, the
+      post-check must end RESULT: ACCEPTED, and each report must equal the stored
+      second-execution report once paths and times are dropped.
+    replay_status: passed
+    verifiers: [V-overbeck-n17-tree-checkers]
+    limitations: >-
+      Run here by lane K3 on 12 October 2026 on the host of
+      E-n017-overbeck-capture-sample-replay: three of the 13 trees, JQ (one node), JPG17m_v5
+      and JPG15p_v5, each PASS in both checkers and RESULT: ACCEPTED in the post-check, with
+      both reports equal to the stored ones, in 0.8 CPU-hours. It is the producers' own code,
+      and the two checkers were written by sessions of one AI system. The other ten trees are
+      not replayed: JG, the only TUBE; JPA_v5, the largest; the hand-over trees G20S and HW;
+      and JPG15m_v5, JPG17p_v5, JPG3m_v5, JPG3p_v5, JPW13 and JPWS_v4. Their stored second
+      execution took 7.1 CPU-hours on the author's machine, about 21 here at the slowdown
+      measured on these three.
+    source_reviewed: '2026-10-12'
+
+  - id: E-n017-overbeck-statement-root-independent
+    claim: derived-structure
+    scope: {n_values: [17]}
+    assurance: verified
+    method: exact-algebraic
+    performed_by: repository
+    relationship_to_generator: independent-implementation
+    origin: replayed-here
+    novelty: previously-published
+    source_key: '[Overbeck n17 candidate 2026]'
+    certificate: packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts-here/upper-bound.json
+    replay: >-
+      From packing/, with the clone of E-n017-overbeck-candidate-check-py-replay as EDITION:
+      .venv/bin/python3 -I
+      resources/web/kleddamag-n17-candidate-2026-10-12/receipts-here/programs/k3_root_isolation.py
+      EDITION/STATEMENT.md
+      campaign/series/series-000-smoke-and-calibration/results/exp-237-n17-polynomial-root/run-001/certificate.json
+      frontier/n-017.md must exit 0 and print result PROVED, with control_perturbed_F_passed
+      false.
+    replay_status: passed
+    verifiers: [V-k3-n17-root-isolation]
+    limitations: >-
+      Run here by lane K3 on 12 October 2026 under CPython 3.14.7: a Krawczyk test in exact
+      rational intervals proves exactly one common zero of F and G in the statement's box, a
+      refined box of radius 10^-45 holds it, and the resultant in t has exactly one real root
+      in the box's t-range by a Sturm count; the side map's denominator is positive, L lies
+      inside the statement's 20-place interval and agrees with the author's
+      own_endpoint_enclosure.py to 45 digits, and L is a root of n-017's degree-18
+      polynomial. F, G, t0, b0 and the radius equal exp-237's chart, so L is the side of
+      E-n017-certified-endpoint, whose ceiling exceeds L by 1.04e-22. The same day the
+      record's H-255 and H-256 checkers ran again on the edition's seed, byte-identical to
+      the one the record holds, and both exact routes accepted that seed as a packing at its
+      rational side, 4.84e-17 above L. The program was written without reading the author's
+      endpoint programs; SymPy parses the polynomials and computes the resultant. It decides
+      the statement's definition of L and its identity with the record, not the lower half.
+    source_reviewed: '2026-10-12'

@@ -174,6 +174,7 @@ action for each are in [`frontier/RESULTS.md`](packing/frontier/RESULTS.md); the
 | [T-026](packing/frontier/RESULTS.md) | 11 | `V3` | `C3` | `S5` | `apparently-novel` | s(11) >= 955000*sqrt(518400042893309449)/179696714646249 = 3.826447410572939, proved by an exact dilation-limit corollary of T-025’s threshold certificate re-certified on a finer direction net. |
 | [T-037](packing/frontier/RESULTS.md) | 11 | `V3` | `C3` | `S5` | `previously-published` | s(11) > 31/8 = 3.875, by Kleddamag’s 11-squares-certified-bound v1.0.2 release of 22 September 2026. |
 | [T-060](packing/frontier/RESULTS.md) | 11 | `V3` | `C3` | `S5` | `previously-published` | `s(11) = T = (6u+4)/(1+2u−u²) = 3.8770835900228141773078970601…`, where `u` is the unique root in `(9/25, 37/100)` of `5u⁸−10u⁷−2u⁶+14u⁵+12u⁴−6u³+2u²+2u−1 = 0`. |
+| [T-153](packing/frontier/RESULTS.md) | 17 | `V0` | `C1` | `S5` | `previously-published` | Marc Leonard Overbeck (Kleddamag) claims, as a candidate proof, that `s(17) = L = 4.67553009360455095163…`, the side of John Bidwell’s 1998 packing of seventeen unit squares, with the squares closed, independently rotated and allowed to touch. |
 | [T-010](packing/frontier/RESULTS.md) | 11 | `V3` | `C3` | `S4` | `apparently-novel` | s(11) >= 2 + 4/sqrt(5), by a source-distinct repair of Stromquist 2003’s Figure 14 point set: the replacement G' = (79/100, 37/20) restores the complete Figure 13 localization, A-triple forcing, repaired unavoidability, and 3+9 capacity chain, certified exactly. |
 | [T-017](packing/frontier/RESULTS.md) | 12 | `V3` | `C3` | `S4` | `apparently-novel` | s(12) >= 99/25, by this project’s weighted fractional unavoidable-set certificate at container side 99/25 = 3.96. |
 | [T-019](packing/frontier/RESULTS.md) | 17, 18, 19 | `V3` | `C3` | `S4` | `apparently-novel` | s(17) >= 459/100, and s(18) >= 459/100 and s(19) >= 459/100, from this project’s weighted fractional unavoidable-set certificate at container side 459/100 = 4.59. |
@@ -353,7 +354,7 @@ hypothesis status and summarizes experiment verdicts, and the
 | Explorations | 50 | 30 linked to proposed hypotheses; 20 uncodified |
 | Hypotheses | 283 | 74 confirmed; 48 refuted; 75 blocked; 24 unresolved; 20 open; 37 open questions; 2 result registered; 2 abandoned; 0 running; 1 exhausted |
 | Experiments | 246 | 94 accepted; 53 rejected; 63 unresolved; 12 baseline; 18 blocked; 5 abandoned; 0 in progress; 1 exhausted |
-| Frontier results | 152 | 152 registered, 122 by others |
+| Frontier results | 153 | 153 registered, 123 by others |
 
 <!-- END CURRENT-RESEARCH-STATUS -->
 
@@ -613,6 +614,7 @@ case or experiment separately.
 
 | Document or collection | Role | Authority | Lifecycle | Current replacement |
 | --- | --- | --- | --- | --- |
+| [Mathematical Review: Kleddamag’s Candidate Proof That `s(17) = L`](docs/project/reviews/review-2026-10-12-kleddamag-n17-candidate.md) | dated review record | record | retained | — |
 | [Review: Robert Barnett’s and Daniil Ostashev’s Rational Upper-Bound Imports of 11 October (#505, #501)](docs/project/reviews/review-2026-10-11-upper-bound-imports-505-501.md) | dated review record | record | retained | — |
 | [Review: Francisco Couzo’s Eleven Rational Upper-Bound Imports of 11 October (#506)](docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md) | dated review record | record | retained | — |
 | [Review: SQUISH’s Fourth Request, Nine Rational Upper-Bound Imports of 11 October (#500)](docs/project/reviews/review-2026-10-11-upper-bound-imports-500.md) | dated review record | record | retained | — |

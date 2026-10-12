@@ -25,8 +25,8 @@ second implementation agrees.
 
 ## The Short Version
 
-- **110** programs: **40** external and **70** first-party; **80** decide claims and **30** check premises.
-- **447** of **515** evidence entries name the programs that verified them: 235 reproduced with the producer’s code, 185 independently re-implemented, 17 re-implemented, sharing the producer’s components, 10 no relation: a proof, a derivation or a report.
+- **115** programs: **43** external and **72** first-party; **85** decide claims and **30** check premises.
+- **452** of **521** evidence entries name the programs that verified them: 238 reproduced with the producer’s code, 187 independently re-implemented, 17 re-implemented, sharing the producer’s components, 10 no relation: a proof, a derivation or a report.
 
 ## Programs
 
@@ -70,6 +70,9 @@ second implementation agrees.
 | [`V-squarepacker-indep-check-cpp`](#v-squarepacker-indep-check-cpp) | indep_check.cpp | squarepacker | external | decides | 4 | 2 |
 | [`V-schadt-n29-check-py`](#v-schadt-n29-check-py) | check.py | Schadt | external | decides | 1 | 0 |
 | [`V-anabologyco-n17-checker`](#v-anabologyco-n17-checker) | scripts/check_certificate.py and its event pipeline | anabologyco-maker | external | decides | 1 | 0 |
+| [`V-overbeck-n17-check-py`](#v-overbeck-n17-check-py) | check.py | Overbeck | external | decides | 1 | 0 |
+| [`V-overbeck-n17-capture-checkers`](#v-overbeck-n17-capture-checkers) | recompute_slice.py | Overbeck | external | decides | 1 | 0 |
+| [`V-overbeck-n17-tree-checkers`](#v-overbeck-n17-tree-checkers) | wxcheck_v30.py and wxcheck2_v30.js | Overbeck | external | decides | 1 | 0 |
 | [`V-check-basic-bounds`](#v-check-basic-bounds) | devtools.check_basic_bounds | Squares Project (Levy) | first-party | decides | 3 | 14 |
 | [`V-optimal-moduli`](#v-optimal-moduli) | cases.small_n.optimal_moduli | Squares Project (Levy) | first-party | decides | 1 | 0 |
 | [`V-sqpack-verify`](#v-sqpack-verify) | sqpack.verify | Squares Project (Levy) | first-party | decides | 41 | 31 |
@@ -109,6 +112,8 @@ second implementation agrees.
 | [`V-audit-clipped-corner-transfer`](#v-audit-clipped-corner-transfer) | devtools.audit_clipped_corner_transfer | Squares Project (Levy) | first-party | decides | 2 | 1 |
 | [`V-audit-continuous-pose`](#v-audit-continuous-pose) | devtools.audit_continuous_pose | Squares Project (Levy) | first-party | decides | 3 | 1 |
 | [`V-check-half-angle-area`](#v-check-half-angle-area) | devtools.check_half_angle_area | Squares Project (Levy) | first-party | decides | 18 | 18 |
+| [`V-k3-n17-capture-row-checker`](#v-k3-n17-capture-row-checker) | k3_capture_row.py | Squares Project (Levy) | first-party | decides | 1 | 0 |
+| [`V-k3-n17-root-isolation`](#v-k3-n17-root-isolation) | k3_root_isolation.py | Squares Project (Levy) | first-party | decides | 1 | 0 |
 | [`V-evand-exact-certificates`](#v-evand-exact-certificates) | devtools.evand_exact_certificates | Squares Project (Levy) | first-party | premises | 22 | 20 |
 | [`V-check-n11-final-composition`](#v-check-n11-final-composition) | devtools.check_n11_final_composition | Squares Project (Levy) | first-party | premises | 2 | 2 |
 | [`V-audit-n11-lean`](#v-audit-n11-lean) | devtools.audit_n11_lean | Squares Project (Levy) | first-party | premises | 2 | 1 |
@@ -926,6 +931,48 @@ The source's checker of its 560-atom weighted fractional certificate for n = 17.
 | --- | --- | --- | --- |
 | `E-n017-anabologyco-weighted-certificate` | the source’s own run | no code | - |
 
+### `V-overbeck-n17-check-py`
+
+**check.py, the edition's one checking command, with the producers' runner and the 31 public check scripts it runs, check_equivalence.py, check_comparison_records.py and the independent reader's own_endpoint_enclosure.py** · Overbeck · external · decides · Python · exact-algebraic
+
+Decides the structural claim of a candidate n = 17 optimality edition: every file, large file and pin has its digest, the 31 cheap public checks reproduce their recorded outcomes, every stored capture row's decision follows from its recorded numbers, and the stored tree outputs pass. It recomputes no capture row and no tree certificate, so it decides no bound.
+
+- Source: [`packing/resources/web/kleddamag-n17-candidate-2026-10-12/acquisition/upstream-subtree.sha256`](../../packing/resources/web/kleddamag-n17-candidate-2026-10-12/acquisition/upstream-subtree.sha256)
+- Versions run: SHA-256 `c17240b51898…`, revision `653b9589d0f8` (check.py of the verification edition, version 1 (candidate), as the release notes of large-files-v1 give it)
+- Note: Pinned only and never retained: the edition grants no licence for reuse, so the packet keeps the digests of check.py and of every file it runs (MANIFEST.sha256) and no upstream byte. Its levels 0 to 2 do not run Node.js. The source says AI systems (Codex, Claude) wrote it under Marc Leonard Overbeck's direction.
+
+| evidence | run | code | results |
+| --- | --- | --- | --- |
+| `E-n017-overbeck-candidate-check-py-replay` | replayed here | producer’s code | - |
+
+### `V-overbeck-n17-capture-checkers`
+
+**recompute_slice.py, which recomputes chosen rows of one capture statement with the producers' Python checker exact_classes.py (with exact_general.py, exact_restricted.py, integer_sweep.py and boolean_rule.py) and their Node checker verify_classes_wb.js, and compares both with the stored rows** · Overbeck · external · decides · Python, JavaScript · exact-algebraic
+
+Decides, for the rows it is given of one of the 98 capture statements of the candidate n = 17 proof, the per-level minimum charge of every cell in both checkers, and that both agree with each other and with the stored row.
+
+- Source: [`packing/resources/web/kleddamag-n17-candidate-2026-10-12/acquisition/upstream-subtree.sha256`](../../packing/resources/web/kleddamag-n17-candidate-2026-10-12/acquisition/upstream-subtree.sha256)
+- Versions run: SHA-256 `d6d887911d48…`, revision `653b9589d0f8` (recompute_slice.py); SHA-256 `802dc62aa4f2…`, revision `653b9589d0f8` (exact_classes.py, the Python capture checker); SHA-256 `7f6b234768f8…`, revision `653b9589d0f8` (verify_classes_wb.js, the Node capture checker)
+- Note: Pinned only and never retained, for the reason V-overbeck-n17-check-py gives; the packet's manifest pins every source file named above. The source says both checkers were written by sessions of one AI system from one specification.
+
+| evidence | run | code | results |
+| --- | --- | --- | --- |
+| `E-n017-overbeck-capture-sample-replay` | replayed here | producer’s code | - |
+
+### `V-overbeck-n17-tree-checkers`
+
+**wxcheck_v30.py and wxcheck2_v30.js, the two frozen v3.0 checkers of SPEC_v3.0.md, with the post-check h_report30.py** · Overbeck · external · decides · Python, JavaScript · exact-algebraic
+
+Decides a tree certificate of the candidate n = 17 proof against SPEC_v3.0.md in both checkers; the post-check accepts it only when the root node equals the named region and an EMPTY conclusion has no terminal leaf.
+
+- Source: [`packing/resources/web/kleddamag-n17-candidate-2026-10-12/acquisition/upstream-subtree.sha256`](../../packing/resources/web/kleddamag-n17-candidate-2026-10-12/acquisition/upstream-subtree.sha256)
+- Versions run: SHA-256 `cf8db52bfa1c…`, revision `653b9589d0f8` (wxcheck_v30.py); SHA-256 `97210adf74a3…`, revision `653b9589d0f8` (wxcheck2_v30.js); SHA-256 `0314aa1f8f74…`, revision `653b9589d0f8` (h_report30.py)
+- Note: Pinned only and never retained, for the reason V-overbeck-n17-check-py gives. The source says both checkers were written by sessions of one AI system from one specification.
+
+| evidence | run | code | results |
+| --- | --- | --- | --- |
+| `E-n017-overbeck-tree-sample-replay` | replayed here | producer’s code | - |
+
 ### `V-check-basic-bounds`
 
 **devtools.check_basic_bounds** · Squares Project (Levy) · first-party · decides · Python · exact-algebraic
@@ -1609,6 +1656,36 @@ Decides a rational centre and half-angle certificate, or a rational centre-basis
 | `E-barnett-505-exact-feasibility` | replayed here | independent | T-150 |
 | `E-squish-500-exact-feasibility` | replayed here | independent | T-151 |
 | `E-couzo-506-exact-feasibility` | replayed here | independent | T-152 |
+
+### `V-k3-n17-capture-row-checker`
+
+**k3_capture_row.py, with compare_independent.py** · Squares Project (Levy) · first-party · decides · Python · exact-algebraic
+
+Decides chosen rows of one fixed-symmetry capture statement of the candidate n = 17 proof in Fraction arithmetic, on its own cell arrangement: every cell's charge against its class level, the per-level minima, and the whole certificate's budget, strict inequality and row chain; the comparison holds each minimum to the stored Python and Node rows.
+
+- Source: [`packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts-here/programs/k3_capture_row.py`](../../packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts-here/programs/k3_capture_row.py), [`packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts-here/programs/compare_independent.py`](../../packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts-here/programs/compare_independent.py)
+- Versions run: this repository's commits, which Git holds
+- What its authors read and used: [`packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts-here/programs/k3_capture_row.py`](../../packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts-here/programs/k3_capture_row.py)
+- Note: Lane K3 of the #557 intake wrote it on 12 October 2026 from the edition's CLASS_ROW_LEMMA.md, PROOF.md section 3 and RESTRICTED_CHECKER.md, without reading the producers' sweep code; its module statement says so and that it imports none of it. Pure Python, about 17 times the producers' CPU per row.
+
+| evidence | run | code | results |
+| --- | --- | --- | --- |
+| `E-n017-overbeck-capture-independent-sample` | replayed here | independent | - |
+
+### `V-k3-n17-root-isolation`
+
+**k3_root_isolation.py** · Squares Project (Levy) · first-party · decides · Python · exact-algebraic
+
+Decides, from STATEMENT.md of the candidate n = 17 proof, that F and G have exactly one common zero in the stated box (a Krawczyk test in rational intervals, and a Sturm count of the resultant), encloses L, compares the chart with exp-237 and tests that L is a root of n-017's degree-18 polynomial; a perturbed F must fail.
+
+- Source: [`packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts-here/programs/k3_root_isolation.py`](../../packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts-here/programs/k3_root_isolation.py)
+- Versions run: this repository's commits, which Git holds
+- What its authors read and used: [`packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts-here/programs/k3_root_isolation.py`](../../packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts-here/programs/k3_root_isolation.py)
+- Note: Lane K3 of the #557 intake wrote it on 12 October 2026 without reading the author's endpoint programs, as its module statement says. SymPy parses the polynomials and computes the resultant; every decision is Fraction arithmetic.
+
+| evidence | run | code | results |
+| --- | --- | --- | --- |
+| `E-n017-overbeck-statement-root-independent` | replayed here | independent | - |
 
 ### `V-evand-exact-certificates`
 

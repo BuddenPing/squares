@@ -2,7 +2,7 @@ softschema:
   contract: packing.squares:Bibliography/v1
   schema: bibliography.schema.yaml
   status: enforced
-last_reviewed: '2026-10-10'
+last_reviewed: '2026-10-12'
 # The citation fields a generator needs, keyed by the source keys the frontier records
 # use. The Markdown tables in README.md stay the human index; this file holds only what
 # a line of citation text is built from, for the keys something cites.
@@ -2002,7 +2002,38 @@ sources:
       source checks with Squares Project (Levy) verification code; this project lineage is
       not independent. The certificates are retained as factual data; the unlicensed prose
       is hash-pinned. Claude assistance disclosed. No optimizer, local or global claim.
+  - key: '[Overbeck n17 candidate 2026]'
+    authors: [Overbeck]
+    year: 2026
+    venue: GitHub
+    short_venue: Web
+    dated: '2026-10-12'
+    credit: Overbeck after Levy, Ahmed, Mira, Guzhou0806, Maaz
+    short_credit: Overbeck after Levy et al.
+    lineage: builds-on-project
+    note: >-
+      Seventeen unit squares: verification edition of a candidate proof, version 1
+      (candidate), Kleddamag/the-seventeenth-square-candidate at
+      653b9589d0f8a152f01adc56b1d48ba53d49abc3 (committed 2026-10-12T14:40:59Z) with its
+      release large-files-v1, pinned in web/kleddamag-n17-candidate-2026-10-12/. README.md
+      and CITATION.cff name the author Marc Leonard Overbeck (ORCID 0009-0008-8607-8197), who
+      publishes on GitHub as Kleddamag, the handle of the [Kleddamag n11 2026] and
+      [Kleddamag n17 ...] keys. CREDITS.md says the result depends on, or follows the idea
+      of, Joshua Levy and the squares project (the charge method, the exact certification of
+      L, the core-stress and local-minimum recipe, the parent-centre contract and the plan to
+      follow the n = 11 proof shape), Manasseh Ahmed's 11SquaresOptimal (the proof shape),
+      Mira-acc/17squares (the certificate frame), Guzhou0806's N17 project (the angle
+      catalogue, the parent-side reduction and the first exact JavaScript checker) and
+      Muhammad Maaz (the semidefinite leaves); Bidwell for the packing, and Gensane and
+      Ryckelynck and David Ellsworth for its exact description. It lists wand125's
+      certificates, kernel and verifier as context, not as a premise. README.md: "The
+      mathematics, the engines, the certificates, the checkers, the reviews and the text
+      were produced by AI systems under his direction and to his instructions: Codex
+      (OpenAI) and Claude (Anthropic). They are named and are not authors", and "Within the
+      project no human has read the mathematics." No licence for reuse.
 credited_names:
+  Marc Leonard Overbeck: Overbeck
+  Marc Leonard Overbeck (Kleddamag): Overbeck
   Daniil Ostashev: Ostashev
   Robert Barnett: Barnett
   Nate Chaoweeraprasit (itsnaka): Chaoweeraprasit
