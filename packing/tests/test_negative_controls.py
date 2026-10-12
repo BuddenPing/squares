@@ -187,6 +187,14 @@ def test_historical_push_logs_leave_workers_but_keep_scientific_consumers(
     ):
         source = ROOT / relative
         assert (tree / HERE / relative).read_bytes() == source.read_bytes(), relative
+        if Path(relative) in controls.HOUSE_LINK_LEAVES:
+            # n263's leaf is T-146's house since the adoption of 11 October 2026
+            # (think-fvz4), and `upper_bound_houses` links every adopted leaf back: the
+            # worker reads the checkout's own file, which its index does not track.
+            assert (tree / HERE / relative).is_symlink(), relative
+            assert (tree / HERE / relative).resolve() == source.resolve(), relative
+            assert tree / HERE / relative not in (tracked_files(tree, "packing") or [])
+            continue
         assert tree / HERE / relative in (tracked_files(tree, "packing") or []), relative
         if relative.endswith(".log.gz"):
             assert read_retained_bytes(tree / HERE / relative) == read_retained_bytes(source)
@@ -2153,6 +2161,7 @@ def test_a_worker_snapshot_can_be_asked_what_this_repository_tracks(
     from devtools import squish_followup_packets as packet  # noqa: PLC0415
     from devtools import squish_second_update_confirmation as second  # noqa: PLC0415
     from devtools import squish_second_update_house_links as house  # noqa: PLC0415
+    from devtools import upper_bound_houses as adopted  # noqa: PLC0415
 
     tree, _copied = control_snapshot
     listed = tracked_files(tree, ".")
@@ -2190,6 +2199,10 @@ def test_a_worker_snapshot_can_be_asked_what_this_repository_tracks(
     )
     linked_proofs.update(
         path.relative_to(controls.REPO).as_posix() for path in gupta.snapshot_house_links()
+    )
+    # The houses adopted on 11 October 2026 (think-fvz4) are linked back like the others.
+    linked_proofs.update(
+        path.relative_to(controls.REPO).as_posix() for path in adopted.snapshot_house_links()
     )
     for relative in linked_proofs:
         assert (tree / relative).is_file()
@@ -2697,9 +2710,14 @@ def test_second_squish_complete_replay_survives_native_worker_boundaries(
     listed = tracked_files(tree, ".")
     assert listed is not None, "the actual worker has no private index"
     tracked = {path.relative_to(tree) for path in listed}
-    private_n263 = house.house_path(263).relative_to(controls.REPO)
-    assert private_n263 in tracked
-    assert not (tree / private_n263).is_symlink()
+    # This packet links eight leaves and kept n263's private. Since the house adoption of
+    # 11 October 2026 (think-fvz4) T-146 holds that leaf, and `upper_bound_houses` links
+    # it back like every adopted house.
+    adopted_n263 = house.house_path(263).relative_to(controls.REPO)
+    assert house.house_path(263) not in house.snapshot_house_links()
+    assert adopted_n263.relative_to(HERE) in controls.HOUSE_LINK_LEAVES
+    assert adopted_n263 not in tracked
+    assert (tree / adopted_n263).resolve() == house.house_path(263).resolve()
     for n in house.LINK_NUMBERS:
         relative = house.house_path(n).relative_to(controls.REPO)
         assert (tree / relative).is_symlink()
@@ -2741,6 +2759,18 @@ if gupta.HISTORY.exists():
         assert 'full geometry or private metadata custody mismatch' in str(error)
     else:
         raise AssertionError('new Gupta geometry was accepted against historical #422 inputs')
+# Since the house adoption of 11 October 2026 (think-fvz4) later sources own the leaves at
+# 263 and 302, and that adoption retained case text rather than houses. Admission stays
+# scoped to this packet: rebuild each earlier house from its private inputs, without
+# reading the newer pose.
+from devtools import upper_bound_houses as adopted
+from sqpack.witness import witness_document
+metadata = house.admitted_metadata(packet.admit_certification())
+for n in packet.NUMBERS:
+    if n in adopted.ADOPTED and n not in historical:
+        witness = packet.original.to_witness(packet.read_fact(n))
+        witness.update(metadata[n]['metadata'])
+        historical[n] = witness_document(witness, schema='../witness.schema.yaml')
 historical_paths = {}
 for n in packet.NUMBERS:
     if n in historical:
@@ -3046,6 +3076,18 @@ if gupta.HISTORY.exists():
         assert 'full geometry or private metadata custody mismatch' in str(error)
     else:
         raise AssertionError('new Gupta geometry was accepted against historical #422 inputs')
+# Since the house adoption of 11 October 2026 (think-fvz4) later sources own the leaves at
+# 263 and 302, and that adoption retained case text rather than houses. Admission stays
+# scoped to this packet: rebuild each earlier house from its private inputs, without
+# reading the newer pose.
+from devtools import upper_bound_houses as adopted
+from sqpack.witness import witness_document
+metadata = house.admitted_metadata(packet.admit_certification())
+for n in packet.NUMBERS:
+    if n in adopted.ADOPTED and n not in historical:
+        witness = packet.original.to_witness(packet.read_fact(n))
+        witness.update(metadata[n]['metadata'])
+        historical[n] = witness_document(witness, schema='../witness.schema.yaml')
 historical_paths = {}
 for n in packet.NUMBERS:
     if n in historical:
