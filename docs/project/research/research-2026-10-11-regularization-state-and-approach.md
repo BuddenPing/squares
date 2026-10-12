@@ -378,6 +378,76 @@ What the full run adds to the pilots:
   counts, T-150 at 146 and 261, and others), so their results here are measured against
   the old witnesses and are run again on the new ones.
 
+### What Reached the Record by the Morning of 12 October 2026
+
+The owner asked overnight for regularized versions of everything, in pull requests ready
+to merge and captured in the frontier records.
+Four pieces of work followed the full run, each in its own layer.
+
+**The no-view ladder (#511).** A retry ladder for counts where the solve gives no view:
+higher precision, a forced KKT step on a noise-level stall, the relaxed gate, and a
+replica patch to the vendored solver that stops `probe_flat` at its stall floor
+(recorded as a `replica` change in `vendor/evand-regularize/vendored.yaml`). Of the five
+counts that keep main’s witness, it recovers 258, 290 and 302:
+
+- 290 certifies and is no change.
+- 258 is held, then refused once registered: its totals fall against today’s view.
+- 302 certifies with upstream’s two active-set steps.
+  Light squares fall from 240 to 81 and house sides rise from 570 to 1,005. It goes to
+  review because the solve, not the regularizer, turns squares 114, 115 and 140.
+
+150 and 155 still give nothing.
+
+**The grid pass (#530).** `devtools.regularize_grid_slack` closes free slack and
+straightens squares tilted under 0.5 degrees at the record’s side, then re-solves
+exactly and decides on both maintained routes.
+Over all 324 counts, 72 had a light, uneven or near-axis square in today’s drawing or
+Evan Daniel’s view. All 72 gave an exact view, one to one with the witness: 67 at the
+witness’s side and 5 at the bound.
+Taking a grid view only where it is better on some measure of the drawing census and
+worse on none, the atlas would draw 25 grid views.
+Against today’s atlas:
+
+- variation (uneven and near-axis squares) falls from 1,344 to 481;
+- near-axis squares fall from 248 to 12.
+
+17 of the 25 are among #518’s counts.
+
+**The record (#548).** The layer’s index became a multi-generator contract
+(`RegularizedAtlasIndex/v2`): every view names its generator and pin, and carries its
+regularization in the register’s `regularizations` terms with identity measured.
+`--verify-atlas` decides every drawn view again on both exact routes.
+The register gained a generated `regularized_drawings` block that lists each drawing
+under the result holding the drawn packing, and `check_results` checks the block.
+
+**The registration (#549).** T-151 registers the exact sides of 60 views that sat just
+below their verified ceilings: 5.4e-20 to 9.9e-15 below, V3/C3, S1. Each case record
+keeps the decimal it printed.
+With the bounds refreshed from the records, 16 of the 23 counts held at row 3 are
+admitted. 39, 204 and 299 go to review, and 53, 151, 176 and 298 are refused.
+
+The end state, with #549 on top of the stack:
+
+| Drawing | Counts |
+| --- | --- |
+| From a regularized view | **87**: 43 axis tool, 37 Evan Daniel (24 at the witness’s side, 13 at the bound), 7 grid pass |
+| Unchanged: the witness is already in the regular pose, or nothing visible changes | 182 |
+| The witness as drawn: no generator’s view is admissible yet | 55 |
+
+- **Light squares.** Under the house rule, light squares across the atlas fall from
+  7,704 (the witnesses) and 5,647 (main’s layer) to 5,511. No count’s house or stage
+  total falls.
+- **The record.** 82 drawings are recorded in `regularized_drawings`. Five are listed
+  unregistered:
+  - 18, 26, 66 and 85 are Kingbird and Friedman packings with verified bounds but no
+    register result;
+  - 87 is drawn at the witness’s side, 4.3e-16 above T-151’s bound.
+- **Still to draw.** Every count is either drawn regularized or has a recorded reason
+  for keeping its drawing:
+  - the review queue goes to the owner;
+  - #518’s 42 counts wait for their new witnesses;
+  - the remaining refusals are views whose house or stage totals would fall.
+
 ## Key Insights
 
 1. **The record’s side is the binding constraint, and it sorts the 324 counts into four
@@ -552,23 +622,26 @@ and 13 counts in the review queue.
   15 counts first, and run the full pass only after the imports in flight at the same
   counts (#470, #476, #481, #483, #488, #489) land, since a changed witness lapses every
   review (think-cb34).
-- [ ] Register the exact packings at printed sides in one batch (think-omqv).
+- [x] Register the exact packings at printed sides in one batch (think-omqv): T-151 on
+  #549, which merges after #516’s T-147 to T-150.
 - [x] Amend the policy’s decision table, then teach `devtools.regularize_evand.classify`
   the amendments (think-up3h): the policy on #497, the driver on #511.
-- [ ] The index contract for both generators (think-k35c), then batch 1 with its gallery
-  and review records (think-ux1v).
+- [x] The index contract for every generator (think-k35c), then the admission batches
+  (think-ux1v): #548 and #549. Review records for the review queue remain.
 - [ ] Give `arrangement_gap` a spatial index; it took 72 s of 553 at $n = 292$
   (think-fkmn).
-- [ ] Record every regularization the project makes with the packing’s provenance, in
-  the register’s `regularizations` terms (owner, 11 October 2026). The driver already
-  writes the record per count; the index contract and admission carry it into the layer
-  (think-k35c, now a blocker of the full run).
-- [ ] A pass for axis regions that closes free slack and straightens near-axis squares
+- [x] Record every regularization the project makes with the packing’s provenance, in
+  the register’s `regularizations` terms (owner, 11 October 2026): the layer’s v2 index
+  and the register’s `regularized_drawings` block (#548).
+- [x] A pass for axis regions that closes free slack and straightens near-axis squares
   at the record’s side where the exact solve gives no view or leaves the grid noisy
-  (302, 303 and others; owner, 12 October 2026).
+  (302, 303 and others; owner, 12 October 2026): `devtools.regularize_grid_slack`
+  (#530). The owner confirms it as the third generator and chooses its threshold (0.5 or
+  5 degrees; think-0mq7).
 - [ ] Re-run the 42 counts whose witnesses #518 changes, before any admission there
   (think-cb34, think-ux1v).
-- [ ] Settle #515, a parallel implementation of this layer, with the owner.
+- [x] Settle #515, a parallel implementation of this layer, with the owner: closed as
+  superseded, its rotation tolerance ported to #511.
 - [ ] After the full run: an explainer paper in the project’s own format, rendered by
   kpress like the $n = 11$ lower-bounds explainer, citing Evan Daniel’s work and
   summarizing this project’s changes with before/after figures (think-scua).
