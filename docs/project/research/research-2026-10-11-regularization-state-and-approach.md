@@ -4,8 +4,9 @@
 
 **Author:** Joshua Levy, with Claude (session_017JNnKDwL74rnktr9s8BdjP)
 
-**Status:** Complete (spikes, recommendations and the owner’s decisions of 12 October
-2026; the full run is in progress)
+**Status:** Complete (spikes, recommendations, the owner’s decisions of 12 October 2026
+and the full run; a pass for grid regions and the re-run of the counts whose witnesses
+change are in progress)
 
 **Bead:** think-pwmi (epic think-cdud).
 
@@ -307,6 +308,48 @@ Three cases decide how the policy should read:
 and the one-to-one pairing T-146’s review also found missing.
 It buys little for the colour conventions and costs identity.
 
+### The Full Run of 12 October 2026
+
+All 324 counts ran with the pilots’ settings (`conservative`, `coincide`, source
+orientation, the KKT frame, 1,800 s limits on the exact solve and the regularizer) at
+four workers, against the witnesses `main` held that day, and were decided under the
+owner’s answers of 12 October.
+It cost 49,290 CPU-seconds (13.7 CPU-hours) and 3.8 hours of wall time, about twice the
+pilots’ fit: the exact solve took 100 to 700 s a count between $n = 240$ and 254 alone.
+
+| Outcome | Counts | Rows |
+| --- | --- | --- |
+| **admitted** | 32: 20 at the witness’s side (`same`), 12 at the verified bound (`bound`) | 10 |
+| review | 13: 106, 172, 199, 207, 211, 228, 259, 295, 297, 301, 305, 306, 307 | 6 (8), 7 (4), 9 (1) |
+| refused | 3: 110, 179, 241, where a house or stage total of shared sides falls | 7 |
+| held, register first | 30 | 3 |
+| no view | 18: the exact solve finds the witness not jammed (10), fails (4), times out (290, 302), certifies an invalid point (1) or stops at a local minimum (303) | 1 |
+| no change | 228: 176 already in the regular pose, 38 register candidates and 14 others with nothing visible to change | 3, 4, 5, 10 |
+
+Row 3 lists 71 register candidates in all, the input to the batch registration
+(think-omqv). Of the eight row 6 reviews, seven turn a square that the regularizer’s
+recorded angle changes do not name, and one (228) has no one-to-one pairing.
+
+What the full run adds to the pilots:
+
+- **The bound relation carries much of the gain.** Twelve of the 32 admitted views have
+  exactly the verified bound as their side: the exact solve reproduces the side the
+  register already certifies, as at $n = 206$.
+- **Bent bands keep their tilts.** At 237 to 241, 270 to 273 and 304 to 307 the band
+  bends through 20 to 30 distinct angles that are determined, not free, so
+  `conservative` leaves them; the shading improves (at 271, light squares 135 to 91 and
+  four-side squares 72 to 143), but the hues stay.
+  Merging them is `fewest`’s change, which the owner declined.
+- **Grid regions stay noisy where no view is produced.** At 302 the exact solve timed
+  out and at 303 it stopped at a local minimum, so the drawings keep the witness’s
+  slack: at 302, 76 of 242 axis squares share at most one side, and 10 squares sit
+  between $0.0001$ and $0.44$ degrees off the axis, each in its own hue.
+  The current axis-tool view leaves 33 light and 9 near-axis there.
+  A pass for axis regions, independent of the exact solve, is being built.
+- **42 counts change witness in #518**, which adopts reviewed lower houses (T-146 at 13
+  counts, T-150 at 146 and 261, and others), so their results here are measured against
+  the old witnesses and are run again on the new ones.
+
 ## Key Insights
 
 1. **The record’s side is the binding constraint, and it sorts the 324 counts into four
@@ -361,8 +404,8 @@ It buys little for the colour conventions and costs identity.
 | Decimal witnesses | Refuses 73 | Reaches all | Reaches those whose printed side is not truncated | As left | Reaches the Göbel family |
 | Non-regression | Measured per square | Not measured | Measured, by the driver | Measured | To be measured |
 | Identity | Same squares by construction | Sampled path test upstream | Measured one to one | Fails at 129 | To be measured |
-| Cost for 1..324 | About 800 CPU-s | 3 to 4 CPU-h | About 7 CPU-h (pilot fit) | Similar | Not built |
-| Status | In the layer (68 views) | T-146’s fifteen | Built this session; pilot only | Measured | think-yk2h |
+| Cost for 1..324 | About 800 CPU-s | 3 to 4 CPU-h | 13.7 CPU-h, measured | Similar | Not built |
+| Status | In the layer (68 views) | T-146’s fifteen | Full run, 12 October 2026 | Measured | think-yk2h |
 
 ## Options Considered
 
@@ -470,6 +513,8 @@ grows roughly as $n^{2.3}$; the exact solve dominates and has a heavy tail: 801 
 $n = 260$), so 2 to 3 hours of wall time at three or four workers, mostly in the third
 batch. Review: if a tenth to a fifth of counts reach the queue, 30 to 60 gallery entries
 for the owner, a few minutes each.
+*Measured* in the full run: 13.7 CPU-hours and 3.8 hours of wall time at four workers,
+and 13 counts in the review queue.
 
 ## Next Steps
 
@@ -490,6 +535,12 @@ for the owner, a few minutes each.
   the register’s `regularizations` terms (owner, 11 October 2026). The driver already
   writes the record per count; the index contract and admission carry it into the layer
   (think-k35c, now a blocker of the full run).
+- [ ] A pass for axis regions that closes free slack and straightens near-axis squares
+  at the record’s side where the exact solve gives no view or leaves the grid noisy
+  (302, 303 and others; owner, 12 October 2026).
+- [ ] Re-run the 42 counts whose witnesses #518 changes, before any admission there
+  (think-cb34, think-ux1v).
+- [ ] Settle #515, a parallel implementation of this layer, with the owner.
 - [ ] After the full run: an explainer paper in the project’s own format, rendered by
   kpress like the $n = 11$ lower-bounds explainer, citing Evan Daniel’s work and
   summarizing this project’s changes with before/after figures (think-scua).
@@ -502,8 +553,8 @@ log and the beads of epics think-los0 and think-cdud, with every count checked a
 the files. The spikes ran `devtools.regularize_evand` at the vendored pin on this host
 (four cores, shared), outputs kept outside the repository; the gallery was rendered from
 them with `devtools.regularize_gallery`. The cost fit is a least-squares line in log-log
-over the 21 pilot counts with $n \ge 26$; it is an estimate, not a measurement of the
-full run.
+over the 21 pilot counts with $n \ge 26$; it is an estimate, and the full run of 12
+October measured the cost by `resource.getrusage` per count, children included.
 
 ## References
 
