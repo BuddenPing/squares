@@ -1966,6 +1966,42 @@ sources:
       project; the comparisons are with Daniel's regularization and this project's register
       and atlas. Derived exact facts only; no upstream byte is retained. OpenAI Codex
       assistance disclosed. No local or global optimality claim.
+  - key: '[SQUISH fourth request 2026-10-11]'
+    authors: [Chaoweeraprasit]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-11'
+    lineage: builds-on-project
+    credit: Chaoweeraprasit after Couzo, Gupta, Ellsworth, Friedman, Levy
+    short_credit: Chaoweeraprasit after Couzo et al.
+    note: >-
+      Nine complete exact certificates at aeacc6c124df339074f7370e1e010bb6e8c1b5ca, reported
+      on jlevy/squares#500, at 176, 181, 238, 239, 270, 271, 272, 304 and 305, from SQUISH's
+      Mondrian composition of pieces of earlier packings: Couzo's s(127), the Kingbird
+      catalogue's s(5) and former records at 11, 19 and 182, SQUISH's own s(209) of issues
+      401 (as Gupta refined it) and 481, and SQUISH's unfiled packings, compared against
+      this project's register; the pieces were measured here to reappear to the eye and not
+      by pose. The issue's 15-digit sides are cuts of the exact fractions summary.csv
+      prints. Derived exact facts only; no upstream byte is retained. Claude assistance
+      disclosed. No KKT, interval, local or global optimality claim.
+  - key: '[Couzo certificates 2026-10-11]'
+    authors: [Couzo]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-11'
+    lineage: builds-on-project
+    credit: Couzo after Chaoweeraprasit, Fang, Daniel, Ellsworth, Levy
+    short_credit: Couzo after Chaoweeraprasit et al.
+    note: >-
+      Fifteen complete exact certificates at 337078ca3e05153aceb099237b175cf64af5748a,
+      eleven of them requested on jlevy/squares#506: exact optima from Daniel's exact
+      contact solver at 304 and 305, refined from Chaoweeraprasit's SQUISH Mondrian packings
+      of issue 500 with Daniel's fq, Couzo's search and Ellsworth's refine_packing and
+      measured here as those arrangements, and nine beyond the case corpus, one of them
+      (375) a dilated rational witness and one (344) a move of Fang's two-wedge packing. The
+      source checks with Squares Project (Levy) verification code; this project lineage is
+      not independent. The certificates are retained as factual data; the unlicensed prose
+      is hash-pinned. Claude assistance disclosed. No optimizer, local or global claim.
 credited_names:
   Daniil Ostashev: Ostashev
   Robert Barnett: Barnett
