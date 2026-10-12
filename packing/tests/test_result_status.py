@@ -403,12 +403,13 @@ def test_superseded_is_marked_on_a_bound_and_where_a_later_result_is_declared() 
         "superseded by T-093, T-102 and T-103"
     ]
     # Only a bound supersedes: at n = 13 and 46 a correction and an audit carry the
-    # lower bound's evidence beside the optimality results that hold it.
+    # lower bound's evidence beside the optimality results that hold it, at n = 46 since
+    # 2026-10-11 T-064's replays of Daniel's s(k^2 - 3) = k family with T-008.
     for n, other in ((13, "T-005"), (46, "T-004")):
         assert other in view.held(n, records).lower_holders
         assert records.results[other]["kind"] not in check_results.BOUND_KINDS
     lower = {"id": "T-999", "kind": "lower-bound", "scope": {"n_values": [13, 46]}}
-    assert view.superseding(lower, records) == ("T-006", "T-008")
+    assert view.superseding(lower, records) == ("T-006", "T-008", "T-064")
     # An exact value is superseded by a proof, never by a construction: Trump's packing,
     # T-011, holds n = 11's upper bound and supersedes no proof of s(11).
     assert view.held(11, records).upper_holders == {"T-011"}
@@ -494,6 +495,24 @@ def test_a_bound_better_than_its_cases_hold_is_pending_adoption_not_superseded()
     )
     assert f"| {status_line(entry, evidence)} |" in row
     assert "superseded" not in row
+    # No live entry has been both confirmed and pending adoption since the house adoption
+    # of 11 October 2026. One raised to C3 by an independently re-implemented replay, as
+    # T-128 was by its review of 10 October, renders as T-128 did, with no mark.
+    confirmed = {
+        **entry,
+        "verification": "V3",
+        "confirmation": "C3",
+        "evidence": [*entry["evidence"], "E-couzo-451-exact-feasibility"],
+    }
+    held = view.standing(confirmed, records)
+    assert held == view.PENDING_ADOPTION
+    cell = status_line(
+        confirmed,
+        evidence,
+        view.position_marks(confirmed, held, records),
+        how=render_results.confirmed_how(confirmed, evidence),
+    )
+    assert cell == f"{CONFIRMED}, independently re-implemented"
     assert [finding.n for finding in check_standing.improvements(entry, records)] == [152]
     adopted = records.results["T-128"]
     assert view.standing(adopted, records) == view.HOLDS

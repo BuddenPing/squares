@@ -22,6 +22,7 @@ import pytest
 
 from devtools import audit_continuous_pose as t145
 from devtools import audit_n40_new_supports as audit
+from devtools.audit_clipped_corner_transfer import text
 from devtools.audit_n40_new_supports import CLAIM, RELEASE
 
 
@@ -364,6 +365,79 @@ def test_a_crate_decision_on_another_input_is_refused(
     assert judged["status"] == "AXIS_STAGE_FAILED"
 
 
+# Review C1 and C3: the crate's decision on another density whose counts, expansion and
+# mass are this one's, its two digests agreeing with each other.
+
+
+def _d3_candidate() -> bytes:
+    """Control D3's candidate, built as `density_controls` builds it: a hundredth of site
+    0's weight moved to site 1."""
+    data = json.loads(raw())
+    step = Fraction(data["sites"][0]["weight"]) / 100
+    for index, sign in ((0, -1), (1, 1)):
+        data["sites"][index]["weight"] = text(
+            Fraction(data["sites"][index]["weight"]) + sign * step
+        )
+    return json.dumps(data).encode()
+
+
+def _crate_record_on(digest: str) -> dict[str, Any]:
+    """The retained axis stage with the crate's input named ``digest`` in both places that
+    state it, the record and the crate's own premises, and nothing else changed."""
+    record = json.loads((audit.RECEIPT_DIR / "axis-stage.json").read_text())
+    crate = record["crate"]
+    crate["input_sha256"] = digest
+    lines = crate["stdout"].splitlines()
+    at = next(i for i, line in enumerate(lines) if '"kind"' in line)
+    lines[at] = _set(lines[at], ("premises", "input_sha256"), digest)
+    crate["stdout"] = "\n".join(lines) + "\n"
+    return record
+
+
+def _crate_failures(folder: Path, record: dict[str, Any]) -> tuple[list[str], str]:
+    (folder / "axis-stage.json").write_text(json.dumps(record))
+    judged = audit.axis_report(folder)
+    return [c["name"] for c in judged["checks"] if not c["held"]], judged["status"]
+
+
+def test_d3s_density_has_this_densitys_counts_expansion_and_mass() -> None:
+    other = audit.site_density(_d3_candidate())
+    assert other.sha256 != audit.CANDIDATE_SHA256 == density().sha256
+    assert len(other.rows) == len(density().rows) == 685
+    assert len(other.merged) == len(density().merged) == 5424
+    assert sum(w for _, w in other.rows) == sum(w for _, w in density().rows) == CLAIM.mass
+    assert audit.crate_axis_input(other) != audit.crate_axis_input(density())
+
+
+def test_a_crate_decision_on_d3s_density_is_refused_by_the_derived_input(
+    tmp_path: Path,
+) -> None:
+    """Review C1: only the comparison with the input derived here from the retained
+    density can refuse a decision on D3's, whose digests agree with each other."""
+    derived = audit.sha256(audit.crate_axis_input(density()))
+    assert _crate_failures(tmp_path, _crate_record_on(derived)) == ([], "AXIS_STAGE_HOLDS")
+    other = audit.sha256(audit.crate_axis_input(audit.site_density(_d3_candidate())))
+    assert _crate_failures(tmp_path, _crate_record_on(other)) == (
+        [audit.CRATE_DECISION],
+        "AXIS_STAGE_FAILED",
+    )
+
+
+def test_a_crate_decision_on_another_candidate_on_disk_is_refused(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Review C3: with D3's candidate read as the retained one and the crate's decision on
+    the input derived from it, every digest agrees, so only the candidate's own digest,
+    which must be the release's, can refuse it."""
+    candidate = _d3_candidate()
+    other = audit.sha256(audit.crate_axis_input(audit.site_density(candidate)))
+    monkeypatch.setattr(audit, "load_candidate", lambda: candidate)
+    assert _crate_failures(tmp_path, _crate_record_on(other)) == (
+        [audit.CRATE_DECISION],
+        "AXIS_STAGE_FAILED",
+    )
+
+
 # --------------------------------------------------------------------------- the kernels
 # Review B2, B3 and B6: the shared kernel files and the shared pose binary, each read from
 # both packets' records and each refused when one side differs.
@@ -399,6 +473,13 @@ def _append_a_byte(path: Path) -> None:
     path.write_bytes(path.read_bytes() + b"\n")
 
 
+def _append_a_byte_to_both(root: Path, path: str) -> None:
+    """Both packets' retained copies of ``path`` changed alike, both manifests not: only
+    the hash of the retained bytes against the manifest can see it (review C2)."""
+    for name in ("ours", "t145"):
+        _append_a_byte(root / name / "source" / path)
+
+
 KERNELS = "kernels: byte for byte T-145's, which its review read"
 POSE_BINARY = "kernels: the CI run's pose binary is T-145's, which its replay rebuilt"
 KERNEL_CHANGES: list[tuple[str, Callable[[Path], None], str]] = [
@@ -411,6 +492,11 @@ KERNEL_CHANGES: list[tuple[str, Callable[[Path], None], str]] = [
     (
         "T-145's retained file not ours",
         lambda root: _append_a_byte(root / "t145/source/tests/oracle.py"),
+        KERNELS,
+    ),
+    (
+        "both retained kernels changed alike, neither manifest",
+        lambda root: _append_a_byte_to_both(root, "verifier/continuous_pose.cpp"),
         KERNELS,
     ),
     (

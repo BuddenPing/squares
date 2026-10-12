@@ -7,58 +7,58 @@ rollup:
   source:
     harness: claude-code
     filename: agent-ae2ab8bf71c6979d9.jsonl
-    sha256: f6844fe355fd296637570be61210cca72a4e0e9fd269dfbc70f0731337b97e76
-    bytes: 1746353
-    records: 424
+    sha256: a3b4099cab8e7bc056b45f397a43fd90b1f25a5aa77d228b9a4964f2c9e45ae2
+    bytes: 1763471
+    records: 432
     session_id: 387dc0a2-0a91-51c6-bf71-f69e33945398
     harness_versions:
     - 2.1.296
   span:
     started_at: '2026-10-12T11:47:51.887Z'
-    ended_at: '2026-10-12T12:39:08.559Z'
-    wall_seconds: 3076.672
+    ended_at: '2026-10-12T12:41:27.764Z'
+    wall_seconds: 3215.877
   turns:
-    assistant: 190
-    sidechain: 190
+    assistant: 193
+    sidechain: 193
     by_model:
-      mathematics tier: 190
+      mathematics tier: 193
     by_thinking_level:
-      xhigh: 190
+      xhigh: 193
     by_model_and_thinking_level:
-      mathematics tier @ xhigh: 190
+      mathematics tier @ xhigh: 193
     by_branch:
       layer5: 126
-      layer6: 64
+      layer6: 67
     latency:
-      count: 176
-      total_seconds: 919.627
+      count: 178
+      total_seconds: 932.214
       median_seconds: 2.041
       max_seconds: 97.098
   tokens:
-    cache_creation_input_tokens: 4016638
-    cache_read_input_tokens: 46645361
+    cache_creation_input_tokens: 4018948
+    cache_read_input_tokens: 47775899
     ephemeral_1h_input_tokens: 0
-    ephemeral_5m_input_tokens: 4016638
-    input_tokens: 4730
-    output_tokens: 23909
+    ephemeral_5m_input_tokens: 4018948
+    input_tokens: 4826
+    output_tokens: 23921
     thinking_tokens: 16311
   tokens_by_thinking_level:
     xhigh:
-      cache_creation_input_tokens: 4016638
-      cache_read_input_tokens: 46645361
+      cache_creation_input_tokens: 4018948
+      cache_read_input_tokens: 47775899
       ephemeral_1h_input_tokens: 0
-      ephemeral_5m_input_tokens: 4016638
-      input_tokens: 4730
-      output_tokens: 23909
+      ephemeral_5m_input_tokens: 4018948
+      input_tokens: 4826
+      output_tokens: 23921
       thinking_tokens: 16311
   tool_calls:
-    total: 105
-    total_seconds: 5720.344
-    share_of_wall: 1.8593
+    total: 107
+    total_seconds: 5841.284
+    share_of_wall: 1.8164
     errors: 0
     denied: 0
     unpaired_results: 0
-    outstanding_at_snapshot: 1
+    outstanding_at_snapshot: 0
     one_off_code:
       count: 11
       total_seconds: 1463.209
@@ -66,9 +66,9 @@ rollup:
       max_seconds: 637.456
     by_tool:
       Bash:
-        count: 97
-        total_seconds: 5718.159
-        median_seconds: 12.757
+        count: 98
+        total_seconds: 5838.518
+        median_seconds: 12.954
         max_seconds: 637.456
       Monitor:
         count: 1
@@ -80,6 +80,11 @@ rollup:
         total_seconds: 0.725
         median_seconds: 0.151
         max_seconds: 0.442
+      SubagentHandback:
+        count: 1
+        total_seconds: 0.581
+        median_seconds: 0.581
+        max_seconds: 0.581
       Write:
         count: 2
         total_seconds: 0.455
@@ -161,6 +166,11 @@ rollup:
         total_seconds: 146.942
         median_seconds: 146.942
         max_seconds: 146.942
+      git && git && git && git && git && git:
+        count: 1
+        total_seconds: 120.359
+        median_seconds: 120.359
+        max_seconds: 120.359
       cat:
         count: 6
         total_seconds: 100.079
@@ -293,16 +303,11 @@ rollup:
         total_seconds: 10.176
         median_seconds: 10.176
         max_seconds: 10.176
-      gh && remote && ]## && gh:
-        count: 1
-        total_seconds: 9.211
-        median_seconds: 9.211
-        max_seconds: 9.211
     by_command_family:
       vcs:
-        count: 34
-        total_seconds: 2896.209
-        median_seconds: 13.475
+        count: 35
+        total_seconds: 3016.568
+        median_seconds: 13.8
         max_seconds: 626.164
       project:
         count: 8
@@ -473,9 +478,9 @@ rollup:
       filesystem: 1
     by_shell_shape:
       compound:
-        count: 65
-        total_seconds: 3348.639
-        median_seconds: 11.283
+        count: 66
+        total_seconds: 3468.998
+        median_seconds: 11.465
         max_seconds: 630.084
       python_heredoc:
         count: 9
@@ -499,8 +504,8 @@ rollup:
         max_seconds: 33.521
     by_thinking_level:
       xhigh:
-        count: 105
-        total_seconds: 5720.344
+        count: 107
+        total_seconds: 5841.284
         median_seconds: 11.283
         max_seconds: 637.456
     shell_traits:

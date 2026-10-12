@@ -1001,9 +1001,9 @@ COPY_SEPARATELY = (
     *evand_houses.private_input_paths(),
     # The houses adopted on 2026-10-11 (`upper_bound_houses`): each count's declaration,
     # acquisition record, digest manifest, certificate or derived fact and receipt, so the
-    # house check runs in a worker on ordinary private files. 262,006 bytes are new to the
-    # worker; the rest are register artifacts the copier already rescues, and the 39 house
-    # leaves themselves are linked back rather than copied (928,868 bytes before).
+    # house check runs in a worker on ordinary private files: 82 inputs of 1,733,559 bytes,
+    # measured on 2026-10-12, some of them register artifacts the copier already rescues.
+    # The 42 house leaves themselves are linked back rather than copied.
     *adopted_houses.private_input_paths(),
     *fn1.private_input_paths(),
     ROOT / "resources/README.md",
