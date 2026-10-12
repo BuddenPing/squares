@@ -667,7 +667,19 @@ def apply_case(n: int, text: str) -> str:
     if preserve_selected_case(n, text, {COVERAGE_ID}):
         return text
     _, front, body = text.split("---\n", 2)
+    if later_ceiling(front):
+        return text
     return f"---\n{front_matter(n, front)}---\n{body_text(n, body)}"
+
+
+def later_ceiling(front: str) -> bool:
+    """Whether a later certificate holds the verified upper lane: an exact regularized
+    view below this import's rounded-up side (T-147), which writes over this layer at its
+    counts and keeps this certificate's sentences as history."""
+    from devtools import register_regularized_bounds as later  # noqa: PLC0415
+
+    upper = safe_load(front)["packing"]["verified_upper_bound"]
+    return later.EVIDENCE in (upper.get("evidence") or [])
 
 
 # --------------------------------------------------------------------------------------

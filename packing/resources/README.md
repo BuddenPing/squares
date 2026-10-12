@@ -1107,6 +1107,19 @@ bound; T-146 records the sides at V3/C3 on the review of 11 October, which accep
 fifteen for finite feasibility only, and as regularizations of the packings the record
 credits to their finders; each is pending adoption.
 
+## Evan Daniel’s regularizer, vendored 11 October 2026
+
+**[Daniel regularizer 2026-10-11]**: Evan Daniel’s exact solver, its two exact checkers
+and his display regularizer, from
+[evand/square-packing](https://github.com/evand/square-packing/tree/675a5eaa8712542daac8b4515b0f69ad7044df44/search/regularize)
+at its 11 October 2026 revision, vendored unmodified under the MIT licence in
+[`vendor/evand-regularize/`](../../vendor/evand-regularize/README.md), whose manifest
+records the pin and every file.
+It is the generator of this project’s regularized drawing layer and decides nothing
+here.
+The exact views of its runs whose sides lie below a case’s verified upper bound are
+this project’s certificates of T-147, which credits it through `builds_on`.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->

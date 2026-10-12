@@ -1867,6 +1867,20 @@ sources:
       for the orientations fitted to this project's witnesses, which change no packing.
       MIT-licensed certificates and JSON retained; Claude assistance disclosed. The source claims no record; no KKT,
       same-packing, local or global optimality is admitted.
+  - key: '[Daniel regularizer 2026-10-11]'
+    authors: [Daniel]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-11'
+    note: >-
+      evand/square-packing at 675a5eaa8712542daac8b4515b0f69ad7044df44 (2026-10-11): the
+      exact solver and its two exact checkers under search/exact/ and the display
+      regularizer under search/regularize/, vendored unmodified under vendor/evand-regularize/
+      with its manifest vendored.yaml, under the MIT licence ("Copyright (c) 2026 Evan
+      Daniel"). This project runs it on its own known-best witnesses through
+      devtools.regularize_evand; its batch inputs and lists derive from those witnesses (CC
+      BY 4.0, Joshua Levy). Its CREDITS.md says the work was produced by Claude (Anthropic)
+      under his direction.
 credited_names:
   Nate Chaoweeraprasit (itsnaka): Chaoweeraprasit
   Siddharth Gupta: Gupta

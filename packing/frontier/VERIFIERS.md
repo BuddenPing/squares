@@ -25,8 +25,8 @@ second implementation agrees.
 
 ## The Short Version
 
-- **110** programs: **40** external and **70** first-party; **80** decide claims and **30** check premises.
-- **441** of **503** evidence entries name the programs that verified them: 235 reproduced with the producer’s code, 179 independently re-implemented, 17 re-implemented, sharing the producer’s components, 10 no relation: a proof, a derivation or a report.
+- **111** programs: **40** external and **71** first-party; **80** decide claims and **31** check premises.
+- **442** of **504** evidence entries name the programs that verified them: 236 reproduced with the producer’s code, 179 independently re-implemented, 17 re-implemented, sharing the producer’s components, 10 no relation: a proof, a derivation or a report.
 
 ## Programs
 
@@ -72,8 +72,8 @@ second implementation agrees.
 | [`V-anabologyco-n17-checker`](#v-anabologyco-n17-checker) | scripts/check_certificate.py and its event pipeline | anabologyco-maker | external | decides | 1 | 0 |
 | [`V-check-basic-bounds`](#v-check-basic-bounds) | devtools.check_basic_bounds | Squares Project (Levy) | first-party | decides | 3 | 14 |
 | [`V-optimal-moduli`](#v-optimal-moduli) | cases.small_n.optimal_moduli | Squares Project (Levy) | first-party | decides | 1 | 0 |
-| [`V-sqpack-verify`](#v-sqpack-verify) | sqpack.verify | Squares Project (Levy) | first-party | decides | 35 | 25 |
-| [`V-check-rational-witness-independent`](#v-check-rational-witness-independent) | devtools.check_rational_witness_independent | Squares Project (Levy) | first-party | decides | 30 | 28 |
+| [`V-sqpack-verify`](#v-sqpack-verify) | sqpack.verify | Squares Project (Levy) | first-party | decides | 36 | 26 |
+| [`V-check-rational-witness-independent`](#v-check-rational-witness-independent) | devtools.check_rational_witness_independent | Squares Project (Levy) | first-party | decides | 31 | 29 |
 | [`V-check-nagamochi-lemma1-counterexample`](#v-check-nagamochi-lemma1-counterexample) | devtools.check_nagamochi_lemma1_counterexample | Squares Project (Levy) | first-party | decides | 1 | 1 |
 | [`V-check-karakus-strip-measure`](#v-check-karakus-strip-measure) | devtools.check_karakus_strip_measure | Squares Project (Levy) | first-party | decides | 1 | 2 |
 | [`V-upper-bound-promotion`](#v-upper-bound-promotion) | devtools.upper_bound_packets | Squares Project (Levy) | first-party | decides | 6 | 5 |
@@ -142,6 +142,7 @@ second implementation agrees.
 | [`V-ryxu-undilated-n51-independent`](#v-ryxu-undilated-n51-independent) | devtools.ryxu_radical_n51.independent | Squares Project (Levy) | first-party | decides | 1 | 1 |
 | [`V-ryxu-complete-custody`](#v-ryxu-complete-custody) | devtools.ryxu_house_links | Squares Project (Levy) | first-party | premises | 2 | 2 |
 | [`V-gupta-complete-custody`](#v-gupta-complete-custody) | devtools.gupta_house_links | Squares Project (Levy) | first-party | premises | 1 | 1 |
+| [`V-register-regularized-bounds`](#v-register-regularized-bounds) | devtools.register_regularized_bounds | Squares Project (Levy) | first-party | premises | 1 | 1 |
 
 ## By Program
 
@@ -1001,6 +1002,7 @@ Decides a packing pair by pair and wall by wall: by exact sign in a number field
 | `E-couzo-488-exact-feasibility` | replayed here | independent | T-140 |
 | `E-evand-489-exact-feasibility` | replayed here | independent | T-141 |
 | `E-evand-regularized-exact-feasibility` | replayed here | independent | T-146 |
+| `E-regularized-bounds-2026-10-12-exact-decision` | replayed here | producer’s code | T-147 |
 
 ### `V-check-rational-witness-independent`
 
@@ -1045,6 +1047,7 @@ Decides a rational-corner witness pair by pair and wall by wall in Fraction arit
 | `E-couzo-488-exact-feasibility` | replayed here | independent | T-140 |
 | `E-evand-489-exact-feasibility` | replayed here | independent | T-141 |
 | `E-evand-regularized-exact-feasibility` | replayed here | independent | T-146 |
+| `E-regularized-bounds-2026-10-12-exact-decision` | replayed here | producer’s code | T-147 |
 
 ### `V-check-nagamochi-lemma1-counterexample`
 
@@ -2224,6 +2227,20 @@ Admits all seventeen pinned originals and comparators, all 51 complete actual in
 | evidence | run | code | results |
 | --- | --- | --- | --- |
 | `E-gupta-438-exact-feasibility` | replayed here | independent | T-127 |
+
+### `V-register-regularized-bounds`
+
+**devtools.register_regularized_bounds** · Squares Project (Levy) · first-party · checks premises · Python · exact-algebraic
+
+Selects the regularized views whose exact side lies below the case's verified upper bound from the regularization runs' reports, retains each view as the run wrote it, measures its identity against the witness's exact frame, hands each view to sqpack.witness.exact_verify and devtools.check_rational_witness_independent, which decide it, makes the negative controls, and writes the case records' verified upper lane.
+
+- Source: [`packing/devtools/register_regularized_bounds.py`](../../packing/devtools/register_regularized_bounds.py)
+- Versions run: this repository's commits, which Git holds
+- Note: Reads the views and the receipts; decides nothing itself. The two programs it hands each view to are the ones the run that made the views decided them with, so its replay is a reproduction with the producer's code.
+
+| evidence | run | code | results |
+| --- | --- | --- | --- |
+| `E-regularized-bounds-2026-10-12-exact-decision` | replayed here | producer’s code | T-147 |
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
