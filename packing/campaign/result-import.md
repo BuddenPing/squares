@@ -503,9 +503,12 @@ from the register:
 - *refuted* or *defect recorded*, from the entries’ reviews and evidence;
 - *open* while validation runs, and *queued* while it waits for import.
 
-A **reply is due** when the issue has had no reply, when an entry has been registered,
-renumbered or moved a rung since the last reply that spoke of it, or when a reply’s
-statement is marked `outdated` and no later reply `corrects` it.
+A **reply is due** when the issue has had no reply, when an entry has been registered or
+renumbered since the last reply that named it, when its rung or status has moved since
+the last reply that stated that field, or when a reply’s statement is marked `outdated`
+and no later reply `corrects` it.
+Each field is held to the last reply that stated it, so a reply that names an entry in
+passing, with no rung or status, leaves the earlier statement standing.
 An issue is **closeable** when triage is done, every result is confirmed or refuted (a
 reported defect: recorded against the entry it names), and no `ask` is queued.
 

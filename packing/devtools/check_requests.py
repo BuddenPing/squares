@@ -15,9 +15,10 @@ register together and stores none of it:
 
 - each result's state: `confirmed` (every mapped entry at `V3` and `C3` or above),
   `refuted`, `defect recorded`, `open` while validation runs, or `queued` for import;
-- **reply due**, entry by entry, when the derived state has moved past the last reply
-  that named the entry, or no reply has named it: a new id, a moved rung, a renumbered
-  id, a defect, or a statement the record marks out of date;
+- **reply due**, entry by entry and field by field, when the derived state has moved past
+  the last reply that stated a rung or status of the entry, or past the last reply that
+  named it, or no reply has named it: a new id, a moved rung, a renumbered id, a defect,
+  or a statement the record marks out of date;
 - **closeable**, when every result is confirmed or refuted (a reported defect: recorded)
   and nothing the author asked for is queued.
 
@@ -45,7 +46,7 @@ import json
 import re
 import subprocess
 import sys
-from collections.abc import Callable, Iterable, Mapping, Sequence
+from collections.abc import Callable, Iterable, Iterator, Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -371,19 +372,33 @@ def _stated(fields: Mapping[str, object]) -> str:
     return ", ".join(part for part in (rungs, str(fields.get("status") or "")) if part)
 
 
-def _moved(entry: Entry, item: Mapped) -> tuple[str, str] | None:
-    """What a reply stated of an entry and what holds now, where the two differ.
+#: The fields a reply's `reported` item can state of an entry. Each is held on its own to
+#: the last reply that stated it.
+STATED_FIELDS: tuple[str, ...] = ("verification", "confirmation", "status")
 
-    Only the fields the reply stated are compared: an item that names an id and states no
-    rung or status is never overtaken, and a later reply that mentions the result without
-    naming the entry no longer re-raises it (#541 tracks requiring the fields)."""
+
+def _moved(
+    entry: Entry, stated: Mapping[str, tuple[str, object]]
+) -> list[tuple[str, str, str]]:
+    """Where what the replies stated of an entry and what holds now differ.
+
+    Each field is compared against the last reply that stated it, as `_last_stated` finds
+    it, so a later reply that names the entry without stating a field leaves the earlier
+    statement of that field standing. A field no reply has stated is never overtaken, and
+    a later reply that mentions the result without naming the entry does not re-raise it
+    (#541 tracks requiring the fields). One item for each reply date whose statement has
+    since moved: the date, all that the replies of that date last stated, and what those
+    fields hold now."""
     held = _current(entry)
-    keys = [
-        key for key in ("verification", "confirmation", "status") if key in item and key in held
+    by_date: dict[str, dict[str, object]] = {}
+    for key, (when, value) in stated.items():
+        if key in held:
+            by_date.setdefault(when, {})[key] = value
+    return [
+        (when, _stated(said), _stated({key: held[key] for key in said}))
+        for when, said in sorted(by_date.items())
+        if any(said[key] != held[key] for key in said)
     ]
-    if all(item[key] == held[key] for key in keys):
-        return None
-    return _stated(item), _stated({key: held[key] for key in keys})
 
 
 def _mentioned(replies: Sequence[Mapped], key: str) -> bool:
@@ -393,21 +408,47 @@ def _mentioned(replies: Sequence[Mapped], key: str) -> bool:
     )
 
 
+def _naming(replies: Sequence[Mapped], key: str, ident: str) -> Iterator[tuple[str, Mapped]]:
+    """Each item that names an entry under a result, with its reply's date, last first."""
+    for reply in reversed(replies):
+        for item in reversed(reply.get("reported", ())):
+            if item.get("result") == key and item.get("id") == ident:
+                yield str(reply["date"]), item
+
+
 def _last_named(replies: Sequence[Mapped], key: str, ident: str) -> tuple[str, Mapped] | None:
-    """The date of the last reply that named an entry under a result, and what it stated.
+    """The date of the last reply that named an entry under a result, and its item.
 
     A reply speaks of an entry by naming its id under the result, and one that mentions
     the result without naming the entry leaves the earlier statement standing
     (`campaign/result-import.md`, The Requests Record). The final comments of 12 October
     named each register entry and its rungs but not the two evidence ids beside it, which
     that day's confirmations had named at the status they still hold; read result by
-    result, each of those ids made a reply due on eleven closed issues.
+    result, each of those ids made a reply due on eleven closed issues. The item says
+    whether the reply used an id the entry no longer has; its rungs and status are read
+    field by field, by `_last_stated`.
     """
-    for reply in reversed(replies):
-        for item in reversed(reply.get("reported", ())):
-            if item.get("result") == key and item.get("id") == ident:
-                return str(reply["date"]), item
-    return None
+    return next(_naming(replies, key, ident), None)
+
+
+def _last_stated(
+    replies: Sequence[Mapped], key: str, ident: str
+) -> dict[str, tuple[str, object]]:
+    """Each field the replies stated of an entry under a result, from the last that stated it.
+
+    Maps each of `STATED_FIELDS` that a reply naming the entry stated to that reply's date
+    and the value it gave. A reply that names the entry and states no rung or status, as a
+    follow-up naming an id in passing does, leaves the earlier statement standing: on 12
+    October four such follow-ups would otherwise have replaced the final replies' V3/C3,
+    and a later move of T-127, T-140 or T-141 would have raised no reply (#558's review,
+    A2).
+    """
+    stated: dict[str, tuple[str, object]] = {}
+    for when, item in _naming(replies, key, ident):
+        for name in STATED_FIELDS:
+            if name in item:
+                stated.setdefault(name, (when, item[name]))
+    return stated
 
 
 def _entry(entry: Entry) -> str:
@@ -436,8 +477,9 @@ def corrections(issue: Mapped, states: Sequence[ResultState]) -> list[str]:
     """What earlier replies on an issue said that the record no longer holds, for the author.
 
     The same facts `replies_due` reports, in the words a follow-up uses: an outdated
-    statement, an id the result no longer has, a rung or status it no longer reads, each
-    against the last reply that named the entry."""
+    statement, an id the result no longer has against the last reply that named the
+    entry, and a rung or status it no longer reads against the last reply that stated
+    it."""
     replies = list(issue.get("replies", ()))
     found = [
         f"The reply of {date} said {statement}." for date, statement in _uncorrected(replies)
@@ -452,19 +494,22 @@ def corrections(issue: Mapped, states: Sequence[ResultState]) -> list[str]:
                 found.append(
                     f"The reply of {when} named this result {item['as']}; it is {entry.id}."
                 )
-            if moved := _moved(entry, item):
-                said = f"The reply of {when} gave {entry.id} as {moved[0]}"
-                found.append(f"{said}; it now reads {moved[1]}.")
+            for said_on, said, now in _moved(entry, _last_stated(replies, state.key, entry.id)):
+                found.append(
+                    f"The reply of {said_on} gave {entry.id} as {said}; it now reads {now}."
+                )
     return found
 
 
 def replies_due(issue: Mapped, states: Sequence[ResultState]) -> list[str]:
     """Why a reply is due on an issue, one reason a line, or none.
 
-    Each entry a result maps to is held to the last reply that named it, as
-    `campaign/result-import.md` states the rule: it is due when no reply has named it, or
-    when it has been renumbered or has moved a rung or status since. A later reply that
-    speaks of the result without naming the entry owes nothing for it.
+    Each entry a result maps to is held to the replies that named it, field by field, as
+    `campaign/result-import.md` states the rule: it is due when no reply has named it,
+    when it has been renumbered since the last reply that named it, or when a rung or
+    status has moved since the last reply that stated it. A later reply that speaks of the
+    result without naming the entry, or names it without stating a field, owes nothing
+    for it and leaves the earlier statement standing.
     """
     replies = list(issue.get("replies", ()))
     if issue["triage"] == "pending":
@@ -495,10 +540,10 @@ def replies_due(issue: Mapped, states: Sequence[ResultState]) -> list[str]:
             when, item = named
             if item.get("as") and item["as"] != entry.id:
                 due.append(f"{state.key}: the reply of {when} named {entry.id} as {item['as']}")
-            if moved := _moved(entry, item):
+            for said_on, said, now in _moved(entry, _last_stated(replies, state.key, entry.id)):
                 due.append(
-                    f"{state.key}: the reply of {when} stated {entry.id} at {moved[0]}; "
-                    f"it is now {moved[1]}"
+                    f"{state.key}: the reply of {said_on} stated {entry.id} at {said}; "
+                    f"it is now {now}"
                 )
     return due
 
