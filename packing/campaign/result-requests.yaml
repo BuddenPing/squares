@@ -169,6 +169,28 @@ issues:
       kind: follow-up
       reported:
       - result: remaining-catalogue
+    - url: https://github.com/jlevy/squares/issues/419#issuecomment-6119246619
+      date: '2026-10-12'
+      by: jlevy
+      kind: follow-up
+      reported:
+      - result: lean-packs-binding-2026-10-11
+      - result: new-exact-forms
+        id: T-120
+        verification: V0
+        confirmation: C0
+      - result: new-exact-forms
+        id: T-121
+        verification: V0
+        confirmation: C0
+      - result: new-exact-forms
+        id: T-122
+        verification: V0
+        confirmation: C0
+      - result: new-exact-forms
+        id: T-123
+        verification: V0
+        confirmation: C0
     close_when: The reported import and its disposition are on main and the owner has posted the resulting
       state; unresolved proof replays remain explicitly owned.
     notes: >-
@@ -758,6 +780,12 @@ issues:
       - result: kernel-rows-2026-10-09
       - result: subpatterns-38-status-2026-10-09
         status: incomplete
+    - url: https://github.com/jlevy/squares/issues/413#issuecomment-6119249016
+      date: '2026-10-12'
+      by: jlevy
+      kind: follow-up
+      reported:
+      - result: kernel-rows-2026-10-11
     close_when: The named owner completes or explicitly dispositions the queued work and posts the recorded
       state; source status alone grants no theorem admission.
     notes: 'The owner reply of 7 October acknowledged the then-current 17 verified / 10 computed split
@@ -4711,7 +4739,13 @@ issues:
     beads:
     - think-lkbe
     answer_bead: think-lkbe
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/494#issuecomment-6119249272
+      date: '2026-10-12'
+      by: jlevy
+      kind: acknowledgement
+      reported:
+      - result: wallchain-width1-negative
     close_when: The negative is recorded beside X-052 section 2.5 and the owner has acknowledged it on the
       issue; it asks for nothing else.
   - number: 495
@@ -4767,6 +4801,13 @@ issues:
     beads:
     - think-nmfl
     answer_bead: think-nmfl
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/495#issuecomment-6119249473
+      date: '2026-10-12'
+      by: jlevy
+      kind: acknowledgement
+      reported:
+      - result: kernel-certificates-15
+      - result: kernel-certificate-m4003392
     close_when: The certificates are admitted to certified-sub-patterns.yaml or declined with a reason, and the
       owner has posted the resulting state.
