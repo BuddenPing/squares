@@ -15836,6 +15836,9 @@ results:
       n = 40's reported and verified lower bounds move from T-133's 335427/50000, which the case
       record keeps as history, to 1340000/199529.
 
+      T-153, registered on 12 October on a new density, raised both lanes of n-040.md to
+      3359/500; the case record keeps this entry as history.
+
   - id: T-146
     kind: upper-bound
     registered: '2026-10-10'
@@ -17363,6 +17366,163 @@ results:
           lineage measured where the record retains the parent.
         verdict: accepted
         covers: [T-152]
+  - id: T-153
+    kind: lower-bound
+    registered: '2026-10-12'
+    headline: "`s(40) > 3359/500 = 6.718`, by T-145's continuous-pose kernel on a density with 163 new supports"
+    claim: >-
+      s(40) > 3359/500 = 6.718, by Guzhou0806, published on 11 October 2026 as release
+      n40-new-supports-6718-20261011 of Guzhou0806/n40-square-packing and reported on
+      jlevy/squares#485. It raises T-145's 1340000/199529 by 217911/99764500 = 0.0021842...,
+      from a new certificate.
+
+      The certificate is a new rational density of 685 positive D4 rectangle orbits, 522 of them
+      rows of wand125's rect_n40_L67 pool and 163 generated outside it, every weight new, of mass
+      3999/100. Every closed square of side 3350/3359 inside [0, 67/10]^2, at every angle and every
+      legal centre, captures mass at least 4999/5000, and 40 x 4999/5000 - 3999/100 = 1/500, so no
+      packing fits at side 3359/500; compactness makes the bound strict.
+
+      The two kernels are T-145's, byte for byte: the continuous-pose interval kernel over the
+      same 43 closed slabs of t = tan(theta/2) in [10^-6, 83/200], and the exact integer axis
+      certificate, here at side 249329659/250000000, which lies inside every side-B square at
+      t <= 10^-6. The source decided both parts in a local run and a GitHub Actions run.
+
+      Both were decided here on 12 October 2026: the two kernels, built from the retained
+      source into the CI run's binaries, ran the axis certificate and all 43 slabs, every output
+      equal to both release receipts apart from timing, and refused every synthetic density whose
+      least capture is below the threshold: confirmed, reproduced with the producer's code.
+
+      This repository's exact audit, which shares no code with the release's, decided the
+      density's orbit facts and every finite step and regenerated both kernel inputs to the
+      digests both receipts name; sqverify-fast decided the near-axis statement a second way on
+      the density itself and verified the 401-direction nodal statement at the new side. The 12
+      October review found no blocking defect. No second method decided the continuous cover.
+
+      Guzhou0806 after wand125, Tokoharu and Levy,
+      [n40-square-packing](https://github.com/Guzhou0806/n40-square-packing/tree/6a65957e6c5c51cdf267917d882dab7f5b4928dd).
+      The source credits the original density and pool to wand125, the translation-derivative
+      structure to Tokoharu, says the concave-section calculations draw on this repository's
+      sqverify_fast, and gives Guzhou0806's AI-assisted contribution as the new supports, the
+      weight optimization, the continuous-cover certificate and the support-family obstruction,
+      with AI assistance in exploration, code, tests, proof writing and publication.
+    scope: {n_values: [40]}
+    verification: V3
+    confirmation: C3
+    significance:
+      score: 3
+      rationale: >-
+        The strongest lower bound on record at n = 40, 0.00218 above T-145, by T-145's technique
+        on a density with 163 new supports and new weights; a single-count raise on an existing
+        technique, the kernel's reuse at the same count and not a bound family. S3 by the
+        precedent of T-099, T-100 and T-145, as the 12 October review keeps it.
+      scored: '2026-10-12'
+      by: >-
+        the 12 October stage 4 review
+        (docs/project/reviews/review-2026-10-12-n40-new-supports-6718.md), which compared it with
+        T-099, T-100, T-145 and the S4 set, keeping lane E's draft of 11 October
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Guzhou0806 n40 new supports 2026-10-11]']
+      published: '2026-10-11'
+    composition: >-
+      One certificate, Guzhou0806's 685-orbit density, and three load-bearing parts. The continuous
+      cover of the 43 slabs is decided by the release's continuous_pose.cpp, interval-certified, the
+      producer's code, rebuilt here from reviewed source into the CI run's binary and replayed in
+      full. The near-axis statement at side 249329659/250000000 is decided by the release's
+      axis_integer_grid.cpp, exact, rebuilt into the CI run's binary and replayed here, and again by
+      sqverify-fast's exact axis-vertex sweep on the density itself, undominated, which shares no
+      code with it.
+
+      The finite steps, the density's orbit facts, both inputs' identity, the near-axis
+      containment, the slab partition, the threshold and the counting margin, are decided by this
+      repository's exact audit, independently re-implemented with respect to exact.py, and are
+      recorded as structure.
+
+      The result takes the part closest to the producer's code: confirmed, reproduced with the
+      producer's code. C3 rests on the complete replay of both kernels and its controls, and the
+      kernels' lemmas on the 10 October review of T-145, which read the same bytes. No second
+      method decides the continuous cover; the 401-direction run of sqverify-fast at the new side
+      is a necessary condition it passed. wand125's published sqverify_continuous (think-xzob),
+      once reviewed and replayed here, would make the cover independently re-implemented and
+      move the mark, not the rung.
+    evidence:
+      - E-n040-guzhou-new-supports-report
+      - E-n040-guzhou-new-supports-kernel-replay
+      - E-n040-guzhou-new-supports-finite-audit
+      - E-n040-guzhou-new-supports-crate-axis
+    reviews:
+      - path: docs/project/reviews/review-2026-10-12-n40-new-supports-6718.md
+        kind: adversarial
+        reviewer: AI agent (Claude, at the highest reasoning effort), stage 4 of the import of the issue 485 follow-up of 11 October (think-tln9), the lane that ran the complete replay, prompted separately from lane E, which wrote the finite audit and the packet, and from the three reviews of pull request 512
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-12'
+        scope: >-
+          Guzhou0806's s(40) > 3359/500, pinned at 6a65957e: the new density's admissibility and
+          orbit facts re-derived and recomputed with the reviewer's own code; the argument from the
+          density to the bound on T-145's lemmas, with the near-axis containment at the new side and
+          the counting at the new X re-derived; the kernel's input and threshold code read; the CI
+          binaries rebuilt; the axis certificate and all 43 slabs replayed with the producer's
+          kernels and held to both receipts; the contract's controls A to H; the near-axis and the
+          401-direction statements decided by sqverify-fast; the release's two dual programs; the
+          replay's judge; the rungs and the drafted significance; and what a replay of wand125's
+          sqverify_continuous would change.
+        verdict: accepted
+        covers: [T-153]
+    artifacts:
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/README.md
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/source/PROOF.md
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/source/certificate/certified_candidate.json.gz
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/source/certificate/parameters.json
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/source/verifier/continuous_pose.cpp
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/source/verifier/axis_integer_grid.cpp
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/source/results/verification.json
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/release-ci/results/verification.json
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/finite-audit.json
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/axis-stage.json
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/axis-check.json
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/builds.json
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/axis-run.json
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/slabs.jsonl.gz
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/crate-runs.json.gz
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/duals.json
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/replay-check.json
+      - packing/devtools/audit_n40_new_supports.py
+      - packing/devtools/audit_continuous_pose.py
+      - docs/project/reviews/review-2026-10-12-n40-new-supports-6718.md
+    controls:
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/controls.jsonl.gz
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/control-G-release.json
+      - packing/tests/test_audit_n40_new_supports.py
+    next_rung: >-
+      V4 and C4 need a second retained adversarial AI review by a distinct reviewer (the 11
+      October final review covers T-145's kernel and density, not this density) and a human
+      oversight record. Beside the rung: a decision of the continuous cover by code other than the
+      producer's, which wand125's published sqverify_continuous (think-xzob: retention, a soundness
+      review, about 2.3 CPU-hours here) or a first-party interval kernel with the angle as an
+      interval dimension (GC-4 of the 10 October review) would supply; either would make the
+      result independently re-implemented and leave the rung where it is.
+    notes: >-
+      Registered on 12 October 2026 by the records lane of the 2026-10-11 intake pass after the
+      complete replay of both kernels, the finite audit, the crate's two runs and the release's
+      dual programs, whose receipts are in the packet; stage 2 retained and audited the release on
+      11 October (pull request 512), and stage 4 replayed and reviewed it on 12 October.
+
+      Of the review's findings, GN-1 (the near-axis containment margin 5.05e-10, sound in exact
+      rationals only) is a note for the author and the replayer; the packet keeps both release receipts and
+      names them, and the pose binaries are T-145's (GN-2); the measured replay price is recorded
+      (GN-3); the composition and the claim say what decides the continuous cover (GN-4); the
+      kernel contract held at the new parameters without re-tuning (GN-5); OBSTRUCTION.md's
+      negative result was replayed with the release's programs and is registered nowhere (GN-6);
+      wand125's sqverify_continuous is published and unretained (GN-7); the release's tests were
+      not run here (GN-8).
+
+      wand125's review comment of 11 October (#485, 6111583905, edited 12 October) reports a fresh
+      run of the release's entry point and his own continuous-angle verifier, both verified; it
+      publishes no receipt, so it is a third party's report and confirms nothing here.
+
+      n = 40's reported and verified lower bounds move from T-145's 1340000/199529, which the case
+      record keeps as history, to 3359/500.
   - id: T-154
     kind: upper-bound
     registered: '2026-10-12'

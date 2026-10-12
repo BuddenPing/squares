@@ -615,6 +615,13 @@ control of this review’s own on the real density scaled by $985/1000$ (the cra
 exact witness, the kernel on two slabs), the contract’s controls, and the release’s
 duals; what no first-party route decides is the continuous cover (GN-4).
 
+## Note of 12 October 2026: the Register Id
+
+Added by the records lane of the 2026-10-11 intake pass (`think-cq95`); the review above
+is unchanged. The register entry this review calls `T-NNN`, to be assigned, is `T-153`,
+registered at `V3`/`C3` and `S3` with the four evidence entries the replay supports, and
+both lower-bound lanes of `n-040.md` move to $3359/500$, with `T-145` kept as history.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->

@@ -1970,7 +1970,7 @@ OTHER_PROJECTS: tuple[tuple[str, str, str], ...] = (
     (
         "https://github.com/Guzhou0806/n40-square-packing",
         "Guzhou0806",
-        "A strict lower bound for forty squares, on wand125's density.",
+        "Strict lower bounds for forty squares, on densities grown from wand125's.",
     ),
     (
         "https://github.com/DRMacIver/square-packing-research",

@@ -1870,8 +1870,8 @@ sources:
       unavoidable-set work by Stromquist, Burns and Massaccesi, and gives Guzhou0806's
       AI-assisted contribution as the new supports, the weight optimization, the
       continuous-cover certificate and the obstruction; the comment asks for credit in the
-      same terms (web/guzhou-n40-new-supports-2026-10-11/README.md). Retained and its finite
-      steps audited, not registered. Dated by that commit.
+      same terms (web/guzhou-n40-new-supports-2026-10-11/README.md). Retained, audited,
+      replayed in full and reviewed; registered as T-153. Dated by that commit.
   - key: '[Daniel regularized lists 2026-10-10]'
     authors: [Daniel]
     year: 2026

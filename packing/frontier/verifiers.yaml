@@ -582,6 +582,12 @@ verifiers:
         note: >-
           Built here with g++ 13.3.0 -O3 -std=c++17 -fno-fast-math -ffp-contract=off from the
           tree's directory into 69bc9e64..., the CI run's binary.
+      - sha256: da06206b8e83a57b8a710ba62e743c6d3a1959e9160ff32ae89ede583841c73c
+        revision: 6a65957e6c5c51cdf267917d882dab7f5b4928dd
+        path: packing/resources/web/guzhou-n40-new-supports-2026-10-11/source/verifier/continuous_pose.cpp
+        note: >-
+          The same bytes at the 11 October pin; built here with g++ 13.3.0 into 69bc9e64..., the
+          CI run's binary, and replayed on all 43 slabs for s(40) > 3359/500.
     note: >-
       Read line by line by the 10 October 2026 review of the release
       (docs/project/reviews/review-2026-10-10-guzhou-n40-continuous-pose-bound.md), which
@@ -609,6 +615,13 @@ verifiers:
       - sha256: f5bc3f60065aaea3d14ffb8465865750fca22cf8bbc6bd8739b5120200b6277d
         revision: 71c97d07553d7d5ff5c5c82f0c9d1c75a150a4e3
         note: Built here with g++ 13.3.0 -O2 -std=c++17 into cccecb9a..., the CI run's binary.
+      - sha256: f5bc3f60065aaea3d14ffb8465865750fca22cf8bbc6bd8739b5120200b6277d
+        revision: 6a65957e6c5c51cdf267917d882dab7f5b4928dd
+        path: packing/resources/web/guzhou-n40-new-supports-2026-10-11/source/verifier/axis_integer_grid.cpp
+        note: >-
+          The same bytes at the 11 October pin, built with g++ 13.3.0 -O3 -std=c++17
+          -fno-fast-math -ffp-contract=off into 19288b2f..., the CI run's binary, for the axis
+          certificate at side 249329659/250000000.
     note: >-
       Read by the 10 October 2026 review, which re-derived the bilinear-cell lemma, the hinge
       expansion and the int128 bounds; replayed here. Its minimum was evaluated again at the
@@ -1292,6 +1305,33 @@ verifiers:
       written; exact.py was read afterwards, to run control G on it, and nothing in the finite
       part changed. It shares with exact.py the definition of the density, its D4 expansion, the
       kernels' input order, the enclosure rule and the inward rounding, and no code.
+      Since 12 October its Release and Replay records parametrise its finite checks, runner and
+      judge, and devtools.audit_n40_new_supports judges the 11 October release through them.
+
+  - id: V-audit-n40-new-supports
+    program: devtools.audit_n40_new_supports
+    author: Squares Project (Levy)
+    provenance: first-party
+    language: [Python]
+    methods: [exact-algebraic]
+    role: decides
+    summary: >-
+      Decides the finite steps of Guzhou0806's s(40) > 3359/500 in exact rationals on the retained
+      density and pool (the orbit facts, both kernel inputs' identity and enclosures, the dominated
+      measure, the scalar chain, and every value of both release receipts), refuses seven finite
+      controls, prices and drives the complete replay of both kernels through
+      audit_continuous_pose's runner and judge with this release's contract, runs the release's
+      dual programs, and decides the near-axis statement a second way through sqverify-fast.
+    source:
+      - packing/devtools/audit_n40_new_supports.py
+      - packing/tests/test_audit_n40_new_supports.py
+    independence_record: packing/devtools/audit_n40_new_supports.py
+    note: >-
+      Written on 11 October 2026 without opening the release's exact.py, audit.py, obstruction
+      programs or tests (its docstring is the read log); on 12 October exact.py was searched for
+      the one string control G mutates, and the replay, check-replay and duals stages were added.
+      Its finite checks after the orbit facts are audit_continuous_pose's, made of this release
+      through its Release record; the replay runs through the same module's Replay record.
 
   - id: V-check-half-angle-area
     program: devtools.check_half_angle_area

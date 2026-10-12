@@ -25,8 +25,8 @@ second implementation agrees.
 
 ## The Short Version
 
-- **110** programs: **40** external and **70** first-party; **80** decide claims and **30** check premises.
-- **450** of **520** evidence entries name the programs that verified them: 236 reproduced with the producer’s code, 187 independently re-implemented, 17 re-implemented, sharing the producer’s components, 10 no relation: a proof, a derivation or a report.
+- **111** programs: **40** external and **71** first-party; **81** decide claims and **30** check premises.
+- **454** of **524** evidence entries name the programs that verified them: 238 reproduced with the producer’s code, 189 independently re-implemented, 17 re-implemented, sharing the producer’s components, 10 no relation: a proof, a derivation or a report.
 
 ## Programs
 
@@ -58,8 +58,8 @@ second implementation agrees.
 | [`V-guzhou-r052-verify-py`](#v-guzhou-r052-verify-py) | certificates/R052/verify.py | Guzhou0806 | external | decides | 2 | 1 |
 | [`V-guzhou-n17-verify-cpp`](#v-guzhou-n17-verify-cpp) | verify.cpp | Guzhou0806 | external | decides | 5 | 3 |
 | [`V-guzhou-n40-finite-py`](#v-guzhou-n40-finite-py) | verifier/run.py | Guzhou0806 | external | decides | 1 | 1 |
-| [`V-guzhou-n40-continuous-pose`](#v-guzhou-n40-continuous-pose) | verifier/continuous_pose.cpp | Guzhou0806 | external | decides | 2 | 1 |
-| [`V-guzhou-n40-axis-integer-grid`](#v-guzhou-n40-axis-integer-grid) | verifier/axis_integer_grid.cpp | Guzhou0806 | external | decides | 2 | 1 |
+| [`V-guzhou-n40-continuous-pose`](#v-guzhou-n40-continuous-pose) | verifier/continuous_pose.cpp | Guzhou0806 | external | decides | 4 | 2 |
+| [`V-guzhou-n40-axis-integer-grid`](#v-guzhou-n40-axis-integer-grid) | verifier/axis_integer_grid.cpp | Guzhou0806 | external | decides | 5 | 2 |
 | [`V-burns-n17-verify-py`](#v-burns-n17-verify-py) | verify-n17-lower-bound-4_4811.py | Burns | external | decides | 1 | 0 |
 | [`V-massaccesi-n17-verify-py`](#v-massaccesi-n17-verify-py) | verify-n17-lower-bound-4_5058.py | Massaccesi | external | decides | 1 | 2 |
 | [`V-mira-17squares-point-checker`](#v-mira-17squares-point-checker) | verify_certificate.py | Mira | external | decides | 1 | 0 |
@@ -107,7 +107,8 @@ second implementation agrees.
 | [`V-n17-catalogue-polynomial`](#v-n17-catalogue-polynomial) | devtools.check_n17_catalogue_polynomial | Squares Project (Levy) | first-party | decides | 1 | 0 |
 | [`V-n11-optimality-checkers`](#v-n11-optimality-checkers) | The devtools.check_n11_optimality | Squares Project (Levy) | first-party | decides | 2 | 2 |
 | [`V-audit-clipped-corner-transfer`](#v-audit-clipped-corner-transfer) | devtools.audit_clipped_corner_transfer | Squares Project (Levy) | first-party | decides | 2 | 1 |
-| [`V-audit-continuous-pose`](#v-audit-continuous-pose) | devtools.audit_continuous_pose | Squares Project (Levy) | first-party | decides | 3 | 1 |
+| [`V-audit-continuous-pose`](#v-audit-continuous-pose) | devtools.audit_continuous_pose | Squares Project (Levy) | first-party | decides | 5 | 2 |
+| [`V-audit-n40-new-supports`](#v-audit-n40-new-supports) | devtools.audit_n40_new_supports | Squares Project (Levy) | first-party | decides | 3 | 1 |
 | [`V-check-half-angle-area`](#v-check-half-angle-area) | devtools.check_half_angle_area | Squares Project (Levy) | first-party | decides | 20 | 20 |
 | [`V-evand-exact-certificates`](#v-evand-exact-certificates) | devtools.evand_exact_certificates | Squares Project (Levy) | first-party | premises | 24 | 22 |
 | [`V-check-n11-final-composition`](#v-check-n11-final-composition) | devtools.check_n11_final_composition | Squares Project (Levy) | first-party | premises | 2 | 2 |
@@ -118,7 +119,7 @@ second implementation agrees.
 | [`V-audit-wand125-point-and-mixed`](#v-audit-wand125-point-and-mixed) | devtools.audit_wand125_point_and_mixed | Squares Project (Levy) | first-party | premises | 17 | 7 |
 | [`V-audit-wand125-declared-net`](#v-audit-wand125-declared-net) | devtools.audit_wand125_declared_net | Squares Project (Levy) | first-party | premises | 2 | 2 |
 | [`V-audit-wand125-linear`](#v-audit-wand125-linear) | devtools.audit_wand125_linear | Squares Project (Levy) | first-party | premises | 3 | 3 |
-| [`V-sqverify-fast`](#v-sqverify-fast) | sqverify-fast | Squares Project (Levy) | first-party | decides | 110 | 22 |
+| [`V-sqverify-fast`](#v-sqverify-fast) | sqverify-fast | Squares Project (Levy) | first-party | decides | 111 | 23 |
 | [`V-replay-chelokot-lean`](#v-replay-chelokot-lean) | devtools.replay_chelokot_lean | Squares Project (Levy) | first-party | premises | 1 | 1 |
 | [`V-replay-evand-zmx2`](#v-replay-evand-zmx2) | devtools.replay_evand_zmx2 | Squares Project (Levy) | first-party | premises | 5 | 5 |
 | [`V-audit-evand-mixed-covers`](#v-audit-evand-mixed-covers) | devtools.audit_evand_mixed_covers | Squares Project (Levy) | first-party | premises | 9 | 8 |
@@ -767,13 +768,15 @@ The release's own verification of s(40) > 335427/50000: run.py derives the 401-d
 Decides, for one closed slab [PL/DEN, PH/DEN] of the half-angle tangent t = tan(theta/2), that every square of side B in [0, L]^2 at every angle of the slab and every legal centre captures at least TN/TD of a rectangle density, by depth-first interval branch and bound over the normalised centre and the angle together: outward-rounded binary64 intervals, whole-box containment and exclusion by projection on the square's normals, a concave-section trapezoid bound on each rectangle's clipped area at the box's centre, and translation-derivative bounds that extend it over the box. It exits 0 with "verified" only when the stack empties, and 3 with "unresolved" at the node budget or a half-width below 2^-40.
 
 - Source: [`packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/verifier/continuous_pose.cpp`](../../packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/verifier/continuous_pose.cpp)
-- Versions run: SHA-256 `da06206b8e83…`, revision `71c97d07553d` (Built here with g++ 13.3.0 -O3 -std=c++17 -fno-fast-math -ffp-contract=off from the tree's directory into 69bc9e64..., the CI run's binary.)
+- Versions run: SHA-256 `da06206b8e83…`, revision `71c97d07553d` (Built here with g++ 13.3.0 -O3 -std=c++17 -fno-fast-math -ffp-contract=off from the tree's directory into 69bc9e64..., the CI run's binary.); SHA-256 `da06206b8e83…`, revision `6a65957e6c5c` (The same bytes at the 11 October pin; built here with g++ 13.3.0 into 69bc9e64..., the CI run's binary, and replayed on all 43 slabs for s(40) > 3359/500.; of `continuous_pose.cpp`)
 - Note: Read line by line by the 10 October 2026 review of the release (docs/project/reviews/review-2026-10-10-guzhou-n40-continuous-pose-bound.md), which re-derived its lemmas; replayed here in full on all 43 slabs. Its source says its translation derivatives follow Tokoharu and its concave sections the Squares Project, and that its lineage is not wholly independent; it shares no code with sqverify-fast.
 
 | evidence | run | code | results |
 | --- | --- | --- | --- |
 | `E-n040-guzhou-continuous-pose-report` | the source’s own run | producer’s code | T-145 |
 | `E-n040-guzhou-continuous-pose-kernel-replay` | replayed here | producer’s code | T-145 |
+| `E-n040-guzhou-new-supports-report` | the source’s own run | producer’s code | T-153 |
+| `E-n040-guzhou-new-supports-kernel-replay` | replayed here | producer’s code | T-153 |
 
 ### `V-guzhou-n40-axis-integer-grid`
 
@@ -782,13 +785,16 @@ Decides, for one closed slab [PL/DEN, PH/DEN] of the half-angle tangent t = tan(
 Decides that every horizontal square of side A in the northeast quadrant of [0, l]^2 captures at least TN/TD of an integer rectangle density, by writing each rectangle as sixteen signed hinge products, accumulating coefficient prefix sums on the grid of breakpoints and evaluating every vertex in signed 128-bit integers within a guarded bound; it reconciles the minimiser by a direct sum and exits 0 with AXIS_COVERAGE_PROVED or 2 with AXIS_TEST_REFUSED.
 
 - Source: [`packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/verifier/axis_integer_grid.cpp`](../../packing/resources/web/guzhou-n40-continuous-pose-2026-10-10/source/verifier/axis_integer_grid.cpp)
-- Versions run: SHA-256 `f5bc3f60065a…`, revision `71c97d07553d` (Built here with g++ 13.3.0 -O2 -std=c++17 into cccecb9a..., the CI run's binary.)
+- Versions run: SHA-256 `f5bc3f60065a…`, revision `71c97d07553d` (Built here with g++ 13.3.0 -O2 -std=c++17 into cccecb9a..., the CI run's binary.); SHA-256 `f5bc3f60065a…`, revision `6a65957e6c5c` (The same bytes at the 11 October pin, built with g++ 13.3.0 -O3 -std=c++17 -fno-fast-math -ffp-contract=off into 19288b2f..., the CI run's binary, for the axis certificate at side 249329659/250000000.; of `axis_integer_grid.cpp`)
 - Note: Read by the 10 October 2026 review, which re-derived the bilinear-cell lemma, the hinge expansion and the int128 bounds; replayed here. Its minimum was evaluated again at the minimiser by devtools.audit_continuous_pose, and the axis statement decided again on the original density by sqverify-fast's axis-vertex sweep.
 
 | evidence | run | code | results |
 | --- | --- | --- | --- |
 | `E-n040-guzhou-continuous-pose-report` | the source’s own run | producer’s code | T-145 |
 | `E-n040-guzhou-continuous-pose-kernel-replay` | replayed here | producer’s code | T-145 |
+| `E-n040-guzhou-new-supports-report` | the source’s own run | producer’s code | T-153 |
+| `E-n040-guzhou-new-supports-kernel-replay` | replayed here | producer’s code | T-153 |
+| `E-n040-guzhou-new-supports-crate-axis` | audited here | independent | T-153 |
 
 ### `V-burns-n17-verify-py`
 
@@ -1575,13 +1581,32 @@ Decides in exact rationals the finite steps of Guzhou0806's continuous-pose boun
 - Source: [`packing/devtools/audit_continuous_pose.py`](../../packing/devtools/audit_continuous_pose.py), [`packing/tests/test_audit_continuous_pose.py`](../../packing/tests/test_audit_continuous_pose.py)
 - Versions run: this repository's commits, which Git holds
 - What its authors read and used: [`packing/devtools/audit_continuous_pose.py`](../../packing/devtools/audit_continuous_pose.py)
-- Note: Its module docstring is its read log: written on 2026-10-10 from the review of the release and its scratch measurements, reading the release's parameters and receipts as data, both kernels and harnesses and run.py in full, and never opening exact.py, audit.py, tests/oracle.py, tests/test_kernel.py, tests/test_admission.py or PROOF.md while it was written; exact.py was read afterwards, to run control G on it, and nothing in the finite part changed. It shares with exact.py the definition of the density, its D4 expansion, the kernels' input order, the enclosure rule and the inward rounding, and no code.
+- Note: Its module docstring is its read log: written on 2026-10-10 from the review of the release and its scratch measurements, reading the release's parameters and receipts as data, both kernels and harnesses and run.py in full, and never opening exact.py, audit.py, tests/oracle.py, tests/test_kernel.py, tests/test_admission.py or PROOF.md while it was written; exact.py was read afterwards, to run control G on it, and nothing in the finite part changed. It shares with exact.py the definition of the density, its D4 expansion, the kernels' input order, the enclosure rule and the inward rounding, and no code. Since 12 October its Release and Replay records parametrise its finite checks, runner and judge, and devtools.audit_n40_new_supports judges the 11 October release through them.
 
 | evidence | run | code | results |
 | --- | --- | --- | --- |
 | `E-n040-guzhou-continuous-pose-kernel-replay` | replayed here | producer’s code | T-145 |
 | `E-n040-guzhou-continuous-pose-finite-audit` | audited here | independent | T-145 |
 | `E-n040-guzhou-continuous-pose-crate-axis` | audited here | independent | T-145 |
+| `E-n040-guzhou-new-supports-kernel-replay` | replayed here | producer’s code | T-153 |
+| `E-n040-guzhou-new-supports-finite-audit` | audited here | independent | T-153 |
+
+### `V-audit-n40-new-supports`
+
+**devtools.audit_n40_new_supports** · Squares Project (Levy) · first-party · decides · Python · exact-algebraic
+
+Decides the finite steps of Guzhou0806's s(40) > 3359/500 in exact rationals on the retained density and pool (the orbit facts, both kernel inputs' identity and enclosures, the dominated measure, the scalar chain, and every value of both release receipts), refuses seven finite controls, prices and drives the complete replay of both kernels through audit_continuous_pose's runner and judge with this release's contract, runs the release's dual programs, and decides the near-axis statement a second way through sqverify-fast.
+
+- Source: [`packing/devtools/audit_n40_new_supports.py`](../../packing/devtools/audit_n40_new_supports.py), [`packing/tests/test_audit_n40_new_supports.py`](../../packing/tests/test_audit_n40_new_supports.py)
+- Versions run: this repository's commits, which Git holds
+- What its authors read and used: [`packing/devtools/audit_n40_new_supports.py`](../../packing/devtools/audit_n40_new_supports.py)
+- Note: Written on 11 October 2026 without opening the release's exact.py, audit.py, obstruction programs or tests (its docstring is the read log); on 12 October exact.py was searched for the one string control G mutates, and the replay, check-replay and duals stages were added. Its finite checks after the orbit facts are audit_continuous_pose's, made of this release through its Release record; the replay runs through the same module's Replay record.
+
+| evidence | run | code | results |
+| --- | --- | --- | --- |
+| `E-n040-guzhou-new-supports-kernel-replay` | replayed here | producer’s code | T-153 |
+| `E-n040-guzhou-new-supports-finite-audit` | audited here | independent | T-153 |
+| `E-n040-guzhou-new-supports-crate-axis` | audited here | independent | T-153 |
 
 ### `V-check-half-angle-area`
 
@@ -1906,6 +1931,7 @@ Decides a measure-capture lower-bound certificate of format T, M or L on the 201
 | `E-n041-wand125-mixed-6775-sqverify-fast-replay` | replayed here | shared components | T-111 |
 | `E-n040-guzhou-clipped-corner-sqverify-fast-replay` | replayed here | producer’s code | T-133 |
 | `E-n040-guzhou-continuous-pose-crate-axis` | audited here | independent | T-145 |
+| `E-n040-guzhou-new-supports-crate-axis` | audited here | independent | T-153 |
 
 ### `V-replay-chelokot-lean`
 

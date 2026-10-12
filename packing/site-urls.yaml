@@ -5346,7 +5346,7 @@ urls:
   generator: devtools.render_case_pages:case_records
   producer: overview
   first_published: '2026-10-03'
-  lastmod: '2026-10-10'
+  lastmod: '2026-10-12'
   status: live
 - path: cases/41.html
   canonical: cases/41.html
@@ -12950,6 +12950,51 @@ urls:
     - packing/devtools/upper_bound_reports.py
     - packing/devtools/check_half_angle_area.py
     - docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md
+- path: result/t-153.html
+  canonical: result/t-153.html
+  kind: result
+  generator: devtools.render_overview:result_fragments
+  producer: overview
+  first_published: '2026-10-12'
+  lastmod: '2026-10-12'
+  status: live
+  identity:
+    kind: lower-bound
+    scope:
+      n_values:
+      - 40
+    established: null
+    attribution:
+      source_keys:
+      - '[Guzhou0806 n40 new supports 2026-10-11]'
+      published: '2026-10-11'
+    builds_on: null
+    evidence:
+    - E-n040-guzhou-new-supports-report
+    - E-n040-guzhou-new-supports-kernel-replay
+    - E-n040-guzhou-new-supports-finite-audit
+    - E-n040-guzhou-new-supports-crate-axis
+    artifacts:
+    - packing/resources/web/guzhou-n40-new-supports-2026-10-11/README.md
+    - packing/resources/web/guzhou-n40-new-supports-2026-10-11/source/PROOF.md
+    - packing/resources/web/guzhou-n40-new-supports-2026-10-11/source/certificate/certified_candidate.json.gz
+    - packing/resources/web/guzhou-n40-new-supports-2026-10-11/source/certificate/parameters.json
+    - packing/resources/web/guzhou-n40-new-supports-2026-10-11/source/verifier/continuous_pose.cpp
+    - packing/resources/web/guzhou-n40-new-supports-2026-10-11/source/verifier/axis_integer_grid.cpp
+    - packing/resources/web/guzhou-n40-new-supports-2026-10-11/source/results/verification.json
+    - packing/resources/web/guzhou-n40-new-supports-2026-10-11/release-ci/results/verification.json
+    - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/finite-audit.json
+    - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/axis-stage.json
+    - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/axis-check.json
+    - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/builds.json
+    - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/axis-run.json
+    - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/slabs.jsonl.gz
+    - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/crate-runs.json.gz
+    - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/duals.json
+    - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/replay-check.json
+    - packing/devtools/audit_n40_new_supports.py
+    - packing/devtools/audit_continuous_pose.py
+    - docs/project/reviews/review-2026-10-12-n40-new-supports-6718.md
 - path: result/t-154.html
   canonical: result/t-154.html
   kind: result

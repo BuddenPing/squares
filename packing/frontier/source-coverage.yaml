@@ -3554,8 +3554,39 @@ sources:
     certificate. Both kernels were rebuilt here into the CI run's binaries and replayed in full, every
     output equal to both release receipts apart from timing; the finite steps were decided again by a
     first-party exact audit and the near-axis statement by sqverify-fast; the mathematics was reviewed
-    the same day with no blocking defect. Both lanes of n-040.md move to 1340000/199529 (T-145); T-133's
-    335427/50000 on the same density stays as history.
+    the same day with no blocking defect. Both lanes of n-040.md moved to 1340000/199529 (T-145), and on
+    12 October to 3359/500 (T-153) on a new density; T-133's 335427/50000 on the same density stays as
+    history.
+- id: guzhou-n40-new-supports-2026-10-11
+  title: Strict lower bound for forty unit squares on a density with new rectangle supports, issue485
+  role: source-repository
+  url: https://github.com/Guzhou0806/n40-square-packing/tree/6a65957e6c5c51cdf267917d882dab7f5b4928dd
+  local: resources/web/guzhou-n40-new-supports-2026-10-11/
+  source_key: '[Guzhou0806 n40 new supports 2026-10-11]'
+  scope:
+    n_values:
+    - 40
+  reviewed: '2026-10-12'
+  source_date: '2026-10-11'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/n-040.md
+  - frontier/results.yaml
+  evidence:
+  - E-n040-guzhou-new-supports-report
+  - E-n040-guzhou-new-supports-kernel-replay
+  - E-n040-guzhou-new-supports-finite-audit
+  - E-n040-guzhou-new-supports-crate-axis
+  notes: Release n40-new-supports-6718-20261011 at 6a65957e, retrieved on 11 October 2026 for the comment
+    on jlevy/squares#485, with thirty-four files retained, wand125's rect_n40_L67 pool pinned by digest,
+    and the release ZIP's CI receipt kept beside the tree's local one. It reports s(40) > 3359/500 by
+    the 10 October release's two kernels, byte for byte, on a new density of 685 rectangle orbits, and
+    an exact obstruction for the original support family that bears on no bound. The finite steps and
+    the near-axis statement were decided here on 11 October; on 12 October both kernels were rebuilt
+    into the CI run's binaries and replayed in full, every output equal to both release receipts apart
+    from timing, and the mathematics was reviewed with no blocking defect. Both lanes of n-040.md move
+    to 3359/500 (T-153); T-145's 1340000/199529 stays as history.
 - id: evand-regularized-2026-10-10
   title: Evan Daniel's regularized record lists at ea1a2f2, no issue
   role: source-repository

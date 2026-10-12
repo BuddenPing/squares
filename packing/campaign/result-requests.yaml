@@ -4395,7 +4395,9 @@ issues:
       the guzhou-n40-new-supports-2026-10-11 packet with both receipts; the density's orbit facts,
       both kernel inputs and every finite step decided here by a first-party exact audit, and the
       near-axis certificate reproduced with the CI run's axis binary and decided again by
-      sqverify-fast. The 43 slabs wait for an owner budget (think-tln9). wand125 edited the 17:14
+      sqverify-fast. On 12 October both kernels were replayed in full here, all 43 slabs, and the
+      release reviewed with no blocking defect; it is registered as T-153, and n = 40's reported and
+      verified lower bounds move to 3359/500 (think-tln9). wand125 edited the 17:14
       UTC comment at 02:19 UTC on 12 October to link the continuous-angle mode at
       wand125/square-packing f30cc2c (think-xzob).
     read_through: '2026-10-12T02:19:26Z'
@@ -4444,19 +4446,13 @@ issues:
         249329659/250000000 for t in [0, 10^-6]; 40 * 4999/5000 - 3999/100 = 1/500. It is
         217911/99764500 above T-145.
       source: https://github.com/jlevy/squares/issues/485#issuecomment-6106761997
-      not_registered: >-
-        Retained, audited, replayed and reviewed, not registered: the packet
-        guzhou-n40-new-supports-2026-10-11 retains the release, devtools.audit_n40_new_supports
-        decided the finite steps and the near-axis statement on 11 October, and on 12 October its
-        run-replay rebuilt both kernels into the CI run's binaries and ran the axis certificate, all
-        43 slabs, the contract's controls, sqverify-fast's two runs and the release's dual programs,
-        every output equal to both release receipts apart from timing (receipts/replay-check.json,
-        REPLAY_HOLDS); the 12 October review
-        (docs/project/reviews/review-2026-10-12-n40-new-supports-6718.md) found no blocking
-        defect and supports V3/C3, S3. The records lane of the 2026-10-11 intake registers it and
-        takes its T-NNN.
-      queued: true
-      bead: think-tln9
+      register:
+      - T-153
+      evidence:
+      - E-n040-guzhou-new-supports-report
+      - E-n040-guzhou-new-supports-kernel-replay
+      - E-n040-guzhou-new-supports-finite-audit
+      - E-n040-guzhou-new-supports-crate-axis
     - key: s40-support-family-obstruction
       claim: >-
         No nonnegative weighting of all 2,526 original uniform D4 rectangle orbits of rect_n40_L67
