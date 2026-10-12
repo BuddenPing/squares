@@ -29,15 +29,17 @@ by the policy's decision table. Per count, in order:
    modules the pipeline runs, with a generated `search/exact/batch/results.json` (one row
    per count: `n`, `from_: witness`, the solve's `status`, the finder as `by`, the
    record's printed side as `register`) and `batch/work/n-N` linked to the count's solve
-   directory, which is where `reg.load` reads its 80-digit input. Nothing is written under
-   `vendor/`, and the run directory must lie outside the checkout.
+   directory, which is where `reg.load` reads its 80-digit input. A solve the retry
+   ladder runs with a replica patch runs from a copy of `search/exact` with the patch
+   applied, under `replica/patched/NAME/`; the replica's own copies stay the pinned
+   bytes. Nothing is written under `vendor/`, and the run directory must lie outside the
+   checkout.
 3. **Exact solve.** `exactsolve.py witness.txt --out solve -q` with `python -I`, one
-   thread, a timeout, and the count's directory as working directory. Two failures are
-   tried once more (`solve_with_retries`): a failed solve at `--dps 100`, and a witness
-   not jammed only at noise level with `--force-kkt`, kept only where the side falls by
-   no more than `10^-10`. A count that still does not certify (not jammed, not
-   converged, an invalid certificate, a timeout) is reported and stops there; it is
-   never polished.
+   thread, a timeout, and the count's directory as working directory. An attempt that
+   gives no view climbs the retry ladder below (`solve_with_retries`). A count that still
+   does not reach the regularizer (not jammed, not converged, an invalid certificate at a
+   point that is not a local minimum, a timeout) is reported and stops there; it is never
+   polished.
 4. **Regularize.** `regularize_evand_shim.py`, beside this file, runs upstream's
    `reg.regularize` with `coincide` placement, the `conservative` angle policy and the
    source orientation, upstream's `atlas.level_of`, and `reg.write_cert`, and writes
@@ -109,6 +111,50 @@ that is rational, a closed form evaluated to 60 digits, else its printed decimal
 printed decimal alone would not do: at n = 51 it is the exact side rounded up at sixteen
 digits, below which every dilated certificate of the optimum falls.
 
+**The retry ladder** (the no-view study of 12 October 2026; rungs 3 and 5a under the
+owner's overnight instruction of the same day). These are policy-visible behaviours: each
+decides whether a count gets a view at all, and none of them decides a view, which is
+decided on this project's exact routes as every view is. Every attempt is listed in the
+report's `solve.attempts` with its rungs, arguments, replica patches, status, gate and
+seconds. Each rung adds to the attempt before it, none is climbed twice, and the first
+attempt that reaches the regularizer is kept under `solve/`, the first attempt moved to
+`solve-first/` and the others left in `solve-retry-RUNG/`.
+
+- *The gate* (`solve_gate`). A solve reaches the regularizer when it certifies (`KKT
+  local min`, `bound only`), or, the relaxed gate of rung 3, when Newton converged and
+  upstream's second-order status is a local minimum but upstream refused its own dilated
+  certificate (`certificate invalid`). The regularizer writes and checks a certificate of
+  its own output, so upstream's refusal of the solve's certificate decides nothing about
+  the view. A point upstream finds is not a local minimum (155, with a first-order
+  descent of 0.084) still stops.
+- *Rung 1, `dps-100`.* A solve that failed in its first pass is solved again at 100
+  digits (n = 18, where an exactly degenerate input sends Newton off at 80).
+- *Rung 2, `force-kkt`.* A witness found not jammed only at noise level, its jam
+  residual below `1e-6` and the MILP's descent below `1e-5`, is solved with upstream's
+  `--force-kkt` (152, 269), and the result is kept only where its exact side is at most
+  `10^-10` below the witness's, so the solve removed noise and polished nothing. The
+  eight rational witnesses with slack the solver rightly finds not jammed (jam residual
+  2.4e-7 to 1.5e-2, descent 2.2e-5 to 1.0) stay out.
+- *Rung 3, `first-pass`.* A solve that failed in an active-set step, where upstream
+  re-solves with the pairs that closed during the solve as equations (258: the contact
+  equations became inconsistent), is solved again by `regularize_evand_first_pass.py`,
+  which stops upstream's recursion, so the converged first pass's outputs are what the
+  solve leaves; they reach the regularizer through the relaxed gate or not at all. A
+  solve that still times out after rung 5a climbs this rung too.
+- *Rung 5a, `stall-stop`.* A solve that timed out is solved again, never with a longer
+  timeout, from a copy of `search/exact` with the replica patch `probe-flat-stall-stop`
+  applied (`vendor/evand-regularize/vendored.yaml`, kind `replica`, and its README's Local
+  Changes): upstream's zero-mode probe also stops at its stall floor, which leaves the
+  KKT point and the certificate unchanged. In the run of 12 October 2026, 290 certified
+  in 282 s with the outputs the study's patched solve gave, and 302's whole solve, two
+  active-set steps included, certified in 819 s, where the pristine first pass alone took
+  1,641 s and its active-set step did not finish in 1,800. A count solved so lists the
+  patch in its report's `generator.patches` and its views' `certificate.generator.patches`,
+  its `method` names it, and the receipt lists it with the counts that used it.
+
+Rung 4 of the study, a solve of the load-bearing sub-packing where upstream's promotion
+of wedged force-free squares sends Newton off (150), is not part of the ladder.
+
 **Workers.** Counts run in a process pool of `sqpack.workers.worker_count` workers,
 capped at two when `--workers` is not given; each count's solve and regularization are
 further child processes with one BLAS thread.
@@ -129,8 +175,9 @@ import resource
 import shutil
 import subprocess
 import sys
+import tempfile
 import time
-from collections.abc import Iterable, Iterator, Mapping, Sequence
+from collections.abc import Collection, Iterable, Iterator, Mapping, Sequence
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass, field, replace
@@ -146,7 +193,9 @@ from devtools import census_atlas_contact_shades as shades
 from devtools import check_half_angle_area as area
 from devtools import check_rational_witness_independent as independent
 from devtools import evand_exact_certificates as evand
+from devtools import regularize_axis_components as axis
 from devtools.apply_exact_ceilings import bound_value
+from devtools.check_vendored_evand import apply_patch
 from devtools.upper_bound_packets import RATIONAL_DIGITS
 from sqpack.witness import (
     # The 36-digit rational pose at dilation 1 is the decimal witness's exact frame, as
@@ -172,6 +221,8 @@ WITNESS_SCHEMA = ROOT / "witnesses/witness.schema.yaml"
 FRONTIER = ROOT / "frontier"
 LAYER_INDEX = ROOT / "atlas/known-best/regularized/index.json"
 SHIM = Path(__file__).with_name("regularize_evand_shim.py")
+#: Runs upstream's solve without its active-set recursion: the ladder's `first-pass` rung.
+FIRST_PASS_SHIM = Path(__file__).with_name("regularize_evand_first_pass.py")
 POLICY = "docs/project/policies/regularization-policy.md"
 
 GENERATOR = "evand-regularize"
@@ -203,6 +254,8 @@ STAGES = ("input", "solve", "regularize", "import")
 MOVE_BOUND = Fraction(1, 2)
 TURN_BOUND = Fraction(1, 10**6)
 SOLVE_CERTIFIED = ("KKT local min", "bound only")
+#: The second-order statuses upstream gives a local minimum of S.
+LOCAL_MINIMUM = ("rigid", "PD", "PSD", "local minimum")
 SINGLE_THREAD = ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS")
 HOUSE, STAGE = shades.RULES[0], shades.RULES[1]
 RULE_NAMES = ("house", "stage")
@@ -478,6 +531,12 @@ def upper_bound(facts: Mapping[str, Any]) -> Fraction | None:
 
 
 def vendored_pin() -> dict[str, Any]:
+    """The generator: its pin, and the local changes every solve and regularization run.
+
+    A replica patch is not among them: it runs only where the retry ladder applies it,
+    and is added to a count's patches there (`applied_patches`) and to the receipt's with
+    the counts that used it (`run_generator`).
+    """
     manifest = load_yaml(VENDORED_MANIFEST.read_text(encoding="utf-8"))
     commit = str(manifest["source_commit"])
     return {
@@ -485,9 +544,35 @@ def vendored_pin() -> dict[str, Any]:
         "source_url": manifest["source_url"],
         "pin": commit[:7],
         "source_commit": commit,
-        "patches": [dict(change) for change in manifest["local_changes"]],
+        "patches": [
+            dict(change)
+            for change in manifest["local_changes"]
+            if change.get("kind") != "replica"
+        ],
         "interpreter": f"{platform.python_implementation()} {platform.python_version()}",
     }
+
+
+def replica_patches() -> dict[str, dict[str, Any]]:
+    """The manifest's replica patches by name, the stem of the patch file."""
+    manifest = load_yaml(VENDORED_MANIFEST.read_text(encoding="utf-8"))
+    found: dict[str, dict[str, Any]] = {}
+    for change in manifest["local_changes"]:
+        if change.get("kind") == "replica":
+            name = Path(str(change["patch"])).stem
+            found[name] = {"name": name, **change}
+    return found
+
+
+def applied_patches(names: Iterable[str]) -> list[dict[str, Any]]:
+    """The manifest's records of the replica patches a solve ran with."""
+    recorded = replica_patches()
+    return [recorded.get(name, {"name": name}) for name in names]
+
+
+def patch_name(patch: Mapping[str, Any]) -> str:
+    """How a `method` names a patch: a replica patch by its name, a local change by path."""
+    return str(patch.get("name") or patch.get("path"))
 
 
 def build_replica(run_dir: Path, rows: Sequence[Mapping[str, Any]]) -> Path:
@@ -513,6 +598,46 @@ def build_replica(run_dir: Path, rows: Sequence[Mapping[str, Any]]) -> Path:
         point_work(replica, int(row["n"]), solve)
     write_json(results, [kept[n] for n in sorted(kept)])
     return replica
+
+
+def solver_tree(replica: Path, patches: Sequence[str]) -> Path:
+    """The `search/exact` a solve runs from: the replica's own, or a patched copy.
+
+    With replica patches, a copy of the replica's `search/exact` modules with each patch
+    applied (`check_vendored_evand.apply_patch`, exact context, refused rather than fuzzed)
+    under `replica/patched/NAME/`, built once: in a staging directory renamed into place,
+    so the pool's workers never run a half-written copy.
+    """
+    exact = Path("search/exact")
+    if not patches:
+        return replica / exact
+    target = replica / "patched" / "+".join(patches)
+    if (target / exact).is_dir():
+        return target / exact
+    recorded = replica_patches()
+    (replica / "patched").mkdir(parents=True, exist_ok=True)
+    staging = Path(tempfile.mkdtemp(prefix=".staging-", dir=replica / "patched"))
+    try:
+        (staging / exact).mkdir(parents=True)
+        for name in REPLICA_FILES[str(exact)]:
+            shutil.copyfile(VENDOR / exact / name, staging / exact / name)
+        for name in patches:
+            record = recorded.get(name)
+            if record is None:
+                raise EvandRunError(f"replica patch {name!r} is not recorded in vendored.yaml")
+            if Path(str(record["path"])).parent != exact:
+                raise EvandRunError(f"replica patch {name!r} patches outside {exact}")
+            patched = staging / str(record["path"])
+            diff = (REPO / str(record["patch"])).read_text(encoding="utf-8")
+            write_text(patched, apply_patch(patched.read_text(encoding="utf-8"), diff))
+        try:
+            staging.rename(target)
+        except OSError:
+            if not (target / exact).is_dir():  # not another worker's copy: a real failure
+                raise
+    finally:
+        shutil.rmtree(staging, ignore_errors=True)
+    return target / exact
 
 
 def point_work(replica: Path, n: int, target: Path) -> None:
@@ -572,6 +697,11 @@ class Options:
     frame: str = "kkt"
 
 
+def local_minimum(second: object) -> bool:
+    """Whether upstream's second-order status is a local minimum of S."""
+    return str(second or "").startswith(LOCAL_MINIMUM)
+
+
 def solve_status(meta: Mapping[str, Any]) -> str:
     """The batch's status vocabulary from one `witness.json`."""
     if meta.get("status") in {"not jammed", "solve failed"}:
@@ -580,10 +710,28 @@ def solve_status(meta: Mapping[str, Any]) -> str:
         return "not converged"
     if not meta.get("cert_valid"):
         return "certificate invalid"
-    second = str((meta.get("second_order") or {}).get("status", ""))
-    if second.startswith(("rigid", "PD", "PSD", "local minimum")):
+    if local_minimum((meta.get("second_order") or {}).get("status")):
         return "KKT local min"
     return "bound only"
+
+
+def solve_gate(block: Mapping[str, Any]) -> Literal["certified", "relaxed"] | None:
+    """How a solve reaches the regularizer, or None when it does not (module docstring).
+
+    `certified`: upstream certified it. `relaxed`, rung 3: Newton converged to a point
+    upstream's second-order analysis finds a local minimum, and only upstream's own dilated
+    certificate of that point was refused.
+    """
+    status = block.get("status")
+    if status in SOLVE_CERTIFIED:
+        return "certified"
+    if (
+        status == "certificate invalid"
+        and block.get("newton_converged")
+        and local_minimum(block.get("second_order"))
+    ):
+        return "relaxed"
+    return None
 
 
 def run_child(
@@ -607,46 +755,127 @@ def run_child(
     return completed.returncode, time.perf_counter() - started
 
 
+@dataclass(frozen=True)
+class Rung:
+    """One rung of the retry ladder: what it adds to the attempt it follows."""
+
+    name: str
+    arguments: tuple[str, ...] = ()
+    #: Replica patches (`vendored.yaml`, kind `replica`) the solve runs with, by name.
+    patches: tuple[str, ...] = ()
+    #: Whether upstream's active-set recursion is stopped after the first pass.
+    first_pass: bool = False
+
+
+@dataclass(frozen=True)
+class Attempt:
+    """A solve's configuration: the rungs climbed to it, each adding to the one before."""
+
+    rungs: tuple[Rung, ...] = ()
+
+    @property
+    def arguments(self) -> list[str]:
+        return [argument for rung in self.rungs for argument in rung.arguments]
+
+    @property
+    def patches(self) -> list[str]:
+        return list(dict.fromkeys(name for rung in self.rungs for name in rung.patches))
+
+    @property
+    def first_pass(self) -> bool:
+        return any(rung.first_pass for rung in self.rungs)
+
+    def climb(self, rung: Rung) -> Attempt:
+        return Attempt((*self.rungs, rung))
+
+    def record(self) -> dict[str, Any]:
+        return {
+            "rungs": [rung.name for rung in self.rungs],
+            "arguments": self.arguments,
+            "patches": self.patches,
+            "first_pass": self.first_pass,
+        }
+
+
+#: The rungs of the retry ladder (module docstring). Thresholds are the study's.
+RETRY_DIGITS = Rung("dps-100", ("--dps", "100"))
+FORCE_KKT = Rung("force-kkt", ("--force-kkt",))
+FIRST_PASS = Rung("first-pass", first_pass=True)
+STALL_STOP = Rung("stall-stop", patches=("probe-flat-stall-stop",))
+PLAIN = Attempt()
+NOISE_JAM_RESIDUAL = 1e-6
+NOISE_DESCENT = 1e-5
+POLISH_ALLOWANCE = Fraction(1, 10**10)
+#: Where an attempt's configuration is written beside its outputs, for `--from-stage`.
+ATTEMPT_FILE = "attempt.json"
+
+
 def solve(
     directory: Path,
     replica: Path,
     timeout: float,
-    extra: Sequence[str] = (),
+    attempt: Attempt = PLAIN,
     name: str = "solve",
 ) -> dict[str, Any]:
+    """One attempt at the exact solve, its outputs under `directory / name`."""
     solve_dir = directory / name
     solve_dir.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(directory / "input.txt", solve_dir / "witness.txt")
     for stale in solve_dir.glob("witness.*"):
         if stale.name != "witness.txt":
             stale.unlink()
+    write_json(solve_dir / ATTEMPT_FILE, attempt.record())
+    exact = solver_tree(replica, attempt.patches)
+    program = (
+        [str(FIRST_PASS_SHIM), "--exact", str(exact)]
+        if attempt.first_pass
+        else [str(exact / "exactsolve.py")]
+    )
     code, seconds = run_child(
         [
             sys.executable,
             "-I",
-            str(replica / "search/exact/exactsolve.py"),
+            *program,
             str(solve_dir / "witness.txt"),
             "--out",
             str(solve_dir),
             "-q",
-            *extra,
+            *attempt.arguments,
         ],
         directory,
         timeout,
         directory / f"{name}.log",
     )
     if code is None:
-        return {"status": "timeout", "seconds": round(seconds, 2), "timeout": timeout}
+        return {
+            "status": "timeout",
+            "gate": None,
+            "seconds": round(seconds, 2),
+            "timeout": timeout,
+            **attempt.record(),
+        }
     meta_path = solve_dir / "witness.json"
     if not meta_path.is_file():
-        return {"status": "error", "returncode": code, "seconds": round(seconds, 2)}
+        return {
+            "status": "error",
+            "gate": None,
+            "returncode": code,
+            "seconds": round(seconds, 2),
+            **attempt.record(),
+        }
     block = solve_block(read_json(meta_path))
-    block.update(returncode=code, seconds=round(seconds, 2))
+    block.update(returncode=code, seconds=round(seconds, 2), **attempt.record())
     return block
 
 
+def attempt_of(solve_dir: Path) -> dict[str, Any]:
+    """The configuration a kept solve ran with, as `solve` wrote it beside its outputs."""
+    path = solve_dir / ATTEMPT_FILE
+    return read_json(path) if path.is_file() else PLAIN.record()
+
+
 def solve_block(meta: Mapping[str, Any]) -> dict[str, Any]:
-    return {
+    block = {
         "status": solve_status(meta),
         "S_exact": meta.get("S_exact"),
         "S_cert": meta.get("S_cert"),
@@ -657,39 +886,39 @@ def solve_block(meta: Mapping[str, Any]) -> dict[str, Any]:
         "why": meta.get("why"),
         "jam_residual": meta.get("jam_residual"),
         "vv_milp_dS": meta.get("vv_milp_dS"),
+        # An active-set step's pairs, present where the last pass upstream ran was one.
+        "forced_pairs": meta.get("forced_pairs"),
+        "promoted": meta.get("promoted"),
         "solver_seconds": meta.get("seconds"),
     }
+    block["gate"] = solve_gate(block)
+    return block
 
 
-#: The retry ladder's automatic rungs (the no-view study of 12 October 2026): a solve
-#: that failed is tried again at 100 digits (it recovered n = 18, where an exactly
-#: degenerate input sends Newton off at 80); a witness found not jammed only at noise
-#: level, its jam residual below 1e-6 and the MILP's descent below 1e-5, is solved with
-#: upstream's `--force-kkt` (152 and 269), and the result is kept only where its exact
-#: side is at most 1e-10 below the witness's, so the solve removed noise and polished
-#: nothing. The eight rational witnesses with slack the solver rightly finds not jammed
-#: (jam residual 2.4e-7 to 1.5e-2, descent 2.2e-5 to 1.0) stay out.
-RETRY_DIGITS = ("--dps", "100")
-FORCE_KKT = ("--force-kkt",)
-NOISE_JAM_RESIDUAL = 1e-6
-NOISE_DESCENT = 1e-5
-POLISH_ALLOWANCE = Fraction(1, 10**10)
-
-
-def retry_rung(first: Mapping[str, Any]) -> tuple[str, ...] | None:
-    """The ladder's rung for a first solve that gives no view, or None."""
-    if first.get("status") == "solve failed":
-        return RETRY_DIGITS
-    residual, descent = first.get("jam_residual"), first.get("vv_milp_dS")
-    if (
-        first.get("status") == "not jammed"
-        and residual is not None
+def noise_level(block: Mapping[str, Any]) -> bool:
+    """Whether a solve found not jammed was so only at noise level (rung 2)."""
+    residual, descent = block.get("jam_residual"), block.get("vv_milp_dS")
+    return (
+        residual is not None
         and descent is not None
         and float(residual) < NOISE_JAM_RESIDUAL
         and abs(float(descent)) < NOISE_DESCENT
-    ):
-        return FORCE_KKT
-    return None
+    )
+
+
+def retry_rung(latest: Mapping[str, Any], climbed: Sequence[Rung] = ()) -> Rung | None:
+    """The ladder's next rung after an attempt that gives no view, or None where it ends."""
+    status = latest.get("status")
+    candidates: tuple[Rung, ...] = ()
+    if status == "timeout":
+        candidates = (STALL_STOP, FIRST_PASS)
+    elif status == "solve failed" and latest.get("forced_pairs"):
+        candidates = (FIRST_PASS, RETRY_DIGITS)
+    elif status == "solve failed":
+        candidates = (RETRY_DIGITS,)
+    elif status == "not jammed" and noise_level(latest):
+        candidates = (FORCE_KKT,)
+    return next((rung for rung in candidates if rung not in climbed), None)
 
 
 def polished(block: Mapping[str, Any], printed: Fraction | None) -> bool:
@@ -699,38 +928,60 @@ def polished(block: Mapping[str, Any], printed: Fraction | None) -> bool:
     return Fraction(str(block["S_exact"])) < printed - POLISH_ALLOWANCE
 
 
+def _attempt_row(rung: Rung | None, block: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        "rung": rung.name if rung is not None else None,
+        "rungs": block.get("rungs") or [],
+        "arguments": block.get("arguments") or [],
+        "patches": block.get("patches") or [],
+        "first_pass": bool(block.get("first_pass")),
+        "status": block["status"],
+        "gate": block.get("gate"),
+        "seconds": block.get("seconds"),
+    }
+
+
 def solve_with_retries(
     directory: Path, replica: Path, timeout: float, printed: Fraction | None
 ) -> dict[str, Any]:
-    """The solve, and the ladder's one automatic retry where the first gives no view.
+    """The solve, and the retry ladder's climb while an attempt gives no view.
 
-    Every attempt is listed in `attempts`. A retry that certifies replaces the first
-    attempt's outputs under `solve/`, the first kept as `solve-first/`; one that does not
-    is left in its own directory and the first attempt's result stands.
+    Every attempt is listed in `attempts`. The first to reach the regularizer
+    (`solve_gate`) is kept: a retry's outputs replace the first attempt's under `solve/`,
+    the first kept as `solve-first/`. A retry that does not is left in its own
+    `solve-retry-RUNG/` and the climb goes on from it. A forced solve that lowered the side
+    by more than noise ends the climb, as does a status no rung is left for; the first
+    attempt's result then stands.
     """
-    first = solve(directory, replica, timeout)
-    attempts = [{"arguments": [], "status": first["status"], "seconds": first.get("seconds")}]
-    rung = retry_rung(first)
-    if rung is None:
-        return {**first, "attempts": attempts}
-    retried = solve(directory, replica, timeout, rung, name="solve-retry")
-    accepted = retried["status"] in SOLVE_CERTIFIED and not (
-        rung == FORCE_KKT and polished(retried, printed)
-    )
-    attempts.append(
-        {
-            "arguments": list(rung),
-            "status": retried["status"],
-            "seconds": retried.get("seconds"),
-            "accepted": accepted,
-        }
-    )
-    if not accepted:
-        return {**first, "attempts": attempts}
-    shutil.rmtree(directory / "solve-first", ignore_errors=True)
-    (directory / "solve").rename(directory / "solve-first")
-    (directory / "solve-retry").rename(directory / "solve")
-    return {**retried, "attempts": attempts, "retried_with": list(rung)}
+    attempt = PLAIN
+    first = solve(directory, replica, timeout, attempt)
+    attempts = [_attempt_row(None, first)]
+    latest = first
+    while latest.get("gate") is None:
+        rung = retry_rung(latest, attempt.rungs)
+        if rung is None:
+            break
+        attempt = attempt.climb(rung)
+        name = f"solve-retry-{rung.name}"
+        latest = solve(directory, replica, timeout, attempt, name=name)
+        polish = (
+            FORCE_KKT in attempt.rungs
+            and latest.get("gate") is not None
+            and polished(latest, printed)
+        )
+        row = _attempt_row(rung, latest)
+        row["accepted"] = latest.get("gate") is not None and not polish
+        if polish:
+            row["polished"] = True
+        attempts.append(row)
+        if row["accepted"]:
+            shutil.rmtree(directory / "solve-first", ignore_errors=True)
+            (directory / "solve").rename(directory / "solve-first")
+            (directory / name).rename(directory / "solve")
+            return {**latest, "attempts": attempts}
+        if polish:
+            break
+    return {**first, "attempts": attempts}
 
 
 def frame_text(witness: Mapping[str, Any], frame: SourceFrame) -> str:
@@ -1472,11 +1723,17 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
     else:
         solved = solve_block(read_json(directory / "solve/witness.json"))
         solved["seconds"] = solved.get("solver_seconds")
-    seconds["solve"] = solved.get("seconds")
+        solved.update(attempt_of(directory / "solve"))
+    # The replica patches the kept solve ran with are this count's, and its views' too.
+    pin = {**pin, "patches": [*pin["patches"], *applied_patches(solved.get("patches") or [])]}
+    report["generator"]["patches"] = pin["patches"]
+    # The stage's cost is every attempt the ladder made, not only the one it kept.
+    attempted = [row.get("seconds") or 0 for row in solved.get("attempts") or []]
+    seconds["solve"] = round(sum(attempted), 2) if attempted else solved.get("seconds")
     report["solve"] = solved
     record_solve_status(replica, n, str(solved["status"]))
     no_output = {"solved": None, "same": None, "same_refusal": None}
-    if solved["status"] not in SOLVE_CERTIFIED:
+    if solved.get("gate") is None:
         report["status"] = "timeout" if solved["status"] == "timeout" else "generator-failed"
         report["outputs"] = no_output
         decide(report, Measured("solved", produced=False, status=f"solve {solved['status']}"))
@@ -1608,13 +1865,17 @@ def receipt_row(report: Mapping[str, Any]) -> dict[str, Any]:
     shaded = report.get("shades") or {}
     decision = report.get("decision") or {}
     solved_decision = (report.get("decisions") or {}).get("solved") or {}
+    solve_record = report.get("solve") or {}
     return {
         "n": report["n"],
         "status": report.get("status"),
         "error": report.get("error"),
         "kind": (report.get("source") or {}).get("kind"),
-        "solve_status": (report.get("solve") or {}).get("status"),
-        "S_exact": (report.get("solve") or {}).get("S_exact"),
+        "solve_status": solve_record.get("status"),
+        "solve_gate": solve_record.get("gate"),
+        "solve_rungs": solve_record.get("rungs") or [],
+        "replica_patches": solve_record.get("patches") or [],
+        "S_exact": solve_record.get("S_exact"),
         "s_W": (report.get("source") or {}).get("s_W"),
         "U": report.get("verified_upper_bound"),
         "level": regularized.get("level"),
@@ -1638,6 +1899,24 @@ def receipt_row(report: Mapping[str, Any]) -> dict[str, Any]:
         "seconds": report.get("seconds"),
         "cost": report.get("cost"),
     }
+
+
+def run_generator(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    """The receipt's generator: the pin, its local changes, and each replica patch a count
+    of the run was solved with, with those counts."""
+    pin = vendored_pin()
+    used: dict[str, list[int]] = {}
+    for row in rows:
+        for name in row.get("replica_patches") or []:
+            used.setdefault(str(name), []).append(int(row["n"]))
+    pin["patches"] = [
+        *pin["patches"],
+        *(
+            {**patch, "counts": used[patch_name(patch)]}
+            for patch in applied_patches(sorted(used))
+        ),
+    ]
+    return pin
 
 
 def _children_cpu() -> float:
@@ -1761,7 +2040,7 @@ def regularization_record(report: Mapping[str, Any]) -> dict[str, Any] | None:
         "by": "project",
         "method": METHOD.format(
             pin=generator.get("pin"),
-            patches="".join(f"+{patch}" for patch in patches),
+            patches="".join(f"+{patch_name(patch)}" for patch in patches),
             variant=generator.get("variant"),
             style=generator.get("style"),
         ),
@@ -1811,9 +2090,10 @@ def measured_from_report(report: Mapping[str, Any], name: Output) -> Measured:
         reason = str((report.get("decision") or {}).get("reason") or "")
         if reason.startswith("no view: ") and not reason.startswith("no view: solve "):
             return Measured(name, produced=False, status=reason.removeprefix("no view: "))
-        status = (report.get("solve") or {}).get("status") or report.get("status")
+        solve_record = report.get("solve") or {}
+        status = solve_record.get("status") or report.get("status")
         regularized = report.get("regularize")
-        if status in SOLVE_CERTIFIED and regularized is not None:
+        if solve_gate({**solve_record, "status": status}) and regularized is not None:
             failure = regularize_failure(regularized) or "regularize: no output"
             return Measured(name, produced=False, status=failure)
         return Measured(name, produced=False, status=f"solve {status}")
@@ -1943,6 +2223,22 @@ SELECTIONS = ("admitted", "preview")
 VIEW_KIND = "regularized-view"
 DRAWING_LABEL = "regularized"
 LAYER_DIR = "packing/atlas/known-best/regularized"
+LAYER_INDEX_PATH = f"{LAYER_DIR}/index.json"
+LAYER_GENERATED_BY = "python -m devtools.regularize_evand layer --select admitted"
+IDENTITY_BY = (
+    "devtools.check_half_angle_area.arrangement_gap, nearest centres under the box's "
+    "eight symmetries"
+)
+SHADES_BY = (
+    "devtools.census_atlas_contact_shades: edge_rule_contacts (house) and "
+    "centre_rule_contacts (stage) on packings_from_witness"
+)
+#: Run parameters an index's `runs` keeps: what a reader needs to rebuild the run, not
+#: the list of counts it ran, which its decisions already sum.
+RUN_PARAMETERS = (
+    "variant", "style", "orient", "frame", "same_mode", "from_stage", "dps", "eps",
+    "timeout", "regularize_timeout", "workers",
+)  # fmt: skip
 
 
 def total_contacts(counts: Sequence[int]) -> int:
@@ -1976,123 +2272,398 @@ def source_id(report: Mapping[str, Any]) -> str:
     return (report.get("source") or {}).get("id") or f"W-known-best-n{int(report['n']):03d}"
 
 
-def layer_view(report: Mapping[str, Any], document: Mapping[str, Any]) -> dict[str, Any]:
-    """A run's view as the atlas layer holds one: the renderer's certificate fields, with
-    the driver's provenance and the regularization record kept beside them."""
-    view = dict(document)
-    view["certificate"] = {
-        "kind": VIEW_KIND,
-        "label": DRAWING_LABEL,
-        "derived_from": source_id(report),
-        "generator": dict(view.get("certificate") or {}),
-        "regularization": report.get("regularization"),
-        "decision": report.get("decision"),
-    }
-    return view
+@dataclass(frozen=True)
+class Admitted:
+    """One generator's view of one count, decided and ready to be drawn by the layer."""
+
+    n: int
+    generator: str
+    run: dict[str, Any]
+    source: dict[str, Any]
+    side: dict[str, Any]
+    view: dict[str, Any]
+    """The view's Witness/v2 record, its certificate not yet the layer's."""
+    provenance: dict[str, Any]
+    """The generator's own certificate fields, kept under the layer's certificate."""
+    routes: dict[str, bool]
+    decision: dict[str, Any]
+    measured: dict[str, Any]
+    regularization: dict[str, Any]
+    house_after: list[int]
 
 
-def layer_entry(
-    report: Mapping[str, Any], view_path: str, view_text: str, chosen: str
-) -> dict[str, Any]:
-    """The index entry for a written view, in the layer's terms plus the run's record."""
+def layer_regularization(record: Mapping[str, Any]) -> dict[str, Any]:
+    """A run's regularization record as the layer keeps it: the register's terms, its
+    identity's measurements retained in the layer's index (`measured_in`)."""
+    kept = {key: value for key, value in record.items() if value is not None}
+    kept["identity"] = {**record["identity"], "measured_in": LAYER_INDEX_PATH}
+    return kept
+
+
+def evand_admitted(report: Mapping[str, Any], directory: Path, run_id: str) -> Admitted:
+    """A driver report's admitted view (row 10), in the layer's terms."""
+    chosen = layer_candidate(report, "admitted")
+    if chosen is None:
+        raise EvandRunError(f"n={report['n']}: not admitted")
+    n = int(report["n"])
     source = report.get("source") or {}
     block = (report.get("outputs") or {})[chosen]
     routes = block.get("routes") or {}
+    ident = report.get("identity") or {}
     shaded = report.get("shades") or {}
-    return {
-        "n": report["n"],
-        "status": "regularized",
-        "generator": GENERATED_BY,
-        "source": {
+    regularized = report.get("regularize") or {}
+    document = load_yaml((directory / f"view-{chosen}.yaml").read_text(encoding="utf-8"))
+    run: dict[str, Any] = {"id": run_id, "output": chosen}
+    retried = (report.get("solve") or {}).get("retried_with")
+    if retried:
+        run["retried_with"] = [str(argument) for argument in retried]
+    decision = report.get("decision") or {}
+    record = report.get("regularization")
+    if not record:
+        raise EvandRunError(f"n={n}: the report carries no regularization record")
+    return Admitted(
+        n=n,
+        generator=axis.EVAND_GENERATOR,
+        run=run,
+        source={
             "witness": source.get("path"),
             "id": source_id(report),
             "scalar_kind": source.get("kind"),
             "sha256": source.get("sha256"),
         },
-        "side": {
+        side={
             "reported": source.get("s_W"),
+            "view": block.get("side_exact"),
             "relation": block.get("relation"),
             "view_minus_reported": block.get("minus_s_W"),
             "view_minus_verified_upper_bound": block.get("minus_U"),
         },
-        "view": {"path": view_path, "sha256": sha256_of(view_text.encode("utf-8"))},
-        "shades": {rule: shaded.get(rule) for rule in RULE_NAMES},
-        "exact_verification": {
+        view=dict(document["witness"]),
+        provenance=dict(document["witness"].get("certificate") or {}),
+        routes={
             "repository_verifier": bool(routes.get("exact_verify")),
             "independent_checker": bool(routes.get("independent")),
-            "passed": bool(routes.get("exact_verify") and routes.get("independent")),
+            **({"half_angle": bool(routes["half_angle"])} if "half_angle" in routes else {}),
         },
-        "decision": report.get("decision"),
-        "regularization": report.get("regularization"),
+        decision={
+            "row": decision.get("row"),
+            "decision": decision.get("decision"),
+            "reason": decision.get("reason"),
+        },
+        measured={
+            "identity_by": f"{IDENTITY_BY}, in devtools.regularize_evand",
+            "shades_by": f"{SHADES_BY}, in devtools.regularize_evand",
+            "contacts": {
+                rule: {
+                    "before": list((shaded.get(rule) or {}).get("before") or []),
+                    "after": list((shaded.get(rule) or {}).get("after") or []),
+                }
+                for rule in RULE_NAMES
+            },
+            "symmetry": int(ident.get("symmetry") or 0),
+            "regressions": _regression_count(shaded) if shaded else 0,
+            "level": regularized.get("level"),
+            "groups": [
+                int(regularized["groups_before"]),
+                int(regularized["groups_after"]),
+            ]
+            if regularized.get("groups_before") is not None
+            else [],
+        },
+        regularization=layer_regularization(record),
+        house_after=list((shaded.get("house") or {}).get("after") or []),
+    )
+
+
+def run_block(run_dir: Path, run_id: str) -> dict[str, Any]:
+    """A run as the layer's index records it, from its receipt: the generator version is
+    the index's `generators` block, so a run keeps its parameters, decisions and cost."""
+    receipt = read_json(run_dir / "receipt.json")
+    parameters = receipt.get("parameters") or {}
+    cost = receipt.get("cost") or {}
+    decisions: dict[str, int] = {}
+    for row in receipt.get("counts") or []:
+        word = str(row.get("decision"))
+        decisions[word] = decisions.get(word, 0) + 1
+    finished = time.strftime(
+        "%Y-%m-%d", time.gmtime((run_dir / "receipt.json").stat().st_mtime)
+    )
+    return {
+        "id": run_id,
+        "generator": axis.EVAND_GENERATOR,
+        "finished": finished,
+        "interpreter": (receipt.get("generator") or {}).get("interpreter"),
+        "parameters": {key: parameters[key] for key in RUN_PARAMETERS if key in parameters},
+        "counts": len(receipt.get("counts") or []),
+        "decisions": dict(sorted(decisions.items())),
+        "cost": {
+            "cpu_seconds": float(cost.get("cpu_seconds") or 0),
+            "wall_seconds": float(cost.get("wall_seconds") or 0),
+            "workers": int(cost.get("workers") or parameters.get("workers") or 1),
+        },
     }
 
 
-def replaces_current(
-    entry: Mapping[str, Any] | None, root: Path, report: Mapping[str, Any]
-) -> bool:
-    """Whether a new view replaces the layer's current one at its count: only when it
-    shares at least as many full sides in total under the house rule."""
+def evand_generator_block() -> dict[str, Any]:
+    """The vendored generator as the layer's index describes it: its pin and patches."""
+    pin = vendored_pin()
+    return {
+        "tool": "packing/devtools/regularize_evand.py",
+        "generated_by": LAYER_GENERATED_BY,
+        "method": METHOD.format(
+            pin=pin["pin"],
+            patches="".join(f"+{patch}" for patch in pin["patches"]),
+            variant="conservative",
+            style=STYLE,
+        ),
+        "credit": axis.EVAND_CREDIT,
+        "vendored": relative(VENDOR),
+        "source_url": pin["source_url"],
+        "pin": pin["pin"],
+        "source_commit": pin["source_commit"],
+        "patches": pin["patches"],
+    }
+
+
+def layer_view(admitted: Admitted) -> dict[str, Any]:
+    """An admitted view as the layer holds it: the renderer's certificate fields, the
+    regularization and credit its entry repeats, and the generator's own fields kept."""
+    view = dict(admitted.view)
+    view["certificate"] = {
+        "kind": VIEW_KIND,
+        "label": DRAWING_LABEL,
+        "derived_from": admitted.source["id"],
+        "generator": admitted.generator,
+        "credit": axis.EVAND_CREDIT,
+        "run": admitted.run["id"],
+        "regularization": admitted.regularization,
+        "decision": admitted.decision,
+        "generated": admitted.provenance,
+    }
+    return view
+
+
+def layer_entry(
+    admitted: Admitted,
+    view_path: str,
+    text: str,
+    shade_record: Mapping[str, Any],
+    reference: Mapping[str, Any],
+) -> dict[str, Any]:
+    """The index entry for a written view (`regularized-atlas-index.schema.yaml`)."""
+    return {
+        "n": admitted.n,
+        "status": "regularized",
+        "generator": admitted.generator,
+        "run": admitted.run,
+        "source": admitted.source,
+        "side": admitted.side,
+        "view": {"path": view_path, "sha256": sha256_of(text.encode("utf-8"))},
+        "shades": dict(shade_record),
+        "exact_verification": {
+            **admitted.routes,
+            "passed": bool(
+                admitted.routes.get("repository_verifier")
+                and admitted.routes.get("independent_checker")
+            ),
+        },
+        "decision": admitted.decision,
+        "measured": admitted.measured,
+        "regularization": admitted.regularization,
+        "reference": dict(reference),
+    }
+
+
+def current_house_total(entry: Mapping[str, Any] | None, root: Path) -> int | None:
+    """Full sides the layer's current view of a count shares under the house rule."""
     if entry is None or entry.get("status") != "regularized" or not entry.get("view"):
-        return True
+        return None
     text = gzip.decompress((root / entry["view"]["path"]).read_bytes()).decode("utf-8")
-    current = histogram(contact_partners(load_yaml(text)["witness"])["house"])
-    after = ((report.get("shades") or {}).get("house") or {}).get("after") or []
-    return total_contacts(after) >= total_contacts(current)
+    return total_contacts(histogram(contact_partners(load_yaml(text)["witness"])["house"]))
 
 
-def write_layer(run_dirs: Sequence[Path], root: Path, select: str) -> dict[str, Any]:
-    """Write the selected views of finished runs into the layer under `root`, merged with
-    the index already there, a later run winning at a count two runs decided. Returns
-    what was written, what kept the current view, and what was left out."""
-    if select not in SELECTIONS:
-        raise EvandRunError(f"unknown selection {select!r}")
+def admit_views(
+    candidates: Sequence[Admitted],
+    root: Path,
+    *,
+    generators: Mapping[str, Any],
+    runs: Sequence[Mapping[str, Any]],
+    exclude: Collection[int] = (),
+) -> dict[str, Any]:
+    """Write admitted views into the layer under `root` and their entries into its index.
+
+    A count in `exclude` is left out whatever was decided there (its witness is about to
+    change). A view replaces the layer's current one only when it shares at least as
+    many full sides in total under the house rule; the axis tool's record of the count
+    stays beside it as `reference`. The index keeps the generators and runs its entries
+    draw from, and its totals are summed again.
+    """
     root = root.resolve()
-    if root == REPO.resolve() and select != "admitted":
-        raise EvandRunError("only the admitted selection may write into this checkout")
-    index_path = root / LAYER_DIR / "index.json"
+    index_path = root / LAYER_INDEX_PATH
     index = read_json(index_path)
+    if index.get("contract") != axis.ATLAS_CONTRACT:
+        raise EvandRunError(f"{LAYER_INDEX_PATH} is not a {axis.ATLAS_CONTRACT} index")
     entries = {int(entry["n"]): entry for entry in index["entries"]}
-    found: dict[int, tuple[Path, dict[str, Any]]] = {}
-    for run_dir in run_dirs:
-        for path in sorted(Path(run_dir).glob("n-*/report.json")):
-            report = read_json(path)
-            found[int(report["n"])] = (path.parent, report)
+    layout = layer_layout(root)
     written: list[int] = []
     kept: list[int] = []
-    left_out: list[int] = []
-    for n in sorted(found):
-        directory, report = found[n]
-        chosen = layer_candidate(report, select)
-        if chosen is None:
-            left_out.append(n)
+    excluded: list[int] = []
+    for admitted in sorted(candidates, key=lambda item: item.n):
+        n = admitted.n
+        if n in exclude:
+            excluded.append(n)
             continue
-        if not replaces_current(entries.get(n), root, report):
+        current = entries.get(n)
+        reference = (current or {}).get("reference") or current
+        if reference is None or reference.get("generator") != axis.ALGORITHM:
+            raise EvandRunError(f"n={n}: the layer holds no record of the axis tool's")
+        drawn = current_house_total(current, root)
+        if drawn is not None and total_contacts(admitted.house_after) < drawn:
             kept.append(n)
             continue
-        document = load_yaml((directory / f"view-{chosen}.yaml").read_text(encoding="utf-8"))
-        text = witness_document(layer_view(report, document["witness"]))
+        text = witness_document(layer_view(admitted), schema=layout.schema_reference())
         view_path = f"{LAYER_DIR}/n-{n:03d}-regularized.yaml.gz"
         target = root / view_path
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_bytes(gzip.compress(text.encode("utf-8"), mtime=0))
-        entries[n] = layer_entry(report, view_path, text, chosen)
-        written.append(n)
-    ordered = [entries[n] for n in sorted(entries)]
-    statuses: dict[str, int] = {}
-    for entry in ordered:
-        statuses[entry["status"]] = statuses.get(entry["status"], 0) + 1
-    index["entries"] = ordered
-    index.setdefault("totals", {})["statuses"] = statuses
-    index["generated_by"] = (
-        f"{index.get('generated_by')}; {GENERATED_BY} layer --select {select}"
-    )
-    if select != "admitted":
-        index["preview"] = (
-            f"a {select} layer from devtools.regularize_evand, not the record's: it includes "
-            "views the policy holds or refuses, for the owner to see before deciding"
+        with atomic_output_file(target, make_parents=True) as temporary:
+            temporary.write_bytes(gzip.compress(text.encode("utf-8"), compresslevel=9, mtime=0))
+        source = root / admitted.source["witness"]
+        with tempfile.TemporaryDirectory() as scratch:
+            plain = Path(scratch) / "view.yaml"
+            plain.write_text(text, encoding="utf-8")
+            after = shades.witness_shades(plain)
+        shade_record = axis.shade_record(shades.witness_shades(source), after)
+        entries[n] = json.loads(
+            json.dumps(layer_entry(admitted, view_path, text, shade_record, reference))
         )
-    write_json(index_path, index)
-    return {"select": select, "written": written, "kept_current": kept, "left_out": left_out}
+        written.append(n)
+    records = [entries[n] for n in sorted(entries)]
+    known = {run["id"]: dict(run) for run in index.get("runs") or []}
+    known.update({run["id"]: dict(run) for run in runs})
+    rebuilt = axis.carried_index(
+        {
+            **index,
+            "generators": {**(index.get("generators") or {}), **generators},
+            "runs": list(known.values()),
+        },
+        records,
+    )
+    with atomic_output_file(index_path) as temporary:
+        temporary.write_text(axis.index_text(rebuilt), encoding="utf-8")
+    return {"written": written, "kept_current": kept, "excluded": excluded}
+
+
+def evand_candidates(run_dirs: Sequence[Path]) -> tuple[list[Admitted], list[dict[str, Any]]]:
+    """Every count finished runs admitted (row 10), a later run winning at a count two
+    decided, with the runs they came from."""
+    found: dict[int, tuple[Path, str, dict[str, Any]]] = {}
+    for run_dir in run_dirs:
+        run_id = f"{axis.EVAND_GENERATOR}-{Path(run_dir).name}"
+        for path in sorted(Path(run_dir).glob("n-*/report.json")):
+            report = read_json(path)
+            found[int(report["n"])] = (path.parent, run_id, report)
+    admitted = [
+        evand_admitted(report, directory, run_id)
+        for directory, run_id, report in found.values()
+        if layer_candidate(report, "admitted") is not None
+    ]
+    used = {item.run["id"] for item in admitted}
+    runs = [
+        run_block(Path(run_dir), run_id)
+        for run_dir in run_dirs
+        if (run_id := f"{axis.EVAND_GENERATOR}-{Path(run_dir).name}") in used
+    ]
+    return admitted, runs
+
+
+def write_preview(run_dirs: Sequence[Path], root: Path, select: str) -> dict[str, Any]:
+    """Write the selected views of finished runs into a scratch tree's layer, as
+    `admit_views` writes admitted ones, for a preview of what the policy would draw."""
+    if root.resolve() == REPO.resolve():
+        raise EvandRunError("only the admitted selection may write into this checkout")
+    found: dict[int, tuple[Path, str, dict[str, Any]]] = {}
+    for run_dir in run_dirs:
+        run_id = f"{axis.EVAND_GENERATOR}-{Path(run_dir).name}"
+        for path in sorted(Path(run_dir).glob("n-*/report.json")):
+            report = read_json(path)
+            chosen = layer_candidate(report, select)
+            if chosen is None:
+                continue
+            # A preview draws what row 10 would have drawn: the record is the run's.
+            report = {**report, "decision": {**report["decision"], "decision": "admit"}}
+            found[int(report["n"])] = (path.parent, run_id, report)
+    admitted = [
+        evand_admitted(report, directory, run_id)
+        for directory, run_id, report in found.values()
+    ]
+    runs = [
+        run_block(Path(run_dir), f"{axis.EVAND_GENERATOR}-{Path(run_dir).name}")
+        for run_dir in run_dirs
+    ]
+    summary = admit_views(
+        admitted, root, generators={axis.EVAND_GENERATOR: evand_generator_block()}, runs=runs
+    )
+    return {"select": select, **summary}
+
+
+def layer_layout(root: Path) -> Any:
+    """The layer under `root` as the axis tool's check reads it."""
+    root = root.resolve()
+    return axis.AtlasLayout(
+        root / "packing",
+        root,
+        root / "packing/atlas/known-best/manifest.json",
+        root / LAYER_DIR,
+        root / "packing/witnesses",
+    )
+
+
+def write_layer_with_grid(
+    run_dirs: Sequence[Path],
+    root: Path,
+    *,
+    grid_run: Path,
+    grid_counts: Collection[int],
+    exclude: Collection[int] = (),
+) -> dict[str, Any]:
+    """Admit finished runs' views and, at `grid_counts`, the grid-slack run's view instead
+    (`devtools.regularize_grid_slack.admitted_views`), in one write of the layer."""
+    grid = importlib.import_module("devtools.regularize_grid_slack")
+    admitted, runs = evand_candidates(run_dirs)
+    chosen = set(grid_counts)
+    views, grid_run_block, grid_generator = grid.admitted_views(grid_run, sorted(chosen))
+    candidates = [item for item in admitted if item.n not in chosen] + list(views)
+    used = {item.run["id"] for item in candidates}
+    summary = admit_views(
+        candidates,
+        root,
+        generators={
+            axis.EVAND_GENERATOR: evand_generator_block(),
+            axis.GRID_GENERATOR: grid_generator,
+        },
+        runs=[run for run in [*runs, grid_run_block] if run["id"] in used],
+        exclude=exclude,
+    )
+    return {"select": "admitted", "grid_counts": sorted(chosen), **summary}
+
+
+def write_layer(
+    run_dirs: Sequence[Path], root: Path, select: str, exclude: Collection[int] = ()
+) -> dict[str, Any]:
+    """Write finished runs' admitted views into the layer under `root` (`admit_views`),
+    or with `preview`, every drawable view into a scratch tree (`write_preview`)."""
+    if select not in SELECTIONS:
+        raise EvandRunError(f"unknown selection {select!r}")
+    if select != "admitted":
+        return write_preview(run_dirs, root, select)
+    admitted, runs = evand_candidates(run_dirs)
+    summary = admit_views(
+        admitted,
+        root,
+        generators={axis.EVAND_GENERATOR: evand_generator_block()},
+        runs=runs,
+        exclude=exclude,
+    )
+    return {"select": select, **summary}
 
 
 def write_receipt(
@@ -2122,7 +2693,7 @@ def write_receipt(
         "format": RECEIPT_FORMAT,
         "generated_by": GENERATED_BY,
         "policy": POLICY,
-        "generator": vendored_pin(),
+        "generator": run_generator(ordered),
         "parameters": parameters,
         "counts": ordered,
         **receipt_lists(ordered),
@@ -2161,6 +2732,20 @@ def _cell(value: Any) -> str:
     return str(value)
 
 
+def solve_cell(row: Mapping[str, Any]) -> str | None:
+    """A count's solve status, with the rungs that reached it and a relaxed gate."""
+    status = row.get("solve_status")
+    if status is None:
+        return None
+    rungs = row.get("solve_rungs") or []
+    relaxed = row.get("solve_gate") == "relaxed"
+    return (
+        f"{status}"
+        + (f" [{'+'.join(rungs)}]" if rungs else "")
+        + (" (relaxed gate)" if relaxed else "")
+    )
+
+
 def report_table(receipt: Mapping[str, Any]) -> str:
     """A compact table of a receipt's counts."""
     header = (
@@ -2174,7 +2759,7 @@ def report_table(receipt: Mapping[str, Any]) -> str:
         cells = (
             row["n"],
             row.get("kind"),
-            row.get("solve_status"),
+            solve_cell(row),
             row.get("level"),
             row.get("moved"),
             f"{_cell(row['groups'][0])}>{_cell(row['groups'][1])}"
@@ -2263,6 +2848,24 @@ def parser() -> argparse.ArgumentParser:
     layer_command.add_argument("--run-dir", type=Path, nargs="+", required=True)
     layer_command.add_argument("--repo-root", type=Path, required=True)
     layer_command.add_argument("--select", choices=SELECTIONS, default="admitted")
+    layer_command.add_argument(
+        "--exclude",
+        nargs="+",
+        default=[],
+        help="counts or a-b left out whatever was decided (their witnesses are changing)",
+    )
+    layer_command.add_argument(
+        "--grid-run",
+        type=Path,
+        default=None,
+        help="a finished devtools.regularize_grid_slack run whose views to admit as well",
+    )
+    layer_command.add_argument(
+        "--grid-counts",
+        nargs="+",
+        default=[],
+        help="the counts at which to draw the grid-slack run's view rather than this one's",
+    )
     report_command = sub.add_parser("report", help="print a run's receipt as a table")
     report_command.add_argument("--run-dir", type=Path, required=True)
     report_command.add_argument("--json", action="store_true")
@@ -2281,9 +2884,24 @@ def main(argv: list[str] | None = None) -> int:
         print(report_table(receipt))
         return 0
     if arguments.command == "layer":
-        summary = write_layer(arguments.run_dir, arguments.repo_root, arguments.select)
+        exclude = parse_counts(arguments.exclude)
+        if arguments.grid_run is None:
+            summary = write_layer(
+                arguments.run_dir, arguments.repo_root, arguments.select, exclude
+            )
+        else:
+            summary = write_layer_with_grid(
+                arguments.run_dir,
+                arguments.repo_root,
+                grid_run=arguments.grid_run,
+                grid_counts=parse_counts(arguments.grid_counts),
+                exclude=exclude,
+            )
         print(json.dumps(summary))
-        return 0
+        problems = axis.check_atlas(layer_layout(arguments.repo_root))
+        for problem in problems:
+            print(problem)
+        return 1 if problems else 0
     if arguments.command == "report":
         receipt = read_json(arguments.run_dir / "receipt.json")
         print(json.dumps(receipt, indent=1) if arguments.json else report_table(receipt))

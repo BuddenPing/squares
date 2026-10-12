@@ -364,6 +364,7 @@ Patterns admit declared namespaces, file types and sixteen-digit asset names.
 | atlas/regularized/n-175.svg | atlas/regularized/n-175.svg | asset-file | overview | 2026-10-07 | 2026-10-07 | live |
 | atlas/regularized/n-177.svg | atlas/regularized/n-177.svg | asset-file | overview | 2026-10-07 | 2026-10-07 | live |
 | atlas/regularized/n-179.svg | atlas/regularized/n-179.svg | asset-file | overview | 2026-10-07 | 2026-10-07 | live |
+| atlas/regularized/n-18.svg | atlas/regularized/n-18.svg | asset-file | overview | 2026-10-08 | 2026-10-08 | live |
 | atlas/regularized/n-180.svg | atlas/regularized/n-180.svg | asset-file | overview | 2026-10-07 | 2026-10-07 | live |
 | atlas/regularized/n-181.svg | atlas/regularized/n-181.svg | asset-file | overview | 2026-10-07 | 2026-10-07 | live |
 | atlas/regularized/n-182.svg | atlas/regularized/n-182.svg | asset-file | overview | 2026-10-07 | 2026-10-07 | live |
@@ -404,9 +405,11 @@ Patterns admit declared namespaces, file types and sixteen-digit asset names.
 | atlas/regularized/n-305.svg | atlas/regularized/n-305.svg | asset-file | overview | 2026-10-07 | 2026-10-07 | live |
 | atlas/regularized/n-306.svg | atlas/regularized/n-306.svg | asset-file | overview | 2026-10-07 | 2026-10-07 | live |
 | atlas/regularized/n-307.svg | atlas/regularized/n-307.svg | asset-file | overview | 2026-10-07 | 2026-10-07 | live |
+| atlas/regularized/n-66.svg | atlas/regularized/n-66.svg | asset-file | overview | 2026-10-08 | 2026-10-08 | live |
 | atlas/regularized/n-68.svg | atlas/regularized/n-68.svg | asset-file | overview | 2026-10-07 | 2026-10-07 | live |
 | atlas/regularized/n-70.svg | atlas/regularized/n-70.svg | asset-file | overview | 2026-10-07 | 2026-10-07 | live |
 | atlas/regularized/n-84.svg | atlas/regularized/n-84.svg | asset-file | overview | 2026-10-07 | 2026-10-07 | live |
+| atlas/regularized/n-85.svg | atlas/regularized/n-85.svg | asset-file | overview | 2026-10-08 | 2026-10-08 | live |
 | atlas/regularized/n-86.svg | atlas/regularized/n-86.svg | asset-file | overview | 2026-10-07 | 2026-10-07 | live |
 | atlas/regularized/n-88.svg | atlas/regularized/n-88.svg | asset-file | overview | 2026-10-07 | 2026-10-07 | live |
 | atlas/trump11-overview.svg | atlas/trump11-overview.svg | asset-file | overview | 2026-10-07 | 2026-10-07 | live |

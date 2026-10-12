@@ -912,18 +912,44 @@ PRUNE |= REGULARIZED_WITNESSES | HISTORICAL_SNAPSHOT_OUTPUTS | UNREAD_WORKER_OUT
 # directory and expects pytest to stop at configuration, before any test is collected,
 # so the consumer contract's declarations of the driver and the gallery are never read
 # in a worker. Left out, the snapshot measures 209,536,887 bytes, 178,313 under the
-# unchanged cap.
+# unchanged cap. 2026-10-12: the grid-slack prototype, the drawing-regularity census and
+# their tests join them on the same grounds (`--audit-snapshot` with the four as
+# candidates: no registered mention, no rescue); left out, 209,547,257 bytes, 167,943
+# under the cap. 2026-10-12, the layer's v2 contract and its first admission batch
+# (think-k35c): the index grew by 94,240 bytes, the register by 48,761 with its
+# generated `regularized_drawings` and their RESULTS.md section, and the layer's tools,
+# schema and tests by 65,635, taking the snapshot to 209,756,149, 40,949 over the cap.
+# The layer's own tests and the read-only comparison of Evan Daniel's lists with the
+# layer join this list on the same grounds (`--audit-snapshot` with the five as
+# candidates: no registered mention, no rescue, 78,281 bytes); the index, its schema,
+# the axis tool and `regularized_drawings` stay, since the controls' validate_schemas
+# and check_results read them. Left out, 209,677,868 bytes, 37,332 under the cap; with
+# the layer's documentation, the batch as drawn and this note, 209,685,086 bytes, 30,114
+# under it.
+# The driver's first-pass launcher and its one replica patch join them on the same
+# grounds; only the driver runs the one and applies the other.
 REGULARIZATION_TOOLS = frozenset(
     ROOT / relative
     for relative in (
         "devtools/regularize_evand.py",
         "devtools/regularize_evand_shim.py",
+        "devtools/regularize_evand_first_pass.py",
+        "devtools/regularize_evand_patches/probe-flat-stall-stop.patch",
         "devtools/regularize_same_side.py",
         "devtools/regularize_gallery.py",
         "devtools/regularize_gallery.css",
         "tests/test_regularize_evand.py",
         "tests/test_regularize_same_side.py",
         "tests/test_regularize_gallery.py",
+        "devtools/regularize_grid_slack.py",
+        "devtools/census_drawing_regularity.py",
+        "tests/test_regularize_grid_slack.py",
+        "tests/test_census_drawing_regularity.py",
+        "devtools/compare_evand_regularization.py",
+        "tests/test_compare_evand_regularization.py",
+        "tests/test_regularize_axis_components.py",
+        "tests/test_render_regularized_atlas.py",
+        "tests/test_regularized_drawings.py",
     )
 )
 PRUNE |= REGULARIZATION_TOOLS
