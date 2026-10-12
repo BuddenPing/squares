@@ -98,6 +98,17 @@ and Evan Daniel's regularized view of it (T-146); `LINEAGE` measures the pieces 
 that the record retains, Evan Daniel's exact certificates of David Ellsworth's s(171)
 (T-101) in the 175 and of Joost de Winter's s(126) (T-098) in the 264.
 
+It reads Evan Daniel's #552 of 12 October too, one certificate at 154 in his text format
+(``decide-imports --imports '#552'``), in the review
+``review-2026-10-12-upper-bound-import-552.md``: retained byte for byte under the source's
+MIT licence, with the regularized drawing of the same packing beside it, and read by
+`parse_certificate` as #488's and #489's are; ``--upstream`` holds it to its fetched
+bytes. `CREDITED` measures it against SQUISH's packing at 154 (T-136), the case's house,
+which the source says it is a different local minimum from, and against Francisco
+Couzo's 154 as Evan Daniel's exact optimum of it (T-098); `LINEAGE` measures Couzo's 155
+as the same release's exact optimum (T-098), which the issue's comment names as the
+start, less one square.
+
 The register's two maintained routes (``devtools.evand_arrangement_reports``) share one
 parse and one half-angle conversion (``devtools.evand_exact_certificates``) and both decide
 pairs by the separating-axis theorem; at T-128 and T-130 one of them, ``sqpack.verify``, is
@@ -149,8 +160,8 @@ plan state, and to its printed side: equal to it, or rounding up to it at its pl
 decided count the entry does not cite (#470's 132 and 267) must be absent from the plan's
 claim. ``--imports`` selects by key (``#476``, ``#481``, ``#483``, ``#484``, ``#470``,
 ``trio126``, ``#488``, ``#489``, ``regularized``, ``#503``, ``#504``, ``#505``, ``#501``,
-``#500``, ``#506``, ``#528``, ``#529``); it defaults to the first four, the roster of the
-first imports review.
+``#500``, ``#506``, ``#528``, ``#529``, ``#552``); it defaults to the first four, the
+roster of the first imports review.
 
 ``replay-t128`` is the maintained two-route replay of T-128's retained receipt, which
 ``devtools.couzo_refinement_reports`` has no command for: every job decided again by the
@@ -792,6 +803,13 @@ IMPORTS_528_529 = {
     "#528": "dostashev-records-2026-10-12",
     "#529": "riocalle-n102-2026-10-12",
 }
+#: Evan Daniel's #552 of 12 October: one certificate at 154 in his text format, retained
+#: byte for byte under the source's MIT licence at 597e660 with the regularized drawing
+#: of the same packing beside it, from a time-travel test of his size-chaining explorer
+#: restarted from the register of 5 October. Its side is the 80-digit KKT point scaled
+#: by 1 + 1e-20 about the origin corner and rounded up at 30 places; the guard is in the
+#: certificate, and this route believes none of it.
+IMPORTS_552 = {"#552": "evand-n154-2026-10-12"}
 ALL_IMPORTS = {
     **IMPORTS,
     **LATER_IMPORTS,
@@ -802,6 +820,7 @@ ALL_IMPORTS = {
     **IMPORTS_500,
     **IMPORTS_506,
     **IMPORTS_528_529,
+    **IMPORTS_552,
 }
 #: Imports decided over their whole replayed roster rather than the counts the entry
 #: cites: #470's README-printed 132 and 267 are certified beside the issue's 28.
@@ -841,6 +860,10 @@ CREDITED: dict[tuple[str, int], tuple[str, ...]] = {
     ("#528", 232): ("T-136",),
     ("#528", 264): ("T-101",),
     ("#529", 102): ("T-125", "T-146"),
+    # Evan Daniel's #552 says its 154 is a different local minimum from SQUISH's packing
+    # (T-136), the case's house, and descends from Francisco Couzo's 5 October packings:
+    # against T-136, and against Couzo's 154 as Evan Daniel's exact optimum of it (T-098).
+    ("#552", 154): ("T-136", "T-098"),
 }
 WEB = ROOT / "resources/web"
 REPO = ROOT.parent
@@ -2012,6 +2035,13 @@ LINEAGE: dict[tuple[str, int], tuple[str, int, Fraction]] = {
     # Friedman's s(85), the 232's piece, is retained as no certificate and not measured.
     ("#528", 175): ("T-101", 171, Fraction(1)),
     ("#528", 264): ("T-098", 126, Fraction(1)),
+    # Daniel's #552 traces its 154, in the issue's comment of 12 October, to Couzo's 5
+    # October 155 less one square, read as Evan Daniel's exact optimum of it (T-098). Its
+    # 1 + 1e-20 scaling about the origin corner is far below `NEAR`, so no dilation is
+    # undone. Blocks of upright squares reappear to the digit from Couzo's 154 as well, 45
+    # squares against the 155's 43, so the measurement by pose does not tell the two
+    # starts apart; at a tenth of a unit the 155 is the nearer, 114 squares against 87.
+    ("#552", 154): ("T-098", 155, Fraction(1)),
 }
 #: How near a parent square must land on a child square to be counted as reappearing:
 #: its centre within 10^-9, and its edge direction within a sine of 10^-6 modulo a
