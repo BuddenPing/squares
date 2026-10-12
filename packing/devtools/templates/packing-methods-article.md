@@ -827,16 +827,18 @@ connecting motion and equivalence of their local minima have not been verified.
 Daniel’s certificate supplies equal-bound evidence to T-128
 ([exact comparison](../../resources/web/evand-record-hunt-2026-10-09/acquisition/claims.json)).
 
-On 11 October 2026 the case records adopted, at 42 counts, the smallest confirmed and
-reviewed exact side the register held: the reported and verified upper bounds moved
+On 11 and 12 October 2026 the case records adopted, at 49 counts, the smallest confirmed
+and reviewed exact side the register held: the reported and verified upper bounds moved
 together to it, each earlier certificate stayed as history, and each drawing moved to
 the adopted geometry.
-Couzo’s refinements hold 84, 86, 105, 108, 127, 180, 228, 267 and 306 and five more
-counts through his 10 October certificates, SQUISH’s packings five counts, Daniel’s
-regularizations of Xu’s and SQUISH’s packings thirteen, Daniel’s reconstruction of Xu’s
-arrangement 126, Daniel’s own packing and his move of Fang’s construction 132 and 308,
-PingYou Ltd’s constructions from Xu’s n = 70 packing 153 and 207, Daniil Ostashev’s
-packings 155, 156 and 211, and Robert Barnett’s refinements of Xu’s packings 146 and 261
+Couzo’s refinements hold 84, 86, 105, 108, 127, 180, 228, 267 and 306, three more counts
+through his 10 October certificates and 304 and 305 through his 11 October refinements
+of SQUISH’s packings there, SQUISH’s packings twelve counts, seven of them Mondrian
+compositions of its 11 October release, Daniel’s regularizations of Xu’s and SQUISH’s
+packings thirteen, Daniel’s reconstruction of Xu’s arrangement 126, Daniel’s own packing
+and his move of Fang’s construction 132 and 308, PingYou Ltd’s constructions from Xu’s n
+= 70 packing 153 and 207, Daniil Ostashev’s packings 155, 156 and 211, and Robert
+Barnett’s refinements of Xu’s packings 146 and 261
 ([results register](../../frontier/results.yaml)).
 
 Pending source claims need their own scope.

@@ -168,6 +168,8 @@ def test_the_checkbox_starts_at_its_pages_default_and_the_table_with_it(
     }
     assert [result.id for result in kept if result.standing == "superseded"] == ["T-003"]
     pending = render_recent_results.PENDING_ADOPTION
+    # T-128 holds its cases since the house adoption of 11 October 2026 (think-fvz4);
+    # T-122 is still a bound pending adoption.
     assert "T-122" in [result.id for result in kept if result.standing == pending]
     assert "t-031" not in current
     assert "t-036" in current
