@@ -509,9 +509,11 @@ def test_the_review_queue_is_every_count_reported_for_review() -> None:
     assert drive.receipt_lists(rows)["review_queue"] == [1, 3, 4]
 
 
-def test_only_the_admitted_selection_may_write_into_this_checkout(tmp_path: Path) -> None:
-    with pytest.raises(drive.EvandRunError, match="only the admitted selection"):
-        drive.write_layer([tmp_path], drive.REPO, "preview")
+@pytest.mark.parametrize("select", drive.SELECTIONS)
+def test_no_selection_writes_into_this_checkout(tmp_path: Path, select: str) -> None:
+    """`layer_entry` is not the index contract's entry, which the atlas's totals read."""
+    with pytest.raises(drive.EvandRunError, match="never this checkout"):
+        drive.write_layer([tmp_path], drive.REPO, select)
 
 
 def test_a_written_view_carries_the_renderers_fields_and_the_record() -> None:
@@ -754,6 +756,64 @@ def test_a_forced_solve_that_polishes_ends_the_climb(
     assert kept["gate"] is None
     assert kept["attempts"][1]["polished"] is True
     assert not (tmp_path / "solve-first").exists()
+
+
+def _timed_out_solve(monkeypatch: pytest.MonkeyPatch) -> list[dict[str, Any]]:
+    """Stand the ladder in for a solve that timed out on both rungs it climbed, and the
+    replica's batch status, which `run` builds and these tests do not."""
+    attempts = [
+        {"rung": None, "status": "timeout", "gate": None, "seconds": 1800.0},
+        {"rung": "stall-stop", "status": "timeout", "gate": None, "seconds": 1800.0},
+    ]
+    block = {"status": "timeout", "gate": None, "seconds": 1800.0, **drive.PLAIN.record()}
+
+    def ladder(*_arguments: object) -> dict[str, Any]:
+        return {**block, "attempts": attempts}
+
+    monkeypatch.setattr(drive, "solve_with_retries", ladder)
+    monkeypatch.setattr(drive, "record_solve_status", lambda *_arguments: None)
+    return attempts
+
+
+STALE_OUTPUTS = ("view-solved.yaml", "view-same.yaml", "regularize.json", "regularize.cert")
+
+
+@pytest.mark.parametrize("stage", ["input", "solve"])
+def test_a_rerun_that_stops_at_the_solve_leaves_no_earlier_output_behind(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, stage: str
+) -> None:
+    """The receipt digests `regularize.cert` and the gallery draws a view on disk, so a
+    count re-run in its run directory keeps neither from the run before."""
+    _timed_out_solve(monkeypatch)
+    directory = drive.count_dir(tmp_path, 26)
+    directory.mkdir(parents=True)
+    for name in STALE_OUTPUTS:
+        (directory / name).write_text("an earlier run's output", encoding="utf-8")
+    report = drive.run_count(26, Options(run_dir=tmp_path, from_stage=stage))
+    assert report["status"] == "timeout"
+    assert report["outputs"] == {"solved": None, "same": None, "same_refusal": None}
+    assert [name for name in STALE_OUTPUTS if (directory / name).exists()] == []
+    assert drive.solve_digests(tmp_path, [26]) == {}
+
+
+def test_a_later_stage_rerun_of_a_timed_out_solve_keeps_its_solve_and_decision(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A timeout writes no `solve/witness.json`: a re-run from a later stage keeps the
+    solve the previous report recorded, attempts and all, and so its decision."""
+    attempts = _timed_out_solve(monkeypatch)
+    first = drive.run_count(26, Options(run_dir=tmp_path))
+    assert first["decision"]["decision"] == "no-view"
+    assert not (drive.count_dir(tmp_path, 26) / "solve/witness.json").exists()
+    for stage in ("regularize", "import"):
+        again = drive.run_count(26, Options(run_dir=tmp_path, from_stage=stage))
+        assert (again["status"], again["error"]) == ("timeout", None)
+        assert again["solve"]["attempts"] == attempts
+        assert again["decision"] == first["decision"]
+    # With no solve and no report to keep it, the count says to run from the solve.
+    unsolved = drive.run_count(27, Options(run_dir=tmp_path, from_stage="regularize"))
+    assert unsolved["status"] == "error"
+    assert "--from-stage solve" in unsolved["error"]
 
 
 def test_a_replica_patch_is_applied_to_a_copy_and_never_under_vendor(tmp_path: Path) -> None:

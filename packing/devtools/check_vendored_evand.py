@@ -33,9 +33,10 @@ and for code a header comment naming `vendor/evand-regularize/README.md`), `remo
 (absent), `added` (a file upstream never had, present), or `replica` (a patch applied
 only to a scratch replica of the copy, so the file here stays the pinned bytes, and the
 patch, a unified diff at the repository-relative `patch` path, still applies to them
-exactly). The README names each recorded change's path, and a replica patch's file name,
-so the prose account and the manifest cannot drift apart. The licence file is never a
-local change: the MIT grant requires its notice with every copy.
+exactly). The README's Local Changes section names each recorded change's path, and a
+replica patch's file name, so the prose account and the manifest cannot drift apart; the
+section alone counts, since the README's role table names every file. The licence file is
+never a local change: the MIT grant requires its notice with every copy.
 Nothing else is in the directory besides its `README.md` and `vendored.yaml`, the
 project's own two files. What the directory holds is asked of git -- tracked
 files and untracked files git would commit, so a stray run output is a finding before it
@@ -89,6 +90,11 @@ KINDS = ("modified", "added", "removed", "replica")
 #: A patched or added file of these kinds carries a header comment pointing here.
 COMMENTED_SUFFIXES = frozenset({".py", ".sh"})
 HEADER_LINES = 20
+#: The README heading under which each recorded local change is described. Only the text
+#: from it to the next heading of any level names a change: the role table names them all.
+LOCAL_CHANGES = "### Local Changes"
+_HEADING = re.compile(r"^ {0,3}#{1,6}(?:[ \t]|$)")
+_FENCE = re.compile(r"^ {0,3}(`{3,}|~{3,})")
 _COMMIT = re.compile(r"^[0-9a-f]{40}$")
 _HEX256 = re.compile(r"^[0-9a-f]{64}$")
 _DAY = re.compile(r"^\d{4}-\d{2}-\d{2}$")
@@ -437,6 +443,33 @@ def _names_vendored(path: Path) -> bool:
     return any(HEADER_MARK in line for line in head)
 
 
+def local_changes_text(prose: str) -> str:
+    """The README text under `LOCAL_CHANGES`, up to the next heading of any level.
+
+    Empty when the heading is absent. A `#` line inside a fenced code block is code, not a
+    heading, so it does not end the section.
+    """
+    section: list[str] | None = None
+    fence = ""
+    for line in prose.splitlines():
+        opened = _FENCE.match(line)
+        if fence:
+            marker = opened.group(1) if opened else ""
+            if marker[:1] == fence[0] and len(marker) >= len(fence):
+                fence = ""
+        elif opened:
+            fence = opened.group(1)
+        elif _HEADING.match(line):
+            if section is not None:
+                break
+            if line.strip() == LOCAL_CHANGES:
+                section = []
+            continue
+        if section is not None:
+            section.append(line)
+    return "\n".join(section or ())
+
+
 def _pinned_problems(directory: Path, manifest: Manifest, present: set[str]) -> list[str]:
     problems: list[str] = []
     for path, pinned in sorted(manifest.files.items()):
@@ -503,15 +536,17 @@ def check(directory: Path, manifest: Manifest, present: Iterable[str]) -> list[s
             )
     document = directory / DOCUMENT
     prose = document.read_text(encoding="utf-8") if document.is_file() else ""
+    described = local_changes_text(prose)
     problems += [
         f"{path}: recorded as a local change, but README.md's Local Changes does not name it"
         for path in sorted(manifest.changes)
-        if path not in prose
+        if path not in described
     ]
     problems += [
-        f"{path}: its replica patch {Path(change.patch).name} is not named in README.md"
+        f"{path}: its replica patch {Path(change.patch).name} is not named in README.md's "
+        "Local Changes"
         for path, change in sorted(manifest.changes.items())
-        if change.patch is not None and Path(change.patch).name not in prose
+        if change.patch is not None and Path(change.patch).name not in described
     ]
     expected = set(manifest.files) | set(manifest.changes) | OWN_FILES
     problems += [

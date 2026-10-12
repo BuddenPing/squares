@@ -1674,6 +1674,25 @@ def run_count(n: int, options: Options) -> dict[str, Any]:
     return report
 
 
+def kept_solve(directory: Path) -> dict[str, Any]:
+    """The kept solve, read back for `--from-stage regularize` or `import`.
+
+    A solve that wrote no `witness.json` (a timeout) stands as the count's previous report
+    recorded it, attempts and all, so a later stage's re-run keeps its decision; without
+    that record the count is run again from the solve."""
+    meta = directory / "solve/witness.json"
+    if meta.is_file():
+        solved = solve_block(read_json(meta))
+        solved["seconds"] = solved.get("solver_seconds")
+        solved.update(attempt_of(directory / "solve"))
+        return solved
+    previous = directory / "report.json"
+    stored = read_json(previous).get("solve") if previous.is_file() else None
+    if not isinstance(stored, dict) or stored.get("gate") is not None:
+        raise EvandRunError(f"{meta} is missing: run this count again from --from-stage solve")
+    return dict(stored)
+
+
 def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any]) -> None:
     pin = vendored_pin()
     path = witness_path(n)
@@ -1710,6 +1729,14 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
     seconds: dict[str, float | None] = {}
     report["seconds"] = seconds
     first = STAGES.index(options.from_stage)
+    # An earlier run's outputs must not outlive a re-run that stops sooner: the receipt
+    # digests `regularize.cert` and the gallery draws a view on disk. Every run makes its
+    # views again at the import stage, and the regularizer's outputs at its own stage.
+    stale = ["view-solved.yaml", "view-same.yaml"]
+    if first <= STAGES.index("regularize"):
+        stale += ["regularize.json", "regularize.cert"]
+    for name in stale:
+        (directory / name).unlink(missing_ok=True)
     replica = options.run_dir.resolve() / "replica"
 
     started = time.perf_counter()
@@ -1720,9 +1747,7 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
     if first <= STAGES.index("solve"):
         solved = solve_with_retries(directory, replica, options.timeout, frame.side)
     else:
-        solved = solve_block(read_json(directory / "solve/witness.json"))
-        solved["seconds"] = solved.get("solver_seconds")
-        solved.update(attempt_of(directory / "solve"))
+        solved = kept_solve(directory)
     # The replica patches the kept solve ran with are this count's, and its views' too.
     pin = {**pin, "patches": [*pin["patches"], *applied_patches(solved.get("patches") or [])]}
     report["generator"]["patches"] = pin["patches"]
@@ -2213,11 +2238,12 @@ def reclassify(run_dir: Path, counts: Sequence[int] | None = None) -> dict[str, 
 # The layer: a run's views written where the atlas reads them
 # --------------------------------------------------------------------------------------
 
-#: The selections `layer` knows. `admitted` is the policy's: row 10 alone, and the only
-#: one that may write into this checkout. `preview` is every view that would change the
-#: drawing, passes the maintained exact routes, pairs one to one, and loses no contact in
-#: total under either rule, against the witness or the current view; it is for a scratch
-#: tree, to see the atlas with the held and review rows drawn before anyone decides them.
+#: The selections `layer` knows. `admitted` is the policy's: row 10 alone. `preview` is
+#: every view that would change the drawing, passes the maintained exact routes, pairs one
+#: to one, and loses no contact in total under either rule, against the witness or the
+#: current view, to see the atlas with the held and review rows drawn before anyone
+#: decides them. Either is written into a scratch tree only: `layer_entry` is not the
+#: index contract's entry, and a view enters this checkout through #548's `admit_views`.
 SELECTIONS = ("admitted", "preview")
 VIEW_KIND = "regularized-view"
 DRAWING_LABEL = "regularized"
@@ -2320,14 +2346,18 @@ def replaces_current(
 
 
 def write_layer(run_dirs: Sequence[Path], root: Path, select: str) -> dict[str, Any]:
-    """Write the selected views of finished runs into the layer under `root`, merged with
-    the index already there, a later run winning at a count two runs decided. Returns
-    what was written, what kept the current view, and what was left out."""
+    """Write the selected views of finished runs into the layer under `root`, a scratch
+    tree and never this checkout (`SELECTIONS`), merged with the index already there, a
+    later run winning at a count two runs decided. Returns what was written, what kept
+    the current view, and what was left out."""
     if select not in SELECTIONS:
         raise EvandRunError(f"unknown selection {select!r}")
     root = root.resolve()
-    if root == REPO.resolve() and select != "admitted":
-        raise EvandRunError("only the admitted selection may write into this checkout")
+    if root == REPO.resolve():
+        raise EvandRunError(
+            "layer writes a scratch tree only, never this checkout: its entries are not the "
+            "index contract's, and views enter the checkout through #548's admit_views"
+        )
     index_path = root / LAYER_DIR / "index.json"
     index = read_json(index_path)
     entries = {int(entry["n"]): entry for entry in index["entries"]}
@@ -2551,7 +2581,7 @@ def parser() -> argparse.ArgumentParser:
     reclassify_command.add_argument("--run-dir", type=Path, required=True)
     reclassify_command.add_argument("--n", nargs="+", default=None, help="counts or a-b")
     layer_command = sub.add_parser(
-        "layer", help="write finished runs' selected views into a layer under a tree"
+        "layer", help="write finished runs' selected views into a scratch tree's layer"
     )
     layer_command.add_argument("--run-dir", type=Path, nargs="+", required=True)
     layer_command.add_argument("--repo-root", type=Path, required=True)
