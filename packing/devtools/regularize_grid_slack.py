@@ -115,11 +115,11 @@ REPO = ROOT.parent
 KNOWN_BEST = ROOT / "witnesses/known-best"
 WITNESS_SCHEMA = ROOT / "witnesses/witness.schema.yaml"
 FORBIDDEN_OUTPUT_ROOTS = (ROOT / "witnesses", ROOT / "atlas")
-GENERATOR = "regularize_grid_slack/0"
+GENERATOR = "regularize_grid_slack/1"
 """A prototype's version: changed by hand with any change that changes a view."""
 
 METHOD = (
-    "regularize_grid_slack/0: Evan Daniel's coincidence placement (evand/square-packing "
+    "regularize_grid_slack/1: Evan Daniel's coincidence placement (evand/square-packing "
     "search/regularize reg.coincidences and reg.place, MIT), ported to start from the "
     "witness's exact frame and to keep its contacts, then the same-side exact re-solve"
 )
@@ -891,21 +891,64 @@ def closable(
     return kept, left
 
 
+def anchor(rows: Sequence[same.Row], fixed: Mapping[int, Fraction]) -> list[same.Row]:
+    """`rows` with the `fixed` columns substituted by their values: the same contacts, in
+    the same order, over the remaining columns. A row left with no column is kept, so the
+    elimination reads it as dependent (its gap is zero) or relaxed (its gap has a sign), and
+    a negative one is reported penetrated like any other."""
+    if not fixed:
+        return list(rows)
+    anchored: list[same.Row] = []
+    for row in rows:
+        moved = sum(
+            (
+                value * fixed[column]
+                for column, value in row.coefficients.items()
+                if column in fixed
+            ),
+            Fraction(0),
+        )
+        anchored.append(
+            replace(
+                row,
+                coefficients={
+                    column: value
+                    for column, value in row.coefficients.items()
+                    if column not in fixed
+                },
+                rhs=row.rhs - moved,
+            )
+        )
+    return anchored
+
+
 def settle_reopening(
     rows: Sequence[same.Row],
     left: Sequence[same.Row],
     generator: Sequence[tuple[Fraction, Fraction]],
+    fixed: Mapping[int, Fraction] | None = None,
 ) -> tuple[same.Solution, list[same.Row], int, int]:
     """`regularize_same_side.settle` on `rows`; a row left open that the solution
-    penetrates is closed after all, in its priority place, and the solve repeated."""
+    penetrates is closed after all, in its priority place, and the solve repeated.
+
+    Columns in `fixed` are held at their values (an anchored square keeps its exact
+    centre): they are substituted out of every row before the elimination and are neither
+    pinned nor free in the solution."""
+    fixed = dict(fixed or {})
     closing = list(rows)
     waiting = list(left)
     reopened = 0
     rounds_left = MAX_REOPEN_ROUNDS
     while True:
         solution, promoted, rounds = same.settle(
-            closing, len(generator), generator, mode="relax"
+            anchor(closing, fixed), len(generator), generator, mode="relax"
         )
+        if fixed:
+            solution = replace(
+                solution,
+                values={**solution.values, **fixed},
+                free_columns=[c for c in solution.free_columns if c not in fixed],
+            )
         penetrated = [row for row in waiting if row.gap(solution.values) < 0]
         rounds_left -= 1
         if not penetrated or rounds_left == 0:
@@ -948,11 +991,39 @@ class Settled:
     """One way of closing the tight set, and what the cheap checks found."""
 
     rows: str
-    """`witness-contacts` (closable's rule) or `all-tight` (the resolver's own)."""
+    """`witness-contacts` (closable's rule), `all-tight` (the resolver's own), or
+    closable's rule with unchanged squares held at their exact centres: the tilted ones
+    (`anchored-tilted`) or all of them (`anchored`)."""
     solution: same.Solution
     centers: list[same.Point]
     record: dict[str, Any]
     refusal: str | None
+
+
+ANCHORED = ("anchored-tilted", "anchored")
+"""The fallbacks, tried after both ways of closing fail. Elimination pins an unchanged
+square through any chain of tight rows, so a chain through a moved square can move it by
+a few `1e-35` and leave a contact between two unchanged tilted squares as far inside
+(n = 272: squares 254 and 255 at 19.7 degrees, the promotion loop's 16 rounds spent).
+Holding unchanged squares at the witness's exact centres keeps the witness's own exact
+contacts among them, and leaves the moved squares to close against them."""
+
+
+def anchored_squares(
+    rows: str, frame: same.Frame, matched: Sequence[same.Matched], changed: set[int]
+) -> list[int]:
+    """The squares `rows` holds at their exact centres: unchanged, with their own exact
+    rotation (a class merged onto another square's rotation is not the witness's pose),
+    and tilted for `anchored-tilted`."""
+    if rows not in ANCHORED:
+        return []
+    return [
+        index
+        for index, m in enumerate(matched)
+        if index not in changed
+        and canonical(m.rotation) == canonical(frame.rotations[index])
+        and (rows == "anchored" or m.source is not None)
+    ]
 
 
 def settle_variant(
@@ -972,12 +1043,14 @@ def settle_variant(
     them.
     """
     generator = [(same.rounded_fraction(p.x), same.rounded_fraction(p.y)) for p in poses]
-    if rows == "witness-contacts":
-        closing, left = closable(tight, frame, changed)
-    else:
+    if rows == "all-tight":
         closing, left = list(tight), []
+    else:
+        closing, left = closable(tight, frame, changed)
     left = [*left, *watched]
-    solution, promoted, rounds, reopened = settle_reopening(closing, left, generator)
+    held = anchored_squares(rows, frame, matched, changed)
+    fixed = {2 * index + axis: frame.centers[index][axis] for index in held for axis in (0, 1)}
+    solution, promoted, rounds, reopened = settle_reopening(closing, left, generator, fixed)
     centers = [(solution.values[2 * i], solution.values[2 * i + 1]) for i in range(len(poses))]
     displacement = max(
         math.hypot(float(x) - float(p.x), float(y) - float(p.y))
@@ -995,6 +1068,7 @@ def settle_variant(
         "promoted": len(promoted),
         "rounds": rounds,
         "free_coordinates": len(solution.free_columns),
+        "anchored": len(held),
         "displacement": displacement,
     }
     refusal = None
@@ -1009,6 +1083,32 @@ def settle_variant(
             refusal = f"overlap in binary64: {where}, {clearance:.3g}"
     record["refusal"] = refusal
     return Settled(rows, solution, centers, record, refusal)
+
+
+def verified_variant(
+    variant: Settled,
+    witness: Mapping[str, Any],
+    frame: same.Frame,
+    matched: Sequence[same.Matched],
+    view_id: str,
+) -> tuple[Settled, dict[str, Any]] | None:
+    """A settled variant written as a witness and decided on both exact routes, or None
+    with the reason recorded on the variant, so the next way of closing is tried."""
+    try:
+        document = same.same_side_witness(
+            witness, frame, variant.centers, matched, view_id=view_id
+        )
+    except ValueError as error:  # Elimination fill-in past Python's integer-text limit.
+        variant.refusal = variant.record["refusal"] = f"literal-too-long: {error}"
+        return None
+    verdicts = same.verify_both(document, variant.centers, matched, frame.side)
+    variant.record["verdicts"] = verdicts
+    if not (verdicts["exact_verify"]["passed"] and verdicts["independent"]["passed"]):
+        variant.refusal = variant.record["refusal"] = (
+            "overlap: an exact route refuses the re-solved pose"
+        )
+        return None
+    return variant, document
 
 
 def exact_view(
@@ -1031,7 +1131,10 @@ def exact_view(
     resolver's closes consistently, so it comes first there. A relaxed row left
     penetrated (the side too small), a re-solved centre more than `BLOWUP` from the
     placement (nearly parallel rows) or an overlap binary64 already sees refuses a way
-    before the expensive verification.
+    before the expensive verification. When both ways fail, at a cheap check, at a
+    literal past Python's integer-text limit or on an exact route, closable's rule is
+    tried again with the unchanged squares held at their exact centres (`ANCHORED`):
+    first the tilted ones, then all of them.
     """
     started = time.perf_counter()
     view_id = f"{witness['id']}-regularized"
@@ -1044,48 +1147,42 @@ def exact_view(
         if row.priority not in keys
     ]
     order = (
-        ("witness-contacts", "all-tight")
+        ("witness-contacts", "all-tight", *ANCHORED)
         if frame.kind == "rational"
-        else ("all-tight", "witness-contacts")
+        else ("all-tight", "witness-contacts", *ANCHORED)
     )
-    tried: list[Settled] = []
-    for rows in order:
-        tried.append(
-            settle_variant(
-                rows,
-                frame=frame,
-                poses=poses,
-                matched=matched,
-                tight=tight,
-                watched=watched,
-                changed=changed,
-            )
-        )
-        if tried[-1].refusal is None:
-            break
-    chosen = tried[-1]
     report: dict[str, Any] = {
         "relation": relation,
         "side": same.literal(frame.side),
         "tight": len(tight),
         "watched": len(watched),
-        "settled": [variant.record for variant in tried],
+        "settled": [],
     }
-    if chosen.refusal is not None:
+    tried: list[Settled] = []
+    found: tuple[Settled, dict[str, Any]] | None = None
+    for rows in order:
+        variant = settle_variant(
+            rows,
+            frame=frame,
+            poses=poses,
+            matched=matched,
+            tight=tight,
+            watched=watched,
+            changed=changed,
+        )
+        tried.append(variant)
+        report["settled"].append(variant.record)
+        if variant.refusal is None:
+            found = verified_variant(variant, witness, frame, matched, view_id)
+            if found is not None:
+                break
+    report["seconds"] = round(time.perf_counter() - started, 2)
+    if found is None:
         report["refusal"] = "; ".join(f"{v.rows}: {v.refusal}" for v in tried)
         return Exact(None, report)
-    solution, centers = chosen.solution, chosen.centers
-    try:
-        document = same.same_side_witness(witness, frame, centers, matched, view_id=view_id)
-    except ValueError as error:  # Elimination fill-in past Python's integer-text limit.
-        report["refusal"] = f"literal-too-long: {error}"
-        return Exact(None, report)
-    verdicts = same.verify_both(document, centers, matched, frame.side)
-    report["verdicts"] = verdicts
-    report["seconds"] = round(time.perf_counter() - started, 2)
-    if not (verdicts["exact_verify"]["passed"] and verdicts["independent"]["passed"]):
-        report["refusal"] = "overlap: an exact route refuses the re-solved pose"
-        return Exact(None, report)
+    chosen, document = found
+    solution = chosen.solution
+    report["verdicts"] = chosen.record.pop("verdicts")
     document["claim"]["coordinate_provenance"] = "verified"
     if relation == "bound":
         document["claim"]["limitations"] = document["claim"]["limitations"].replace(
@@ -1103,6 +1200,7 @@ def exact_view(
             "rows_left_open": chosen.record["left_open"],
             "rows_relaxed": len(solution.relaxed),
             "free_coordinates": len(solution.free_columns),
+            "anchored_squares": chosen.record["anchored"],
         },
         "replay": "uv run --frozen packing-witness verify <this file>",
     }
@@ -1219,6 +1317,36 @@ def regularize(
     return None, report
 
 
+def own_pairing(
+    view: Sequence[driver.Placed], source: Sequence[driver.Placed], named: Sequence[int]
+) -> dict[str, Any]:
+    """The view against the witness square for square, as this generator keeps them: the
+    largest move and the turned squares (0-based, as `driver.identity` lists them).
+
+    `driver.identity` pairs by `arrangement_gap`, which takes whichever of the box's eight
+    symmetries gives the least largest move. A witness that is nearly symmetric can win
+    under a reflection by a hair, and then pairs tilted squares with mirror partners of
+    another angle: n = 259 reported 16 unnamed turns under symmetry 5, with none under its
+    own pairing and the same largest move, 0.0638. The generator moves and turns squares
+    in place, so its own pairing is the one the view was made by; both are reported.
+    """
+    turned = [
+        index
+        for index, ((_x, _y, c, s), (_u, _v, a, b)) in enumerate(zip(view, source, strict=True))
+        if min(abs(c * b - s * a), abs(c * a + s * b)) > driver.TURN_BOUND
+    ]
+    largest = max(
+        math.hypot(float(x - u), float(y - v))
+        for (x, y, _c, _s), (u, v, _a, _b) in zip(view, source, strict=True)
+    )
+    return {
+        "basis": "square for square, the generator's own pairing (symmetry 0)",
+        "max_move": f"{largest:.6e}",
+        "turned": turned,
+        "unnamed_turns": sorted(set(turned) - set(named)),
+    }
+
+
 def measure(
     n: int, witness: Mapping[str, Any], view: Mapping[str, Any], straightened: Sequence[int]
 ) -> dict[str, Any]:
@@ -1229,6 +1357,7 @@ def measure(
     reference = frame.side if frame.side is not None else Fraction(frame.side_text)
     named = [index - 1 for index in straightened]
     ident = driver.identity((side, placements), (reference, frame.placements), named, "witness")
+    ident["own_pairing"] = own_pairing(placements, frame.placements, named)
     shaded = driver.contact_shades(n, witness, view, "witness")
     return {
         "identity": ident,

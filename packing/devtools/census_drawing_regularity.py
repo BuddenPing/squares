@@ -344,11 +344,14 @@ def compare(before: Mapping[str, Any], after: Mapping[str, Any]) -> list[dict[st
     return rows
 
 
-def _source(drawing: Mapping[str, Any]) -> str:
+def source_label(drawing: Mapping[str, Any]) -> str:
+    """Which generator a drawing's view came from, by its index entry's generator."""
     if drawing["kind"] == "witness":
         return "witness"
     generator = str(drawing.get("generator") or "")
-    return "Evan view" if "regularize_evand" in generator else "axis view"
+    if "regularize_evand" in generator:
+        return "Evan view"
+    return "grid view" if "regularize_grid_slack" in generator else "axis view"
 
 
 def ranking_markdown(rows: Sequence[Mapping[str, Any]], *, top: int) -> str:
@@ -365,9 +368,9 @@ def ranking_markdown(rows: Sequence[Mapping[str, Any]], *, top: int) -> str:
         old, new = row["before"], row["after"]
         faces = ", ".join(f"{cause} {count}" for cause, count in new["light_faces"].items())
         lines.append(
-            f"| {row['n']} | {_source(old['drawing'])} "
+            f"| {row['n']} | {source_label(old['drawing'])} "
             f"| {old['light_axis']} / {old['uneven_axis']} / {old['axis']} "
-            f"| {old['near_axis']} | {_source(new['drawing'])} "
+            f"| {old['near_axis']} | {source_label(new['drawing'])} "
             f"| {new['light_axis']} / {new['uneven_axis']} / {new['axis']} "
             f"| {new['near_axis']} | {new['variation']} | {row['change']:+d} | {faces or '-'} |"
         )
