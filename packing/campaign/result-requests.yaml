@@ -3778,14 +3778,28 @@ issues:
         status: confirmed
       corrects:
       - https://github.com/jlevy/squares/issues/438#issuecomment-6116242868
+      outdated:
+      - '#553, in review, registers SQUISH''s #500 packings at 238 and 239 and moves those two cases,
+        keeping T-127 as history; #553 merged on 12 October, and T-151 is the house at 238 and 239
+        with T-127 as history'
+    - url: https://github.com/jlevy/squares/issues/438#issuecomment-6130070537
+      date: '2026-10-12'
+      by: jlevy
+      kind: follow-up
+      reported:
+      - result: precision-refinements-14
+        id: T-127
+      corrects:
+      - https://github.com/jlevy/squares/issues/438#issuecomment-6127527608
     close_when: The fourteen finite bounds and three withdrawals are published from main with their
       actual evidence scope, and the owner posts the final registration disposition.
     read_through: '2026-10-08T03:08:01Z'
     notes: >-
       The final reply of 12 October says that #553, in review, registers SQUISH's #500 packings at
-      238 and 239 and moves those two cases, keeping T-127 as history. When #553 merges, that
-      statement is to be marked `outdated` on the final reply, and a one-line follow-up saying so
-      names the final reply in `corrects` (think-fvz4).
+      238 and 239 and moves those two cases, keeping T-127 as history. #553 merged on 12 October:
+      that statement is marked `outdated` on the final reply, and the follow-up posted that day,
+      which says T-151 is now the house at both and T-127 remains it at 88, 130, 179, 199 and 208,
+      names the final reply in `corrects` (think-fvz4, think-ckjc).
   - number: 445
     title: 'verify_n17_bb_certificate.py: full mode keeps every internal node in memory'
     author: wand125
@@ -4385,6 +4399,19 @@ issues:
         status: confirmed
       corrects:
       - https://github.com/jlevy/squares/issues/481#issuecomment-6116243829
+      outdated:
+      - '#553, in review, registers and adopts the author''s #500 packings at 270 and 305, at 305
+        through Francisco Couzo''s #506 refinement; #553 merged on 12 October, and T-151 is the
+        house at 270 and T-152 at 305'
+    - url: https://github.com/jlevy/squares/issues/481#issuecomment-6130070910
+      date: '2026-10-12'
+      by: jlevy
+      kind: follow-up
+      reported:
+      - result: fifteen-new-packings
+        id: T-136
+      corrects:
+      - https://github.com/jlevy/squares/issues/481#issuecomment-6127531070
     close_when: The import and its disposition are on main and the owner has posted the resulting state;
       local and global optimality are outside this request.
     notes: >-
@@ -4394,9 +4421,11 @@ issues:
       replay confirmed, and, as on #238, no comment is to be posted only to name them.
 
       The final reply of 12 October says that #553, in review, registers and adopts the author's
-      #500 packings at 270 and 305, at 305 through Francisco Couzo's #506 refinement. When #553
-      merges, that statement is to be marked `outdated` on the final reply, and a one-line follow-up
-      saying so names the final reply in `corrects` (think-fvz4).
+      #500 packings at 270 and 305, at 305 through Francisco Couzo's #506 refinement. #553 merged
+      on 12 October: that statement is marked `outdated` on the final reply, and the follow-up
+      posted that day, which says T-151 is now the house at 270 and T-152 at 305, with T-136
+      verified and not selected at both, names the final reply in `corrects` (think-fvz4,
+      think-ckjc).
   - number: 483
     title: 'n=70 exact rational precision refinement of Ryan Xu''s packing: registration request'
     author: ebdeleeuw
@@ -4884,6 +4913,19 @@ issues:
         status: confirmed
       corrects:
       - https://github.com/jlevy/squares/issues/488#issuecomment-6116244574
+      outdated:
+      - 'at 270 and 305, #553, in review, registers SQUISH''s #500 and the author''s #506 sides and
+        moves both cases, keeping T-140 as history; #553 merged on 12 October, and T-151 is the
+        house at 270 and T-152 at 305, with T-140 as history at both'
+    - url: https://github.com/jlevy/squares/issues/488#issuecomment-6130071279
+      date: '2026-10-12'
+      by: jlevy
+      kind: follow-up
+      reported:
+      - result: six-exact-certificates
+        id: T-140
+      corrects:
+      - https://github.com/jlevy/squares/issues/488#issuecomment-6127533578
     close_when: The import and its disposition are on main and the owner has posted the resulting state;
       optimality and the credit for the starting packings' constructions stay with their sources.
     notes: >-
@@ -4893,9 +4935,11 @@ issues:
       and, as on #238, no comment is to be posted only to name them.
 
       The final reply of 12 October says that #553, in review, registers SQUISH's #500 and the
-      author's #506 sides at 270 and 305 and moves both cases, keeping T-140 as history. When #553
-      merges, that statement is to be marked `outdated` on the final reply, and a one-line follow-up
-      saying so names the final reply in `corrects` (think-fvz4).
+      author's #506 sides at 270 and 305 and moves both cases, keeping T-140 as history. #553
+      merged on 12 October: that statement is marked `outdated` on the final reply, and the
+      follow-up posted that day, which says T-151 is now the house at 270 and T-152 at 305 and
+      T-140 remains it at 175, 209 and 237, names the final reply in `corrects` (think-fvz4,
+      think-ckjc).
   - number: 489
     title: 'New packings: s(132), s(308), s(343), s(344): registration request'
     author: evand
@@ -4990,6 +5034,20 @@ issues:
       - result: hunt3-343-344
       corrects:
       - https://github.com/jlevy/squares/issues/489#issuecomment-6116244764
+      outdated:
+      - '#553, in review, records Francisco Couzo''s #506 side at 344 as a verified beyond-horizon
+        row; #553 merged on 12 October, and that row, 18.994353244944, supersedes the Hunt 3 row at
+        344'
+    - url: https://github.com/jlevy/squares/issues/489#issuecomment-6130071583
+      date: '2026-10-12'
+      by: jlevy
+      kind: follow-up
+      reported:
+      - result: hunt3-132-308
+        id: T-141
+      - result: hunt3-343-344
+      corrects:
+      - https://github.com/jlevy/squares/issues/489#issuecomment-6127534278
     close_when: The import and its disposition, including the beyond-horizon counts, are on main and the
       owner has posted the resulting state; Kevin Fang's credit for the two-wedge constructions and
       optimality stay with their sources.
@@ -5000,9 +5058,10 @@ issues:
       replay confirmed, and, as on #238, no comment is to be posted only to name them.
 
       The final reply of 12 October says that #553, in review, records Francisco Couzo's #506 side
-      at 344 as a verified beyond-horizon row. When #553 merges, that statement is to be marked
-      `outdated` on the final reply, and a one-line follow-up saying so names the final reply in
-      `corrects` (think-fvz4).
+      at 344 as a verified beyond-horizon row. #553 merged on 12 October: that statement is marked
+      `outdated` on the final reply, and the follow-up posted that day, which says the row
+      supersedes the author's Hunt 3 row there by 9.73e-05, his 343 row stays and T-141 remains
+      the house at 132 and 308, names the final reply in `corrects` (think-fvz4, think-ckjc).
   - number: 494
     title: 'n17 hard tail: wall-chain elimination (width 1) does not see m851903''s obstruction — float negative'
     author: evand
@@ -5134,9 +5193,10 @@ issues:
       its pinned certificate and witness, measured the two patches where the source places them and
       found no blocking defect. Registered as T-147 at V3/C3; the case record's house adoption is
       the next layer. The first commit, 0d8b9c1, and the issue as first posted disclosed OpenAI
-      Codex assistance; the pinned commit and the edited issue removed it without a reason, and
-      which account stands is the author's to say.
-    read_through: '2026-10-11T10:31:52Z'
+      Codex assistance; the pinned commit and the edited issue removed it without a reason. Asked
+      which account stands, the author answered on 12 October, for this issue and #504: "Both
+      solutions were AI assisted by 'PY', an unreleased agentic AI offering by PingYou Ltd."
+    read_through: '2026-10-12T17:57:46Z'
     results:
     - key: n207-exact-certificate
       claim: s(207) <= 148809603730436756319360591381170501178639/10^40 =
@@ -5185,6 +5245,9 @@ issues:
         status: confirmed
       corrects:
       - https://github.com/jlevy/squares/issues/503#issuecomment-6125247333
+      outdated:
+      - 'the AI-assistance question is still open; the author answered on #503 on 12 October 2026,
+        for both issues, and the record carries the answer'
     close_when: The import and its disposition are on main, the house adoption at 207 has landed or
       is owned, the author has been asked which AI-assistance account stands, and the owner has
       posted the resulting state; optimality is outside this request.
@@ -5193,6 +5256,17 @@ issues:
       E-pingyou-503-certificate-report and E-pingyou-503-exact-feasibility. The confirmation of 12
       October named both at the status they hold now, the report reviewed and the replay confirmed,
       and, as on #238, no comment is to be posted only to name them.
+
+      BuddenPing's comment of 12 October 2026, 17:57:46Z
+      (https://github.com/jlevy/squares/issues/503#issuecomment-6129716138), answers the
+      question both replies asked: "Both solutions were AI assisted by "PY", an unreleased agentic
+      AI offering by PingYou Ltd." It covers #504 as well. T-147 and T-148, their case records,
+      both packets' READMEs, their bibliography and evidence entries and the resources README now
+      carry it in the author's words, and devtools.state_ai_assistance holds both case records to
+      it. A short thank-you saying the record now carries the statement is owed here once that
+      change is on main (think-ckjc). The final reply's "still open" statement is marked
+      `outdated`, so a reply is due here until the thank-you names that reply in `corrects`
+      (review A3 of #558).
   - number: 504
     title: 's(153) ≤ 12.870013850408: registration request'
     author: BuddenPing
@@ -5215,8 +5289,10 @@ issues:
       its pinned certificate and witness and found no blocking defect; the lineage from the n70 is
       by construction, not by pose. Registered as T-148 at V3/C3; the case record's house adoption
       is the next layer. The issue omits the template's AI-assistance section; the same author's
-      #503 disclosed OpenAI Codex assistance and then removed it.
-    read_through: '2026-10-11T20:26:51Z'
+      #503 disclosed OpenAI Codex assistance and then removed it, and on #503 the author answered
+      on 12 October, for both issues: "Both solutions were AI assisted by 'PY', an unreleased
+      agentic AI offering by PingYou Ltd."
+    read_through: '2026-10-12T17:57:46Z'
     results:
     - key: n153-exact-certificate
       claim: s(153) <= 6435006925203522001385040447/500000000000000000000000000 =
@@ -5271,6 +5347,9 @@ issues:
         status: confirmed
       corrects:
       - https://github.com/jlevy/squares/issues/504#issuecomment-6125249586
+      outdated:
+      - 'the AI-assistance question is still open; the author answered on #503 on 12 October 2026,
+        for both issues, and the record carries the answer'
     close_when: The import and its disposition are on main, the house adoption at 153 has landed or
       is owned, and the owner has posted the resulting state; optimality and the undilated contact
       solution are outside this request.
@@ -5279,6 +5358,14 @@ issues:
       E-pingyou-504-certificate-report and E-pingyou-504-exact-feasibility. The confirmation of 12
       October named both at the status they hold now, the report reviewed and the replay confirmed,
       and, as on #238, no comment is to be posted only to name them.
+
+      The AI-assistance question was answered on #503, for both issues, by BuddenPing's comment of
+      12 October 2026, 17:57:46Z (https://github.com/jlevy/squares/issues/503#issuecomment-6129716138);
+      `read_through` is that comment's time, since it is the latest read into this entry, and no
+      comment on #504 is later than it. The thank-you owed on #503 covers this issue too
+      (think-ckjc). The final reply's "still open" statement is marked `outdated`, and since
+      `corrects` names replies on the same issue, a one-line pointer here to the #503 thank-you,
+      naming the final reply in `corrects`, clears the reply due (review A3 of #558).
   - number: 501
     title: New results for n=155, n=156 and n=211 to the best of my knowledge
     author: dostashev
@@ -5459,7 +5546,8 @@ issues:
       239 (#401) and 270, 305 (#481): registration request'
     author: itsnaka
     opened: '2026-10-11'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -5501,15 +5589,39 @@ issues:
     - think-ga3m
     - think-720n
     answer_bead: think-ga3m
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/500#issuecomment-6130062157
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: nine-mondrian-packings
+        id: T-151
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: nine-mondrian-packings
+        id: E-squish-500-certificate-report
+        status: reviewed
+      - result: nine-mondrian-packings
+        id: E-squish-500-exact-feasibility
+        status: confirmed
+      - result: nearby-search-squeeze
     close_when: The import and its disposition are on main, the house adoption at its counts has
       landed or is owned, and the owner has posted the resulting state; the sources/ pieces are not
       requested, and optimality is outside this request.
+    notes: >-
+      Registration (T-151) and the house adoption landed together in #553, merged on 12 October
+      2026 as 06c425eca, so one reply confirmed and closed the issue once the Pages deployment of
+      that commit had passed: T-151 is the house at 176, 181, 238, 239, 270, 271 and 272, and at
+      304 and 305 Francisco Couzo's #506 refinements (T-152) are smaller and hold the case, T-151
+      verified and not selected there (think-ckjc).
   - number: 506
     title: '304, 305 and nine counts above 324 (338–381): registration request'
     author: franciscouzo
     opened: '2026-10-11'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -5568,8 +5680,52 @@ issues:
     - think-om5l
     - think-720n
     answer_bead: think-om5l
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/506#issuecomment-6130063939
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: n304-n305-exact-optima
+        id: T-152
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: n304-n305-exact-optima
+        id: E-couzo-506-certificate-report
+        status: reviewed
+      - result: n304-n305-exact-optima
+        id: E-couzo-506-exact-feasibility
+        status: confirmed
+      - result: nine-beyond-horizon
+        id: E-couzo-506-certificate-report
+        status: reviewed
+      - result: nine-beyond-horizon
+        id: E-couzo-506-exact-feasibility
+        status: confirmed
+      - result: kkt-exact-optima
+      - result: unnamed-175-308-340-343
     close_when: The import and its disposition, including the beyond-horizon counts, are on main,
       the house adoption at 304 and 305 has landed or is owned, and the owner has posted the
       resulting state; the four unnamed certificates are imports of their own, and optimality is
       outside this request.
+    notes: >-
+      Registration (T-152), the nine verified beyond-horizon rows and the house adoption at 304
+      and 305 landed together in #553, merged on 12 October 2026 as 06c425eca, so one reply
+      confirmed and closed the issue once the Pages deployment of that commit had passed. It gives
+      each beyond-horizon row's margin against the row it replaces, not the issue's own before
+      column (RY-3), and asks the author to correct the certificates README's 1 + 1e-12 at 375
+      (RY-2).
+
+      The unnamed 175 was the smallest side known at its count when the import read it; Daniil
+      Ostashev's #528 has since reported a smaller one (think-em0b), and the reply says so rather
+      than repeat the claim above (think-ckjc).
+
+      The reply followed `not_registered` above as it stands on main, saying 175's "own import is
+      queued", while think-9fjl records the plan of the 12 October review's RX-5: the certificate
+      stays in the couzo-certificates-2026-10-11 packet and is not registered unless the author
+      asks. The reply asked nothing, so that bead's closing condition is not met. A follow-up here
+      waits for layer 6, which registers and adopts T-154 at 175, to be on main; it says the
+      certificate stays in the packet unless he wants it registered, asks whether he does, and
+      names the final reply in `corrects` once that reply's statement is marked `outdated` (review
+      A1 of #558).
