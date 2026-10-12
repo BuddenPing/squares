@@ -1136,7 +1136,10 @@ a third exact route agrees and held the fact to the pinned certificate and witne
 T-147 records the side at V3/C3 on the
 [review of 11 October](../../docs/project/reviews/review-2026-10-11-upper-bound-imports-503-504.md),
 and the case at 207 holds it as the house since 11 October 2026. The first commit
-disclosed OpenAI Codex assistance, and the pinned commit removed the disclosure.
+disclosed OpenAI Codex assistance, and the pinned commit removed the disclosure; asked
+which account stands, the author answered on jlevy/squares#503 on 12 October 2026, for
+this release and the n153 one: “Both solutions were AI assisted by ‘PY’, an unreleased
+agentic AI offering by PingYou Ltd.”
 
 **[PingYou n153 certificate 2026-10-11]**: PingYou Ltd’s exact rational certificate for
 n = 153, by its account Ryan Xu’s n70 construction composed with its reflection and an
@@ -1147,7 +1150,9 @@ Both project exact routes accept the replayed certificate and refuse both contro
 a third exact route agrees and held the fact to the pinned certificate and witness.
 T-148 records the side at V3/C3 on the same review, and the case at 153 holds it as the
 house since 11 October 2026; the lineage from the n70 is by construction, not by pose.
-The release makes no statement about AI assistance.
+The release makes no statement about AI assistance; on jlevy/squares#503 the author
+answered on 12 October 2026, for this release and the n207 one: “Both solutions were AI
+assisted by ‘PY’, an unreleased agentic AI offering by PingYou Ltd.”
 
 ## Daniil Ostashev’s and Robert Barnett’s certificates, 11 October 2026
 
