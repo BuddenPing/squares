@@ -131,8 +131,11 @@ for automatic admission."""
 TIME_LIMIT = 120.0
 STAGE_MARGIN = 0.0099
 """A kept stage contact stays this close; the stage's frame rounds centres to `1e-6`."""
-EPSILON = 1e-12
-"""A kept house residual may always be this large: the float LP's own noise."""
+EPSILON = 1e-9
+"""A kept house residual may always grow to this, three orders under the house's `2e-6`.
+A floor at the LP's own noise (`1e-12`) leaves rows a few `1e-12` wide, which HiGHS
+cannot meet (n = 211: a square at 0.0012 degrees could not be straightened), and a
+residual this small is closed exactly by the re-solve's `1e-9` tight set anyway."""
 UNMOVED = 1e-9
 """A square the LP moved by less than this keeps its exact centre in the re-solve."""
 BLOWUP = 1e-6
