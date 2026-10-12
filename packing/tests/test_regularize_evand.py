@@ -1017,3 +1017,66 @@ def test_a_regularizer_refusal_keeps_its_reason_when_decided_again() -> None:
     }
     measured = drive.measured_from_report(relaxed, "solved")
     assert measured.status == "regularize: upstream's checker refused the certificate"
+
+
+def test_reclassify_refreshes_a_stale_bound_from_the_case_record(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A run decided before a register result moved `U` holds its view at row 3; read
+    again from the case record, which now holds the view's side as its exact form, the
+    same measurements admit it, and the receipt names the count whose bound moved."""
+    side = Fraction(563, 100)
+    run_dir = tmp_path / "run"
+    directory = run_dir / "n-026"
+    directory.mkdir(parents=True)
+    same = {"side_exact": "563/100", "relation": "same", "routes": ROUTES_OK, "minus_U": "x"}
+    report = {
+        **DECIDED,
+        "verified_upper_bound": "5.64",
+        "verified_upper_bound_exact_form": "141/25",
+        "shades": {**DECIDED["shades"], "regressions": []},
+        "source": {"s_W_exact": "563/100", "provenance": {"source_key": None}},
+        "outputs": {"same": same, "solved": None, "same_refusal": None},
+        "identity": {"one_to_one": True, "moved": 4, "max_move": "0.1", "turned": [2]},
+        "regularize": {"level": 2, "changed_angles": [2]},
+        "solve": {"status": "KKT local min"},
+    }
+    (directory / "report.json").write_text(json.dumps(report), encoding="utf-8")
+    receipt = {"counts": [{"n": 26}], "cost": {"cpu_seconds": 1.0}}
+    (run_dir / "receipt.json").write_text(json.dumps(receipt), encoding="utf-8")
+    monkeypatch.setattr(drive, "_current_histograms", lambda _n, _report: None)
+
+    stale = drive.reclassify(run_dir)
+    assert stale["counts"][0]["row"] == 3
+    assert "refreshed_bounds" not in stale["reclassified"]
+
+    monkeypatch.setattr(
+        drive,
+        "case_facts",
+        lambda _n: {
+            "verified_upper_bound": "5.64",
+            "exact_form": str(side),
+            "reported": "5.63",
+            "found_by": [],
+            "improved_by": [],
+            "source_key": None,
+        },
+    )
+    fresh = drive.reclassify(run_dir, refresh_bounds=True)
+    redone = json.loads((directory / "report.json").read_text(encoding="utf-8"))
+    assert redone["verified_upper_bound"] == "5.64"
+    assert redone["verified_upper_bound_exact_form"] == "563/100"
+    assert redone["outputs"]["same"]["minus_U"] == "0.000e+00"
+    assert redone["decision"]["decision"] == "admit"
+    assert fresh["counts"][0]["row"] == 10
+    assert fresh["cost"] == receipt["cost"]
+    assert fresh["reclassified"]["refreshed_bounds"] == [
+        {
+            "n": 26,
+            "before": {"value": "5.64", "exact_form": "141/25"},
+            "after": {"value": "5.64", "exact_form": "563/100"},
+        }
+    ]
+    # A second refresh finds the record and the report agreeing, and moves nothing.
+    again = drive.reclassify(run_dir, refresh_bounds=True)
+    assert again["reclassified"]["refreshed_bounds"] == []

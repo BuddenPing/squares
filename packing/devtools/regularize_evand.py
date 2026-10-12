@@ -7,7 +7,7 @@ Usage, from `packing/`, each after
     run --run-dir DIR --n 10 26 70 [--workers K] [--timeout S] [--from-stage STAGE]
         [--frame kkt|witness] [--variant conservative|fewest] [--orient 0|best|K]
     input --n N --output FILE
-    reclassify --run-dir DIR [--n N ...]
+    reclassify --run-dir DIR [--n N ...] [--refresh-bounds]
     layer --run-dir DIR [DIR ...] --repo-root TREE [--select admitted|preview]
     report --run-dir DIR [--json]
 
@@ -90,7 +90,8 @@ by the policy's decision table. Per count, in order:
    row 7 where per-square counts fall but no total does. A row 3 candidate is listed in the
    receipt whatever it is reported as, for registration first. `reclassify` decides a
    finished run again from its reports, for a change to the table, without re-running a
-   stage.
+   stage; with `--refresh-bounds` it first reads each count's `U` again from the case
+   record, for a run decided before a register result moved the bound.
 
 Every count writes `RUN/n-NNN/report.json`, and the run writes `RUN/receipt.json`: the
 generator (name, pin, local patches, interpreter), the parameters, one row per count with
@@ -2170,20 +2171,56 @@ def _current_histograms(n: int, report: dict[str, Any]) -> None:
             current["histograms"] = {rule: histogram(partners[rule]) for rule in RULE_NAMES}
 
 
-def reclassify(run_dir: Path, counts: Sequence[int] | None = None) -> dict[str, Any]:
+def refresh_bound(report: dict[str, Any], n: int) -> dict[str, Any] | None:
+    """Rewrite a report's stored `U` from the case record as it stands, and each output's
+    distance to it; the change, or `None` where the record still holds the same bound.
+
+    A run stores the verified upper bound it compared with. When a register result moves
+    that bound afterwards (T-151 took 60 ceilings to the exact sides of row-3 views), the
+    run's decisions are stale until `U` is read again: `upper_bound` reads the exact form
+    where it is rational, so a bound printed at the same decimal with a new exact form is a
+    new `U`.
+    """
+    facts = case_facts(n)
+    before = {
+        "value": report.get("verified_upper_bound"),
+        "exact_form": report.get("verified_upper_bound_exact_form"),
+    }
+    after = {"value": facts["verified_upper_bound"], "exact_form": facts["exact_form"]}
+    if before == after:
+        return None
+    report["verified_upper_bound"] = after["value"]
+    report["verified_upper_bound_exact_form"] = after["exact_form"]
+    upper = upper_bound(facts)
+    for block in (report.get("outputs") or {}).values():
+        if isinstance(block, dict) and block.get("side_exact") and upper is not None:
+            block["minus_U"] = f"{float(Fraction(block['side_exact']) - upper):.3e}"
+    return {"n": n, "before": before, "after": after}
+
+
+def reclassify(
+    run_dir: Path, counts: Sequence[int] | None = None, *, refresh_bounds: bool = False
+) -> dict[str, Any]:
     """Decide a finished run again from its reports, without re-running any stage.
 
     For a change to the decision table or to how decisions are reported: every count's
     `decision` and `decisions` are rewritten from its stored measurements, and the
-    receipt's rows and lists follow; its cost and parameters are left as they were.
+    receipt's rows and lists follow; its cost and parameters are left as they were. With
+    `refresh_bounds`, each report's `U` is first read again from the case record
+    (`refresh_bound`), for a run decided before a register result moved the bound; the
+    receipt lists every count whose `U` changed. Run it on a copy of a run directory to
+    keep the run as it was decided.
     """
     path = run_dir / "receipt.json"
     receipt = read_json(path)
     rows = {int(row["n"]): row for row in receipt.get("counts", [])}
     chosen = sorted(rows) if counts is None else list(counts)
+    refreshed: list[dict[str, Any]] = []
     for n in chosen:
         report_path = count_dir(run_dir, n) / "report.json"
         report = read_json(report_path)
+        if refresh_bounds and (change := refresh_bound(report, n)) is not None:
+            refreshed.append(change)
         _current_histograms(n, report)
         outputs = report.get("outputs") or {}
         solved = measured_from_report(report, "solved")
@@ -2206,6 +2243,8 @@ def reclassify(run_dir: Path, counts: Sequence[int] | None = None) -> dict[str, 
     ordered = [rows[n] for n in sorted(rows)]
     receipt.update({"counts": ordered, **receipt_lists(ordered)})
     receipt["reclassified"] = {"policy": POLICY, "counts": chosen}
+    if refresh_bounds:
+        receipt["reclassified"]["refreshed_bounds"] = refreshed
     write_json(path, receipt)
     return receipt
 
@@ -2842,6 +2881,11 @@ def parser() -> argparse.ArgumentParser:
     )
     reclassify_command.add_argument("--run-dir", type=Path, required=True)
     reclassify_command.add_argument("--n", nargs="+", default=None, help="counts or a-b")
+    reclassify_command.add_argument(
+        "--refresh-bounds",
+        action="store_true",
+        help="read each report's verified upper bound again from the case record first",
+    )
     layer_command = sub.add_parser(
         "layer", help="write finished runs' selected views into a layer under a tree"
     )
@@ -2880,7 +2924,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if arguments.command == "reclassify":
         counts = None if arguments.n is None else parse_counts(arguments.n)
-        receipt = reclassify(arguments.run_dir, counts)
+        receipt = reclassify(arguments.run_dir, counts, refresh_bounds=arguments.refresh_bounds)
         print(report_table(receipt))
         return 0
     if arguments.command == "layer":
