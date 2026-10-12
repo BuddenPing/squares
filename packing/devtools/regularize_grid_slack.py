@@ -147,7 +147,14 @@ EXACT_GAP = 1e-13
 """A tight row between two unchanged squares is closed only if the witness's own gap is
 this small: what is left is the witness's exact contacts and its rotation classes' merge."""
 LP_TOLERANCE = 1e-10
-MIP_TOLERANCE = 1e-9
+HIGHS_RETRIES: tuple[tuple[float | None, bool], ...] = (
+    (None, True),
+    (1e-9, True),
+    (1e-7, True),
+    (None, False),
+    (1e-9, False),
+)
+"""HiGHS feasibility tolerance (its default where `None`) and presolve, in the order tried."""
 ELASTIC_PRICE = 1e6
 """The price of a unit of slack on a coincidence in the elastic re-placement."""
 DROP_SLACK = 1e-9
@@ -562,16 +569,26 @@ def _milp(
     integrality: np.ndarray,
     settings: Settings,
 ) -> Any:
-    """HiGHS through `milp`, once more without presolve if HiGHS reports a solve error.
+    """HiGHS through `milp`, retried over `HIGHS_RETRIES` until it returns a point.
 
-    HiGHS's default MIP feasibility tolerance, `1e-6`, lets a binary sit `1e-6` short of
-    one; times a big-M that is a row violated by about `1e-6`, which HiGHS's own final
-    check then reports as a solve error (n = 154). `milp` passes options it does not
-    know to HiGHS verbatim, with a warning this silences, so both tolerances are set to
-    `MIP_TOLERANCE`.
+    HiGHS checks its own MIP solution at the end and reports a solve error, with no point,
+    when a row is off by more than its feasibility tolerance: a binary `1e-6` short of one
+    times a big-M is such a row. Which tolerance and presolve setting avoids it depends on
+    the model (n = 154 needed `1e-9`; n = 302 and 303 with wider kept rows needed the
+    defaults), and the point is only a proposal that `replace_flush` re-solves, so each
+    setting is tried in turn. `milp` passes options it does not know to HiGHS verbatim,
+    with a warning this silences.
     """
     result: Any = None
-    for presolve in (True, False):
+    for tolerance, presolve in HIGHS_RETRIES:
+        options: dict[str, Any] = {
+            "time_limit": settings.time_limit,
+            "mip_rel_gap": 0.0,
+            "presolve": presolve,
+        }
+        if tolerance is not None:
+            options["mip_feasibility_tolerance"] = tolerance
+            options["primal_feasibility_tolerance"] = tolerance
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", message="Unrecognized options detected")
             result = milp(
@@ -580,13 +597,7 @@ def _milp(
                 constraints=(rows.matrix(columns), np.array(rows.lo), np.array(rows.hi)),
                 integrality=integrality,
                 bounds=bounds,
-                options={
-                    "time_limit": settings.time_limit,
-                    "mip_rel_gap": 0.0,
-                    "presolve": presolve,
-                    "mip_feasibility_tolerance": MIP_TOLERANCE,
-                    "primal_feasibility_tolerance": MIP_TOLERANCE,
-                },
+                options=options,
             )
         if result.x is not None:
             break
