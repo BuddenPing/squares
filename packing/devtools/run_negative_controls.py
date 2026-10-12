@@ -96,6 +96,7 @@ from devtools import refinement_house_links as refinements
 from devtools import ryxu_house_links as ryxu
 from devtools import squish_second_update_confirmation as second
 from devtools import squish_second_update_house_links as house
+from devtools import upper_bound_houses as adopted_houses
 from devtools import wand125_fn1_bindings as fn1
 from devtools.check_checkout_imports import environment_for
 from devtools.repo_scope import tracked_files
@@ -172,6 +173,7 @@ HOUSE_LINK_LEAVES = frozenset(
         *ryxu.snapshot_house_links(),
         *gupta.snapshot_house_links(),
         *evand_houses.snapshot_house_links(),
+        *adopted_houses.snapshot_house_links(),
     )
 )
 # C8 / think-rara: exact historical outputs, not their scientific input packets or
@@ -995,6 +997,12 @@ COPY_SEPARATELY = (
     *ryxu.private_input_paths(),
     *gupta.private_input_paths(),
     *evand_houses.private_input_paths(),
+    # The houses adopted on 2026-10-11 (`upper_bound_houses`): each count's declaration,
+    # acquisition record, digest manifest, certificate or derived fact and receipt, so the
+    # house check runs in a worker on ordinary private files: 82 inputs of 1,733,559 bytes,
+    # measured on 2026-10-12, some of them register artifacts the copier already rescues.
+    # The 42 house leaves themselves are linked back rather than copied.
+    *adopted_houses.private_input_paths(),
     *fn1.private_input_paths(),
     ROOT / "resources/README.md",
     ROOT / "resources/bibliography.yaml",
