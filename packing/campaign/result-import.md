@@ -78,9 +78,8 @@ It does answer the issues, by the owner’s standing instruction of 2026-10-11: 
 comments on every issue it touches and follows up each later change of its state, each
 comment posted once the pull request that carries the change has merged, and it closes
 an issue only with its final comment ([stage 7](#stage-7-answer)). The owner may post
-instead.
-Under the `github-workflows` grant it also adds the `intake` label; it edits nothing
-else on an issue without the owner’s word.
+instead. Under the `github-workflows` grant it also adds the `intake` label; it edits
+nothing else on an issue without the owner’s word.
 
 ### The Prompt
 
