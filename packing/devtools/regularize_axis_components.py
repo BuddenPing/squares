@@ -101,7 +101,7 @@ import math
 import tempfile
 import time
 from collections.abc import Collection, Sequence
-from concurrent.futures import ProcessPoolExecutor, as_completed
+from concurrent.futures import Future, ProcessPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from fractions import Fraction
 from pathlib import Path
@@ -2294,8 +2294,8 @@ def verify_atlas(
         for entry in selected
         if drawn_elsewhere(committed.get(entry["n"]))
     ]
-    results = run_records(
-        selected, layout, workers=workers, smallest_dilation=smallest_dilation
+    results, decided = verify_units(
+        selected, drawn, layout, workers=workers, smallest_dilation=smallest_dilation
     )
     problems: list[str] = []
     for n, (record, text, _seconds) in sorted(results.items()):
@@ -2312,8 +2312,65 @@ def verify_atlas(
         )
         if text != retained:
             problems.append(f"n={n}: the re-derived view differs from the retained one")
-    problems.extend(decide_drawn_views(drawn, layout, workers=workers))
+    problems.extend(problem for n in sorted(decided) for problem in decided[n])
     return problems
+
+
+def verify_units(
+    entries: Sequence[dict[str, Any]],
+    drawn: Sequence[dict[str, Any]],
+    layout: AtlasLayout,
+    *,
+    workers: int,
+    smallest_dilation: bool = False,
+) -> tuple[dict[int, tuple[dict[str, Any], str | None, float]], dict[int, list[str]]]:
+    """Every entry's record re-derived (`atlas_record`) and every other generator's view
+    decided again (`decide_drawn_view`), in one pool, the largest counts first and a
+    view before a record at the same count: the two kinds of work then finish together
+    instead of the views waiting for the last record."""
+    units: list[tuple[int, int, dict[str, Any]]] = [
+        *((-record["n"], 0, record) for record in drawn),
+        *((-entry["n"], 1, entry) for entry in entries),
+    ]
+    units.sort(key=lambda unit: (unit[0], unit[1]))
+    records: dict[int, tuple[dict[str, Any], str | None, float]] = {}
+    decided: dict[int, list[str]] = {}
+    total = len(units)
+
+    def note(kind: int, outcome: Any) -> None:
+        if kind == 0:
+            n, problems, seconds = outcome
+            decided[n] = problems
+            what = f"drawn view {'refused' if problems else 'decided'}"
+        else:
+            record, _text, seconds = outcome
+            n = record["n"]
+            records[n] = outcome
+            what = str(record["status"])
+        done = len(records) + len(decided)
+        print(f"[{done}/{total}] n={n}: {what} ({seconds:.1f}s)", flush=True)
+
+    if workers <= 1:
+        for _order, kind, item in units:
+            if kind == 0:
+                note(kind, decide_drawn_view(item, layout))
+            else:
+                note(kind, atlas_record(item, layout, smallest_dilation=smallest_dilation))
+        return records, decided
+    with ProcessPoolExecutor(max_workers=workers) as pool:
+        futures: dict[Future[Any], int] = {}
+        for _order, kind, item in units:
+            future: Future[Any] = (
+                pool.submit(decide_drawn_view, item, layout)
+                if kind == 0
+                else pool.submit(
+                    atlas_record, item, layout, smallest_dilation=smallest_dilation
+                )
+            )
+            futures[future] = kind
+        for future in as_completed(futures):
+            note(futures[future], future.result())
+    return records, decided
 
 
 # --------------------------------------------------------------------------------------
@@ -2370,29 +2427,6 @@ def decide_drawn_view(
     if _normalized(shade_record(before, after)) != record["shades"]:
         problems.append(f"n={n}: the drawn view's shades differ from its entry's")
     return n, problems, time.perf_counter() - started
-
-
-def decide_drawn_views(
-    records: Sequence[dict[str, Any]], layout: AtlasLayout, *, workers: int
-) -> list[str]:
-    """Every other generator's view decided again (`decide_drawn_view`), the largest first."""
-    ordered = sorted(records, key=lambda record: -record["n"])
-    found: dict[int, list[str]] = {}
-
-    def note(n: int, problems: list[str], seconds: float) -> None:
-        found[n] = problems
-        verdict = "refused" if problems else "decided"
-        print(f"[{len(found)}/{len(ordered)}] n={n}: drawn view {verdict} ({seconds:.1f}s)")
-
-    if workers <= 1:
-        for record in ordered:
-            note(*decide_drawn_view(record, layout))
-    else:
-        with ProcessPoolExecutor(max_workers=workers) as pool:
-            futures = [pool.submit(decide_drawn_view, record, layout) for record in ordered]
-            for future in as_completed(futures):
-                note(*future.result())
-    return [problem for n in sorted(found) for problem in found[n]]
 
 
 # --------------------------------------------------------------------------------------
