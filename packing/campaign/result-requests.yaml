@@ -888,7 +888,8 @@ issues:
     title: "wand125's repositories moved to wand125/square-packing (old links keep working)"
     author: wand125
     opened: '2026-10-07'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: other
     triage: done
     summary: >-
@@ -913,6 +914,12 @@ issues:
       date: '2026-10-12'
       by: jlevy
       kind: acknowledgement
+      reported:
+      - result: repository-consolidation
+    - url: https://github.com/jlevy/squares/issues/411#issuecomment-6127523980
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
       reported:
       - result: repository-consolidation
     close_when: The canonical source-discovery addition is merged and acknowledged from main.
@@ -3548,7 +3555,8 @@ issues:
     title: '105, 108, 127, 131, 155, 180, 228, 306: registration request'
     author: franciscouzo
     opened: '2026-10-08'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: All eight complete source certificates and decimal context poses are retained. The complete
@@ -3601,13 +3609,35 @@ issues:
         verification: V3
         confirmation: C3
         status: confirmed
+      outdated:
+      - 'the case records still show the earlier ceilings, and the case pages will show T-128 and
+        T-130 where they hold the case when the adoption merges; #518 merged on 12 October, and
+        T-130 is the house at 84, 86 and 105 and T-128 at 108, 127, 180, 228 and 306'
+    - url: https://github.com/jlevy/squares/issues/451#issuecomment-6127528255
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: eight-rational-refinements
+        id: T-128
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: five-follow-up-refinements-2d32a6e
+        id: T-130
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      corrects:
+      - https://github.com/jlevy/squares/issues/451#issuecomment-6116243186
     close_when: The supported import and disposition are on main and the owner posts the resulting state;
       optimizer and local/global optimality remain separate claims.
   - number: 425
     title: 'Exact certificate refinements of five Couzo square packings: registration request'
     author: lollipoll
     opened: '2026-10-07'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: Seth Rehwaldt’s five-case source offer is retained historically; T-117 confirms complete
@@ -3658,6 +3688,23 @@ issues:
       - result: historical-refinements-130-263-272
       - result: n105-supersession-2026-10-08
       - result: restricted-n105-dual
+      outdated:
+      - 'the case record at 292 keeps the author''s certificate (T-117) until the reviewed results
+        are adopted onto the case records; #518 merged on 12 October and T-146 is the house at 292,
+        with T-117 as history'
+    - url: https://github.com/jlevy/squares/issues/425#issuecomment-6127526932
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: finite-refinements-105-292
+        id: T-117
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: historical-refinements-130-263-272
+      corrects:
+      - https://github.com/jlevy/squares/issues/425#issuecomment-6116242408
     close_when: The retained finite-feasibility result and supersession disposition are published from
       main, and the owner replies with the active 292 and historical 105/130/263/272 scopes.
     read_through: '2026-10-08T02:58:00Z'
@@ -3665,7 +3712,8 @@ issues:
     title: 'Exact rational ceiling refinements for 14 square-packing counts: registration request'
     author: SidG2k1
     opened: '2026-10-08'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: Siddharth Gupta reports fourteen exact rational precision refinements of SQUISH constructions.
@@ -3713,9 +3761,31 @@ issues:
         confirmation: C3
         status: confirmed
       - result: withdrawn-108-123-129
+      outdated:
+      - 'the case records at all fourteen counts keep the author''s certificates (T-127) until the
+        reviewed results are adopted onto them; #518 merged on 12 October, T-127 is the house at 88,
+        130, 179, 199, 208, 238 and 239, and smaller certificates hold the other seven: T-148 at
+        153, T-136 at 154, T-128 at 180, T-147 at 207, T-140 at 209 and 237, and T-146 at 236'
+    - url: https://github.com/jlevy/squares/issues/438#issuecomment-6127527608
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: precision-refinements-14
+        id: T-127
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      corrects:
+      - https://github.com/jlevy/squares/issues/438#issuecomment-6116242868
     close_when: The fourteen finite bounds and three withdrawals are published from main with their
       actual evidence scope, and the owner posts the final registration disposition.
     read_through: '2026-10-08T03:08:01Z'
+    notes: >-
+      The final reply of 12 October says that #553, in review, registers SQUISH's #500 packings at
+      238 and 239 and moves those two cases, keeping T-127 as history. When #553 merges, that
+      statement is to be marked `outdated` on the final reply, and a one-line follow-up saying so
+      names the final reply in `corrects` (think-fvz4).
   - number: 445
     title: 'verify_n17_bb_certificate.py: full mode keeps every internal node in memory'
     author: wand125
@@ -3787,7 +3857,8 @@ issues:
     title: 'New packings: s(132) ≤ 11.98709933224506, s(155) ≤ 12.95249894401401'
     author: evand
     opened: '2026-10-09'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: Evan Daniel reports rational certificates at n=132 and n=155 below the case ceilings, in
@@ -3859,8 +3930,35 @@ issues:
         id: E-evand-465-record-hunt-exact-feasibility
         status: confirmed
       - result: kkt-local-minima
+      outdated:
+      - 'the case record at 155 still shows the earlier ceiling, and the case page will show T-128
+        where it holds the case when the adoption merges; #518 merged on 12 October and T-149, below
+        the T-128 side, is the house at 155'
+    - url: https://github.com/jlevy/squares/issues/465#issuecomment-6127528935
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: s132-record-hunt
+        id: T-131
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: s155-record-hunt
+        id: T-128
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: kkt-local-minima
+      corrects:
+      - https://github.com/jlevy/squares/issues/465#issuecomment-6116243324
     close_when: T-131 and T-128 are confirmed on main after independent review and adoption, and the
       owner has posted that state; local and global optimality are outside this feasibility import.
+    notes: >-
+      The final reply of 12 October names T-131 and T-128 with their rungs, but not the evidence ids
+      E-evand-465-record-hunt-report and E-evand-465-record-hunt-exact-feasibility. The confirmation
+      of 12 October named both at the status they hold now, the report reviewed and the replay
+      confirmed, and, as on #238, no comment is to be posted only to name them.
   - number: 470
     title: 'New packings below register for 28 counts (n = 84–306): registration request'
     author: Mishapolk
@@ -3970,7 +4068,8 @@ issues:
       + 0.623 for k >= 1.6e7)'
     author: squarepacker
     opened: '2026-10-09'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -4040,6 +4139,15 @@ issues:
       - result: theorem-1.2
       - result: theorem-1.4
       - result: theorem-1.6
+    - url: https://github.com/jlevy/squares/issues/471#issuecomment-6127529639
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: theorem-1.1
+      - result: theorem-1.2
+      - result: theorem-1.4
+      - result: theorem-1.6
     close_when: The reported import and its review disposition are on main and the owner has posted
       the resulting state.
   - number: 472
@@ -4101,7 +4209,8 @@ issues:
     title: '132, 237, 263, 267, 270, 303: registration request'
     author: franciscouzo
     opened: '2026-10-09'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -4150,14 +4259,35 @@ issues:
       - result: six-exact-certificates
         id: E-couzo-476-exact-feasibility
         status: confirmed
+      outdated:
+      - 'the case record at 267 still shows Ryan Xu''s certificate (T-125); #518 merged on 12
+        October and T-134 is the house at 267'
+    - url: https://github.com/jlevy/squares/issues/476#issuecomment-6127530457
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: six-exact-certificates
+        id: T-134
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      corrects:
+      - https://github.com/jlevy/squares/issues/476#issuecomment-6116243703
     close_when: The import and its disposition are on main and the owner has posted the resulting state;
       optimality and the credit for the starting packings' constructions stay with their sources.
+    notes: >-
+      The final reply of 12 October names T-134 with its rungs, but not the evidence ids
+      E-couzo-476-certificate-report and E-couzo-476-exact-feasibility. The confirmation of 12
+      October named both at the status they hold now, the report reviewed and the replay confirmed,
+      and, as on #238, no comment is to be posted only to name them.
   - number: 481
     title: '15 new packings below record for n = 131–307 (improvement of 1.678e-04 to 1.119e-02), + 2
       smaller packings of SQUISH''s prev registered 154, 237: registration request'
     author: itsnaka
     opened: '2026-10-09'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -4234,13 +4364,45 @@ issues:
       - result: smaller-154-237
         id: E-squish-481-exact-feasibility
         status: confirmed
+      outdated:
+      - 'the case records still show the earlier ceilings, and the case pages will show T-136 where
+        it holds the case when the adoption merges; #518 merged on 12 October and T-136 is the house
+        at 131, 154, 232, 259 and 307'
+    - url: https://github.com/jlevy/squares/issues/481#issuecomment-6127531070
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: fifteen-new-packings
+        id: T-136
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: smaller-154-237
+        id: T-136
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      corrects:
+      - https://github.com/jlevy/squares/issues/481#issuecomment-6116243829
     close_when: The import and its disposition are on main and the owner has posted the resulting state;
       local and global optimality are outside this request.
+    notes: >-
+      The final reply of 12 October names T-136 with its rungs for both results, but not the
+      evidence ids E-squish-481-certificate-report and E-squish-481-exact-feasibility. The
+      confirmation of 12 October named both at the status they hold now, the report reviewed and the
+      replay confirmed, and, as on #238, no comment is to be posted only to name them.
+
+      The final reply of 12 October says that #553, in review, registers and adopts the author's
+      #500 packings at 270 and 305, at 305 through Francisco Couzo's #506 refinement. When #553
+      merges, that statement is to be marked `outdated` on the final reply, and a one-line follow-up
+      saying so names the final reply in `corrects` (think-fvz4).
   - number: 483
     title: 'n=70 exact rational precision refinement of Ryan Xu''s packing: registration request'
     author: ebdeleeuw
     opened: '2026-10-10'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -4287,14 +4449,35 @@ issues:
       - result: n70-exact-refinement
         id: E-deleeuw-483-exact-feasibility
         status: confirmed
+      outdated:
+      - 'Ryan Xu''s certificate (T-125) is the one the n = 70 case record holds; #518 merged on 12
+        October and T-146 is the house at 70, with T-125 as history'
+    - url: https://github.com/jlevy/squares/issues/483#issuecomment-6127531807
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: n70-exact-refinement
+        id: T-137
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      corrects:
+      - https://github.com/jlevy/squares/issues/483#issuecomment-6116243966
     close_when: The import and its disposition are on main and the owner has posted the resulting state;
       optimality is outside this request.
+    notes: >-
+      The final reply of 12 October names T-137 with its rungs, but not the evidence ids
+      E-deleeuw-483-certificate-report and E-deleeuw-483-exact-feasibility. The confirmation of 12
+      October named both at the status they hold now, the report reviewed and the replay confirmed,
+      and, as on #238, no comment is to be posted only to name them.
   - number: 484
     title: 's(308) ≤ 17.999309855162748, s(343) ≤ 18.994903529220497, s(344) ≤ 18.995489275430816: registration
       request'
     author: TheSnakeFang
     opened: '2026-10-10'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -4352,8 +4535,29 @@ issues:
       - result: s343-s344-two-wedge
         id: E-fang-484-exact-feasibility
         status: confirmed
+      outdated:
+      - 'the n = 308 case holds the grid''s 18; #518 merged on 12 October and T-141 is the house at
+        308'
+    - url: https://github.com/jlevy/squares/issues/484#issuecomment-6127532349
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: s308-two-wedge
+        id: T-135
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: s343-s344-two-wedge
+      corrects:
+      - https://github.com/jlevy/squares/issues/484#issuecomment-6116244122
     close_when: The import and its disposition, including the beyond-horizon counts, are on main and the
       owner has posted the resulting state; optimality is outside this request.
+    notes: >-
+      The final reply of 12 October names T-135 with its rungs and the 343 and 344 rows without an
+      id, but not the evidence ids E-fang-484-certificate-report and E-fang-484-exact-feasibility.
+      The confirmation of 12 October named both at the status they hold now, the report reviewed and
+      the replay confirmed, and, as on #238, no comment is to be posted only to name them.
   - number: 485
     title: 's(40) > 3359/500 = 6.718: updated registration request'
     author: Guzhou0806
@@ -4552,7 +4756,8 @@ issues:
       k ≥ 2.48×10^12'
     author: squarepacker
     opened: '2026-10-10'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -4585,13 +4790,20 @@ issues:
       kind: import
       reported:
       - result: theorem-1.1-v1.1-tiers
+    - url: https://github.com/jlevy/squares/issues/486#issuecomment-6127533006
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: theorem-1.1-v1.1-tiers
     close_when: The reported import and its review disposition are on main and the owner has posted the
       resulting state.
   - number: 488
     title: '132-305: registration request'
     author: franciscouzo
     opened: '2026-10-10'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -4656,13 +4868,40 @@ issues:
         status: confirmed
       - result: kkt-no-descent
       - result: unnamed-303-338-340
+      outdated:
+      - 'the case records still show the earlier ceilings, and the case pages will show T-140 where
+        it holds the case when the adoption merges; #518 merged on 12 October and T-140 is the house
+        at 175, 209, 237, 270 and 305'
+    - url: https://github.com/jlevy/squares/issues/488#issuecomment-6127533578
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: six-exact-certificates
+        id: T-140
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      corrects:
+      - https://github.com/jlevy/squares/issues/488#issuecomment-6116244574
     close_when: The import and its disposition are on main and the owner has posted the resulting state;
       optimality and the credit for the starting packings' constructions stay with their sources.
+    notes: >-
+      The final reply of 12 October names T-140 with its rungs, but not the evidence ids
+      E-couzo-488-certificate-report and E-couzo-488-exact-feasibility. The confirmation of 12
+      October named both at the status they hold now, the report reviewed and the replay confirmed,
+      and, as on #238, no comment is to be posted only to name them.
+
+      The final reply of 12 October says that #553, in review, registers SQUISH's #500 and the
+      author's #506 sides at 270 and 305 and moves both cases, keeping T-140 as history. When #553
+      merges, that statement is to be marked `outdated` on the final reply, and a one-line follow-up
+      saying so names the final reply in `corrects` (think-fvz4).
   - number: 489
     title: 'New packings: s(132), s(308), s(343), s(344): registration request'
     author: evand
     opened: '2026-10-10'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -4734,9 +4973,36 @@ issues:
         id: E-evand-489-exact-feasibility
         status: confirmed
       - result: kkt-local-minima
+      outdated:
+      - 'the case records at 132 and 308 still show the earlier ceilings, and the case pages will
+        show T-141 when the adoption merges; #518 merged on 12 October and T-141 is the house at
+        both'
+    - url: https://github.com/jlevy/squares/issues/489#issuecomment-6127534278
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: hunt3-132-308
+        id: T-141
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: hunt3-343-344
+      corrects:
+      - https://github.com/jlevy/squares/issues/489#issuecomment-6116244764
     close_when: The import and its disposition, including the beyond-horizon counts, are on main and the
       owner has posted the resulting state; Kevin Fang's credit for the two-wedge constructions and
       optimality stay with their sources.
+    notes: >-
+      The final reply of 12 October names T-141 with its rungs and the 343 and 344 rows without an
+      id, but not the evidence ids E-evand-489-hunt3-report and E-evand-489-exact-feasibility. The
+      confirmation of 12 October named both at the status they hold now, the report reviewed and the
+      replay confirmed, and, as on #238, no comment is to be posted only to name them.
+
+      The final reply of 12 October says that #553, in review, records Francisco Couzo's #506 side
+      at 344 as a verified beyond-horizon row. When #553 merges, that statement is to be marked
+      `outdated` on the final reply, and a one-line follow-up saying so names the final reply in
+      `corrects` (think-fvz4).
   - number: 494
     title: 'n17 hard tail: wall-chain elimination (width 1) does not see m851903''s obstruction — float negative'
     author: evand
@@ -4851,7 +5117,8 @@ issues:
     title: 's(207) ≤ 14.880960373044: registration request'
     author: BuddenPing
     opened: '2026-10-11'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -4903,14 +5170,35 @@ issues:
       - result: n207-exact-certificate
         id: E-pingyou-503-exact-feasibility
         status: confirmed
+      outdated:
+      - 'the case record at 207 still shows T-127, and the adoption layer, jlevy/squares#518, is in
+        review; #518 merged on 12 October and T-147 is the house at 207'
+    - url: https://github.com/jlevy/squares/issues/503#issuecomment-6127536031
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: n207-exact-certificate
+        id: T-147
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      corrects:
+      - https://github.com/jlevy/squares/issues/503#issuecomment-6125247333
     close_when: The import and its disposition are on main, the house adoption at 207 has landed or
       is owned, the author has been asked which AI-assistance account stands, and the owner has
       posted the resulting state; optimality is outside this request.
+    notes: >-
+      The final reply of 12 October names T-147 with its rungs, but not the evidence ids
+      E-pingyou-503-certificate-report and E-pingyou-503-exact-feasibility. The confirmation of 12
+      October named both at the status they hold now, the report reviewed and the replay confirmed,
+      and, as on #238, no comment is to be posted only to name them.
   - number: 504
     title: 's(153) ≤ 12.870013850408: registration request'
     author: BuddenPing
     opened: '2026-10-11'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -4968,14 +5256,35 @@ issues:
       - result: n153-exact-certificate
         id: E-pingyou-504-exact-feasibility
         status: confirmed
+      outdated:
+      - 'the case record at 153 still shows T-127, and the adoption layer, jlevy/squares#518, is in
+        review; #518 merged on 12 October and T-148 is the house at 153'
+    - url: https://github.com/jlevy/squares/issues/504#issuecomment-6127536658
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: n153-exact-certificate
+        id: T-148
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      corrects:
+      - https://github.com/jlevy/squares/issues/504#issuecomment-6125249586
     close_when: The import and its disposition are on main, the house adoption at 153 has landed or
       is owned, and the owner has posted the resulting state; optimality and the undilated contact
       solution are outside this request.
+    notes: >-
+      The final reply of 12 October names T-148 with its rungs, but not the evidence ids
+      E-pingyou-504-certificate-report and E-pingyou-504-exact-feasibility. The confirmation of 12
+      October named both at the status they hold now, the report reviewed and the replay confirmed,
+      and, as on #238, no comment is to be posted only to name them.
   - number: 501
     title: New results for n=155, n=156 and n=211 to the best of my knowledge
     author: dostashev
     opened: '2026-10-11'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -5039,14 +5348,36 @@ issues:
         id: E-ostashev-501-exact-feasibility
         status: confirmed
       - result: kkt-exact-optima
+      outdated:
+      - 'the case records still show T-115 at 155 and T-098 at 156 and 211, and the adoption layer,
+        jlevy/squares#518, is in review; #518 merged on 12 October and T-149 is the house at all
+        three'
+    - url: https://github.com/jlevy/squares/issues/501#issuecomment-6127534994
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: three-records
+        id: T-149
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      corrects:
+      - https://github.com/jlevy/squares/issues/501#issuecomment-6125250032
     close_when: The import and its disposition are on main, the house adoption at 155, 156 and 211
       has landed or is owned, and the owner has posted the resulting state; the KKT statement and
       optimality are outside this request.
+    notes: >-
+      The final reply of 12 October names T-149 with its rungs, but not the evidence ids
+      E-ostashev-501-certificate-report and E-ostashev-501-exact-feasibility. The confirmation of 12
+      October named both at the status they hold now, the report reviewed and the replay confirmed,
+      and, as on #238, no comment is to be posted only to name them.
   - number: 505
     title: 'Improved certified upper bounds for 146 and 261 squares: registration request'
     author: RobertBarnettProjects
     opened: '2026-10-11'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -5098,6 +5429,27 @@ issues:
       - result: n146-n261-refinements
         id: E-barnett-505-exact-feasibility
         status: confirmed
+      outdated:
+      - 'the case records at 146 and 261 still show Ryan Xu''s certificates (T-125), and the
+        adoption layer, jlevy/squares#518, is in review; #518 merged on 12 October and T-150 is the
+        house at both'
+    - url: https://github.com/jlevy/squares/issues/505#issuecomment-6127537241
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: n146-n261-refinements
+        id: T-150
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      corrects:
+      - https://github.com/jlevy/squares/issues/505#issuecomment-6125250423
     close_when: The import and its disposition are on main, the house adoption at 146 and 261 has
       landed or is owned, and the owner has posted the resulting state; the superseded and n = 2043
       certificates are not requested, and optimality is outside this request.
+    notes: >-
+      The final reply of 12 October names T-150 with its rungs, but not the evidence ids
+      E-barnett-505-certificate-report and E-barnett-505-exact-feasibility. The confirmation of 12
+      October named both at the status they hold now, the report reviewed and the replay confirmed,
+      and, as on #238, no comment is to be posted only to name them.
