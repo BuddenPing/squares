@@ -912,7 +912,10 @@ PRUNE |= REGULARIZED_WITNESSES | HISTORICAL_SNAPSHOT_OUTPUTS | UNREAD_WORKER_OUT
 # directory and expects pytest to stop at configuration, before any test is collected,
 # so the consumer contract's declarations of the driver and the gallery are never read
 # in a worker. Left out, the snapshot measures 209,536,887 bytes, 178,313 under the
-# unchanged cap.
+# unchanged cap. 2026-10-12: the grid-slack prototype, the drawing-regularity census and
+# their tests join them on the same grounds (`--audit-snapshot` with the four as
+# candidates: no registered mention, no rescue); left out, 209,547,257 bytes, 167,943
+# under the cap.
 REGULARIZATION_TOOLS = frozenset(
     ROOT / relative
     for relative in (
@@ -924,6 +927,10 @@ REGULARIZATION_TOOLS = frozenset(
         "tests/test_regularize_evand.py",
         "tests/test_regularize_same_side.py",
         "tests/test_regularize_gallery.py",
+        "devtools/regularize_grid_slack.py",
+        "devtools/census_drawing_regularity.py",
+        "tests/test_regularize_grid_slack.py",
+        "tests/test_census_drawing_regularity.py",
     )
 )
 PRUNE |= REGULARIZATION_TOOLS
