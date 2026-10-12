@@ -1100,6 +1100,7 @@ HOUSES: dict[str, Callable[[int], Fraction]] = {
     "[Couzo certificates 2026-10-11]": _import("couzo-certificates-2026-10-11"),
     "[Ostashev records 2026-10-12]": _import("dostashev-records-2026-10-12"),
     "[Calle n102 2026-10-12]": _import("riocalle-n102-2026-10-12"),
+    "[Daniel n154 2026-10-12]": _import("evand-n154-2026-10-12"),
 }
 
 

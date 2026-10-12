@@ -616,6 +616,7 @@ case or experiment separately.
 
 | Document or collection | Role | Authority | Lifecycle | Current replacement |
 | --- | --- | --- | --- | --- |
+| [Review: Evan Daniel’s Rational Upper-Bound Import of 12 October (#552)](docs/project/reviews/review-2026-10-12-upper-bound-import-552.md) | dated review record | record | retained | — |
 | [Review: Daniil Ostashev’s and Rio Calle’s Rational Upper-Bound Imports of 12 October (#528, #529)](docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md) | dated review record | record | retained | — |
 | [Review: Robert Barnett’s and Daniil Ostashev’s Rational Upper-Bound Imports of 11 October (#505, #501)](docs/project/reviews/review-2026-10-11-upper-bound-imports-505-501.md) | dated review record | record | retained | — |
 | [Review: Francisco Couzo’s Eleven Rational Upper-Bound Imports of 11 October (#506)](docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md) | dated review record | record | retained | — |

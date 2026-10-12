@@ -5,6 +5,7 @@ from __future__ import annotations
 import gzip
 import hashlib
 import json
+from decimal import Decimal
 from fractions import Fraction
 from pathlib import Path
 from typing import Any
@@ -2034,3 +2035,187 @@ def test_ostashevs_compositions_are_new_arrangements_and_calles_is_ryan_xus_desi
     )
     # The 126 sits five units along and one unit down from its box's half turn.
     assert [round(float(Fraction(v)), 9) for v in de_winter["translation"]] == [5.0, -1.0]
+
+
+# --------------------------------------------------------------------------- #552
+
+DANIEL_552_SIDE = Fraction(12922566401934059503377267965457, 10**30)
+DANIEL_552_CERT = "source/search/packer/candidates/tt_n154.cert"
+#: The 1 + 1e-20 scaling of the KKT point about the origin corner puts the first square's
+#: centre (1 + 1e-20)/2 off each low wall; the far-wall clearance is what the scaling
+#: leaves once the side is rounded up at 30 places, the same along both axes.
+DANIEL_552_WALL = "1/200000000000000000000"
+DANIEL_552_FAR_WALL = "25000000003727/5000000000000000000000000000000000"
+COUZO_155 = Fraction(1295561959213445243801096476729, 10**29)
+COUZO_154 = Fraction(12931663721166847019324363825319, 10**30)
+SQUISH_154 = Fraction(
+    784162558492446266593660385683137819091796768322490163735346888314210507575675725,
+    60679277154496515024381071712664165344389803410694160363187109568787250164584599,
+)
+
+
+def _daniel_552_candidates() -> Path:
+    return route.WEB / "evand-n154-2026-10-12/source/search/packer/candidates"
+
+
+def test_the_552_roster_is_the_one_certificate_the_issue_requests() -> None:
+    """One retained certificate in Evan Daniel's text format at 154, admitted by equality
+    with the fraction the issue prints, 5.04e-4 below SQUISH's packing (T-136)."""
+    (case,) = route.import_cases(("#552",))
+    assert (case.issue, case.packet, case.n, case.read) == (
+        "#552",
+        "evand-n154-2026-10-12",
+        154,
+        DANIEL_552_CERT,
+    )
+    assert case.side == DANIEL_552_SIDE
+    assert len(case.placements) == 154
+    declared = upper.load_declaration(route.WEB / case.packet)["certificates"]
+    (offered,) = (row["offered"] for row in declared if row["n"] == 154)
+    assert admitted(case.side, offered)
+    assert literal(offered) == case.side
+    assert Fraction(5037, 10**7) < SQUISH_154 - case.side < Fraction(5039, 10**7)
+
+
+def test_the_552_certificate_is_its_kkt_point_scaled_by_1e_20_about_the_origin() -> None:
+    """Every centre is the 80-digit KKT centre times 1 + 1e-20 to the 35 places the
+    certificate prints, and the side is the scaled KKT side rounded up at 30 places: the
+    guard is in the certificate, as the issue says, and the routes believe none of it.
+    The KKT file's numbers run past `decimal_literal`'s 64 characters, so the standard
+    library reads them here; nothing is decided from them."""
+    side, poses = route.read_evand_cert(
+        (_daniel_552_candidates() / "tt_n154.cert").read_bytes(), 154
+    )
+    lines = (_daniel_552_candidates() / "tt_n154.exact.txt").read_text("utf-8").splitlines()
+    count, kkt_side = lines[0].split()
+    assert int(count) == 154
+    guard = 1 + Fraction(1, 10**20)
+    scaled = Fraction(Decimal(kkt_side)) * guard
+    assert side - Fraction(1, 10**30) < scaled <= side
+    assert side.denominator == 10**30
+    rows = [line.split() for line in lines[1:]]
+    assert len(rows) == 154
+    for (x, y, _t), (kx, ky, _angle) in zip(poses, rows, strict=True):
+        for value, printed in ((x, kx), (y, ky)):
+            assert abs(value - Fraction(Decimal(printed)) * guard) < Fraction(1, 10**34)
+    # 103 squares are upright, their KKT angles within 1e-60 of 0 or 1e-10 of 90 degrees.
+    assert sum(1 for _x, _y, t in poses if t == 0) == 103
+
+
+def test_the_packings_552_is_measured_against_are_read_as_their_entries_state() -> None:
+    """SQUISH's packing at 154 (T-136), the case's house, and Francisco Couzo's 5 October
+    packings at 154 and 155 as Evan Daniel's exact optima of them (T-098)."""
+    assert route.credited("#552", 154) == ("T-136", "T-098")
+    assert route.LINEAGE["#552", 154] == ("T-098", 155, Fraction(1))
+    sides = {("T-136", 154): SQUISH_154, ("T-098", 154): COUZO_154, ("T-098", 155): COUZO_155}
+    for (key, m), expected in sides.items():
+        side, placements = route.parent_packing(key, m)
+        assert side == expected
+        assert len(placements) == m
+
+
+def test_the_552_import_agrees_with_its_receipt_to_every_digit() -> None:
+    """The third route accepts the certificate with its six controls, finds no square
+    touching a wall, and agrees with both maintained routes' retained positive at the
+    side, every pose and the least wall clearance; its least Euclidean distance is at
+    least their separating-axis gap."""
+    (case,) = route.import_cases(("#552",))
+    row = route.decide_import(case)
+    maintained = upper.check_certification(route.WEB / case.packet)[154]
+    assert row["passed"]
+    assert row["wall_contacts"] == 0
+    assert row["wall_clearance"] == DANIEL_552_WALL
+    assert row["far_wall_clearance"] == DANIEL_552_FAR_WALL
+    assert row["least_distance"] == "1.000000e-20"
+    assert row["closest_pair"] == [141, 145]
+    assert all(row["controls"].values())
+    inputs = maintained["checker_input"]
+    assert literal(inputs["side"]) == case.side
+    assert [
+        (literal(x), literal(y), *rotation(literal(t))) for x, y, t in inputs["poses"]
+    ] == list(case.placements)
+    distance = literal(row["least_distance_squared"])
+    for name in ("exact_verify", "independent"):
+        found = maintained[name]
+        assert found["verification_passed"] is True
+        assert literal(found["minimum_containment_clearance"]) == literal(DANIEL_552_WALL)
+        gap = literal(found["minimum_best_pair_gap"])
+        assert Fraction(999, 10**23) < gap < Fraction(1, 10**20)
+        assert gap * gap <= distance
+
+
+@pytest.mark.slow
+def test_the_552_import_agrees_with_its_plan_frozen_claim_and_print() -> None:
+    """`compare_import` finds no disagreement with the retained positive, the register
+    plan's claim, the frozen claim record and the print the issue offers."""
+    (case,) = route.import_cases(("#552",))
+    row = route.decide_import(case)
+    packet = route.WEB / case.packet
+    maintained = upper.check_certification(packet)[154]
+    claims = dict(
+        route.PLAN_CLAIM.findall(upper.register_plan(packet)["results.yaml"]["claim"])
+    )
+    frozen = next(r for r in upper.check_claims(packet)["results"] if r["n"] == 154)
+    assert literal(frozen["offered_side"]) == case.side
+    assert (
+        route.compare_import(
+            row, maintained, literal(claims["154"]), frozen, frozen["offered_side"]
+        )
+        == []
+    )
+
+
+@pytest.mark.slow
+def test_the_regularized_drawing_of_552_passes_the_third_route_at_the_same_clearances() -> None:
+    """The source's display view of the same packing, retained beside the certificate and
+    no separate claim: the same side, the same least wall clearances and the same least
+    distance between the same closest pair. A diagnostic outside any receipt."""
+    raw = (_daniel_552_candidates() / "tt_n154_regularized.cert").read_bytes()
+    side, poses = route.read_evand_cert(raw, 154)
+    assert side == DANIEL_552_SIDE
+    row = route.verdict(side, tuple(placed(poses)))
+    assert row["passed"]
+    assert row["wall_clearance"] == DANIEL_552_WALL
+    assert row["far_wall_clearance"] == DANIEL_552_FAR_WALL
+    assert row["least_distance"] == "1.000000e-20"
+    assert row["closest_pair"] == [141, 145]
+    assert all(row["controls"].values())
+
+
+@pytest.mark.slow
+def test_daniels_154_is_another_arrangement_than_squishs_and_nearer_couzos_155() -> None:
+    """No symmetry pairs the certificate square for square with SQUISH's packing (T-136)
+    or with Couzo's 154 (T-098); under the best placement found, 32 of SQUISH's squares
+    land within 1e-9 of one of these, one to the digit. From Couzo's 155, 43 squares
+    reappear to the digit under one translation, and from Couzo's 154, 45 do, so the
+    measurement by pose does not tell the two starts apart; at a tenth of a unit the 155
+    is the nearer of Couzo's two, 114 of its squares landing on squares of this packing
+    against 87 of the 154's. The coarse count says nothing about descent: at that scale
+    SQUISH's packing lands 123, 32 of them turned, and only one to the digit."""
+    (case,) = route.import_cases(("#552",))
+    gaps = route.credited_gaps([case])
+    unmatched = "no symmetry matches the two packings square for square"
+    for key in ("T-136", "T-098"):
+        gap = gaps[f"#552 n=154 against {key}"]
+        assert gap["unmatched"] == unmatched
+        assert Fraction(gap["side_difference"]) < 0
+    (top, *_rest) = route.lineage_gaps([case])["#552 n=154 from T-098 n=155"]
+    assert (top["symmetry"], top["squares"], top["turned_beyond_1e-6"], top["exact"]) == (
+        0,
+        43,
+        0,
+        43,
+    )
+    child = (case.side, case.placements)
+    couzo_154 = route.parent_packing("T-098", 154)
+    (top_154, *_rest) = route.patch_lineage(child, couzo_154, Fraction(1))
+    assert (top_154["squares"], top_154["turned_beyond_1e-6"], top_154["exact"]) == (45, 0, 45)
+    squish = route.parent_packing("T-136", 154)
+    (top_136, *_rest) = route.patch_lineage(child, squish, Fraction(1))
+    assert (top_136["squares"], top_136["turned_beyond_1e-6"], top_136["exact"]) == (32, 0, 1)
+    tenth = Fraction(1, 10)
+    couzo_155 = route.parent_packing("T-098", 155)
+    coarse_155 = route.patch_lineage(child, couzo_155, Fraction(1), near=tenth)
+    coarse_154 = route.patch_lineage(child, couzo_154, Fraction(1), near=tenth)
+    assert max(placement["squares"] for placement in coarse_155) == 114
+    assert max(placement["squares"] for placement in coarse_154) == 87
