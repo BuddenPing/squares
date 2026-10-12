@@ -1,10 +1,11 @@
 # Research: Regularizing Every Known-Best Packing for Display
 
-**Date:** 2026-10-11 (last updated 2026-10-11)
+**Date:** 2026-10-11 (last updated 2026-10-12)
 
 **Author:** Joshua Levy, with Claude (session_017JNnKDwL74rnktr9s8BdjP)
 
-**Status:** Complete (spikes and recommendations; the full run is not started)
+**Status:** Complete (spikes, recommendations and the owner’s decisions of 12 October
+2026; the full run is in progress)
 
 **Bead:** think-pwmi (epic think-cdud).
 
@@ -262,10 +263,10 @@ list by how many rotation groups it merges, including three the current layer re
 | 87 | decimal | held (3): register first, about $10^{-14}$ below | 3 → 3 | 16 → 16 | 49 → 49 | 6 squares, up to 0.003 |
 | 102 | rational | held (3): T-146’s side, $7.9 \times 10^{-11}$ below | 4 → 3 | 29 → 26 | 46 → 46 | 15 moved, 1 turned |
 | 126 | rational | **admitted (10)** | **5 → 2** | **26 → 7** | **51 → 55** | 15 moved, 3 turned |
-| 206 | decimal (Couzo) | held (4): its side is exactly the verified bound, not the witness’s | **44 → 4** | **135 → 26** | **32 → 144** | 96 moved, 40 turned |
+| 206 | decimal (Couzo) | **admitted (10, `bound`)**; held (4) before 12 October | **44 → 4** | **135 → 26** | **32 → 144** | 96 moved, 40 turned |
 | 260 | decimal | no change (row 3: a candidate about $10^{-14}$ below) | 2 → 2 | 0 → 0 | 188 → 188 | nothing |
 | 267 | rational | held (3): register first, $2.5 \times 10^{-11}$ below | 9 → 5 | 41 → 37 | 196 → 196 | 31 moved, 10 turned |
-| 295 | rational | refused (7): 22 per-square counts fall | 2 → 2 | **62 → 3** | **101 → 166** | 122 moved |
+| 295 | rational | review (7): 22 per-square counts fall, no total does; refused before 12 October | 2 → 2 | **62 → 3** | **101 → 166** | 122 moved |
 
 It cost 1,598 CPU-seconds and 933 seconds of wall time at three workers; the exact solve
 at $n = 260$ alone took 801 s.
@@ -279,14 +280,16 @@ Three cases decide how the policy should read:
   bound**: the certificate’s side and the case record’s bound are the same rational,
   $232189979115498488075628916091 / 15625000000000000000000000000$, because T-098 made
   that bound from Evan Daniel’s exact solve of this same packing.
-  Row 4 holds it as a side other than the witness’s, but it certifies nothing the
+  Row 4 held it as a side other than the witness’s, but it certifies nothing the
   register does not already hold, and it passes every other check: no square’s count
-  falls, the pairing is one to one, and the largest move is 0.37.
+  falls, the pairing is one to one, and the largest move is 0.37. The owner’s answer of
+  12 October 2026 admits it as the side relation `bound`.
 - **$n = 295$ improves on every histogram total** (light squares 62 to 3, four-side 101
   to 166) and is refused because 22 individual counts fall: one square loses a house
   contact and a row of squares loses a stage contact each.
   Strict per-square non-regression, written for the axis tool’s single slides, is too
-  strict for a generator that moves a whole band; this is a case for review.
+  strict for a generator that moves a whole band; this is a case for review, and since
+  12 October 2026 row 7 sends it there.
 - **$n = 86$ and 127 fail in the exact solve** on the newer witnesses the record now
   holds, which upstream never solved.
   The current layer’s views stand there.
@@ -334,11 +337,13 @@ It buys little for the colour conventions and costs identity.
    square. At $n = 292$ Evan Daniel’s view has fewer light squares than the project’s
    current view (54 against 87) and more four-side squares (198 against 124); at 70 and
    129 the project’s current view changes nothing visible.
-6. **The decision table is right about soundness and too blunt about drawings.** Of 25
-   pilot counts it admits 4 (26, 66, 126, 292). Eight are held: by T-146’s refinements
-   rediscovered and by rounding below the bound (row 3), or by a view exactly at the
-   verified bound (row 4, $n = 206$). One is refused for per-square regressions while
-   every total improved (row 7, $n = 295$). None of those is a soundness problem.
+6. **The decision table was right about soundness and too blunt about drawings.** Of 25
+   pilot counts the first table admitted 4 (26, 66, 126, 292). Eight were held: by
+   T-146’s refinements rediscovered and by rounding below the bound (row 3), or by a
+   view exactly at the verified bound (row 4, $n = 206$). One was refused for per-square
+   regressions while every total improved (row 7, $n = 295$). None of those is a
+   soundness problem. Under the owner’s answers of 12 October 2026 the same pilots admit
+   5 (206 joins), hold 7, send 1 to review (295) and refuse none.
    Nine change nothing visible, among them the Göbel family and $n = 51$, which would
    need a number field, and three give no view because the exact solve fails (86, 127,
    261).
@@ -405,7 +410,11 @@ does not say, except where it equals the bound exactly.
 
 Adopt Option B as the standard procedure for every result, with four amendments to the
 policy and two changes to the record made first.
-Everything below is a proposal for the owner; nothing in it has been applied.
+The owner answered each on 12 October 2026: “q1 yes / q2 send to review yes, for
+trickier cases we can go to review in general / q3 yes / q4 as we do currently / q5 as
+recommended / q6 yes regularize and correct always”.
+The policy records the answers in its section 9, and `devtools.regularize_evand` applies
+them; how each recommendation was decided follows it below.
 
 **Settle the record before the full run.**
 
@@ -414,32 +423,42 @@ Everything below is a proposal for the owner; nothing in it has been applied.
    flight, such as #476 at 267). Then the run regularizes the credited packing at its
    own side instead of rediscovering it; at 70, 102, 129 and 146 the same-side re-solve
    should then succeed, which the next pilot must confirm.
+   *Decided:* as recommended, after the case-record rewrite (#403), RG-7 custody and the
+   imports in flight (think-cb34).
 2. **Register the exact packings at the printed sides in one batch.** Wherever the
    same-side view is exact at a witness’s printed side and that side is below the
    verified bound (37, 87, 101, 200 and 260 in the pilots; 17 waits on the $n = 17$
    intake hold, think-x4v4), one register result with a `regularizations` item per count
    closes the gap between reported and verified and lets the drawings in.
    This is owner question 3 in its current, much smaller form.
+   *Decided:* register and correct always, in batches, every exact view below the bound
+   (think-omqv).
 
 **Amend the decision table** (policy section 4):
 
 3. **Row 4:** a view whose exact side equals the verified upper bound is admissible as a
    drawing (relation `bound`), since it certifies exactly what the register holds.
    This admits $n = 206$ and every T-098 or T-101 count where the regularizer reproduces
-   the certified side.
+   the certified side. *Decided:* yes; `bound` is decided by rows 5 to 10, and a
+   `regularizations` item writes it `solved`, the register’s term.
 4. **Row 7:** when per-square counts fall but neither rule’s totals fall (no fewer
    four-side squares, no more light squares), send the view to review instead of
    refusing it. Keep refusal when a total falls.
+   *Decided:* yes, and more generally the trickier cases go to review: row 6 (no
+   one-to-one pairing, an unnamed turn) does too.
 5. **Row 5:** a view within $10^{-9}$ of the witness with no square turned is
    `unchanged`, so a $10^{-33}$ difference ($n = 11$) does not create a file.
+   *Decided:* as now. A view that changes nothing visible is reported as no change and
+   writes no file, whatever row matched, so the tolerance is not needed.
 6. **Question 1:** `conservative` only, as the policy already defaults.
+   *Decided:* yes.
 
 **Run it in three batches** (1–108, 109–216, 217–324), each with its receipt, its
 gallery and a review record per decision, as the epic’s plan already says.
-The automated pass admits row 10; the reviewer sees rows 7 to 9 and the gallery’s
-flagged tie-breaks.
-Where both generators admit a view, keep Evan Daniel’s and record the
-axis tool’s beside it.
+The automated pass admits row 10; the reviewer sees rows 6 to 9 where they send a view
+to review, and the gallery’s flagged tie-breaks.
+Where both generators admit a view, keep Evan Daniel’s and record the axis tool’s beside
+it.
 
 **Leave alone, deliberately:** the Göbel-family decimal records and $n = 51$, which are
 already regular in the drawings and need a number field to be framed exactly
@@ -454,14 +473,15 @@ for the owner, a few minutes each.
 
 ## Next Steps
 
-- [ ] Owner: answer the amendments and the two record changes above (think-pn0e).
+- [x] Owner: answer the amendments and the two record changes above (think-pn0e;
+  answered 12 October 2026).
 - [ ] Adopt the register’s lower exact certificates as the atlas witnesses, T-146 at its
   15 counts first, and run the full pass only after the imports in flight at the same
   counts (#470, #476, #481, #483, #488, #489) land, since a changed witness lapses every
   review (think-cb34).
 - [ ] Register the exact packings at printed sides in one batch (think-omqv).
-- [ ] Amend the policy’s decision table, then teach `devtools.regularize_evand.classify`
-  the amendments (think-up3h).
+- [x] Amend the policy’s decision table, then teach `devtools.regularize_evand.classify`
+  the amendments (think-up3h): the policy on #497, the driver on #511.
 - [ ] The index contract for both generators (think-k35c), then batch 1 with its gallery
   and review records (think-ux1v).
 - [ ] Give `arrangement_gap` a spatial index; it took 72 s of 553 at $n = 292$
@@ -488,7 +508,7 @@ full run.
 ## References
 
 - [Regularization policy](../policies/regularization-policy.md): the obligations and the
-  decision table this document proposes to amend.
+  decision table, amended on 12 October 2026 as this document recommended.
 - [Assessment of Evan Daniel’s process](research-2026-10-11-evand-regularization-assessment.md):
   how upstream works, and the adaptation plan these tools carry out.
 - [Atlas README, “The regularized views”](../../../packing/atlas/known-best/README.md#the-regularized-views):
