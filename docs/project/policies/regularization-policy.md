@@ -381,7 +381,7 @@ recorded where it is implemented, and reversing one is a change to that layer.
    registered result holds is listed as unregistered (#548). A drawing proves no bound,
    so no register result is made for one.
 7. **Registering exact views below the bound** (question 6’s answer, carried out): the
-   row 3 views outside #518’s counts are registered as one batch result, `T-151`, with
+   row 3 views outside #518’s counts are registered as one batch result, `T-154`, with
    the case records’ exact forms moved to the registered sides and their printed values
    kept, so no citation weakens (the next layer).
 

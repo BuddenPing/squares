@@ -16193,7 +16193,9 @@ results:
       review and the package preparation were assisted by OpenAI Codex; minutes later a
       revision titled "Correct attribution in submission materials", the one the issue
       names, removed that sentence, and the issue was edited to match, with no reason
-      given. The record keeps both accounts until the author says which stands.
+      given. Asked which account stands, the author answered on jlevy/squares#503 on 12
+      October 2026, for this certificate and the n153 of issue 504 (T-148): "Both solutions
+      were AI assisted by 'PY', an unreleased agentic AI offering by PingYou Ltd."
     scope:
       n_values: [207]
     verification: V3
@@ -16358,8 +16360,10 @@ results:
       first published, and its issue as first posted, said that the verification, the
       comparison review and the package preparation were assisted by OpenAI Codex; minutes
       later a revision titled "Correct attribution in submission materials" removed that
-      sentence, and the issue was edited to match, with no reason given. The record keeps
-      both accounts until the author says which stands.
+      sentence, and the issue was edited to match, with no reason given. Asked on issue 503
+      which account stands for both releases, the author answered there on 12 October 2026:
+      "Both solutions were AI assisted by 'PY', an unreleased agentic AI offering by PingYou
+      Ltd."
     scope:
       n_values: [153]
     verification: V3
