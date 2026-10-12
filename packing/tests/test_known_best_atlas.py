@@ -1257,7 +1257,8 @@ def test_poster_complete_rows_share_a_right_edge_and_leave_room_for_left_informa
         assert position.top + 242 <= canvas.height - 120
     for row, top, prefix_left, first_grid_left in (
         (17, 4712, 586, 4116),
-        (18, 4999, 180, 3913),
+        # 308 left the grid on 11 October 2026 (think-fvz4), so row 18's grid starts at 309.
+        (18, 4999, 180, 4116),
     ):
         transition = transitions[row]
         non_grid, grid = canvas.segment_lines(transition)
@@ -1621,7 +1622,7 @@ def test_triangle_fast_label_check_requires_the_compact_caption() -> None:
     assert check(canvas, root) == [
         (
             "atlas/known-best/known-best-1-324.svg n=211 side-bound is "
-            "('s(211) ≤ 14.997961',); expected ('s(211) ≤ 14.99797',)"
+            "('s(211) ≤ 14.997961',); expected ('s(211) ≤ 14.99634',)"
         )
     ]
 
@@ -2014,13 +2015,17 @@ def test_poster_packing_credits_name_every_retained_construction_author_and_sour
         "Chaoweeraprasit",
         "Couzo",
         "Daniel",
-        "de Winter",
+        "Fang",
+        "Ostashev",
+        "PingYou Ltd",
         "Rehwaldt",
         "Gupta",
+        "Barnett",
         "ry-xu",
         "Chang",
         "DeVincentis",
         "hmbelvedere",
+        "Mishapolk",
     ]
     assert all(body.count(name) == 1 for name in expected_names)
     assert "et al." not in body
@@ -2156,7 +2161,7 @@ def test_poster_accents_recent_contributions_independently_in_svg_and_pdf() -> N
         line = cards[211].find(f"svg:text[@data-feature='{feature}']", SVG)
         assert line is not None
         assert "".join(line.itertext()) == (
-            "s(211) ≤ 14.99797" if feature == "side-bound" else "s(211) ≥ 14.54457"
+            "s(211) ≤ 14.99634" if feature == "side-bound" else "s(211) ≥ 14.54457"
         )
         colored = [span for span in line if span.attrib.get("fill") == FIRST_PARTY_ACCENT_COLOR]
         assert len(colored) == 1
@@ -2947,10 +2952,12 @@ def test_the_poster_badges_every_perfect_square_and_counts_them_in_its_legend() 
         "".join(node.itertext())
         for node in legend.findall(".//svg:text[@data-feature='legend-label']", SVG)
     ]
+    # The house adoption of 11 October 2026 gave nine cases known only numerically an
+    # exact certificate (think-fvz4).
     assert labels == [
         "proved optimal (77 of 324)",
-        "exact value known (295 of 324)",
-        "only known numerically (29 of 324)",
+        "exact value known (304 of 324)",
+        "only known numerically (20 of 324)",
         "rigid (22 of 324)",
         "colors indicate distinct tilt angles",
         "shade indicates number of full-side contacts",
