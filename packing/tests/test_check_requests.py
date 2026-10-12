@@ -405,6 +405,16 @@ def test_each_entry_is_held_to_the_last_reply_that_named_it() -> None:
     )
     assert due(elsewhere) == ["bound: T-001 at V3/C3: confirmed, and no reply has named it"]
 
+    # A bare naming states nothing to compare, so nothing later overtakes it, and a later
+    # mention of the result does not re-raise it (#541 tracks requiring the fields).
+    bare = issue(
+        replies=[
+            reply(1, "2026-10-02", reported=[{"result": "bound", "id": "T-001"}]),
+            reply(2, "2026-10-03", reported=[{"result": "bound"}]),
+        ]
+    )
+    assert due(bare) == []
+
 
 def test_an_outdated_statement_is_due_until_a_later_reply_corrects_it() -> None:
     said = [{"result": "bound", "id": "T-001", "verification": "V3", "confirmation": "C3"}]

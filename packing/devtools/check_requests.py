@@ -374,8 +374,9 @@ def _stated(fields: Mapping[str, object]) -> str:
 def _moved(entry: Entry, item: Mapped) -> tuple[str, str] | None:
     """What a reply stated of an entry and what holds now, where the two differ.
 
-    Only the fields the reply stated are compared: an acknowledgement that named an id
-    and no rung has not been overtaken by a rung."""
+    Only the fields the reply stated are compared: an item that names an id and states no
+    rung or status is never overtaken, and a later reply that mentions the result without
+    naming the entry no longer re-raises it (#541 tracks requiring the fields)."""
     held = _current(entry)
     keys = [
         key for key in ("verification", "confirmation", "status") if key in item and key in held
