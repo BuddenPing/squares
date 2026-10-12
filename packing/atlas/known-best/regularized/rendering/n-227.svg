@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:sqpack="https://github.com/jlevy/thinking-scratchpad/ns/sqpack/v1" width="960" height="680" viewBox="0 0 960 680" role="img" aria-labelledby="figure-title figure-description" data-static-fallback="final">
   <title id="figure-title">Known-best packing of 227 unit squares, regularized</title>
-  <desc id="figure-description">A regularized derived view of the retained known-best n=227 construction, never the source witness: Evan Daniel's regularizer's view of it, its contacts re-solved exactly at the record's side, verified over the rationals (atlas/known-best/regularized/index.json), and rendered with the repository's deterministic house renderer. It changes no side, frontier value or evidence tier; the evidence stated here is the record's. Regularized by the Squares Project with Evan Daniel's regularizer (evand/square-packing, MIT).</desc>
+  <desc id="figure-description">A regularized derived view of the retained known-best n=227 construction, never the source witness: its exact frame with the free grid slack closed and the near-axis squares straightened at the record's side, verified over the rationals (atlas/known-best/regularized/index.json), and rendered with the repository's deterministic house renderer. It changes no side, frontier value or evidence tier; the evidence stated here is the record's. Regularized by the Squares Project with Evan Daniel's regularizer (evand/square-packing, MIT).</desc>
   <metadata>
     <sqpack:profile version="8">
       <sqpack:coordinates>mathematical-y-up; svg-y-down</sqpack:coordinates>
