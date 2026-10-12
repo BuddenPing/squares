@@ -3521,6 +3521,7 @@ def test_couzo_complete_sources_survive_native_worker_boundaries(
     assert snapshot_source_bytes() <= SNAPSHOT_MAX_BYTES
 
 
+@pytest.mark.slow
 def test_adopted_houses_survive_native_worker_boundaries(
     control_snapshot: tuple[Path, set[Path]],
 ) -> None:

@@ -1402,6 +1402,11 @@ def test_the_slow_marker_is_declared_only_by_measured_nodes() -> None:
             # 14.99s CPU lower bound for complete Gupta admission, four mutations and
             # restorations. The shared clone remains setup and child45s is unchanged.
             "test_gupta_complete_sources_survive_native_worker_boundaries",  # 15.224s
+            # Measured 2026-10-12 on a loaded four-cpu box: 24.95s call, 17.77s setup for
+            # the 42 houses adopted on 11 October 2026 (think-fvz4), their 82 private
+            # inputs admitted in a worker and 24 late mutations refused and restored. The
+            # quick lane keeps the custody receipt's own checks (test_house_adoption).
+            "test_adopted_houses_survive_native_worker_boundaries",  # 24.95s
         },
         # Hosted run37739373988/job113186283659: 14.52s; 68 full geometry replays
         # cover 85,204 pair decisions across the n108 translation/tolerance surface.
