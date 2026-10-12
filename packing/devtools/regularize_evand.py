@@ -32,9 +32,12 @@ by the policy's decision table. Per count, in order:
    directory, which is where `reg.load` reads its 80-digit input. Nothing is written under
    `vendor/`, and the run directory must lie outside the checkout.
 3. **Exact solve.** `exactsolve.py witness.txt --out solve -q` with `python -I`, one
-   thread, a timeout, and the count's directory as working directory. A count that does
-   not certify (not jammed, not converged, an invalid certificate, a timeout) is
-   reported and stops there; it is never polished.
+   thread, a timeout, and the count's directory as working directory. Two failures are
+   tried once more (`solve_with_retries`): a failed solve at `--dps 100`, and a witness
+   not jammed only at noise level with `--force-kkt`, kept only where the side falls by
+   no more than `10^-10`. A count that still does not certify (not jammed, not
+   converged, an invalid certificate, a timeout) is reported and stops there; it is
+   never polished.
 4. **Regularize.** `regularize_evand_shim.py`, beside this file, runs upstream's
    `reg.regularize` with `coincide` placement, the `conservative` angle policy and the
    source orientation, upstream's `atlas.level_of`, and `reg.write_cert`, and writes
@@ -604,8 +607,14 @@ def run_child(
     return completed.returncode, time.perf_counter() - started
 
 
-def solve(directory: Path, replica: Path, timeout: float) -> dict[str, Any]:
-    solve_dir = directory / "solve"
+def solve(
+    directory: Path,
+    replica: Path,
+    timeout: float,
+    extra: Sequence[str] = (),
+    name: str = "solve",
+) -> dict[str, Any]:
+    solve_dir = directory / name
     solve_dir.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(directory / "input.txt", solve_dir / "witness.txt")
     for stale in solve_dir.glob("witness.*"):
@@ -620,10 +629,11 @@ def solve(directory: Path, replica: Path, timeout: float) -> dict[str, Any]:
             "--out",
             str(solve_dir),
             "-q",
+            *extra,
         ],
         directory,
         timeout,
-        directory / "solve.log",
+        directory / f"{name}.log",
     )
     if code is None:
         return {"status": "timeout", "seconds": round(seconds, 2), "timeout": timeout}
@@ -646,8 +656,81 @@ def solve_block(meta: Mapping[str, Any]) -> dict[str, Any]:
         "second_order": (meta.get("second_order") or {}).get("status"),
         "why": meta.get("why"),
         "jam_residual": meta.get("jam_residual"),
+        "vv_milp_dS": meta.get("vv_milp_dS"),
         "solver_seconds": meta.get("seconds"),
     }
+
+
+#: The retry ladder's automatic rungs (the no-view study of 12 October 2026): a solve
+#: that failed is tried again at 100 digits (it recovered n = 18, where an exactly
+#: degenerate input sends Newton off at 80); a witness found not jammed only at noise
+#: level, its jam residual below 1e-6 and the MILP's descent below 1e-5, is solved with
+#: upstream's `--force-kkt` (152 and 269), and the result is kept only where its exact
+#: side is at most 1e-10 below the witness's, so the solve removed noise and polished
+#: nothing. The eight rational witnesses with slack the solver rightly finds not jammed
+#: (jam residual 2.4e-7 to 1.5e-2, descent 2.2e-5 to 1.0) stay out.
+RETRY_DIGITS = ("--dps", "100")
+FORCE_KKT = ("--force-kkt",)
+NOISE_JAM_RESIDUAL = 1e-6
+NOISE_DESCENT = 1e-5
+POLISH_ALLOWANCE = Fraction(1, 10**10)
+
+
+def retry_rung(first: Mapping[str, Any]) -> tuple[str, ...] | None:
+    """The ladder's rung for a first solve that gives no view, or None."""
+    if first.get("status") == "solve failed":
+        return RETRY_DIGITS
+    residual, descent = first.get("jam_residual"), first.get("vv_milp_dS")
+    if (
+        first.get("status") == "not jammed"
+        and residual is not None
+        and descent is not None
+        and float(residual) < NOISE_JAM_RESIDUAL
+        and abs(float(descent)) < NOISE_DESCENT
+    ):
+        return FORCE_KKT
+    return None
+
+
+def polished(block: Mapping[str, Any], printed: Fraction | None) -> bool:
+    """Whether a forced solve moved the side more than noise below the witness's."""
+    if printed is None or not block.get("S_exact"):
+        return True
+    return Fraction(str(block["S_exact"])) < printed - POLISH_ALLOWANCE
+
+
+def solve_with_retries(
+    directory: Path, replica: Path, timeout: float, printed: Fraction | None
+) -> dict[str, Any]:
+    """The solve, and the ladder's one automatic retry where the first gives no view.
+
+    Every attempt is listed in `attempts`. A retry that certifies replaces the first
+    attempt's outputs under `solve/`, the first kept as `solve-first/`; one that does not
+    is left in its own directory and the first attempt's result stands.
+    """
+    first = solve(directory, replica, timeout)
+    attempts = [{"arguments": [], "status": first["status"], "seconds": first.get("seconds")}]
+    rung = retry_rung(first)
+    if rung is None:
+        return {**first, "attempts": attempts}
+    retried = solve(directory, replica, timeout, rung, name="solve-retry")
+    accepted = retried["status"] in SOLVE_CERTIFIED and not (
+        rung == FORCE_KKT and polished(retried, printed)
+    )
+    attempts.append(
+        {
+            "arguments": list(rung),
+            "status": retried["status"],
+            "seconds": retried.get("seconds"),
+            "accepted": accepted,
+        }
+    )
+    if not accepted:
+        return {**first, "attempts": attempts}
+    shutil.rmtree(directory / "solve-first", ignore_errors=True)
+    (directory / "solve").rename(directory / "solve-first")
+    (directory / "solve-retry").rename(directory / "solve")
+    return {**retried, "attempts": attempts, "retried_with": list(rung)}
 
 
 def frame_text(witness: Mapping[str, Any], frame: SourceFrame) -> str:
@@ -1385,7 +1468,7 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
     seconds["input"] = round(time.perf_counter() - started, 3)
 
     if first <= STAGES.index("solve"):
-        solved = solve(directory, replica, options.timeout)
+        solved = solve_with_retries(directory, replica, options.timeout, frame.side)
     else:
         solved = solve_block(read_json(directory / "solve/witness.json"))
         solved["seconds"] = solved.get("solver_seconds")
@@ -1723,7 +1806,16 @@ def measured_from_report(report: Mapping[str, Any], name: Output) -> Measured:
     outputs = report.get("outputs") or {}
     block = outputs.get(name)
     if not block:
+        # The stage that stopped the count says why: a regularizer's refusal after a
+        # certified solve is not the solve's status (n = 303 in the full run).
+        reason = str((report.get("decision") or {}).get("reason") or "")
+        if reason.startswith("no view: ") and not reason.startswith("no view: solve "):
+            return Measured(name, produced=False, status=reason.removeprefix("no view: "))
         status = (report.get("solve") or {}).get("status") or report.get("status")
+        regularized = report.get("regularize")
+        if status in SOLVE_CERTIFIED and regularized is not None:
+            failure = regularize_failure(regularized) or "regularize: no output"
+            return Measured(name, produced=False, status=failure)
         return Measured(name, produced=False, status=f"solve {status}")
     regularized = report.get("regularize") or {}
     upper = upper_bound(

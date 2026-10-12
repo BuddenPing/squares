@@ -588,3 +588,37 @@ def test_long_integer_text_lifts_the_digit_limit_for_one_measurement() -> None:
         assert len(str(huge)) == 5001
     with pytest.raises(ValueError, match="integer string conversion"):
         str(huge)
+
+
+def test_the_retry_ladder_takes_only_failed_solves_and_noise_level_jams() -> None:
+    """The no-view study of 12 October 2026: 18 recovers at 100 digits, 152 and 269 with
+    `--force-kkt`; the rational witnesses with slack are rightly not jammed."""
+    assert drive.retry_rung({"status": "solve failed"}) == drive.RETRY_DIGITS
+    noise = {"status": "not jammed", "jam_residual": 1.82e-7, "vv_milp_dS": -4.9e-7}
+    assert drive.retry_rung(noise) == drive.FORCE_KKT
+    slack = {"status": "not jammed", "jam_residual": 1.5e-2, "vv_milp_dS": -0.42}
+    assert drive.retry_rung(slack) is None
+    assert drive.retry_rung({**noise, "vv_milp_dS": -2.2e-5}) is None
+    for status in ("timeout", "certificate invalid", "KKT local min"):
+        assert drive.retry_rung({"status": status}) is None
+    printed = Fraction(1283, 100)
+    assert not drive.polished({"S_exact": str(printed - Fraction(5, 10**12))}, printed)
+    assert drive.polished({"S_exact": str(printed - Fraction(1, 10**9))}, printed)
+    assert drive.polished({"S_exact": str(printed)}, None)
+
+
+def test_a_regularizer_refusal_keeps_its_reason_when_decided_again() -> None:
+    report = {
+        "n": 303,
+        "status": "generator-failed",
+        "solve": {"status": "KKT local min"},
+        "regularize": {"place": "ok", "cert_ok": False},
+        "outputs": {"solved": None, "same": None, "same_refusal": None},
+        "decision": {"row": 1, "reason": "no view: solve KKT local min"},
+    }
+    measured = drive.measured_from_report(report, "solved")
+    assert measured.status == "regularize: upstream's checker refused the certificate"
+    kept = {**report, "decision": {"row": 1, "reason": "no view: regularize timeout"}}
+    assert drive.measured_from_report(kept, "solved").status == "regularize timeout"
+    unsolved = {**report, "solve": {"status": "not jammed"}, "regularize": None}
+    assert drive.measured_from_report(unsolved, "solved").status == "solve not jammed"
