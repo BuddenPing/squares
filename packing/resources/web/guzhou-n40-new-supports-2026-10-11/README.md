@@ -138,7 +138,7 @@ first-party tool, written without opening the release’s `verifier/exact.py`,
 Its receipts are in [receipts/](receipts).
 
 **The finite audit** (`check`, [receipts/finite-audit.json](receipts/finite-audit.json),
-`FINITE_STEPS_HOLD`, 67 checks, about ten seconds), in exact rationals on the retained
+`FINITE_STEPS_HOLD`, 68 checks, about ten seconds), in exact rationals on the retained
 bytes.
 After the orbit facts, its checks are the ones
 [`devtools.audit_continuous_pose`](../../../devtools/audit_continuous_pose.py) makes of
@@ -172,7 +172,12 @@ After the orbit facts, its checks are the ones
 - Every `parameters`, `scalar`, `admission`, `coverage` and `axis` block of both receipts,
   every slab row as the contract runs it (exit 0, an empty stderr, the inputs, source
   and binary it names), the fourteen control stages’ exits, and the 30 source digests
-  each receipt lists, which are the retained files’.
+  each receipt lists, which are the manifest’s.
+- The kernels: the five files this release keeps from `T-145`’s (both kernels, both
+  harnesses and the oracle) are in both packets’ manifests with one digest, which their
+  retained bytes here have, and are byte for byte `T-145`’s retained files; the CI run’s
+  pose binary `69bc9e64…` is the one `T-145`’s CI receipt names and `T-145`’s replay
+  rebuilt with the CI compiler.
 - Controls, each refused: $A$ one step of $1/250000000$ larger (the near-axis
   containment fails); $\tau = 3999/4000$; $T = 41/100$; $\varepsilon = 10^{-5}$; a
   generated site moved onto a pool rectangle’s mirror image; one weight scaled by
@@ -195,8 +200,12 @@ $199950/4999 < 40$; 5,424 distinct rectangles once expanded) and threshold 1: `v
 by the exact axis-vertex sweep over 10,929,636 vertices, least certified
 1.0016868361671276, in 2.8 s. That decision shares no code with the axis kernel and reads
 the density itself rather than the dominated measure.
-`check-axis` refuses an axis stage whose record lacks this decision unless it is told
-`--without-crate`.
+`check-axis` holds it to the input derived here from the retained density: the digest
+the record and the crate’s own premises state, `192f5df6…`, is that input’s, and the
+premises name its $L$, $n$, 5,424 expanded rectangles and net.
+It refuses an axis stage whose record lacks this decision unless it is told
+`--without-crate`, and a judgement without it reports
+`AXIS_KERNEL_HOLDS_WITHOUT_CRATE`, never `AXIS_STAGE_HOLDS`.
 
 **Not run here:** the 43 slabs of the continuous-pose kernel, the release’s
 `run.py` controls, its tests and its two dual programs. The `price` block of the finite
