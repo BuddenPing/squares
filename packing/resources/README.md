@@ -1135,7 +1135,10 @@ a third exact route agrees and held the fact to the pinned certificate and witne
 T-147 records the side at V3/C3 on the
 [review of 11 October](../../docs/project/reviews/review-2026-10-11-upper-bound-imports-503-504.md),
 and the case at 207 holds it as the house since 11 October 2026. The first commit
-disclosed OpenAI Codex assistance, and the pinned commit removed the disclosure.
+disclosed OpenAI Codex assistance, and the pinned commit removed the disclosure; asked
+which account stands, the author answered on jlevy/squares#503 on 12 October 2026, for
+this release and the n153 one: “Both solutions were AI assisted by ‘PY’, an unreleased
+agentic AI offering by PingYou Ltd.”
 
 **[PingYou n153 certificate 2026-10-11]**: PingYou Ltd’s exact rational certificate for
 n = 153, by its account Ryan Xu’s n70 construction composed with its reflection and an
@@ -1146,7 +1149,9 @@ Both project exact routes accept the replayed certificate and refuse both contro
 a third exact route agrees and held the fact to the pinned certificate and witness.
 T-148 records the side at V3/C3 on the same review, and the case at 153 holds it as the
 house since 11 October 2026; the lineage from the n70 is by construction, not by pose.
-The release makes no statement about AI assistance.
+The release makes no statement about AI assistance; on jlevy/squares#503 the author
+answered on 12 October 2026, for this release and the n207 one: “Both solutions were AI
+assisted by ‘PY’, an unreleased agentic AI offering by PingYou Ltd.”
 
 ## Daniil Ostashev’s and Robert Barnett’s certificates, 11 October 2026
 
@@ -1173,6 +1178,38 @@ on the two requested and held each fact to its pinned certificate.
 T-150 records the two sides at V3/C3 on the same review, and the cases at 146 and 261
 hold them as the house since 11 October 2026; the five superseded certificates are
 registered nowhere. OpenAI Codex assistance disclosed.
+
+## SQUISH’s fourth request and Francisco Couzo’s certificates, 11 October 2026
+
+**[SQUISH fourth request 2026-10-11]**: Nate Chaoweeraprasit’s exact rational
+certificates for n = 176, 181, 238, 239, 270, 271, 272, 304 and 305, composed by
+SQUISH’s Mondrian method from pieces of earlier packings, pinned at
+`aeacc6c124df339074f7370e1e010bb6e8c1b5ca`, kept as derived exact facts, no upstream
+byte retained; [packet](web/squish-500-fourth-request-2026-10-11/README.md).
+Both project exact routes accept all nine and refuse all 18 controls, and a third exact
+route agrees and held each fact to its pinned certificate and summary.csv row.
+T-151 records the exact fractions at V3/C3 on the
+[review of 11 October](../../docs/project/reviews/review-2026-10-11-upper-bound-imports-500.md),
+and the cases at 176, 181, 238, 239, 270, 271 and 272 hold them as the house since 12
+October 2026; the issue’s 15-digit sides are cuts of them, and at 304 and 305 Francisco
+Couzo’s certificates below, built from these packings, are smaller.
+Claude Opus 5.5 assistance disclosed.
+
+**[Couzo certificates 2026-10-11]**: Francisco Couzo’s exact rational certificates for n
+= 304, 305, 338, 339, 344, 375, 376, 378, 379, 380 and 381, pinned at
+`337078ca3e05153aceb099237b175cf64af5748a`, retained as the source wrote them;
+[packet](web/couzo-certificates-2026-10-11/README.md).
+Both project exact routes accept all 15 certificates the two source commits add or
+change and refuse all 30 controls, and a third exact route agrees on the eleven
+requested and held every file to its pinned bytes.
+T-152 records the 304 and 305 sides, refinements of SQUISH’s Mondrian packings above, at
+V3/C3 on the
+[review of 12 October](../../docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md),
+and the cases at 304 and 305 hold them as the house since 12 October 2026. The nine
+sides beyond the case corpus are verified beyond-horizon rows that supersede the rows
+tracked at 338, 339, 344, 375, 376, 378 and 379; the four certificates the issue does
+not name, at 175, 308, 340 and 343, are registered nowhere.
+Claude assistance disclosed.
 
 ## Evan Daniel’s regularizer, vendored 11 October 2026
 
