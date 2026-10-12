@@ -1193,7 +1193,7 @@
       {
         "badges": [{"glyph":"O","meaning":"proved optimal","style":"solid"},{"glyph":"=","meaning":"exact value known","style":"solid"}],
         "exactness": {"degree":1,"degree_provenance":"derived","degree_recorded_upstream":false,"exact_form":"7","minimal_polynomial":"s - 7 = 0","state":"closed-form"},
-        "lower": {"correction":false,"display":"s(46) ≥ 7","evidence":["E-bentz-2010-proof","E-bentz46-theorem8-audit"],"first_proved_here":false,"provenance":"frontier","recent_result":false,"shown":false,"value":"7"},
+        "lower": {"correction":false,"display":"s(46) ≥ 7","evidence":["E-bentz-2010-proof","E-bentz46-theorem8-audit","E-k2m3-evand-bentz-lean-build","E-k2m3-evand-valid7-qx2-replay"],"first_proved_here":false,"provenance":"frontier","recent_result":false,"shown":false,"value":"7"},
         "n": 46,
         "optimality": {"provenance":"frontier","status":"proved"},
         "rigidity": {
