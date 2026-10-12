@@ -17196,10 +17196,13 @@ results:
     claim: >-
       Marc Leonard Overbeck (Kleddamag) claims, as a candidate proof, that `s(17) = L =
       4.67553009360455095163…`, the side of John Bidwell's 1998 packing of seventeen unit
-      squares, with the squares closed, independently rotated and allowed to touch. His
-      STATEMENT.md defines `F(t,b)=t-3t^2-t^3-t^4+(1-t-t^4+t^5)b+(-3t+t^2-t^3-t^4)b^2` and
+      squares, with the squares closed, independently rotated and allowed to touch.
+
+      His STATEMENT.md defines `F(t,b)=t-3t^2-t^3-t^4+(1-t-t^4+t^5)b+(-3t+t^2-t^3-t^4)b^2` and
       `G(t,b)=-2t^3-2t^4+(-1+3t-4t^2+t^4+t^5)b+(4-2t-2t^2+2t^3-2t^4)b^2+(-1-5t+4t^2+t^4+t^5)b^3+(2t+2t^2)b^4`,
-      takes `t_0` and `b_0` to 60 places, and states: `There exists exactly one simultaneous
+      takes `t_0` and `b_0` to 60 places.
+
+      It states: `There exists exactly one simultaneous
       real zero $(t_*,b_*)$ in the isolating rectangle
       $[t_0-10^{-12},t_0+10^{-12}]\times[b_0-10^{-12},b_0+10^{-12}]$.` `Set
       $L=(6+4t_*)/(1+2t_*-t_*^2)$; its denominator is positive and
@@ -17214,7 +17217,9 @@ results:
       leaving 11 cases; admission of each case into one of 11 regions; 13 tree certificates,
       by which ten regions hold no packing below L and the eleventh only packings in a tube
       around the known one; and a rigidity step, 17 exact rounds and a contraction of ratio
-      159201934153319/200000000000000. Its audit was by AI sessions; Guzhou0806 read the
+      159201934153319/200000000000000.
+
+      Its audit was by AI sessions; Guzhou0806 read the
       premises in an earlier state and ran a checker of his own on two of the 13 trees, and
       nobody outside has verified the whole.
 
@@ -17275,8 +17280,9 @@ results:
       (E-n017-overbeck-capture-sample-replay), 34 rows of six statements were decided again
       by an independent implementation (E-n017-overbeck-capture-independent-sample), and a
       sample decides no statement whole. Of the 13 trees, three were reproduced with the
-      producer's code (E-n017-overbeck-tree-sample-replay) and ten were not run. The
-      rigidity stage's finite rounds and contraction ran in the author's check.py
+      producer's code (E-n017-overbeck-tree-sample-replay) and ten were not run.
+
+      The rigidity stage's finite rounds and contraction ran in the author's check.py
       (E-n017-overbeck-candidate-check-py-replay), which recomputes no capture row and no
       tree. These runs are evidence on the case record and are not cited here: each is a
       machine-shaped replay that passed on the part it ran, so citing it would let the
