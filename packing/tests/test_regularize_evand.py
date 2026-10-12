@@ -12,6 +12,9 @@ through the real solver and regularizer.
 
 from __future__ import annotations
 
+import gzip
+import hashlib
+import importlib
 import json
 import math
 import os
@@ -24,10 +27,13 @@ import mpmath
 import pytest
 from jsonschema import Draft202012Validator
 
+from devtools import regularize_axis_components as axis
 from devtools import regularize_evand as drive
+from devtools.regularize_axis_components import AtlasLayout
 from devtools.regularize_evand import Decision, Measured, Options, classify
-from sqpack.witness import load_witness, materialize_exact_witness
+from sqpack.witness import load_witness, materialize_exact_witness, witness_document
 from sqpack.yamlio import load_yaml
+from tests.test_regularize_axis_components import PIN_4, decimal_witness, write_witness
 
 ALL_ROUTES = {"exact_verify": True, "independent": True, "half_angle": True}
 
@@ -514,20 +520,186 @@ def test_only_the_admitted_selection_may_write_into_this_checkout(tmp_path: Path
         drive.write_layer([tmp_path], drive.REPO, "preview")
 
 
-def test_a_written_view_carries_the_renderers_fields_and_the_record() -> None:
-    view = drive.layer_view(
-        {**REPORT, "decision": {"decision": "admit"}, "regularization": {"by": "project"}},
-        {
-            "id": "W-known-best-n026-regularized",
-            "n": 26,
-            "certificate": {"kind": "same-side-view"},
-        },
+def scratch_tree(tmp_path: Path) -> tuple[Path, AtlasLayout]:
+    """A tree laid out as the checkout is, with one count (the axis tests' row of four
+    with slack) and the axis tool's layer built over it."""
+    root = tmp_path / "tree"
+    packing = root / "packing"
+    (packing / "witnesses/known-best").mkdir(parents=True)
+    (packing / "atlas/known-best").mkdir(parents=True)
+    row = decimal_witness(
+        [("0.53", "0.5", "0"), ("1.56", "0.5", "0"), ("2.59", "0.5", "0"), PIN_4],
+        "4",
+        name="row",
     )
+    write_witness(packing / "witnesses/known-best/n-004.yaml", row)
+    manifest = packing / "atlas/known-best/manifest.json"
+    entries = [{"n": 4, "witness": {"path": "witnesses/known-best/n-004.yaml"}}]
+    manifest.write_text(json.dumps({"atlas": {"entries": entries}}), encoding="utf-8")
+    layout = drive.layer_layout(root)
+    assert axis.main(["--update-atlas"], layout=layout) == 0
+    return root, layout
+
+
+def a_run(root: Path, layout: AtlasLayout, run_dir: Path) -> Path:
+    """A finished run that admitted a view of the row at its own side: the axis tool's
+    view, written as the driver writes its same-side view, with the report around it."""
+    view = load_yaml(gzip.decompress(layout.view(4).read_bytes()).decode())["witness"]
+    view["certificate"] = {"kind": "same-side-view", "side_relation": "same"}
+    directory = run_dir / "n-004"
+    directory.mkdir(parents=True)
+    (directory / "view-same.yaml").write_text(witness_document(view), encoding="utf-8")
+    source = root / "packing/witnesses/known-best/n-004.yaml"
+    after = drive.histogram(drive.contact_partners(view)["house"])
+    stage = drive.histogram(drive.contact_partners(view)["stage"])
+    record = {
+        "n": 4,
+        "of_witness": "W-row",
+        "provenance": {"source_key": None, "found_by": [], "improved_by": []},
+        "by": "project",
+        "method": drive.METHOD.format(
+            pin="675a5ea", patches="", variant="conservative", style="coincide"
+        ),
+        "side": "same",
+        "identity": {
+            "basis": "measured",
+            "measured_in": drive.MEASURED_IN,
+            "one_to_one": True,
+            "moved": 3,
+            "max_move": 0.06,
+            "max_turn_deg": 0.0,
+        },
+    }
+    report = {
+        "n": 4,
+        "status": "ok",
+        "source": {
+            "id": "W-row",
+            "path": "packing/witnesses/known-best/n-004.yaml",
+            "sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+            "kind": "decimal",
+            "s_W": "4",
+            "s_W_exact": "4",
+        },
+        "solve": {"status": "KKT local min", "retried_with": ["--dps", "100"]},
+        "regularize": {"level": 2, "groups_before": 1, "groups_after": 1},
+        "outputs": {
+            "solved": None,
+            "same": {
+                "side_exact": "4",
+                "relation": "same",
+                "routes": {"exact_verify": True, "independent": True},
+                "minus_s_W": "0.000e+00",
+                "minus_U": None,
+            },
+        },
+        "identity": {"one_to_one": True, "symmetry": 0},
+        "shades": {
+            "house": {"before": after, "after": after},
+            "stage": {"before": stage, "after": stage},
+            "regressions": [],
+            "against_current": None,
+        },
+        "decision": {
+            "row": 10,
+            "decision": "admit",
+            "reason": "every admission condition holds",
+        },
+        "regularization": record,
+    }
+    (directory / "report.json").write_text(json.dumps(report), encoding="utf-8")
+    receipt = {
+        "generator": {"interpreter": "CPython 3.14.7"},
+        "parameters": {"variant": "conservative", "workers": 1, "counts": [4]},
+        "counts": [{"n": 4, "decision": "admit"}],
+        "cost": {"cpu_seconds": 1.5, "wall_seconds": 2.0, "workers": 1},
+    }
+    (run_dir / "receipt.json").write_text(json.dumps(receipt), encoding="utf-8")
+    return run_dir
+
+
+def test_an_admitted_view_enters_the_layer_under_its_contract(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("PACK_JOBS", "1")
+    root, layout = scratch_tree(tmp_path)
+    run_dir = a_run(root, layout, tmp_path / "full")
+
+    # A count left out is not written, whatever was decided there.
+    summary = drive.write_layer([run_dir], root, "admitted", exclude={4})
+    assert (summary["written"], summary["excluded"]) == ([], [4])
+
+    summary = drive.write_layer([run_dir], root, "admitted")
+    assert summary["written"] == [4]
+    assert axis.check_atlas(layout) == []
+    index = json.loads(layout.index.read_text())
+    (entry,) = index["entries"]
+    assert entry["generator"] == axis.EVAND_GENERATOR
+    assert entry["run"] == {
+        "id": "evand-regularize-full",
+        "output": "same",
+        "retried_with": ["--dps", "100"],
+    }
+    assert entry["reference"]["generator"] == axis.ALGORITHM
+    assert entry["regularization"]["identity"]["measured_in"] == drive.LAYER_INDEX_PATH
+    assert entry["decision"]["row"] == 10
+    assert index["generators"][axis.EVAND_GENERATOR]["pin"] == "675a5ea"
+    assert index["runs"][0]["decisions"] == {"admit": 1}
+    view = load_yaml(gzip.decompress(layout.view(4).read_bytes()).decode())["witness"]
     certificate = view["certificate"]
-    assert (certificate["kind"], certificate["label"]) == ("regularized-view", "regularized")
-    assert certificate["derived_from"] == "W-known-best-n026"
-    assert certificate["generator"] == {"kind": "same-side-view"}
-    assert certificate["regularization"] == {"by": "project"}
+    assert certificate["credit"] == axis.EVAND_CREDIT
+    assert certificate["generated"] == {"kind": "same-side-view", "side_relation": "same"}
+    # The full check decides the drawn view again on both routes.
+    assert axis.main(["--verify-atlas"], layout=layout) == 0
+
+
+def test_only_an_admitted_grid_view_is_admitted() -> None:
+    """The decision table decides a grid-slack view as it decides the driver's own."""
+    grid = importlib.import_module("devtools.regularize_grid_slack")
+    report: dict[str, Any] = {
+        "n": 26,
+        "attempts": [
+            {
+                "exact": {
+                    "side": drive.literal(Fraction(source_side(26))),
+                    "verdicts": {
+                        "exact_verify": {"passed": True},
+                        "independent": {"passed": True},
+                    },
+                }
+            }
+        ],
+        "measured": {
+            "identity": {
+                "one_to_one": True,
+                "unnamed_turns": [],
+                "max_move": "1e-1",
+                "moved": 1,
+            },
+            "shades": {"regressions": [], "against_current": {"regressions": []}},
+            "visible_change": True,
+            "totals_fall": False,
+        },
+    }
+    source = witness(26)
+    assert grid.decided(report, source).decision == "admit"
+    turned = {
+        **report["measured"],
+        "identity": {**report["measured"]["identity"], "unnamed_turns": [3]},
+    }
+    assert grid.decided({**report, "measured": turned}, source).row == 6
+    far = {
+        **report["measured"],
+        "identity": {**report["measured"]["identity"], "max_move": "0.6"},
+    }
+    assert grid.decided({**report, "measured": far}, source).row == 9
+    assert grid.decided({"n": 26, "refusal": "no-exact-frame"}, source).decision == "no-view"
+
+
+def source_side(n: int) -> Fraction:
+    frame = drive.source_frame(witness(n))
+    assert frame.side is not None
+    return frame.side
 
 
 # --------------------------------------------------------------------------------------

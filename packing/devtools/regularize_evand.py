@@ -129,8 +129,9 @@ import resource
 import shutil
 import subprocess
 import sys
+import tempfile
 import time
-from collections.abc import Iterable, Iterator, Mapping, Sequence
+from collections.abc import Collection, Iterable, Iterator, Mapping, Sequence
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass, field, replace
@@ -146,6 +147,7 @@ from devtools import census_atlas_contact_shades as shades
 from devtools import check_half_angle_area as area
 from devtools import check_rational_witness_independent as independent
 from devtools import evand_exact_certificates as evand
+from devtools import regularize_axis_components as axis
 from devtools.apply_exact_ceilings import bound_value
 from devtools.upper_bound_packets import RATIONAL_DIGITS
 from sqpack.witness import (
@@ -1943,6 +1945,22 @@ SELECTIONS = ("admitted", "preview")
 VIEW_KIND = "regularized-view"
 DRAWING_LABEL = "regularized"
 LAYER_DIR = "packing/atlas/known-best/regularized"
+LAYER_INDEX_PATH = f"{LAYER_DIR}/index.json"
+LAYER_GENERATED_BY = "python -m devtools.regularize_evand layer --select admitted"
+IDENTITY_BY = (
+    "devtools.check_half_angle_area.arrangement_gap, nearest centres under the box's "
+    "eight symmetries"
+)
+SHADES_BY = (
+    "devtools.census_atlas_contact_shades: edge_rule_contacts (house) and "
+    "centre_rule_contacts (stage) on packings_from_witness"
+)
+#: Run parameters an index's `runs` keeps: what a reader needs to rebuild the run, not
+#: the list of counts it ran, which its decisions already sum.
+RUN_PARAMETERS = (
+    "variant", "style", "orient", "frame", "same_mode", "from_stage", "dps", "eps",
+    "timeout", "regularize_timeout", "workers",
+)  # fmt: skip
 
 
 def total_contacts(counts: Sequence[int]) -> int:
@@ -1976,123 +1994,398 @@ def source_id(report: Mapping[str, Any]) -> str:
     return (report.get("source") or {}).get("id") or f"W-known-best-n{int(report['n']):03d}"
 
 
-def layer_view(report: Mapping[str, Any], document: Mapping[str, Any]) -> dict[str, Any]:
-    """A run's view as the atlas layer holds one: the renderer's certificate fields, with
-    the driver's provenance and the regularization record kept beside them."""
-    view = dict(document)
-    view["certificate"] = {
-        "kind": VIEW_KIND,
-        "label": DRAWING_LABEL,
-        "derived_from": source_id(report),
-        "generator": dict(view.get("certificate") or {}),
-        "regularization": report.get("regularization"),
-        "decision": report.get("decision"),
-    }
-    return view
+@dataclass(frozen=True)
+class Admitted:
+    """One generator's view of one count, decided and ready to be drawn by the layer."""
+
+    n: int
+    generator: str
+    run: dict[str, Any]
+    source: dict[str, Any]
+    side: dict[str, Any]
+    view: dict[str, Any]
+    """The view's Witness/v2 record, its certificate not yet the layer's."""
+    provenance: dict[str, Any]
+    """The generator's own certificate fields, kept under the layer's certificate."""
+    routes: dict[str, bool]
+    decision: dict[str, Any]
+    measured: dict[str, Any]
+    regularization: dict[str, Any]
+    house_after: list[int]
 
 
-def layer_entry(
-    report: Mapping[str, Any], view_path: str, view_text: str, chosen: str
-) -> dict[str, Any]:
-    """The index entry for a written view, in the layer's terms plus the run's record."""
+def layer_regularization(record: Mapping[str, Any]) -> dict[str, Any]:
+    """A run's regularization record as the layer keeps it: the register's terms, its
+    identity's measurements retained in the layer's index (`measured_in`)."""
+    kept = {key: value for key, value in record.items() if value is not None}
+    kept["identity"] = {**record["identity"], "measured_in": LAYER_INDEX_PATH}
+    return kept
+
+
+def evand_admitted(report: Mapping[str, Any], directory: Path, run_id: str) -> Admitted:
+    """A driver report's admitted view (row 10), in the layer's terms."""
+    chosen = layer_candidate(report, "admitted")
+    if chosen is None:
+        raise EvandRunError(f"n={report['n']}: not admitted")
+    n = int(report["n"])
     source = report.get("source") or {}
     block = (report.get("outputs") or {})[chosen]
     routes = block.get("routes") or {}
+    ident = report.get("identity") or {}
     shaded = report.get("shades") or {}
-    return {
-        "n": report["n"],
-        "status": "regularized",
-        "generator": GENERATED_BY,
-        "source": {
+    regularized = report.get("regularize") or {}
+    document = load_yaml((directory / f"view-{chosen}.yaml").read_text(encoding="utf-8"))
+    run: dict[str, Any] = {"id": run_id, "output": chosen}
+    retried = (report.get("solve") or {}).get("retried_with")
+    if retried:
+        run["retried_with"] = [str(argument) for argument in retried]
+    decision = report.get("decision") or {}
+    record = report.get("regularization")
+    if not record:
+        raise EvandRunError(f"n={n}: the report carries no regularization record")
+    return Admitted(
+        n=n,
+        generator=axis.EVAND_GENERATOR,
+        run=run,
+        source={
             "witness": source.get("path"),
             "id": source_id(report),
             "scalar_kind": source.get("kind"),
             "sha256": source.get("sha256"),
         },
-        "side": {
+        side={
             "reported": source.get("s_W"),
+            "view": block.get("side_exact"),
             "relation": block.get("relation"),
             "view_minus_reported": block.get("minus_s_W"),
             "view_minus_verified_upper_bound": block.get("minus_U"),
         },
-        "view": {"path": view_path, "sha256": sha256_of(view_text.encode("utf-8"))},
-        "shades": {rule: shaded.get(rule) for rule in RULE_NAMES},
-        "exact_verification": {
+        view=dict(document["witness"]),
+        provenance=dict(document["witness"].get("certificate") or {}),
+        routes={
             "repository_verifier": bool(routes.get("exact_verify")),
             "independent_checker": bool(routes.get("independent")),
-            "passed": bool(routes.get("exact_verify") and routes.get("independent")),
+            **({"half_angle": bool(routes["half_angle"])} if "half_angle" in routes else {}),
         },
-        "decision": report.get("decision"),
-        "regularization": report.get("regularization"),
+        decision={
+            "row": decision.get("row"),
+            "decision": decision.get("decision"),
+            "reason": decision.get("reason"),
+        },
+        measured={
+            "identity_by": f"{IDENTITY_BY}, in devtools.regularize_evand",
+            "shades_by": f"{SHADES_BY}, in devtools.regularize_evand",
+            "contacts": {
+                rule: {
+                    "before": list((shaded.get(rule) or {}).get("before") or []),
+                    "after": list((shaded.get(rule) or {}).get("after") or []),
+                }
+                for rule in RULE_NAMES
+            },
+            "symmetry": int(ident.get("symmetry") or 0),
+            "regressions": _regression_count(shaded) if shaded else 0,
+            "level": regularized.get("level"),
+            "groups": [
+                int(regularized["groups_before"]),
+                int(regularized["groups_after"]),
+            ]
+            if regularized.get("groups_before") is not None
+            else [],
+        },
+        regularization=layer_regularization(record),
+        house_after=list((shaded.get("house") or {}).get("after") or []),
+    )
+
+
+def run_block(run_dir: Path, run_id: str) -> dict[str, Any]:
+    """A run as the layer's index records it, from its receipt: the generator version is
+    the index's `generators` block, so a run keeps its parameters, decisions and cost."""
+    receipt = read_json(run_dir / "receipt.json")
+    parameters = receipt.get("parameters") or {}
+    cost = receipt.get("cost") or {}
+    decisions: dict[str, int] = {}
+    for row in receipt.get("counts") or []:
+        word = str(row.get("decision"))
+        decisions[word] = decisions.get(word, 0) + 1
+    finished = time.strftime(
+        "%Y-%m-%d", time.gmtime((run_dir / "receipt.json").stat().st_mtime)
+    )
+    return {
+        "id": run_id,
+        "generator": axis.EVAND_GENERATOR,
+        "finished": finished,
+        "interpreter": (receipt.get("generator") or {}).get("interpreter"),
+        "parameters": {key: parameters[key] for key in RUN_PARAMETERS if key in parameters},
+        "counts": len(receipt.get("counts") or []),
+        "decisions": dict(sorted(decisions.items())),
+        "cost": {
+            "cpu_seconds": float(cost.get("cpu_seconds") or 0),
+            "wall_seconds": float(cost.get("wall_seconds") or 0),
+            "workers": int(cost.get("workers") or parameters.get("workers") or 1),
+        },
     }
 
 
-def replaces_current(
-    entry: Mapping[str, Any] | None, root: Path, report: Mapping[str, Any]
-) -> bool:
-    """Whether a new view replaces the layer's current one at its count: only when it
-    shares at least as many full sides in total under the house rule."""
+def evand_generator_block() -> dict[str, Any]:
+    """The vendored generator as the layer's index describes it: its pin and patches."""
+    pin = vendored_pin()
+    return {
+        "tool": "packing/devtools/regularize_evand.py",
+        "generated_by": LAYER_GENERATED_BY,
+        "method": METHOD.format(
+            pin=pin["pin"],
+            patches="".join(f"+{patch}" for patch in pin["patches"]),
+            variant="conservative",
+            style=STYLE,
+        ),
+        "credit": axis.EVAND_CREDIT,
+        "vendored": relative(VENDOR),
+        "source_url": pin["source_url"],
+        "pin": pin["pin"],
+        "source_commit": pin["source_commit"],
+        "patches": pin["patches"],
+    }
+
+
+def layer_view(admitted: Admitted) -> dict[str, Any]:
+    """An admitted view as the layer holds it: the renderer's certificate fields, the
+    regularization and credit its entry repeats, and the generator's own fields kept."""
+    view = dict(admitted.view)
+    view["certificate"] = {
+        "kind": VIEW_KIND,
+        "label": DRAWING_LABEL,
+        "derived_from": admitted.source["id"],
+        "generator": admitted.generator,
+        "credit": axis.EVAND_CREDIT,
+        "run": admitted.run["id"],
+        "regularization": admitted.regularization,
+        "decision": admitted.decision,
+        "generated": admitted.provenance,
+    }
+    return view
+
+
+def layer_entry(
+    admitted: Admitted,
+    view_path: str,
+    text: str,
+    shade_record: Mapping[str, Any],
+    reference: Mapping[str, Any],
+) -> dict[str, Any]:
+    """The index entry for a written view (`regularized-atlas-index.schema.yaml`)."""
+    return {
+        "n": admitted.n,
+        "status": "regularized",
+        "generator": admitted.generator,
+        "run": admitted.run,
+        "source": admitted.source,
+        "side": admitted.side,
+        "view": {"path": view_path, "sha256": sha256_of(text.encode("utf-8"))},
+        "shades": dict(shade_record),
+        "exact_verification": {
+            **admitted.routes,
+            "passed": bool(
+                admitted.routes.get("repository_verifier")
+                and admitted.routes.get("independent_checker")
+            ),
+        },
+        "decision": admitted.decision,
+        "measured": admitted.measured,
+        "regularization": admitted.regularization,
+        "reference": dict(reference),
+    }
+
+
+def current_house_total(entry: Mapping[str, Any] | None, root: Path) -> int | None:
+    """Full sides the layer's current view of a count shares under the house rule."""
     if entry is None or entry.get("status") != "regularized" or not entry.get("view"):
-        return True
+        return None
     text = gzip.decompress((root / entry["view"]["path"]).read_bytes()).decode("utf-8")
-    current = histogram(contact_partners(load_yaml(text)["witness"])["house"])
-    after = ((report.get("shades") or {}).get("house") or {}).get("after") or []
-    return total_contacts(after) >= total_contacts(current)
+    return total_contacts(histogram(contact_partners(load_yaml(text)["witness"])["house"]))
 
 
-def write_layer(run_dirs: Sequence[Path], root: Path, select: str) -> dict[str, Any]:
-    """Write the selected views of finished runs into the layer under `root`, merged with
-    the index already there, a later run winning at a count two runs decided. Returns
-    what was written, what kept the current view, and what was left out."""
-    if select not in SELECTIONS:
-        raise EvandRunError(f"unknown selection {select!r}")
+def admit_views(
+    candidates: Sequence[Admitted],
+    root: Path,
+    *,
+    generators: Mapping[str, Any],
+    runs: Sequence[Mapping[str, Any]],
+    exclude: Collection[int] = (),
+) -> dict[str, Any]:
+    """Write admitted views into the layer under `root` and their entries into its index.
+
+    A count in `exclude` is left out whatever was decided there (its witness is about to
+    change). A view replaces the layer's current one only when it shares at least as
+    many full sides in total under the house rule; the axis tool's record of the count
+    stays beside it as `reference`. The index keeps the generators and runs its entries
+    draw from, and its totals are summed again.
+    """
     root = root.resolve()
-    if root == REPO.resolve() and select != "admitted":
-        raise EvandRunError("only the admitted selection may write into this checkout")
-    index_path = root / LAYER_DIR / "index.json"
+    index_path = root / LAYER_INDEX_PATH
     index = read_json(index_path)
+    if index.get("contract") != axis.ATLAS_CONTRACT:
+        raise EvandRunError(f"{LAYER_INDEX_PATH} is not a {axis.ATLAS_CONTRACT} index")
     entries = {int(entry["n"]): entry for entry in index["entries"]}
-    found: dict[int, tuple[Path, dict[str, Any]]] = {}
-    for run_dir in run_dirs:
-        for path in sorted(Path(run_dir).glob("n-*/report.json")):
-            report = read_json(path)
-            found[int(report["n"])] = (path.parent, report)
+    layout = layer_layout(root)
     written: list[int] = []
     kept: list[int] = []
-    left_out: list[int] = []
-    for n in sorted(found):
-        directory, report = found[n]
-        chosen = layer_candidate(report, select)
-        if chosen is None:
-            left_out.append(n)
+    excluded: list[int] = []
+    for admitted in sorted(candidates, key=lambda item: item.n):
+        n = admitted.n
+        if n in exclude:
+            excluded.append(n)
             continue
-        if not replaces_current(entries.get(n), root, report):
+        current = entries.get(n)
+        reference = (current or {}).get("reference") or current
+        if reference is None or reference.get("generator") != axis.ALGORITHM:
+            raise EvandRunError(f"n={n}: the layer holds no record of the axis tool's")
+        drawn = current_house_total(current, root)
+        if drawn is not None and total_contacts(admitted.house_after) < drawn:
             kept.append(n)
             continue
-        document = load_yaml((directory / f"view-{chosen}.yaml").read_text(encoding="utf-8"))
-        text = witness_document(layer_view(report, document["witness"]))
+        text = witness_document(layer_view(admitted), schema=layout.schema_reference())
         view_path = f"{LAYER_DIR}/n-{n:03d}-regularized.yaml.gz"
         target = root / view_path
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_bytes(gzip.compress(text.encode("utf-8"), mtime=0))
-        entries[n] = layer_entry(report, view_path, text, chosen)
-        written.append(n)
-    ordered = [entries[n] for n in sorted(entries)]
-    statuses: dict[str, int] = {}
-    for entry in ordered:
-        statuses[entry["status"]] = statuses.get(entry["status"], 0) + 1
-    index["entries"] = ordered
-    index.setdefault("totals", {})["statuses"] = statuses
-    index["generated_by"] = (
-        f"{index.get('generated_by')}; {GENERATED_BY} layer --select {select}"
-    )
-    if select != "admitted":
-        index["preview"] = (
-            f"a {select} layer from devtools.regularize_evand, not the record's: it includes "
-            "views the policy holds or refuses, for the owner to see before deciding"
+        with atomic_output_file(target, make_parents=True) as temporary:
+            temporary.write_bytes(gzip.compress(text.encode("utf-8"), compresslevel=9, mtime=0))
+        source = root / admitted.source["witness"]
+        with tempfile.TemporaryDirectory() as scratch:
+            plain = Path(scratch) / "view.yaml"
+            plain.write_text(text, encoding="utf-8")
+            after = shades.witness_shades(plain)
+        shade_record = axis.shade_record(shades.witness_shades(source), after)
+        entries[n] = json.loads(
+            json.dumps(layer_entry(admitted, view_path, text, shade_record, reference))
         )
-    write_json(index_path, index)
-    return {"select": select, "written": written, "kept_current": kept, "left_out": left_out}
+        written.append(n)
+    records = [entries[n] for n in sorted(entries)]
+    known = {run["id"]: dict(run) for run in index.get("runs") or []}
+    known.update({run["id"]: dict(run) for run in runs})
+    rebuilt = axis.carried_index(
+        {
+            **index,
+            "generators": {**(index.get("generators") or {}), **generators},
+            "runs": list(known.values()),
+        },
+        records,
+    )
+    with atomic_output_file(index_path) as temporary:
+        temporary.write_text(axis.index_text(rebuilt), encoding="utf-8")
+    return {"written": written, "kept_current": kept, "excluded": excluded}
+
+
+def evand_candidates(run_dirs: Sequence[Path]) -> tuple[list[Admitted], list[dict[str, Any]]]:
+    """Every count finished runs admitted (row 10), a later run winning at a count two
+    decided, with the runs they came from."""
+    found: dict[int, tuple[Path, str, dict[str, Any]]] = {}
+    for run_dir in run_dirs:
+        run_id = f"{axis.EVAND_GENERATOR}-{Path(run_dir).name}"
+        for path in sorted(Path(run_dir).glob("n-*/report.json")):
+            report = read_json(path)
+            found[int(report["n"])] = (path.parent, run_id, report)
+    admitted = [
+        evand_admitted(report, directory, run_id)
+        for directory, run_id, report in found.values()
+        if layer_candidate(report, "admitted") is not None
+    ]
+    used = {item.run["id"] for item in admitted}
+    runs = [
+        run_block(Path(run_dir), run_id)
+        for run_dir in run_dirs
+        if (run_id := f"{axis.EVAND_GENERATOR}-{Path(run_dir).name}") in used
+    ]
+    return admitted, runs
+
+
+def write_preview(run_dirs: Sequence[Path], root: Path, select: str) -> dict[str, Any]:
+    """Write the selected views of finished runs into a scratch tree's layer, as
+    `admit_views` writes admitted ones, for a preview of what the policy would draw."""
+    if root.resolve() == REPO.resolve():
+        raise EvandRunError("only the admitted selection may write into this checkout")
+    found: dict[int, tuple[Path, str, dict[str, Any]]] = {}
+    for run_dir in run_dirs:
+        run_id = f"{axis.EVAND_GENERATOR}-{Path(run_dir).name}"
+        for path in sorted(Path(run_dir).glob("n-*/report.json")):
+            report = read_json(path)
+            chosen = layer_candidate(report, select)
+            if chosen is None:
+                continue
+            # A preview draws what row 10 would have drawn: the record is the run's.
+            report = {**report, "decision": {**report["decision"], "decision": "admit"}}
+            found[int(report["n"])] = (path.parent, run_id, report)
+    admitted = [
+        evand_admitted(report, directory, run_id)
+        for directory, run_id, report in found.values()
+    ]
+    runs = [
+        run_block(Path(run_dir), f"{axis.EVAND_GENERATOR}-{Path(run_dir).name}")
+        for run_dir in run_dirs
+    ]
+    summary = admit_views(
+        admitted, root, generators={axis.EVAND_GENERATOR: evand_generator_block()}, runs=runs
+    )
+    return {"select": select, **summary}
+
+
+def layer_layout(root: Path) -> Any:
+    """The layer under `root` as the axis tool's check reads it."""
+    root = root.resolve()
+    return axis.AtlasLayout(
+        root / "packing",
+        root,
+        root / "packing/atlas/known-best/manifest.json",
+        root / LAYER_DIR,
+        root / "packing/witnesses",
+    )
+
+
+def write_layer_with_grid(
+    run_dirs: Sequence[Path],
+    root: Path,
+    *,
+    grid_run: Path,
+    grid_counts: Collection[int],
+    exclude: Collection[int] = (),
+) -> dict[str, Any]:
+    """Admit finished runs' views and, at `grid_counts`, the grid-slack run's view instead
+    (`devtools.regularize_grid_slack.admitted_views`), in one write of the layer."""
+    grid = importlib.import_module("devtools.regularize_grid_slack")
+    admitted, runs = evand_candidates(run_dirs)
+    chosen = set(grid_counts)
+    views, grid_run_block, grid_generator = grid.admitted_views(grid_run, sorted(chosen))
+    candidates = [item for item in admitted if item.n not in chosen] + list(views)
+    used = {item.run["id"] for item in candidates}
+    summary = admit_views(
+        candidates,
+        root,
+        generators={
+            axis.EVAND_GENERATOR: evand_generator_block(),
+            axis.GRID_GENERATOR: grid_generator,
+        },
+        runs=[run for run in [*runs, grid_run_block] if run["id"] in used],
+        exclude=exclude,
+    )
+    return {"select": "admitted", "grid_counts": sorted(chosen), **summary}
+
+
+def write_layer(
+    run_dirs: Sequence[Path], root: Path, select: str, exclude: Collection[int] = ()
+) -> dict[str, Any]:
+    """Write finished runs' admitted views into the layer under `root` (`admit_views`),
+    or with `preview`, every drawable view into a scratch tree (`write_preview`)."""
+    if select not in SELECTIONS:
+        raise EvandRunError(f"unknown selection {select!r}")
+    if select != "admitted":
+        return write_preview(run_dirs, root, select)
+    admitted, runs = evand_candidates(run_dirs)
+    summary = admit_views(
+        admitted,
+        root,
+        generators={axis.EVAND_GENERATOR: evand_generator_block()},
+        runs=runs,
+        exclude=exclude,
+    )
+    return {"select": select, **summary}
 
 
 def write_receipt(
@@ -2263,6 +2556,24 @@ def parser() -> argparse.ArgumentParser:
     layer_command.add_argument("--run-dir", type=Path, nargs="+", required=True)
     layer_command.add_argument("--repo-root", type=Path, required=True)
     layer_command.add_argument("--select", choices=SELECTIONS, default="admitted")
+    layer_command.add_argument(
+        "--exclude",
+        nargs="+",
+        default=[],
+        help="counts or a-b left out whatever was decided (their witnesses are changing)",
+    )
+    layer_command.add_argument(
+        "--grid-run",
+        type=Path,
+        default=None,
+        help="a finished devtools.regularize_grid_slack run whose views to admit as well",
+    )
+    layer_command.add_argument(
+        "--grid-counts",
+        nargs="+",
+        default=[],
+        help="the counts at which to draw the grid-slack run's view rather than this one's",
+    )
     report_command = sub.add_parser("report", help="print a run's receipt as a table")
     report_command.add_argument("--run-dir", type=Path, required=True)
     report_command.add_argument("--json", action="store_true")
@@ -2281,9 +2592,24 @@ def main(argv: list[str] | None = None) -> int:
         print(report_table(receipt))
         return 0
     if arguments.command == "layer":
-        summary = write_layer(arguments.run_dir, arguments.repo_root, arguments.select)
+        exclude = parse_counts(arguments.exclude)
+        if arguments.grid_run is None:
+            summary = write_layer(
+                arguments.run_dir, arguments.repo_root, arguments.select, exclude
+            )
+        else:
+            summary = write_layer_with_grid(
+                arguments.run_dir,
+                arguments.repo_root,
+                grid_run=arguments.grid_run,
+                grid_counts=parse_counts(arguments.grid_counts),
+                exclude=exclude,
+            )
         print(json.dumps(summary))
-        return 0
+        problems = axis.check_atlas(layer_layout(arguments.repo_root))
+        for problem in problems:
+            print(problem)
+        return 1 if problems else 0
     if arguments.command == "report":
         receipt = read_json(arguments.run_dir / "receipt.json")
         print(json.dumps(receipt, indent=1) if arguments.json else report_table(receipt))

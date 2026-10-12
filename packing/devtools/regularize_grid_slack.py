@@ -83,6 +83,7 @@ from __future__ import annotations
 
 import argparse
 import gzip
+import hashlib
 import json
 import math
 import time
@@ -100,6 +101,7 @@ from strif import atomic_output_file
 
 from devtools import census_atlas_contact_shades as shades
 from devtools import census_drawing_regularity as regularity
+from devtools import regularize_axis_components as layer
 from devtools import regularize_evand as driver
 from devtools import regularize_same_side as same
 from devtools.build_known_best_atlas import frame_from_witness
@@ -1301,6 +1303,220 @@ def run_one(n: int, run_dir: Path, settings: Settings) -> dict[str, Any]:
         directory / "report.json", (json.dumps(report, indent=1, default=str) + "\n").encode()
     )
     return report
+
+
+# --------------------------------------------------------------------------------------
+# Admission: a run's views as the regularized layer draws them
+# --------------------------------------------------------------------------------------
+
+
+def decided(report: Mapping[str, Any], witness: Mapping[str, Any]) -> driver.Decision:
+    """The policy's decision table (section 4) applied to one count's view, as the driver
+    applies it to its own: the exact routes, the side against `s_W` and `U`, the pairing
+    and named turns, the per-square and total contact counts, and the move bound."""
+    if "measured" not in report:
+        return driver.classify(
+            driver.Measured("same", produced=False, status=str(report.get("refusal")))
+        )
+    measured = report["measured"]
+    ident = measured["identity"]
+    shaded = measured["shades"]
+    verdicts = report["attempts"][-1]["exact"]["verdicts"]
+    side = Fraction(str(report["attempts"][-1]["exact"]["side"]))
+    frame = driver.source_frame(witness)
+    printed = frame.side if frame.side is not None else None
+    upper = driver.upper_bound(driver.case_facts(int(report["n"])))
+    relation = driver.side_relation(side, printed, upper)
+    current = shaded.get("against_current") or {}
+    return driver.classify(
+        driver.Measured(
+            "same" if relation == "same" else "solved",
+            produced=True,
+            routes={
+                "exact_verify": bool(verdicts["exact_verify"]["passed"]),
+                "independent": bool(verdicts["independent"]["passed"]),
+            },
+            relation=relation,
+            side=side,
+            upper=upper,
+            one_to_one=bool(ident.get("one_to_one")),
+            unnamed_turns=tuple(ident.get("unnamed_turns") or ()),
+            regressions=len(shaded.get("regressions") or [])
+            + len(current.get("regressions") or []),
+            max_move=Fraction(str(ident["max_move"])) if ident.get("max_move") else None,
+            visible_change=bool(measured.get("visible_change")),
+            totals_fall=bool(measured.get("totals_fall")),
+        )
+    )
+
+
+def admitted(directory: Path, run_id: str) -> driver.Admitted:
+    """One count's grid-slack view, admitted by the decision table's row 10, in the
+    layer's terms (`devtools.regularize_evand.admit_views` writes it).
+
+    The run read the known-best witness of the checkout it ran in, which its report
+    names by path; the layer records the digest of the witness this checkout holds, so
+    run and admit from one revision, and the layer's check names a later change.
+    """
+    report = json.loads((directory / "report.json").read_text(encoding="utf-8"))
+    n = int(report["n"])
+    if report.get("generator") != GENERATOR:
+        raise GridSlackError(f"n={n}: a view of {report.get('generator')}, not {GENERATOR}")
+    path = KNOWN_BEST / f"n-{n:03d}.yaml"
+    data = path.read_bytes()
+    witness = load_yaml(data.decode("utf-8"))["witness"]
+    decision = decided(report, witness)
+    if decision.decision != "admit":
+        raise GridSlackError(f"n={n}: not admitted: row {decision.row}, {decision.reason}")
+    view = load_yaml(gzip.decompress((directory / "view.yaml.gz").read_bytes()).decode())
+    view = view["witness"]
+    measured = report["measured"]
+    ident = measured["identity"]
+    shaded = measured["shades"]
+    side = Fraction(str(view["side"]))
+    printed = driver.source_frame(witness).side
+    upper = driver.upper_bound(driver.case_facts(n))
+    relation = driver.side_relation(side, printed, upper)
+    facts = driver.case_facts(n)
+    record: dict[str, Any] = {
+        "n": n,
+        "of_witness": witness["id"],
+        "provenance": {
+            "source_key": facts.get("source_key"),
+            "found_by": facts.get("found_by") or [],
+            "improved_by": facts.get("improved_by") or [],
+        },
+        "by": "project",
+        "method": f"{METHOD}, through devtools.regularize_grid_slack",
+        "side": "same" if relation == "same" else "solved",
+    }
+    # No `changes`: the register counts there the free squares a regularizer turns, and
+    # the squares straightened here are any within `--near-axis-degrees` of the axes,
+    # load-bearing or not; their largest turn is the identity's `max_turn_deg`.
+    record["identity"] = {
+        "basis": "measured",
+        "measured_in": driver.LAYER_INDEX_PATH,
+        "one_to_one": bool(ident["one_to_one"]),
+        "moved": int(ident["moved"]),
+        "max_move": float(ident["max_move"]),
+        "max_turn_deg": float(ident["max_turn_deg"]),
+    }
+    verdicts = report["attempts"][-1]["exact"]["verdicts"]
+    current = shaded.get("against_current") or {}
+    return driver.Admitted(
+        n=n,
+        generator=GENERATOR,
+        run={"id": run_id, "output": "grid"},
+        source={
+            "witness": relative_source(n),
+            "id": str(witness["id"]),
+            "scalar_kind": str(witness["scalar"]["kind"]),
+            "sha256": hashlib.sha256(data).hexdigest(),
+        },
+        side={
+            "reported": str(witness["side"]),
+            "view": driver.literal(side),
+            "relation": relation,
+            "view_minus_reported": f"{float(side - printed):.3e}" if printed else "-",
+            "view_minus_verified_upper_bound": (
+                f"{float(side - upper):.3e}" if upper is not None else None
+            ),
+        },
+        view=dict(view),
+        provenance=dict(view.get("certificate") or {}),
+        routes={
+            "repository_verifier": bool(verdicts["exact_verify"]["passed"]),
+            "independent_checker": bool(verdicts["independent"]["passed"]),
+        },
+        decision={
+            "row": decision.row,
+            "decision": decision.decision,
+            "reason": decision.reason,
+        },
+        measured={
+            "identity_by": f"{driver.IDENTITY_BY}, in devtools.regularize_grid_slack",
+            "shades_by": f"{driver.SHADES_BY}, in devtools.regularize_grid_slack",
+            "contacts": {
+                rule: {
+                    "before": list(shaded[rule]["before"]),
+                    "after": list(shaded[rule]["after"]),
+                }
+                for rule in ("house", "stage")
+            },
+            "symmetry": int(ident.get("symmetry") or 0),
+            "regressions": len(shaded.get("regressions") or [])
+            + len(current.get("regressions") or []),
+            "level": None,
+            "groups": [],
+        },
+        regularization=record,
+        house_after=list(shaded["house"]["after"]),
+    )
+
+
+def relative_source(n: int) -> str:
+    return (KNOWN_BEST / f"n-{n:03d}.yaml").relative_to(REPO).as_posix()
+
+
+def generator_block(settings: Mapping[str, Any]) -> dict[str, Any]:
+    """This generator as the layer's index describes it."""
+    return {
+        "tool": "packing/devtools/regularize_grid_slack.py",
+        "generated_by": (
+            "python -m devtools.regularize_grid_slack --n N ... --run-dir DIR, admitted by "
+            "python -m devtools.regularize_evand layer --grid-run DIR --grid-counts N ..."
+        ),
+        "method": METHOD,
+        "credit": layer.EVAND_CREDIT,
+        "settings": dict(settings),
+    }
+
+
+def run_block(run_dir: Path, run_id: str) -> tuple[dict[str, Any], dict[str, Any]]:
+    """A run as the layer's index records it, and its settings: every count's decision
+    by the table and the seconds its reports record. The run kept no receipt of its own
+    CPU time, so the cost is those seconds, summed, at one worker a count."""
+    decisions: dict[str, int] = {}
+    seconds = 0.0
+    settings: dict[str, Any] = {}
+    finished = 0.0
+    counts = 0
+    for path in sorted(run_dir.glob("n-*/report.json")):
+        report = json.loads(path.read_text(encoding="utf-8"))
+        n = int(report["n"])
+        witness = load_source(n)
+        word = decided(report, witness).decision
+        decisions[word] = decisions.get(word, 0) + 1
+        seconds += float(report.get("seconds") or 0)
+        settings = dict(report.get("settings") or settings)
+        finished = max(finished, path.stat().st_mtime)
+        counts += 1
+    block = {
+        "id": run_id,
+        "generator": GENERATOR,
+        "finished": time.strftime("%Y-%m-%d", time.gmtime(finished)),
+        "parameters": settings,
+        "counts": counts,
+        "decisions": dict(sorted(decisions.items())),
+        "cost": {
+            "cpu_seconds": round(seconds, 2),
+            "wall_seconds": round(seconds, 2),
+            "workers": 1,
+            "note": "per-count seconds the reports record, summed; no receipt of the run's own",
+        },
+    }
+    return block, settings
+
+
+def admitted_views(
+    run_dir: Path, counts: Sequence[int]
+) -> tuple[list[driver.Admitted], dict[str, Any], dict[str, Any]]:
+    """The views of `counts` in a finished run, each admitted by the decision table, with
+    the run and this generator as the layer's index records them."""
+    run_id = f"grid-slack-{run_dir.name}"
+    views = [admitted(run_dir / f"n-{n:03d}", run_id) for n in counts]
+    run, settings = run_block(run_dir, run_id)
+    return views, run, generator_block(settings)
 
 
 def summary(report: Mapping[str, Any]) -> str:
