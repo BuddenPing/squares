@@ -509,9 +509,11 @@ def test_the_review_queue_is_every_count_reported_for_review() -> None:
     assert drive.receipt_lists(rows)["review_queue"] == [1, 3, 4]
 
 
-def test_only_the_admitted_selection_may_write_into_this_checkout(tmp_path: Path) -> None:
-    with pytest.raises(drive.EvandRunError, match="only the admitted selection"):
-        drive.write_layer([tmp_path], drive.REPO, "preview")
+@pytest.mark.parametrize("select", drive.SELECTIONS)
+def test_no_selection_writes_into_this_checkout(tmp_path: Path, select: str) -> None:
+    """`layer_entry` is not the index contract's entry, which the atlas's totals read."""
+    with pytest.raises(drive.EvandRunError, match="never this checkout"):
+        drive.write_layer([tmp_path], drive.REPO, select)
 
 
 def test_a_written_view_carries_the_renderers_fields_and_the_record() -> None:

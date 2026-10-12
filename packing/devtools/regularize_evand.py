@@ -2213,11 +2213,12 @@ def reclassify(run_dir: Path, counts: Sequence[int] | None = None) -> dict[str, 
 # The layer: a run's views written where the atlas reads them
 # --------------------------------------------------------------------------------------
 
-#: The selections `layer` knows. `admitted` is the policy's: row 10 alone, and the only
-#: one that may write into this checkout. `preview` is every view that would change the
-#: drawing, passes the maintained exact routes, pairs one to one, and loses no contact in
-#: total under either rule, against the witness or the current view; it is for a scratch
-#: tree, to see the atlas with the held and review rows drawn before anyone decides them.
+#: The selections `layer` knows. `admitted` is the policy's: row 10 alone. `preview` is
+#: every view that would change the drawing, passes the maintained exact routes, pairs one
+#: to one, and loses no contact in total under either rule, against the witness or the
+#: current view, to see the atlas with the held and review rows drawn before anyone
+#: decides them. Either is written into a scratch tree only: `layer_entry` is not the
+#: index contract's entry, and a view enters this checkout through #548's `admit_views`.
 SELECTIONS = ("admitted", "preview")
 VIEW_KIND = "regularized-view"
 DRAWING_LABEL = "regularized"
@@ -2320,14 +2321,18 @@ def replaces_current(
 
 
 def write_layer(run_dirs: Sequence[Path], root: Path, select: str) -> dict[str, Any]:
-    """Write the selected views of finished runs into the layer under `root`, merged with
-    the index already there, a later run winning at a count two runs decided. Returns
-    what was written, what kept the current view, and what was left out."""
+    """Write the selected views of finished runs into the layer under `root`, a scratch
+    tree and never this checkout (`SELECTIONS`), merged with the index already there, a
+    later run winning at a count two runs decided. Returns what was written, what kept
+    the current view, and what was left out."""
     if select not in SELECTIONS:
         raise EvandRunError(f"unknown selection {select!r}")
     root = root.resolve()
-    if root == REPO.resolve() and select != "admitted":
-        raise EvandRunError("only the admitted selection may write into this checkout")
+    if root == REPO.resolve():
+        raise EvandRunError(
+            "layer writes a scratch tree only, never this checkout: its entries are not the "
+            "index contract's, and views enter the checkout through #548's admit_views"
+        )
     index_path = root / LAYER_DIR / "index.json"
     index = read_json(index_path)
     entries = {int(entry["n"]): entry for entry in index["entries"]}
@@ -2551,7 +2556,7 @@ def parser() -> argparse.ArgumentParser:
     reclassify_command.add_argument("--run-dir", type=Path, required=True)
     reclassify_command.add_argument("--n", nargs="+", default=None, help="counts or a-b")
     layer_command = sub.add_parser(
-        "layer", help="write finished runs' selected views into a layer under a tree"
+        "layer", help="write finished runs' selected views into a scratch tree's layer"
     )
     layer_command.add_argument("--run-dir", type=Path, nargs="+", required=True)
     layer_command.add_argument("--repo-root", type=Path, required=True)
