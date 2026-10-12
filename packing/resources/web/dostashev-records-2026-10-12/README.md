@@ -84,9 +84,12 @@ deciding input and both routes’ complete outputs.
 
 The two routes share certificate parsing, the half-angle conversion, Python’s rational
 arithmetic and the separating-axis method, so they are two implementations of one
-method. Neither is the author’s code, and the third exact route
-(`devtools.check_half_angle_area`) has not decided these certificates; only its credit
-measurements below have read them.
+method. Neither is the author’s code. The third exact route
+(`devtools.check_half_angle_area`), which imports neither route’s parsing or deciding
+code, decided all three certificates again with six controls each in the stage 4
+[review of 12 October](../../../../docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md),
+agreed with both routes at every number they share, and held each retained file to its
+upstream bytes; its credit measurements are below.
 
 ## Against the Record
 

@@ -17373,7 +17373,7 @@ results:
     claim: >-
       s(40) > 3359/500 = 6.718, by Guzhou0806, published on 11 October 2026 as release
       n40-new-supports-6718-20261011 of Guzhou0806/n40-square-packing and reported on
-      jlevy/squares#485. It raises T-145's 1340000/199529 by 217911/99764500 = 0.0021842...,
+      jlevy/squares#485. It raises T-145's 1340000/199529 by 217911/99764500 = 0.00218425...,
       from a new certificate.
 
       The certificate is a new rational density of 685 positive D4 rectangle orbits, 522 of them
