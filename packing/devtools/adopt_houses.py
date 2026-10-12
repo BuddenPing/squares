@@ -22,10 +22,11 @@ owner lifted that wait on 11 October 2026. For every count whose house moves, th
 - **the deferrals**: every `certificate-citation-deferrals.yaml` entry whose evidence a
   case record now cites is removed, as that file requires;
 - **the prior state**: before the first record is written, each moved record's complete
-  earlier text is retained in `PRIOR_STATE`, as the Ry-Xu and Gupta adoptions retain
-  theirs, so the tests of a source this adoption displaced can still draft its case as
-  that source held it. The earlier houses are not copied: each is rebuilt from its own
-  retained packet.
+  earlier text is retained in the archive of the pass that moves it (`prior_state`), as
+  the Ry-Xu and Gupta adoptions retain theirs, so the tests of a source this adoption
+  displaced can still draft its case as that source held it, and the writer can be
+  replayed from what each pass read. The earlier houses are not copied: each is rebuilt
+  from its own retained packet.
 
 The drawing, `witnesses/known-best/n-NNN.yaml`, is `devtools.upper_bound_houses`'s; this
 refuses a count that module does not house, and the atlas is refreshed after it runs.
@@ -42,11 +43,29 @@ Usage, from ``packing/`` with the project interpreter::
     python -m devtools.adopt_houses --dry-run   # list what would move
     python -m devtools.adopt_houses --check     # hold every adopted case to its house
 
-**A second pass.** A later import adopted the same way needs its register entry at
-`V3`/`C3` with an accepted review covering it, its packet in
-`upper_bound_houses._sources` and each count it houses in `upper_bound_houses.ADOPTED`,
-its prose in `RESULTS` and each count's credit in `CREDITS` here; `select_houses` then
-names the counts and this writes them.
+**A later pass.** A later import adopted the same way needs:
+
+- its register entry at `V3`/`C3` with an accepted review covering it;
+- its packet in `upper_bound_houses._sources`, each count it houses in
+  `upper_bound_houses.ADOPTED`, and those counts under the pass's day in
+  `upper_bound_houses.LATER_PASSES`, which dates every sentence, note, review date and
+  coverage reason this writes for them;
+- a coverage-register entry for its source key whose scope holds each count it houses.
+  Where that entry declares a `claims_record`, the record must print the in-corpus claims,
+  since `_value` holds the selected value to its print: a record that holds only claims
+  beyond the corpus refuses the adoption. Such a source takes a second entry for its
+  in-corpus counts with no claims record, as issue 506's does (`coverage_source`); Hunt
+  3's moved its `claims_record` to `claims.json` for the same reason;
+- its prose in `RESULTS` and each count's credit in `CREDITS` here.
+
+`select_houses` then names the counts and this writes them. A count an earlier pass
+adopted is adopted again in place: the earlier pass's paragraph, section and verified
+statements are marked as history (`historical`), its house becomes a note dated from the
+day it was adopted until this one, and its selected override becomes a superseded row.
+The pass retains each record it moves, as it stood before, in an archive of its own day;
+the earlier pass's archive is never rewritten, so the writer can be replayed from each
+count's state before its last pass (`before_last_pass`) and the history readers still
+find each count as it stood before its first (`read_history`).
 """
 
 from __future__ import annotations
@@ -76,14 +95,7 @@ FRONTIER = select_houses.FRONTIER
 COVERAGE = FRONTIER / "source-coverage.yaml"
 BIBLIOGRAPHY = ROOT / "resources/bibliography.yaml"
 DEFERRALS = ROOT / "devtools/certificate-citation-deferrals.yaml"
-#: The moved records as they stood before this adoption first wrote them, named by the
-#: day it began. A later pass of it (`upper_bound_houses.LATER_PASSES`) adds the counts it
-#: moves first and keeps the earlier text of a count it moves again; a separate adoption
-#: retains its own archive, under its own date.
-PRIOR_STATE = ROOT / f"devtools/house-adoption-prior-state-{houses.ADOPTED_ON}.json.xz"
 PRIOR_FORMAT = "house-adoption-prior-frontier-v1"
-#: The day the adoption began, which names its prior-state archive.
-DAY = houses.ADOPTED_ON
 WIDTH = 96
 FINAL_REVIEW = "docs/project/reviews/review-2026-10-11-final-upper-bounds.md"
 FOOTER = "<!-- This document follows common-doc-guidelines.md."
@@ -442,8 +454,14 @@ def _bibliography() -> Mapping[str, Mapping[str, Any]]:
     return _keyed(BIBLIOGRAPHY.read_text(encoding="utf-8"), "key")
 
 
-def _coverage_sources() -> Sequence[Mapping[str, Any]]:
-    return _listed(COVERAGE.read_text(encoding="utf-8"))
+def _covering(key: str, n: int) -> Mapping[str, Any]:
+    """`coverage_source` in the register on disk, parsed and looked up once for each text."""
+    return _covered(COVERAGE.read_text(encoding="utf-8"), key, n)
+
+
+@cache
+def _covered(text: str, key: str, n: int) -> Mapping[str, Any]:
+    return coverage_source(_listed(text), key, n)
 
 
 def coverage_source(
@@ -513,7 +531,7 @@ def _value(candidate: select_houses.Candidate) -> str:
     side that record prints; every other house is reported at its exact side rounded up
     at sixteen places, as the verified lane writes it.
     """
-    source = coverage_source(_coverage_sources(), candidate.source_key, candidate.n)
+    source = _covering(candidate.source_key, candidate.n)
     if source.get("claims_record"):
         printed = _claims(ROOT / str(source["claims_record"])).get(candidate.n)
         if printed is None or Fraction(Decimal(printed)) != candidate.side:
@@ -524,10 +542,15 @@ def _value(candidate: select_houses.Candidate) -> str:
     return select_houses.ceiling(candidate.side)
 
 
+def words(iso: str) -> str:
+    """An ISO date as prose writes it: ``2026-10-12`` is ``12 October 2026``."""
+    day = date.fromisoformat(iso)
+    return f"{day.day} {day:%B %Y}"
+
+
 def day_words(n: int) -> str:
     """The day the count's house was adopted, as prose writes it: ``12 October 2026``."""
-    day = date.fromisoformat(houses.adopted_on(n))
-    return f"{day.day} {day:%B %Y}"
+    return words(houses.adopted_on(n))
 
 
 def _sci(value: Fraction) -> str:
@@ -616,7 +639,7 @@ def plan(
 
 
 def _source_url(key: str, n: int) -> str:
-    return str(coverage_source(_coverage_sources(), key, n)["url"])
+    return str(_covering(key, n)["url"])
 
 
 def reported_bound(move: Move) -> dict[str, Any]:
@@ -634,7 +657,7 @@ def reported_bound(move: Move) -> dict[str, Any]:
         "construction_method": "unknown",
         "tilt_angles_deg": None,
         "found_by": list(credit.found_by),
-        "found_year": 2026,
+        "found_year": date.fromisoformat(house.published).year,
         "improved_by": list(credit.improved_by),
         "catalogue_pictured": False,
         "source_key": house.source_key,
@@ -652,13 +675,34 @@ def verified_bound(move: Move) -> dict[str, Any]:
     }
 
 
+#: A history note this adoption wrote, and the day its house stopped being the ceiling.
+HELD_UNTIL = re.compile(r"^Earlier house .*, the case’s ceiling (?:from .* )?until (.+?);")
+
+
+def held_since(packing: Mapping[str, Any]) -> str | None:
+    """The day the record's house became its ceiling, where an earlier note dates it.
+
+    When an earlier pass adopted the house, its note on the house before says until when
+    that one held, which is the day this one began; a house no pass of this adoption
+    wrote has no such note, and its start is not stated.
+    """
+    days = [
+        match.group(1)
+        for note in packing.get("priority_notes") or ()
+        if (match := HELD_UNTIL.match(" ".join(str(note.get("claim") or "").split())))
+    ]
+    return days[-1] if days else None
+
+
 def history_note(move: Move) -> dict[str, Any]:
     upper = move.packing["reported_upper_bound"]
     claimed = [*(upper.get("found_by") or ()), *(upper.get("improved_by") or ())]
+    since = held_since(move.packing)
+    held = f"from {since} until" if since else "until"
     return {
         "claim": (
             f"Earlier house {upper['value']} from {upper['source_key']}, the case’s ceiling "
-            f"until {day_words(move.n)}; its certificate and replay remain retained."
+            f"{held} {day_words(move.n)}; its certificate and replay remain retained."
         ),
         "claimed_by": [str(name) for name in claimed],
         "published": upper.get("source_date"),
@@ -755,8 +799,7 @@ def _review(result: str) -> tuple[str, str]:
     review = next(
         r for r in entry["reviews"] if r["path"] != FINAL_REVIEW and r["verdict"] == "accepted"
     )
-    day = int(str(review["date"])[-2:])
-    return str(review["path"]), f"{day} October 2026"
+    return str(review["path"]), words(str(review["date"]))
 
 
 def _finally_reviewed(result: str) -> bool:
@@ -859,14 +902,82 @@ def section(move: Move) -> str:
     return "\n\n".join(paragraphs) + "\n"
 
 
+#: The heading `apply_exact_ceilings` gives the section on a ceiling that trails the print.
+CEILING_HEADING = "## The verified upper bound is a ceiling"
+EARLIER_CEILING = "## The earlier verified ceiling"
+
+
+def _earlier_ceiling(move: Move, text: str) -> str:
+    """`T-101`'s exact-ceiling prose, in the past tense from this adoption on.
+
+    `apply_exact_ceilings` wrote it where a certified side, rounded up at the catalogue's
+    places, trailed the catalogue's print; the house replaces both lanes, so the ceiling,
+    the blocker that recorded the gap and the certificate's bound are history.
+    """
+    n, until = move.n, day_words(move.n)
+    bound = rf"\$s\({n}\)\s+\\le\s+[0-9.]+\$"
+    text = re.sub(
+        rf"\bit\s+proves\s+({bound}),\s+the\s+verified\s+upper\s+bound\s+\((T-\d+)\)\.",
+        rf"it proved \1, the verified upper bound until {until} (\2).",
+        text,
+    )
+    text = re.sub(
+        rf"\bThat\s+proves\s+({bound}),\s+the\s+verified\s+upper\s+bound:\s+the\s+certificate’s",
+        rf"That proved \1, the verified upper bound until {until}: the certificate’s",
+        text,
+    )
+    start = text.find(f"\n{CEILING_HEADING}\n")
+    if start < 0:
+        return text
+    end = text.find("\n## ", start + 1)
+    end = len(text) if end < 0 else end
+    section = text[start:end].replace(CEILING_HEADING, EARLIER_CEILING, 1)
+    section = re.sub(
+        r"`verified_upper_bound`\s+for\s+this\s+case\s+is\s+(\$[0-9.]+\$),",
+        rf"Until {until} the verified upper bound here was \1,",
+        section,
+    )
+    section = re.sub(
+        r"It\s+is\s+\*\*larger\*\*\s+than\s+the\s+best\s+known\s+(\$[0-9.]+\$)\s+two\s+fields"
+        r"\s+above\s+it,",
+        r"It was **larger** than the catalogue’s printed side \1, then the best known,",
+        section,
+    )
+    section = re.sub(
+        rf"It\s+is\s+not\s+the\s+value\s+of\s+\$s\({n}\)\$",
+        f"It was not the value of $s({n})$",
+        section,
+    )
+    section = re.sub(
+        r"The\s+`mathematics`\s+blocker\s+in\s+the\s+frontmatter\s+records\s+the\s+difference\."
+        r"\s+Read\s+`reported_upper_bound`\s+for\s+the\s+best\s+known\s+side\s+length\.",
+        f"A `mathematics` blocker in the frontmatter recorded the difference until "
+        f"{_title(move)} replaced both lanes.",
+        section,
+    )
+    return text[:start] + section + text[end:]
+
+
 def historical(move: Move, text: str) -> str:
     """The body's own statements of the earlier house, marked as history.
 
     `check_case_prose` holds every `s(n) <= x` a body writes to the front matter unless
-    its sentence says it is historical. The exact-optimum sections that `T-098` wrote
-    state the earlier house in two fixed sentences; both say now that it was the bound
-    until this adoption. A house an earlier pass adopted states itself in its dated
-    paragraph and its section, and both say now that it was the house until this one.
+    its sentence says it is historical. Four kinds of prose state the earlier house, and
+    each says now that it held until this adoption:
+
+    - the opening "Open." sentence the generator writes, of the best known packing;
+    - the exact-optimum sections that `T-098` wrote, in two fixed sentences;
+    - the exact-ceiling prose that `T-101` wrote where a certified side rounded up trails
+      the catalogue's print (`apply_exact_ceilings`): its dated paragraph, its ceiling
+      section, now "The earlier verified ceiling", and its certificate section;
+    - a house an earlier pass of this adoption adopted, in its dated paragraph and its
+      section.
+
+    Prose in no fixed form, which no tool here wrote, is not rewritten; `check_case_prose`
+    refuses a record that still states it as the bound. The first pass marked such prose
+    by hand at five counts, the SQUISH update sections at 155, 258, 263 and 302 and the
+    grid prose at 308 (`test_house_adoption.HAND_MARKED`); every other word of an adopted
+    body is what this writes from the record its last pass read.
     """
     n, until = move.n, day_words(move.n)
     text = re.sub(
@@ -875,6 +986,13 @@ def historical(move: Move, text: str) -> str:
         text,
         flags=re.MULTILINE,
     )
+    text = re.sub(
+        r"^Open\.\s+The\s+best\s+known\s+packing\s+gives\b",
+        "Open. Previously, the best known packing gave",
+        text,
+        flags=re.MULTILINE,
+    )
+    text = _earlier_ceiling(move, text)
     # The records are wrapped, so a sentence may break at any space; whitespace is
     # matched as such and the reflow is the formatter's.
     text = re.sub(
@@ -942,12 +1060,13 @@ def _section_span(text: str, key: str) -> tuple[int, int]:
 
 #: The clause of a displaced house's row that names the certificate below it.
 DISPLACED_BY = re.compile(r"and T-\d+'s exact side is smaller\.$")
+#: The day a selected override's reason says its house was adopted.
+ADOPTED_ON_DAY = re.compile(r"\badopted on (\d{4}-\d{2}-\d{2}) \(T-\d+\)")
 
 
 def coverage(moves: Sequence[Move], text: str) -> str:
     """The coverage register with each moved count's selection and supersessions."""
     data = safe_load(text)
-    claims = {str(s["id"]) for s in data["sources"] if s.get("claims_record")}
     overrides = {int(entry["n"]): entry for entry in data["selected_overrides"]}
     superseded = list(data["superseded_reports"])
     for move in moves:
@@ -971,14 +1090,20 @@ def coverage(moves: Sequence[Move], text: str) -> str:
                     report["reason"] = DISPLACED_BY.sub(
                         f"and {house.result}'s exact side is smaller.", str(report["reason"])
                     )
-        if old is not None and old["source_id"] in claims:
+        # The displaced house is recorded whether or not its source has a claims record:
+        # its selected value is the source's print where it has one and the ceiling of
+        # its exact side where it has none (`_value`). One an earlier pass adopted is
+        # dated from that pass's day.
+        if old is not None:
+            since = ADOPTED_ON_DAY.search(str(old.get("reason") or ""))
+            held = f"from {since.group(1)} until" if since else "until"
             superseded.append(
                 {
                     "n": n,
                     "source_id": old["source_id"],
                     "value": old["value"],
                     "reason": (
-                        f"The house until {houses.adopted_on(n)}; its certificate stays "
+                        f"The house {held} {houses.adopted_on(n)}; its certificate stays "
                         "retained and "
                         f"verified, and {house.result}'s exact side is smaller."
                     ),
@@ -1123,42 +1248,88 @@ def _evidence(node: object) -> set[str]:
 # ------------------------------------------------------------------------- history
 
 
-def read_history() -> dict[int, str]:
-    """Each moved record's complete text as it stood before this adoption, by count."""
-    houses.reports.ensure_private(PRIOR_STATE)
-    record = houses.kernel.read_xz(PRIOR_STATE)
+def passes() -> tuple[str, ...]:
+    """The adoption's passes, earliest first: the day it began and each later pass's."""
+    return (houses.ADOPTED_ON, *sorted(houses.LATER_PASSES))
+
+
+def prior_state(day: str) -> Path:
+    """The archive of the pass of `day`: each record it moved, as it stood before."""
+    return ROOT / f"devtools/house-adoption-prior-state-{day}.json.xz"
+
+
+def read_pass(day: str) -> dict[int, str]:
+    """Each record the pass of `day` moved, as that pass read it before writing, by count.
+
+    A count two passes moved is in both archives: the earlier holds the record before
+    the adoption first moved it, and the later the record as the earlier pass left it.
+    """
+    path = prior_state(day)
+    houses.reports.ensure_private(path)
+    record = houses.kernel.read_xz(path)
     if (
         type(record) is not dict
         or set(record) != {"format", "adopted_on", "cases"}
         or record["format"] != PRIOR_FORMAT
-        or record["adopted_on"] != DAY
+        or record["adopted_on"] != day
         or type(record["cases"]) is not list
     ):
-        raise AdoptionError(f"{PRIOR_STATE.name}: not this adoption's prior state")
+        raise AdoptionError(f"{path.name}: not the prior state of the pass of {day}")
     rows = {}
     for row in record["cases"]:
         if type(row) is not dict or set(row) != {"n", "frontier"} or row["n"] in rows:
-            raise AdoptionError(f"{PRIOR_STATE.name}: malformed or repeated row")
+            raise AdoptionError(f"{path.name}: malformed or repeated row")
         rows[int(row["n"])] = str(row["frontier"])
     return rows
 
 
-def retain_history(texts: Mapping[int, str]) -> None:
-    """Retain each record's earlier text before its first write; history comes first.
+def read_history() -> dict[int, str]:
+    """Each moved record as it stood before this adoption first moved it, by count.
 
-    A count already retained keeps the text it was retained with: the prior state is the
-    record before this adoption first moved it, never an intermediate one.
+    What a source this adoption displaced held: the earliest pass's text of each count.
     """
-    rows = read_history() if PRIOR_STATE.exists() else {}
+    rows: dict[int, str] = {}
+    for day in passes():
+        if prior_state(day).exists():
+            for n, text in read_pass(day).items():
+                rows.setdefault(n, text)
+    return rows
+
+
+def before_last_pass() -> dict[int, str]:
+    """Each adopted record as it stood before the pass that last moved it, by count.
+
+    What that pass's writer read, so a replay of it from here gives the committed record:
+    a count moved twice is read from the later pass's archive, as the earlier left it.
+    """
+    archives = {day: read_pass(day) for day in passes() if prior_state(day).exists()}
+    rows = {}
+    for n in houses.ADOPTED:
+        day = houses.adopted_on(n)
+        if n not in archives.get(day, {}):
+            raise AdoptionError(f"n={n}: the pass of {day} retained no prior state of it")
+        rows[n] = archives[day][n]
+    return rows
+
+
+def retain_history(day: str, texts: Mapping[int, str]) -> None:
+    """Retain each record's earlier text in its pass's archive before the pass writes it.
+
+    A count already in that archive keeps the text it was retained with: a pass's prior
+    state is the record before that pass first moved it, never an intermediate one, and
+    a later pass retains in its own archive and never rewrites an earlier one.
+    """
+    path = prior_state(day)
+    rows = read_pass(day) if path.exists() else {}
     added = {n: text for n, text in texts.items() if n not in rows}
     if not added:
         return
     rows.update(added)
     houses.kernel.save_xz(
-        PRIOR_STATE,
+        path,
         {
             "format": PRIOR_FORMAT,
-            "adopted_on": DAY,
+            "adopted_on": day,
             "cases": [{"n": n, "frontier": rows[n]} for n in sorted(rows)],
         },
     )
@@ -1236,7 +1407,10 @@ def write(moves: Sequence[Move]) -> list[int]:
     register = COVERAGE.read_text(encoding="utf-8")
     covered = coverage(pending, register) if pending else register
     deferred = deferrals(DEFERRALS.read_text(encoding="utf-8"), _cited(rewritten))
-    retain_history({move.n: move.text for move in pending})
+    for day in sorted({houses.adopted_on(move.n) for move in pending}):
+        retain_history(
+            day, {move.n: move.text for move in pending if houses.adopted_on(move.n) == day}
+        )
     _write(COVERAGE, covered)
     _write(DEFERRALS, deferred)
     for move in pending:

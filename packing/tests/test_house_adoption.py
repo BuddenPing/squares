@@ -1,10 +1,13 @@
-"""The 11 October 2026 house adoption: derivation, drawing custody and the case records."""
+# ruff: noqa: RUF001 -- these tests read case prose, whose typography uses curly apostrophes.
+"""The house adoption of 11 October 2026 and its later passes: derivation, drawing custody,
+the case records, the coverage register and each pass's prior state."""
 
 from __future__ import annotations
 
 import dataclasses
 import hashlib
 import json
+import re
 from decimal import Decimal
 from fractions import Fraction
 from pathlib import Path
@@ -26,20 +29,26 @@ def selections() -> dict[int, select.Selection]:
 
 @pytest.fixture(scope="module")
 def prior() -> dict[int, str]:
-    """Each moved record as it stood before the adoption, from the retained prior state."""
+    """Each moved record as it stood before the adoption first moved it."""
     return adopt.read_history()
 
 
 @pytest.fixture(scope="module")
+def latest() -> dict[int, str]:
+    """Each adopted record as it stood before the pass that last moved it."""
+    return adopt.before_last_pass()
+
+
+@pytest.fixture(scope="module")
 def replayed(
-    selections: dict[int, select.Selection], prior: dict[int, str]
+    selections: dict[int, select.Selection], latest: dict[int, str]
 ) -> list[adopt.Move]:
-    """The adoption planned again from the retained prior state of every moved record."""
+    """Each count's last pass planned again from the record as that pass read it."""
     cases = {
-        n: select.parse_case(n, prior[n]) if n in prior else selection.case
+        n: select.parse_case(n, latest[n]) if n in latest else selection.case
         for n, selection in selections.items()
     }
-    return adopt.plan(select.select(cases=cases), texts=prior)
+    return adopt.plan(select.select(cases=cases), texts=latest)
 
 
 def test_no_confirmed_reviewed_side_is_left_below_its_case(
@@ -263,14 +272,50 @@ def test_the_prior_state_keeps_every_moved_record_as_it_stood_before(
         assert Fraction(packing["verified_upper_bound"]["exact_form"]) > houses.side(n)
     # Retaining again keeps the first text and writes only a count not yet retained; the
     # archive is never written here.
+    first = houses.ADOPTED_ON
     saved: list[Any] = []
     monkeypatch.setattr(houses.kernel, "save_xz", lambda _path, value: saved.append(value))
-    adopt.retain_history({70: "a later text is not the prior state"})
+    adopt.retain_history(first, {70: "a later text is not the prior state"})
     assert saved == []
-    adopt.retain_history({70: "a later text", 999: "a count not yet retained"})
+    adopt.retain_history(first, {70: "a later text", 999: "a count not yet retained"})
     (record,) = saved
+    assert record["adopted_on"] == first
     rows = {row["n"]: row["frontier"] for row in record["cases"]}
-    assert rows == {**prior, 999: "a count not yet retained"}
+    assert rows == {**adopt.read_pass(first), 999: "a count not yet retained"}
+
+
+def test_each_pass_keeps_the_records_it_moved_as_that_pass_read_them(
+    prior: dict[int, str], latest: dict[int, str]
+) -> None:
+    """One archive per pass: a count moved twice is in both, as each pass found it.
+
+    The earlier archive keeps the record before the adoption first moved it, and the
+    later one the record as the earlier pass left it, at that pass's house and dated by
+    it; the writer is replayed from the later one and the history readers read the first.
+    """
+    assert adopt.passes()[0] == houses.ADOPTED_ON
+    archives = {day: adopt.read_pass(day) for day in adopt.passes()}
+    for day, counts in houses.LATER_PASSES.items():
+        assert set(archives[day]) == counts
+    first = archives[houses.ADOPTED_ON]
+    assert {n for n in houses.ADOPTED if houses.adopted_on(n) == houses.ADOPTED_ON} <= set(
+        first
+    )
+    again: set[int] = set()
+    for index, day in enumerate(adopt.passes()):
+        for n in sorted(archives[day]):
+            earlier = [d for d in adopt.passes()[:index] if n in archives[d]]
+            if not earlier:
+                assert prior[n] == archives[day][n]
+                continue
+            again.add(n)
+            # As the earlier pass left it: at that pass's house, dated that day.
+            packing = _front(archives[day][n])
+            assert packing["source_reviewed"] == earlier[-1]
+            assert f"**House adoption, {adopt.words(earlier[-1])}.**" in archives[day][n]
+            assert prior[n] == archives[earlier[0]][n] != archives[day][n]
+    assert again, "no count has been adopted twice"
+    assert {n for n in houses.ADOPTED if prior[n] != latest[n]} == again
 
 
 #: The front-matter keys `adopt_houses.front_matter` writes; every other key is the draft's
@@ -295,14 +340,32 @@ def _flat(text: str) -> str:
     return " ".join(text.split())
 
 
+#: The verifier table, which `render_case_verifiers` writes.
+VERIFIER_TABLE = re.compile(
+    r"<!-- BEGIN verification code.*?<!-- END verification code -->", re.DOTALL
+)
+#: Counts whose body the first pass, on 11 October 2026, marked as history by hand, in
+#: prose no tool writes in a fixed form (`adopt_houses.historical`): the SQUISH update
+#: sections and the grid prose. Their owned parts are still compared.
+HAND_MARKED = frozenset({155, 258, 263, 302, 308})
+
+
+def _body(text: str) -> str:
+    """A record's body as the writer is answerable for it: flowmark's wrapping and escapes
+    undone and the verifier table left out."""
+    return _flat(VERIFIER_TABLE.sub("", text.split("---\n", 2)[2]).replace("\\+", "+"))
+
+
 def test_the_writer_rebuilds_every_adopted_record_from_its_prior_state(
     replayed: list[adopt.Move],
 ) -> None:
-    """Replaying `rewrite` on each retained prior record gives the committed record.
+    """Replaying `rewrite` on each record as its last pass read it gives the committed one.
 
-    What the writer owns is compared: its front-matter keys, and its opening paragraph and
-    certificate section with whitespace collapsed, since flowmark rewraps the body. The
-    verifier table and the rigidity scope are refreshed by their own tools.
+    What the writer owns is compared: its front-matter keys, its opening paragraph and
+    certificate section, and the rest of the body, which it marks as history, with
+    whitespace collapsed, since flowmark rewraps it. The verifier table and the rigidity
+    scope are refreshed by their own tools. A count adopted twice is replayed from the
+    record the earlier pass left (`adopt_houses.before_last_pass`).
     """
     assert [move.n for move in replayed] == sorted(houses.ADOPTED)
     for move in replayed:
@@ -315,6 +378,138 @@ def test_the_writer_rebuilds_every_adopted_record_from_its_prior_state(
         body = _flat(committed.split("---\n", 2)[2])
         assert _flat(adopt.opening(move)) in body, f"n={move.n}: opening paragraph"
         assert _flat(adopt.section(move)) in body, f"n={move.n}: certificate section"
+        if move.n not in HAND_MARKED:
+            assert _body(committed) == _body(written), f"n={move.n}: the body as history"
+
+
+#: A synthetic later pass, its review and its source: n = 84 adopted again after T-130.
+LATER_DAY, REVIEWED, PUBLISHED = "2026-11-03", "2026-11-02", "2025-12-31"
+
+
+def _readopted(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, replayed: list[adopt.Move]
+) -> tuple[adopt.Move, str, adopt.Move]:
+    """n = 84 as the first pass wrote it, and a move to a synthetic T-900 on a later day.
+
+    T-900 sits a millionth below T-130 with a source of its own in a copy of the coverage
+    register; the later day is a pass of its own in `upper_bound_houses.LATER_PASSES`.
+    """
+    first = next(move for move in replayed if move.n == 84)
+    written = adopt.rewrite(first)
+    monkeypatch.setitem(houses.LATER_PASSES, LATER_DAY, frozenset({84}))
+    house = select.Candidate(
+        result="T-900",
+        n=84,
+        side=first.house.side - Fraction(1, 10**6),
+        source_key="[new]",
+        published=PUBLISHED,
+        report_evidence=("E-new",),
+        confirming_evidence=("E-new-replay",),
+        regularizes=None,
+    )
+    monkeypatch.setitem(
+        adopt.RESULTS,
+        "T-900",
+        adopt.Prose(author="A. Finder", reported="on no issue", producer_route=False, ai=""),
+    )
+    review = {"path": "docs/review-t900.md", "verdict": "accepted", "date": REVIEWED}
+    entry = {
+        "id": "T-900",
+        "scope": {"n_values": [84]},
+        "evidence": ["E-new", "E-new-replay"],
+        "reviews": [review],
+    }
+    register = (*adopt._register(), entry)  # noqa: SLF001  # pyright: ignore[reportPrivateUsage]
+    monkeypatch.setattr(adopt, "_register", lambda: register)
+    bibliography = {**adopt._bibliography(), "[new]": {"dated": PUBLISHED}}  # noqa: SLF001  # pyright: ignore[reportPrivateUsage]
+    monkeypatch.setattr(adopt, "_bibliography", lambda: bibliography)
+    source = "- id: new\n  source_key: '[new]'\n  url: https://example.invalid/new\n"
+    text = adopt.COVERAGE.read_text(encoding="utf-8").replace(
+        "\nsources:\n", f"\nsources:\n{source}  scope:\n    n_values: [84]\n", 1
+    )
+    monkeypatch.setattr(adopt, "COVERAGE", tmp_path / "source-coverage.yaml")
+    adopt.COVERAGE.write_text(text, encoding="utf-8")
+    case = select.parse_case(84, written)
+    selection = select.Selection(
+        n=84, case=case, house=house, candidates=(house, *first.selection.candidates)
+    )
+    packing = _front(written)
+    return first, written, adopt.Move(selection, house, packing, written)
+
+
+def test_a_count_adopted_again_on_a_later_day_has_one_current_house(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, replayed: list[adopt.Move]
+) -> None:
+    """The second adoption of a count reads as one current house and dated history.
+
+    The earlier pass's paragraph, section and verified statement say until when they
+    held; its house becomes a note from its day until this one; the review's date, the
+    found year and `source_reviewed` come from the record; and the prose check passes.
+    """
+    from devtools import check_case_prose  # noqa: PLC0415
+
+    first, written, again = _readopted(tmp_path, monkeypatch, replayed)
+    before = _front(written)["reported_upper_bound"]
+    record = adopt.rewrite(again)
+    body = _flat(record.split("---\n", 2)[2])
+    assert body.count("is now this case’s house") == 1
+    assert body.count("**House adoption, ") == 2
+    title = body.index("— open")
+    assert body.index("**House adoption, 3 November 2026.**") == title + len("— open ")
+    assert (
+        "**House adoption, 11 October 2026.** Francisco Couzo’s refinement of Ryan Xu’s "
+        "packing (T-130) was this case’s house until 3 November 2026:"
+    ) in body
+    assert "the verified upper bound until 3 November 2026: confirmed," in body
+    assert "[review of 2 November 2026](../../docs/review-t900.md)" in body
+    packing = _front(record)
+    assert packing["source_reviewed"] == LATER_DAY
+    assert packing["reported_upper_bound"]["found_year"] == 2025
+    notes = [note["claim"] for note in packing["priority_notes"]]
+    assert notes[:-1] == [note["claim"] for note in _front(written)["priority_notes"]]
+    assert notes[-2].endswith(
+        "the case’s ceiling until 11 October 2026; its certificate and replay remain retained."
+    )
+    assert notes[-1] == (
+        f"Earlier house {before['value']} from {before['source_key']}, the case’s ceiling "
+        "from 11 October 2026 until 3 November 2026; its certificate and replay remain "
+        "retained."
+    )
+    path = tmp_path / "n-084.md"
+    path.write_text(record, encoding="utf-8")
+    assert check_case_prose.check_case_file(path) == []
+    assert adopt.adopted(dataclasses.replace(again, packing=packing))
+    assert not adopt.adopted(dataclasses.replace(first, packing=packing))
+
+
+def test_the_coverage_of_a_count_adopted_again_names_the_new_house_throughout(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, replayed: list[adopt.Move]
+) -> None:
+    """Every row at the count is re-pointed, every reason that names the house names it,
+    and the house it displaced is a row of its own, dated from its adoption."""
+    from devtools import check_source_coverage  # noqa: PLC0415
+
+    _first, _written, again = _readopted(tmp_path, monkeypatch, replayed)
+    text = adopt.COVERAGE.read_text(encoding="utf-8")
+    held = {int(e["n"]): e for e in safe_load(text)["selected_overrides"]}[84]
+    data = safe_load(adopt.coverage([again], text))
+    (override,) = [entry for entry in data["selected_overrides"] if entry["n"] == 84]
+    assert override["source_id"] == "new"
+    assert override["reason"].endswith(f"adopted on {LATER_DAY} (T-900).")
+    rows = [row for row in data["superseded_reports"] if row["n"] == 84]
+    assert {row["superseded_by"] for row in rows} == {"new"}
+    (displaced,) = [row for row in rows if row["source_id"] == held["source_id"]]
+    assert displaced["value"] == held["value"]
+    assert displaced["reason"] == (
+        f"The house from 2026-10-11 until {LATER_DAY}; its certificate stays retained and "
+        "verified, and T-900's exact side is smaller."
+    )
+    assert all("T-130's exact side" not in str(row.get("reason")) for row in rows)
+    results = [
+        *select.load_results(),
+        {"id": "T-900", "attribution": {"source_keys": ["[new]"]}},
+    ]
+    assert check_source_coverage.house_reason_errors(data, results) == []
 
 
 def test_a_conjecture_the_house_does_not_beat_stops_the_adoption(
@@ -510,7 +705,7 @@ def test_an_interrupted_write_is_finished_by_running_it_again(
     monkeypatch.setattr(adopt, "COVERAGE", tmp_path / "source-coverage.yaml")
     monkeypatch.setattr(adopt, "DEFERRALS", tmp_path / "deferrals.yaml")
     retained: dict[int, str] = {}
-    monkeypatch.setattr(adopt, "retain_history", retained.update)
+    monkeypatch.setattr(adopt, "retain_history", lambda _day, texts: retained.update(texts))
 
     def stage() -> None:
         for path, text in staged.items():

@@ -5999,6 +5999,18 @@ superseded_reports:
   reason: The house until 2026-10-12; its certificate stays retained and verified, and T-152's exact
     side is smaller.
   superseded_by: couzo-certificates-2026-10-11-in-corpus
+- n: 270
+  source_id: couzo-certificates-2026-10-10
+  value: '16.9297753535413596'
+  reason: The house from 2026-10-11 until 2026-10-12; its certificate stays retained and verified,
+    and T-151's exact side is smaller.
+  superseded_by: squish-500-fourth-request-2026-10-11
+- n: 305
+  source_id: couzo-certificates-2026-10-10
+  value: '17.9511397722069976'
+  reason: The house from 2026-10-11 until 2026-10-12; its certificate stays retained and verified,
+    and T-152's exact side is smaller.
+  superseded_by: couzo-certificates-2026-10-11-in-corpus
 beyond_horizon_claims:
 - n: 327
   source_id: couzo-extended-range-reports-2026-10-08
