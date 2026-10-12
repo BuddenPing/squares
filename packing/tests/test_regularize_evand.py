@@ -18,6 +18,7 @@ import os
 from dataclasses import replace
 from fractions import Fraction
 from pathlib import Path
+from typing import Any
 
 import mpmath
 import pytest
@@ -475,6 +476,26 @@ def test_a_report_written_before_bound_existed_is_decided_as_the_table_now_does(
     same = {**block, "side_exact": "563/100", "relation": "same"}
     beside = {**report, "outputs": {"same": same, "solved": block}}
     assert classify(drive.measured_from_report(beside, "solved")).decision == "review"
+
+
+def test_a_held_count_says_what_registration_would_lead_to() -> None:
+    held: dict[str, Any] = {}
+    below = replace(SAME, side=SW - Fraction(1, 10**14), upper=SW)
+    drive.decide(held, replace(below, output="solved", relation="solved"), below)
+    assert held["decision"]["row"] == 3
+    assert held["decision"]["after_registration"]["decision"] == "admit"
+    solved_only: dict[str, Any] = {}
+    drive.decide(solved_only, replace(below, output="solved", relation="solved"))
+    assert solved_only["decision"]["after_registration"]["row"] == 10
+    admitted: dict[str, Any] = {}
+    drive.decide(admitted, replace(SAME, output="solved", relation="solved", side=SW + 1), SAME)
+    assert "after_registration" not in admitted["decision"]
+
+
+def test_only_the_source_orientation_is_run(tmp_path: Path) -> None:
+    options = drive.Options(run_dir=tmp_path, orient="best")
+    with pytest.raises(drive.EvandRunError, match="only at --orient 0"):
+        drive.run([26], options, 1)
 
 
 def test_the_review_queue_is_every_count_reported_for_review() -> None:

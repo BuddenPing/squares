@@ -27,12 +27,13 @@ earns that relation. It re-solves the view's tight contacts as exact equalities 
    is what is decided, not the source. A witness over a number field has no rational
    frame and is refused, `no-exact-frame`.
 2. **Rotation matching.** Each view square's rotation, taken modulo 90 degrees, is mapped
-   to an exact rotation: axis-aligned, `(1, 0)`, within `1e-12` degrees of the axis;
-   otherwise the exact `(c, s)` of a witness square whose rotation class agrees within
-   `1e-12` degrees, the view square's own source square first, else the nearest class,
-   ties by index, turned by quarter turns into the quarter the view states. A view square
-   that matches no class is refused, `unmatched-rotation`: a group merged to exactly 45
-   degrees, for one, has no rational pose at all.
+   to an exact rotation: axis-aligned, `(1, 0)`, within a sine of `1e-9` of the axis
+   (about `5.7e-8` degrees); otherwise the exact `(c, s)` of the lowest-index witness
+   square whose rotation class agrees within the same tolerance, so a class the generator
+   merged takes one rotation, turned by quarter turns into the quarter the view states. A
+   view square that matches no class is refused, `unmatched-rotation`: a group merged to
+   exactly 45 degrees, for one, has no rational pose at all, and a band the exact solve
+   turned (0.0115 degrees at n = 70) matches nothing.
 3. **The tight set.** At the generator's pose, in binary64 and with every rotation fixed
    at its exact match, a wall contact is a square's extent along `x` or `y` within `tight`
    of `0` or `s_W`, and a pair contact is a nearby pair whose best separating face normal,
@@ -58,8 +59,10 @@ earns that relation. It re-solves the view's tight contacts as exact equalities 
 5. **Exact verification.** The pose is written as a rational centre-basis Witness/v2
    document at `s_W` and decided by both maintained exact routes,
    `sqpack.witness.exact_verify` and `check_rational_witness_independent`, which share no
-   geometry code. Either refusing refuses the view, `overlap`; both accepting is the
-   status `same`.
+   geometry code. Both refusing refuses the view, `overlap`; one refusing what the other
+   accepts refuses it too, `routes-disagree`; both accepting is the status `same`. A pose
+   whose exact coordinates are too long for Python to write as text is refused,
+   `literal-too-large`.
 
 **What decides.** The exact verification is the decision. The binary64 tight-set
 detection only proposes which contacts to close, and a wrong proposal can only produce a
@@ -111,8 +114,13 @@ WITNESSES = ROOT / "witnesses"
 WITNESS_SCHEMA = WITNESSES / "witness.schema.yaml"
 KNOWN_BEST = WITNESSES / "known-best"
 
-#: A view rotation within this many degrees of a rotation class, modulo 90, takes it.
-ROTATION_TOLERANCE_DEGREES = 1e-12
+#: A view rotation within a sine of this of a rotation class, modulo 90, takes it: about
+#: 5.7e-8 degrees, a thousand times below the policy's 1e-6 turn threshold, so a match
+#: neither hides nor makes a turn, and wide enough for the drift the exact solve leaves on
+#: rotations it does not turn (up to 7.5e-11 degrees at n = 146 in the full run of 12
+#: October 2026, which a tolerance of 1e-12 degrees refused at 17 counts).
+ROTATION_TOLERANCE_SINE = 1e-9
+ROTATION_TOLERANCE_DEGREES = math.degrees(math.asin(ROTATION_TOLERANCE_SINE))
 #: Decimal places a coordinate no row pins keeps of the generator's value.
 FREE_COORDINATE_PLACES = 30
 #: Default gap below which a contact at the generator's pose is proposed as tight.
@@ -142,7 +150,8 @@ class GeneratorPose:
 class SameSideOutcome:
     status: Status
     reason: str | None
-    """`unmatched-rotation`, `inconsistent-tight-set`, `overlap` or `no-exact-frame`."""
+    """`unmatched-rotation`, `inconsistent-tight-set`, `overlap`, `routes-disagree`,
+    `literal-too-large` or `no-exact-frame`."""
     side: Fraction | None
     """`s_W` when the status is `same`."""
     witness: dict[str, Any] | None
@@ -754,6 +763,32 @@ def resolve(
     view_id: str | None = None,
 ) -> SameSideOutcome:
     """Bring `view` to the source witness's side exactly, or say why it cannot be."""
+    try:
+        return _resolve(source_witness, view, mode=mode, tight=tight, view_id=view_id)
+    except ValueError as error:
+        # Python refuses to write an integer longer than its digit limit as text; a pose
+        # whose exact coordinates need that many digits is no drawing frame (n = 270 and
+        # 272 in the full run of 12 October 2026).
+        if "integer string conversion" not in str(error):
+            raise
+        detail = f"an exact coordinate is too long to write: {error}"
+        report = {
+            "n": len(view),
+            "mode": mode,
+            "tight": tight,
+            "refusal": {"reason": "literal-too-large", "detail": detail},
+        }
+        return SameSideOutcome("refused", "literal-too-large", None, None, report)
+
+
+def _resolve(
+    source_witness: Mapping[str, Any],
+    view: Sequence[GeneratorPose],
+    *,
+    mode: Mode,
+    tight: float,
+    view_id: str | None,
+) -> SameSideOutcome:
     started = time.perf_counter()
     seconds: dict[str, float] = {}
     report: dict[str, Any] = {
@@ -877,13 +912,17 @@ def resolve(
     seconds["verify"] = round(time.perf_counter() - phase, 3)
     report["verdicts"] = verdicts
     seconds["total"] = round(time.perf_counter() - started, 3)
-    if not (verdicts["exact_verify"]["passed"] and verdicts["independent"]["passed"]):
+    passed = (verdicts["exact_verify"]["passed"], verdicts["independent"]["passed"])
+    if not all(passed):
         failures = verdicts["exact_verify"]["failures"] or verdicts["independent"]["failures"]
+        # One route accepting what the other refuses is a disagreement between checkers
+        # that share no geometry code, worth naming apart from a plain overlap.
+        reason = "routes-disagree" if any(passed) else "overlap"
         report["refusal"] = {
-            "reason": "overlap",
+            "reason": reason,
             "detail": f"the re-solved pose is not a packing at s_W: {failures[:3]}",
         }
-        return SameSideOutcome("refused", "overlap", None, None, report)
+        return SameSideOutcome("refused", reason, None, None, report)
     witness["claim"]["coordinate_provenance"] = "verified"
     witness["certificate"] = {
         "kind": "same-side-view",

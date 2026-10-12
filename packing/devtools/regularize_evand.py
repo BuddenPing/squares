@@ -44,9 +44,11 @@ by the policy's decision table. Per count, in order:
    list, so that the regularizer keeps the witness's side and rotations. At a rational
    witness whose side has slack the KKT point lowers the side by about `10^-10` and can
    turn a tilted band by hundredths of a degree (0.0115 degrees at n = 70), which no
-   exact rotation of the witness matches. In the pilot of 11 October 2026 the witness
-   frame did not rescue those counts (70, 129, 146): upstream's 80-digit verification
-   finds overlaps of about `10^-10` at `s_W` and its certificate is invalid.
+   exact rotation of the witness matches. Elsewhere it leaves rotations within `10^-10`
+   degrees of the witness's (7.5e-11 at n = 146, 2e-11 at 206), which the same-side
+   re-solve matches within a sine of `10^-9`. In the pilot of 11 October 2026 the
+   witness frame did not rescue 70, 129 and 146: upstream's 80-digit verification finds
+   overlaps of about `10^-10` at `s_W` and its certificate is invalid.
 5. **Import.** The dilated certificate becomes `view-solved.yaml`, a rational
    centre-basis Witness/v2, through `devtools.evand_exact_certificates` (`parse`,
    `basis_witness`), decided by `sqpack.witness.exact_verify`, the independent checker and
@@ -127,7 +129,7 @@ import sys
 import time
 from collections.abc import Iterable, Mapping, Sequence
 from concurrent.futures import ProcessPoolExecutor, as_completed
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, replace
 from decimal import ROUND_HALF_EVEN, Decimal, localcontext
 from fractions import Fraction
 from pathlib import Path
@@ -1375,7 +1377,7 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
     if solved["status"] not in SOLVE_CERTIFIED:
         report["status"] = "timeout" if solved["status"] == "timeout" else "generator-failed"
         report["outputs"] = no_output
-        _decide(report, Measured("solved", produced=False, status=f"solve {solved['status']}"))
+        decide(report, Measured("solved", produced=False, status=f"solve {solved['status']}"))
         return
 
     if first <= STAGES.index("regularize"):
@@ -1390,7 +1392,7 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
     if failure is not None:
         report["status"] = "timeout" if "timeout" in failure else "generator-failed"
         report["outputs"] = no_output
-        _decide(report, Measured("solved", produced=False, status=failure))
+        decide(report, Measured("solved", produced=False, status=failure))
         return
 
     started = time.perf_counter()
@@ -1464,11 +1466,11 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
             **common, **fields,
         )  # fmt: skip
     seconds["measure"] = round(time.perf_counter() - started, 3)
-    _decide(report, measured["solved"], measured.get("same"), same_refusal)
+    decide(report, measured["solved"], measured.get("same"), same_refusal)
     report["regularization"] = regularization_record(report)
 
 
-def _decide(
+def decide(
     report: dict[str, Any],
     solved: Measured,
     same: Measured | None = None,
@@ -1480,6 +1482,13 @@ def _decide(
     governing = dict(decisions["same"] or decisions["solved"])
     if same is None and same_refusal:
         governing["reason"] = f"{governing['reason']}; same side: {same_refusal}"
+    chosen = same if same is not None else solved
+    if governing["row"] == 3 and chosen.side is not None:
+        # Registering the view makes its side the verified bound, so the row it reaches
+        # then is what deciding "register first" leads to (owner, 12 October 2026).
+        relation = "bound" if chosen.relation == "solved" else chosen.relation
+        after = replace(chosen, upper=chosen.side, relation=relation)
+        governing["after_registration"] = asdict(classify(after))
     report["decision"] = governing
     report["decisions"] = decisions
 
@@ -1522,6 +1531,7 @@ def receipt_row(report: Mapping[str, Any]) -> dict[str, Any]:
         "decision": decision.get("decision"),
         "index_record": decision.get("index_record"),
         "refusal": decision.get("refusal"),
+        "after_registration": (decision.get("after_registration") or {}).get("decision"),
         "solved_row": solved_decision.get("row"),
         "seconds": report.get("seconds"),
         "cost": report.get("cost"),
@@ -1540,6 +1550,14 @@ def _self_cpu() -> float:
 
 def run(counts: Sequence[int], options: Options, workers: int) -> dict[str, Any]:
     """Every stage for every count in a process pool, then the receipt."""
+    if options.orient != "0":
+        # The dilated certificate is imported in the generator's frame, which is the
+        # source's only at orientation 0; another would draw the packing turned or
+        # mirrored against its witness.
+        raise EvandRunError(
+            f"--orient {options.orient}: the solved view is imported in the generator's "
+            "frame, which is the source's only at --orient 0"
+        )
     run_dir = outside_checkout(options.run_dir)
     options = Options(**{**asdict(options), "run_dir": run_dir})
     wall, cpu_self = time.perf_counter(), _self_cpu()
@@ -1782,7 +1800,7 @@ def reclassify(run_dir: Path, counts: Sequence[int] | None = None) -> dict[str, 
         for measured in (solved, same):
             if measured is not None and measured.produced:
                 outputs[measured.output]["relation"] = measured.relation
-        _decide(report, solved, same, outputs.get("same_refusal"))
+        decide(report, solved, same, outputs.get("same_refusal"))
         source = report.setdefault("source", {})
         if not source.get("provenance"):
             facts = case_facts(n)

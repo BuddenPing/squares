@@ -260,6 +260,64 @@ def test_a_rotation_no_witness_square_holds_is_refused() -> None:
         match_rotations(exact_frame(witness), poses)
 
 
+TILT_DEGREES = math.degrees(math.atan2(0.8, 0.6))
+
+
+def test_the_drift_the_exact_solve_leaves_on_a_rotation_still_matches_it() -> None:
+    """The full run of 12 October 2026 refused 17 counts at a tolerance of 1e-12 degrees
+    for drifts of 2e-11 to 7.5e-11 degrees (n = 146); a sine of 1e-9 takes them."""
+    witness = basis_witness([("7/10", "7/10", ("3/5", "4/5"))], "7/5")
+    drifted = resolve(witness, view(("0.7", "0.7", repr(TILT_DEGREES + 7.5e-11))))
+    assert drifted.status == "same"
+    assert drifted.witness is not None
+    assert drifted.witness["squares"][0]["basis"] == ["3/5", "4/5"]
+    assert math.isclose(same_side.ROTATION_TOLERANCE_DEGREES, 5.7296e-8, rel_tol=1e-4)
+    # A turn of a millionth of a degree is a turn, not drift.
+    turned = resolve(witness, view(("0.7", "0.7", repr(TILT_DEGREES + 1e-6))))
+    assert (turned.status, turned.reason) == ("refused", "unmatched-rotation")
+
+
+def test_a_reflected_rotation_is_not_the_witness_rotation() -> None:
+    # (4/5, -3/5) at -36.87 degrees mirrors the witness's +36.87; no quarter turn of one
+    # is the other, so it is refused rather than matched (after #515's test).
+    witness = basis_witness([("7/10", "7/10", ("3/5", "4/5"))], "7/5")
+    outcome = resolve(witness, view(("0.7", "0.7", repr(-TILT_DEGREES))))
+    assert (outcome.status, outcome.reason) == ("refused", "unmatched-rotation")
+
+
+def test_quarter_turns_of_a_rotation_are_one_class() -> None:
+    frame = exact_frame(basis_witness([("7/10", "7/10", ("3/5", "4/5"))], "7/5"))
+    matched = match_rotations(
+        frame, [GeneratorPose("0.7", "0.7", repr(TILT_DEGREES + 90 * k)) for k in range(4)]
+    )
+    assert [(m.source, m.quarter_turns) for m in matched] == [(0, k) for k in range(4)]
+
+
+def test_one_route_refusing_what_the_other_accepts_is_named(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def disagreeing(*_args: object) -> dict[str, Any]:
+        return {
+            "exact_verify": {"passed": True, "failures": []},
+            "independent": {"passed": False, "failures": ["a test disagreement"]},
+        }
+
+    monkeypatch.setattr(same_side, "verify_both", disagreeing)
+    witness = basis_witness([("1/2", "1/2", ("1", "0"))], "1")
+    outcome = resolve(witness, view(("0.5", "0.5", "0")))
+    assert (outcome.status, outcome.reason) == ("refused", "routes-disagree")
+
+
+def test_a_pose_too_long_to_write_is_refused_by_name(monkeypatch: pytest.MonkeyPatch) -> None:
+    def too_long(*_args: object, **_kwargs: object) -> same_side.SameSideOutcome:
+        raise ValueError("Exceeds the limit (4300 digits) for integer string conversion")
+
+    monkeypatch.setattr(same_side, "_resolve", too_long)
+    witness = basis_witness([("1/2", "1/2", ("1", "0"))], "1")
+    outcome = resolve(witness, view(("0.5", "0.5", "0")))
+    assert (outcome.status, outcome.reason) == ("refused", "literal-too-large")
+
+
 def test_a_witness_over_a_number_field_has_no_exact_frame() -> None:
     witness = load_witness(KNOWN_BEST / "n-051.yaml", fallback_schema=WITNESS_SCHEMA)
     outcome = resolve(witness, [GeneratorPose("0.5", "0.5", "0")] * 51)
