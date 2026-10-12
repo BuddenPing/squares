@@ -270,13 +270,21 @@ def test_frontier_witness_field_parser_is_independent_of_key_order() -> None:
     assert safe_load(updated.split("---\n", 2)[1]) == original
 
 
-@pytest.mark.parametrize("n", [51])
+@pytest.mark.parametrize("n", [51, 105, 108])
 @pytest.mark.parametrize("mutation", ["side", "credit", "body"])
 def test_source_adoption_refuses_mutable_upper_geometry_claims(
     private: Path, n: int, mutation: str
 ) -> None:
+    """51 takes the radical route and 105 and 108 the rational route, through the drafted
+    lower lanes of a generated record."""
     assert private == houses.REPO
-    original = (SOURCE / f"packing/frontier/n-{n:03d}.md").read_text()
+    if n in adopted.ADOPTED:
+        # Since the house adoption of 11 October 2026 (think-fvz4) T-130 and T-128 hold
+        # 105 and 108. The refusal is this packet's, so each case is staged as the
+        # adoption found it (`adopt_houses.read_history`), at the ry-xu house.
+        original = adopt_houses.read_history()[n]
+    else:
+        original = (SOURCE / f"packing/frontier/n-{n:03d}.md").read_text()
     prefix, front, body = original.split("---\n", 2)
     document = safe_load(front)
     if mutation == "side":
@@ -313,8 +321,8 @@ def test_source_adoption_refuses_mutable_upper_geometry_claims(
             review_date="2026-10-08",
             retrieved_date="2026-10-08",
         )
-    adopted = register.adopt_case(n, changed, drafted)
-    result = safe_load(adopted.split("---\n", 2)[1])["packing"]
+    redrafted = register.adopt_case(n, changed, drafted)
+    result = safe_load(redrafted.split("---\n", 2)[1])["packing"]
     assert result["reported_upper_bound"] == register.reported_bound(n)
     before = safe_load(old.split("---\n", 2)[1])["packing"]
     original_case = safe_load(original.split("---\n", 2)[1])["packing"]
@@ -326,7 +334,7 @@ def test_source_adoption_refuses_mutable_upper_geometry_claims(
     lower_draft = safe_load(drafted.split("---\n", 2)[1])["packing"]
     for field in ("reported_lower_bound", "verified_lower_bound", "status"):
         assert result[field] == lower_draft[field]
-    assert "global optimum exactly equals" not in adopted
+    assert "global optimum exactly equals" not in redrafted
 
 
 def test_unmapped_confirming_evidence_is_refused(private: Path) -> None:
