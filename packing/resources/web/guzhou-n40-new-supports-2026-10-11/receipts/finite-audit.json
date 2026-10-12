@@ -335,6 +335,11 @@
    "detail": "5 of 5: verifier/continuous_pose.cpp, verifier/axis_integer_grid.cpp, tests/kernel_harness.cpp, tests/rounding_harness.cpp, tests/oracle.py",
    "held": true,
    "name": "kernels: byte for byte T-145's, which its review read"
+  },
+  {
+   "detail": "69bc9e648510..., in both CI receipts and T-145's build with the CI compiler",
+   "held": true,
+   "name": "kernels: the CI run's pose binary is T-145's, which its replay rebuilt"
   }
  ],
  "claim": "s(40) > 3359/500",
