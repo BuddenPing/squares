@@ -28,6 +28,7 @@ def test_only_declared_cargo_outputs_are_outside_document_map(
     monkeypatch.setattr(check_documentation, "MAP", tmp_path / "docs/project/document-map.yaml")
     monkeypatch.setattr(check_documentation, "SYNOPSIS", synopsis)
     monkeypatch.setattr(check_documentation, "is_vendored", lambda _: False)
+    monkeypatch.setattr(check_documentation, "LAYOUT_PENDING", frozenset())
     monkeypatch.setattr(
         check_documentation,
         "load_map",

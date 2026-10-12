@@ -42,6 +42,42 @@ RETIRED_PHRASES = (
     "verified-construction",
 )
 
+#: Where a dated project record goes: the directory named for its kind, under a name that
+#: starts with that kind and the record's date. Nothing sits loose in `docs/project/`, since
+#: a loose file says nothing about what kind of document it is
+#: (docs/project/specs/active/plan-2026-10-11-documentation-organization.md, think-mv16).
+PROJECT_DOCS = "docs/project"
+DATED_KINDS = {
+    "handoffs": ("handoff",),
+    "postmortems": ("postmortem",),
+    "research": ("research",),
+    "reviews": ("review",),
+    "specs": ("plan", "spike"),
+}
+DATED_NAME = re.compile(r"(?P<kind>[a-z]+)-\d{4}-\d{2}-\d{2}-[a-z0-9.-]+\.md")
+#: The capitalized names a tool or convention fixes, and a registered identifier spelled
+#: as its record's id (`H-001-…`, `X-001-…`, `VE-001-…`; conventions.md section 2).
+CAPITALIZED_NAMES = {"README.md", "AGENTS.md", "CLAUDE.md"}
+IDENTIFIER_NAME = re.compile(r"[A-Z]+-\d+-[a-z0-9.-]+\.md")
+#: Documents that predate the layout and wait on a move every open pull request would
+#: conflict with: the root guides, the frontier's generated views and the verifier guides
+#: that `evidence.yaml` cites (think-xz7z). The list only shrinks; an entry that no longer
+#: breaks a rule fails, so a finished move takes its entry with it.
+LAYOUT_PENDING = frozenset(
+    {
+        "SYNOPSIS.md",
+        "TUTORIAL.md",
+        "docs/project/site-urls.md",
+        "packing/frontier/CERTIFICATE-REACH.md",
+        "packing/frontier/INVENTORY.md",
+        "packing/frontier/RESULTS.md",
+        "packing/frontier/STATUS.md",
+        "packing/frontier/VERIFIERS.md",
+        "packing/sqverify_fast/INDEPENDENCE.md",
+        "packing/sqverify_fast/SOUNDNESS.md",
+    }
+)
+
 
 def _matches(pattern: str) -> set[str]:
     return {path.relative_to(REPO).as_posix() for path in REPO.glob(pattern) if path.is_file()}
@@ -136,6 +172,39 @@ def _link_problems(path: Path) -> list[str]:
     return problems
 
 
+def _layout_problem(relative: str) -> str | None:
+    """Why a mapped document's place or name breaks the layout, or None if it does not."""
+    parts = relative.split("/")
+    name = parts[-1]
+    if relative.startswith(f"{PROJECT_DOCS}/"):
+        inside = parts[2:]
+        if len(inside) == 1 and name != "README.md":
+            return "sits loose in docs/project/; put it in the directory for its kind"
+        kinds = DATED_KINDS.get(inside[0], ()) if len(inside) > 1 else ()
+        match = DATED_NAME.fullmatch(name)
+        if kinds and not (match and match["kind"] in kinds):
+            names = " or ".join(f"{kind}-YYYY-MM-DD-topic.md" for kind in kinds)
+            return f"is not named {names}"
+    capitalized = name != name.lower() and name not in CAPITALIZED_NAMES
+    if capitalized and not IDENTIFIER_NAME.fullmatch(name):
+        return "has capitals in its name; use lowercase kebab-case"
+    return None
+
+
+def _layout_problems(mapped: set[str]) -> list[str]:
+    problems = [
+        f"{relative}: {problem}"
+        for relative in sorted(mapped - LAYOUT_PENDING)
+        if (problem := _layout_problem(relative))
+    ]
+    problems.extend(
+        f"layout allowlist entry no longer needed: {relative}"
+        for relative in sorted(LAYOUT_PENDING)
+        if relative not in mapped or _layout_problem(relative) is None
+    )
+    return problems
+
+
 def check() -> list[str]:
     document_map = load_map()
     problems: list[str] = []
@@ -217,6 +286,7 @@ def check() -> list[str]:
         if FOOTER not in text:
             problems.append(f"{relative}: common-doc footer is missing")
         problems.extend(_link_problems(REPO / relative))
+    problems.extend(_layout_problems(covered & actual))
 
     current_paths = {
         item["path"]
