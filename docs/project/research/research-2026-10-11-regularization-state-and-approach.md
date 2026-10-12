@@ -240,13 +240,18 @@ exact route), 170 to 206 s (same-side re-solve) and 72 s (`arrangement_gap`).
   Those drawings already read cleanly, so leaving them as they are costs nothing
   visually.
 - **Re-solving finds a lower packing nearby.** At 70, 129 and 146 the exact solve lowers
-  the side by about $10^{-10}$ and turns a tilted band by up to 0.0115 degrees.
-  No exact rotation of the witness matches the turned band, so the same-side re-solve
-  refuses, and the regularized view is a `solved` certificate below the case record’s
-  bound. Those three sides equal T-146’s registered certificates, which the case records
-  have not yet adopted as their bound.
-  Starting the regularizer from the witness’s own pose instead (`--frame witness`) did
-  not help: upstream’s 80-digit verification finds overlaps of about $10^{-10}$ there.
+  the side by about $10^{-10}$, and the regularized view is a `solved` certificate below
+  the case record’s bound.
+  Those three sides equal T-146’s registered certificates, which the case records have
+  not yet adopted as their bound.
+  At 70 and 129 the solve also turns a tilted band (0.0115 degrees at 70), which no
+  exact rotation of the witness matches, so the same-side re-solve refuses.
+  At 146 it turns nothing: every rotation stays within $10^{-10}$ degrees of the
+  witness’s, and only the re-solve’s first tolerance, $10^{-12}$ degrees, refused it.
+  The full run’s re-solve matches within a sine of $10^{-9}$ and admits 146 at its own
+  side. Starting the regularizer from the witness’s own pose instead (`--frame witness`)
+  did not help: upstream’s 80-digit verification finds overlaps of about $10^{-10}$
+  there.
 - **Row 3 is mostly rounding.** At 17, 37, 101 and 200 the same-side view is exact at
   the witness’s printed side, which lies $10^{-22}$ to $10^{-14}$ below a verified bound
   that is an exact certificate’s side rounded up at fourteen decimals.
@@ -330,11 +335,34 @@ Row 3 lists 71 register candidates in all, the input to the batch registration
 (think-omqv). Of the eight row 6 reviews, seven turn a square that the regularizer’s
 recorded angle changes do not name, and one (228) has no one-to-one pairing.
 
+**A wider rotation tolerance.** Comparing this layer with #515, a parallel
+implementation, showed that the exact solve leaves the rotations it does not turn within
+$10^{-10}$ degrees of the witness’s (7.5e-11 at $n = 146$), and that the same-side
+re-solve’s tolerance of $10^{-12}$ degrees refused those views as `unmatched-rotation`.
+The re-solve now matches within a sine of $10^{-9}$, about $5.7 \times 10^{-8}$ degrees,
+#515’s tolerance and a thousand times below the policy’s turn threshold.
+The 34 counts the first tolerance refused ran again from the import stage (3,356 s of
+wall at two workers):
+
+- 102, 103 and 146 move from held to **admitted** at the witness’s own side, and 123
+  from held to review.
+- Six admitted views move from `bound` to `same`, the witness’s exact side: 132, 156,
+  182, 206, 268 and 304. 110 and 241 stay refused, now measured at the witness’s side.
+- 22 still fail the re-solve: 15 with a rotation the solve turns beyond the tolerance
+  (70, 129, 267 and 12 others), four views that do not close at $s_W$ (210, 228, 240,
+  273\) and three whose exact coordinates are too long to write (270, 272, 306). 210,
+  240 and 273 are admitted at the bound; at 270 and 272 the solved view’s own side is
+  the witness’s, an exact certificate at that side, so they are admitted as `same`.
+
+After the re-run the run decides **35 admitted** (29 `same`, 6 `bound`), 14 review, 3
+refused, 26 held, 18 no view and 228 no change.
+
 What the full run adds to the pilots:
 
-- **The bound relation carries much of the gain.** Twelve of the 32 admitted views have
-  exactly the verified bound as their side: the exact solve reproduces the side the
-  register already certifies, as at $n = 206$.
+- **The bound relation admits what the witness’s side cannot.** Six of the 35 admitted
+  views (177, 181, 210, 240, 271, 273) have exactly the verified bound as their side,
+  where the re-solve at $s_W$ turns a band or does not close: the exact solve reproduces
+  the side the register already certifies.
 - **Bent bands keep their tilts.** At 237 to 241, 270 to 273 and 304 to 307 the band
   bends through 20 to 30 distinct angles that are determined, not free, so
   `conservative` leaves them; the shading improves (at 271, light squares 135 to 91 and
