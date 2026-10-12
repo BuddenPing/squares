@@ -14,6 +14,7 @@ scratch tree of three records: one regularized, one unchanged and one refused.
 from __future__ import annotations
 
 import gzip
+import hashlib
 import json
 from fractions import Fraction
 from pathlib import Path
@@ -25,6 +26,9 @@ from devtools import atlas_orientation
 from devtools.atlas_orientation import orient_atlas_witness, reflect_y_axis
 from devtools.regularize_axis_components import (
     ALGORITHM,
+    ATLAS_CONTRACT,
+    EVAND_CREDIT,
+    EVAND_GENERATOR,
     RATIONAL_DIGITS,
     ROOT,
     SMALLEST_DILATION,
@@ -34,6 +38,7 @@ from devtools.regularize_axis_components import (
     AtlasLayout,
     RegularizeError,
     atlas_record,
+    atlas_totals,
     axis_square,
     centre,
     check_atlas,
@@ -452,7 +457,9 @@ def test_the_atlas_layer_updates_checks_and_verifies(
 
     assert main(["--update-atlas"], layout=layout) == 0
     index = json.loads(layout.index.read_text())
-    assert index["algorithm"] == ALGORITHM
+    assert index["contract"] == ATLAS_CONTRACT
+    assert index["softschema"]["contract"] == ATLAS_CONTRACT
+    assert index["generators"][ALGORITHM]["method"] == ALGORITHM
     assert index["label"] == "regularized"
     statuses = {record["n"]: record["status"] for record in index["entries"]}
     assert statuses == {2: "refused", 3: "unchanged", 4: "regularized"}
@@ -467,6 +474,25 @@ def test_the_atlas_layer_updates_checks_and_verifies(
     assert regularized["moves"]["compactions"] == 3
     assert regularized["exact_verification"]["passed"] is True
     assert regularized["view"]["path"] == "packing/regularized/n-004-regularized.yaml.gz"
+    # Each record names its generator, and a drawn view carries its regularization in the
+    # register's terms: three squares slid along the row, none turned.
+    assert {record["generator"] for record in index["entries"]} == {ALGORITHM}
+    assert regularized["regularization"] == {
+        "n": 4,
+        "of_witness": "W-row",
+        "by": "project",
+        "method": ALGORITHM,
+        "side": "same",
+        "identity": {
+            "basis": "measured",
+            "measured_in": "packing/regularized/index.json",
+            "one_to_one": True,
+            "moved": 3,
+            "max_move": 0.06,
+            "max_turn_deg": 0.0,
+        },
+    }
+    assert "regularization" not in unchanged
     assert sorted(path.name for path in layout.directory.iterdir()) == [
         "index.json",
         "n-004-regularized.yaml.gz",
@@ -500,6 +526,131 @@ def test_the_atlas_layer_updates_checks_and_verifies(
         "unexpected file packing/regularized/stray.txt",
     ]
     assert main(["--check-atlas"], layout=layout) == 1
+
+
+def drawn_by_another_generator(layout: AtlasLayout, n: int) -> dict[str, Any]:
+    """Draw count `n` from another generator's view, as an admission writes one: here the
+    axis tool's own view relabelled, which is exact and verifies as any view must."""
+    index = json.loads(layout.index.read_text())
+    entries = {record["n"]: record for record in index["entries"]}
+    reference = entries[n]
+    view = load_yaml(gzip.decompress(layout.view(n).read_bytes()).decode())["witness"]
+    regularization = {
+        **reference["regularization"],
+        "method": "a fixture through devtools.regularize_evand",
+    }
+    view["certificate"] = {
+        "kind": "regularized-view",
+        "label": "regularized",
+        "derived_from": reference["source"]["id"],
+        "generator": EVAND_GENERATOR,
+        "credit": EVAND_CREDIT,
+        "regularization": regularization,
+    }
+    text = witness_document(view, schema=str(WITNESS_SCHEMA))
+    layout.view(n).write_bytes(gzip.compress(text.encode(), mtime=0))
+    entries[n] = {
+        "n": n,
+        "status": "regularized",
+        "generator": EVAND_GENERATOR,
+        "run": {"id": "fixture-run"},
+        "source": reference["source"],
+        "side": {
+            "reported": reference["side"]["reported"],
+            "view": view["side"],
+            "relation": "same",
+            "view_minus_reported": "0.000e+00",
+            "view_minus_verified_upper_bound": None,
+        },
+        "view": {
+            "path": reference["view"]["path"],
+            "sha256": hashlib.sha256(text.encode()).hexdigest(),
+        },
+        "shades": reference["shades"],
+        "exact_verification": {
+            "repository_verifier": True,
+            "independent_checker": True,
+            "passed": True,
+        },
+        "decision": {"row": 10, "decision": "admit", "reason": "fixture"},
+        "measured": {
+            "identity_by": "fixture",
+            "shades_by": "fixture",
+            "contacts": {
+                rule: {"before": [0, 0, 0, 0, 0], "after": [0, 0, 0, 0, 0]}
+                for rule in ("house", "stage")
+            },
+            "symmetry": 0,
+            "regressions": 0,
+        },
+        "regularization": regularization,
+        "reference": reference,
+    }
+    records = [entries[key] for key in sorted(entries)]
+    index["entries"] = records
+    index["generators"][EVAND_GENERATOR] = {
+        "tool": "packing/devtools/regularize_evand.py",
+        "generated_by": "fixture",
+        "method": "fixture",
+        "credit": EVAND_CREDIT,
+    }
+    index["runs"] = [
+        {
+            "id": "fixture-run",
+            "generator": EVAND_GENERATOR,
+            "finished": "2026-10-12",
+            "parameters": {},
+            "counts": 1,
+            "cost": {"cpu_seconds": 0, "wall_seconds": 0, "workers": 1},
+        }
+    ]
+    index["totals"] = atlas_totals(records)
+    layout.index.write_text(json.dumps(index), encoding="utf-8")
+    return entries[n]
+
+
+def test_another_generators_view_is_checked_kept_and_decided_again(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("PACK_JOBS", "1")
+    layout = scratch_atlas(tmp_path)
+    assert main(["--update-atlas"], layout=layout) == 0
+    entry = drawn_by_another_generator(layout, 4)
+    assert check_atlas(layout) == []
+    # The full check re-derives this tool's record into the reference and decides the
+    # other generator's view again on both exact routes.
+    assert main(["--verify-atlas"], layout=layout) == 0
+
+    # Updating this tool's layer keeps the drawn view and its run, and refreshes the
+    # reference beside it.
+    retained = layout.view(4).read_bytes()
+    assert main(["--update-atlas"], layout=layout) == 0
+    index = json.loads(layout.index.read_text())
+    kept = next(record for record in index["entries"] if record["n"] == 4)
+    assert kept == entry
+    assert layout.view(4).read_bytes() == retained
+    assert [run["id"] for run in index["runs"]] == ["fixture-run"]
+    assert index["totals"]["views_by_generator"] == {EVAND_GENERATOR: 1}
+
+    # A view that no longer says what its entry says is named, field by field.
+    view = load_yaml(gzip.decompress(retained).decode())["witness"]
+    view["certificate"]["credit"] = "someone else"
+    text = witness_document(view, schema=str(WITNESS_SCHEMA))
+    layout.view(4).write_bytes(gzip.compress(text.encode(), mtime=0))
+    problems = check_atlas(layout)
+    assert "n=4: the view differs from the one its verdict was recorded for" in problems
+    assert any("certificate credit is 'someone else'" in problem for problem in problems)
+    layout.view(4).write_bytes(retained)
+
+    # Its witness changed: the view lapses, and this tool's record is drawn again.
+    path = layout.packing / "w/n-004.yaml"
+    path.write_text(path.read_text() + "# corrected\n", encoding="utf-8")
+    assert main(["--update-atlas"], layout=layout) == 0
+    index = json.loads(layout.index.read_text())
+    assert {record["generator"] for record in index["entries"]} == {ALGORITHM}
+    assert index["runs"] == []
+    assert list(index["generators"]) == [ALGORITHM]
+    assert check_atlas(layout) == []
 
 
 # Two squares meeting a hair too closely: their 31-digit centres put them 1e-30 into each
@@ -570,9 +721,11 @@ def test_the_atlas_records_a_dilation_only_when_the_prototype_is_asked_for(
 
     assert main(["--update-atlas", "--smallest-dilation"], layout=layout) == 0
     index = json.loads(layout.index.read_text())
-    assert index["parameters"]["center_dilation"] == SMALLEST_DILATION
+    assert index["generators"][ALGORITHM]["parameters"]["center_dilation"] == SMALLEST_DILATION
     (record,) = index["entries"]
     assert record["status"] == "regularized"
+    # A dilated frame is not the witness's side, so its regularization was solved to one.
+    assert record["regularization"]["side"] == "solved"
     assert Fraction(record["exact_frame"]["center_dilation"]) == 1 + Fraction(1, 10**29)
     assert record["side"]["fits_reported_side"] is False
     assert record["exact_verification"]["passed"] is True
@@ -581,7 +734,7 @@ def test_the_atlas_records_a_dilation_only_when_the_prototype_is_asked_for(
     assert main(["--check-atlas", "--smallest-dilation"], layout=layout) == 0
     assert main(["--verify-atlas", "--smallest-dilation"], layout=layout) == 0
     (problem,) = check_atlas(layout)
-    assert problem.startswith("index parameters is ")
+    assert problem.startswith(f"index {ALGORITHM} is ")
     assert main(["--verify-atlas"], layout=layout) == 1
 
 

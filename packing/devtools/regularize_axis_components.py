@@ -142,11 +142,31 @@ FORBIDDEN_OUTPUT_ROOTS = (WITNESSES, ROOT / "atlas")
 MANIFEST = ROOT / "atlas/known-best/manifest.json"
 ATLAS_DIR = ROOT / "atlas/known-best/regularized"
 
-ATLAS_CONTRACT = "packing.squares:RegularizedAtlasIndex/v1"
+ATLAS_CONTRACT = "packing.squares:RegularizedAtlasIndex/v2"
+"""The layer's index contract. v2 (12 October 2026, think-k35c) names each entry's
+generator and carries each drawn view's regularization in the register's terms; v1 was
+this tool's alone."""
+ATLAS_SCHEMA = "../regularized-atlas-index.schema.yaml"
+"""The index's soft schema, relative to the index's directory: beside the atlas's other
+schemas, since the layer's directory holds only what the check expects there."""
 ATLAS_GENERATOR = "python -m devtools.regularize_axis_components --update-atlas"
 ALGORITHM = "regularize_axis_components/2"
 """Changed by hand whenever a change to this module changes a view or a count. The cheap
 check sees the index, not the code, so this is how it learns the views are out of date."""
+EVAND_GENERATOR = "evand-regularize"
+"""Evan Daniel's regularizer as `devtools.regularize_evand` drives it (policy section 2)."""
+GRID_GENERATOR = "regularize_grid_slack/0"
+"""The grid-slack generator, `devtools.regularize_grid_slack`'s own version."""
+GENERATORS = (ALGORITHM, EVAND_GENERATOR, GRID_GENERATOR)
+POLICY_DOCUMENT = "docs/project/policies/regularization-policy.md"
+EVAND_CREDIT = (
+    "Regularized by the Squares Project with Evan Daniel's regularizer "
+    "(evand/square-packing, MIT)"
+)
+"""The line the index and every drawing of a view his method made carry (policy section
+7): a view of the vendored generator, or of the grid-slack port of his placement."""
+PROJECT_REGULARIZER = "project"
+"""A regularization's `by` for this project's own runs (`results.schema.yaml`)."""
 VIEW_SUFFIX = "-regularized.yaml.gz"
 DRAWING_LABEL = "regularized"
 RENDERINGS = "rendering"
@@ -1218,6 +1238,42 @@ def settle(
     raise RuntimeError(message)
 
 
+MOVED_BEYOND = 1e-3
+"""A square counts as moved past this distance, as the register's `identity.moved` does."""
+
+
+def _significant(value: float, digits: int = 7) -> float:
+    """A measurement kept to `digits` significant figures, so the index reads it back
+    exactly and two runs write the same text."""
+    return float(f"{value:.{digits - 1}e}")
+
+
+def square_identity(certified: Sequence[Piece], pieces: Sequence[Piece]) -> dict[str, Any]:
+    """How far the view moved each square of its exact frame, square by square.
+
+    The tool never reorders or replaces a square, so each square of the view is the
+    frame's square at the same index and the pairing is one to one by construction; what
+    is measured is how far each centre moved, and which squares were turned onto the axes
+    and by how much. These are the register's `identity` measurements (`moved` beyond
+    `1e-3`, `max_move`, `max_turn_deg`) for a regularization of this tool.
+    """
+    moves: list[float] = []
+    turns: list[float] = []
+    for before, after in zip(certified, pieces, strict=True):
+        (x0, y0), (x1, y1) = centre(before.corners), centre(after.corners)
+        moves.append(math.hypot(float(x1 - x0), float(y1 - y0)))
+        if is_exact_axis(after.corners) and not is_exact_axis(before.corners):
+            turns.append(math.degrees(before.source_angle))
+    return {
+        "pairing": "by index",
+        "one_to_one": True,
+        "moved": sum(move > MOVED_BEYOND for move in moves),
+        "max_move": _significant(max(moves, default=0.0)),
+        "straightened": len(turns),
+        "max_turn_deg": _significant(max(turns, default=0.0), 6),
+    }
+
+
 def regularize_frame(
     witness: dict[str, Any],
     frame: ExactFrame,
@@ -1256,6 +1312,7 @@ def regularize_frame(
     report = verify_packing([p.corners for p in pieces], side, sign=rational_sign, bucket=True)
     certified = [p.corners for p in frame.pieces]
     changed = sum(p.corners != corners for p, corners in zip(pieces, certified, strict=True))
+    identity = square_identity(frame.pieces, pieces)
 
     per_square: list[dict[str, Any]] = []
     structural: dict[str, int] = {}
@@ -1332,6 +1389,7 @@ def regularize_frame(
             },
         },
         "regularization": {**summary, "rounds": outcome.rounds},
+        "identity": identity,
         "contacts": {rule: contact_tally(*counts[rule], *greens[rule]) for rule in RULE_NAMES},
         "residual_regressions": [
             {
@@ -1537,7 +1595,7 @@ def atlas_parameters(*, smallest_dilation: bool = False) -> dict[str, Any]:
     }
 
 
-def _shade_record(before: dict[str, int], after: dict[str, int]) -> dict[str, Any]:
+def shade_record(before: dict[str, int], after: dict[str, int]) -> dict[str, Any]:
     return {
         rule: {
             "green_before": before[f"{rule}_green"],
@@ -1572,6 +1630,7 @@ def atlas_record(
     record: dict[str, Any] = {
         "n": n,
         "status": "",
+        "generator": ALGORITHM,
         "source": {
             "witness": layout.relative(source),
             "id": witness["id"],
@@ -1589,7 +1648,7 @@ def atlas_record(
     except RegularizeError as error:
         record["status"] = "refused"
         record["refusal"] = {"kind": error.kind, "reason": str(error)}
-        record["shades"] = _shade_record(before, before)
+        record["shades"] = shade_record(before, before)
         return record, None, time.perf_counter() - started
     # A count certified again from a later packet has a certificate in each packet's
     # directory, and the frame is exactly the one of the packing the atlas now draws; the
@@ -1647,7 +1706,7 @@ def atlas_record(
     }
     if regularization["changed_squares"] == 0:
         record["status"] = "unchanged"
-        record["shades"] = _shade_record(before, before)
+        record["shades"] = shade_record(before, before)
         return record, None, time.perf_counter() - started
     text = witness_document(view, schema=layout.schema_reference())
     with tempfile.TemporaryDirectory() as scratch:
@@ -1663,14 +1722,50 @@ def atlas_record(
     record["status"] = "regularized" if passed else "failed-verification"
     record["changed_squares"] = regularization["changed_squares"]
     record["view"] = {"path": layout.relative(layout.view(n)), "sha256": digest(text.encode())}
-    record["shades"] = _shade_record(before, after)
+    record["shades"] = shade_record(before, after)
     record["exact_verification"] = {
         "repository_verifier": bool(repository_valid),
         "independent_checker": bool(verdict["verification_passed"]),
         "pairs_tested_independently": verdict["pairs_tested"],
         "passed": passed,
     }
+    record["regularization"] = axis_regularization(
+        n, witness, report, measured_in=layout.relative(layout.index)
+    )
     return record, text if passed else None, time.perf_counter() - started
+
+
+def axis_regularization(
+    n: int, witness: dict[str, Any], report: dict[str, Any], *, measured_in: str
+) -> dict[str, Any]:
+    """This tool's view of a record as the register's `regularizations` item would state
+    it (`results.schema.yaml`), with `of_witness` standing in for `of` until the frontier
+    record resolves the source witness to the registered result that holds its packing.
+
+    The view keeps the frame's side, so it is `same` unless a dilated frame was asked
+    for; the identity is `square_identity`'s, measured here and retained in the index
+    (`measured_in`). It records no `changes`: the register counts there the free squares
+    a regularizer turns, and the squares this tool straightens are any within the snap
+    tolerance of the axes, load-bearing or not, so their largest turn is the identity's
+    `max_turn_deg` instead.
+    """
+    identity = report["identity"]
+    record: dict[str, Any] = {
+        "n": n,
+        "of_witness": witness["id"],
+        "by": PROJECT_REGULARIZER,
+        "method": ALGORITHM,
+        "side": "same" if report["exact_frame"]["side_minus_reported"] == "0" else "solved",
+    }
+    record["identity"] = {
+        "basis": "measured",
+        "measured_in": measured_in,
+        "one_to_one": identity["one_to_one"],
+        "moved": identity["moved"],
+        "max_move": identity["max_move"],
+        "max_turn_deg": identity["max_turn_deg"],
+    }
+    return record
 
 
 def atlas_totals(records: Sequence[dict[str, Any]]) -> dict[str, Any]:
@@ -1713,35 +1808,103 @@ def atlas_totals(records: Sequence[dict[str, Any]]) -> dict[str, Any]:
             + record.get("non_regression", {}).get("held_pose", 0)
             for record in records
         ),
+        "views_by_generator": {
+            generator: count
+            for generator in GENERATORS
+            if (count := sum(record.get("generator") == generator for record in regularized))
+        },
+    }
+
+
+LAYER_GENERATED_BY = (
+    f"{ATLAS_GENERATOR}, then the other generators' admitted views by "
+    "python -m devtools.regularize_evand layer"
+)
+LAYER_POLICY = (
+    "A derived drawing layer under the regularization policy, never a witness: each view "
+    "is an exact packing of the credited arrangement at the side the record already "
+    "states, made by the generator its entry names and verified twice over Q. It changes "
+    "no side, frontier value, evidence tier or credit, and every drawing made from it must "
+    "be labelled 'regularized'."
+)
+LAYER_DIGESTS = (
+    "Cache keys, not integrity claims: source.sha256 says the view was derived from the "
+    "witness the atlas now holds; view.sha256, of the decompressed YAML, binds the "
+    "verification verdict recorded beside it to those bytes."
+)
+
+
+def axis_generator(*, smallest_dilation: bool = False) -> dict[str, Any]:
+    """This tool as the index's `generators` describes it."""
+    return {
+        "tool": "packing/devtools/regularize_axis_components.py",
+        "generated_by": ATLAS_GENERATOR,
+        "method": ALGORITHM,
+        "parameters": atlas_parameters(smallest_dilation=smallest_dilation),
     }
 
 
 def atlas_index(
-    records: Sequence[dict[str, Any]], *, smallest_dilation: bool = False
+    records: Sequence[dict[str, Any]],
+    *,
+    smallest_dilation: bool = False,
+    generators: dict[str, Any] | None = None,
+    runs: Sequence[dict[str, Any]] = (),
 ) -> dict[str, Any]:
+    """The layer's index (`ATLAS_CONTRACT`): this tool's generator block, the other
+    generators and runs whose views the entries draw, the totals and the entries."""
     return {
+        "softschema": {
+            "contract": ATLAS_CONTRACT,
+            "schema": ATLAS_SCHEMA,
+            "status": "enforced",
+        },
         "contract": ATLAS_CONTRACT,
-        "generated_by": ATLAS_GENERATOR,
-        "algorithm": ALGORITHM,
+        "generated_by": LAYER_GENERATED_BY,
         "label": DRAWING_LABEL,
-        "policy": (
-            "A derived drawing layer, never a witness: each view is the record's exact frame "
-            "with its near-axis squares straightened and slid into exact contact, verified "
-            "twice over Q at the certificate's side. It changes no side, frontier value or "
-            "evidence tier, and every drawing made from it must be labelled 'regularized'."
-        ),
-        "digests": (
-            "Cache keys, not integrity claims: source.sha256 says the view was derived from "
-            "the witness the atlas now holds; view.sha256, of the decompressed YAML, binds "
-            "the verification verdict recorded beside it to those bytes."
-        ),
-        "parameters": atlas_parameters(smallest_dilation=smallest_dilation),
+        "policy": LAYER_POLICY,
+        "policy_document": POLICY_DOCUMENT,
+        "credit": EVAND_CREDIT,
+        "digests": LAYER_DIGESTS,
+        "generators": {
+            ALGORITHM: axis_generator(smallest_dilation=smallest_dilation),
+            **{key: value for key, value in (generators or {}).items() if key != ALGORITHM},
+        },
+        "runs": list(runs),
         "totals": atlas_totals(records),
         "entries": list(records),
     }
 
 
-def _index_text(index: dict[str, Any]) -> str:
+def drawn_elsewhere(record: dict[str, Any] | None) -> bool:
+    """Whether an index entry draws another generator's view rather than this tool's."""
+    return record is not None and record.get("generator", ALGORITHM) != ALGORITHM
+
+
+def carried_index(
+    committed: dict[str, Any] | None,
+    records: Sequence[dict[str, Any]],
+    *,
+    smallest_dilation: bool = False,
+) -> dict[str, Any]:
+    """The index over `records`, keeping the generators and runs of the committed index
+    that some entry still draws from."""
+    used = {record["generator"] for record in records if drawn_elsewhere(record)}
+    runs = {record["run"]["id"] for record in records if drawn_elsewhere(record)}
+    committed = committed or {}
+    return atlas_index(
+        records,
+        smallest_dilation=smallest_dilation,
+        generators={
+            key: value
+            for key, value in (committed.get("generators") or {}).items()
+            if key in used
+        },
+        runs=[run for run in committed.get("runs") or [] if run["id"] in runs],
+    )
+
+
+def index_text(index: dict[str, Any]) -> str:
     return retained_json.dumps(index, ensure_ascii=False)
 
 
@@ -1830,30 +1993,46 @@ def update_atlas(
     committed = _committed_index(layout)
     previous = {record["n"]: record for record in (committed or {}).get("entries", [])}
     records: list[dict[str, Any]] = []
+    elsewhere: set[int] = set()
     for entry in entries:
         n = entry["n"]
+        kept = previous.get(n)
         if n in results:
-            records.append(_normalized(results[n][0]))
-        elif n in previous:
-            records.append(previous[n])
+            record = _normalized(results[n][0])
+            # Another generator's admitted view stays drawn while it was derived from the
+            # witness the atlas still holds; this tool's record of the count is kept
+            # beside it as the reference (policy section 4, "Two candidates").
+            if drawn_elsewhere(kept) and kept is not None:
+                if kept["source"] == record["source"]:
+                    records.append({**kept, "reference": record})
+                    elsewhere.add(n)
+                    continue
+                print(f"n={n}: the {kept['generator']} view lapsed: its witness changed")
+            records.append(record)
+        elif kept is not None:
+            records.append(kept)
+            if drawn_elsewhere(kept):
+                elsewhere.add(n)
         else:
             message = f"n={n} has no record; run --update-atlas without --n first"
             raise SystemExit(message)
     layout.directory.mkdir(parents=True, exist_ok=True)
     for n, (_record, text, _seconds) in sorted(results.items()):
+        if n in elsewhere:
+            continue
         target = layout.view(n)
         if text is None:
             target.unlink(missing_ok=True)
             continue
         with atomic_output_file(target) as temporary:
             temporary.write_bytes(_gzip(text))
-    kept = {layout.view(record["n"]).name for record in records if "view" in record}
+    kept_views = {layout.view(record["n"]).name for record in records if "view" in record}
     for stray in layout.directory.glob(f"*{VIEW_SUFFIX}"):
-        if stray.name not in kept:
+        if stray.name not in kept_views:
             stray.unlink()
-    index = atlas_index(records, smallest_dilation=smallest_dilation)
+    index = carried_index(committed, records, smallest_dilation=smallest_dilation)
     with atomic_output_file(layout.index) as temporary:
-        temporary.write_text(_index_text(index), encoding="utf-8")
+        temporary.write_text(index_text(index), encoding="utf-8")
     elapsed = time.perf_counter() - started
     serial = sum(seconds for _record, _text, seconds in results.values())
     print(_totals_line(index["totals"]))
@@ -1882,22 +2061,27 @@ def _totals_line(totals: dict[str, Any]) -> str:
 
 def check_atlas(layout: AtlasLayout, *, smallest_dilation: bool = False) -> list[str]:
     """The cheap check: the index against the manifest, the witnesses and the retained
-    views, by digest. It re-derives and re-verifies nothing."""
+    views, by digest, and each other generator's view against its entry by reading it.
+    It re-derives and re-verifies nothing."""
     index = _committed_index(layout)
     if index is None:
         return [f"{layout.relative(layout.index)} is missing; run --update-atlas"]
     problems: list[str] = []
-    for key, expected in (
-        ("contract", ATLAS_CONTRACT),
-        ("algorithm", ALGORITHM),
-        ("label", DRAWING_LABEL),
-        ("parameters", _normalized(atlas_parameters(smallest_dilation=smallest_dilation))),
+    axis = _normalized(axis_generator(smallest_dilation=smallest_dilation))
+    for key, found, expected in (
+        ("softschema", index.get("softschema"), _normalized(atlas_index([])["softschema"])),
+        ("contract", index.get("contract"), ATLAS_CONTRACT),
+        ("label", index.get("label"), DRAWING_LABEL),
+        ("policy_document", index.get("policy_document"), POLICY_DOCUMENT),
+        ("credit", index.get("credit"), EVAND_CREDIT),
+        (ALGORITHM, (index.get("generators") or {}).get(ALGORITHM), axis),
     ):
-        if index.get(key) != expected:
-            problems.append(f"index {key} is {index.get(key)!r}, the tool's is {expected!r}")
+        if found != expected:
+            problems.append(f"index {key} is {found!r}, the tool's is {expected!r}")
     records = index.get("entries", [])
     if index.get("totals") != _normalized(atlas_totals(records)):
         problems.append("index totals do not sum its entries")
+    problems.extend(_generator_problems(index, records))
     by_n = {record["n"]: record for record in records}
     entries = manifest_entries(layout)
     if sorted(by_n) != sorted(entry["n"] for entry in entries) or len(by_n) != len(records):
@@ -1917,6 +2101,32 @@ def check_atlas(layout: AtlasLayout, *, smallest_dilation: bool = False) -> list
     return problems
 
 
+def _generator_problems(index: dict[str, Any], records: Sequence[dict[str, Any]]) -> list[str]:
+    """Every generator and run the index names is one an entry draws from, and every
+    entry's generator and run are named, once each."""
+    problems: list[str] = []
+    named = set(index.get("generators") or {})
+    used = {str(record.get("generator")) for record in records if drawn_elsewhere(record)}
+    problems.extend(
+        f"index names generator {generator}, which no entry draws from"
+        for generator in sorted(named - used - {ALGORITHM})
+    )
+    problems.extend(
+        f"entries draw from generator {generator}, which the index does not describe"
+        for generator in sorted(used - named)
+    )
+    runs = [str(run.get("id")) for run in index.get("runs") or []]
+    if len(runs) != len(set(runs)):
+        problems.append("index runs are not named once each")
+    drawn = {str(record["run"]["id"]) for record in records if drawn_elsewhere(record)}
+    problems.extend(f"index run {run} draws no entry" for run in sorted(set(runs) - drawn))
+    problems.extend(
+        f"entries name run {run}, which the index does not record"
+        for run in sorted(drawn - set(runs))
+    )
+    return problems
+
+
 def _check_record(
     layout: AtlasLayout, entry: dict[str, Any], record: dict[str, Any], kept: set[str]
 ) -> list[str]:
@@ -1928,7 +2138,10 @@ def _check_record(
     elif digest(source.read_bytes()) != record["source"]["sha256"]:
         problems.append(f"n={n}: the witness changed since its view was derived (stale)")
     status = record["status"]
+    generator = record.get("generator")
     view = layout.view(n)
+    if generator not in GENERATORS:
+        problems.append(f"n={n}: generator {generator!r}")
     if status == "regularized":
         kept.add(view.name)
         if record["view"]["path"] != layout.relative(view):
@@ -1939,18 +2152,119 @@ def _check_record(
         data = view.read_bytes()
         if data[:8] != b"\x1f\x8b\x08\x00\x00\x00\x00\x00":
             problems.append(f"n={n}: the view is not a deterministic gzip")
-        if digest(gzip.decompress(data)) != record["view"]["sha256"]:
+        text = gzip.decompress(data)
+        if digest(text) != record["view"]["sha256"]:
             problems.append(
                 f"n={n}: the view differs from the one its verdict was recorded for"
             )
         if not record["exact_verification"]["passed"]:
             problems.append(f"n={n}: recorded exact verification did not pass")
+        problems.extend(_regularization_problems(n, record))
+        if drawn_elsewhere(record):
+            problems.extend(_drawn_view_problems(layout, record, text.decode("utf-8")))
     elif status in {"unchanged", "refused"}:
+        if drawn_elsewhere(record):
+            problems.append(f"n={n}: {status} by {generator}, which records only views")
         if view.exists():
             problems.append(f"n={n}: {status}, yet {layout.relative(view)} exists")
     else:
         problems.append(f"n={n}: status {status!r}")
     return problems
+
+
+def _regularization_problems(n: int, record: dict[str, Any]) -> list[str]:
+    """A drawn view's regularization, in the register's terms, is of this record's
+    witness, by this project, and names the generator that made it."""
+    item = record.get("regularization")
+    if not isinstance(item, dict):
+        return [f"n={n}: a drawn view carries no regularization record"]
+    problems: list[str] = []
+    if item.get("n") != n or item.get("of_witness") != record["source"]["id"]:
+        problems.append(f"n={n}: the regularization is not of this record's witness")
+    if item.get("by") != PROJECT_REGULARIZER:
+        problems.append(f"n={n}: the regularization is by {item.get('by')!r}, not this project")
+    generator = str(record.get("generator"))
+    mark = METHOD_MARKS.get(generator, generator)
+    if mark not in str(item.get("method")):
+        problems.append(f"n={n}: the regularization's method does not name {mark}")
+    return problems
+
+
+METHOD_MARKS = {
+    ALGORITHM: ALGORITHM,
+    EVAND_GENERATOR: "devtools.regularize_evand",
+    GRID_GENERATOR: GRID_GENERATOR,
+}
+"""What each generator's regularization `method` names, so a record says who made it."""
+
+
+def _drawn_view_problems(layout: AtlasLayout, record: dict[str, Any], text: str) -> list[str]:
+    """What another generator's admitted view says against its entry, read from the view.
+
+    The view is the count's own Witness/v2 document labelled a regularized view of the
+    record's witness by the entry's generator, carrying the entry's regularization and
+    the credit line; its side is the entry's, and the witness's own where the relation is
+    `same`. The entry was admitted by the decision table's row 10 and keeps this tool's
+    record of the count beside it (`reference`).
+    """
+    n = record["n"]
+    problems: list[str] = []
+    document = load_yaml(text)
+    view = document.get("witness") if isinstance(document, dict) else None
+    if not isinstance(view, dict):
+        return [f"n={n}: the view is not a witness document"]
+    certificate = view.get("certificate") or {}
+    expected = {
+        "kind": "regularized-view",
+        "label": DRAWING_LABEL,
+        "derived_from": record["source"]["id"],
+        "generator": record["generator"],
+        "credit": EVAND_CREDIT,
+        "regularization": record["regularization"],
+    }
+    problems.extend(
+        f"n={n}: the view's certificate {key} is {certificate.get(key)!r}, "
+        f"its entry's {value!r}"
+        for key, value in expected.items()
+        if certificate.get(key) != value
+    )
+    if view.get("n") != n or view.get("id") != f"{record['source']['id']}-regularized":
+        problems.append(f"n={n}: the view is not this record's regularized view")
+    side = record["side"]
+    if str(view.get("side")) != side["view"]:
+        problems.append(f"n={n}: the view's side is not its entry's")
+    witness = load_yaml((layout.repo / record["source"]["witness"]).read_text(encoding="utf-8"))
+    own = witness_side(witness["witness"])
+    if (side["relation"] == "same") != (Fraction(side["view"]) == own):
+        problems.append(f"n={n}: the side relation {side['relation']!r} is not the view's")
+    if (side["relation"] == "same") != (record["regularization"]["side"] == "same"):
+        problems.append(f"n={n}: the regularization's side does not match the relation")
+    decision = record.get("decision") or {}
+    if decision.get("row") != ADMITTING_ROW or decision.get("decision") != "admit":
+        problems.append(f"n={n}: drawn without the decision table's admission (row 10)")
+    reference = record.get("reference") or {}
+    if reference.get("generator") != ALGORITHM or reference.get("source") != record["source"]:
+        problems.append(f"n={n}: this tool's record of the count is not kept beside the view")
+    return problems
+
+
+def witness_side(witness: dict[str, Any]) -> Fraction | None:
+    """`s_W`, the witness's own exact side as the policy defines it (section 2): a rational
+    witness's side, or a decimal witness's 36-digit rational promotion at centre dilation
+    1, built as the generators build it and not verified here; None over a number field."""
+    kind = witness["scalar"]["kind"]
+    if kind == "rational":
+        return Fraction(str(witness["side"]))
+    if kind == "decimal":
+        _squares, side = _promoted_candidate(
+            witness, rational_digits=RATIONAL_DIGITS, dilation=Fraction(1)
+        )
+        return Fraction(side)
+    return None
+
+
+ADMITTING_ROW = 10
+"""The decision table's one automatic admission (policy section 4)."""
 
 
 def verify_atlas(
@@ -1960,22 +2274,34 @@ def verify_atlas(
     workers: int | None,
     smallest_dilation: bool = False,
 ) -> list[str]:
-    """Re-derive every selected record and require it, and its view, to be identical."""
+    """Re-derive every selected record and require it, and its view, to be identical;
+    decide every other generator's view again on both exact routes."""
     index = _committed_index(layout)
     if index is None:
         return [f"{layout.relative(layout.index)} is missing; run --update-atlas"]
-    expected = _normalized(atlas_parameters(smallest_dilation=smallest_dilation))
-    if index.get("parameters") != expected:
-        return [f"index parameters are {index.get('parameters')!r}, the tool's {expected!r}"]
+    expected = _normalized(axis_generator(smallest_dilation=smallest_dilation))
+    found = (index.get("generators") or {}).get(ALGORITHM)
+    if found != expected:
+        return [f"index {ALGORITHM} is {found!r}, the tool's {expected!r}"]
     committed = {record["n"]: record for record in index.get("entries", [])}
     selected = _select(manifest_entries(layout), only)
     workers = worker_count(len(selected)) if workers is None else workers
+    drawn = [
+        committed[entry["n"]]
+        for entry in selected
+        if drawn_elsewhere(committed.get(entry["n"]))
+    ]
     results = run_records(
         selected, layout, workers=workers, smallest_dilation=smallest_dilation
     )
     problems: list[str] = []
     for n, (record, text, _seconds) in sorted(results.items()):
-        if _normalized(record) != committed.get(n):
+        entry = committed.get(n)
+        if drawn_elsewhere(entry) and entry is not None:
+            if _normalized(record) != entry.get("reference"):
+                problems.append(f"n={n}: the re-derived record differs from the reference")
+            continue
+        if _normalized(record) != entry:
             problems.append(f"n={n}: the re-derived record differs from the index")
         view = layout.view(n)
         retained = (
@@ -1983,7 +2309,87 @@ def verify_atlas(
         )
         if text != retained:
             problems.append(f"n={n}: the re-derived view differs from the retained one")
+    problems.extend(decide_drawn_views(drawn, layout, workers=workers))
     return problems
+
+
+# --------------------------------------------------------------------------------------
+# Other generators' views, decided again
+# --------------------------------------------------------------------------------------
+
+
+def basis_corners(center: Sequence[Any], basis: Sequence[Any]) -> Corners:
+    """A unit square's exact corners from its rational centre and rotation `(c, s)`."""
+    x, y = (Fraction(str(value)) for value in center)
+    c, s = (Fraction(str(value)) for value in basis)
+    return [
+        (x + c * a - s * b, y + s * a + c * b)
+        for a, b in ((HALF, HALF), (-HALF, HALF), (-HALF, -HALF), (HALF, -HALF))
+    ]
+
+
+def view_corners(view: dict[str, Any]) -> tuple[Fraction, list[Corners]]:
+    """A rational view's side and exact corners, read from its stated fields."""
+    if view["representation"] == "corners":
+        squares = [
+            [(Fraction(str(x)), Fraction(str(y))) for x, y in square["corners"]]
+            for square in view["squares"]
+        ]
+    else:
+        squares = [
+            basis_corners(square["center"], square["basis"]) for square in view["squares"]
+        ]
+    return Fraction(str(view["side"])), squares
+
+
+def decide_drawn_view(
+    record: dict[str, Any], layout: AtlasLayout
+) -> tuple[int, list[str], float]:
+    """One other generator's view decided again over Q on both maintained routes, the
+    repository's separating-axis verifier and the independent checker, and its house and
+    stage shades measured again by the census, against its entry. Runs in a worker."""
+    started = time.perf_counter()
+    n = record["n"]
+    path = layout.repo / record["view"]["path"]
+    text = gzip.decompress(path.read_bytes()).decode("utf-8")
+    view = load_yaml(text)["witness"]
+    side, squares = view_corners(view)
+    problems: list[str] = []
+    if not verify_packing(squares, side, sign=rational_sign, bucket=True).valid:
+        problems.append(f"n={n}: the repository verifier refuses the drawn view")
+    if not independent.check_squares(squares, side)["verification_passed"]:
+        problems.append(f"n={n}: the independent checker refuses the drawn view")
+    with tempfile.TemporaryDirectory() as scratch:
+        plain = Path(scratch) / "view.yaml"
+        plain.write_text(text, encoding="utf-8")
+        after = shades.witness_shades(plain)
+    before = shades.witness_shades(layout.repo / record["source"]["witness"])
+    if _normalized(shade_record(before, after)) != record["shades"]:
+        problems.append(f"n={n}: the drawn view's shades differ from its entry's")
+    return n, problems, time.perf_counter() - started
+
+
+def decide_drawn_views(
+    records: Sequence[dict[str, Any]], layout: AtlasLayout, *, workers: int
+) -> list[str]:
+    """Every other generator's view decided again (`decide_drawn_view`), the largest first."""
+    ordered = sorted(records, key=lambda record: -record["n"])
+    found: dict[int, list[str]] = {}
+
+    def note(n: int, problems: list[str], seconds: float) -> None:
+        found[n] = problems
+        verdict = "refused" if problems else "decided"
+        print(f"[{len(found)}/{len(ordered)}] n={n}: drawn view {verdict} ({seconds:.1f}s)")
+
+    if workers <= 1:
+        for record in ordered:
+            note(*decide_drawn_view(record, layout))
+    else:
+        with ProcessPoolExecutor(max_workers=workers) as pool:
+            futures = [pool.submit(decide_drawn_view, record, layout) for record in ordered]
+            for future in as_completed(futures):
+                note(*future.result())
+    return [problem for n in sorted(found) for problem in found[n]]
 
 
 # --------------------------------------------------------------------------------------

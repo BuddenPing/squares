@@ -80,6 +80,9 @@ CONTACT_SCAFFOLD_ATLAS = (
     FRONTIER.parent / "atlas" / "enumerated" / "contact-scaffolds-size5.json"
 )
 CONTACT_STRUCTURES = FRONTIER.parent / "atlas" / "known-best" / "contact-structures.json"
+#: The regularized drawing layer's index: which generator drew each count, and each drawn
+#: view's regularization in the register's terms (think-k35c, 12 October 2026).
+REGULARIZED_INDEX = FRONTIER.parent / "atlas" / "known-best" / "regularized" / "index.json"
 #: Hosted-data manifests (OR-18): one per release that holds bulk data outside Git.
 HOSTED = FRONTIER.parent / "hosted"
 
@@ -323,6 +326,7 @@ def corpus_paths() -> tuple[list[pathlib.Path], list[pathlib.Path]]:
     datasets.append(PROSPECTIVE_ATLAS_SEED)
     datasets.append(CONTACT_SCAFFOLD_ATLAS)
     datasets.append(CONTACT_STRUCTURES)
+    datasets.append(REGULARIZED_INDEX)
     # One record per harness session log. The logs themselves are not retained, so
     # these are the durable artifact rather than a pointer to one and are enforced like
     # any other dataset.
