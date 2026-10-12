@@ -70,8 +70,13 @@ and against the project's current view of the count; a total that falls is repor
 the decision table's refusal (row 7). The drawing is measured by the house renderer
 through `census_drawing_regularity.regularity`.
 
-**Limits.** A prototype, run on request: it writes only into `--run-dir`, never into
-`witnesses/` or `atlas/`, and admits nothing. The MILP stops at `--time-limit` with its
+**Admission.** A run writes only into `--run-dir`, never into `witnesses/` or `atlas/`.
+This module also decides a finished run's views by the policy's decision table
+(`decided`) and gives the ones row 10 admits to the layer in its terms (`admitted`,
+`admitted_views`); only `python -m devtools.regularize_evand layer --grid-run DIR
+--grid-counts N ...` writes them into it.
+
+**Limits.** A prototype, run on request. The MILP stops at `--time-limit` with its
 best incumbent, so "the slack the packing forces" is what the incumbent leaves within the
 trust region, not a proof that no placement closes more. Pairs whose rotations differ by
 less than the house's tolerance but are not one exact class cannot coincide here; a

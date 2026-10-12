@@ -9,6 +9,7 @@ Usage, from `packing/`, each after
     input --n N --output FILE
     reclassify --run-dir DIR [--n N ...]
     layer --run-dir DIR [DIR ...] --repo-root TREE [--select admitted|preview]
+        [--exclude N ...] [--grid-run DIR --grid-counts N ...]
     report --run-dir DIR [--json]
 
 This is the automated pass of the regularization policy
