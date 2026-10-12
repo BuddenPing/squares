@@ -266,12 +266,19 @@ def apply_case(n: int, text: str) -> str:
     agrees with it. The body is the case record's own, and is left as it is.
     ``devtools.generate_frontier_case`` applies this to its drafts of these counts, as it
     applies ``devtools.apply_upper_bound_packets`` to the counts T-056 and T-057 certified.
+    A record whose verified upper lane the regularized layer holds (T-151) is returned
+    unchanged, as ``devtools.apply_exact_ceilings`` returns it: that layer writes over
+    this one and keeps this certificate's sentences as history.
     """
     if n not in RESULTS:
         return text
+    from devtools import register_regularized_bounds as later  # noqa: PLC0415
+
     row = certification()[n]
     _, front, body = text.split("---\n", 2)
     payload = safe_load(front)["packing"]
+    if later.EVIDENCE in (payload["verified_upper_bound"].get("evidence") or []):
+        return text
     verified = {
         "value": str(row["verified_value"]),
         "exact_form": str(row["exact_form"]),
