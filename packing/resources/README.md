@@ -1174,6 +1174,38 @@ T-150 records the two sides at V3/C3 on the same review, and the cases at 146 an
 hold them as the house since 11 October 2026; the five superseded certificates are
 registered nowhere. OpenAI Codex assistance disclosed.
 
+## SQUISH’s fourth request and Francisco Couzo’s certificates, 11 October 2026
+
+**[SQUISH fourth request 2026-10-11]**: Nate Chaoweeraprasit’s exact rational
+certificates for n = 176, 181, 238, 239, 270, 271, 272, 304 and 305, composed by
+SQUISH’s Mondrian method from pieces of earlier packings, pinned at
+`aeacc6c124df339074f7370e1e010bb6e8c1b5ca`, kept as derived exact facts, no upstream
+byte retained; [packet](web/squish-500-fourth-request-2026-10-11/README.md).
+Both project exact routes accept all nine and refuse all 18 controls, and a third exact
+route agrees and held each fact to its pinned certificate and summary.csv row.
+T-151 records the exact fractions at V3/C3 on the
+[review of 11 October](../../docs/project/reviews/review-2026-10-11-upper-bound-imports-500.md),
+and the cases at 176, 181, 238, 239, 270, 271 and 272 hold them as the house since 12
+October 2026; the issue’s 15-digit sides are cuts of them, and at 304 and 305 Francisco
+Couzo’s certificates below, built from these packings, are smaller.
+Claude Opus 5.5 assistance disclosed.
+
+**[Couzo certificates 2026-10-11]**: Francisco Couzo’s exact rational certificates for n
+= 304, 305, 338, 339, 344, 375, 376, 378, 379, 380 and 381, pinned at
+`337078ca3e05153aceb099237b175cf64af5748a`, retained as the source wrote them;
+[packet](web/couzo-certificates-2026-10-11/README.md).
+Both project exact routes accept all 15 certificates the two source commits add or
+change and refuse all 30 controls, and a third exact route agrees on the eleven
+requested and held every file to its pinned bytes.
+T-152 records the 304 and 305 sides, refinements of SQUISH’s Mondrian packings above, at
+V3/C3 on the
+[review of 12 October](../../docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md),
+and the cases at 304 and 305 hold them as the house since 12 October 2026. The nine
+sides beyond the case corpus are verified beyond-horizon rows that supersede the rows
+tracked at 338, 339, 344, 375, 376, 378 and 379; the four certificates the issue does
+not name, at 175, 308, 340 and 343, are registered nowhere.
+Claude assistance disclosed.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->
