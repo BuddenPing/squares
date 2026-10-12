@@ -2427,6 +2427,15 @@ def run_block(run_dir: Path, run_id: str) -> dict[str, Any]:
     finished = time.strftime(
         "%Y-%m-%d", time.gmtime((run_dir / "receipt.json").stat().st_mtime)
     )
+    measured: dict[str, Any] = {
+        "cpu_seconds": float(cost.get("cpu_seconds") or 0),
+        "wall_seconds": float(cost.get("wall_seconds") or 0),
+        "workers": int(cost.get("workers") or parameters.get("workers") or 1),
+    }
+    # A receipt that says how its cost was measured -- one rebuilt after the run, say --
+    # keeps that sentence beside the numbers, so the index does not read it as measured.
+    if note := cost.get("measured_by"):
+        measured["note"] = str(note)
     return {
         "id": run_id,
         "generator": axis.EVAND_GENERATOR,
@@ -2435,11 +2444,7 @@ def run_block(run_dir: Path, run_id: str) -> dict[str, Any]:
         "parameters": {key: parameters[key] for key in RUN_PARAMETERS if key in parameters},
         "counts": len(receipt.get("counts") or []),
         "decisions": dict(sorted(decisions.items())),
-        "cost": {
-            "cpu_seconds": float(cost.get("cpu_seconds") or 0),
-            "wall_seconds": float(cost.get("wall_seconds") or 0),
-            "workers": int(cost.get("workers") or parameters.get("workers") or 1),
-        },
+        "cost": measured,
     }
 
 

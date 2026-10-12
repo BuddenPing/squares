@@ -1080,3 +1080,19 @@ def test_reclassify_refreshes_a_stale_bound_from_the_case_record(
     # A second refresh finds the record and the report agreeing, and moves nothing.
     again = drive.reclassify(run_dir, refresh_bounds=True)
     assert again["reclassified"]["refreshed_bounds"] == []
+
+
+def test_a_run_block_keeps_how_a_receipts_cost_was_measured(tmp_path: Path) -> None:
+    measured = tmp_path / "measured"
+    measured.mkdir()
+    receipt = {"counts": [{"n": 26, "decision": "admit"}], "cost": {"cpu_seconds": 2.5}}
+    (measured / "receipt.json").write_text(json.dumps(receipt), encoding="utf-8")
+    assert "note" not in drive.run_block(measured, "measured")["cost"]
+
+    rebuilt = tmp_path / "rebuilt"
+    rebuilt.mkdir()
+    sentence = "reconstructed after the run: CPU summed from the count reports"
+    receipt["cost"] = {"cpu_seconds": 2.5, "wall_seconds": 9.0, "measured_by": sentence}
+    (rebuilt / "receipt.json").write_text(json.dumps(receipt), encoding="utf-8")
+    cost = drive.run_block(rebuilt, "rebuilt")["cost"]
+    assert cost == {"cpu_seconds": 2.5, "wall_seconds": 9.0, "workers": 1, "note": sentence}
