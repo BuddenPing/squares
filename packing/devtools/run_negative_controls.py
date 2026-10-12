@@ -926,11 +926,15 @@ PRUNE |= REGULARIZED_WITNESSES | HISTORICAL_SNAPSHOT_OUTPUTS | UNREAD_WORKER_OUT
 # and check_results read them. Left out, 209,677,868 bytes, 37,332 under the cap; with
 # the layer's documentation, the batch as drawn and this note, 209,685,086 bytes, 30,114
 # under it.
+# The driver's first-pass launcher and its one replica patch join them on the same
+# grounds; only the driver runs the one and applies the other.
 REGULARIZATION_TOOLS = frozenset(
     ROOT / relative
     for relative in (
         "devtools/regularize_evand.py",
         "devtools/regularize_evand_shim.py",
+        "devtools/regularize_evand_first_pass.py",
+        "devtools/regularize_evand_patches/probe-flat-stall-stop.patch",
         "devtools/regularize_same_side.py",
         "devtools/regularize_gallery.py",
         "devtools/regularize_gallery.css",
