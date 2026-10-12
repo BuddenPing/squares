@@ -16967,8 +16967,6 @@ results:
       - packing/cases/regularized_bounds/selection.json
       - packing/cases/regularized_bounds/exact-decision.json
       - packing/devtools/register_regularized_bounds.py
-      - packing/devtools/regularize_evand.py
-      - packing/devtools/regularize_same_side.py
       - packing/devtools/check_rational_witness_independent.py
       - docs/project/policies/regularization-policy.md
     controls:
