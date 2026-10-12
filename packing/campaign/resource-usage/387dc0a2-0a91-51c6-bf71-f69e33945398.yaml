@@ -7,27 +7,27 @@ rollup:
   source:
     harness: claude-code
     filename: 387dc0a2-0a91-51c6-bf71-f69e33945398.jsonl
-    sha256: 0d7a3486b88360ffe4bbbb25d9ad1988b5763c24a84544a57152b2004d5fa0be
-    bytes: 15085551
-    records: 6266
+    sha256: 693d82440b74059824837026422ac5b4d272d7329ec0e5712f797ec721d6168c
+    bytes: 15527879
+    records: 6522
     session_id: 387dc0a2-0a91-51c6-bf71-f69e33945398
     harness_versions:
     - 2.1.296
   span:
     started_at: '2026-10-11T20:22:28.978Z'
-    ended_at: '2026-10-12T18:34:36.743Z'
-    wall_seconds: 79927.765
+    ended_at: '2026-10-12T19:06:27.677Z'
+    wall_seconds: 81838.699
   turns:
-    assistant: 1471
+    assistant: 1521
     sidechain: 0
     by_model:
-      operations tier: 1470
+      operations tier: 1520
       <synthetic>: 1
     by_thinking_level:
-      xhigh: 1470
+      xhigh: 1520
       None: 1
     by_model_and_thinking_level:
-      operations tier @ xhigh: 1470
+      operations tier @ xhigh: 1520
       <synthetic> @ None: 1
     by_branch:
       HEAD: 718
@@ -36,27 +36,28 @@ rollup:
       l4: 95
       n40-stage4: 69
       intake-528-529: 66
+      k17-records: 65
       l2: 57
       l3: 52
       k17-intake: 52
       k17-checks: 32
       claude/wizardly-meitner-wqn4x3-atlas-press-race: 20
-      k17-records: 18
       worktree-agent-af50ac6f952ba9008: 16
       k17-trial: 6
+      r5: 3
     latency:
-      count: 1169
-      total_seconds: 3712.81
-      median_seconds: 2.016
+      count: 1211
+      total_seconds: 3839.667
+      median_seconds: 2.011
       max_seconds: 38.244
   tokens:
-    cache_creation_input_tokens: 7799940
-    cache_read_input_tokens: 620387941
-    ephemeral_1h_input_tokens: 7799940
+    cache_creation_input_tokens: 7875281
+    cache_read_input_tokens: 627168256
+    ephemeral_1h_input_tokens: 7875281
     ephemeral_5m_input_tokens: 0
-    input_tokens: 3494
-    output_tokens: 1149692
-    thinking_tokens: 349746
+    input_tokens: 3602
+    output_tokens: 1182472
+    thinking_tokens: 359606
   tokens_by_thinking_level:
     None:
       cache_creation_input_tokens: 0
@@ -66,25 +67,25 @@ rollup:
       input_tokens: 0
       output_tokens: 0
     xhigh:
-      cache_creation_input_tokens: 7799940
-      cache_read_input_tokens: 620387941
-      ephemeral_1h_input_tokens: 7799940
+      cache_creation_input_tokens: 7875281
+      cache_read_input_tokens: 627168256
+      ephemeral_1h_input_tokens: 7875281
       ephemeral_5m_input_tokens: 0
-      input_tokens: 3494
-      output_tokens: 1149692
-      thinking_tokens: 349746
+      input_tokens: 3602
+      output_tokens: 1182472
+      thinking_tokens: 359606
   tool_calls:
-    total: 737
-    total_seconds: 28099.328
-    share_of_wall: 0.3516
+    total: 762
+    total_seconds: 28211.406
+    share_of_wall: 0.3447
     errors: 2
     denied: 0
     unpaired_results: 0
     outstanding_at_snapshot: 0
     one_off_code:
-      count: 32
-      total_seconds: 276.907
-      median_seconds: 4.708
+      count: 35
+      total_seconds: 282.658
+      median_seconds: 3.842
       max_seconds: 42.471
     by_tool:
       AskUserQuestion:
@@ -93,24 +94,24 @@ rollup:
         median_seconds: 3677.674
         max_seconds: 10718.612
       Bash:
-        count: 418
-        total_seconds: 6930.97
-        median_seconds: 2.282
+        count: 435
+        total_seconds: 7027.699
+        median_seconds: 2.211
         max_seconds: 281.795
       Agent:
-        count: 76
-        total_seconds: 1372.869
-        median_seconds: 11.712
+        count: 78
+        total_seconds: 1387.689
+        median_seconds: 11.334
         max_seconds: 117.768
       TaskUpdate:
-        count: 43
-        total_seconds: 715.644
-        median_seconds: 0.15
+        count: 44
+        total_seconds: 715.683
+        median_seconds: 0.143
         max_seconds: 103.902
       SendMessage:
-        count: 39
-        total_seconds: 408.653
-        median_seconds: 0.743
+        count: 40
+        total_seconds: 409.034
+        median_seconds: 0.707
         max_seconds: 122.993
       TaskCreate:
         count: 18
@@ -123,9 +124,9 @@ rollup:
         median_seconds: 2.017
         max_seconds: 10.373
       ReadNotifications:
-        count: 109
-        total_seconds: 5.181
-        median_seconds: 0.04
+        count: 112
+        total_seconds: 5.258
+        median_seconds: 0.038
         max_seconds: 0.314
       Edit:
         count: 5
@@ -153,9 +154,9 @@ rollup:
         median_seconds: 0.232
         max_seconds: 0.232
       ToolSearch:
-        count: 4
-        total_seconds: 0.1
-        median_seconds: 0.022
+        count: 5
+        total_seconds: 0.132
+        median_seconds: 0.028
         max_seconds: 0.041
       Write:
         count: 1
@@ -223,6 +224,11 @@ rollup:
         total_seconds: 125.136
         median_seconds: 125.136
         max_seconds: 125.136
+      git && git:
+        count: 22
+        total_seconds: 124.896
+        median_seconds: 1.057
+        max_seconds: 65.824
       find && du && df:
         count: 1
         total_seconds: 121.612
@@ -323,11 +329,6 @@ rollup:
         total_seconds: 63.507
         median_seconds: 63.507
         max_seconds: 63.507
-      git && git:
-        count: 20
-        total_seconds: 58.635
-        median_seconds: 1.057
-        max_seconds: 18.856
       tbd && tbd:
         count: 5
         total_seconds: 56.024
@@ -365,28 +366,28 @@ rollup:
         max_seconds: 34.715
     by_command_family:
       vcs:
-        count: 188
-        total_seconds: 3721.439
-        median_seconds: 2.604
+        count: 196
+        total_seconds: 3804.084
+        median_seconds: 2.59
         max_seconds: 281.795
       project:
-        count: 18
-        total_seconds: 1009.832
-        median_seconds: 9.104
+        count: 19
+        total_seconds: 1011.804
+        median_seconds: 6.949
         max_seconds: 281.65
       other:
-        count: 77
-        total_seconds: 782.227
-        median_seconds: 2.106
+        count: 82
+        total_seconds: 787.135
+        median_seconds: 1.953
         max_seconds: 198.921
       toolchain:
-        count: 48
-        total_seconds: 750.908
-        median_seconds: 7.138
+        count: 50
+        total_seconds: 757.614
+        median_seconds: 6.844
         max_seconds: 125.136
       inspection:
-        count: 75
-        total_seconds: 329.757
+        count: 76
+        total_seconds: 330.255
         median_seconds: 0.744
         max_seconds: 121.612
       filesystem:
@@ -400,29 +401,29 @@ rollup:
         median_seconds: 1.6
         max_seconds: 2.211
     invoked:
-      head: 253
-      tail: 235
-      export: 165
-      grep: 111
-      echo: 108
-      cd: 74
+      head: 262
+      tail: 237
+      export: 168
+      grep: 114
+      echo: 110
+      cd: 78
       gh pr: 70
-      git log: 67
-      sed: 64
+      git log: 69
+      sed: 68
       df: 58
-      git worktree: 51
+      git worktree: 53
       cut: 42
-      ls: 38
+      ls: 39
       .name]: 37
+      gh api: 35
       cat: 34
-      gh api: 34
+      git show: 30
       git status: 29
-      sort: 25
-      git fetch: 24
+      sort: 27
+      git fetch: 25
       du: 21
       wc: 20
-      git show: 20
-      git diff: 19
+      git diff: 20
       awk: 18
       the: 17
       join(,)): 17
@@ -431,20 +432,20 @@ rollup:
       tbd show: 14
       git branch: 13
       gh issue: 12
+      git push: 12
       (timeout: 12
       '##': 11
-      git push: 11
       retire-success: 11
       uptime: 10
       ps: 9
       rm: 9
+      git add: 9
       timeout gh stack: 9
       timeout git worktree: 9
+      git ls-remote: 8
       uniq: 8
-      git add: 8
       timeout uv run python -m devtools.check_pr_description: 8
       Done: 8
-      git ls-remote: 7
       python3: 7
       git commit: 7
       Work: 7
@@ -455,6 +456,7 @@ rollup:
       Area: 7
       Result: 7
       Principal: 7
+      printf: 7
       git checkout: 7
       FAILED: 7
       timeout tbd sync: 7
@@ -462,7 +464,6 @@ rollup:
       'no': 6
       tbd start: 6
       tbd shortcut: 6
-      printf: 6
       assert: 6
       AssertionError: 6
       STEP: 6
@@ -517,6 +518,7 @@ rollup:
       not: 3
       passed,: 3
       cp: 3
+      and: 3
       python3 -m devtools.check_bootstrap: 2
       which: 2
       uv: 2
@@ -586,6 +588,7 @@ rollup:
       test(tbd:dispositions))]: 2
       timeout uv run ruff check: 2
       timeout uv run ruff format: 2
+      python -m devtools.release_pin: 2
       (curl: 1
       sh): 1
       uv python: 1
@@ -654,32 +657,30 @@ rollup:
       Mid-session: 1
       '3': 1
       '39': 1
-      V4: 1
-      Recent: 1
-      (other): 237
+      (other): 250
     invoked_families:
-      inspection: 903
-      other: 752
-      vcs: 442
-      shell: 363
-      toolchain: 104
-      project: 38
+      inspection: 924
+      other: 764
+      vcs: 462
+      shell: 373
+      toolchain: 106
+      project: 40
       filesystem: 15
     by_shell_shape:
       compound:
-        count: 346
-        total_seconds: 6305.005
-        median_seconds: 2.268
+        count: 358
+        total_seconds: 6394.893
+        median_seconds: 2.216
         max_seconds: 281.795
       pipeline:
-        count: 22
-        total_seconds: 309.232
-        median_seconds: 2.199
+        count: 24
+        total_seconds: 310.322
+        median_seconds: 1.601
         max_seconds: 109.314
       python_heredoc:
-        count: 22
-        total_seconds: 144.061
-        median_seconds: 2.612
+        count: 25
+        total_seconds: 149.812
+        median_seconds: 2.557
         max_seconds: 42.471
       python_inline:
         count: 10
@@ -698,21 +699,21 @@ rollup:
         max_seconds: 2.299
     by_thinking_level:
       xhigh:
-        count: 737
-        total_seconds: 28099.328
-        median_seconds: 1.668
+        count: 762
+        total_seconds: 28211.406
+        median_seconds: 1.64
         max_seconds: 10718.612
     shell_traits:
-      pipes: 380
-      redirects_output: 79
+      pipes: 395
+      redirects_output: 82
       substitutes: 31
   session_events:
     compact_boundaries: 2
-    stop_hook_summaries: 236
+    stop_hook_summaries: 242
     queue_operations:
-      enqueue: 654
-      remove: 490
-      dequeue: 164
+      enqueue: 689
+      remove: 520
+      dequeue: 169
   semantics:
     wall_seconds: First to last timestamped record. It is elapsed session time and includes
       every interval in which nothing was running, so it is an upper bound on work and never
