@@ -1315,6 +1315,36 @@ def regularize(
     return None, report
 
 
+def own_pairing(
+    view: Sequence[driver.Placed], source: Sequence[driver.Placed], named: Sequence[int]
+) -> dict[str, Any]:
+    """The view against the witness square for square, as this generator keeps them: the
+    largest move and the turned squares (0-based, as `driver.identity` lists them).
+
+    `driver.identity` pairs by `arrangement_gap`, which takes whichever of the box's eight
+    symmetries gives the least largest move. A witness that is nearly symmetric can win
+    under a reflection by a hair, and then pairs tilted squares with mirror partners of
+    another angle: n = 259 reported 16 unnamed turns under symmetry 5, with none under its
+    own pairing and the same largest move, 0.0638. The generator moves and turns squares
+    in place, so its own pairing is the one the view was made by; both are reported.
+    """
+    turned = [
+        index
+        for index, ((_x, _y, c, s), (_u, _v, a, b)) in enumerate(zip(view, source, strict=True))
+        if min(abs(c * b - s * a), abs(c * a + s * b)) > driver.TURN_BOUND
+    ]
+    largest = max(
+        math.hypot(float(x - u), float(y - v))
+        for (x, y, _c, _s), (u, v, _a, _b) in zip(view, source, strict=True)
+    )
+    return {
+        "basis": "square for square, the generator's own pairing (symmetry 0)",
+        "max_move": f"{largest:.6e}",
+        "turned": turned,
+        "unnamed_turns": sorted(set(turned) - set(named)),
+    }
+
+
 def measure(
     n: int, witness: Mapping[str, Any], view: Mapping[str, Any], straightened: Sequence[int]
 ) -> dict[str, Any]:
@@ -1325,6 +1355,7 @@ def measure(
     reference = frame.side if frame.side is not None else Fraction(frame.side_text)
     named = [index - 1 for index in straightened]
     ident = driver.identity((side, placements), (reference, frame.placements), named, "witness")
+    ident["own_pairing"] = own_pairing(placements, frame.placements, named)
     shaded = driver.contact_shades(n, witness, view, "witness")
     return {
         "identity": ident,

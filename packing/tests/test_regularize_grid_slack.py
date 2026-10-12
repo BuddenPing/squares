@@ -281,3 +281,20 @@ def test_a_literal_past_the_digit_limit_tries_the_next_way(
     assert settled[0]["refusal"].startswith("literal-too-long")
     assert settled[1]["refusal"] is None
     assert view["certificate"]["resolve"]["rows"] == settled[1]["rows"]
+
+
+def test_the_own_pairing_names_turns_square_for_square() -> None:
+    one, zero = Fraction(1), Fraction(0)
+    t = Fraction(1, 500)
+    c, s = (1 - t * t) / (1 + t * t), 2 * t / (1 + t * t)
+    source = [(HALF, HALF, one, zero), (Fraction(16, 10), Fraction(6, 10), c, s)]
+    view = [(HALF, HALF, one, zero), (Fraction(3, 2), HALF, one, zero)]
+    paired = slack.own_pairing(view, source, [1])
+    assert paired["turned"] == [1]
+    assert paired["unnamed_turns"] == []
+    assert float(paired["max_move"]) == pytest.approx(0.1 * 2**0.5, rel=1e-6)
+    assert slack.own_pairing(view, source, [])["unnamed_turns"] == [1]
+    view, _report = slack.regularize(tilted(), slack.Settings())
+    assert view is not None
+    measured = slack.measure(2, tilted(), view, [2])
+    assert measured["identity"]["own_pairing"]["unnamed_turns"] == []
