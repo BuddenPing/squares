@@ -1028,5 +1028,5 @@ def test_the_head_lists_the_counts_the_atlas_draws_its_packing_regularized(
     head = bodies["T-118"].split("</header>", 1)[0]
     value = result_overview.prose_html("\n".join(result.drawings))
     assert f"<dt>Regularized drawings</dt><dd>{value}</dd>" in head
-    assert not _result(overview, "T-146").drawings
-    assert "<dt>Regularized drawings</dt>" not in bodies["T-146"]
+    assert not _result(overview, "T-101").drawings
+    assert "<dt>Regularized drawings</dt>" not in bodies["T-101"]
