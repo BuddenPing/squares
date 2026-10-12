@@ -927,7 +927,11 @@ PRUNE |= REGULARIZED_WITNESSES | HISTORICAL_SNAPSHOT_OUTPUTS | UNREAD_WORKER_OUT
 # the layer's documentation, the batch as drawn and this note, 209,685,086 bytes, 30,114
 # under it.
 # The driver's first-pass launcher and its one replica patch join them on the same
-# grounds; only the driver runs the one and applies the other.
+# grounds; only the driver runs the one and applies the other. With the solve retry
+# ladder merged beneath this layer, the hosted shard measured the snapshot over the cap
+# where this checkout measured 17,453 bytes under it; the vendored regularizer's pin check
+# and its tests join the list (`--audit-snapshot`: no registered mention, no rescue,
+# 46,656 bytes), since the pin is checked by its validation step and no control runs it.
 REGULARIZATION_TOOLS = frozenset(
     ROOT / relative
     for relative in (
@@ -950,6 +954,8 @@ REGULARIZATION_TOOLS = frozenset(
         "tests/test_regularize_axis_components.py",
         "tests/test_render_regularized_atlas.py",
         "tests/test_regularized_drawings.py",
+        "devtools/check_vendored_evand.py",
+        "tests/test_check_vendored_evand.py",
     )
 )
 PRUNE |= REGULARIZATION_TOOLS
