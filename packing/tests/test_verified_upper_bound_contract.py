@@ -118,6 +118,25 @@ DECLARED_CONSUMERS = {
         "side, labelled as the certified upper bound; a ceiling shown for comparison, never "
         "s(n)"
     ),
+    "packing/devtools/regularize_grid_slack.py": (
+        "the grid-slack generator re-solves a view at the case's verified bound U where the "
+        "witness's own side is not a frame, and records the view's side minus U in its index "
+        "entry; U is the ceiling the view's side is held to, never s(n)"
+    ),
+    "packing/devtools/regularized_drawings.py": (
+        "the regularized-drawings record reads a count's verified bound only where a view "
+        "sits exactly at it, to find the registered result whose evidence holds that ceiling "
+        "and name it as the drawn packing's result; a ceiling's holder, never s(n)"
+    ),
+    "packing/atlas/known-best/regularized-atlas-index.schema.yaml": (
+        "the regularized layer's index schema names the field `view_minus_verified_upper_bound`"
+        ", the view's side minus the case's ceiling U as its generator measured it; it "
+        "states a difference to a ceiling, never s(n)"
+    ),
+    "packing/tests/test_regularize_axis_components.py": (
+        "a synthetic index entry for the axis tool's tests carries the v2 contract's "
+        "`view_minus_verified_upper_bound` as null; the test reads no value from it"
+    ),
     "packing/tests/test_regularize_gallery.py": (
         "a synthetic run report for the gallery's tests carries U as the driver writes it; "
         "the test checks it is printed, and reads no value from it"

@@ -229,7 +229,9 @@ def test_run_page_draws_three_panels_and_its_measurements(tmp_path: Path) -> Non
         for entry in json.loads(INDEX.read_text(encoding="utf-8"))["entries"]
         if entry["n"] == 26
     )
-    largest = entry["moves"]["largest_move_decimal"]
+    # The axis tool's record of the count: the entry itself, or under a v2 entry whose
+    # view another generator made, its `reference`.
+    largest = (entry.get("moves") or entry["reference"]["moves"])["largest_move_decimal"]
     assert f"1 moved, 0 turned; largest {largest}, 0°; symmetry 0" in section
     assert f"s {gallery.MINUS} s_W = 0" in section
     assert section.count('<path class="mark"') == 3
