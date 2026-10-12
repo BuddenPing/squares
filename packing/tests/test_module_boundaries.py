@@ -622,6 +622,17 @@ def test_ci_jobs_fetch_provenance_history_and_key_the_uv_cache_from_the_lock() -
     assert f"/packing/resources/web/{squish_upper_bound_packets.PACKET.name}/" in sparse
     assert f"/packing/resources/web/{squish_followup_packets.PACKET.name}/" in sparse
     assert f"/packing/resources/web/{squish_second_update_packets.PACKET.name}/" in sparse
+    # `known-best atlas records and sample` rebuilds every house adopted on 11 October
+    # 2026 from its packet's private inputs (`upper_bound_houses.check_houses`), so each
+    # adopted source's packet rides in the slice, read from that module's own table; the
+    # slice without them failed on a missing acquisition report on jlevy/squares#518's
+    # first run (38196351783).
+    from devtools import upper_bound_houses  # noqa: PLC0415
+
+    assert {
+        f"/packing/resources/web/{source.packet.name}/"
+        for source in upper_bound_houses.sources().values()
+    } <= sparse
     full_step = next(
         _mapping(step)
         for step in validate_steps
@@ -1169,6 +1180,13 @@ def test_the_slow_marker_is_declared_only_by_measured_nodes() -> None:
             "test_certificate_refuses_a_displaced_point",  # 2.2s
             "test_certificate_builds_and_charges_every_point",  # 2.1s
         },
+        # 23.91s of call time across 1, measured on 2026-10-12 on a four-cpu box at a load
+        # of 8 to 11: the atlas builder draws n = 211's de Winter witness from its parent
+        # facts and orients it, two 211-square multiprecision checks, to hold the fixture
+        # the orientation tests read to that drawing (#518 B10).
+        "test_atlas_orientation.py": {
+            "test_the_de_winter_fixture_is_what_its_parent_facts_draw",  # 23.91s
+        },
         # 41s of call time across 1, measured locally on 2026-09-23; the jet refusals run
         # inside it on the same exact branch-0 system rather than as a second slow test.
         "test_capture_radius.py": {
@@ -1417,11 +1435,18 @@ def test_the_slow_marker_is_declared_only_by_measured_nodes() -> None:
             # 14.99s CPU lower bound for complete Gupta admission, four mutations and
             # restorations. The shared clone remains setup and child45s is unchanged.
             "test_gupta_complete_sources_survive_native_worker_boundaries",  # 15.224s
+            # Measured 2026-10-12 on a loaded four-cpu box: 24.95s call, 17.77s setup for
+            # the 42 houses adopted on 11 October 2026 (think-fvz4), their 82 private
+            # inputs admitted in a worker and 24 late mutations refused and restored. The
+            # quick lane keeps the custody receipt's own checks (test_house_adoption).
+            "test_adopted_houses_survive_native_worker_boundaries",  # 24.95s
         },
         # Hosted run37739373988/job113186283659: 14.52s; 68 full geometry replays
         # cover 85,204 pair decisions across the n108 translation/tolerance surface.
+        # Since the house adoption of 11 October 2026 (think-fvz4) the case is n84's
+        # unstable T-130 house: its screen measured 3.18s on a loaded four-cpu box.
         "test_translation_escape_screen.py": {
-            "test_squish_n108_retains_its_replayed_tolerance_instability",
+            "test_an_adopted_house_retains_its_replayed_tolerance_instability",  # 3.18s
         },
         # Hosted run37743601485/job113199788788, 2026-10-08: 25.04s for the
         # actual complete clone, all three #399 houses/native custody and two private

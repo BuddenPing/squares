@@ -813,7 +813,8 @@ def admit(certificate: legacy.Certificate, offered: str) -> None:
     )
 
 
-def _options(row: CertificateRow) -> dict[str, str]:
+def row_options(row: CertificateRow) -> dict[str, str]:
+    """The options a certificate row declares for its format's reader, by name."""
     options = row.get("options", [])
     names = [option["name"] for option in options]
     _require(len(names) == len(set(names)), f"n={row['n']}: an option is declared twice")
@@ -928,7 +929,7 @@ def read_facts(packet: Path) -> dict[int, legacy.Certificate]:
             certificate = read_fact(packet, declaration, row)
         else:
             raw = _read(source, row["path"])
-            certificate = parse_certificate(raw, n, row["format"], _options(row))
+            certificate = parse_certificate(raw, n, row["format"], row_options(row))
         admit(certificate, row["offered"])
         # Beside a derived fact the other files are not retained; ``derive`` compares them.
         for other in [] if "fact" in row else row.get("same_packing", []):
@@ -1002,6 +1003,11 @@ HOUSES: dict[str, Callable[[int], Fraction]] = {
     "[Deleeuw n70 refinement 2026-10-10]": _import("ebdeleeuw-n70-refinement-2026-10-10"),
     "[Mishapolk decimal poses 2026-10-09]": _import("mishapolk-decimal-poses-2026-10-09"),
     "[Daniel regularized lists 2026-10-10]": _import("evand-regularized-2026-10-10"),
+    "[Daniel trio126 2026-10-09]": _import("evand-trio126-2026-10-09"),
+    "[PingYou n207 certificate 2026-10-11]": _import("pingyou-n207-certificate-2026-10-11"),
+    "[PingYou n153 certificate 2026-10-11]": _import("pingyou-n153-certificate-2026-10-11"),
+    "[Ostashev records 2026-10-11]": _import("dostashev-records-2026-10-11"),
+    "[Barnett refinements 2026-10-11]": _import("barnett-refinements-2026-10-11"),
 }
 
 
@@ -1363,7 +1369,7 @@ def derive(packet: Path, checkout: Path, *, check: bool = False) -> list[retaine
             continue
         n = row["n"]
         raw = _checkout_bytes(packet, checkout, row["path"])
-        certificate = parse_certificate(raw, n, row["format"], _options(row))
+        certificate = parse_certificate(raw, n, row["format"], row_options(row))
         admit(certificate, row["offered"])
         for other in row.get("same_packing", []):
             raw = _checkout_bytes(packet, checkout, other["path"])
