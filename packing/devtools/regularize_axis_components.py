@@ -1252,10 +1252,13 @@ def square_identity(certified: Sequence[Piece], pieces: Sequence[Piece]) -> dict
     """How far the view moved each square of its exact frame, square by square.
 
     The tool never reorders or replaces a square, so each square of the view is the
-    frame's square at the same index and the pairing is one to one by construction; what
-    is measured is how far each centre moved, and which squares were turned onto the axes
-    and by how much. These are the register's `identity` measurements (`moved` beyond
-    `1e-3`, `max_move`, `max_turn_deg`) for a regularization of this tool.
+    frame's square at the same index; what is measured is how far each centre moved, and
+    which squares were turned onto the axes and by how much. These are the register's
+    `identity` measurements (`moved` beyond `1e-3`, `max_move`, `max_turn_deg`) for a
+    regularization of this tool. Its `one_to_one` is the register's, nearest centres
+    pairing the squares one to one, and follows from the moves: two unit squares with
+    disjoint interiors have centres at least 1 apart, so a square moved by less than `1/2`
+    lies nearer its own centre than any other, and every move here is measured.
     """
     moves: list[float] = []
     turns: list[float] = []
@@ -1266,7 +1269,7 @@ def square_identity(certified: Sequence[Piece], pieces: Sequence[Piece]) -> dict
             turns.append(math.degrees(before.source_angle))
     return {
         "pairing": "by index",
-        "one_to_one": True,
+        "one_to_one": max(moves, default=0.0) < float(HALF),
         "moved": sum(move > MOVED_BEYOND for move in moves),
         "max_move": _significant(max(moves, default=0.0)),
         "straightened": len(turns),
