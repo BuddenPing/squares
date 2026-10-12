@@ -1,9 +1,11 @@
 # Assessment: Evan Daniel’s regularization process, and adapting it to every packing n = 1..324
 
 **Bead:** think-kl2v (epic think-cdud; feeds think-ux1v). **Date:** 2026-10-11.
-**Scope:** this assessment and its plan are the whole of pull request #497. The
-regularization itself (think-ux1v) is not started and lands later in its own pull
-requests, after the owner answers the questions at the end.
+**Scope:** this assessment and its plan were written as the whole of pull request #497,
+which has since taken the [regularization policy](../policies/regularization-policy.md)
+as well.
+The regularization itself (think-ux1v) is not started and lands later in its own
+pull requests, after the owner answers the questions at the end.
 **Upstream:** `attic/evand-square-packing` at `060c1a1` (main’s head on 2026-10-11),
 read in full under `search/regularize/`, `search/exact/` and `search/exact/batch/`;
 nothing under the checkout was modified.
@@ -28,6 +30,18 @@ pipeline runs, `lists/best.json`, `lists/alternates.json` and the 324 chosen
 certificates are byte-identical, so every measurement here, made at `060c1a1`, holds at
 `675a5ea`; `crosstab` run against `675a5ea`’s `lists/best.json` reproduces the
 appendix’s figures. The adaptation pins `675a5ea`.
+
+**Amended 2026-10-12, the project-side figures and the answers.** Every figure here
+about the project’s own layer (its 68 regularized, 182 unchanged and 74 refused records,
+the cross-tabulation’s project side and the refused records’ split by tilt) was measured
+against `packing/atlas/known-best/regularized/index.json` at `5c9f4f2`, and stays as
+written. The index has moved since with main’s records: on 12 October 2026, after #518
+and #553, it reads 71 regularized, 181 unchanged and 72 refused, 42 of them with every
+tilt at 45 degrees and 30 with another (`compare_evand_regularization refused-tilts`).
+The owner answered on 12 October 2026, question 3 first;
+[section 9 of the regularization policy](../policies/regularization-policy.md#9-owner-decisions)
+records each answer, and the default it applies where none is recorded.
+think-ux1v is carried out in the stacked pull requests #509 to #559.
 
 ## Conclusions in brief
 

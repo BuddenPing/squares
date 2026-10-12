@@ -96,15 +96,22 @@ def test_crosstab_counts_each_side_and_their_overlap() -> None:
     assert result["upstream_changes_beyond_project"] == 2
 
 
+def _committed_totals() -> dict[str, Any]:
+    """The committed index's own totals, which move with every merge of main's records."""
+    return json.loads(compare.INDEX.read_text(encoding="utf-8"))["totals"]
+
+
 def test_the_committed_index_recounts_to_its_totals() -> None:
+    # load_index refuses an index whose entries do not recount to its totals; what is
+    # asserted here holds at any index, not the counts of one merge.
     index = compare.load_index()
+    totals = _committed_totals()
     statuses = [entry["status"] for entry in index.values()]
-    assert len(index) == 324
-    assert (
-        statuses.count("regularized"),
-        statuses.count("unchanged"),
-        statuses.count("refused"),
-    ) == (71, 181, 72)
+    assert sorted(index) == list(range(1, 325))
+    assert totals["records"] == 324
+    assert {name: statuses.count(name) for name in totals["statuses"]} == totals["statuses"]
+    assert sum(totals["statuses"].values()) == 324
+    assert sum(totals["refusals"].values()) == totals["statuses"]["refused"]
 
 
 def test_an_index_that_disagrees_with_its_totals_is_refused() -> None:
@@ -170,9 +177,13 @@ def test_a_tilt_near_but_not_at_a_class_angle_is_refused() -> None:
 
 def test_the_refused_records_split_by_their_witness_tilts() -> None:
     result = compare.refused_tilts(compare.load_index())
-    assert result["refused"] == 72
-    assert result["counts"] == {"all-45": 42, "other-tilt": 30, "axis-only": 0}
-    records = result["records"]
+    counts, records = result["counts"], result["records"]
+    assert set(counts) == {"all-45", "other-tilt", "axis-only"}
+    assert {kind: len(members) for kind, members in records.items()} == counts
+    refused = _committed_totals()["statuses"]["refused"]
+    assert sum(counts.values()) == result["refused"] == refused
+    # Every refused record holds a tilted square.
+    assert counts["axis-only"] == 0
     # n = 51's witness is exact over Q(sqrt 2), with 17 squares at 45 degrees.
     assert {5, 10, 19, 27, 51} <= set(records["all-45"])
     assert {11, 17, 18} <= set(records["other-tilt"])
