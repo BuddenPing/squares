@@ -181,7 +181,13 @@ def scalar(value: Any) -> str:
     the plain text differently, which YAML reads back as the same string."""
     if isinstance(value, bool):
         return "true" if value else "false"
-    if isinstance(value, int | float):
+    if isinstance(value, float):
+        # YAML 1.1, which the register's loader reads, takes `1e-15` for a string: its
+        # float needs a point in the mantissa, so JSON's exponent form gains one.
+        text = json.dumps(value)
+        mantissa, exponent, power = text.partition("e")
+        return f"{mantissa}.0e{power}" if exponent and "." not in mantissa else text
+    if isinstance(value, int):
         return json.dumps(value)
     text = str(value)
     if _PLAIN.match(text) and not _NUMERIC.match(text) and text.lower() not in _WORDS:

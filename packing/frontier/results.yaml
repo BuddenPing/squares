@@ -16817,7 +16817,7 @@ regularized_drawings:
         one_to_one: true
         moved: 14
         max_move: 0.04973407
-        max_turn_deg: 1e-15
+        max_turn_deg: 1.0e-15
       view: packing/atlas/known-best/regularized/n-084-regularized.yaml.gz
     - n: 86
       of: T-130
