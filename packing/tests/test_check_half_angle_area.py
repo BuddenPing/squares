@@ -1392,3 +1392,275 @@ def test_barnetts_refinements_are_ryan_xus_packings_moved_and_ostashevs_are_not(
         assert gaps[f"#501 n={n} against T-098"]["unmatched"] == (
             "no symmetry matches the two packings square for square"
         )
+
+
+# --------------------------------------------------------------------------- #500
+
+SQUISH_500 = (176, 181, 238, 239, 270, 271, 272, 304, 305)
+#: The 15-digit sides issue #500 prints: each is its exact side cut, below it by less
+#: than one unit in the last place, so none is a bound the route would admit.
+SQUISH_500_ISSUE_DISPLAYS = {
+    176: "13.812856253277056",
+    181: "13.950819531022924",
+    238: "15.924106785321494",
+    239: "15.948443327300499",
+    270: "16.928196993329016",
+    271: "16.949116687815009",
+    272: "16.965586474837671",
+    304: "17.929657042170880",
+    305: "17.950544853925636",
+}
+#: How many square-to-wall clearances the third route finds exactly zero at each count.
+SQUISH_500_WALL_CONTACTS = {
+    176: 30,
+    181: 30,
+    238: 18,
+    239: 38,
+    270: 37,
+    271: 43,
+    272: 41,
+    304: 10,
+    305: 19,
+}
+
+
+def test_the_500_roster_is_nine_derived_facts() -> None:
+    found = route.import_cases(("#500",))
+    assert [(case.issue, case.n, case.read) for case in found] == [
+        ("#500", n, f"facts/n-{n:03d}.yaml") for n in SQUISH_500
+    ]
+    assert found[0].side == Fraction(
+        305005022674381157367132529416905207296020948646520876053762749858683599318120744,
+        22081242074898135703849455266036121393870562834861102970956326327326447327968587,
+    )
+    assert found[-1].side == Fraction(
+        176574386584524522718242075735181894343653439251445905894414633471908824717084407,
+        9836714596766635588546138051753839920746733217534271639970138607199828771763358,
+    )
+    # Every side is the one the packet's own HOUSES reader rebuilds for the register.
+    for case in found:
+        assert case.side == upper.house_side("[SQUISH fourth request 2026-10-11]", case.n)
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize("n", SQUISH_500)
+def test_the_500_imports_agree_with_their_receipt_plan_and_print_to_every_digit(
+    n: int,
+) -> None:
+    """Each certificate touches the box (a least wall clearance of exactly 0, the far
+    wall among the walls touched) and clears every pair by the 10^-32 the source states;
+    its side, poses and margins are the maintained routes' and the plan's."""
+    case = next(case for case in route.import_cases(("#500",)) if case.n == n)
+    row = route.decide_import(case)
+    packet = route.WEB / case.packet
+    maintained = upper.check_certification(packet)[n]
+    claims = dict(
+        route.PLAN_CLAIM.findall(upper.register_plan(packet)["results.yaml"]["claim"])
+    )
+    frozen = next(r for r in upper.check_claims(packet)["results"] if r["n"] == n)
+    assert row["passed"]
+    assert (row["wall_clearance"], row["far_wall_clearance"]) == ("0", "0")
+    assert row["wall_contacts"] == SQUISH_500_WALL_CONTACTS[n]
+    assert row["least_distance"] == "1.000000e-32"
+    assert all(row["controls"].values())
+    assert (
+        route.compare_import(
+            row, maintained, literal(claims[str(n)]), frozen, frozen["offered_side"]
+        )
+        == []
+    )
+    # The issue's 15-digit display is the exact side cut, so it is no ceiling and the
+    # route's admission by rounding up refuses it; the exact fraction is admitted.
+    assert not admitted(case.side, SQUISH_500_ISSUE_DISPLAYS[n])
+    assert admitted(case.side, frozen["offered_side"])
+
+
+def test_couzos_451_certificate_is_read_as_t128_states_it() -> None:
+    side, placements = route.couzo_refinement_packing(127)
+    assert side == upper.house_side("[Couzo exact refinements 2026-10-08]", 127)
+    assert len(placements) == 127
+    assert decide_placed(side, placements).passed
+    assert route.parent_packing("T-128", 127) == (side, placements)
+    assert route.parent_packing("#481", 209)[0] == upper.house_side(
+        "[SQUISH third request 2026-10-09]", 209
+    )
+
+
+def test_a_lineage_at_a_coarser_nearness_counts_a_moved_square() -> None:
+    """One grid square moved by a thousandth leaves three by pose, below the floor of
+    four, so nothing is reported at `NEAR`; at a hundredth the moved square counts."""
+    side = Fraction(2)
+    parent = tuple(placed(GRID))
+    x, y, c, s = parent[3]
+    moved = (*parent[:3], (x + Fraction(1, 1000), y, c, s))
+    assert route.patch_lineage((side, moved), (side, parent), Fraction(1)) == []
+    coarse = route.patch_lineage(
+        (side, moved), (side, parent), Fraction(1), near=Fraction(1, 100)
+    )
+    assert (coarse[0]["squares"], coarse[0]["exact"]) == (4, 3)
+    with pytest.raises(AreaRouteError):
+        route.patch_lineage((side, moved), (side, parent), Fraction(1), near=Fraction(0))
+
+
+@pytest.mark.slow
+def test_the_500_pieces_reappear_to_the_eye_and_not_by_pose() -> None:
+    """The source names Couzo's 127 (T-128) less six squares as a piece of the 176 and
+    SQUISH's #481 209 whole as a piece of the 270 and the 304. Within a tenth of a unit
+    most of each piece reappears, under a reflection of the 127's box and the identity
+    for the 209; within 10^-9 only upright squares at lattice positions do, and no
+    tilted square of either piece keeps its pose."""
+    found = route.import_cases(("#500",))
+    lineage = route.lineage_gaps(found)
+    by_pose = {name: patches[0] for name, patches in lineage.items()}
+    assert {
+        name: (p["symmetry"], p["squares"], p["turned_beyond_1e-6"], p["exact"])
+        for name, p in by_pose.items()
+    } == {
+        "#500 n=176 from T-128 n=127": (4, 20, 0, 1),
+        "#500 n=270 from #481 n=209": (0, 99, 0, 1),
+        "#500 n=304 from #481 n=209": (0, 98, 0, 1),
+    }
+    coarse = {}
+    for case in found:
+        named = route.LINEAGE.get((case.issue, case.n))
+        if named is None:
+            continue
+        key, m, dilation = named
+        parent = route.parent_packing(key, m)
+        best = route.patch_lineage(
+            (case.side, case.placements), parent, dilation, near=Fraction(1, 10)
+        )[0]
+        coarse[case.n] = (best["symmetry"], best["squares"], best["turned_beyond_1e-6"])
+    assert coarse == {176: (4, 115, 59), 270: (0, 180, 36), 304: (0, 188, 43)}
+
+
+# --------------------------------------------------------------------------- #506
+
+COUZO_506 = (304, 305, 338, 339, 344, 375, 376, 378, 379, 380, 381)
+#: The 12-place sides issue #506 prints, each its exact side rounded up.
+COUZO_506_PRINTS = {
+    304: "17.929565946849",
+    305: "17.950466482138",
+    338: "18.906436500552",
+    339: "18.929433883808",
+    344: "18.994353244944",
+    375: "19.906335145009",
+    376: "19.910276586885",
+    378: "19.942541777355",
+    379: "19.953572709539",
+    380: "19.987440766556",
+    381: "19.992663288464",
+}
+#: What every square clears: the 1 + 10^-20 guard of Evan Daniel's exact optima leaves a
+#: least wall clearance of exactly 1/(2 * 10^20) and a least distance of 10^-20; the
+#: rational witness at 375, the decimal packing dilated by 1 + 10^-11, clears its walls by
+#: exactly 10^-15 and its closest pair by 7.05e-12.
+EXACT_OPTIMUM = ("1/200000000000000000000", "1.000000e-20")
+COUZO_506_MARGINS = dict.fromkeys(COUZO_506, EXACT_OPTIMUM) | {
+    375: ("1/1000000000000000", "7.047473e-12")
+}
+
+
+def test_the_506_roster_is_the_eleven_retained_certificates_the_issue_names() -> None:
+    found = route.import_cases(("#506",))
+    assert [(case.issue, case.n, case.read) for case in found] == [
+        ("#506", n, f"source/certificates/n{n}.cert") for n in COUZO_506
+    ]
+    assert found[0].side == Fraction(8964782973424250487190982671787, 5 * 10**29)
+    assert found[5].side == Fraction(
+        38166979981362750351336743477, 1917328312988500000000000000
+    )
+    for case in found:
+        assert len(case.placements) == case.n
+        # Every side is the one the packet's own HOUSES reader rebuilds for the register,
+        # and rounds up at 12 places to the side the issue prints.
+        assert case.side == upper.house_side("[Couzo certificates 2026-10-11]", case.n)
+        assert admitted(case.side, COUZO_506_PRINTS[case.n])
+    # The four certificates the issue does not name are declared but not on the roster.
+    declared = upper.load_declaration(route.WEB / found[0].packet)["certificates"]
+    assert {row["n"] for row in declared} - set(COUZO_506) == {175, 308, 340, 343}
+    # Credit: the issue's starting packings where the record retains them as certificates.
+    assert route.credited("#506", 304) == ("#500",)
+    assert route.credited("#506", 305) == ("#500",)
+    assert route.credited("#506", 344) == ("#484", "#489")
+    assert route.credited("#506", 338) == ()
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize("n", COUZO_506)
+def test_the_506_imports_agree_with_their_receipt_plan_and_print_to_every_digit(
+    n: int,
+) -> None:
+    """No square touches a wall; the side, poses and margins are the maintained routes'
+    and the plan's, and the issue's 12-place print is the side rounded up."""
+    case = next(case for case in route.import_cases(("#506",)) if case.n == n)
+    row = route.decide_import(case)
+    packet = route.WEB / case.packet
+    maintained = upper.check_certification(packet)[n]
+    claims = dict(
+        route.PLAN_CLAIM.findall(upper.register_plan(packet)["results.yaml"]["claim"])
+    )
+    frozen = next(r for r in upper.check_claims(packet)["results"] if r["n"] == n)
+    assert row["passed"]
+    assert row["wall_contacts"] == 0
+    assert (row["wall_clearance"], row["least_distance"]) == COUZO_506_MARGINS[n]
+    assert all(row["controls"].values())
+    assert (
+        route.compare_import(
+            row, maintained, literal(claims[str(n)]), frozen, frozen["offered_side"]
+        )
+        == []
+    )
+    assert frozen["offered_side"] == COUZO_506_PRINTS[n]
+
+
+@pytest.mark.slow
+def test_the_506_packings_are_their_named_parents_moved() -> None:
+    """The issue says its 304 and 305 start from #500's Mondrian packings and its 344
+    from Kevin Fang's #484, which Evan Daniel's Hunt 3 (#489) also moved. Measured: at
+    304 and 305 every square matches one of #500's one to one under a reflection of the
+    box, none moved beyond a tenth, and by pose only the upright lattice squares coincide
+    under the translation by the side difference; at 344 every square of Fang's moved
+    beyond 10^-9 under a half turn, and Hunt 3's 344 matches the same way."""
+    found = [case for case in route.import_cases(("#506",)) if case.n in (304, 305, 344)]
+    gaps = route.credited_gaps(found)
+    assert {
+        name: (
+            gap["symmetry"],
+            gap["moved_beyond"]["1e-9"],
+            gap["moved_beyond"]["1e-3"],
+            gap["moved_beyond"]["1e-1"],
+            gap["turned_beyond_1e-6"],
+        )
+        for name, gap in gaps.items()
+    } == {
+        "#506 n=304 against #500": (4, 243, 65, 0, 72),
+        "#506 n=305 against #500": (4, 257, 58, 0, 92),
+        "#506 n=344 against #484": (2, 344, 206, 0, 254),
+        "#506 n=344 against #489": (2, 214, 136, 3, 125),
+    }
+    assert gaps["#506 n=304 against #500"]["largest_displacement"] == "5.025268e-2"
+    assert gaps["#506 n=305 against #500"]["largest_displacement"] == "7.175586e-2"
+    # Each side difference is the exact margin the refrozen claim record states.
+    for n, key in ((304, "#500"), (305, "#500")):
+        (case,) = [case for case in found if case.n == n]
+        assert Fraction(gaps[f"#506 n={n} against {key}"]["side_difference"]) == (
+            case.side - upper.house_side("[SQUISH fourth request 2026-10-11]", n)
+        )
+    lineage = route.lineage_gaps(found)
+    by_pose = {name: patches[0] if patches else None for name, patches in lineage.items()}
+    assert {
+        name: p and (p["symmetry"], p["squares"], p["turned_beyond_1e-6"], p["exact"])
+        for name, p in by_pose.items()
+    } == {
+        "#506 n=304 from #500 n=304": (4, 146, 0, 1),
+        "#506 n=305 from #500 n=305": (4, 138, 0, 1),
+        "#506 n=344 from #484 n=344": None,
+    }
+    # By pose the translation is the side difference along each axis, to the 10^-15 at
+    # which the exact shifts of two squares differ: the lattice squares against the far
+    # walls moved with the walls.
+    placement = lineage["#506 n=304 from #500 n=304"][0]
+    shift = [Fraction(value) for value in placement["translation"]]
+    assert all(Fraction(-9110, 10**8) < value < Fraction(-9109, 10**8) for value in shift)
+    assert abs(shift[0] - shift[1]) < Fraction(1, 10**14)

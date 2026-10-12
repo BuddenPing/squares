@@ -1200,14 +1200,28 @@ def test_the_slow_marker_is_declared_only_by_measured_nodes() -> None:
         "test_check_declared_bounds.py": {
             "test_n68_depth_bound_is_named_by_its_refusal_test",  # 3.4s
         },
-        # 95s of call time across six nodes in five functions. The 489 node measured 4.1s
-        # on 2026-10-10 at load 4.7 on four cores. The two lineage nodes of the #503/#504
-        # and #505/#501 imports were measured on 2026-10-12 on four cores at load 5.5 to
-        # 7.1, each alone and again with the file's other slow nodes (`-m slow
-        # --durations=0`): 4.75s and 4.74s for the n207 patches, 49.61s and 57.11s for the
-        # Barnett and Ostashev gaps, so neither shares a build. The two decide functions
-        # mark one or two cases each with `pytest.param(..., marks=pytest.mark.slow)`, and
-        # their other cases stay on the pull-request surface.
+        # 95s of call time across six nodes in five functions before the four #500 and #506
+        # functions at the end. The 489 node measured 4.1s on 2026-10-10 at load 4.7 on
+        # four cores. The two lineage nodes of the #503/#504 and #505/#501 imports were
+        # measured on 2026-10-12 on four cores at load 5.5 to 7.1, each alone and again
+        # with the file's other slow nodes (`-m slow --durations=0`): 4.75s and 4.74s for
+        # the n207 patches, 49.61s and 57.11s for the Barnett and Ostashev gaps, so
+        # neither shares a build. The two decide functions mark one or two cases each with
+        # `pytest.param(..., marks=pytest.mark.slow)`, and their other cases stay on the
+        # pull-request surface.
+        #
+        # The four #500 and #506 functions carry the marker themselves, so every case is
+        # deferred. They were measured on 2026-10-12 on four cores at load 15 to 24 (a
+        # shared box), each alone and again with the file's other slow nodes: the nine
+        # #500 receipt-plan cases 296.4s alone (22.7s to 39.4s each) and 297.4s together;
+        # the #500 pieces seen by eye and not by pose 292.9s and 224.2s; the eleven #506
+        # receipt-plan cases 549.6s (33.4s to 63.2s each) and 237.1s; the #506 parents
+        # moved 628.9s and 427.0s. The load moved between runs, so these do not say
+        # whether two of them share a build; each is far above the marking threshold.
+        # The deferred slow lane measured them on CI at 89cc71684 (deep gate run
+        # 38276665178, `--jobs 1 --inner-jobs 2`): 56.7s, 56.1s, 58.3s and 96.6s, 267.8s
+        # in all, and the whole lane 225 tests in 844.5s of its 1800s budget, so it
+        # stays under its ceiling with every case where it is.
         "test_check_half_angle_area.py": {
             "test_the_489_certificate_at_305_has_488s_side_in_a_quarter_turned_arrangement",
             "test_the_n207_certificate_is_two_placed_patches_of_the_n70_and_the_n153_is_not",
@@ -1216,6 +1230,11 @@ def test_the_slow_marker_is_declared_only_by_measured_nodes() -> None:
             "test_the_pingyou_imports_agree_with_their_receipts_plans_and_prints_to_every_digit",
             # The #505 n261 case, 18.26s, and the #501 n211 case, 11.40s.
             "test_the_505_and_501_imports_agree_with_their_receipts_plans_and_prints_to_every_digit",
+            # The four #500 and #506 functions, every case.
+            "test_the_500_imports_agree_with_their_receipt_plan_and_print_to_every_digit",
+            "test_the_500_pieces_reappear_to_the_eye_and_not_by_pose",
+            "test_the_506_imports_agree_with_their_receipt_plan_and_print_to_every_digit",
+            "test_the_506_packings_are_their_named_parents_moved",
         },
         # 24s of call time across 1.
         "test_contact_assembly_labels.py": {

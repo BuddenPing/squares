@@ -5453,3 +5453,123 @@ issues:
       E-barnett-505-certificate-report and E-barnett-505-exact-feasibility. The confirmation of 12
       October named both at the status they hold now, the report reviewed and the replay confirmed,
       and, as on #238, no comment is to be posted only to name them.
+  - number: 500
+    title: '9 packings below record for n = 176–305, composed from pieces of known packings (Mondrian;
+      s(n) bounds 8.7e-04 to 1.0e-02 below the reported side), including smaller packings of our 238,
+      239 (#401) and 270, 305 (#481): registration request'
+    author: itsnaka
+    opened: '2026-10-11'
+    state: open
+    kind: result-report
+    triage: done
+    summary: >-
+      Nate Chaoweeraprasit (SQUISH) reports exact rational certificates for nine packings, at n =
+      176, 181, 238, 239, 270, 271, 272, 304 and 305, composed by SQUISH's Mondrian method from
+      pieces of earlier packings, in itsnaka/squish-certs at
+      aeacc6c124df339074f7370e1e010bb6e8c1b5ca, squish-submission-2026-10-11; a sources/ folder
+      holds five unfiled packings used as pieces. The issue lists each count's pieces and checks
+      all nine with SQUISH's exact checker and Ellsworth's check_packing.py; no KKT or
+      local-optimality evidence is given. Imported on 11 October 2026: the nine kept as derived
+      exact facts in the squish-500-fourth-request-2026-10-11 packet, each admitted by the exact
+      fraction summary.csv prints, since the issue's 15-digit sides are cuts of it; replayed twice
+      on both maintained exact routes and decided again by a third exact route in the review of the
+      same day, which held each fact to its pinned upstream file, measured the pieces the record
+      retains as reappearing to the eye and not by pose, and found no blocking defect. Registered as
+      T-151 at V3/C3. At 304 and 305 Francisco Couzo's issue 506 certificates, built from these
+      packings, are smaller (T-152). The five sources/ pieces are each above their case or the
+      filed certificate at their count and are not imported. Claude Opus 5.5 assistance disclosed.
+    read_through: '2026-10-11T05:30:43Z'
+    results:
+    - key: nine-mondrian-packings
+      claim: s(n) <= S_n at n = 176, 181, 238, 239, 270, 271, 272, 304 and 305, each S_n the exact
+        fraction summary.csv prints; the issue's 15-digit sides are those fractions cut, 8.7e-04 to
+        1.0e-02 below the register's sides as the issue lists them.
+      source: body
+      register:
+      - T-151
+      evidence:
+      - E-squish-500-certificate-report
+      - E-squish-500-exact-feasibility
+    - key: nearby-search-squeeze
+      claim: An hour of nearby search and a deep squeeze moved no certificate by more than 7e-07, and
+        each was drawn from a 60-digit contact solution with clearance 1e-32.
+      source: body
+      not_registered: Search evidence, not a bound on s(n); recorded as reported in
+        E-squish-500-certificate-report and not checked here.
+      queued: false
+    beads:
+    - think-ga3m
+    - think-720n
+    answer_bead: think-ga3m
+    replies: []
+    close_when: The import and its disposition are on main, the house adoption at its counts has
+      landed or is owned, and the owner has posted the resulting state; the sources/ pieces are not
+      requested, and optimality is outside this request.
+  - number: 506
+    title: '304, 305 and nine counts above 324 (338–381): registration request'
+    author: franciscouzo
+    opened: '2026-10-11'
+    state: open
+    kind: result-report
+    triage: done
+    summary: >-
+      Francisco Couzo reports eleven exact rational certificates in franciscouzo/square-packing
+      certificates/ at 337078ca3e05153aceb099237b175cf64af5748a in Evan Daniel's half-angle
+      format: 304 and 305, refined from Nate Chaoweeraprasit's issue 500 Mondrian packings, and
+      338, 339, 344, 375, 376, 378, 379, 380 and 381 beyond the case corpus; ten are exact optima
+      from Evan Daniel's exact contact solver and 375 a rational witness of a decimal packing
+      dilated by 1 + 1e-11. Imported on 11 October 2026: the fifteen certificates the two commits
+      since issue 488's pin add or change retained in the couzo-certificates-2026-10-11 packet
+      and replayed twice on both maintained exact routes; the review of 12 October decided the
+      eleven again by a third exact route, refroze the comparison with issue 500 against its
+      exact sides, measured 304 and 305 as issue 500's arrangements re-equilibrated and found no
+      blocking defect. 304 and 305 are registered as T-152 at V3/C3; the nine beyond the corpus
+      are verified beyond-horizon rows that supersede the rows tracked at 338, 339, 344, 375,
+      376, 378 and 379. Author checkers and KKT statements were not run here; no optimality is
+      claimed. Claude assistance disclosed.
+    read_through: '2026-10-11T18:06:50Z'
+    results:
+    - key: n304-n305-exact-optima
+      claim: s(304) <= 17.929565946849 and s(305) <= 17.950466482138, each the exact rational side of
+        a certificate rounded up at 12 places.
+      source: body
+      register:
+      - T-152
+      evidence:
+      - E-couzo-506-certificate-report
+      - E-couzo-506-exact-feasibility
+    - key: nine-beyond-horizon
+      claim: s(338) <= 18.906436500552, s(339) <= 18.929433883808, s(344) <= 18.994353244944, s(375)
+        <= 19.906335145009, s(376) <= 19.910276586885, s(378) <= 19.942541777355, s(379) <=
+        19.953572709539, s(380) <= 19.987440766556 and s(381) <= 19.992663288464, beyond the 1..324
+        case corpus.
+      source: body
+      evidence:
+      - E-couzo-506-certificate-report
+      - E-couzo-506-exact-feasibility
+    - key: kkt-exact-optima
+      claim: Ten of the eleven are exact optima of their arrangements, KKT points to about 1e-19, as
+        the certificates README at the pin says.
+      source: source
+      not_registered: Numerical evidence of local optimality, not a bound on s(n); recorded as
+        reported in E-couzo-506-certificate-report and not checked here.
+      queued: false
+    - key: unnamed-175-308-340-343
+      claim: The same two commits hold four certificates the issue does not name, s(175) <=
+        13.767119024199, s(308) <= 17.998459831024, s(340) <= 18.939649632892 and s(343) <=
+        18.993870589750, as certificates/README.md prints them.
+      source: source
+      not_registered: Not requested. Compared in the packet's claim record; 175 is the smallest
+        side known at its count and is its own import (think-9fjl), 340 is below its tracked row
+        beyond the corpus and its row is the owner's decision, and 308 and 343 are above T-141's
+        308 and Hunt 3's 343, marked superseded by the source.
+      queued: false
+    beads:
+    - think-om5l
+    - think-720n
+    answer_bead: think-om5l
+    replies: []
+    close_when: The import and its disposition, including the beyond-horizon counts, are on main,
+      the house adoption at 304 and 305 has landed or is owned, and the owner has posted the
+      resulting state; the four unnamed certificates are imports of their own, and optimality is
+      outside this request.
