@@ -52,6 +52,8 @@ COUZO_506 = "couzo-certificates-2026-10-11"
 #: layout, whose exact certificate is derived here (`test_upper_bound_reports_528_529`).
 OSTASHEV_528 = "dostashev-records-2026-10-12"
 CALLE = "riocalle-n102-2026-10-12"
+#: Issue #552, Evan Daniel's s(154) in his own text format (`test_upper_bound_reports_552`).
+DANIEL_552 = "evand-n154-2026-10-12"
 #: How a declaration cites a beyond-horizon row of the source register.
 COVERAGE_URL = "packing/frontier/source-coverage.yaml"
 EVERY = (
@@ -67,6 +69,7 @@ EVERY = (
     COUZO_506,
     OSTASHEV_528,
     CALLE,
+    DANIEL_552,
 )
 
 
@@ -1006,6 +1009,7 @@ def test_the_register_plan_states_each_bound_as_check_standing_reads_it(name: st
         COUZO_506: "2026-10-11",
         OSTASHEV_528: "2026-10-12",
         CALLE: "2026-10-12",
+        DANIEL_552: "2026-10-12",
     }
     assert result["attribution"]["published"] == published.get(name, "2026-10-10")
     evidence = plan["evidence.yaml"]
