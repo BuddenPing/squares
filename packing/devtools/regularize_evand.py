@@ -51,7 +51,8 @@ by the policy's decision table. Per count, in order:
    centre-basis Witness/v2, through `devtools.evand_exact_certificates` (`parse`,
    `basis_witness`), decided by `sqpack.witness.exact_verify`, the independent checker and
    the half-angle route of `devtools.check_half_angle_area`. Its side is upstream's `S'`,
-   so its relation to the witness is `solved`.
+   so its relation to the witness is `bound` where `S'` is the verified upper bound `U`
+   exactly, and `solved` otherwise.
 6. **Same side.** `devtools.regularize_same_side.resolve` re-solves the view's tight
    contacts over Q at the witness's side `s_W`; when it succeeds, `view-same.yaml` is
    decided here again on the two maintained routes and its side compared with `s_W`
@@ -76,9 +77,13 @@ by the policy's decision table. Per count, in order:
    `no-view` for row 1; `no-change` wherever the view would draw the same picture, whatever
    row matched (nothing moved beyond `10^-3` or turned, the pairing one to one, the house
    counts the source's), so nothing is refused or held that would not change; `held` for a
-   visible view at rows 3 and 4; `refuse` for rows 2, 6 and 7. A row 3 candidate is listed
-   in the receipt whatever it is reported as. `reclassify` decides a finished run again
-   from its reports, for a change to the table, without re-running a stage.
+   visible view at rows 3 and 4; `refuse` for row 2 and for row 7 where a house or stage
+   total falls. The owner's answers of 12 October 2026 admit a view at the bound as a
+   same-side one is admitted, and send what the rules cannot settle to review: row 6, and
+   row 7 where per-square counts fall but no total does. A row 3 candidate is listed in the
+   receipt whatever it is reported as, for registration first. `reclassify` decides a
+   finished run again from its reports, for a change to the table, without re-running a
+   stage.
 
 Every count writes `RUN/n-NNN/report.json`, and the run writes `RUN/receipt.json`: the
 generator (name, pin, local patches, interpreter), the parameters, one row per count with
@@ -1075,11 +1080,27 @@ def contact_shades(
     current = current_view(n)
     if current is not None:
         path, document = current
+        partners = contact_partners(document)
         record["against_current"] = {
             "view": path,
-            "regressions": regressions(contact_partners(document), after, ids),
+            "regressions": regressions(partners, after, ids),
+            "histograms": {rule: histogram(partners[rule]) for rule in RULE_NAMES},
         }
     return record
+
+
+def totals_fall(shaded: Mapping[str, Any]) -> bool:
+    """Whether a house or stage total of shared sides falls, against the witness or the
+    current view the new one would replace (policy row 7, owner, 12 October 2026)."""
+    current = (shaded.get("against_current") or {}).get("histograms") or {}
+    for rule in RULE_NAMES:
+        counts = shaded.get(rule) or {}
+        after = total_contacts(counts.get("after") or [])
+        if after < total_contacts(counts.get("before") or []):
+            return True
+        if rule in current and after < total_contacts(current[rule]):
+            return True
+    return False
 
 
 def poses_equal(view_corners: Sequence[Corners], frame: SourceFrame) -> bool:
@@ -1105,7 +1126,7 @@ class Measured:
     produced: bool
     status: str = "ok"
     routes: Mapping[str, bool] = field(default_factory=dict)
-    relation: Literal["same", "solved"] | None = None
+    relation: Literal["same", "bound", "solved"] | None = None
     side: Fraction | None = None
     upper: Fraction | None = None
     pose_equals_witness: bool = False
@@ -1120,6 +1141,11 @@ class Measured:
     #: `10^-3` or turned, a house contact count changed, or no one-to-one pairing to say
     #: otherwise. Unmeasured outputs count as changed.
     visible_change: bool = True
+    #: Whether a house or stage total of shared sides falls (`totals_fall`).
+    totals_fall: bool = False
+    #: False for a drawable output whose identity and shades were never measured: a
+    #: report written before `bound` existed measured only the output it chose.
+    measured: bool = True
 
 
 @dataclass(frozen=True)
@@ -1137,8 +1163,9 @@ def classify(measured: Measured) -> Decision:
     The rows decide; the word reports. A view that would draw the same picture is "no
     change" whatever row matched, since there is nothing to refuse or hold; a register
     candidate under it is still row 3, and the receipt still lists it. Row 1 is "no
-    view"; a visible view held by rows 3 or 4 is "held"; "refuse" is left for a view that
-    changes the drawing and fails an obligation (rows 2, 6 and 7).
+    view"; a visible view held by rows 3 or 4 is "held"; "refuse" is left for an exact
+    route's refusal (row 2) and a falling total (row 7), and rows 6 and 7 otherwise send
+    the view to review (owner, 12 October 2026).
     """
     decided = table_row(measured)
     if decided.row in {1, 2} or measured.visible_change:
@@ -1183,28 +1210,45 @@ def table_row(measured: Measured) -> Decision:  # noqa: PLR0911 -- one return pe
             f"register first: the {m.relation} side is below the verified upper bound by "
             f"{float(m.upper - m.side):.3e}, a register-result candidate",
         )
-    if m.relation != "same":
+    # A view at exactly the verified bound (`bound`) is a drawing frame, as a same-side
+    # view is (owner, 12 October 2026); only another side stops here.
+    if m.relation == "solved":
         if m.upper is None:
             where = "not the witness's; U unknown, so row 3 was not decided"
-        elif m.side == m.upper:
-            where = "exactly the verified upper bound, not the witness's printed side"
         else:
             where = "not the witness's and above the verified upper bound"
         return Decision(4, "held", None, "dilated-side", f"the view's side is {where}")
+    if not m.measured:
+        return Decision(None, "review", None, None, "the view was not measured")
     if m.pose_equals_witness:
         return Decision(5, "no-change", "unchanged", None, "the view is the witness's pose")
+    # What the rules cannot settle goes to a person, not to refusal (owner, 12 October
+    # 2026): the review admits the view as the packing or records it as an alternate.
     if not m.one_to_one:
-        return Decision(6, "refuse", "refused", "not-one-to-one", "no one-to-one pairing")
+        return Decision(
+            6, "review", None, "not-one-to-one", "no one-to-one pairing: for review"
+        )
     if m.unnamed_turns:
         return Decision(
             6,
-            "refuse",
-            "refused",
+            "review",
+            None,
             "unnamed-turn",
-            f"squares {list(m.unnamed_turns)} turned without a recorded angle change",
+            f"squares {list(m.unnamed_turns)} turned without a recorded angle change: "
+            "for review",
+        )
+    if m.regressions and m.totals_fall:
+        return Decision(
+            7, "refuse", "refused", "regression", "a house or stage total of shared sides falls"
         )
     if m.regressions:
-        return Decision(7, "refuse", "refused", "regression", f"{m.regressions} counts fell")
+        return Decision(
+            7,
+            "review",
+            None,
+            "regression",
+            f"{m.regressions} per-square counts fell while no total did: for review",
+        )
     if (m.variant == "fewest" and m.determined_merge) or m.level == 3:
         return Decision(8, "alternate", None, None, "review only, never drawn as the packing")
     if m.max_move is not None and m.max_move > MOVE_BOUND:
@@ -1236,6 +1280,18 @@ def _measure_view(
     shaded = contact_shades(n, witness, document, of)
     move = Fraction(measured["max_move"]) if measured.get("max_move") is not None else None
     return measured, shaded, move, poses_equal(corners, frame)
+
+
+def side_relation(
+    side: Fraction, printed: Fraction | None, upper: Fraction | None
+) -> Literal["same", "bound", "solved"]:
+    """A view's side against the record: the witness's own (`same`), exactly the verified
+    upper bound (`bound`, admissible since 12 October 2026), or another (`solved`)."""
+    if printed is not None and side == printed:
+        return "same"
+    if upper is not None and side == upper:
+        return "bound"
+    return "solved"
 
 
 def _regression_count(shaded: Mapping[str, Any]) -> int:
@@ -1378,14 +1434,14 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
     measured: dict[Output, Measured] = {}
     for name, (block, document) in outputs.items():
         side = Fraction(block["side_exact"])
-        relation = "same" if frame.side is not None and side == frame.side else "solved"
+        relation = side_relation(side, frame.side, upper)
         block["relation"] = relation
         block["minus_s_W"] = (
             f"{float(side - frame.side):.3e}" if frame.side is not None else None
         )
         block["minus_U"] = f"{float(side - upper):.3e}" if upper is not None else None
         fields: dict[str, Any] = {}
-        if name == chosen or relation == "same":
+        if name == chosen or relation != "solved":
             ident, shaded, move, equal = _measure_view(
                 n=n, witness=witness, frame=frame, document=document, named=named, of=name
             )
@@ -1400,6 +1456,7 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
                 "one_to_one": bool(ident["one_to_one"]),
                 "unnamed_turns": tuple(ident.get("unnamed_turns") or ()),
                 "regressions": _regression_count(shaded),
+                "totals_fall": totals_fall(shaded),
                 "max_move": move,
             }
         measured[name] = Measured(
@@ -1588,7 +1645,8 @@ def regularization_record(report: Mapping[str, Any]) -> dict[str, Any] | None:
             variant=generator.get("variant"),
             style=generator.get("style"),
         ),
-        "side": chosen.get("relation"),
+        # The register knows `same` and `solved`; a view at the bound was solved to it.
+        "side": "same" if chosen.get("relation") == "same" else "solved",
     }
     if changes:
         record["changes"] = changes
@@ -1609,7 +1667,9 @@ def receipt_lists(ordered: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
         "candidates": [
             row["n"] for row in ordered if row.get("solved_row") == 3 or row["row"] == 3
         ],
-        "review_queue": [row["n"] for row in ordered if row.get("row") in {8, 9, None}],
+        "review_queue": [
+            row["n"] for row in ordered if row.get("decision") in {"review", "alternate"}
+        ],
         "index_records": {
             record: [row["n"] for row in ordered if row.get("index_record") == record]
             for record in ("regularized", "refused", "unchanged")
@@ -1629,15 +1689,25 @@ def measured_from_report(report: Mapping[str, Any], name: Output) -> Measured:
         status = (report.get("solve") or {}).get("status") or report.get("status")
         return Measured(name, produced=False, status=f"solve {status}")
     regularized = report.get("regularize") or {}
-    relation = block.get("relation")
+    upper = upper_bound(
+        {
+            "verified_upper_bound": report.get("verified_upper_bound"),
+            "exact_form": report.get("verified_upper_bound_exact_form"),
+        }
+    )
+    side = Fraction(block["side_exact"])
+    printed = (report.get("source") or {}).get("s_W_exact")
+    # Derived again rather than read, so reports written before `bound` existed decide
+    # as the table now does.
+    relation = side_relation(side, Fraction(printed) if printed else None, upper)
     chosen = "same" if outputs.get("same") else "solved"
     ident: Mapping[str, Any] | None = None
     shaded: Mapping[str, Any] | None = None
     if name == chosen:
         ident, shaded = report.get("identity"), report.get("shades")
-    elif relation == "same":
+    elif relation != "solved":
         ident, shaded = block.get("identity"), block.get("shades")
-    fields: dict[str, Any] = {}
+    fields: dict[str, Any] = {"measured": False}
     if ident is not None and shaded is not None:
         move = Fraction(ident["max_move"]) if ident.get("max_move") is not None else None
         equal = ident.get("pose_equals_witness")
@@ -1649,6 +1719,7 @@ def measured_from_report(report: Mapping[str, Any], name: Output) -> Measured:
             "one_to_one": bool(ident.get("one_to_one")),
             "unnamed_turns": tuple(ident.get("unnamed_turns") or ()),
             "regressions": _regression_count(shaded),
+            "totals_fall": totals_fall(shaded),
             "max_move": move,
         }
     return Measured(
@@ -1656,13 +1727,8 @@ def measured_from_report(report: Mapping[str, Any], name: Output) -> Measured:
         produced=True,
         routes=block.get("routes") or {},
         relation=relation,
-        side=Fraction(block["side_exact"]),
-        upper=upper_bound(
-            {
-                "verified_upper_bound": report.get("verified_upper_bound"),
-                "exact_form": report.get("verified_upper_bound_exact_form"),
-            }
-        ),
+        side=side,
+        upper=upper,
         variant=(report.get("generator") or {}).get("variant", "conservative"),
         determined_merge=any(
             isinstance(change, list) and change and change[0] == "determined-merge"
@@ -1671,6 +1737,28 @@ def measured_from_report(report: Mapping[str, Any], name: Output) -> Measured:
         level=regularized.get("level"),
         **fields,
     )
+
+
+def _current_histograms(n: int, report: dict[str, Any]) -> None:
+    """Add the replaced view's histograms to a report measured before they were stored,
+    so row 7 can tell a falling total from per-square losses; only while the layer in
+    this checkout still holds the view the report was measured against."""
+    blocks = [report.get("shades"), *(
+        (block or {}).get("shades") for block in (report.get("outputs") or {}).values()
+        if isinstance(block, dict)
+    )]  # fmt: skip
+    pending = [
+        block["against_current"]
+        for block in blocks
+        if block
+        and block.get("against_current")
+        and "histograms" not in block["against_current"]
+    ]
+    found = current_view(n) if pending else None
+    for current in pending:
+        if found is not None and found[0] == current.get("view"):
+            partners = contact_partners(found[1])
+            current["histograms"] = {rule: histogram(partners[rule]) for rule in RULE_NAMES}
 
 
 def reclassify(run_dir: Path, counts: Sequence[int] | None = None) -> dict[str, Any]:
@@ -1687,11 +1775,14 @@ def reclassify(run_dir: Path, counts: Sequence[int] | None = None) -> dict[str, 
     for n in chosen:
         report_path = count_dir(run_dir, n) / "report.json"
         report = read_json(report_path)
+        _current_histograms(n, report)
         outputs = report.get("outputs") or {}
+        solved = measured_from_report(report, "solved")
         same = measured_from_report(report, "same") if outputs.get("same") else None
-        _decide(
-            report, measured_from_report(report, "solved"), same, outputs.get("same_refusal")
-        )
+        for measured in (solved, same):
+            if measured is not None and measured.produced:
+                outputs[measured.output]["relation"] = measured.relation
+        _decide(report, solved, same, outputs.get("same_refusal"))
         source = report.setdefault("source", {})
         if not source.get("provenance"):
             facts = case_facts(n)
@@ -1717,8 +1808,8 @@ def reclassify(run_dir: Path, counts: Sequence[int] | None = None) -> dict[str, 
 #: The selections `layer` knows. `admitted` is the policy's: row 10 alone, and the only
 #: one that may write into this checkout. `preview` is every view that would change the
 #: drawing, passes the maintained exact routes, pairs one to one, and loses no contact in
-#: total under either rule; it is for a scratch tree, to see the atlas before the owner
-#: decides the held and refused rows.
+#: total under either rule, against the witness or the current view; it is for a scratch
+#: tree, to see the atlas with the held and review rows drawn before anyone decides them.
 SELECTIONS = ("admitted", "preview")
 VIEW_KIND = "regularized-view"
 DRAWING_LABEL = "regularized"
@@ -1734,9 +1825,10 @@ def layer_candidate(report: Mapping[str, Any], select: str) -> str | None:
     """Which view of a decided count `select` takes, `same` or `solved`, or None."""
     decision = report.get("decision") or {}
     outputs = report.get("outputs") or {}
-    if select == "admitted":
-        return "same" if decision.get("decision") == "admit" and outputs.get("same") else None
     chosen = "same" if outputs.get("same") else "solved" if outputs.get("solved") else None
+    if select == "admitted":
+        # Row 10 decided the chosen view: the same-side one, or the solved one at the bound.
+        return chosen if decision.get("decision") == "admit" else None
     if chosen is None or decision.get("decision") in {None, "no-view", "no-change"}:
         return None
     routes = outputs[chosen].get("routes") or {}
@@ -1744,12 +1836,8 @@ def layer_candidate(report: Mapping[str, Any], select: str) -> str | None:
         return None
     if not (report.get("identity") or {}).get("one_to_one"):
         return None
-    shaded = report.get("shades") or {}
-    for rule in RULE_NAMES:
-        counts = shaded.get(rule) or {}
-        before, after = counts.get("before") or [], counts.get("after") or []
-        if total_contacts(after) < total_contacts(before):
-            return None
+    if totals_fall(report.get("shades") or {}):
+        return None
     return chosen
 
 

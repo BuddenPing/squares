@@ -93,8 +93,14 @@ DECLARED_CONSUMERS = {
     "packing/devtools/regularize_evand.py": (
         "the regularization driver reads each case's verified bound as U, the ceiling a "
         "regularized view's exact side is compared with (policy rows 3 and 4): a side below "
-        "it is a register-result candidate, a side above it is not a drawing frame. It never "
-        "reads the field as s(n) or as the witness's side, which it takes from the witness"
+        "it is a register-result candidate, a side exactly at it is a drawing frame (`bound`), "
+        "and a side above it is not. It never reads the field as s(n) or as the witness's "
+        "side, which it takes from the witness"
+    ),
+    "packing/tests/test_regularize_evand.py": (
+        "a synthetic report for the driver's tests carries U as the driver writes it, so the "
+        "test can check a view at exactly U is decided as `bound`; it is a ceiling there, "
+        "never s(n)"
     ),
     "packing/devtools/regularize_gallery.py": (
         "the regularization review gallery prints U from a run's report beside the view's "

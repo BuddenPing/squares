@@ -188,7 +188,12 @@ ROWS = {
     ),
     4: (
         Measured(
-            "solved", produced=True, routes=ALL_ROUTES, relation="solved", side=SW, upper=SW
+            "solved",
+            produced=True,
+            routes=ALL_ROUTES,
+            relation="solved",
+            side=SW,
+            upper=SW - Fraction(1, 10**10),
         ),
         "dilated-side",
     ),
@@ -205,8 +210,8 @@ EXPECTED = {
     3: ("held", None),
     4: ("held", None),
     5: ("no-change", "unchanged"),
-    6: ("refuse", "refused"),
-    7: ("refuse", "refused"),
+    6: ("review", None),
+    7: ("review", None),
     8: ("alternate", None),
     9: ("review", None),
     10: ("admit", "regularized"),
@@ -236,11 +241,42 @@ def test_the_first_matching_row_decides() -> None:
     turned = replace(SAME, unnamed_turns=(3,), regressions=1)
     assert classify(turned) == Decision(
         6,
+        "review",
+        None,
+        "unnamed-turn",
+        "squares [3] turned without a recorded angle change: for review",
+    )
+
+
+def test_a_falling_total_is_refused_and_per_square_losses_alone_go_to_review() -> None:
+    """Owner, 12 October 2026: trickier cases go to review; a total that falls does not."""
+    per_square = classify(replace(SAME, regressions=22))
+    assert (per_square.row, per_square.decision, per_square.index_record) == (
+        7,
+        "review",
+        None,
+    )
+    fell = classify(replace(SAME, regressions=22, totals_fall=True))
+    assert (fell.row, fell.decision, fell.index_record, fell.refusal) == (
+        7,
         "refuse",
         "refused",
-        "unnamed-turn",
-        "squares [3] turned without a recorded angle change",
+        "regression",
     )
+
+
+def test_totals_fall_against_the_witness_or_the_current_view() -> None:
+    gained = {"before": [0, 1, 12, 6, 7], "after": [0, 0, 13, 5, 8]}
+    shaded: dict[str, object] = {"house": gained, "stage": gained, "against_current": None}
+    assert not drive.totals_fall(shaded)
+    lost = {"before": gained["after"], "after": gained["before"]}
+    assert drive.totals_fall({**shaded, "stage": lost})
+    richer = {"house": [0, 0, 0, 6, 20], "stage": [0, 0, 13, 5, 8]}
+    current = {"view": "v", "regressions": [], "histograms": richer}
+    assert drive.totals_fall({**shaded, "against_current": current})
+    # A report written before the replaced view's histograms were stored has none to
+    # compare with, and decides against the witness alone.
+    assert not drive.totals_fall({**shaded, "against_current": {"regressions": [1]}})
 
 
 def test_a_fewest_merge_is_an_alternate_and_fewest_alone_is_not_admitted() -> None:
@@ -288,9 +324,22 @@ def test_a_solved_view_with_no_upper_bound_is_held_and_says_so() -> None:
     decided = classify(measured)
     assert decided.row == 4
     assert "U unknown" in decided.reason
-    at_bound = classify(replace(measured, upper=SW))
-    assert at_bound.decision == "held"
-    assert "exactly the verified upper bound" in at_bound.reason
+
+
+def test_a_view_at_exactly_the_bound_is_decided_as_a_same_side_view_is() -> None:
+    """Owner, 12 October 2026: a view whose side is the verified upper bound exactly
+    is a drawing frame, so rows 5 to 10 decide it (n = 206 in the pilot)."""
+    upper = SW - Fraction(1, 10**20)
+    assert drive.side_relation(SW, SW, upper) == "same"
+    assert drive.side_relation(upper, SW, upper) == "bound"
+    assert drive.side_relation(upper, None, upper) == "bound"
+    assert drive.side_relation(SW, None, upper) == "solved"
+    assert drive.side_relation(SW, None, None) == "solved"
+    at_bound = replace(SAME, output="solved", relation="bound", side=upper, upper=upper)
+    assert classify(at_bound) == classify(SAME)
+    assert classify(replace(at_bound, regressions=1)).row == 7
+    unmeasured = replace(at_bound, measured=False)
+    assert classify(unmeasured).decision == "review"
 
 
 def _register_item_validator() -> Draft202012Validator:
@@ -345,6 +394,13 @@ def test_the_regularization_record_is_the_registers_item_once_of_is_resolved() -
     assert errors == []
 
 
+def test_a_view_at_the_bound_is_recorded_as_solved_in_the_registers_terms() -> None:
+    at_bound = {**REPORT, "outputs": {"same": None, "solved": {"relation": "bound"}}}
+    record = drive.regularization_record(at_bound)
+    assert record is not None
+    assert record["side"] == "solved"
+
+
 def test_no_view_has_no_regularization_record() -> None:
     assert drive.regularization_record({**REPORT, "outputs": {}}) is None
     assert drive.regularization_record({**REPORT, "identity": None}) is None
@@ -367,6 +423,14 @@ def test_the_admitted_selection_takes_row_10_alone() -> None:
     assert drive.layer_candidate(DECIDED, "admitted") == "same"
     held = {**DECIDED, "decision": {"row": 4, "decision": "held"}}
     assert drive.layer_candidate(held, "admitted") is None
+    for word in ("review", "alternate"):
+        decided = {**DECIDED, "decision": {"row": 7, "decision": word}}
+        assert drive.layer_candidate(decided, "admitted") is None
+    at_bound = {
+        **DECIDED,
+        "outputs": {"same": None, "solved": {"relation": "bound", "routes": ROUTES_OK}},
+    }
+    assert drive.layer_candidate(at_bound, "admitted") == "solved"
 
 
 def test_the_preview_takes_visible_exact_one_to_one_views_that_lose_no_contact() -> None:
@@ -390,6 +454,38 @@ def test_the_preview_takes_visible_exact_one_to_one_views_that_lose_no_contact()
     fewer = {"before": [0, 0, 13, 5, 8], "after": [0, 1, 12, 6, 7]}
     lost = {**DECIDED, "shades": {"house": fewer, "stage": DECIDED["shades"]["stage"]}}
     assert drive.layer_candidate(lost, "preview") is None
+
+
+def test_a_report_written_before_bound_existed_is_decided_as_the_table_now_does() -> None:
+    block = {"side_exact": "281/50", "relation": "solved", "routes": ROUTES_OK}
+    report = {
+        **DECIDED,
+        "verified_upper_bound": "5.62",
+        "verified_upper_bound_exact_form": None,
+        "shades": {**DECIDED["shades"], "regressions": []},
+        "source": {"s_W_exact": "563/100"},
+        "outputs": {"same": None, "solved": block},
+        "identity": {"one_to_one": True, "moved": 4, "max_move": "1/10", "turned": [2]},
+        "regularize": {"level": 2},
+    }
+    measured = drive.measured_from_report(report, "solved")
+    assert measured.relation == "bound"
+    assert classify(measured).decision == "admit"
+    # Beside a same-side view the bound view was never measured, and is not admitted.
+    same = {**block, "side_exact": "563/100", "relation": "same"}
+    beside = {**report, "outputs": {"same": same, "solved": block}}
+    assert classify(drive.measured_from_report(beside, "solved")).decision == "review"
+
+
+def test_the_review_queue_is_every_count_reported_for_review() -> None:
+    rows = [
+        {"n": 1, "row": 6, "decision": "review"},
+        {"n": 2, "row": 7, "decision": "refuse"},
+        {"n": 3, "row": 8, "decision": "alternate"},
+        {"n": 4, "row": None, "decision": "review"},
+        {"n": 5, "row": 10, "decision": "admit"},
+    ]
+    assert drive.receipt_lists(rows)["review_queue"] == [1, 3, 4]
 
 
 def test_only_the_admitted_selection_may_write_into_this_checkout(tmp_path: Path) -> None:

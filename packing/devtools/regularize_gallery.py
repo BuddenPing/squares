@@ -555,7 +555,7 @@ class CountCase:
     report: dict[str, Any]
     panels: tuple[Panel, ...]
     relation: str | None = None
-    """The drawn view's side relation, `same` or `solved`."""
+    """The drawn view's side relation, `same`, `bound` or `solved`."""
     layer_status: str | None = None
     """The current layer's index status for the count, when the layer was consulted."""
     notes: tuple[str, ...] = ()
@@ -692,9 +692,11 @@ def run_case(count_dir: Path, layer_index: Mapping[int, dict[str, Any]] | None) 
     for relation_name in ("same", "solved"):
         path = count_dir / f"view-{relation_name}.yaml"
         if path.is_file():
-            relation = relation_name
+            # The report's relation where it has one: the solved view may be `bound`.
+            stored = field(report, "outputs", relation_name, "relation")
+            relation = str(stored) if stored else relation_name
             try:
-                panels.append(view_panel(read_witness(path), relation_name, source_frame))
+                panels.append(view_panel(read_witness(path), relation, source_frame))
             except DRAW_ERRORS as error:
                 panels.append(_failed("view", error))
             break
