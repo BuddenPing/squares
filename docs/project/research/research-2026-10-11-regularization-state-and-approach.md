@@ -448,6 +448,38 @@ The end state, with #549 on top of the stack:
   - #518’s 42 counts wait for their new witnesses;
   - the remaining refusals are views whose house or stage totals would fall.
 
+**Addendum, 12 October 2026: #518’s 42 counts (layer 7).** #518 merged with its new
+houses, and the axis tool’s views of them entered the layer.
+Both generators were then run on the new witnesses, and each count was decided by the
+grid lane’s rule, as in the grid pass above:
+
+- 18 of Evan Daniel’s views are drawn.
+- 11 grid views are drawn, at 105, 131, 146, 156, 175, 211, 267, 292, 305, 307 and 308.
+- 232’s grid view goes to review: five per-square counts fall against #518’s view.
+- The other 12 counts keep #518’s drawing.
+  303 is among them: its new house draws 4 / 8 / 0, which neither generator changes.
+- At 302 the new house already draws 0 / 0 / 0, and Evan Daniel’s view adds four full
+  sides.
+
+Over the 42 counts, against #518’s drawings:
+
+- light squares fall from 230 to 133;
+- uneven squares fall from 588 to 361;
+- near-axis squares fall from 182 to 6;
+- house sides rise from 21,701 to 23,038.
+
+The end state is now:
+
+- 89 counts drawn from a regularized view: 16 axis tool, 55 Evan Daniel (42 at the
+  witness’s side, 13 at the bound) and 18 grid;
+- 181 unchanged;
+- 54 drawn as the witness.
+
+Light squares across the atlas fall from 5,506 to 5,382. The witnesses alone have 7,681,
+now that #518 has re-housed its 42 counts.
+84 drawings are recorded in `regularized_drawings`, with the same five listed
+unregistered.
+
 ## Key Insights
 
 1. **The record’s side is the binding constraint, and it sorts the 324 counts into four
