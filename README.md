@@ -3,10 +3,10 @@
 **[The Squares Project website](https://jlevy.github.io/squares/) is a full archive of
 every known result on the square packing problem**, including the many new results since
 August 2026, several of them first found here and since built on by many others.
-It holds an atlas of the frontier, with the best known packing and the current upper and
-lower bounds for every case $n = 1\ldots324$, each with its source and credit, along
-with comprehensive documentation, papers, a large set of tools, and agent-based
-third-party validation that rates how far each new result has been verified.
+Its atlas lists the best known packing and the current upper and lower bounds for every
+case $n = 1\ldots324$, each with its source and credit.
+It also includes documentation, papers, tools, and agent-based third-party validation
+that rates how far each new result has been verified.
 Its homepage links every other major resource on square packing.
 All of it is generated from the record in this repository.
 
@@ -24,7 +24,7 @@ All of it is generated from the record in this repository.
 > better packing, a lower bound, an exact value, a proof, a verification, or a
 > correction), or know of newer results, please
 > [file an issue](https://github.com/jlevy/squares/issues/new?template=result-registration.md)
-> to report them, including what name you wish to be used for credits.
+> to report them, including the name you would like credited.
 > We encourage real names, for better record keeping.
 > Agents will validate, tabulate, and cite your work once it is a confirmed record.
 >
@@ -39,11 +39,10 @@ the size of the smallest square that can hold $n$ unit squares, where the square
 free to rotate but cannot overlap?
 The side length of that smallest square is written $s(n)$.
 
-The question of the value of $s(n)$ is simple, but the answer is an open problem for
-most $n$. In many cases, $s(n)$ is known only to lie between an upper bound (the size of
-the enclosing square for the tightest packing ever discovered, such as
-$s(29) \le 5.934$) and a lower bound (a size below which it is proved that no packing
-can exist, such as the reported $s(29) \ge 5.81$).
+The value of $s(n)$ remains unknown for most $n$. In many cases, $s(n)$ is known only to
+lie between an upper bound (the size of the enclosing square for the tightest packing
+ever discovered, such as $s(29) \le 5.934$) and a lower bound (a size below which it is
+proved that no packing can exist, such as the reported $s(29) \ge 5.81$).
 
 <!-- END SHARED: project-intro -->
 
@@ -82,8 +81,8 @@ The most significant since August 2026:
 
 ## Papers
 
-The website’s [papers page](https://jlevy.github.io/squares/papers.html) has each paper
-with its PDF. Three form one series on $n = 11$, read in order:
+The website’s [papers page](https://jlevy.github.io/squares/papers.html) links each
+paper and its PDF. Three form a series on $n = 11$:
 
 1. [**New Lower Bounds for Square Packing for n = 11**](https://jlevy.github.io/squares/papers/n11-lower-bounds-explainer.html):
    weighted points and 2-of-3 threshold atoms prove $s(11) \ge 3.8264\ldots$.
@@ -101,9 +100,10 @@ version.
 
 ## Repository Guide
 
-The repository holds the record the website is generated from, and the tools and AI
-workflows that produce and check it: agents run a recorded process in which hypotheses
-are registered before measurement, every claim is graded, and every defect is logged
+The repository holds the records used to generate the website, along with the tools and
+AI workflows that produce and check them.
+Agents follow a recorded process in which hypotheses are registered before measurement,
+every claim is graded, and every defect is logged
 ([Autonomous Research Process](#autonomous-research-process)).
 
 | Where | What |
@@ -204,7 +204,7 @@ and research records as separate layers.
 | Python environment and QA | [uv](https://github.com/astral-sh/uv), [Ruff](https://github.com/astral-sh/ruff), [BasedPyright](https://github.com/DetachHead/basedpyright), and [pytest](https://github.com/pytest-dev/pytest) | Locked environments, linting, formatting, type checking, and behavioral tests |
 | Git hooks | [lefthook](https://github.com/evilmartians/lefthook) | Runs the pinned Markdown formatter and re-stages its changes before commit |
 
-The dependency and tool versions are owned by
+Dependency and tool versions are recorded in
 [`packing/pyproject.toml`](packing/pyproject.toml),
 [`packing/uv.lock`](packing/uv.lock),
 [`packing/sqsearch/Cargo.toml`](packing/sqsearch/Cargo.toml), and the root `Makefile`
@@ -212,6 +212,10 @@ and hook configuration.
 [`development.md`](development.md) explains how the layers interact.
 
 ### Core Commands
+
+For a fresh clone, complete the
+[environment setup](development.md#supported-environment) before running these commands
+from `packing/`.
 
 ```shell
 uv sync --frozen --all-extras --group dev
@@ -328,7 +332,7 @@ contact-heavy witness becomes formally verified.
 The synopsis explains the full argument in
 [Why Exactness Is Not Optional](SYNOPSIS.md#why-exactness-is-not-optional).
 
-Two retained examples show the boundary.
+Two retained witnesses illustrate these assurance levels.
 The Schadt $n = 29$ decimal pose passes its declared 300-digit numerical check, while
 the separately promoted interval witness establishes a slightly weaker side rigorously.
 Trump’s $n = 11$ witness is verified exactly over a degree-eight number field, including
