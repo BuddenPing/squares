@@ -1339,7 +1339,14 @@ verifiers:
       reader of the sqcert format, an --upstream reader of Evan Daniel's format for derived
       facts, a check of each retained certificate's side against its README's print at the
       pin, and credit readers for T-146, T-128 and T-098, and ran it on the five
-      certificates T-149 and T-150 cite. Its author had read both
+      certificates T-149 and T-150 cite. The review lane of issue 500
+      (docs/project/reviews/review-2026-10-11-upper-bound-imports-500.md) added its roster,
+      a reader of T-128's retained certificates and a widened nearness for patch_lineage,
+      and ran it on the nine certificates T-151 cites; the review lane of issue 506
+      (docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md) ran it through a
+      roster entry and credit keys that read another import's certificate, with no change
+      to any decision, on the eleven certificates T-152 and its beyond-horizon rows cite.
+      Its author had read both
       maintained routes, their parser and the importer's adapters before writing it, so it
       is not clean-room; it imports none of their parsing or deciding code and shares
       Fraction with every exact checker here. It is a second pair-deciding procedure
@@ -1802,6 +1809,11 @@ verifiers:
       full. The import lane of issues 505 and 501 added the sqcert adapter, which the 11
       October review of those issues
       (docs/project/reviews/review-2026-10-11-upper-bound-imports-505-501.md) read in full.
+      The import lanes of issues 500 and 506 added HOUSES readers of their packets, which
+      the reviews of issue 500
+      (docs/project/reviews/review-2026-10-11-upper-bound-imports-500.md) and of issue 506
+      (docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md) read in full; the
+      second refroze issue 506's claim record against the first's exact sides.
 
   - id: V-rehwaldt-n68-verify
     program: verify.py

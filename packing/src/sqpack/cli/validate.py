@@ -146,11 +146,11 @@ SCREEN_EXCLUDED: dict[str, tuple[str, ...]] = {
 #: T-127 refreshes fourteen Gupta rows; all three corpus tripwires below sum their
 #: current complete retained motions, with the other 310 screen rows unchanged.
 #: The house adoption of 11 October 2026 (think-fvz4) re-screened its 42 counts, with the
-#: other 282 rows unchanged.
+#: other 282 rows unchanged, and its pass of 12 October the nine counts it moved.
 SCREEN_FINDINGS: dict[str, tuple[int, int, int, int]] = {
     "n=1..100": (28, 146, 86, 659),
-    "n=1..200": (66, 503, 182, 2090),
-    "n=1..324": (122, 1505, 302, 5018),
+    "n=1..200": (65, 530, 182, 2178),
+    "n=1..324": (120, 1483, 302, 5030),
 }
 UNDETERMINED_BY_MISS = (28,)
 #: The cases the two sampled sweeps re-derive on every pull request, computed here from
