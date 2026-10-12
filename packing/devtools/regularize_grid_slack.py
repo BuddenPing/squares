@@ -140,7 +140,9 @@ UNMOVED = 1e-9
 """A square the LP moved by less than this keeps its exact centre in the re-solve."""
 BLOWUP = 1e-6
 """A re-solved centre this far from the placement means nearly parallel tight rows."""
-MAX_REOPEN_ROUNDS = 8
+MAX_REOPEN_ROUNDS = 32
+WATCH = 1e-6
+"""Contacts this close to the placement are watched by the exact solve: see `BLOWUP`."""
 FLOAT_OVERLAP = 1e-12
 """An overlap binary64 sees this clearly is refused before the exact routes run."""
 EXACT_GAP = 1e-13
@@ -958,14 +960,21 @@ def settle_variant(
     poses: Sequence[same.GeneratorPose],
     matched: Sequence[same.Matched],
     tight: Sequence[same.Row],
+    watched: Sequence[same.Row],
     changed: set[int],
 ) -> Settled:
-    """Close the tight set one way and run the checks that need no exact route."""
+    """Close the tight set one way and run the checks that need no exact route.
+
+    `watched` are the contacts within `WATCH` of the placement but not tight: closed only
+    if the exact solution, which may move a pinned centre by up to `BLOWUP`, penetrates
+    them.
+    """
     generator = [(same.rounded_fraction(p.x), same.rounded_fraction(p.y)) for p in poses]
     if rows == "witness-contacts":
         closing, left = closable(tight, frame, changed)
     else:
         closing, left = list(tight), []
+    left = [*left, *watched]
     solution, promoted, rounds, reopened = settle_reopening(closing, left, generator)
     centers = [(solution.values[2 * i], solution.values[2 * i + 1]) for i in range(len(poses))]
     displacement = max(
@@ -1026,6 +1035,12 @@ def exact_view(
     view_id = f"{witness['id']}-regularized"
     matched = same.match_rotations(frame, poses)
     tight = same.tight_rows(frame, poses, matched)
+    keys = {row.priority for row in tight}
+    watched = [
+        row
+        for row in same.tight_rows(frame, poses, matched, tight=WATCH)
+        if row.priority not in keys
+    ]
     order = (
         ("witness-contacts", "all-tight")
         if frame.kind == "rational"
@@ -1035,7 +1050,13 @@ def exact_view(
     for rows in order:
         tried.append(
             settle_variant(
-                rows, frame=frame, poses=poses, matched=matched, tight=tight, changed=changed
+                rows,
+                frame=frame,
+                poses=poses,
+                matched=matched,
+                tight=tight,
+                watched=watched,
+                changed=changed,
             )
         )
         if tried[-1].refusal is None:
@@ -1045,13 +1066,18 @@ def exact_view(
         "relation": relation,
         "side": same.literal(frame.side),
         "tight": len(tight),
+        "watched": len(watched),
         "settled": [variant.record for variant in tried],
     }
     if chosen.refusal is not None:
         report["refusal"] = "; ".join(f"{v.rows}: {v.refusal}" for v in tried)
         return Exact(None, report)
     solution, centers = chosen.solution, chosen.centers
-    document = same.same_side_witness(witness, frame, centers, matched, view_id=view_id)
+    try:
+        document = same.same_side_witness(witness, frame, centers, matched, view_id=view_id)
+    except ValueError as error:  # Elimination fill-in past Python's integer-text limit.
+        report["refusal"] = f"literal-too-long: {error}"
+        return Exact(None, report)
     verdicts = same.verify_both(document, centers, matched, frame.side)
     report["verdicts"] = verdicts
     report["seconds"] = round(time.perf_counter() - started, 2)
