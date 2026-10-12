@@ -16972,10 +16972,11 @@ results:
       - path: docs/project/reviews/review-2026-10-11-upper-bound-imports-500.md
         kind: adversarial
         reviewer: >-
-          AI agent (Claude, at extra-high reasoning effort, a different model from the
-          import lane's), the stage 4 review lane (W2) of the 2026-10-11 intake pass under
-          think-720n, prompted separately from the import lane that built the packet, with
-          no shared context beyond its committed notes and register plan
+          AI agent (Claude, the mathematics tier, at extra-high reasoning effort, a
+          different model from the import lane's), the stage 4 review lane (W2) of the
+          2026-10-11 intake pass under think-720n, prompted separately from the import lane
+          that built the packet, with no shared context beyond its committed notes and
+          register plan
         reviewer_kind: ai
         relation: project
         date: '2026-10-11'
@@ -17012,7 +17013,7 @@ results:
       and the tangent of its half-angle, in Evan Daniel's format; each side rounds up to the
       12-place print of the issue. Ten are exact optima from Evan Daniel's exact contact
       solver; the one at 375 is a rational witness, the author's decimal packing with
-      centres dilated by 1 + 1e-11, as the issue says, about the first square's centre as
+      centres dilated by 1 + 1e-11, as the issue says, about the point (1/2, 1/2) as
       measured here. The author reports that all eleven pass Evan Daniel's verify_cert.py
       and a copy of this repository's sqpack verifier in exact rational arithmetic; those
       statements are the author's, and no source program ran here.
