@@ -888,7 +888,8 @@ issues:
     title: "wand125's repositories moved to wand125/square-packing (old links keep working)"
     author: wand125
     opened: '2026-10-07'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: other
     triage: done
     summary: >-
@@ -913,6 +914,12 @@ issues:
       date: '2026-10-12'
       by: jlevy
       kind: acknowledgement
+      reported:
+      - result: repository-consolidation
+    - url: https://github.com/jlevy/squares/issues/411#issuecomment-6127523980
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
       reported:
       - result: repository-consolidation
     close_when: The canonical source-discovery addition is merged and acknowledged from main.
@@ -3548,7 +3555,8 @@ issues:
     title: '105, 108, 127, 131, 155, 180, 228, 306: registration request'
     author: franciscouzo
     opened: '2026-10-08'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: All eight complete source certificates and decimal context poses are retained. The complete
@@ -3601,13 +3609,29 @@ issues:
         verification: V3
         confirmation: C3
         status: confirmed
+    - url: https://github.com/jlevy/squares/issues/451#issuecomment-6127528255
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: eight-rational-refinements
+        id: T-128
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: five-follow-up-refinements-2d32a6e
+        id: T-130
+        verification: V3
+        confirmation: C3
+        status: confirmed
     close_when: The supported import and disposition are on main and the owner posts the resulting state;
       optimizer and local/global optimality remain separate claims.
   - number: 425
     title: 'Exact certificate refinements of five Couzo square packings: registration request'
     author: lollipoll
     opened: '2026-10-07'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: Seth Rehwaldt’s five-case source offer is retained historically; T-117 confirms complete
@@ -3658,6 +3682,17 @@ issues:
       - result: historical-refinements-130-263-272
       - result: n105-supersession-2026-10-08
       - result: restricted-n105-dual
+    - url: https://github.com/jlevy/squares/issues/425#issuecomment-6127526932
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: finite-refinements-105-292
+        id: T-117
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: historical-refinements-130-263-272
     close_when: The retained finite-feasibility result and supersession disposition are published from
       main, and the owner replies with the active 292 and historical 105/130/263/272 scopes.
     read_through: '2026-10-08T02:58:00Z'
@@ -3665,7 +3700,8 @@ issues:
     title: 'Exact rational ceiling refinements for 14 square-packing counts: registration request'
     author: SidG2k1
     opened: '2026-10-08'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: Siddharth Gupta reports fourteen exact rational precision refinements of SQUISH constructions.
@@ -3713,6 +3749,16 @@ issues:
         confirmation: C3
         status: confirmed
       - result: withdrawn-108-123-129
+    - url: https://github.com/jlevy/squares/issues/438#issuecomment-6127527608
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: precision-refinements-14
+        id: T-127
+        verification: V3
+        confirmation: C3
+        status: confirmed
     close_when: The fourteen finite bounds and three withdrawals are published from main with their
       actual evidence scope, and the owner posts the final registration disposition.
     read_through: '2026-10-08T03:08:01Z'
@@ -3787,7 +3833,8 @@ issues:
     title: 'New packings: s(132) ≤ 11.98709933224506, s(155) ≤ 12.95249894401401'
     author: evand
     opened: '2026-10-09'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: Evan Daniel reports rational certificates at n=132 and n=155 below the case ceilings, in
@@ -3857,6 +3904,22 @@ issues:
         status: reviewed
       - result: s155-record-hunt
         id: E-evand-465-record-hunt-exact-feasibility
+        status: confirmed
+      - result: kkt-local-minima
+    - url: https://github.com/jlevy/squares/issues/465#issuecomment-6127528935
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: s132-record-hunt
+        id: T-131
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: s155-record-hunt
+        id: T-128
+        verification: V3
+        confirmation: C3
         status: confirmed
       - result: kkt-local-minima
     close_when: T-131 and T-128 are confirmed on main after independent review and adoption, and the
@@ -3970,7 +4033,8 @@ issues:
       + 0.623 for k >= 1.6e7)'
     author: squarepacker
     opened: '2026-10-09'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -4040,6 +4104,15 @@ issues:
       - result: theorem-1.2
       - result: theorem-1.4
       - result: theorem-1.6
+    - url: https://github.com/jlevy/squares/issues/471#issuecomment-6127529639
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: theorem-1.1
+      - result: theorem-1.2
+      - result: theorem-1.4
+      - result: theorem-1.6
     close_when: The reported import and its review disposition are on main and the owner has posted
       the resulting state.
   - number: 472
@@ -4101,7 +4174,8 @@ issues:
     title: '132, 237, 263, 267, 270, 303: registration request'
     author: franciscouzo
     opened: '2026-10-09'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -4150,6 +4224,16 @@ issues:
       - result: six-exact-certificates
         id: E-couzo-476-exact-feasibility
         status: confirmed
+    - url: https://github.com/jlevy/squares/issues/476#issuecomment-6127530457
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: six-exact-certificates
+        id: T-134
+        verification: V3
+        confirmation: C3
+        status: confirmed
     close_when: The import and its disposition are on main and the owner has posted the resulting state;
       optimality and the credit for the starting packings' constructions stay with their sources.
   - number: 481
@@ -4157,7 +4241,8 @@ issues:
       smaller packings of SQUISH''s prev registered 154, 237: registration request'
     author: itsnaka
     opened: '2026-10-09'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -4234,13 +4319,29 @@ issues:
       - result: smaller-154-237
         id: E-squish-481-exact-feasibility
         status: confirmed
+    - url: https://github.com/jlevy/squares/issues/481#issuecomment-6127531070
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: fifteen-new-packings
+        id: T-136
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: smaller-154-237
+        id: T-136
+        verification: V3
+        confirmation: C3
+        status: confirmed
     close_when: The import and its disposition are on main and the owner has posted the resulting state;
       local and global optimality are outside this request.
   - number: 483
     title: 'n=70 exact rational precision refinement of Ryan Xu''s packing: registration request'
     author: ebdeleeuw
     opened: '2026-10-10'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -4287,6 +4388,16 @@ issues:
       - result: n70-exact-refinement
         id: E-deleeuw-483-exact-feasibility
         status: confirmed
+    - url: https://github.com/jlevy/squares/issues/483#issuecomment-6127531807
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: n70-exact-refinement
+        id: T-137
+        verification: V3
+        confirmation: C3
+        status: confirmed
     close_when: The import and its disposition are on main and the owner has posted the resulting state;
       optimality is outside this request.
   - number: 484
@@ -4294,7 +4405,8 @@ issues:
       request'
     author: TheSnakeFang
     opened: '2026-10-10'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -4352,6 +4464,17 @@ issues:
       - result: s343-s344-two-wedge
         id: E-fang-484-exact-feasibility
         status: confirmed
+    - url: https://github.com/jlevy/squares/issues/484#issuecomment-6127532349
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: s308-two-wedge
+        id: T-135
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: s343-s344-two-wedge
     close_when: The import and its disposition, including the beyond-horizon counts, are on main and the
       owner has posted the resulting state; optimality is outside this request.
   - number: 485
@@ -4552,7 +4675,8 @@ issues:
       k ≥ 2.48×10^12'
     author: squarepacker
     opened: '2026-10-10'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -4585,13 +4709,20 @@ issues:
       kind: import
       reported:
       - result: theorem-1.1-v1.1-tiers
+    - url: https://github.com/jlevy/squares/issues/486#issuecomment-6127533006
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: theorem-1.1-v1.1-tiers
     close_when: The reported import and its review disposition are on main and the owner has posted the
       resulting state.
   - number: 488
     title: '132-305: registration request'
     author: franciscouzo
     opened: '2026-10-10'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -4656,13 +4787,24 @@ issues:
         status: confirmed
       - result: kkt-no-descent
       - result: unnamed-303-338-340
+    - url: https://github.com/jlevy/squares/issues/488#issuecomment-6127533578
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: six-exact-certificates
+        id: T-140
+        verification: V3
+        confirmation: C3
+        status: confirmed
     close_when: The import and its disposition are on main and the owner has posted the resulting state;
       optimality and the credit for the starting packings' constructions stay with their sources.
   - number: 489
     title: 'New packings: s(132), s(308), s(343), s(344): registration request'
     author: evand
     opened: '2026-10-10'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -4734,6 +4876,17 @@ issues:
         id: E-evand-489-exact-feasibility
         status: confirmed
       - result: kkt-local-minima
+    - url: https://github.com/jlevy/squares/issues/489#issuecomment-6127534278
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: hunt3-132-308
+        id: T-141
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: hunt3-343-344
     close_when: The import and its disposition, including the beyond-horizon counts, are on main and the
       owner has posted the resulting state; Kevin Fang's credit for the two-wedge constructions and
       optimality stay with their sources.
@@ -4851,7 +5004,8 @@ issues:
     title: 's(207) ≤ 14.880960373044: registration request'
     author: BuddenPing
     opened: '2026-10-11'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -4903,6 +5057,21 @@ issues:
       - result: n207-exact-certificate
         id: E-pingyou-503-exact-feasibility
         status: confirmed
+      outdated:
+      - 'the case record at 207 still shows T-127, and the adoption layer, jlevy/squares#518, is in
+        review; #518 merged on 12 October and T-147 is the house at 207'
+    - url: https://github.com/jlevy/squares/issues/503#issuecomment-6127536031
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: n207-exact-certificate
+        id: T-147
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      corrects:
+      - https://github.com/jlevy/squares/issues/503#issuecomment-6125247333
     close_when: The import and its disposition are on main, the house adoption at 207 has landed or
       is owned, the author has been asked which AI-assistance account stands, and the owner has
       posted the resulting state; optimality is outside this request.
@@ -4910,7 +5079,8 @@ issues:
     title: 's(153) ≤ 12.870013850408: registration request'
     author: BuddenPing
     opened: '2026-10-11'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -4968,6 +5138,21 @@ issues:
       - result: n153-exact-certificate
         id: E-pingyou-504-exact-feasibility
         status: confirmed
+      outdated:
+      - 'the case record at 153 still shows T-127, and the adoption layer, jlevy/squares#518, is in
+        review; #518 merged on 12 October and T-148 is the house at 153'
+    - url: https://github.com/jlevy/squares/issues/504#issuecomment-6127536658
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: n153-exact-certificate
+        id: T-148
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      corrects:
+      - https://github.com/jlevy/squares/issues/504#issuecomment-6125249586
     close_when: The import and its disposition are on main, the house adoption at 153 has landed or
       is owned, and the owner has posted the resulting state; optimality and the undilated contact
       solution are outside this request.
@@ -4975,7 +5160,8 @@ issues:
     title: New results for n=155, n=156 and n=211 to the best of my knowledge
     author: dostashev
     opened: '2026-10-11'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -5039,6 +5225,22 @@ issues:
         id: E-ostashev-501-exact-feasibility
         status: confirmed
       - result: kkt-exact-optima
+      outdated:
+      - 'the case records still show T-115 at 155 and T-098 at 156 and 211, and the adoption layer,
+        jlevy/squares#518, is in review; #518 merged on 12 October and T-149 is the house at all
+        three'
+    - url: https://github.com/jlevy/squares/issues/501#issuecomment-6127534994
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: three-records
+        id: T-149
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      corrects:
+      - https://github.com/jlevy/squares/issues/501#issuecomment-6125250032
     close_when: The import and its disposition are on main, the house adoption at 155, 156 and 211
       has landed or is owned, and the owner has posted the resulting state; the KKT statement and
       optimality are outside this request.
@@ -5046,7 +5248,8 @@ issues:
     title: 'Improved certified upper bounds for 146 and 261 squares: registration request'
     author: RobertBarnettProjects
     opened: '2026-10-11'
-    state: open
+    state: closed
+    closed: '2026-10-12'
     kind: result-report
     triage: done
     summary: >-
@@ -5098,6 +5301,22 @@ issues:
       - result: n146-n261-refinements
         id: E-barnett-505-exact-feasibility
         status: confirmed
+      outdated:
+      - 'the case records at 146 and 261 still show Ryan Xu''s certificates (T-125), and the
+        adoption layer, jlevy/squares#518, is in review; #518 merged on 12 October and T-150 is the
+        house at both'
+    - url: https://github.com/jlevy/squares/issues/505#issuecomment-6127537241
+      date: '2026-10-12'
+      by: jlevy
+      kind: final
+      reported:
+      - result: n146-n261-refinements
+        id: T-150
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      corrects:
+      - https://github.com/jlevy/squares/issues/505#issuecomment-6125250423
     close_when: The import and its disposition are on main, the house adoption at 146 and 261 has
       landed or is owned, and the owner has posted the resulting state; the superseded and n = 2043
       certificates are not requested, and optimality is outside this request.
