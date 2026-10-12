@@ -617,6 +617,9 @@ case or experiment separately.
 | [Review: Francisco Couzo’s Eleven Rational Upper-Bound Imports of 11 October (#506)](docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md) | dated review record | record | retained | — |
 | [Review: SQUISH’s Fourth Request, Nine Rational Upper-Bound Imports of 11 October (#500)](docs/project/reviews/review-2026-10-11-upper-bound-imports-500.md) | dated review record | record | retained | — |
 | [Review: PingYou Ltd’s Two Rational Upper-Bound Imports of 11 October (#503, #504)](docs/project/reviews/review-2026-10-11-upper-bound-imports-503-504.md) | dated review record | record | retained | — |
+| [Review: The Verification and Confirmation Rungs of Register Entries T-120 to T-146](docs/project/reviews/review-2026-10-11-recent-register-rungs.md) | dated review record | record | retained | — |
+| [The Lean-Backed Claims Against the Rung Predicates: `T-060`, `T-084`, `T-055` and `T-120` to `T-124`](docs/project/reviews/review-2026-10-11-lean-backed-rungs.md) | dated review record | record | retained | — |
+| [Significance Scores Wrapped Up: The 48 Drafts Confirmed, Three Scores Changed, and the Working Rules Collected](docs/project/reviews/review-2026-10-11-significance-scores.md) | dated review record | record | retained | — |
 | [Review: Evan Daniel’s Regularized Certificates at Fifteen Counts (T-146)](docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md) | dated review record | record | retained | — |
 | [Final Review: Ryu’s $k^{3/8}$ Deficiency Bounds and the Grading of T-128 to T-146](docs/project/reviews/review-2026-10-11-final-asymptotic-and-grading.md) | dated review record | record | retained | — |
 | [Final Review of PR 487’s Lower Bounds: `T-133` and `T-145` at `n = 40`, and the Reported `T-132`, `T-142`, `T-143` and `T-144`](docs/project/reviews/review-2026-10-11-final-lower-bounds.md) | dated review record | record | retained | — |
