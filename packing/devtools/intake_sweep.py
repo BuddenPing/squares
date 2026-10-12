@@ -17,7 +17,8 @@ none does, or that what it waits on has already happened.
 The sources, one section of the report each:
 
 - **GitHub issues**: `check_requests --github`'s comparison through `gh`: issues the
-  record lacks, replies missing from it, and comments after an entry's `read_through`.
+  record lacks, replies missing from it, and comments created or edited after an
+  entry's `read_through`.
 - **Watched repositories**: every repository the source register, a packet's acquisition
   record, or the site's list of other projects names. `git ls-remote` reads each head,
   and a fetch of commits and trees (no blobs) reads two things. Commits past every

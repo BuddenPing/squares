@@ -597,11 +597,14 @@ def test_the_draft_refuses_off_main(
     assert check_requests.main(["--draft", "1"]) == 2
 
 
-def comment(number: int, login: str, created: str, body: str = "thanks") -> Record:
+def comment(
+    number: int, login: str, created: str, body: str = "thanks", updated: str | None = None
+) -> Record:
     return {
         "html_url": URL.format(number),
         "user": {"login": login},
         "created_at": created,
+        "updated_at": updated or created,
         "body": body,
     }
 
@@ -631,6 +634,35 @@ def test_the_github_comparison_lists_missing_replies_unread_comments_and_unknown
         "#8 is not in the record: Another",
         f"#7: reply missing from the record: {URL.format(2)} (owner, 2026-10-02)",
         f"#7: reply missing from the record: {URL.format(3)} (agent, 2026-10-02)",
+        f"#7: unread comment {URL.format(4)} (someone, 2026-10-02T12:00:00Z)",
+    ]
+
+
+def test_a_comment_read_and_then_edited_after_read_through_is_listed_as_unread() -> None:
+    """wand125's #485 review was read at its creation, then edited to link a new mode.
+
+    `read_through` holds a creation time, so an edit to a comment it already covers
+    arrived unseen: the f30cc2c link reached the record on 12 October only because the
+    comment was read again by hand. An edit at or before `read_through`, an edit to a
+    reply, and an edit to a comment already listed as unread add nothing.
+    """
+    recorded = record(
+        issue(replies=[reply(1, "2026-10-01")], read_through="2026-10-01T12:00:00Z")
+    )
+    live = {
+        "repos/owner/repo/issues?state=all&per_page=100": [
+            {"number": 7, "state": "open", "title": "A request"},
+        ],
+        "repos/owner/repo/issues/7/comments?per_page=100": [
+            comment(1, "owner", "2026-10-01T10:00:00Z", updated="2026-10-03T08:00:00Z"),
+            comment(2, "someone", "2026-09-30T12:00:00Z", updated="2026-10-01T11:00:00Z"),
+            comment(3, "reviewer", "2026-10-01T12:00:00Z", updated="2026-10-02T09:00:00Z"),
+            comment(4, "someone", "2026-10-02T12:00:00Z", updated="2026-10-02T13:00:00Z"),
+        ],
+    }
+    edited = "(reviewer, 2026-10-01T12:00:00Z, edited 2026-10-02T09:00:00Z)"
+    assert check_requests.compare_github(recorded, live.__getitem__) == [
+        f"#7: unread comment {URL.format(3)} {edited}",
         f"#7: unread comment {URL.format(4)} (someone, 2026-10-02T12:00:00Z)",
     ]
 

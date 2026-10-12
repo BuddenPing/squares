@@ -9,7 +9,7 @@
 #
 # A reply is a comment by the owner, or one that ends in the Claude Code footer and is
 # not by the issue's author. `read_through` is the latest comment read into the entry;
-# `check_requests --github` lists anything later.
+# `check_requests --github` lists anything later, and any earlier comment edited later.
 softschema:
   contract: packing.squares:ResultRequests/v1
   schema: schemas/result-requests.schema.yaml

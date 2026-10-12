@@ -107,7 +107,7 @@ Every input reaches the record through one of these sources, and the sweep reads
 
 | Source | How it is read | What an item becomes |
 | --- | --- | --- |
-| GitHub issues and comments | `check_requests --github` lists the issues `result-requests.yaml` lacks, the replies missing from it, and the comments after an entry’s `read_through` | A new issue: an entry with `triage: pending` and an import bead. A comment: its claims mapped into its issue’s entry, and `read_through` moved |
+| GitHub issues and comments | `check_requests --github` lists the issues `result-requests.yaml` lacks, the replies missing from it, and the comments created or edited after an entry’s `read_through` | A new issue: an entry with `triage: pending` and an import bead. A comment: its claims mapped into its issue’s entry, and `read_through` moved |
 | Owner and other manual reports | Nothing reads them: a message, a link pasted to an agent, a result named in a review | A bead labelled `result-import` first, titled with `(no issue)`; then stage 1. The sweep lists the open ones |
 | The Kingbird catalogue | [`devtools.capture_kingbird_catalogue`](../devtools/capture_kingbird_catalogue.py) fetches and transcribes it into `attic/intake/`; the sweep compares the newest capture with the record’s, count by count | A count whose side drops below its record: an import, or a `pending_catalogue_intake` entry with its bead. Other changes: classified when the retained capture is refreshed. None when nothing moved |
 | Other catalogues and releases | Read by hand: the register’s other `current-catalogue` and `first-party-release` sources, UnitSquare’s release today. The sweep prints when each was last reviewed | A later release: an import. Nothing new: the source’s `reviewed` date moves |
