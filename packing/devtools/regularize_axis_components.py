@@ -157,7 +157,12 @@ EVAND_GENERATOR = "evand-regularize"
 """Evan Daniel's regularizer as `devtools.regularize_evand` drives it (policy section 2)."""
 GRID_GENERATOR = "regularize_grid_slack/0"
 """The grid-slack generator, `devtools.regularize_grid_slack`'s own version."""
-GENERATORS = (ALGORITHM, EVAND_GENERATOR, GRID_GENERATOR)
+GRID_GENERATOR_V1 = "regularize_grid_slack/1"
+"""Its second version (#530): a failed re-solve holds the unchanged squares exactly and
+the identity is also measured under its own pairing. Views of each version keep the
+version that made them, so the layer names both."""
+GRID_GENERATORS = (GRID_GENERATOR, GRID_GENERATOR_V1)
+GENERATORS = (ALGORITHM, EVAND_GENERATOR, *GRID_GENERATORS)
 POLICY_DOCUMENT = "docs/project/policies/regularization-policy.md"
 EVAND_CREDIT = (
     "Regularized by the Squares Project with Evan Daniel's regularizer "
@@ -2197,6 +2202,7 @@ METHOD_MARKS = {
     ALGORITHM: ALGORITHM,
     EVAND_GENERATOR: "devtools.regularize_evand",
     GRID_GENERATOR: GRID_GENERATOR,
+    GRID_GENERATOR_V1: GRID_GENERATOR_V1,
 }
 """What each generator's regularization `method` names, so a record says who made it."""
 

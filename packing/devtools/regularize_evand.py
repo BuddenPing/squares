@@ -2663,7 +2663,7 @@ def write_layer_with_grid(
         root,
         generators={
             axis.EVAND_GENERATOR: evand_generator_block(),
-            axis.GRID_GENERATOR: grid_generator,
+            grid.GENERATOR: grid_generator,
         },
         runs=[run for run in [*runs, grid_run_block] if run["id"] in used],
         exclude=exclude,

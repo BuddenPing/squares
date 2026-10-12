@@ -63,6 +63,7 @@ from devtools.regularize_axis_components import (
     EVAND_CREDIT,
     EVAND_GENERATOR,
     GRID_GENERATOR,
+    GRID_GENERATOR_V1,
 )
 from sqpack.render import render_packing_svg
 from sqpack.render.model import PackingFrame, RenderSpec
@@ -89,9 +90,10 @@ MADE_BY = {
         "Evan Daniel's regularizer's view of it, its contacts re-solved exactly at the "
         "record's side"
     ),
-    GRID_GENERATOR: (
+    **dict.fromkeys(
+        (GRID_GENERATOR, GRID_GENERATOR_V1),
         "its exact frame with the free grid slack closed and the near-axis squares "
-        "straightened at the record's side"
+        "straightened at the record's side",
     ),
 }
 

@@ -20,8 +20,11 @@ from typing import Any
 import pytest
 
 from devtools import census_drawing_regularity as census
+from devtools import regularize_axis_components as axis
 from devtools import regularize_grid_slack as slack
+from devtools import render_regularized_atlas as render
 from devtools.regularize_evand import view_geometry
+from sqpack.yamlio import load_yaml
 
 HALF = Fraction(1, 2)
 
@@ -298,3 +301,18 @@ def test_the_own_pairing_names_turns_square_for_square() -> None:
     assert view is not None
     measured = slack.measure(2, tilted(), view, [2])
     assert measured["identity"]["own_pairing"]["unnamed_turns"] == []
+
+
+def test_the_layer_contract_names_this_version() -> None:
+    """A view this version makes can enter the layer: the contract's generators, the
+    index schema, the method mark the checker looks for and the drawing's sentence all
+    name it, beside the version whose views the layer already draws."""
+    schema = load_yaml(
+        (axis.ATLAS_DIR.parent / "regularized-atlas-index.schema.yaml").read_text()
+    )
+    named = schema["$defs"]["generator_id"]["enum"]
+    assert set(named) == set(axis.GENERATORS)
+    assert {slack.GENERATOR, axis.GRID_GENERATOR} <= set(axis.GRID_GENERATORS)
+    assert axis.METHOD_MARKS[slack.GENERATOR] in slack.METHOD
+    assert slack.GENERATOR in render.MADE_BY
+    assert slack.GENERATOR in schema["properties"]["generators"]["properties"]
