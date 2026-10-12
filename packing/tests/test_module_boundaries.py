@@ -1180,6 +1180,13 @@ def test_the_slow_marker_is_declared_only_by_measured_nodes() -> None:
             "test_certificate_refuses_a_displaced_point",  # 2.2s
             "test_certificate_builds_and_charges_every_point",  # 2.1s
         },
+        # 23.91s of call time across 1, measured on 2026-10-12 on a four-cpu box at a load
+        # of 8 to 11: the atlas builder draws n = 211's de Winter witness from its parent
+        # facts and orients it, two 211-square multiprecision checks, to hold the fixture
+        # the orientation tests read to that drawing (#518 B10).
+        "test_atlas_orientation.py": {
+            "test_the_de_winter_fixture_is_what_its_parent_facts_draw",  # 23.91s
+        },
         # 41s of call time across 1, measured locally on 2026-09-23; the jet refusals run
         # inside it on the same exact branch-0 system rather than as a second slow test.
         "test_capture_radius.py": {
