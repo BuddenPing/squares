@@ -31746,9 +31746,12 @@ evidence:
       647.47 route CPU seconds and 1544.83 job wall seconds; the longest job took 291.46 s.
       Every positive clears every wall by about 5.00e-21 and every pair by a least
       Euclidean distance of 5.000000e-21. The kernel's two controls are gross (RX-6); the
-      third route's six are sharp. No private-worker custody is on file. Finite feasibility
-      only: no local or global optimality, no rigidity, and nothing about the 38-square
-      rectangle or Friedman's piece beyond the author's statement.
+      third route's six are sharp. Private-worker custody was closed on 12 October 2026
+      (packing/devtools/house-custody-2026-10-11.json), when the case records adopted the
+      three certificates
+      as houses. Finite feasibility only: no local or global optimality, no rigidity, and
+      nothing about the 38-square rectangle or Friedman's piece beyond the author's
+      statement.
     source_reviewed: '2026-10-12'
 
   - id: E-calle-529-certificate-report

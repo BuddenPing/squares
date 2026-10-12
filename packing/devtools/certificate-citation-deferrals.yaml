@@ -8,15 +8,4 @@
 # its evidence (remove it in that change), a named entry stops citing it, or it is more
 # than 30 days older than the evidence register's `last_reviewed`, so the list cannot
 # outlive what it defers.
-deferrals:
-  - evidence: E-ostashev-528-exact-feasibility
-    results: [T-154]
-    bead: think-cq95
-    blocked_on: think-cq95
-    recorded: '2026-10-12'
-    reason: >-
-      The 12 October review of issues 528 and 529 accepted the replay for finite
-      feasibility and recommends T-154 as the house at 175, 232 and 264; the case records'
-      adoption, with private-worker custody first, follows this registration in the same
-      layer of the 2026-10-11 intake stack, and the records lane recorded the deferral
-      when it registered T-154 (think-cq95).
+deferrals: []

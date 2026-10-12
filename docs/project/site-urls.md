@@ -388,6 +388,7 @@ Patterns admit declared namespaces, file types and sixteen-digit asset names.
 | atlas/regularized/n-26.svg | atlas/regularized/n-26.svg | asset-file | overview | 2026-10-07 | 2026-10-07 | live |
 | atlas/regularized/n-261.svg | atlas/regularized/n-261.svg | asset-file | overview | 2026-10-07 | 2026-10-07 | live |
 | atlas/regularized/n-263.svg | atlas/regularized/n-263.svg | asset-file | overview | 2026-10-07 | 2026-10-07 | live |
+| atlas/regularized/n-264.svg | atlas/regularized/n-264.svg | asset-file | overview | 2026-10-08 | 2026-10-08 | live |
 | atlas/regularized/n-266.svg | atlas/regularized/n-266.svg | asset-file | overview | 2026-10-07 | 2026-10-07 | live |
 | atlas/regularized/n-267.svg | atlas/regularized/n-267.svg | asset-file | overview | 2026-10-07 | 2026-10-07 | live |
 | atlas/regularized/n-268.svg | atlas/regularized/n-268.svg | asset-file | overview | 2026-10-07 | 2026-10-07 | live |

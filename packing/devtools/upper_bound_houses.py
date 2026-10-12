@@ -426,6 +426,7 @@ def _sources() -> dict[str, Source]:
         packet_source("T-150", "barnett-refinements-2026-10-11"),
         packet_source("T-151", "squish-500-fourth-request-2026-10-11"),
         packet_source("T-152", "couzo-certificates-2026-10-11"),
+        packet_source("T-154", "dostashev-records-2026-10-12"),
     ]
     return {source.key: source for source in sources}
 
@@ -434,7 +435,8 @@ def _sources() -> dict[str, Source]:
 #: `devtools.select_houses` derived it from the register on 11 October 2026; `check`
 #: holds every case record named here to it, so an adoption that moves a count again
 #: changes or removes its row in the same change, as the second pass of that day did at
-#: 146, 153, 155 and 207 and the third, for issues 500 and 506, at 270 and 305.
+#: 146, 153, 155 and 207, the third, for issues 500 and 506, at 270 and 305, and the
+#: fourth, for issue 528, at 175 and 232.
 ADOPTED: dict[int, str] = {
     70: "T-146",
     84: "T-130",
@@ -454,7 +456,7 @@ ADOPTED: dict[int, str] = {
     154: "T-136",
     155: "T-149",
     156: "T-149",
-    175: "T-140",
+    175: "T-154",
     176: "T-151",
     180: "T-128",
     181: "T-151",
@@ -462,7 +464,7 @@ ADOPTED: dict[int, str] = {
     209: "T-140",
     211: "T-149",
     228: "T-128",
-    232: "T-136",
+    232: "T-154",
     236: "T-146",
     237: "T-140",
     238: "T-151",
@@ -471,6 +473,7 @@ ADOPTED: dict[int, str] = {
     259: "T-136",
     261: "T-150",
     263: "T-146",
+    264: "T-154",
     267: "T-134",
     269: "T-146",
     270: "T-151",
@@ -488,10 +491,11 @@ ADOPTED: dict[int, str] = {
 }
 NUMBERS = tuple(sorted(ADOPTED))
 #: The counts a later pass adopted, by the day it did; every other count of `ADOPTED` was
-#: adopted on `ADOPTED_ON`. The pass of 12 October 2026 adopted issues 500 and 506 (T-151,
-#: T-152), the second of them reviewed that day, and moved 270 and 305 from T-140.
+#: adopted on `ADOPTED_ON`. The passes of 12 October 2026 adopted issues 500 and 506
+#: (T-151, T-152), the second of them reviewed that day, moving 270 and 305 from T-140,
+#: and issue 528 (T-154), reviewed that day, moving 175 from T-140 and 232 from T-136.
 LATER_PASSES: dict[str, frozenset[int]] = {
-    "2026-10-12": frozenset({176, 181, 238, 239, 270, 271, 272, 304, 305}),
+    "2026-10-12": frozenset({175, 176, 181, 232, 238, 239, 264, 270, 271, 272, 304, 305}),
 }
 
 
@@ -643,7 +647,7 @@ def linked_house_problem(path: str, *, repository: Path) -> str | None:
 #: Where the custody run's receipt is kept: one record for every adopted packet.
 CUSTODY_RECEIPT = ROOT / "devtools/house-custody-2026-10-11.json"
 CUSTODY_FORMAT = "AdoptedHouseCustody/v1"
-#: The worker's deadline: it admits all 49 houses and refuses 28 mutations.
+#: The worker's deadline: it admits all 50 houses and refuses 30 mutations.
 CUSTODY_TIMEOUT = 120
 
 

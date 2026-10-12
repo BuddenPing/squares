@@ -231,6 +231,16 @@ RESULTS: dict[str, Prose] = {
             "under his direction."
         ),
     ),
+    "T-154": Prose(
+        author="Daniil Ostashev",
+        reported="on [jlevy/squares#528](https://github.com/jlevy/squares/issues/528)",
+        producer_route=False,
+        ai=(
+            "The issue says the author set up an AI-assisted research loop and drove it with "
+            "his own ideas, the rectangle library and the composition being his, and that AI "
+            "agents wrote and ran the search, composition and verification code."
+        ),
+    ),
 }
 
 XU = "ry-xu"
@@ -262,6 +272,12 @@ def _mondrian(pieces: str) -> Credit:
     return Credit(
         (SQUISH,), (), f"Nate Chaoweeraprasit’s SQUISH packing, composed from {pieces}"
     )
+
+
+def _composed(what: str) -> Credit:
+    """Daniil Ostashev's composition with his 38-square rectangle, as his issue names the
+    pieces (T-154); the pieces' sources are acknowledged, the packing is his."""
+    return Credit((OSTASHEV,), (), f"Daniil Ostashev’s composition of {what}")
 
 
 def _regularized(finder: str, whose: str, *, via: str | None = None) -> Credit:
@@ -305,7 +321,10 @@ CREDITS: dict[int, Credit] = {
     154: Credit((SQUISH,), (), "Nate Chaoweeraprasit’s SQUISH packing"),
     155: Credit((OSTASHEV,), (), "Daniil Ostashev’s packing"),
     156: Credit((OSTASHEV,), (), "Daniil Ostashev’s packing"),
-    175: _couzo("Xu"),
+    175: _composed(
+        "two of his 38-square rectangles with David Ellsworth’s n = 171 template, in place "
+        "of its pieces of Thomas Schadt’s n = 50 packing"
+    ),
     176: _mondrian(
         "Francisco Couzo’s n = 127 packing and the Kingbird catalogue’s n = 5 packing"
     ),
@@ -325,7 +344,9 @@ CREDITS: dict[int, Credit] = {
     209: _couzo("SQUISH"),
     211: Credit((OSTASHEV,), (), "Daniil Ostashev’s packing"),
     228: Credit((COUZO,), (), "Francisco Couzo’s refinement of his own packing"),
-    232: Credit((SQUISH,), (), "Nate Chaoweeraprasit’s SQUISH packing"),
+    232: _composed(
+        "his 38-square rectangle with a 76-square piece of Erich Friedman’s n = 85 packing"
+    ),
     236: _regularized(SQUISH, "Nate Chaoweeraprasit’s SQUISH"),
     237: _couzo("SQUISH"),
     238: _mondrian("SQUISH’s own n = 305 and n = 154 packings"),
@@ -336,6 +357,10 @@ CREDITS: dict[int, Credit] = {
     259: Credit((SQUISH,), (), "Nate Chaoweeraprasit’s SQUISH packing"),
     261: Credit((XU,), (BARNETT,), "Robert Barnett’s refinement of Ryan Xu’s packing"),
     263: _regularized(SQUISH, "Nate Chaoweeraprasit’s SQUISH"),
+    264: _composed(
+        "his 38-square rectangle with a 93-square piece of Evan Daniel’s exact optimum of "
+        "Joost de Winter’s n = 126 packing"
+    ),
     267: _couzo("Xu"),
     269: _regularized(SQUISH, "Nate Chaoweeraprasit’s SQUISH"),
     270: _mondrian(

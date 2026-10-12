@@ -1045,7 +1045,9 @@ derived exact facts, no upstream byte retained;
 Both project exact routes accept all 17 replayed certificates and refuse all 34
 controls, and a third exact route agrees and held each fact to its pinned upstream file.
 T-136 records the seventeen sides at V3/C3; since 11 October 2026 the cases at 131, 154,
-232, 259 and 307 hold them as the house, and smaller certificates hold the other twelve.
+259 and 307 hold them as the house, and at 232 until 12 October 2026, when Daniil
+Ostashev’s smaller certificate (T-154) replaced it; smaller certificates hold the other
+twelve.
 
 **[Deleeuw n70 refinement 2026-10-10]**: Eric Deleeuw’s exact rational certificate for n
 = 70, a refinement of Ryan Xu’s packing, pinned at
@@ -1090,8 +1092,9 @@ Both project exact routes accept all 9 replayed certificates and refuse all 18 c
 and the third route accepts the six requested ones.
 T-140 records the six sides at V3/C3 on the
 [review of 10 October](../../docs/project/reviews/review-2026-10-10-upper-bound-imports-488-489.md),
-and since 11 October 2026 the cases at 175, 209, 237, 270 and 305 hold them as the
-house; at n = 132 issue #489’s side is smaller.
+and since 11 October 2026 the cases at 209 and 237 hold them as the house; at 175, 270
+and 305 they were the house until smaller certificates replaced them on 12 October 2026
+(T-154, T-151, T-152), and at n = 132 issue #489’s side is smaller.
 
 ## Evan Daniel’s Hunt 3 certificates, 10 October 2026
 
@@ -1215,9 +1218,9 @@ its MIT licence; [packet](web/dostashev-records-2026-10-12/README.md).
 Both project exact routes accept all three and refuse all six controls, and a third
 exact route agrees and held every retained file to its pinned bytes.
 T-154 records the sides at V3/C3 on the
-[review of 12 October](../../docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md).
-The issue states that AI agents wrote and ran the search, composition and verification
-code.
+[review of 12 October](../../docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md),
+and the cases at all three hold them as the house since 12 October 2026. The issue
+states that AI agents wrote and ran the search, composition and verification code.
 
 **[Calle n102 2026-10-12]**: Rio Calle’s decimal layout for n = 102, another arrangement
 of Ryan Xu’s design, pinned at `831368623f2d4dcef2e9434fd85c3e154083c97d`, kept as an

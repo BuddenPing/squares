@@ -3312,8 +3312,9 @@ sources:
     to its upstream certificate fetched at the pin. Squares touch the closed box at every count. On 11
     October 2026 the cases at 131, 154, 207, 232, 259 and 307 adopted these certificates, the selected
     overrides below; at the other eleven counts smaller confirmed certificates hold the cases (T-140,
-    and T-146, which regularizes these packings). The three sources/ certificates at 155, 240 and 306
-    are above their cases and not imported.
+    and T-146, which regularizes these packings). On 12 October 2026 issue 528's smaller certificate
+    (T-154) replaced this source's at 232. The three sources/ certificates at 155, 240 and 306 are
+    above their cases and not imported.
 - id: ebdeleeuw-n70-refinement-2026-10-10
   title: Eric Deleeuw's n70 refinement at 24221d5, issue483
   role: source-repository
@@ -3420,7 +3421,9 @@ sources:
     certificates the commit changes, at 303, 338 and 340, are compared in the claim record and
     registered by no entry, and the other 54 are pinned to the issue-476 packet's identical
     copies. On 11 October 2026 the cases at 175, 209, 237, 270 and 305 adopted these certificates,
-    the selected overrides below; at 132 issue 489's smaller side holds the case.
+    the selected overrides below; at 132 issue 489's smaller side holds the case. On 12 October
+    2026 smaller certificates replaced them at 270 and 305 (issues 500 and 506) and at 175 (issue
+    528, T-154).
 - id: evand-record-hunt3-2026-10-10
   title: Evan Daniel's Hunt 3 certificates at 76a529b, issue489
   role: source-repository
@@ -3814,8 +3817,8 @@ sources:
     issue prints. T-154 records them at V3/C3 on the review of 12 October
     (docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md), which reproduced all 9
     native jobs, decided the three by a third exact route and held every file to its bytes fetched
-    at the pin. Selected overrides at 175, 232 and 264 follow when the cases adopt them, each
-    packing credited to Daniil Ostashev.
+    at the pin. On 12 October 2026 the cases at 175, 232 and 264 adopted these certificates, the
+    selected overrides below, each packing credited to Daniil Ostashev.
 - id: riocalle-n102-2026-10-12
   title: Rio Calle's n102 arrangement at 8313686, issue529
   role: source-repository
@@ -3998,11 +4001,11 @@ selected_overrides:
   reason: The exact optimum of the same packing, certified here (T-098), below Francisco Couzo's printed
     side (T-056).
 - n: 175
-  source_id: couzo-certificates-2026-10-10
-  value: '13.7671207246923133'
-  evidence: E-couzo-488-certificate-report
+  source_id: dostashev-records-2026-10-12
+  value: '13.7641743174865967'
+  evidence: E-ostashev-528-certificate-report
   reason: The smallest exact side the register holds at this count, confirmed at V3/C3 by a replay
-    here and an accepted review, adopted on 2026-10-11 (T-140).
+    here and an accepted review, adopted on 2026-10-12 (T-154).
 - n: 176
   source_id: squish-500-fourth-request-2026-10-11
   value: '13.8128562532770564'
@@ -4088,11 +4091,11 @@ selected_overrides:
   reason: The smallest exact side the register holds at this count, confirmed at V3/C3 by a replay
     here and an accepted review, adopted on 2026-10-11 (T-128).
 - n: 232
-  source_id: squish-481-third-request-2026-10-09
-  value: '15.7674283499418417'
-  evidence: E-squish-481-certificate-report
+  source_id: dostashev-records-2026-10-12
+  value: '15.7641743174865967'
+  evidence: E-ostashev-528-certificate-report
   reason: The smallest exact side the register holds at this count, confirmed at V3/C3 by a replay
-    here and an accepted review, adopted on 2026-10-11 (T-136).
+    here and an accepted review, adopted on 2026-10-12 (T-154).
 - n: 236
   source_id: evand-regularized-2026-10-10
   value: '15.8639557471592675'
@@ -4153,6 +4156,12 @@ selected_overrides:
   evidence: E-evand-regularized-certificate-report
   reason: The smallest exact side the register holds at this count, confirmed at V3/C3 by a replay
     here and an accepted review, adopted on 2026-10-11 (T-146).
+- n: 264
+  source_id: dostashev-records-2026-10-12
+  value: '16.7747351323878329'
+  evidence: E-ostashev-528-certificate-report
+  reason: The smallest exact side the register holds at this count, confirmed at V3/C3 by a replay
+    here and an accepted review, adopted on 2026-10-12 (T-154).
 - n: 266
   source_id: evand-new-arrangements-2026-10-07
   value: '16.823028750756475970708783711254'
@@ -4767,7 +4776,7 @@ superseded_reports:
 - n: 175
   source_id: evand-square-packing-2026-10-05
   value: '13.778174593052022768547069729084'
-  superseded_by: couzo-certificates-2026-10-10
+  superseded_by: dostashev-records-2026-10-12
   reason: Certifies the catalogue's packing at a side 2.8e-15 above the one it prints, which stays
     the report; since 2026-10-06 it is the verified upper bound, rounded up at the printed precision
     (T-101).
@@ -5025,7 +5034,7 @@ superseded_reports:
 - n: 232
   source_id: evand-square-packing-2026-10-05
   value: '15.778174593052022768567069729084'
-  superseded_by: squish-481-third-request-2026-10-09
+  superseded_by: dostashev-records-2026-10-12
   reason: Certifies the catalogue's packing at a side 2.8e-15 above the one it prints, which stays
     the report; since 2026-10-06 it is the verified upper bound, rounded up at the printed precision
     (T-101).
@@ -5188,7 +5197,7 @@ superseded_reports:
 - n: 264
   source_id: evand-square-packing-2026-10-05
   value: '16.778174593052022768577069729084'
-  superseded_by: kingbird-current
+  superseded_by: dostashev-records-2026-10-12
   reason: Certifies the catalogue's packing at a side 2.8e-15 above the one it prints, which stays
     the report; since 2026-10-06 it is the verified upper bound, rounded up at the printed precision
     (T-101).
@@ -5889,7 +5898,7 @@ superseded_reports:
   value: '13.7688992766137689'
   reason: The house until 2026-10-11; its certificate stays retained and verified, and T-140's exact
     side is smaller.
-  superseded_by: couzo-certificates-2026-10-10
+  superseded_by: dostashev-records-2026-10-12
 - n: 180
   source_id: gupta-square-packing-refinements-2026-10-08
   value: '13.9176534174501843'
