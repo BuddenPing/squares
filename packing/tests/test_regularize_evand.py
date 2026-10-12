@@ -758,6 +758,44 @@ def test_a_forced_solve_that_polishes_ends_the_climb(
     assert not (tmp_path / "solve-first").exists()
 
 
+def _timed_out_solve(monkeypatch: pytest.MonkeyPatch) -> list[dict[str, Any]]:
+    """Stand the ladder in for a solve that timed out on both rungs it climbed, and the
+    replica's batch status, which `run` builds and these tests do not."""
+    attempts = [
+        {"rung": None, "status": "timeout", "gate": None, "seconds": 1800.0},
+        {"rung": "stall-stop", "status": "timeout", "gate": None, "seconds": 1800.0},
+    ]
+    block = {"status": "timeout", "gate": None, "seconds": 1800.0, **drive.PLAIN.record()}
+
+    def ladder(*_arguments: object) -> dict[str, Any]:
+        return {**block, "attempts": attempts}
+
+    monkeypatch.setattr(drive, "solve_with_retries", ladder)
+    monkeypatch.setattr(drive, "record_solve_status", lambda *_arguments: None)
+    return attempts
+
+
+STALE_OUTPUTS = ("view-solved.yaml", "view-same.yaml", "regularize.json", "regularize.cert")
+
+
+@pytest.mark.parametrize("stage", ["input", "solve"])
+def test_a_rerun_that_stops_at_the_solve_leaves_no_earlier_output_behind(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, stage: str
+) -> None:
+    """The receipt digests `regularize.cert` and the gallery draws a view on disk, so a
+    count re-run in its run directory keeps neither from the run before."""
+    _timed_out_solve(monkeypatch)
+    directory = drive.count_dir(tmp_path, 26)
+    directory.mkdir(parents=True)
+    for name in STALE_OUTPUTS:
+        (directory / name).write_text("an earlier run's output", encoding="utf-8")
+    report = drive.run_count(26, Options(run_dir=tmp_path, from_stage=stage))
+    assert report["status"] == "timeout"
+    assert report["outputs"] == {"solved": None, "same": None, "same_refusal": None}
+    assert [name for name in STALE_OUTPUTS if (directory / name).exists()] == []
+    assert drive.solve_digests(tmp_path, [26]) == {}
+
+
 def test_a_replica_patch_is_applied_to_a_copy_and_never_under_vendor(tmp_path: Path) -> None:
     before = vendor_listing()
     rows = [drive.batch_row(26, drive.case_facts(26), witness(26))]

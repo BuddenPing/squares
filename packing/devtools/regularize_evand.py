@@ -1710,6 +1710,14 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
     seconds: dict[str, float | None] = {}
     report["seconds"] = seconds
     first = STAGES.index(options.from_stage)
+    # An earlier run's outputs must not outlive a re-run that stops sooner: the receipt
+    # digests `regularize.cert` and the gallery draws a view on disk. Every run makes its
+    # views again at the import stage, and the regularizer's outputs at its own stage.
+    stale = ["view-solved.yaml", "view-same.yaml"]
+    if first <= STAGES.index("regularize"):
+        stale += ["regularize.json", "regularize.cert"]
+    for name in stale:
+        (directory / name).unlink(missing_ok=True)
     replica = options.run_dir.resolve() / "replica"
 
     started = time.perf_counter()

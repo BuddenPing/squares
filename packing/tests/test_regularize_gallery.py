@@ -270,6 +270,21 @@ def test_a_failed_count_draws_its_source_alone(tmp_path: Path) -> None:
     assert "no view drawn" in section
 
 
+def test_a_view_the_report_does_not_name_is_an_earlier_runs_and_is_not_drawn(
+    tmp_path: Path,
+) -> None:
+    decision = {"row": 1, "decision": "no-view", "index_record": None, "reason": "timeout"}
+    outputs = {"solved": None, "same": None, "same_refusal": None}
+    report = _report(status="timeout", decision=decision, outputs=outputs)
+    run = _run(tmp_path, report)
+    case = gallery.run_case(run / "n-026", None)
+    section = _section(gallery.render_page([case], title="Gallery", source="run"), 26)
+    assert section.count('<svg class="drawing"') == 1
+    assert '<span class="chip chip-unchanged">no view</span>' in section
+    assert "no view drawn" in section
+    assert "view-same.yaml is on disk but the report records no same output" in section
+
+
 @pytest.mark.parametrize(
     ("decision", "text", "tone"),
     [

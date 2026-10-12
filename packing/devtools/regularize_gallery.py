@@ -19,7 +19,9 @@ this file inlined, and no script. It reads a run directory in the layout
   default), with a note when its scalar kind or side is no longer what the report
   recorded, which means the record changed after the run;
 - **Regularized**: the run's chosen view, `view-same.yaml` when the same-side re-solve
-  succeeded and `view-solved.yaml` otherwise, labelled with its side relation;
+  succeeded and `view-solved.yaml` otherwise, labelled with its side relation; a view
+  file the count's report records no output for is an earlier run's, noted and not
+  drawn;
 - **Current layer**, with `--with-current-layer`: the view
   `atlas/known-best/regularized/index.json` holds for the count, which is the other
   generator's (`regularize_axis_components/2`), when the index has one.
@@ -691,15 +693,23 @@ def run_case(count_dir: Path, layer_index: Mapping[int, dict[str, Any]] | None) 
     relation = None
     for relation_name in ("same", "solved"):
         path = count_dir / f"view-{relation_name}.yaml"
-        if path.is_file():
-            # The report's relation where it has one: the solved view may be `bound`.
-            stored = field(report, "outputs", relation_name, "relation")
-            relation = str(stored) if stored else relation_name
-            try:
-                panels.append(view_panel(read_witness(path), relation, source_frame))
-            except DRAW_ERRORS as error:
-                panels.append(_failed("view", error))
-            break
+        if not path.is_file():
+            continue
+        if report and field(report, "outputs", relation_name) is None:
+            # A view the report does not name is an earlier run's, left on disk.
+            notes.append(
+                f"{path.name} is on disk but the report records no {relation_name} "
+                "output: an earlier run's file, not drawn."
+            )
+            continue
+        # The report's relation where it has one: the solved view may be `bound`.
+        stored = field(report, "outputs", relation_name, "relation")
+        relation = str(stored) if stored else relation_name
+        try:
+            panels.append(view_panel(read_witness(path), relation, source_frame))
+        except DRAW_ERRORS as error:
+            panels.append(_failed("view", error))
+        break
     view, source_side = panels[-1], source.side
     if (
         relation == "same"
