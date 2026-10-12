@@ -1674,6 +1674,25 @@ def run_count(n: int, options: Options) -> dict[str, Any]:
     return report
 
 
+def kept_solve(directory: Path) -> dict[str, Any]:
+    """The kept solve, read back for `--from-stage regularize` or `import`.
+
+    A solve that wrote no `witness.json` (a timeout) stands as the count's previous report
+    recorded it, attempts and all, so a later stage's re-run keeps its decision; without
+    that record the count is run again from the solve."""
+    meta = directory / "solve/witness.json"
+    if meta.is_file():
+        solved = solve_block(read_json(meta))
+        solved["seconds"] = solved.get("solver_seconds")
+        solved.update(attempt_of(directory / "solve"))
+        return solved
+    previous = directory / "report.json"
+    stored = read_json(previous).get("solve") if previous.is_file() else None
+    if not isinstance(stored, dict) or stored.get("gate") is not None:
+        raise EvandRunError(f"{meta} is missing: run this count again from --from-stage solve")
+    return dict(stored)
+
+
 def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any]) -> None:
     pin = vendored_pin()
     path = witness_path(n)
@@ -1728,9 +1747,7 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
     if first <= STAGES.index("solve"):
         solved = solve_with_retries(directory, replica, options.timeout, frame.side)
     else:
-        solved = solve_block(read_json(directory / "solve/witness.json"))
-        solved["seconds"] = solved.get("solver_seconds")
-        solved.update(attempt_of(directory / "solve"))
+        solved = kept_solve(directory)
     # The replica patches the kept solve ran with are this count's, and its views' too.
     pin = {**pin, "patches": [*pin["patches"], *applied_patches(solved.get("patches") or [])]}
     report["generator"]["patches"] = pin["patches"]

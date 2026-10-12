@@ -796,6 +796,26 @@ def test_a_rerun_that_stops_at_the_solve_leaves_no_earlier_output_behind(
     assert drive.solve_digests(tmp_path, [26]) == {}
 
 
+def test_a_later_stage_rerun_of_a_timed_out_solve_keeps_its_solve_and_decision(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A timeout writes no `solve/witness.json`: a re-run from a later stage keeps the
+    solve the previous report recorded, attempts and all, and so its decision."""
+    attempts = _timed_out_solve(monkeypatch)
+    first = drive.run_count(26, Options(run_dir=tmp_path))
+    assert first["decision"]["decision"] == "no-view"
+    assert not (drive.count_dir(tmp_path, 26) / "solve/witness.json").exists()
+    for stage in ("regularize", "import"):
+        again = drive.run_count(26, Options(run_dir=tmp_path, from_stage=stage))
+        assert (again["status"], again["error"]) == ("timeout", None)
+        assert again["solve"]["attempts"] == attempts
+        assert again["decision"] == first["decision"]
+    # With no solve and no report to keep it, the count says to run from the solve.
+    unsolved = drive.run_count(27, Options(run_dir=tmp_path, from_stage="regularize"))
+    assert unsolved["status"] == "error"
+    assert "--from-stage solve" in unsolved["error"]
+
+
 def test_a_replica_patch_is_applied_to_a_copy_and_never_under_vendor(tmp_path: Path) -> None:
     before = vendor_listing()
     rows = [drive.batch_row(26, drive.case_facts(26), witness(26))]
