@@ -81,6 +81,11 @@ def _copy(root: Path, local_changes: str = "[]") -> Path:
     return directory
 
 
+def _describe(directory: Path, entry: str) -> None:
+    """The provenance file, with `entry` as its Local Changes section."""
+    (directory / "README.md").write_text(f"# Vendored\n\n### Local Changes\n\n{entry}\n")
+
+
 def _problems(directory: Path) -> list[str]:
     manifest = vendored.load_manifest(directory / vendored.MANIFEST_NAME)
     return vendored.check(directory, manifest, vendored.present_files(directory))
@@ -196,7 +201,7 @@ def test_a_recorded_modification_passes_once_it_is_marked(tmp_path: Path) -> Non
 def test_a_modified_data_file_needs_no_header_comment(tmp_path: Path) -> None:
     directory = _copy(tmp_path, _change("search/data.json", "modified"))
     (directory / "search/data.json").write_bytes(b'{"n": 2}\n')
-    (directory / "README.md").write_text("`search/data.json` holds 2.\n")
+    _describe(directory, "`search/data.json` holds 2.")
     assert _problems(directory) == []
 
 
@@ -207,9 +212,7 @@ def test_a_removal_and_an_addition_are_held_to_what_they_say(tmp_path: Path) -> 
         "bead: think-abcd, reason: a driver}]"
     )
     directory = _copy(tmp_path, changes)
-    (directory / "README.md").write_text(
-        "`search/data.json` removed; `search/extra.py` added.\n"
-    )
+    _describe(directory, "`search/data.json` removed; `search/extra.py` added.")
     assert _problems(directory) == [
         "search/data.json: recorded as removed, but it is still here",
         "search/extra.py: recorded as added, but it is not here",
@@ -221,10 +224,63 @@ def test_a_removal_and_an_addition_are_held_to_what_they_say(tmp_path: Path) -> 
     assert _problems(directory) == []
 
 
+#: Each kind of local change, applied correctly: the path it records and the bytes it
+#: leaves there (None for a removal).
+APPLIED = {
+    "modified": (
+        "search/tool.py",
+        (
+            b"# Locally modified (think-abcd); see vendor/evand-regularize/README.md.\n"
+            b"import sys\nprint(sys.path)\n"
+        ),
+    ),
+    "added": (
+        "search/extra.py",
+        b"# Added here (think-abcd); see vendor/evand-regularize/README.md.\n",
+    ),
+    "removed": ("search/data.json", None),
+}
+
+
+@pytest.mark.parametrize("kind", sorted(APPLIED))
+def test_only_the_local_changes_section_names_a_change(tmp_path: Path, kind: str) -> None:
+    """A path the role table or a later section names is not thereby a described change."""
+    path, data = APPLIED[kind]
+    directory = _copy(tmp_path, _change(path, kind))
+    if data is None:
+        (directory / path).unlink()
+    else:
+        (directory / path).write_bytes(data)
+    pristine = "None. Every file is byte-identical to the pin."
+    readme = (
+        f"# Vendored\n\n## What Each File Is For\n\n| `{path}` | its role |\n\n"
+        f"### Local Changes\n\n{pristine}\n\n## Re-pinning\n\nRestore `{path}` first.\n"
+    )
+    (directory / "README.md").write_text(readme)
+    assert _problems(directory) == [
+        f"{path}: recorded as a local change, but README.md's Local Changes does not name it"
+    ]
+    (directory / "README.md").write_text(readme.replace(pristine, f"`{path}` is {kind}."))
+    assert _problems(directory) == []
+
+
+def test_the_local_changes_section_ends_at_the_next_heading_outside_code() -> None:
+    readme = (
+        "## Forking\n\nName `a.py` here.\n\n### Local Changes\n\n"
+        "```sh\n# a comment, not a heading\n```\n\n`b.py` is patched.\n\n"
+        "#### Detail\n\n`c.py`\n\n## Re-pinning\n"
+    )
+    section = vendored.local_changes_text(readme)
+    assert "`b.py` is patched." in section
+    assert "a.py" not in section
+    assert "c.py" not in section
+    assert vendored.local_changes_text("`b.py` is patched.\n") == ""
+
+
 def test_the_licence_is_never_a_local_change(tmp_path: Path) -> None:
     directory = _copy(tmp_path, _change("LICENSE", "modified"))
     (directory / "LICENSE").write_text("All rights reserved.\n")
-    (directory / "README.md").write_text("`LICENSE` replaced.\n")
+    _describe(directory, "`LICENSE` replaced.")
     assert (
         "LICENSE: the licence file is never a local change; the MIT grant requires its notice "
         "with every copy"
