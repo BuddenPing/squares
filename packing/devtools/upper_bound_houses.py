@@ -622,7 +622,8 @@ def linked_house_problem(path: str, *, repository: Path) -> str | None:
 #: Where the custody run's receipt is kept: one record for every adopted packet.
 CUSTODY_RECEIPT = ROOT / "devtools/house-custody-2026-10-11.json"
 CUSTODY_FORMAT = "AdoptedHouseCustody/v1"
-#: The worker's deadline: it admits all 39 houses and refuses sixteen mutations.
+#: The worker's deadline: it admits all 42 houses and refuses 24 mutations, two for each
+#: of the twelve packets.
 CUSTODY_TIMEOUT = 120
 
 
