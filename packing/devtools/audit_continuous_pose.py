@@ -430,8 +430,14 @@ def axis_input(rows: Sequence[Row], claim: Claim = CLAIM, tau: Fraction | None =
 
 
 def crate_input(density: Density, side: Fraction, step: Fraction, count: int) -> bytes:
-    """A format T input for ``sqverify-fast``: the 480 positive rows with their weights
-    scaled by `CRATE_SCALE`, threshold one, and the net in the ``certificate`` block."""
+    """A format T input for ``sqverify-fast``: the density's positive rows (480 here, 685
+    for `devtools.audit_n40_new_supports`) with their weights scaled by `CRATE_SCALE`,
+    threshold one, and the net in the ``certificate`` block.
+
+    The n40 audit refuses its retained crate decision unless the input the crate read has
+    the digest of these bytes, recomputed on every judgement, so any change to them (key
+    order, separators, how `text` writes a fraction) fails that receipt until its
+    ``run-axis --crate-binary`` is run again from reviewed crate source."""
     value = {
         "n": density.n,
         "L": text(density.side),

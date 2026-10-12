@@ -319,12 +319,17 @@ allowlist:
       binary the one T-145's CI receipt and T-145's replay build with the CI compiler
       record, and its axis binary the one a build here with the CI compiler must
       reproduce; the shared kernel files against T-145's packet manifest, and their
-      retained bytes against this packet's; and the crate input's digest, as the axis
-      stage's record and the crate's own premises state it, held against the input
-      derived here from the retained density, which a crate decision on another density
-      of the same counts and mass fails. The checks after the orbit facts are
+      retained bytes against this packet's. The checks after the orbit facts are
       audit_continuous_pose's, made of this release. Every finite value and the axis
-      stage's output are recomputed and compared whole; no run is refused on a digest.
+      stage's output are recomputed and compared whole. One run is refused on a digest:
+      the crate's decision, unless the input digest the axis stage's record and the
+      crate's own premises state is that of the input derived here from the retained
+      candidate, itself held to the release's digest, so a crate decision on another
+      density of the same counts and mass fails. The expected digest is computed on
+      every run by this repository's serializer (audit_continuous_pose.crate_input), not
+      supplied by the release, so a change to that serialization refuses the retained
+      crate decision until run-axis is run again: about 3 s, with g++ and a cargo build
+      of the reviewed crate source.
   - path: packing/devtools/audit_evand_mixed_covers.py
     kind: download
     boundary: Evan D's run headers against the retained upstream files (H7).
