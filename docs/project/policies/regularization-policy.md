@@ -334,10 +334,56 @@ is recorded, the default the policy applies until there is one.
     (`T-146` at its fifteen counts first) become the atlas witnesses before their counts
     are admitted, once the case-record rewrite (#403) and `T-146`’s custody item allow,
     and after the imports in flight at the same counts land.
-    A view derived from a witness that later changes is re-reviewed (section 5).
+    A view derived from a witness that later changes is re-reviewed (section 5). The
+    intake’s #518 adopts these houses on the case records directly, citing an owner
+    decision of 11 October 2026 not to wait for #403; its counts are regularized again
+    on the new witnesses once it lands.
 
 An answer, like any other change to this policy, is an owner decision recorded here with
 its date. It replaces the default, and the counts it bears on are re-reviewed.
+
+## 10. Implemented on the Owner’s Standing Instruction, for Confirmation
+
+On 12 October 2026 the owner asked for the work to run “autonomously end-to-end
+overnight to make sure that we have regularized versions of everything by the time we’re
+done and everything is PR’d and ready to merge”, with “all versions that are regularized
+… properly captured in our frontier records”.
+The stack implements the choices below under that instruction.
+None is an answer to a question of section 9 until the owner confirms it; each is
+recorded where it is implemented, and reversing one is a change to that layer.
+
+1. **Rotation matching:** a regularized view’s rotation matches the witness’s within a
+   sine of $10^{-9}$, the tolerance of #515’s re-solve, a thousand times below the turn
+   threshold of obligation 3 (#511).
+2. **Retrying a solve that gives no view,** once per rung and each attempt listed in the
+   receipt: a failed solve at 100 digits; a witness not jammed only at noise level with
+   upstream’s `--force-kkt`, kept only where the side falls by at most $10^{-10}$; a
+   converged solve whose certificate upstream refused, or whose active-set step failed
+   after a converged first pass, passed on to the regularizer; a timeout solved again
+   with a recorded replica patch that stops upstream’s zero-mode probe at its floor,
+   applied outside `vendor/` (#511). The views are decided by this project’s exact
+   routes as always.
+3. **A third generator:** `regularize_grid_slack`, this project’s port of Evan Daniel’s
+   coincidence placement, started from the witness’s exact frame (near-axis squares
+   straightened under 0.5 degrees where a placement stays feasible), brought to the
+   record’s side by the same exact re-solve, and credited to his method (section 7)
+   (#530).
+4. **Choosing between generators:** where both yield an admissible view, Evan Daniel’s
+   is drawn unless the grid-slack view is better on a measure of the drawing (light,
+   uneven or near-axis squares, or a house or stage total) and worse on none (#548).
+5. **The layer’s contract and checks:** every index entry names its generator; the
+   records-tier check reads each non-axis view against its entry, and the full tier
+   re-derives the axis tool’s views and decides every other view again on both exact
+   routes (#548).
+6. **The frontier record of a drawing:** each drawn view’s regularization is recorded in
+   the register’s terms in `results.yaml`’s generated `regularized_drawings`, `of`
+   resolved to the registered result that holds the packing; a count whose packing no
+   registered result holds is listed as unregistered (#548). A drawing proves no bound,
+   so no register result is made for one.
+7. **Registering exact views below the bound** (question 6’s answer, carried out): the
+   row 3 views outside #518’s counts are registered as one batch result, `T-151`, with
+   the case records’ exact forms moved to the registered sides and their printed values
+   kept, so no citation weakens (the next layer).
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
