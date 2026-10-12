@@ -12923,8 +12923,10 @@ results:
       129, 146 and 295, by 7.90e-11 to 7.82e-10, and regularize the packings there, credited
       to ry-xu, at 103 as refined by Mishapolk (T-138); at 70 Eric Deleeuw's refinement
       (T-137) is named only as the smallest side the record held. The 11 October review of
-      T-146 accepted it, and the house recommendation at those seven counts goes to it; the
-      case records keep these certificates until jlevy/squares#403 lands.
+      T-146 accepted it, and the house recommendation at six of those counts goes to it. At
+      146 and 261 Robert Barnett's refinements of the same packings (T-150, issue 505) are
+      smaller still, and the 11 October review of issues 505 and 501 recommends them as the
+      houses there. The case records keep these certificates until jlevy/squares#403 lands.
     controls:
     - packing/resources/web/ry-xu-new-packings-2026-10-08/receipts/exact-certification.json.xz
     - packing/tests/test_ryxu_house_links.py
@@ -13169,16 +13171,19 @@ results:
       10 October review accepted it as an equal-side certificate
       (E-evand-465-record-hunt-exact-feasibility); it moves no rung.
 
-      The review recommends T-128 as the house at 108, 127, 155, 180, 228 and 306, Couzo's
+      The review recommended T-128 as the house at 108, 127, 155, 180, 228 and 306, Couzo's
       n155 certificate, committed nine hours before Daniel's, holding 155. At 105 T-130's
-      side is smaller and at 131 issue 481's, so T-128's stay verified there and are not
-      selected. No house moves until jlevy/squares#403, which rewrites every case record,
-      lands.
+      side is smaller, at 131 issue 481's and at 155 Daniil Ostashev's of issue 501 (T-149),
+      which the 11 October review of issues 505 and 501 recommends there, so T-128's stay
+      verified at those three and are not selected. No house moves until
+      jlevy/squares#403, which rewrites every case record, lands.
     next_rung: >-
       V4 and C4 need a retained human oversight record: two accepted adversarial
       reviews by distinct AI reviewers are retained, the 10 October review and the 11 October
-      final review (docs/project/reviews/review-2026-10-11-final-upper-bounds.md). Separately, once jlevy/squares#403 lands, adopt T-128 as the house at 108,
-      127, 155, 180, 228 and 306 with each earlier house kept as history.
+      final review (docs/project/reviews/review-2026-10-11-final-upper-bounds.md).
+      Separately, once jlevy/squares#403 lands, adopt T-128 as the house at 108, 127, 180,
+      228 and 306 with each earlier house kept as history; at 155 the house recommendation
+      goes to T-149, whose 11 October review accepted it.
     reviews:
     - path: docs/project/reviews/review-2026-10-10-couzo-daniel-refinement-replays.md
       kind: adversarial
@@ -16175,7 +16180,7 @@ results:
       rationale: >-
         A smaller finite construction side at n = 207, 7.03e-03 below the case ceiling and
         4.55e-03 below the smallest pending side, by placed boundary patches of an existing
-        packing, a method the record had not seen; no lower bound or optimum.
+        packing, as the source describes its construction; no lower bound or optimum.
       scored: '2026-10-11'
       by: >-
         the 11 October review
@@ -16710,8 +16715,9 @@ results:
       their required outcomes on both routes, 786102 pair decisions; summed over the 21
       jobs, the receipt records 530.82 route CPU seconds and 1329.06 job wall seconds, the
       longest job 224.09 seconds. Every positive clears every wall by at least 3.92e-14 and
-      every pair by at least 1.20e-16; at 146 and 261 the third route finds least Euclidean
-      distances of 1.206274e-16 and 1.206060e-16 and no square touching a wall.
+      every pair by at least 1.20e-16, the least over the seven, at 146 and 261. There the
+      third route finds least Euclidean distances of 1.206274e-16 and 1.206060e-16 and no
+      square touching a wall.
 
       V3 and C3 rest on the 11 October review
       (docs/project/reviews/review-2026-10-11-upper-bound-imports-505-501.md) and the
