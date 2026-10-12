@@ -915,7 +915,15 @@ PRUNE |= REGULARIZED_WITNESSES | HISTORICAL_SNAPSHOT_OUTPUTS | UNREAD_WORKER_OUT
 # unchanged cap. 2026-10-12: the grid-slack prototype, the drawing-regularity census and
 # their tests join them on the same grounds (`--audit-snapshot` with the four as
 # candidates: no registered mention, no rescue); left out, 209,547,257 bytes, 167,943
-# under the cap.
+# under the cap. 2026-10-12, the layer's v2 contract and its first admission batch
+# (think-k35c): the index grew by 94,240 bytes, the register by 48,761 with its
+# generated `regularized_drawings` and their RESULTS.md section, and the layer's tools,
+# schema and tests by 65,635, taking the snapshot to 209,756,149, 40,949 over the cap.
+# The layer's own tests and the read-only comparison of Evan Daniel's lists with the
+# layer join this list on the same grounds (`--audit-snapshot` with the five as
+# candidates: no registered mention, no rescue, 78,281 bytes); the index, its schema,
+# the axis tool and `regularized_drawings` stay, since the controls' validate_schemas
+# and check_results read them. Left out, 209,677,868 bytes, 37,332 under the cap.
 REGULARIZATION_TOOLS = frozenset(
     ROOT / relative
     for relative in (
@@ -931,6 +939,11 @@ REGULARIZATION_TOOLS = frozenset(
         "devtools/census_drawing_regularity.py",
         "tests/test_regularize_grid_slack.py",
         "tests/test_census_drawing_regularity.py",
+        "devtools/compare_evand_regularization.py",
+        "tests/test_compare_evand_regularization.py",
+        "tests/test_regularize_axis_components.py",
+        "tests/test_render_regularized_atlas.py",
+        "tests/test_regularized_drawings.py",
     )
 )
 PRUNE |= REGULARIZATION_TOOLS
