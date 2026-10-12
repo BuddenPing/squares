@@ -176,6 +176,18 @@ def test_the_tree_decides_what_is_drawn(tmp_path: Path) -> None:
     assert "| 4 | witness | 0 / 4 / 4 | 0 | Evan view | 0 / 0 / 4 | 0 | 0 | -4 |" in table
 
 
+def test_a_view_is_labelled_by_its_generator() -> None:
+    def drawn(generator: str | None) -> dict[str, Any]:
+        return {"kind": "regularized-view", "generator": generator}
+
+    assert census.source_label({"kind": "witness"}) == "witness"
+    assert census.source_label(drawn("python -m devtools.regularize_evand")) == "Evan view"
+    assert (
+        census.source_label(drawn("devtools.regularize_grid_slack (prototype)")) == "grid view"
+    )
+    assert census.source_label(drawn(None)) == "axis view"
+
+
 def test_the_cli_writes_its_census(tmp_path: Path) -> None:
     tree = scratch_tree(tmp_path)
     output = tmp_path / "out/census.json"
