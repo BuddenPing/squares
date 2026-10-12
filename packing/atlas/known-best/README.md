@@ -183,9 +183,9 @@ The axis tool’s own record of that count stays beside it as `reference`. Such 
 carries the credit line *Regularized by the Squares Project with Evan Daniel’s
 regularizer (evand/square-packing, MIT)*, in the index, in the view and in its drawing.
 
-On 12 October 2026 the index draws 71 views: 47 by the axis tool, 22 by Evan Daniel’s
-regularizer (16 at the witness’s side and 6 at the verified upper bound) and 2 by the
-grid-slack generator, with 182 records unchanged and 71 refused.
+On 12 October 2026 the index draws 74 views: 56 by the axis tool, 16 by Evan Daniel’s
+regularizer (12 at the witness’s side and 4 at the verified upper bound) and 2 by the
+grid-slack generator, with 181 records unchanged and 69 refused.
 Every drawn view carries its regularization in the register’s terms (`by: project`, the
 method, the side and the identity measured here), and `results.yaml`’s
 `regularized_drawings` records each one whose packing a registered result holds,
@@ -205,7 +205,7 @@ checkpoint
 it re-derives every axis-tool record, the references included, and decides each other
 generator’s view again on both maintained exact routes.
 
-**The axis tool still refuses the 73 Kingbird-derived records.** Their 36-digit poses
+**The axis tool still refuses 71 Kingbird-derived records.** Their 36-digit poses
 overlap by a rounding sliver at centre dilation 1, the only factor the tool uses; Evan
 Daniel’s regularizer, re-solved at that promotion’s side, now draws three of them
 ($n = 18$, $66$ and $85$), and the rest stay refused here.
