@@ -6,15 +6,17 @@
 // second change starts from where the first had got to, so nothing a reader can see
 // jumps. `first` and `second` are the controls' selectors.
 //
-// `wait` is counted on the move's own clock, not the wall's. A move Chromium has created
-// but not yet started is pending, its tiles still where they were, and under load it
-// stays so for longer than a timer would wait: a second press then finds nothing to turn
-// round. A timer that fires late can find the move over. So the probe waits until every
-// move the first press started is under way (`ready`), sets each still running to `wait`
-// milliseconds into its course, as `measure_atlas_views/hold` sets a move for a picture,
-// and reads and presses in that same task, in which the timeline does not advance: the
-// page reads the tiles exactly there.
-async (/** @type {{first: string, second: string, wait: number}} */ { first, second, wait }) => {
+// `wait` is counted on the move's own clock, not the wall's, and nothing waits for the
+// compositor. Chromium creates each move in the press's own task but holds it pending,
+// its tiles still where they were, until the compositor starts it. Under load that
+// outlasts a timer, and a second press then finds nothing to turn round; a timer, or a
+// wait for `ready`, that the main thread reaches late can instead find the move over.
+// So straight after the first press, while every move it started is still pending, the
+// probe sets each to `wait` milliseconds into its course. That holds it there, reading
+// `running`, until it starts. The probe then reads and presses in that same task, as
+// `pressed` reads in the press's own. The timeline does not advance within a task, so the
+// page reads every tile exactly `wait` into its move, however late the compositor is.
+(/** @type {{first: string, second: string, wait: number}} */ { first, second, wait }) => {
   const one = document.querySelector(first);
   const two = document.querySelector(second);
   if (!(one instanceof HTMLElement) || !(two instanceof HTMLElement)) {
@@ -40,12 +42,8 @@ async (/** @type {{first: string, second: string, wait: number}} */ { first, sec
     );
   one.focus();
   one.click();
-  const started = moves();
-  await Promise.allSettled(started.map((move) => move.ready));
-  for (const move of started) {
-    if (move.playState === "running") {
-      move.currentTime = wait;
-    }
+  for (const move of moves()) {
+    move.currentTime = wait;
   }
   const before = { moving: moving(), drawings: drawings() };
   two.focus();
