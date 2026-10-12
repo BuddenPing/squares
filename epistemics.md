@@ -582,8 +582,13 @@ Its three end points are fixed here.
 3. **Answered.** An author who asked for the registration, on an issue here or
    otherwise, has been told what was registered, at which rung, what was replayed, and
    what remains. The answer goes on their issue, which stays open while work they asked
-   for is still queued; the owner posts it, or an agent does at the owner’s request.
-   An answer is kept true: when an id or a rung it states changes, a follow-up says so.
+   for is still queued.
+   Every issue an intake pass touches is answered, and every later change of its state
+   gets a follow-up until the issue closes with a final comment.
+   An agent posts each as part of the pass, by the owner’s standing instruction of
+   2026-10-11, once the pull request that carries the change has merged; the owner may
+   post instead. An answer is kept true: when an id or a rung it states changes, a
+   follow-up says so.
 
 ### Where the Frontier Is Recorded
 
