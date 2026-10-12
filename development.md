@@ -618,10 +618,14 @@ regularizes every record of the
 [derived layer](packing/atlas/known-best/README.md#the-regularized-views) again from its
 witness, re-runs both exact verifications, and requires the index and every retained
 view to come out byte-identical.
+Since 12 October 2026 the layer also draws views by Evan Daniel’s regularizer and by the
+grid-slack generator; for each of those the step requires the axis tool’s re-derived
+record to equal the `reference` kept beside it, and decides the drawn view again over
+the rationals on both maintained routes, with its shades measured again.
 Its stand-in on every pull request is the records-tier step `regularized atlas views
 match their index`, which compares the same index with the manifest, the witnesses and
-the views by digest in about a tenth of a second.
-The tool’s pool follows `PACK_JOBS`.
+the views by digest, and reads each other generator’s view against its entry, in about
+two seconds. The tool’s pool follows `PACK_JOBS`.
 
 It was measured on 2026-10-02 on a four-cpu host that other sessions were also using, so
 read these as upper bounds:
