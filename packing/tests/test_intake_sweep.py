@@ -347,6 +347,21 @@ def test_github_differences_each_need_an_owner_and_a_failure_is_not_checked() ->
     assert skipped.unchecked == ["GitHub issues: skipped by --offline"]
 
 
+def test_a_report_without_the_intake_label_needs_action_and_names_the_command() -> None:
+    """The pass adds the label itself, so the step is the command; a new issue's step
+    says a report gets the label when it is entered."""
+    record = {"repository": "jlevy/squares"}
+    differences = [
+        "#529 is a result report without the `intake` label",
+        "#530 is not in the record: New result",
+    ]
+    section = sweep.github_section(record, offline=False, compare_github=lambda _: differences)
+    assert [i.state for i in section.items] == [sweep.NEEDS_OWNER] * 2
+    assert section.items[0].step == "add the label: gh issue edit 529 --add-label intake"
+    assert section.items[1].step.endswith("a result report also gets the `intake` label")
+    assert sweep.needing_action([section]) == section.items
+
+
 def test_a_blocker_is_read_only_from_a_sentence_that_says_something_waits() -> None:
     text = (
         "Certificates posted on jlevy/squares#282 from 3 October. Stage 3 (new T-NNN) "

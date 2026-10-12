@@ -29,6 +29,8 @@ from devtools.check_requests import (
 
 Record = dict[str, Any]
 URL = "https://github.com/owner/repo/issues/7#issuecomment-{}"
+#: A label as GitHub's REST API returns it on an issue.
+INTAKE = {"id": 1, "name": "intake", "color": "0e8a16"}
 
 
 def result_entry(
@@ -614,7 +616,7 @@ def test_the_github_comparison_lists_missing_replies_unread_comments_and_unknown
     )
     live = {
         "repos/owner/repo/issues?state=all&per_page=100": [
-            {"number": 7, "state": "open", "title": "A request"},
+            {"number": 7, "state": "open", "title": "A request", "labels": [INTAKE]},
             {"number": 8, "state": "open", "title": "Another"},
             {"number": 9, "state": "open", "title": "A pull request", "pull_request": {}},
         ],
@@ -632,6 +634,32 @@ def test_the_github_comparison_lists_missing_replies_unread_comments_and_unknown
         f"#7: reply missing from the record: {URL.format(2)} (owner, 2026-10-02)",
         f"#7: reply missing from the record: {URL.format(3)} (agent, 2026-10-02)",
         f"#7: unread comment {URL.format(4)} (someone, 2026-10-02T12:00:00Z)",
+    ]
+
+
+def test_the_github_comparison_lists_every_result_report_without_the_intake_label() -> None:
+    """A result report carries `intake` on GitHub, open or closed, whatever else it
+    carries; an issue of another kind needs no label. On 12 October 2026 none of the 64
+    reports carried it, and nothing listed them."""
+    recorded = record(
+        issue(number=7),
+        issue(number=8, state="closed", closed="2026-10-03"),
+        issue(number=9, state="closed", closed="2026-10-03"),
+        issue(number=10, kind="defect-report"),
+    )
+    n17 = {"id": 2, "name": "n-17", "color": "5319e7"}
+    live: dict[str, Any] = {
+        "repos/owner/repo/issues?state=all&per_page=100": [
+            {"number": 7, "state": "open", "title": "A request", "labels": [n17]},
+            {"number": 8, "state": "closed", "title": "Closed", "labels": []},
+            {"number": 9, "state": "closed", "title": "Labelled", "labels": [n17, INTAKE]},
+            {"number": 10, "state": "open", "title": "A defect", "labels": []},
+        ],
+        **{f"repos/owner/repo/issues/{n}/comments?per_page=100": [] for n in (7, 8, 9, 10)},
+    }
+    assert check_requests.compare_github(recorded, live.__getitem__) == [
+        "#7 is a result report without the `intake` label",
+        "#8 is a result report without the `intake` label",
     ]
 
 

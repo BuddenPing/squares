@@ -17,7 +17,8 @@ none does, or that what it waits on has already happened.
 The sources, one section of the report each:
 
 - **GitHub issues**: `check_requests --github`'s comparison through `gh`: issues the
-  record lacks, replies missing from it, and comments after an entry's `read_through`.
+  record lacks, replies missing from it, comments after an entry's `read_through`, and
+  result reports without the `intake` label, which the pass adds.
 - **Watched repositories**: every repository the source register, a packet's acquisition
   record, or the site's list of other projects names. `git ls-remote` reads each head,
   and a fetch of commits and trees (no blobs) reads two things. Commits past every
@@ -392,9 +393,16 @@ def github_section(
 
 
 def _github_step(difference: str) -> str:
-    """What `result-import.md`'s After the Merge does with one kind of difference."""
+    """What `result-import.md`'s stage 0 and After the Merge do with one kind of difference."""
+    label = check_requests.INTAKE_LABEL
     if "is not in the record" in difference:
-        return "enter it in result-requests.yaml with triage: pending, and an import bead"
+        return (
+            "enter it in result-requests.yaml with triage: pending, and an import bead; "
+            f"a result report also gets the `{label}` label"
+        )
+    if f"without the `{label}` label" in difference:
+        number = difference.split(" ", 1)[0].removeprefix("#")
+        return f"add the label: gh issue edit {number} --add-label {label}"
     if "unread comment" in difference:
         return "read it: map any result it reports, then move the entry's read_through"
     if "reply missing" in difference:
