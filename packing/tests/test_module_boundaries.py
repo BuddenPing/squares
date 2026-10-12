@@ -1189,7 +1189,7 @@ def test_the_slow_marker_is_declared_only_by_measured_nodes() -> None:
         "test_check_declared_bounds.py": {
             "test_n68_depth_bound_is_named_by_its_refusal_test",  # 3.4s
         },
-        # 1486s of call time across 8. The 489 node measured 4.1s on 2026-10-10 at load 4.7
+        # 1532s of call time across 11. The 489 node measured 4.1s on 2026-10-10 at load 4.7
         # on four cores. The two lineage nodes of the #503/#504 and #505/#501 imports were
         # measured on 2026-10-12 on four cores at load 5.5 to 7.1, each alone and again
         # with the file's other slow nodes (`-m slow --durations=0`): 4.75s and 4.74s for
@@ -1201,7 +1201,10 @@ def test_the_slow_marker_is_declared_only_by_measured_nodes() -> None:
         # 279.9s over nine counts (22.3s to 34.3s each) and its pieces 258.8s; the #506
         # imports 375.5s over eleven (26.8s to 42.2s each) and its parents 426.7s; and the
         # #528/#529 arrangement measurement 87.1s. The two slow `pytest.param` cases of
-        # #528 took 14.35s (n264) and 10.00s (n232).
+        # #528 took 14.35s (n264) and 10.00s (n232). The three #552 nodes were measured on
+        # 2026-10-12 in one `-m slow --durations=0` run on four cores at load 4 to 7: the
+        # import 6.74s, its regularized drawing 3.07s and the arrangement measurement
+        # 35.75s.
         "test_check_half_angle_area.py": {
             "test_the_489_certificate_at_305_has_488s_side_in_a_quarter_turned_arrangement",
             "test_the_n207_certificate_is_two_placed_patches_of_the_n70_and_the_n153_is_not",
@@ -1211,6 +1214,9 @@ def test_the_slow_marker_is_declared_only_by_measured_nodes() -> None:
             "test_the_506_imports_agree_with_their_receipt_plan_and_print_to_every_digit",
             "test_the_506_packings_are_their_named_parents_moved",
             "test_ostashevs_compositions_are_new_arrangements_and_calles_is_ryan_xus_design_moved",
+            "test_the_552_import_agrees_with_its_plan_frozen_claim_and_print",
+            "test_the_regularized_drawing_of_552_passes_the_third_route_at_the_same_clearances",
+            "test_daniels_154_is_another_arrangement_than_squishs_and_nearer_couzos_155",
         },
         # 24s of call time across 1.
         "test_contact_assembly_labels.py": {

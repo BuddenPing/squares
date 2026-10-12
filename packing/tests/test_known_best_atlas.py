@@ -1991,9 +1991,10 @@ def test_poster_packing_credits_name_every_retained_construction_author_and_sour
     # The house adoption of 11 October 2026 credits Fang, Mishapolk, PingYou Ltd, Ostashev
     # and Barnett and draws no de Winter packing, from eight more sources; that of 12
     # October draws from SQUISH's and Couzo's 11 October releases (think-fvz4), and the
-    # pass for issue 528 from Daniil Ostashev's 12 October release (think-cq95).
+    # pass for issue 528 from Daniil Ostashev's 12 October release, and that for issue 552
+    # from Evan Daniel's n = 154 packet (think-cq95).
     assert len(expected_names) == 26
-    assert len(expected_sources) == 21
+    assert len(expected_sources) == 22
     assert set(json.loads(credit_block.attrib["data-credited-names"])) == expected_names
     assert set(json.loads(credit_block.attrib["data-source-keys"])) == expected_sources
     assert credit_block.find("svg:text[@data-feature='packing-credits-heading']", SVG) is None

@@ -90,7 +90,8 @@ def _rendering_entry(directory: Path) -> dict[str, Any]:
 #: October 2026 (think-fvz4) moved the n = 1..324 list only at adopted counts: 23 of them
 #: left it and 156 and 232 joined it. Its pass of 12 October moved it at its own nine:
 #: 176 and 270 joined, and 238, 271, 272 and 304 left. The pass for issue 528 (T-154)
-#: moved it at its three: 175 and 264 joined, and 232 stayed. Re-screening the adopted
+#: moved it at its three: 175 and 264 joined, and 232 stayed; that for issue 552 (T-156)
+#: at 154, which left. Re-screening the adopted
 #: counts with the screen's own `--update --n` rebuilds the retained screen byte for byte.
 GOLDEN_UNSTABLE = {
     "n=1..100": [
@@ -106,7 +107,6 @@ GOLDEN_UNSTABLE = {
         110,
         130,
         146,
-        154,
         156,
         172,
         175,
@@ -124,7 +124,6 @@ GOLDEN_UNSTABLE = {
         110,
         130,
         146,
-        154,
         156,
         172,
         175,
