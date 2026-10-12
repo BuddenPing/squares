@@ -468,10 +468,11 @@ results:
       retained for this result, so it stands at V3/C3: machine-checked, review record
       pending. The oversight record restores the rung.
 
-      On 12 October 2026 the exact regularized certificate of T-147 took the case's verified
-      upper bound to the witness's own side, 5.93383346267692918968946061635201914, 5.4e-20
-      below this certificate's endpoint. This entry stays true as stated and is superseded
-      there as a ceiling.
+      On 12 October 2026 the exact regularized certificate of T-151 took the exact form of
+      the case's verified upper bound to the witness's own side,
+      5.93383346267692918968946061635201914, 5.4e-20 below this certificate's endpoint,
+      which the case record still prints. This entry stays true as stated and is
+      superseded there as a ceiling.
     next_rung: >-
       V4 and C4 need two adversarial AI reviews by distinct reviewers and a human oversight
       record, and none is retained. An exact-algebraic confirmation of the same witness would
@@ -10349,14 +10350,14 @@ results:
       original source13ee36e certificates, poses, scope, credits and reviews; its
       historical decisions are not proofs of the newly adopted arrangements.
 
-      On 12 October 2026 the exact regularized certificates of T-147 took the verified
-      upper bound at 59 of these counts to exact sides 2.2e-16 to 9.9e-15 below this
-      entry's rounded-up ones: at 34 exactly the side of this entry's own certificate,
-      which the record had carried rounded up at the printed precision, and at 25 the
-      witness's own side, below it. The counts jlevy/squares#518 re-houses and n = 17 are
-      not among them. This entry stays true as stated and is superseded there as a
-      ceiling; its certificates, credits and reviews are unchanged, and T-147 names it as
-      the result whose packings it regularizes.
+      On 12 October 2026 the exact regularized certificates of T-151 took the exact form of
+      the verified upper bound at 59 of these counts to exact sides 2.2e-16 to 9.9e-15
+      below this entry's rounded-up ones, which the case records still print: at 34 exactly
+      the side of this entry's own certificate, which the record had carried rounded up at
+      the printed precision, and at 25 the witness's own side, below it. The counts
+      jlevy/squares#518 re-houses and n = 17 are not among them. This entry stays true as
+      stated and is superseded there as a ceiling; its certificates, credits and reviews
+      are unchanged, and T-151 names it as the result whose packings it regularizes.
 
   - id: T-102
     kind: lower-bound
@@ -16111,7 +16112,7 @@ results:
         verdict: accepted
         covers: [T-146]
 
-  - id: T-147
+  - id: T-151
     kind: upper-bound
     registered: '2026-10-12'
     headline: Exact regularized sides at 60 counts, `5.4e-20` to `9.9e-15` below the ceilings they replace
@@ -16121,55 +16122,76 @@ results:
       rational packing of the register's known-best packing at n that this project made with
       Evan Daniel's exact solver and regularizer and decided here over Q. Each s_n lies
       below the verified upper bound the record held, by 5.4e-20 at n = 29 to 9.9e-15 at n =
-      37, and each is now its case's verified upper bound. The counts are 28, 29, 37, 39,
+      37, and each is now the exact form of its case's verified upper bound, which the case
+      record still prints at the decimal it printed before. The counts are 28, 29, 37, 39,
       41, 50, 53, 54, 55, 69, 71, 83, 87, 101, 104, 107, 109, 122, 124, 125, 128, 145, 147,
       148, 149, 151, 170, 171, 173, 174, 176, 178, 197, 198, 200, 201, 202, 203, 204, 205,
       226, 227, 229, 230, 231, 233, 234, 235, 257, 260, 262, 264, 265, 291, 293, 294, 296,
       298, 299 and 300.
 
-      The bounds are s(28) <= 5.824444616674059297016873205016, s(29) <=
-      5.93383346267692918968946061635201914, s(37) <= 6.59861960924436011617837046268, s(39)
-      <= 6.810722083068648851765886665183, s(41) <= 6.926693094468802231581078913560208950…,
-      s(50) <= 7.57142857142857142857142857142857143, s(53) <=
+      The bounds are s(28) <= 5.824444616674059297016873205016000000…, s(29) <=
+      5.933833462676929189689460616352019140…, s(37) <=
+      6.598619609244360116178370462680000000…, s(39) <=
+      6.810722083068648851765886665183000000…, s(41) <=
+      6.926693094468802231581078913560208950…, s(50) <=
+      7.571428571428571428571428571428571430…, s(53) <=
       7.822875655532295295250807876819630217…, s(54) <=
-      7.846667192843489782943314590960000004…, s(55) <= 7.945771007503912979037467248603,
-      s(69) <= 8.827194655729738915019741327146, s(71) <=
-      8.944071557570315506565203868717210450… and s(83) <= 9.634757648631082029356431370282.
+      7.846667192843489782943314590960000004…, s(55) <=
+      7.945771007503912979037467248603000000…, s(69) <=
+      8.827194655729738915019741327146000000…, s(71) <=
+      8.944071557570315506565203868717210450… and s(83) <=
+      9.634757648631082029356431370282000000….
 
-      Then s(87) <= 9.838815269948262260364481342204, s(101) <=
-      10.53553390593273762200422181052425, s(104) <= 10.707106781186547524507915429917,
-      s(107) <= 10.846667192843489783051781262887, s(109) <=
-      10.949747468305832670915408009418, s(122) <= 11.53553390593273762200422181052425,
-      s(124) <= 11.65685424949238019520675489684, s(125) <=
-      11.707106781186547524517915429917, s(128) <= 11.825091968213687029149282424753443192…,
-      s(145) <= 12.53553390593273762200422181052425, s(147) <=
-      12.65685424949238019520675489684 and s(148) <= 12.65685424949238019520675489684.
+      Then s(87) <= 9.838815269948262260364481342204000000…, s(101) <=
+      10.535533905932737622004221810524250000…, s(104) <=
+      10.707106781186547524507915429917000000…, s(107) <=
+      10.846667192843489783051781262887000000…, s(109) <=
+      10.949747468305832670915408009418000000…, s(122) <=
+      11.535533905932737622004221810524250000…, s(124) <=
+      11.656854249492380195206754896840000000…, s(125) <=
+      11.707106781186547524517915429917000000…, s(128) <=
+      11.825091968213687029149282424753443192…, s(145) <=
+      12.535533905932737622004221810524250000…, s(147) <=
+      12.656854249492380195206754896840000000… and s(148) <=
+      12.656854249492380195206754896840000000….
 
-      Then s(149) <= 12.707106781186547524527915429917, s(151) <=
-      12.822875655532295295379036633375, s(170) <= 13.535533905932737622139577149584, s(171)
-      <= 13.571428571428571428707142857143, s(173) <= 13.65685424949238019520675489684,
-      s(174) <= 13.707106781186547524537915429917, s(176) <=
-      13.822875655532295295389036633375, s(178) <= 13.846667192843489782943314590960000000…,
-      s(197) <= 14.53553390593273762200422181052425, s(198) <=
-      14.571428571428571428717142857143, s(200) <= 14.65685424949238019520675489684 and
-      s(201) <= 14.707106781186547524547915429917.
+      Then s(149) <= 12.707106781186547524527915429917000000…, s(151) <=
+      12.822875655532295295379036633375000000…, s(170) <=
+      13.535533905932737622139577149584000000…, s(171) <=
+      13.571428571428571428707142857143000000…, s(173) <=
+      13.656854249492380195206754896840000000…, s(174) <=
+      13.707106781186547524537915429917000000…, s(176) <=
+      13.822875655532295295389036633375000000…, s(178) <=
+      13.846667192843489782943314590960000000…, s(197) <=
+      14.535533905932737622004221810524250000…, s(198) <=
+      14.571428571428571428717142857143000000…, s(200) <=
+      14.656854249492380195206754896840000000… and s(201) <=
+      14.707106781186547524547915429917000000….
 
-      Then s(202) <= 14.727922061357855439362477738501, s(203) <=
-      14.778174593052022768557069729084, s(204) <= 14.822875655532295295399036633375, s(205)
-      <= 14.824451146124088223663726065684, s(226) <= 15.53553390593273762200422181052425,
-      s(227) <= 15.5710678118654752440084436210484904, s(229) <=
-      15.65685424949238019520675489684, s(230) <= 15.682926829268292683083658536586, s(231)
-      <= 15.707106781186547524557915429917, s(233) <= 15.778174593052022768567069729084,
-      s(234) <= 15.822875655532295295409036633375 and s(235) <=
-      15.8266056334285680695673962075609972.
+      Then s(202) <= 14.727922061357855439362477738501000000…, s(203) <=
+      14.778174593052022768557069729084000000…, s(204) <=
+      14.822875655532295295399036633375000000…, s(205) <=
+      14.824451146124088223663726065684000000…, s(226) <=
+      15.535533905932737622004221810524250000…, s(227) <=
+      15.571067811865475244008443621048490400…, s(229) <=
+      15.656854249492380195206754896840000000…, s(230) <=
+      15.682926829268292683083658536586000000…, s(231) <=
+      15.707106781186547524557915429917000000…, s(233) <=
+      15.778174593052022768567069729084000000…, s(234) <=
+      15.822875655532295295409036633375000000… and s(235) <=
+      15.826605633428568069567396207560997200….
 
-      And s(257) <= 16.535533905932737622169577149584, s(260) <=
-      16.65685424949238019520675489684, s(262) <= 16.707106781186547524567915429917, s(264)
-      <= 16.778174593052022768577069729084, s(265) <= 16.778174593052022768577069729084,
-      s(291) <= 17.53553390593273762200422181052425, s(293) <=
-      17.63414634146341463432268292683, s(294) <= 17.65685424949238019520675489684, s(296)
-      <= 17.707106781186547524577915429917, s(298) <= 17.778174593052022768587069729084,
-      s(299) <= 17.822875655532295295429036633375 and s(300) <=
+      And s(257) <= 16.535533905932737622169577149584000000…, s(260) <=
+      16.656854249492380195206754896840000000…, s(262) <=
+      16.707106781186547524567915429917000000…, s(264) <=
+      16.778174593052022768577069729084000000…, s(265) <=
+      16.778174593052022768577069729084000000…, s(291) <=
+      17.535533905932737622004221810524250000…, s(293) <=
+      17.634146341463414634322682926830000000…, s(294) <=
+      17.656854249492380195206754896840000000…, s(296) <=
+      17.707106781186547524577915429917000000…, s(298) <=
+      17.778174593052022768587069729084000000…, s(299) <=
+      17.822875655532295295429036633375000000… and s(300) <=
       17.824123388478543470893201807357410338….
 
       At 34 counts the certificate is the regularizer's own, at the side the solve reached,
@@ -16993,14 +17015,17 @@ results:
       those (70, 102, 103, 123, 126, 129, 146, 232, 267 and 295) the run also held a view
       below the bound, and they wait for their new witnesses.
 
-      At 7 counts with no catalogue closed form, 28, 39, 69, 71, 128, 205 and 235, the
-      catalogue's printed side lies more than half a unit of its last place below the
-      certificate's side, so the exact ceiling no longer agrees with it at the printed
-      precision, as the rounded-up one did; each case record says so and carries a
-      mathematics blocker. At n = 29 the interval certificate's ceiling trailed the printed
-      side already, and the exact one still does. At the counts with a closed form, each
-      side lies above it, by 1.4e-36 at n = 50 to 1.8e-19, so the ceiling still trails the
-      report there.
+      Each case record keeps the decimal it printed as its verified upper bound's value, the
+      side of Evan Daniel's certificate rounded up at the printed precision, or at n = 29
+      the interval certificate's endpoint, which lies above the new exact side, and carries
+      the exact side as its exact form, as records at n = 70 and elsewhere print a rounded
+      value beside a rational exact form. So the bound agrees with the catalogue's printed
+      side at the printed precision wherever it did before. Where the catalogue prints a
+      closed form, each exact side lies above it, by 1.4e-36 at n = 50 to 1.8e-19, so the
+      ceiling still trails the report there, as it does at n = 29.
+
+      The id is T-151 because T-147 to T-150 are held by imports in flight; a renumbering at
+      merge follows the register's rule.
 
       Of the views as drawings, the run's reclassification after registration admits 16,
       sends 3 to review (39, 204 and 299) and refuses 4 (53, 151, 176 and 298), where a

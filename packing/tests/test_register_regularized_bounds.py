@@ -1,4 +1,4 @@
-"""The regularized views registered as verified upper bounds (T-147).
+"""The regularized views registered as verified upper bounds (T-151).
 
 `devtools.register_regularized_bounds` retains each view whose exact side lies below its
 case's verified upper bound, decides it on both maintained exact routes, makes three
@@ -48,12 +48,34 @@ def test_each_side_lies_below_the_bound_it_replaced_and_at_or_below_t101s_side()
         assert Fraction(Decimal(row["value"])) >= side, n
 
 
-def test_the_display_is_exact_where_the_side_ends_and_a_ceiling_where_it_does_not() -> None:
-    assert registered.display(Fraction(11, 2)) == "5.5"
-    assert registered.display(Fraction(1, 3)) == "0." + "3" * 35 + "4"
-    assert registered.display(Fraction(1, 2**40)) == format(
+def test_prose_writes_a_side_exactly_where_it_ends_and_rounded_up_where_it_does_not() -> None:
+    assert registered.side_text(Fraction(11, 2)) == "5.5"
+    assert registered.side_text(Fraction(1, 3)) == "0." + "3" * 35 + "4"
+    assert registered.side_text(Fraction(1, 2**40)) == format(
         registered.ceiling_decimal(Fraction(1, 2**40), registered.DISPLAY_PLACES), "f"
     )
+
+
+def test_the_printed_value_stays_unless_it_would_fall_below_the_side() -> None:
+    assert registered.printed_value("6.59861960924437", Fraction("6.598619609244360116")) == (
+        "6.59861960924437",
+        False,
+    )
+    assert registered.printed_value("6.59861960924436", Fraction("6.598619609244360116")) == (
+        "6.59861960924437",
+        True,
+    )
+
+
+def test_each_record_prints_its_earlier_decimal_beside_the_exact_side() -> None:
+    """The value is the decimal the record printed before, an upper display of the new
+    exact form; no count needed it raised, and agreement with the report is unchanged."""
+    for n, row in registered.committed().items():
+        upper = registered.case_front(n)["verified_upper_bound"]
+        assert upper["value"] == row["earlier_verified"]["value"], n
+        assert not row["value_raised"], n
+        assert Fraction(Decimal(upper["value"])) >= Fraction(upper["exact_form"]), n
+        assert Fraction(upper["exact_form"]) == Fraction(row["side"]), n
 
 
 @pytest.mark.parametrize("n", [28, 29, 37, 50, 204, 300])
@@ -152,6 +174,7 @@ def test_the_controls_refuse_an_overlap_and_a_shrink_and_accept_one_unit() -> No
 
 def test_a_trailing_blocker_names_the_gap_and_what_would_close_it() -> None:
     row = {
+        "side_text": "5.824444616674059297016873205016",
         "value": "5.824444616674059297016873205016",
         "printed_side": "5.82444461667405",
         "printed_exact_form": None,

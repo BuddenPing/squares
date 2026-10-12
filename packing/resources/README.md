@@ -1118,7 +1118,7 @@ records the pin and every file.
 It is the generator of this project’s regularized drawing layer and decides nothing
 here.
 The exact views of its runs whose sides lie below a case’s verified upper bound are
-this project’s certificates of T-147, which credits it through `builds_on`.
+this project’s certificates of T-151, which credits it through `builds_on`.
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.

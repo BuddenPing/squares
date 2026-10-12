@@ -31068,7 +31068,9 @@ evidence:
       witness's exact frame (check_half_angle_area.arrangement_gap under the box's eight
       symmetries); at n = 204 and 299 nearest centres do not pair the view's squares one to
       one with the witness's, so there the view's identity with the credited packing is
-      not decided here. No optimality, local minimum, rigidity or same-packing claim, and no
+      not decided here. The case records carry each exact side as the verified upper
+      bound's exact_form and keep the decimal they printed before, which lies above it, as
+      its value. No optimality, local minimum, rigidity or same-packing claim, and no
       certificate of a closed-form side: where the catalogue prints one, each side lies
       above it.
     source_reviewed: '2026-10-12'

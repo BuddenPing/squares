@@ -33,7 +33,6 @@ import pytest
 import yaml
 
 from devtools import apply_exact_ceilings
-from devtools import register_regularized_bounds as regularized
 from devtools import squish_followup_packets as squish_update
 from devtools import squish_second_update_packets as squish_second
 from devtools import squish_upper_bound_packets as squish
@@ -104,13 +103,14 @@ DECLARED_CONSUMERS = {
         "never s(n)"
     ),
     "packing/devtools/register_regularized_bounds.py": (
-        "writes the ceiling an exact regularized view proves at 60 counts (T-147), the view's "
-        "exact side, below the ceiling it replaces, compares it with that earlier ceiling and "
-        "with the report, and keeps a blocker and a ceiling section where the two disagree at "
-        "the printed precision; it reads the field as a ceiling and never as s(n)"
+        "writes the ceiling an exact regularized view proves at 60 counts (T-151): the view's "
+        "exact side as the exact form, below the ceiling it replaces, and the decimal the "
+        "record printed before as the value, an upper display of it; it keeps a blocker and a "
+        "ceiling section where that value and the report disagree at the printed precision, "
+        "and reads the field as a ceiling and never as s(n)"
     ),
     "packing/tests/test_register_regularized_bounds.py": (
-        "holds the case records' ceilings to the registered views' exact sides (T-147) and "
+        "holds the case records' ceilings to the registered views' exact sides (T-151) and "
         "to the earlier ceilings they replace; a ceiling throughout, never s(n)"
     ),
     "packing/devtools/regularize_gallery.py": (
@@ -647,16 +647,7 @@ def test_a_third_of_the_corpus_certifies_a_weaker_bound_than_it_reports() -> Non
         if loaded_cases[29]["reported_upper_bound"]["source_key"] == "[Kingbird]"
         else set()
     )
-    # Since 2026-10-12 the regularized views' exact sides hold 60 of these lanes (T-147),
-    # each printed to its full length rather than rounded up at the catalogue's fourteenth
-    # decimal; where a catalogue side was cut short more than half a unit below the
-    # packing's, the exact ceiling no longer agrees with it at the printed precision.
-    unclosed = {
-        n
-        for n, row in regularized.committed().items()
-        if not row["agrees_with_report"] and not row["printed_exact_form"]
-    }
-    assert set(trailing) == historical | interval | pending | unclosed
+    assert set(trailing) == historical | interval | pending
     for n, (reported, verified) in trailing.items():
         assert verified > reported, n
     # Up to 0.464 until 2026-10-06, when T-101's certificates took the last trailing
@@ -668,10 +659,9 @@ def test_a_third_of_the_corpus_certifies_a_weaker_bound_than_it_reports() -> Non
     assert worst <= Decimal("1E-14")
 
     # And in those cases `exact_form` is exact about the ceiling and says nothing about
-    # s(n). None is the integer grid bound any more. Every trailing case reports a closed
-    # form, which no rational certificate of its packing reaches (T-101, T-147), or is one
-    # of the eight whose exact regularized side lies more than half a unit of the printed
-    # last place above a side the catalogue cut short, n = 29 among them (T-147).
+    # s(n). None is the integer grid bound any more. n = 29 carries an interval
+    # certificate's endpoint; every other trailing case reports a closed form, which the
+    # rounded-up side of a rational certificate of its packing does not reach (T-101).
     grids = {
         n
         for n in trailing
@@ -679,7 +669,7 @@ def test_a_third_of_the_corpus_certifies_a_weaker_bound_than_it_reports() -> Non
     }
     assert not grids
     closed = {n for n in trailing if loaded_cases[n]["reported_upper_bound"]["exact_form"]}
-    assert sorted(set(trailing) - closed - pending) == sorted(interval | unclosed)
+    assert sorted(set(trailing) - closed - pending) == sorted(interval)
 
     # Every case carrying an exact_form on the ceiling, split by whether s(n) is known.
     exact_forms = sum(

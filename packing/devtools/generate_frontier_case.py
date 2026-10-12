@@ -2349,7 +2349,7 @@ def adopt_upper_bound_packet(n: int, text: str) -> str:
     `devtools.apply_exact_optima` moves both upper lanes to the certified side; then, at
     the 77 counts where his other certificates lower the verified ceiling (T-101),
     `devtools.apply_exact_ceilings` moves the verified upper lane; last, at the counts
-    where a regularized view's exact side lies below that ceiling (T-147),
+    where a regularized view's exact side lies below that ceiling (T-151),
     `devtools.register_regularized_bounds` moves it onto that side.
     """
     intake, plans, earlier = _upper_bound_packets()

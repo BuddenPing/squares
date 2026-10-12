@@ -29,7 +29,7 @@ side of Evan Daniel's certificate of the same packing (T-101), which the record 
 carried rounded up at the fourteen decimals the catalogue prints. At the other 26 it is a
 `same` view, whose side is the witness's own, 6.6e-20 to 1.8e-19 below T-101's at 25 of
 them; at `n = 29` it lies 5.4e-20 below the interval certificate's endpoint (T-009). The
-packings are the catalogue's; only the ceiling's exact identity moves, by 1.9e-16 to
+packings are the catalogue's; only the ceiling's exact identity moves, by 5.4e-20 to
 9.9e-15 at each count.
 
 **What is retained.** Each registered view as the run wrote it, gzip-compressed, under
@@ -53,14 +53,18 @@ which both must refuse; and the box shrunk by the unit alone, which both must ac
 wherever the clearance exceeds it.
 
 **What it writes.** Run with no command, it writes each case record's verified upper lane
-onto the registered side (`apply_case`): the exact side as `exact_form`, its decimal as
-`value` (exact where it ends within 36 places, else rounded up there), this tool's
-evidence; a `mathematics` blocker where the bound and the report disagree at the declared
-precision; a dated paragraph and a section on the certificate; and the earlier
-certificate's sentences put in the past. `devtools.generate_frontier_case` applies it last,
-after `devtools.apply_exact_ceilings`, so that a regenerated draft reads as the record
-does; applied to its own output it changes nothing. `--check` reports drift and writes
-nothing.
+onto the registered side (`apply_case`): the exact side as `exact_form` and this tool's
+evidence, while `value` keeps the decimal the record printed before, which lies above the
+exact side and so stays an upper display of it, as the record prints a rounded `value`
+beside a rational `exact_form` at n = 70 and elsewhere (`printed_value`; were it below the
+side, the smallest decimal at that precision at or above the side would be printed, and
+the row says so). Agreement with the report at the printed precision is therefore what
+it was. It also writes a `mathematics` blocker where the bound and the report disagree at
+the declared precision, a dated paragraph and a section on the certificate, which state
+the exact side, and the earlier certificate's sentences put in the past.
+`devtools.generate_frontier_case` applies it last, after `devtools.apply_exact_ceilings`,
+so that a regenerated draft reads as the record does; applied to its own output it
+changes nothing. `--check` reports drift and writes nothing.
 
 Usage, from `packing/`, each after `uv run --frozen --all-extras --group dev python -m
 devtools.register_regularized_bounds`:
@@ -108,7 +112,7 @@ PACKAGE_LINK = "../cases/regularized_bounds/README.md"
 FORMAT = "regularized-bounds-receipt-v1"
 TOOL = "python -m devtools.register_regularized_bounds"
 POLICY = "docs/project/policies/regularization-policy.md"
-RESULT = "T-147"
+RESULT = "T-151"
 EVIDENCE = "E-regularized-bounds-2026-10-12-exact-decision"
 SOURCE_KEY = "[Daniel regularizer 2026-10-11]"
 REGISTERED = "2026-10-12"
@@ -122,7 +126,8 @@ REHOUSED = frozenset(
     | {270, 292, 295, 302, 303, 305, 306, 307, 308}
 )
 EXCLUDED = HELD | REHOUSED
-#: The decimal places of a displayed side: the exact decimal where it ends by then.
+#: The decimal places at which prose writes an exact side: the exact decimal where it
+#: ends by then, else the side rounded up there.
 DISPLAY_PLACES = 36
 #: The register result whose packing each count's view redraws: Evan Daniel's exact
 #: certificates of the catalogue's packings (T-101), and at n = 29 this project's interval
@@ -175,13 +180,24 @@ def ceiling_decimal(value: Fraction, places: int) -> Decimal:
     return result
 
 
-def display(side: Fraction) -> str:
-    """A side as the record's `value`: its exact decimal where that ends within
+def side_text(side: Fraction) -> str:
+    """A side as prose writes it: its exact decimal where that ends within
     `DISPLAY_PLACES` places, else the side rounded up there, so it stays a ceiling."""
     places = terminating_places(side)
     if places is not None and places <= DISPLAY_PLACES:
         return format(ceiling_decimal(side, max(places, 1)), "f")
     return format(ceiling_decimal(side, DISPLAY_PLACES), "f")
+
+
+def printed_value(earlier: str, side: Fraction) -> tuple[str, bool]:
+    """The record's `value` for a bound whose exact form becomes `side`: the decimal it
+    printed before where that is at or above `side`, as every registered count's is, else
+    the smallest decimal at the same precision at or above `side`; and whether it had to
+    be raised."""
+    if Fraction(Decimal(earlier)) >= side:
+        return earlier, False
+    places = -int(Decimal(earlier).as_tuple().exponent)
+    return format(ceiling_decimal(side, places), "f"), True
 
 
 def decimal_text(value: Fraction, digits: int = 40) -> str:
@@ -382,7 +398,7 @@ def selection_row(
     with atomic_output_file(view_path(n), make_parents=True) as temporary:
         temporary.write_bytes(gzip.compress(data, compresslevel=9, mtime=0))
     reported = case["reported_upper_bound"]
-    value = display(side)
+    value, raised = printed_value(earlier["value"], side)
     verified = {"value": value, "exact_form": literal(side)}
     above_form, degree = _closed_form_facts(reported, side)
     regularized = report.get("regularize") or {}
@@ -401,7 +417,9 @@ def selection_row(
         "outputs_at_row_3": names,
         "side": literal(side),
         "side_decimal": decimal_text(side),
+        "side_text": side_text(side),
         "value": value,
+        "value_raised": raised,
         "earlier_verified": earlier,
         "below_earlier_by": float(f"{float(upper - side):.4e}"),
         "t101_side": literal(t101_side) if t101_side is not None else None,
@@ -778,8 +796,10 @@ def problems() -> list[str]:
         kinds = {item["control"] for item in controls.get(n, []) if item["as_expected"]}
         if len(kinds) != 3:
             found.append(f"n={n}: the controls did not all reach their outcomes")
-        if display(side) != row["value"]:
-            found.append(f"n={n}: the displayed value is not the rule's")
+        if printed_value(row["earlier_verified"]["value"], side)[0] != row["value"]:
+            found.append(f"n={n}: the printed value is not the rule's")
+        if side_text(side) != row["side_text"]:
+            found.append(f"n={n}: the side's decimal is not the rule's")
         case = case_front(n)
         if case["verified_upper_bound"] != verified_block(row):
             found.append(f"n={n}: the case record's verified upper bound is not the view's")
@@ -811,6 +831,7 @@ def _set_block(front: str, name: str, value: object) -> str:
 def trailing_blocker(row: Mapping[str, Any], evidence: Sequence[str]) -> dict[str, Any]:
     """The `mathematics` blocker where the bound and the report disagree."""
     gap = difference(row["value"], row["printed_side"])
+    exact = f"{EVIDENCE}'s exact side, {row['side_text']}, printed as {row['value']},"
     form = row["printed_exact_form"]
     if form:
         rational = row["printed_exact_form_degree"] == 1
@@ -825,16 +846,16 @@ def trailing_blocker(row: Mapping[str, Any], evidence: Sequence[str]) -> dict[st
             else "an exact algebraic certificate of the packing at its closed-form side"
         )
         detail = (
-            f"verified_upper_bound is {EVIDENCE}'s exact side, {row['value']}, which trails "
-            f"the report {row['printed_side']} by {gap}, and the report's exact form {form}, "
+            f"verified_upper_bound is {exact} which trails the report "
+            f"{row['printed_side']} by {gap}, and the report's exact form {form}, "
             f"{kind}: the certificate's side lies "
             f"{scientific(row['above_exact_side_by'])} above it. Closing the gap needs "
             f"{remedy}."
         )
     else:
         detail = (
-            f"verified_upper_bound is {EVIDENCE}'s exact side, {row['value']}, which trails "
-            f"the report {row['printed_side']} by {gap}, more than half a unit of the "
+            f"verified_upper_bound is {exact} which trails the report "
+            f"{row['printed_side']} by {gap}, more than half a unit of the "
             "report's last declared place, so the two do not agree at declared precision "
             "and the printed side itself is not certified here. Closing the gap needs a "
             "certificate at or below the printed side."
@@ -866,6 +887,9 @@ def front_matter(n: int, front: str) -> str:
             replacement = None
     if replacement is not None:
         blockers.insert(0, replacement)
+    if blockers == list(payload.get("blockers") or []):
+        # Rewritten only where they change, so the other blockers keep their layout.
+        return front
     return _set_block(front, "blockers", blockers)
 
 
@@ -903,12 +927,12 @@ def earlier_words(n: int, row: Mapping[str, Any]) -> str:
     earlier = row["earlier_verified"]
     if n in PACKING_RESULT:
         return (
-            f"`{earlier['value']}`, the upper endpoint of this project’s interval "
+            f"exactly `{earlier['value']}`, the upper endpoint of this project’s interval "
             f"certificate of the same packing ({PACKING_RESULT[n]})"
         )
     return (
-        f"`{earlier['value']}`, the side of Evan Daniel’s exact certificate of this packing "
-        f"rounded up at the printed precision ({DEFAULT_PACKING_RESULT})"
+        f"exactly `{earlier['value']}`, the side of Evan Daniel’s exact certificate of this "
+        f"packing rounded up at the printed precision ({DEFAULT_PACKING_RESULT})"
     )
 
 
@@ -917,8 +941,9 @@ def dated_paragraph(n: int, row: Mapping[str, Any]) -> str:
         f"{DATED} This project’s regularization pass, Evan Daniel’s exact solver and "
         "regularizer run here on this register’s witness, produced an exact rational "
         f"packing of this arrangement, decided here over `ℚ` by two exact checkers: it "
-        f"proves `s({n}) ≤ {row['value']}`, the verified upper bound ({RESULT}). Until "
-        f"then the verified upper bound was {earlier_words(n, row)}.\n\n"
+        f"proves `s({n}) ≤ {row['side_text']}`, the verified upper bound ({RESULT}), "
+        f"which the record still prints as `{row['value']}`. Until then the verified upper "
+        f"bound was {earlier_words(n, row)}.\n\n"
     )
 
 
@@ -999,7 +1024,7 @@ def section(n: int, row: Mapping[str, Any]) -> str:
         "(https://github.com/evand/square-packing), MIT, vendored here) on this register’s "
         "witness for this count, with the `conservative` angle policy and `coincide` "
         f"placement, {_how_made(row)}. The result is an exact rational packing of the same "
-        f"{n} squares in a square of side `{row['value']}`, {_side_words(n, row)}. "
+        f"{n} squares in a square of side `{row['side_text']}`, {_side_words(n, row)}. "
         f"{_identity_words(row)} {_drawing_words(row)}"
     )
     second = (
@@ -1008,9 +1033,11 @@ def section(n: int, row: Mapping[str, Any]) -> str:
         "and both accept it; both refuse it with its tightest pair pushed into overlap and "
         f"with its box shrunk past its least clearance ([certificate]({PACKAGE_LINK})). The "
         "same two checkers accepted it in the run that made it, so this is a reproduction "
-        f"with the producer’s code. That proves `s({n}) ≤ {row['value']}`, the verified "
-        f"upper bound ({RESULT}). It says nothing about optimality, and the packing stays "
-        "its finders’."
+        f"with the producer’s code. That proves `s({n}) ≤ {row['side_text']}`, the "
+        f"verified upper bound ({RESULT}), the exact form of the case’s "
+        f"`verified_upper_bound`, which prints it as `{row['value']}`, the decimal it "
+        "printed before and an upper display of it. It says nothing about optimality, and "
+        "the packing stays its finders’."
     )
     return f"{SECTION}\n\n{first}\n\n{second}\n\n"
 
@@ -1019,9 +1046,10 @@ def ceiling_section(n: int, row: Mapping[str, Any]) -> str:
     """The ceiling section of a count whose bound and report disagree."""
     value, printed = row["value"], row["printed_side"]
     first = (
-        f"`verified_upper_bound` for this case is `{value}`, proved by the exact regularized "
-        f"certificate of this packing (`{EVIDENCE}`, {RESULT}). It is **larger** than the "
-        f"best known `{printed}` two fields above it, by `{difference(value, printed)}`."
+        f"`verified_upper_bound` for this case is `{row['side_text']}`, exactly, proved by "
+        f"the exact regularized certificate of this packing (`{EVIDENCE}`, {RESULT}), and "
+        f"the record prints it as `{value}`. As printed it is **larger** than the best "
+        f"known `{printed}` two fields above it, by `{difference(value, printed)}`."
     )
     form = row["printed_exact_form"]
     if form:
@@ -1055,11 +1083,10 @@ def ceiling_section(n: int, row: Mapping[str, Any]) -> str:
     if n in PACKING_RESULT:
         earlier = row["earlier_verified"]
         history = (
-            f"\n\nUntil {DATE_WORDS} the verified upper bound was `{earlier['value']}`, the "
-            f"upper endpoint of this project’s interval certificate "
-            f"(`{earlier['evidence'][0]}`, {PACKING_RESULT[n]}) at a declared relaxation of "
-            "`1e-20`, which on 30 August 2026 had replaced an exact rational replay at "
-            "`5.93388579981302587863645209`."
+            f"\n\nUntil {DATE_WORDS} that printed decimal was the bound exactly, the upper "
+            f"endpoint of this project’s interval certificate (`{earlier['evidence'][0]}`, "
+            f"{PACKING_RESULT[n]}) at a declared relaxation of `1e-20`, which on 30 August "
+            "2026 had replaced an exact rational replay at `5.93388579981302587863645209`."
         )
     return f"{CEILING_HEADING}\n\n{first}\n\n{second}{history}\n\n"
 
@@ -1093,7 +1120,7 @@ def past_tense(n: int, body: str, row: Mapping[str, Any]) -> str:
     if f"{T101_SECTION}\n" in body:
         body = body.replace(f"{T101_SECTION}\n", f"{T101_EARLIER}\n", 1)
     if n == 29:
-        now = markdown_math(f"`s(29) ≤ {row['value']}`")
+        now = markdown_math(f"`s(29) ≤ {row['side_text']}`")
         body = _N029_VERIFIES.sub(
             lambda match: (
                 f"{match.group(1)} verified {match.group(2)} until {DATE_WORDS}, and its "
@@ -1156,8 +1183,8 @@ def _shown(value: str, digits: int = 22) -> str:
 def table() -> str:
     """One row per registered count, from the committed selection."""
     header = (
-        "| n | View | Verified upper bound | Earlier | Below it by | Below T-101’s side by "
-        "| Agrees | Drawing | Moved, largest |"
+        "| n | View | Exact side | Printed as | Below the earlier bound by "
+        "| Below T-101’s side by | Agrees | Drawing | Moved, largest |"
     )
     lines = [header, "| --- | --- | --- | --- | --- | --- | --- | --- | --- |"]
     for n, row in sorted(committed().items()):
@@ -1171,8 +1198,8 @@ def table() -> str:
         after = row["after_registration"]["decision"] or row["drawing"]
         margin = "0" if t101 == 0 else f"`{scientific(float(t101 or 0))}`"
         lines.append(
-            f"| {n} | `{row['output']}` | `{_shown(row['value'])}` "
-            f"| `{row['earlier_verified']['value']}` "
+            f"| {n} | `{row['output']}` | `{_shown(row['side_text'])}` "
+            f"| `{row['value']}` "
             f"| `{scientific(float(row['below_earlier_by']))}` "
             f"| {'—' if t101 is None else margin} "
             f"| {'yes' if row['agrees_with_report'] else 'no'} "

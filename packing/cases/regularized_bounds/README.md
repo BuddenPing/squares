@@ -1,6 +1,6 @@
 # Regularized Views Registered as Verified Upper Bounds
 
-This directory holds the certificates of T-147: the exact views of the regularization
+This directory holds the certificates of T-151: the exact views of the regularization
 run of 11 and 12 October 2026 whose sides lie below their cases’ verified upper bounds,
 registered as results under the
 [regularization policy](../../../docs/project/policies/regularization-policy.md) (row 3,
@@ -50,11 +50,14 @@ Every registered side lies $5.4 \times 10^{-20}$ to $9.9 \times 10^{-15}$ below 
 verified upper bound it replaces.
 
 At 37 counts the view draws the same picture as the witness; at the other 23 it redraws
-the packing. At 7 counts whose catalogue side has no closed form, 28, 39, 69, 71, 128,
-205 and 235, the exact side lies more than half a unit of the printed side’s last place
-above it, so the new bound and the printed side no longer agree at the printed
-precision, as the rounded-up bound did; each of those case records says so, and at
-$n = 29$ the two disagreed already.
+the packing. Each case record carries the registered side as its verified upper bound’s
+`exact_form` and keeps the decimal it printed before as `value`, which lies above the
+side and so still bounds it from above, as the records at $n = 70$ and elsewhere print a
+rounded value beside a rational exact form.
+The bound’s agreement with the catalogue’s printed side at the printed precision is
+therefore what it was: it agrees wherever the catalogue prints a decimal alone, apart
+from $n = 29$, and trails wherever the catalogue prints a closed form, which each side
+lies above.
 
 ## How Each View Was Decided
 
@@ -101,26 +104,27 @@ they hold are not retained here.
 
 ## The Counts
 
-`Below it by` is the margin under the verified upper bound the record held before,
-`Below T-101’s side by` the margin under the side of Evan Daniel’s certificate of the
-same packing, and `Agrees` whether the new bound and the catalogue’s printed side agree
-at the printed precision.
+`Exact side` is the registered side, cut and rounded up where long; `Printed as` the
+record’s `value`; `Below the earlier bound by` the margin under the verified upper bound
+the record held before; `Below T-101’s side by` the margin under the side of Evan
+Daniel’s certificate of the same packing; and `Agrees` whether the bound as printed and
+the catalogue’s printed side agree at the printed precision.
 `Drawing` is the run’s word for the view as a drawing, then its word once the view is
 registered; the regularized layer decides the drawing on its own.
 
-| n | View | Verified upper bound | Earlier | Below it by | Below T-101’s side by | Agrees | Drawing | Moved, largest |
+| n | View | Exact side | Printed as | Below the earlier bound by | Below T-101’s side by | Agrees | Drawing | Moved, largest |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 28 | `solved` | `5.82444461667405929702…` | `5.82444461667406` | `7.0e-16` | 0 | no | no-change, then no-change | none |
+| 28 | `solved` | `5.82444461667405929702…` | `5.82444461667406` | `7.0e-16` | 0 | yes | no-change, then no-change | none |
 | 29 | `same` | `5.93383346267692918969…` | `5.93383346267692918974379895098` | `5.4e-20` | — | no | held, then admit | 3, `1.3e-2` |
 | 37 | `same` | `6.59861960924436011618…` | `6.59861960924437` | `9.9e-15` | `6.6e-20` | yes | held, then admit | 7, `1.7e-1` |
-| 39 | `solved` | `6.81072208306864885177…` | `6.81072208306865` | `1.1e-15` | 0 | no | held, then review | 11, `7.3e-2` |
+| 39 | `solved` | `6.81072208306864885177…` | `6.81072208306865` | `1.1e-15` | 0 | yes | held, then review | 11, `7.3e-2` |
 | 41 | `same` | `6.92669309446880223159…` | `6.92669309446881` | `7.8e-15` | `6.9e-20` | yes | held, then admit | 5, `2.4e-2` |
 | 50 | `same` | `7.57142857142857142858…` | `7.57142857142858` | `8.6e-15` | `7.6e-20` | no | held, then admit | 6, `9.6e-3` |
 | 53 | `same` | `7.82287565553229529526…` | `7.82287565553230` | `4.7e-15` | `7.8e-20` | no | held, then refuse | 3, `3.7e-2` |
 | 54 | `same` | `7.84666719284348978295…` | `7.84666719284349` | `2.2e-16` | `7.8e-20` | no | held, then admit | 8, `6.9e-2` |
 | 55 | `solved` | `7.94577100750391297904…` | `7.94577100750392` | `7.0e-15` | 0 | yes | no-change, then no-change | none |
-| 69 | `solved` | `8.82719465572973891502…` | `8.82719465572974` | `1.1e-15` | 0 | no | no-change, then no-change | none |
-| 71 | `same` | `8.94407155757031550657…` | `8.94407155757032` | `4.5e-15` | `8.9e-20` | no | held, then admit | 3, `2.8e-2` |
+| 69 | `solved` | `8.82719465572973891502…` | `8.82719465572974` | `1.1e-15` | 0 | yes | no-change, then no-change | none |
+| 71 | `same` | `8.94407155757031550657…` | `8.94407155757032` | `4.5e-15` | `8.9e-20` | yes | held, then admit | 3, `2.8e-2` |
 | 83 | `solved` | `9.63475764863108202936…` | `9.63475764863109` | `8.0e-15` | 0 | yes | held, then admit | 14, `3.1e-2` |
 | 87 | `solved` | `9.83881526994826226037…` | `9.83881526994827` | `7.7e-15` | 0 | yes | held, then admit | 6, `2.9e-3` |
 | 101 | `same` | `10.5355339059327376221…` | `10.53553390593274` | `2.4e-15` | `1.1e-19` | no | no-change, then no-change | none |
@@ -130,7 +134,7 @@ registered; the regularized layer decides the drawing on its own.
 | 122 | `same` | `11.5355339059327376221…` | `11.53553390593274` | `2.4e-15` | `1.2e-19` | no | no-change, then no-change | none |
 | 124 | `same` | `11.6568542494923801953…` | `11.65685424949239` | `9.8e-15` | `1.2e-19` | no | no-change, then no-change | none |
 | 125 | `solved` | `11.7071067811865475246…` | `11.70710678118655` | `2.5e-15` | 0 | no | no-change, then no-change | none |
-| 128 | `same` | `11.8250919682136870292…` | `11.82509196821369` | `3.0e-15` | `1.2e-19` | no | no-change, then no-change | none |
+| 128 | `same` | `11.8250919682136870292…` | `11.82509196821369` | `3.0e-15` | `1.2e-19` | yes | no-change, then no-change | none |
 | 145 | `same` | `12.5355339059327376221…` | `12.53553390593274` | `2.4e-15` | `1.3e-19` | no | no-change, then no-change | none |
 | 147 | `same` | `12.6568542494923801953…` | `12.65685424949239` | `9.8e-15` | `1.3e-19` | no | no-change, then no-change | none |
 | 148 | `same` | `12.6568542494923801953…` | `12.65685424949239` | `9.8e-15` | `1.3e-19` | no | no-change, then no-change | none |
@@ -149,7 +153,7 @@ registered; the regularized layer decides the drawing on its own.
 | 202 | `solved` | `14.7279220613578554394…` | `14.72792206135786` | `4.6e-15` | 0 | no | no-change, then no-change | none |
 | 203 | `solved` | `14.7781745930520227686…` | `14.77817459305203` | `7.2e-15` | 0 | no | no-change, then no-change | none |
 | 204 | `solved` | `14.8228756555322952954…` | `14.82287565553230` | `4.7e-15` | 0 | no | held, then review | not one to one |
-| 205 | `solved` | `14.8244511461240882237…` | `14.82445114612409` | `1.8e-15` | 0 | no | no-change, then no-change | none |
+| 205 | `solved` | `14.8244511461240882237…` | `14.82445114612409` | `1.8e-15` | 0 | yes | no-change, then no-change | none |
 | 226 | `same` | `15.5355339059327376221…` | `15.53553390593274` | `2.4e-15` | `1.6e-19` | no | no-change, then no-change | none |
 | 227 | `same` | `15.5710678118654752441…` | `15.57106781186548` | `4.8e-15` | `1.6e-19` | no | held, then admit | 1, `2.9e-1` |
 | 229 | `same` | `15.6568542494923801953…` | `15.65685424949239` | `9.8e-15` | `1.6e-19` | no | no-change, then no-change | none |
@@ -157,7 +161,7 @@ registered; the regularized layer decides the drawing on its own.
 | 231 | `solved` | `15.7071067811865475246…` | `15.70710678118655` | `2.5e-15` | 0 | no | no-change, then no-change | none |
 | 233 | `solved` | `15.7781745930520227686…` | `15.77817459305203` | `7.2e-15` | 0 | no | no-change, then no-change | none |
 | 234 | `solved` | `15.8228756555322952955…` | `15.82287565553230` | `4.7e-15` | 0 | no | held, then admit | 6, `9.9e-2` |
-| 235 | `same` | `15.8266056334285680696…` | `15.82660563342857` | `1.9e-15` | `1.6e-19` | no | no-change, then no-change | none |
+| 235 | `same` | `15.8266056334285680696…` | `15.82660563342857` | `1.9e-15` | `1.6e-19` | yes | no-change, then no-change | none |
 | 257 | `solved` | `16.5355339059327376222…` | `16.53553390593274` | `2.4e-15` | 0 | no | no-change, then no-change | none |
 | 260 | `same` | `16.6568542494923801953…` | `16.65685424949239` | `9.8e-15` | `1.7e-19` | no | no-change, then no-change | none |
 | 262 | `solved` | `16.7071067811865475246…` | `16.70710678118655` | `2.5e-15` | 0 | no | no-change, then no-change | none |
