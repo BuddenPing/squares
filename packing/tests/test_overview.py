@@ -896,7 +896,8 @@ def test_the_atlas_marks_each_perfect_square_and_nothing_else_on_a_tile(
         212,
         242,
         274,
-        308,
+        # 308 left the grid for a packet house on 11 October 2026 (think-fvz4).
+        309,
     ]
     first = re.search(
         r'<a\b[^>]* data-atlas-n="1"[^>]* style="([^"]+)"', _atlas_template(atlas_page, "first")
@@ -1060,25 +1061,23 @@ def test_one_tile_a_case_is_drawn_from_its_regularized_view_where_it_has_one() -
             n, units=overview_sections.ATLAS_UNITS, root=frontier.REGULARIZED_RENDERINGS
         ) == frontier.packing_svg(n, units=overview_sections.ATLAS_UNITS):
             identical_thumbnails.add(n)
-    # The exact #432 houses and n155's 337 sub-picometre snaps have unchanged
-    # tile-scale shades; 400-unit rounding hides moves visible in the full SVG.
+    # Since the house adoption of 11 October 2026 (think-fvz4), the houses that are
+    # already display-regularized packings (T-146), Couzo's n155 refinement and the
+    # remaining #432 house at 261 have unchanged tile-scale shades; 400-unit rounding
+    # hides moves visible in the full SVG.
     assert identical_thumbnails == {
-        129,
-        131,
-        261,
         70,
         103,
-        295,
-        105,
-        267,
-        108,
+        153,
         155,
-        146,
-        84,
-        86,
-        123,
-        126,
-        127,
+        236,
+        258,
+        261,
+        263,
+        269,
+        295,
+        302,
+        303,
     }
     assert "data-atlas-layer" not in tiles
 
