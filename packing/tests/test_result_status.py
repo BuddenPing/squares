@@ -495,6 +495,24 @@ def test_a_bound_better_than_its_cases_hold_is_pending_adoption_not_superseded()
     )
     assert f"| {status_line(entry, evidence)} |" in row
     assert "superseded" not in row
+    # No live entry has been both confirmed and pending adoption since the house adoption
+    # of 11 October 2026. One raised to C3 by an independently re-implemented replay, as
+    # T-128 was by its review of 10 October, renders as T-128 did, with no mark.
+    confirmed = {
+        **entry,
+        "verification": "V3",
+        "confirmation": "C3",
+        "evidence": [*entry["evidence"], "E-couzo-451-exact-feasibility"],
+    }
+    held = view.standing(confirmed, records)
+    assert held == view.PENDING_ADOPTION
+    cell = status_line(
+        confirmed,
+        evidence,
+        view.position_marks(confirmed, held, records),
+        how=render_results.confirmed_how(confirmed, evidence),
+    )
+    assert cell == f"{CONFIRMED}, independently re-implemented"
     assert [finding.n for finding in check_standing.improvements(entry, records)] == [152]
     adopted = records.results["T-128"]
     assert view.standing(adopted, records) == view.HOLDS

@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import dataclasses
 from collections.abc import Mapping
+from decimal import Decimal
 from fractions import Fraction
 from typing import Any
 
@@ -361,6 +362,38 @@ def test_a_bound_better_than_its_case_record_is_pending_adoption(
         records.results["T-001"], view.PENDING_ADOPTION, records
     )
     assert "T-001 is pending adoption, yet no bound it states is better" in beaten
+
+
+def test_a_confirmed_bound_better_at_several_cases_names_each_one(
+    records: view.Records,
+) -> None:
+    """The shape T-128 had from its review of 10 October until the house adoption of 11
+    October 2026 (think-fvz4): a confirmed entry better than its case records at several
+    counts. No live entry has it now, so T-122 is given three counts, each side a
+    thousandth below the verified ceiling its case holds."""
+    sides = {
+        n: Decimal(str(records.cases[n]["verified_upper_bound"]["value"])) - Decimal("0.001")
+        for n in (152, 154, 157)
+    }
+    headline = ", ".join(f"`s({n}) ≤ {side}`" for n, side in sides.items())
+    record = _entry(
+        records,
+        "T-122",
+        verification="V3",
+        confirmation="C3",
+        scope={"n_values": list(sides)},
+        headline=headline,
+    )
+    cases = "n = 152, 154, 157"
+    assert view.standing(record, records) == view.PENDING_ADOPTION
+    assert check_standing.problems(record, view.PENDING_ADOPTION, records) == []
+    (superseded,) = check_standing.problems(record, view.SUPERSEDED, records)
+    assert superseded == (
+        f"T-122 is superseded, yet at {cases} its stated bound is no worse than the "
+        "verified one"
+    )
+    line = check_standing.summary(record, view.PENDING_ADOPTION, records)
+    assert f"better than the case record at {cases}" in line
 
 
 def test_a_bound_no_case_record_cites_states_what_it_bounds(records: view.Records) -> None:
