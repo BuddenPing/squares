@@ -558,19 +558,24 @@ most 2.
 ### Smallest Open Gaps
 
 Ranked by gap—the best-known packing minus the verified lower bound, which is what
-`devtools.gap_ranking` computes—the five smallest open cases at $n \le 100$ are:
+`devtools.gap_ranking` computes—the six smallest open cases at $n \le 100$, $76$ and
+$95$ tied, are:
 
 | $n$ | gap | record | note |
 | --- | --- | --- | --- |
 | 17 | 0.0151 | Bidwell | carried to $\frac{18641771}{4000000}$ by Guzhou0806 after Kleddamag |
 | 44 | 0.0275 | grid | $7^2 - 5$, carried to $\frac{2789}{400}$ by wand125 after Tokoharu |
 | 12 | 0.0285 | grid | $4^2 - 4$, carried to $\frac{7943}{2000}$ by squarepacker after Daniel |
+| 96 | 0.0300 | grid | $10^2 - 4$, carried to $\frac{997}{100}$ by wand125 after Tokoharu; reported proved by Evan Daniel (T-081) |
 | 76 | 0.0350 | grid | $9^2 - 5$, carried to $\frac{1793}{200}$ by wand125 after Tokoharu |
 | 95 | 0.0350 | grid | $10^2 - 5$, carried to $\frac{1993}{200}$ by wand125 after Tokoharu |
 
-The $n = 17$ bound is Guzhou0806 / N17 project’s R068, continuing Kleddamag’s charge
+The $n = 17$ bound is Guzhou0806 / N17 project’s R071, continuing Kleddamag’s charge
 (Kleddamag building on Squares Project (Joshua Levy), Mira and Guzhou0806): an exact
-weighted-certificate proof over 4,991 orientation intervals.
+weighted-certificate proof over 5,114 orientation intervals.
+A candidate proof that closes the gap at Bidwell’s side, `T-153` of 12 October 2026, has
+been read here and partly replayed; until its complete replay passes, the verified gap
+stays as the table gives it.
 $n = 17$ and $n = 12$ moved in September 2026 on third-party weighted certificates, and
 the $k^2 - 4$ family now has three solved members above $k = 3$: $s(21) = 5$,
 $s(32) = 6$ and $s(45) = 7$, proved by Evan Daniel on the same method’s zero-margin
