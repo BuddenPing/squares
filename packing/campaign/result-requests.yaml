@@ -10,6 +10,10 @@
 # A reply is a comment by the owner, or one that ends in the Claude Code footer and is
 # not by the issue's author. `read_through` is the latest comment read into the entry;
 # `check_requests --github` lists anything later, and any earlier comment edited later.
+#
+# An issue that reports a new item for intake carries the `intake` label on GitHub: each
+# `result-report`, and each entry of another kind marked `intake: true`. `--github` lists
+# any of them without the label (campaign/result-import.md, stage 0).
 softschema:
   contract: packing.squares:ResultRequests/v1
   schema: schemas/result-requests.schema.yaml
@@ -1236,6 +1240,7 @@ issues:
     opened: '2026-10-05'
     state: open
     kind: other
+    intake: true
     triage: done
     summary: 'A method report and not a result: the B2 branching rule for devtools/pilot_n17_subpattern_bb.py,
       which learns each square''s weight from the closing Farkas multipliers and bisects the heaviest
@@ -1573,6 +1578,7 @@ issues:
     opened: '2026-10-05'
     state: open
     kind: other
+    intake: true
     triage: done
     summary: Two arity-7 classes have upstream reported full standing-verifier and independent Rust
       passes. The owner's retained C2 replay is INCOMPLETE after 480.468 seconds on the one-second RSS-query
@@ -1850,6 +1856,7 @@ issues:
     state: closed
     closed: '2026-10-03'
     kind: defect-report
+    intake: true
     triage: done
     summary: >-
       The sixteen points of Friedman's Figure 34, the unavoidable set behind Green's
@@ -2000,6 +2007,7 @@ issues:
     state: closed
     closed: '2026-10-06'
     kind: defect-report
+    intake: true
     triage: done
     summary: >-
       Nagamochi's Lemma 1 is false (chelokot's Lean counterexample, Karakuş's family), so
