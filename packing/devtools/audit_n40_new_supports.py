@@ -33,9 +33,10 @@ Four subcommands:
   near-axis statement a second way with ``sqverify-fast``'s exact axis sweep. These are
   the quick parts of the replay; the 43 slabs are not run here.
 - ``check-axis`` judges those receipts: the crate's decision must be on the input derived
-  here (`crate_axis_input`), by its digest and its premises. It refuses receipts without
-  that decision unless told ``--without-crate``, and a judgement without it says
-  `KERNEL_ONLY`, never the full stage's ``AXIS_STAGE_HOLDS``.
+  here (`crate_axis_input`) from the release's candidate, by its digest and its
+  premises. It refuses receipts without that decision unless told ``--without-crate``,
+  and a judgement without it says ``AXIS_KERNEL_HOLDS_WITHOUT_CRATE``, never the full
+  stage's ``AXIS_STAGE_HOLDS``.
 
 **What its author read** (its independence record, for the finite steps). Written on
 2026-10-11 by an AI agent (Claude, lane E of the 2026-10-11 intake pass, ``think-tln9``)
@@ -789,7 +790,8 @@ def axis_stage_checks(
 ) -> list[Check]:
     """The axis stage's receipts against both release receipts and ``density``. The
     stage's second decision of the near-axis statement is the crate's, on the input
-    derived here from ``density``, so a record without it fails `CRATE_DECISION` unless
+    derived here from ``density``, which must be the release's candidate
+    (`CANDIDATE_SHA256`), so a record without it fails `CRATE_DECISION` unless
     ``require_crate`` is false, for a run made without the crate."""
     build, runs = record["build"], record["runs"]
     release = [
@@ -856,6 +858,7 @@ def axis_stage_checks(
         Check(
             CRATE_DECISION,
             crate["exit_code"] == 0
+            and density.sha256 == CANDIDATE_SHA256
             and crate.get("input_sha256") == premises.get("input_sha256") == derived
             and premises.get("L") == text(CLAIM.L)
             and premises.get("n") == CLAIM.n
