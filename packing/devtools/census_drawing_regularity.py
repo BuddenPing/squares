@@ -49,16 +49,15 @@ classified. A sweep moves one square alone: `slack` says the square could slide 
 before meeting anything, not that the drawing can close the gap without opening another,
 which only a joint placement can say (`devtools.regularize_grid_slack`).
 
-The census decides nothing and writes only the file it is given. The view's digest is
-compared with the index's as `digest_matches`, a report, not a refusal: a preview tree's
-scratch layer is read as it stands.
+The census decides nothing and writes only the file it is given. A tree's layer is
+read as it stands, a preview tree's scratch layer included; that its views are the
+index's is the atlas checks' question, not this census's.
 """
 
 from __future__ import annotations
 
 import argparse
 import gzip
-import hashlib
 import json
 import math
 from collections import Counter
@@ -124,8 +123,6 @@ class Drawing:
     """Repository-relative."""
     generator: str | None
     """The index entry's generator, where it names one."""
-    digest_matches: bool | None
-    """Whether the view's bytes are the ones the index recorded; `None` for a witness."""
 
 
 def read_index(tree: Path) -> dict[int, dict[str, Any]]:
@@ -137,10 +134,9 @@ def read_index(tree: Path) -> dict[int, dict[str, Any]]:
     return {int(entry["n"]): entry for entry in index.get("entries", [])}
 
 
-def _text(path: Path) -> tuple[str, bytes]:
+def _text(path: Path) -> str:
     raw = path.read_bytes()
-    data = gzip.decompress(raw) if path.suffix == ".gz" else raw
-    return data.decode("utf-8"), data
+    return (gzip.decompress(raw) if path.suffix == ".gz" else raw).decode("utf-8")
 
 
 def drawing_for(
@@ -150,20 +146,15 @@ def drawing_for(
     entry = entries.get(n)
     if entry is not None and entry.get("status") == "regularized":
         relative = str(entry["view"]["path"])
-        text, data = _text(tree / relative)
-        recorded = entry["view"].get("sha256")
+        text = _text(tree / relative)
         generator = entry.get("generator")
         drawing = Drawing(
-            n,
-            "regularized-view",
-            relative,
-            str(generator) if generator else None,
-            None if recorded is None else hashlib.sha256(data).hexdigest() == recorded,
+            n, "regularized-view", relative, str(generator) if generator else None
         )
     else:
         relative = WITNESS.format(n=n)
-        text, _data = _text(tree / relative)
-        drawing = Drawing(n, "witness", relative, None, None)
+        text = _text(tree / relative)
+        drawing = Drawing(n, "witness", relative, None)
     document = load_yaml(text)
     if not isinstance(document, dict) or not isinstance(document.get("witness"), dict):
         raise TypeError(f"{relative} is not a witness document")
@@ -273,7 +264,6 @@ def census_count(unit: tuple[Path, int, Mapping[int, Mapping[str, Any]]]) -> dic
             "kind": drawing.kind,
             "path": drawing.path,
             "generator": drawing.generator,
-            "digest_matches": drawing.digest_matches,
         },
         **regularity(witness),
     }

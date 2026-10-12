@@ -11,7 +11,6 @@ ranks the worst first. One real record (n = 10) checks the counts add up.
 from __future__ import annotations
 
 import gzip
-import hashlib
 import json
 from pathlib import Path
 from typing import Any
@@ -124,10 +123,6 @@ def test_a_square_a_fifth_of_a_degree_off_is_near_axis() -> None:
     assert measured["variation"] >= 1
 
 
-def _digest(data: bytes) -> str:
-    return hashlib.sha256(data).hexdigest()
-
-
 def scratch_tree(tmp_path: Path) -> Path:
     """n = 4 drawn from a view the index lists; n = 1 from its witness."""
     known = tmp_path / "packing/witnesses/known-best"
@@ -147,8 +142,7 @@ def scratch_tree(tmp_path: Path) -> Path:
                 "status": "regularized",
                 "generator": "python -m devtools.regularize_evand run",
                 "view": {
-                    "path": "packing/atlas/known-best/regularized/n-004-regularized.yaml.gz",
-                    "sha256": _digest(view),
+                    "path": "packing/atlas/known-best/regularized/n-004-regularized.yaml.gz"
                 },
             },
         ]
@@ -164,7 +158,6 @@ def test_the_tree_decides_what_is_drawn(tmp_path: Path) -> None:
     assert first["drawing"]["kind"] == "witness"
     assert first["drawing"]["path"] == "packing/witnesses/known-best/n-001.yaml"
     assert fourth["drawing"]["kind"] == "regularized-view"
-    assert fourth["drawing"]["digest_matches"] is True
     assert fourth["uneven_axis"] == 0
     assert document["totals"]["drawn_from_views"] == 1
     assert document["totals"]["axis_sides"] == [0, 0, 0, 0, 5]
