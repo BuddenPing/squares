@@ -577,3 +577,14 @@ def test_n26_runs_end_to_end(tmp_path: Path) -> None:
     assert redone["decision"] == decided
     assert again["cost"] == receipt["cost"]
     assert again["reclassified"]["counts"] == [26]
+
+
+def test_long_integer_text_lifts_the_digit_limit_for_one_measurement() -> None:
+    """At n = 110 `arrangement_gap` wrote an exact squared move past Python's limit."""
+    huge = 10**5000
+    with pytest.raises(ValueError, match="integer string conversion"):
+        str(huge)
+    with drive.long_integer_text():
+        assert len(str(huge)) == 5001
+    with pytest.raises(ValueError, match="integer string conversion"):
+        str(huge)

@@ -127,8 +127,9 @@ import shutil
 import subprocess
 import sys
 import time
-from collections.abc import Iterable, Mapping, Sequence
+from collections.abc import Iterable, Iterator, Mapping, Sequence
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from contextlib import contextmanager
 from dataclasses import asdict, dataclass, field, replace
 from decimal import ROUND_HALF_EVEN, Decimal, localcontext
 from fractions import Fraction
@@ -975,6 +976,23 @@ def turned_squares(
     return turned
 
 
+@contextmanager
+def long_integer_text() -> Iterator[None]:
+    """Lift Python's 4300-digit limit on writing integers as text, for one measurement.
+
+    The limit guards parsing untrusted text. `arrangement_gap` writes the exact squared
+    largest move, whose terms multiply a view's and a witness's coordinates and can pass
+    it where every coordinate is well within it (n = 110 in the re-run of 12 October 2026);
+    the driver reads only the move's decimal root.
+    """
+    previous = sys.get_int_max_str_digits()
+    sys.set_int_max_str_digits(0)
+    try:
+        yield
+    finally:
+        sys.set_int_max_str_digits(previous)
+
+
 def identity(
     view: tuple[Fraction, Sequence[Placed]],
     source: tuple[Fraction, Sequence[Placed]],
@@ -988,7 +1006,8 @@ def identity(
         "of": of,
     }
     try:
-        gap = area.arrangement_gap(view, source)
+        with long_integer_text():
+            gap = area.arrangement_gap(view, source)
     except area.AreaRouteError as error:
         record.update(one_to_one=False, unmatched=str(error), unnamed_turns=[])
         return record
