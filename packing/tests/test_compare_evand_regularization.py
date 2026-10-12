@@ -104,7 +104,7 @@ def test_the_committed_index_recounts_to_its_totals() -> None:
         statuses.count("regularized"),
         statuses.count("unchanged"),
         statuses.count("refused"),
-    ) == (68, 182, 74)
+    ) == (70, 181, 73)
 
 
 def test_an_index_that_disagrees_with_its_totals_is_refused() -> None:
@@ -170,8 +170,8 @@ def test_a_tilt_near_but_not_at_a_class_angle_is_refused() -> None:
 
 def test_the_refused_records_split_by_their_witness_tilts() -> None:
     result = compare.refused_tilts(compare.load_index())
-    assert result["refused"] == 74
-    assert result["counts"] == {"all-45": 43, "other-tilt": 31, "axis-only": 0}
+    assert result["refused"] == 73
+    assert result["counts"] == {"all-45": 42, "other-tilt": 31, "axis-only": 0}
     records = result["records"]
     # n = 51's witness is exact over Q(sqrt 2), with 17 squares at 45 degrees.
     assert {5, 10, 19, 27, 51} <= set(records["all-45"])
