@@ -1673,8 +1673,8 @@ PAPERS: tuple[Paper, ...] = (
         description=(
             "An introduction for anyone new to the problem: what the objects are, why the "
             "approach is shaped the way it is, and what the research has and has not "
-            "established. Each outside idea it uses, from linear programming to algebraic "
-            "number fields, is introduced where it is first needed."
+            "established. It introduces linear programming and algebraic number fields "
+            "and links further reading."
         ),
     ),
 )

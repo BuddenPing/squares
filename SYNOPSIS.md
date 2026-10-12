@@ -613,6 +613,8 @@ case or experiment separately.
 | --- | --- | --- | --- | --- |
 | [Review: Robert Barnett’s and Daniil Ostashev’s Rational Upper-Bound Imports of 11 October (#505, #501)](docs/project/reviews/review-2026-10-11-upper-bound-imports-505-501.md) | dated review record | record | retained | — |
 | [Review: PingYou Ltd’s Two Rational Upper-Bound Imports of 11 October (#503, #504)](docs/project/reviews/review-2026-10-11-upper-bound-imports-503-504.md) | dated review record | record | retained | — |
+| [Editorial Review: README, Homepage, and About](docs/project/reviews/review-2026-10-11-front-door-prose.md) | dated review record | record | retained | — |
+| [Editorial Review: Top-Level Reader Documents and Site Pages](docs/project/reviews/review-2026-10-11-top-level-prose.md) | dated review record | record | retained | — |
 | [Review: Evan Daniel’s Regularized Certificates at Fifteen Counts (T-146)](docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md) | dated review record | record | retained | — |
 | [Final Review: Ryu’s $k^{3/8}$ Deficiency Bounds and the Grading of T-128 to T-146](docs/project/reviews/review-2026-10-11-final-asymptotic-and-grading.md) | dated review record | record | retained | — |
 | [Final Review of PR 487’s Lower Bounds: `T-133` and `T-145` at `n = 40`, and the Reported `T-132`, `T-142`, `T-143` and `T-144`](docs/project/reviews/review-2026-10-11-final-lower-bounds.md) | dated review record | record | retained | — |
@@ -4044,18 +4046,16 @@ squares and 406 pairs.
 This formally proves the weaker upper bound; it does not verify the original decimal
 pose, the tighter current Kingbird report, or global optimality.
 
-The **reported-value path** now has every component built, and still promotes nothing.
-Those are two separate facts and the distance between them is the point.
+The **reported-value path** has every component built, and still promotes nothing.
 
-Each step named as missing when this section was first written now exists and is
-replayable. [`promote.contacts`](packing/src/sqpack/promote/contacts.py) infers which
-features meet and issues a typed refusal for any incidence it cannot decide rather than
-choosing one. [`promote.system`](packing/src/sqpack/promote/system.py) assembles those
-into equations that vanish at the packing they came from, one per contact type rather
-than one per contact.
-[`promote.solve`](packing/src/sqpack/promote/solve.py) recovers a minimal polynomial
-under a margin rule frozen as a test, because an integer-relation search given enough
-digits returns a relation whether or not one exists.
+Each component is replayable.
+[`promote.contacts`](packing/src/sqpack/promote/contacts.py) infers which features meet
+and issues a typed refusal for any incidence it cannot decide rather than choosing one.
+[`promote.system`](packing/src/sqpack/promote/system.py) assembles those into equations
+that vanish at the packing they came from, one per contact type rather than one per
+contact. [`promote.solve`](packing/src/sqpack/promote/solve.py) recovers a minimal
+polynomial under a margin rule frozen as a test, because an integer-relation search
+given enough digits returns a relation whether or not one exists.
 [`promote.krawczyk`](packing/src/sqpack/promote/krawczyk.py) decides existence and
 uniqueness over a box with directed rounding, returning `exists` and `unique`
 separately, and nothing may be promoted from `exists` alone.

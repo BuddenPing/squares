@@ -200,9 +200,10 @@ $199950/4999 < 40$; 5,424 distinct rectangles once expanded) and threshold 1: `v
 by the exact axis-vertex sweep over 10,929,636 vertices, least certified
 1.0016868361671276, in 2.8 s. That decision shares no code with the axis kernel and reads
 the density itself rather than the dominated measure.
-`check-axis` holds it to the input derived here from the retained density: the digest
-the record and the crate’s own premises state, `192f5df6…`, is that input’s, and the
-premises name its $L$, $n$, 5,424 expanded rectangles and net.
+`check-axis` holds it to the input derived here from the retained density: the density
+is the release’s candidate, `984fcd3a…`; the digest the record and the crate’s own
+premises state, `192f5df6…`, is that input’s; and the premises name its $L$, $n$, 5,424
+expanded rectangles and net.
 It refuses an axis stage whose record lacks this decision unless it is told
 `--without-crate`, and a judgement without it reports
 `AXIS_KERNEL_HOLDS_WITHOUT_CRATE`, never `AXIS_STAGE_HOLDS`.
