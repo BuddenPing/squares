@@ -48,7 +48,8 @@ and its drawing enters the layer only after that.
 | $s_V$ | The view’s exact certified side |
 | Generator | The code that made a view: `regularize_axis_components/2` in `packing/devtools/regularize_axis_components.py`, or Evan Daniel’s exact solver and regularizer vendored under `vendor/evand-regularize/`, driven by `packing/devtools/regularize_evand.py` and brought to the witness’s side by `packing/devtools/regularize_same_side.py`. A generator’s version is its own version, or for the vendored code the pin plus its ordered local patches. |
 | `same` | Side relation: $s_V = s_W$ exactly, in the witness’s frame or a recorded isometry of it |
-| `solved` | Side relation: any other exact side, including Evan Daniel’s certificate, which scales the solved point by $1 + 10^{-20}$ and rounds the side up. Never written as `same`. |
+| `bound` | Side relation: $s_V = U$ exactly, where that is not $s_W$. The view certifies exactly the side the register already verifies, so it is a drawing frame (owner, 12 October 2026); at $n = 206$, $U$ is the side of Evan Daniel’s exact solve of the same packing (T-098), and the regularized certificate reproduces it |
+| `solved` | Side relation: any other exact side, including Evan Daniel’s certificate, which scales the solved point by $1 + 10^{-20}$ and rounds the side up. Never written as `same` or `bound`. |
 | Identity | Whether the view is still the credited packing, measured by `arrangement_gap` in `packing/devtools/check_half_angle_area.py` between view and source witness under the best of the box’s eight symmetries: `one_to_one`, `moved` (beyond $10^{-3}$), `max_move` and `max_turn_deg`, recorded as `identity: {basis: measured, measured_in, …}` in the register’s terms |
 | Non-regression | No square’s contact count falls under the house rule (gap $2 \times 10^{-6}$) or the stage rule (gap $0.01$, half a degree), as `census_atlas_contact_shades.witness_shades` measures it |
 | Free square | A square with no load-bearing contact in the exact solve: a rattler, or a force-free square |
@@ -69,16 +70,19 @@ records.
    A view that two routes here cannot decide, such as a pose over a number field today,
    is not admitted. The index’s digest binds the verdict to the view’s bytes.
 2. **Side relation.** $s_V$ is computed exactly and the relation recorded.
-   A drawing needs `same` and $s_V \ge U$. A view with $s_V < U$ is a register-result
-   candidate, and a `solved` view with $s_V \ge U$ is not a drawing frame
+   A drawing needs `same` or `bound`, and $s_V \ge U$. A view with $s_V < U$ is
+   registered as a result first and drawn after (owner, 12 October 2026: “regularize and
+   correct always”), and a `solved` view with $s_V > U$ is not a drawing frame
    ([the decision table](#the-decision-table)).
 3. **Identity.** Measured and recorded for every view, from every generator.
    The view pairs one to one with the witness, and every square turned by more than
    $10^{-6}$ (as a sine) is one the run’s recorded angle changes name; a view that fails
-   either is not drawn as the packing.
+   either goes to review, which admits it as the packing or records it as an alternate.
    A view in which some square moves by more than $1/2$ is admitted only by review.
-4. **Non-regression.** No square’s house or stage count falls, against the source
-   witness or against the admitted view it would replace.
+4. **Non-regression.** Neither the house nor the stage total of shared sides falls,
+   against the source witness or against the admitted view it would replace.
+   A view in which some square’s count falls while neither total does goes to review
+   (owner, 12 October 2026).
 5. **Labelling.** The index entry says `label: regularized`, the view’s id ends in
    `-regularized`, the drawing’s title and description say “regularized”, the container
    drawn is the view’s certified side, and the credit line of [section 7](#7-credit) is
@@ -125,19 +129,21 @@ first row that matches decides.
 | --- | --- | --- | --- |
 | 1 | No output: no valid certificate, an infeasible start, a stall or a timeout | Refuse; the current view or the witness stands | `refused`, `generator-failed`, with the status |
 | 2 | A route here refuses the output | Refuse, and open a defect bead | `refused`, `invalid` |
-| 3 | $s_V < U$, under either relation | Register-result candidate, with its identity measured for its `regularizations` item and listed in the receipt for the import runbook; no drawing until the result is registered | None; the receipt lists it |
-| 4 | `solved`, $s_V \ge U$ | Refuse as a drawing frame | `refused`, `dilated-side` |
-| 5 | `same`, and the view’s pose equals the witness’s exactly | No view | `unchanged` |
-| 6 | `same`, not one to one, or a square turned that the recorded angle changes do not name | Refuse as the packing; shown in the gallery as an alternate | `refused`, `not-one-to-one` or `unnamed-turn` |
-| 7 | `same`, a square’s house or stage count falls against the witness or the view it would replace | Refuse | `refused`, `regression` |
-| 8 | `same`, variant `fewest` with a merge of determined groups, or level 3 | Alternate: review only, never drawn as the packing | Review queue |
-| 9 | `same`, a square moved by more than $1/2$ | Review | Review queue |
-| 10 | `same`, one to one, every turn named, every move within $1/2$, no regression, `conservative`, level 2 or below | Admit | `regularized` |
+| 3 | $s_V < U$, under any relation | Register first: a result through the import runbook, in batches, with its identity measured for its `regularizations` item; drawn once registered | None; the receipt lists it |
+| 4 | `solved`, $s_V > U$ | Not a drawing frame | None, `dilated-side` |
+| 5 | `same` or `bound`, and the view’s pose equals the witness’s exactly | No view | `unchanged` |
+| 6 | `same` or `bound`, not one to one, or a square turned that the recorded angle changes do not name | Review: admitted as the packing or recorded as an alternate | Review queue |
+| 7 | `same` or `bound`, a square’s house or stage count falls against the witness or the view it would replace | Refuse when a house or stage total falls; review when neither does | `refused`, `regression`, or the review queue |
+| 8 | `same` or `bound`, variant `fewest` with a merge of determined groups, or level 3 | Alternate: review only, never drawn as the packing | Review queue |
+| 9 | `same` or `bound`, a square moved by more than $1/2$ | Review | Review queue |
+| 10 | `same` or `bound`, one to one, every turn named, every move within $1/2$, no regression, `conservative`, level 2 or below | Admit | `regularized` |
 
 Row 10 is the only automatic admission.
-Views from `regularize_axis_components/2` are classified by the same table; having no
-variant or level, they meet row 10’s last two conditions by construction.
-A view in the review queue is not drawn until a review record admits it.
+Rows 6 and 7 were refusals until the owner’s answers of 12 October 2026: a case the
+rules cannot settle goes to review, and only an exact route’s refusal or a fall in a
+total refuses. Views from `regularize_axis_components/2` are classified by the same
+table; having no variant or level, they meet row 10’s last two conditions by
+construction. A view in the review queue is not drawn until a review record admits it.
 
 **How a decision is reported** (owner, 11 October 2026). “Refused” is kept for a view
 that would change the drawing and fails an obligation.
@@ -147,9 +153,9 @@ A run reports every count in one of these words, in this order of precedence:
 | --- | --- | --- |
 | **no view** | The generator produced nothing to judge; the witness or the current view stands | 1 |
 | **no change** | The view would draw the same picture: no square moves beyond $10^{-3}$ or turns, and the angle classes and the house contact counts are the source’s. Whatever its side relation, nothing is drawn differently, so there is nothing to refuse; a side below $U$ is still listed as a register-result candidate in the receipt | 3 to 7 and 10, when nothing visible changes; 5 |
-| **refused** | The view changes the drawing and an exact route refuses it (2), it is not the packing (6), or a square’s house or stage count falls (7) | 2, 6, 7 |
+| **refused** | The view changes the drawing and an exact route refuses it (2), or a house or stage total falls (7) | 2, 7 |
 | **held** | The view changes the drawing, passes every route, and waits on the record: a register result first (3) or a side the record does not hold (4); the reason is shown with it | 3, 4 |
-| **review** or **alternate** | As rows 8 and 9 say | 8, 9 |
+| **review** or **alternate** | The pairing or a turn needs a person (6), a square loses a contact while no total falls (7), or as rows 8 and 9 say | 6, 7, 8, 9 |
 | **admitted** | Row 10 | 10 |
 
 This changes how decisions are worded, not what is drawn: only an admitted view, or a
@@ -277,18 +283,24 @@ So it runs on request with a receipt, and the gates hold the decisions it produc
 | Re-decision of vendored-generator views | Every retained view decided again over $\mathbb{Q}$ on the maintained routes, its identity and shades re-measured and its digests held | Deferred, once its cost is measured inside a ceiling; selected per invocation while it is above one |
 | The generator run | The views reproduced from the pinned code and inputs | On request only, with a receipt |
 
-## 9. Open Owner Decisions
+## 9. Owner Decisions
 
 The assessment’s eight
-[open questions](../research/research-2026-10-11-evand-regularization-assessment.md#open-owner-questions)
-stay open. Until each is answered, the policy applies the default in its line, chosen so
-the automated pass can run without overstepping:
+[open questions](../research/research-2026-10-11-evand-regularization-assessment.md#open-owner-questions),
+and the four the pilots of 11 October 2026 raised, each with its answer or, where none
+is recorded, the default the policy applies until there is one.
 
 1. **Variant:** `conservative` only; `fewest` is not run.
+   *Answered by the owner on 12 October 2026:* yes.
+   At $n = 129$ `fewest` lost 26 of 79 four-side squares and the one-to-one pairing.
 2. **A `fewest` merge of determined groups as the same packing:** no.
    Such views are alternates (row 8) and are not admitted.
-3. **Solved-to-smaller-side views as register results:** none is written.
-   Candidates (row 3) are listed in the receipt, neither registered nor drawn.
+3. **Exact views below the verified bound:** *answered by the owner on 12 October 2026,
+   “regularize and correct always”:* every such view is registered as a result through
+   the import runbook, in batches with a `regularizations` item per count, and drawn
+   once registered (row 3). The first batch is the exact packings at the decimal
+   witnesses’ printed sides, about $10^{-14}$ below bounds rounded up at fourteen
+   decimals.
 4. **Irrational optima:** the status quo.
    A dilated certificate is not a drawing frame (row 4), and views over a number field
    are a follow-up, $\mathbb{Q}(\sqrt{2})$ first; $n = 11$, whose proved optimum lies in
@@ -308,6 +320,21 @@ the automated pass can run without overstepping:
    ([OR-18](../../../operating-rules.md#or-18-keep-bulk-data-out-of-git-and-never-bind-code-or-verdicts-to-a-git-commit-or-blob)),
    named by digest in the receipt: they can be discarded later, and a discard cannot be
    undone.
+9. **A view at exactly the verified bound:** *answered by the owner on 12 October 2026:*
+   admitted, as the side relation `bound` (rows 5 to 10). It certifies exactly what the
+   register holds.
+10. **Cases the rules cannot settle:** *answered by the owner on 12 October 2026:* they
+    go to review, not to refusal.
+    Rows 6 and 7 send a view to review unless a total of shared sides falls; only an
+    exact route’s refusal or a falling total refuses.
+11. **A view that changes nothing visible:** *answered by the owner on 12 October 2026:*
+    as now. It is reported as no change and no file is written for it.
+12. **Registered refinements the case records have not adopted:** *answered by the owner
+    on 12 October 2026, as recommended:* the register’s lower exact certificates
+    (`T-146` at its fifteen counts first) become the atlas witnesses before their counts
+    are admitted, once the case-record rewrite (#403) and `T-146`’s custody item allow,
+    and after the imports in flight at the same counts land.
+    A view derived from a witness that later changes is re-reviewed (section 5).
 
 An answer, like any other change to this policy, is an owner decision recorded here with
 its date. It replaces the default, and the counts it bears on are re-reviewed.
