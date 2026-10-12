@@ -612,10 +612,17 @@ def test_the_506_claims_hold_each_count_against_its_case_or_tracked_row() -> Non
     assert requested == [304, 305, 338, 339, 344, 375, 376, 378, 379, 380, 381]
     assert all(rows[n]["smallest"] == reports.THIS for n in requested)
     assert [rows[n]["case"]["result"] for n in (304, 305)] == ["T-098", "T-098"]
-    # Issue #500's prints, the Mondrian packings both start from, allow nothing smaller.
+    # Issue #500's exact sides, the Mondrian packings both start from, are read from its
+    # own packet, not from the issue's 15-digit prints, which are those sides cut.
     for n in (304, 305):
         (squish,) = [other for other in rows[n]["pending"] if other["report"] == "#500"]
         assert squish["relation"] == "below"
+        assert "printed" not in squish
+        assert Fraction(squish["exact_side"]) == reports.house_side(
+            "[SQUISH fourth request 2026-10-11]", n
+        )
+    assert Fraction(rows[304]["pending"][-1]["difference"]) > Fraction(9109, 10**8)
+    assert Fraction(rows[305]["pending"][-1]["difference"]) > Fraction(7837, 10**8)
     # Beyond the corpus, each requested count is below the row the register tracked there
     # when the issue was read, and 380 and 381 had none.
     tracked = {

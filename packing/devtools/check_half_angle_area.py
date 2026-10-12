@@ -703,6 +703,10 @@ IMPORTS_503_504 = {
 #: derived fact beside the digest of its pinned ``nNNN.cert.json``; no upstream byte is
 #: retained, as for #481, and the same SQUISH JSON reader holds each fact to its pin.
 IMPORTS_500 = {"#500": "squish-500-fourth-request-2026-10-11"}
+#: Francisco Couzo's #506 of 11 October: eleven certificates in Evan Daniel's text format
+#: retained as factual data at 337078c, 304 and 305 in the case corpus and 338, 339, 344,
+#: 375, 376, 378, 379, 380 and 381 beyond it, each read by this route's own parser.
+IMPORTS_506 = {"#506": "couzo-certificates-2026-10-11"}
 ALL_IMPORTS = {
     **IMPORTS,
     **LATER_IMPORTS,
@@ -710,6 +714,7 @@ ALL_IMPORTS = {
     **IMPORTS_REGULARIZED,
     **IMPORTS_503_504,
     **IMPORTS_500,
+    **IMPORTS_506,
 }
 #: Imports decided over their whole replayed roster rather than the counts the entry
 #: cites: #470's README-printed 132 and 267 are certified beside the issue's 28.
@@ -723,6 +728,12 @@ CREDITED: dict[tuple[str, int], tuple[str, ...]] = {
     ("trio126", 126): ("T-125",),
     ("#470", 103): ("T-125",),
     ("#470", 258): ("T-115",),
+    # Couzo's #506 says its 304 and 305 start from SQUISH's #500 Mondrian packings and
+    # its 344 from Kevin Fang's #484, whose arrangement Evan Daniel's Hunt 3 (#489) also
+    # moved; a key that is no register entry names the import whose certificate it is.
+    ("#506", 304): ("#500",),
+    ("#506", 305): ("#500",),
+    ("#506", 344): ("#484", "#489"),
 }
 WEB = ROOT / "resources/web"
 REPO = ROOT.parent
@@ -1616,7 +1627,7 @@ def credited_gaps(found: Sequence[Imported]) -> dict[str, dict[str, Any]]:
     credit: dict[str, dict[str, Any]] = {}
     for case in found:
         for house in credited(case.issue, case.n):
-            other = CREDITED_READERS[house](case.n)
+            other = parent_packing(house, case.n)
             try:
                 gap = arrangement_gap((case.side, case.placements), other)
             except AreaRouteError as error:
@@ -1641,6 +1652,12 @@ LINEAGE: dict[tuple[str, int], tuple[str, int, Fraction]] = {
     ("#500", 176): ("T-128", 127, Fraction(1)),
     ("#500", 270): ("#481", 209, Fraction(1)),
     ("#500", 304): ("#481", 209, Fraction(1)),
+    # Couzo's #506 starts from #500's packings of the same count at 304 and 305 and from
+    # Kevin Fang's #484 at 344; its exact optima carry the 1 + 10^-20 guard of Evan
+    # Daniel's solver, far below `NEAR`, so no dilation is undone.
+    ("#506", 304): ("#500", 304, Fraction(1)),
+    ("#506", 305): ("#500", 305, Fraction(1)),
+    ("#506", 344): ("#484", 344, Fraction(1)),
 }
 #: How near a parent square must land on a child square to be counted as reappearing:
 #: its centre within 10^-9, and its edge direction within a sine of 10^-6 modulo a

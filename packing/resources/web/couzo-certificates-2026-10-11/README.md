@@ -131,15 +131,18 @@ packet. The two the issue reports inside the corpus:
 
 | n | Case ceiling, holder | Below it by | Other pending reports at the count | Smallest |
 | --- | --- | --- | --- | --- |
-| 304 | 17.934650018390681724105084929881, Evan Daniel’s exact optimum of Couzo’s packing (T-098) | $5.08 \times 10^{-3}$ | #476 equals the case ceiling; #500 prints 17.929657042170880, above by $9.11 \times 10^{-5}$ | this certificate |
-| 305 | 17.952959459015527962875662582531, Evan Daniel’s exact optimum of Couzo’s packing (T-098) | $2.49 \times 10^{-3}$ | #500 prints 17.950544853925636, above by $7.84 \times 10^{-5}$; T-140 (#488), and Hunt 3’s `hunt3_n305` of the same side, above by $6.73 \times 10^{-4}$; T-136 (#481) above by $7.30 \times 10^{-4}$; #476 equals the case ceiling | this certificate |
+| 304 | 17.934650018390681724105084929881, Evan Daniel’s exact optimum of Couzo’s packing (T-098) | $5.08 \times 10^{-3}$ | #476 equals the case ceiling; #500’s exact side, 17.9296570421708801 rounded up, above by $9.109 \times 10^{-5}$ | this certificate |
+| 305 | 17.952959459015527962875662582531, Evan Daniel’s exact optimum of Couzo’s packing (T-098) | $2.49 \times 10^{-3}$ | #500’s exact side, 17.9505448539256365 rounded up, above by $7.837 \times 10^{-5}$; T-140 (#488), and Hunt 3’s `hunt3_n305` of the same side, above by $6.73 \times 10^{-4}$; T-136 (#481) above by $7.30 \times 10^{-4}$; #476 equals the case ceiling | this certificate |
 
-Issue #500, SQUISH’s Mondrian packings from which both start, was filed the same day and
-is compared at the 15 places its table prints, each side within one unit of the print
-either way. Its exact sides are retained by its own import; at either count the
-certificate here is below every number the print allows. The other reports of 11 October
-share no count with this release: #501 is at 155, 156 and 211, #503 at 207, #504 at 153
-and #505 at 146 and 261.
+Issue #500, SQUISH’s Mondrian packings from which both start, was filed the same day.
+Its exact sides are read from its own packet
+([`squish-500-fourth-request-2026-10-11`](../squish-500-fourth-request-2026-10-11/README.md))
+through the importer’s `[SQUISH fourth request 2026-10-11]` reader, so the two margins
+above are exact; the issue’s 15-digit prints are those sides cut, not rounded, and the
+record was first frozen against them (within one unit of the print either way) before
+that packet existed, with the same relations. The other reports of 11 October share no
+count with this release: #501 is at 155, 156 and 211, #503 at 207, #504 at 153 and #505
+at 146 and 261.
 
 Beyond the corpus there is no case record. Each requested side is compared with the grid,
 with the beyond-horizon row the source register tracks as current at its count, and with
@@ -196,7 +199,10 @@ The certificates establish finite upper bounds at their exact sides, nothing mor
 The issue says all eleven pass Evan Daniel’s `verify_cert.py` and this repository’s
 `sqpack` verifier; those runs are the author’s, and neither program of the source ran
 here. Novelty, local or global optimality and rigidity are not established.
-No review has read this packet.
+The stage 4 review of 12 October 2026
+([review-2026-10-11-upper-bound-imports-506.md](../../../../docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md))
+replayed the kernel at 304, 305, 344 and 381, decided all eleven requested certificates
+on the third exact route and measured the lineage the issue states.
 
 ## Credit and Licence
 
