@@ -621,6 +621,17 @@ def test_ci_jobs_fetch_provenance_history_and_key_the_uv_cache_from_the_lock() -
     assert f"/packing/resources/web/{squish_upper_bound_packets.PACKET.name}/" in sparse
     assert f"/packing/resources/web/{squish_followup_packets.PACKET.name}/" in sparse
     assert f"/packing/resources/web/{squish_second_update_packets.PACKET.name}/" in sparse
+    # `known-best atlas records and sample` rebuilds every house adopted on 11 October
+    # 2026 from its packet's private inputs (`upper_bound_houses.check_houses`), so each
+    # adopted source's packet rides in the slice, read from that module's own table; the
+    # slice without them failed on a missing acquisition report on jlevy/squares#518's
+    # first run (38196351783).
+    from devtools import upper_bound_houses  # noqa: PLC0415
+
+    assert {
+        f"/packing/resources/web/{source.packet.name}/"
+        for source in upper_bound_houses.sources().values()
+    } <= sparse
     full_step = next(
         _mapping(step)
         for step in validate_steps
@@ -1178,11 +1189,17 @@ def test_the_slow_marker_is_declared_only_by_measured_nodes() -> None:
         "test_check_declared_bounds.py": {
             "test_n68_depth_bound_is_named_by_its_refusal_test",  # 3.4s
         },
-        # 4s of call time across 1, measured on 2026-10-10 at load 4.7 on four cores:
-        # `test_the_489_certificate_at_305_has_488s_side_in_a_quarter_turned_arrangement`
-        # took 4.1s.
+        # 58s of call time across 3. The 489 node measured 4.1s on 2026-10-10 at load 4.7
+        # on four cores. The two lineage nodes of the #503/#504 and #505/#501 imports were
+        # measured on 2026-10-12 on four cores at load 5.5 to 7.1, each alone and again
+        # with the file's other slow nodes (`-m slow --durations=0`): 4.75s and 4.74s for
+        # the n207 patches, 49.61s and 57.11s for the Barnett and Ostashev gaps, so
+        # neither shares a build. The three slow `pytest.param` cases this check cannot
+        # see took 7.05s (#503 n207), 18.26s (#505 n261) and 11.40s (#501 n211).
         "test_check_half_angle_area.py": {
             "test_the_489_certificate_at_305_has_488s_side_in_a_quarter_turned_arrangement",
+            "test_the_n207_certificate_is_two_placed_patches_of_the_n70_and_the_n153_is_not",
+            "test_barnetts_refinements_are_ryan_xus_packings_moved_and_ostashevs_are_not",
         },
         # 24s of call time across 1.
         "test_contact_assembly_labels.py": {
@@ -1410,8 +1427,10 @@ def test_the_slow_marker_is_declared_only_by_measured_nodes() -> None:
         },
         # Hosted run37739373988/job113186283659: 14.52s; 68 full geometry replays
         # cover 85,204 pair decisions across the n108 translation/tolerance surface.
+        # Since the house adoption of 11 October 2026 (think-fvz4) the case is n84's
+        # unstable T-130 house: its screen measured 3.18s on a loaded four-cpu box.
         "test_translation_escape_screen.py": {
-            "test_squish_n108_retains_its_replayed_tolerance_instability",
+            "test_an_adopted_house_retains_its_replayed_tolerance_instability",  # 3.18s
         },
         # Hosted run37743601485/job113199788788, 2026-10-08: 25.04s for the
         # actual complete clone, all three #399 houses/native custody and two private

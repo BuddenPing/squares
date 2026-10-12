@@ -31,7 +31,7 @@
    "name": "crate: reviewed source for a declared net, the binary embeds it"
   },
   {
-   "detail": "verified, 10929636 vertices, least 1.0016868361671276 at ['3490012394923077/1000000000000000', '3100670341/500000000'], 2.792 s",
+   "detail": "verified on the input derived here, 192f5df66e91..., 10929636 vertices, least 1.0016868361671276 at ['3490012394923077/1000000000000000', '3100670341/500000000'], 2.792 s",
    "held": true,
    "name": "crate: the near-axis statement at side A by the exact vertex sweep"
   }
