@@ -623,6 +623,7 @@ case or experiment separately.
 | [Review: The Verification and Confirmation Rungs of Register Entries T-120 to T-146](docs/project/reviews/review-2026-10-11-recent-register-rungs.md) | dated review record | record | retained | — |
 | [The Lean-Backed Claims Against the Rung Predicates: `T-060`, `T-084`, `T-055` and `T-120` to `T-124`](docs/project/reviews/review-2026-10-11-lean-backed-rungs.md) | dated review record | record | retained | — |
 | [Significance Scores Wrapped Up: The 48 Drafts Confirmed, Three Scores Changed, and the Working Rules Collected](docs/project/reviews/review-2026-10-11-significance-scores.md) | dated review record | record | retained | — |
+| [Guzhou0806’s `s(40) > 3359/500`: Review of the New-Support Density on the Continuous-Pose Kernel](docs/project/reviews/review-2026-10-12-n40-new-supports-6718.md) | dated review record | record | retained | — |
 | [Editorial Review: README, Homepage, and About](docs/project/reviews/review-2026-10-11-front-door-prose.md) | dated review record | record | retained | — |
 | [Editorial Review: Top-Level Reader Documents and Site Pages](docs/project/reviews/review-2026-10-11-top-level-prose.md) | dated review record | record | retained | — |
 | [Review: Evan Daniel’s Regularized Certificates at Fifteen Counts (T-146)](docs/project/reviews/review-2026-10-10-evand-regularized-certificates.md) | dated review record | record | retained | — |
