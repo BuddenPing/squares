@@ -356,6 +356,7 @@ def test_superseded_is_marked_on_a_bound_and_where_a_later_result_is_declared() 
         "T-135",
         "T-137",
         "T-138",
+        "T-155",
     }
     # The house adoption of 11 October 2026 moved 42 case records to the smallest
     # confirmed and reviewed side the register held (think-fvz4): SQUISH's earlier packets
@@ -364,7 +365,8 @@ def test_superseded_is_marked_on_a_bound_and_where_a_later_result_is_declared() 
     # their cases were never adopted, since a smaller one was (T-131, T-135, T-137, T-138).
     # Couzo's eight-case report of 8 October (T-128) and five-case follow-up (T-130),
     # pending adoption until then, hold case lanes at five counts and three, and are
-    # unmarked.
+    # unmarked. Rio Calle's n = 102 certificate (T-155) is superseded from the day it was
+    # registered: T-146, the house there, is smaller.
     for entry in ("T-128", "T-130"):
         assert entry not in marked
         assert view.standing(records.results[entry], records) == view.HOLDS
