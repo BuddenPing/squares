@@ -455,14 +455,13 @@ def coverage_source(
     has two: its beyond-horizon rows read a claims record that holds only the claims
     beyond the corpus, and `check_source_coverage` holds a selected override of a source
     with a claims record to that record's print, so its in-corpus counts are an entry of
-    their own.
+    their own. A key with one entry is that entry, as the register is keyed elsewhere.
     """
-    found = [
-        source
-        for source in sources
-        if str(source["source_key"]) == key
-        and n in select_houses.scope_values(dict(source["scope"]))
-    ]
+    found = [source for source in sources if str(source["source_key"]) == key]
+    if len(found) > 1:
+        found = [
+            source for source in found if n in select_houses.scope_values(dict(source["scope"]))
+        ]
     if len(found) != 1:
         raise AdoptionError(f"n={n}: {len(found)} coverage entries of {key} hold this count")
     return found[0]

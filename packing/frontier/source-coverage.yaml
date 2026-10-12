@@ -5900,7 +5900,7 @@ superseded_reports:
 - n: 270
   source_id: evand-new-arrangements-2026-10-07
   value: '16.937807228446029110709567408515'
-  reason: The house until 2026-10-11; its certificate stays retained and verified, and T-140's exact
+  reason: The house until 2026-10-11; its certificate stays retained and verified, and T-151's exact
     side is smaller.
   superseded_by: squish-500-fourth-request-2026-10-11
 - n: 292
@@ -5924,7 +5924,7 @@ superseded_reports:
 - n: 305
   source_id: evand-square-packing-2026-10-05
   value: '17.952959459015527962875662582531'
-  reason: The house until 2026-10-11; its certificate stays retained and verified, and T-140's exact
+  reason: The house until 2026-10-11; its certificate stays retained and verified, and T-152's exact
     side is smaller.
   superseded_by: couzo-certificates-2026-10-11-in-corpus
 - n: 306
@@ -5942,8 +5942,8 @@ superseded_reports:
 - n: 305
   source_id: evand-record-hunt3-2026-10-10
   value: '17.951139772207'
-  reason: A certificate of the same release that no register entry cites; its exact side is above
-    the house adopted here on 2026-10-12 (T-152).
+  reason: A certificate of the same release that no register entry cites; its exact side equals T-140's,
+    the house from 11 to 12 October 2026; above the house adopted on 2026-10-12 (T-152).
   superseded_by: couzo-certificates-2026-10-11-in-corpus
 - n: 156
   source_id: evand-square-packing-2026-10-05

@@ -414,6 +414,9 @@ def test_coverage_selects_the_new_house_and_points_every_row_at_it(
     adopt.COVERAGE.write_text(text, encoding="utf-8")
     monkeypatch.setitem(select.reports.HOUSES, "[equal]", lambda _n: Fraction(13, 4))
     monkeypatch.setitem(select.reports.HOUSES, "[above]", lambda _n: Fraction(7, 2))
+    # The writer dates each count by the pass that adopted it (`houses.adopted_on`), which
+    # reads the adoption's table; the synthetic count is adopted by the first pass.
+    monkeypatch.setitem(houses.ADOPTED, 7, "T-900")
     once = adopt.coverage([_move()], text)
     data = safe_load(once)
     (override,) = data["selected_overrides"]
