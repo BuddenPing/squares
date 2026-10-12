@@ -23,8 +23,12 @@ packing the witness retains: `of` is the registered result whose `attribution` n
 witness's source and whose scope holds the count. A view at the verified upper bound
 (`bound`, written `solved` in the register's terms) redraws the packing solved to that
 bound: `of` is the result the case's verified upper bound rests on
-(`build_bound_citations.results_carrying` on the bound's own evidence). Exactly one result
-must answer; where none does, or more than one, the count is listed under `unregistered`
+(`build_bound_citations.results_carrying` on the bound's own evidence). A `same` view whose
+side is also exactly the verified upper bound, where no registered result attributes the
+witness's source, redraws the packing at that bound in the same way: the result the bound
+rests on holds it (T-151 certified 26 witnesses' own sides exactly from views that are
+drawn here). Exactly one result must answer; where none does, or more than one, the count
+is listed under `unregistered`
 with the reason, and its record stays in the layer's index alone. The register holds a
 result by others only when the record acts on it (`epistemics.md`, Results by Others), so a
 packing from before this project began that no replay here ever registered has no result to
@@ -49,6 +53,7 @@ import json
 import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
+from fractions import Fraction
 from pathlib import Path
 from typing import Any
 
@@ -92,6 +97,24 @@ def relation(entry: Mapping[str, Any]) -> str:
     return str(side.get("relation") or "same")
 
 
+def bound_side(bound: Mapping[str, Any]) -> Fraction | None:
+    """A verified upper bound as a rational where it is one: its exact form, or its decimal
+    where it states none; `None` for a closed form, which no rational side equals."""
+    exact = bound.get("exact_form")
+    text = str(exact if exact is not None else bound.get("value") or "")
+    try:
+        return Fraction(text)
+    except ValueError:
+        return None
+
+
+def at_bound(entry: Mapping[str, Any], bound: Mapping[str, Any]) -> bool:
+    """Whether a drawn entry's exact side is the case's verified upper bound."""
+    view = (entry.get("side") or {}).get("view")
+    upper = bound_side(bound)
+    return view is not None and upper is not None and Fraction(str(view)) == upper
+
+
 def witness_source_key(entry: Mapping[str, Any], repo: Path = REPO) -> str | None:
     """The bibliography key the drawn entry's source witness names."""
     document = load_yaml((repo / entry["source"]["witness"]).read_text(encoding="utf-8"))
@@ -104,8 +127,10 @@ def packing_result(
     *,
     source_key: str | None,
     bound_holders: Sequence[str],
+    side_at_bound: bool = False,
 ) -> Resolved:
-    """The registered result whose packing the drawn entry redraws (see the module)."""
+    """The registered result whose packing the drawn entry redraws (see the module).
+    `side_at_bound` says a `same` view's side is also exactly the verified upper bound."""
     n = int(entry["n"])
     if relation(entry) == "bound":
         if len(bound_holders) == 1:
@@ -119,6 +144,10 @@ def packing_result(
     ]
     if len(holders) == 1:
         return Resolved(holders[0], "attributes the witness's source")
+    if not holders and side_at_bound and len(bound_holders) == 1:
+        return Resolved(
+            bound_holders[0], "holds the verified upper bound the witness's side is exactly"
+        )
     if not holders:
         return Resolved(
             None, f"no registered result attributes the witness's source {source_key}"
@@ -153,15 +182,19 @@ def expected(
             continue
         n = int(entry["n"])
         holders: list[str] = []
-        if relation(entry) == "bound":
+        exact = False
+        if relation(entry) in {"bound", "same"}:
             bound = load_case(n).get("verified_upper_bound") or {}
-            own = own_evidence(bound.get("evidence") or [], register)
-            holders = results_carrying(n, own, results)
+            exact = relation(entry) == "same" and at_bound(entry, bound)
+            if relation(entry) == "bound" or exact:
+                own = own_evidence(bound.get("evidence") or [], register)
+                holders = results_carrying(n, own, results)
         resolved = packing_result(
             entry,
             results,
             source_key=witness_source_key(entry, repo),
             bound_holders=holders,
+            side_at_bound=exact,
         )
         if resolved.of is None:
             unregistered.append({"n": n, "reason": resolved.reason})

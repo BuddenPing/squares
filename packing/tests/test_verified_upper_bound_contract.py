@@ -94,8 +94,9 @@ DECLARED_CONSUMERS = {
         "the regularization driver reads each case's verified bound as U, the ceiling a "
         "regularized view's exact side is compared with (policy rows 3 and 4): a side below "
         "it is a register-result candidate, a side exactly at it is a drawing frame (`bound`), "
-        "and a side above it is not. It never reads the field as s(n) or as the witness's "
-        "side, which it takes from the witness"
+        "and a side above it is not; `reclassify --refresh-bounds` copies it into a finished "
+        "run's reports again from the case record before deciding. It never reads the field "
+        "as s(n) or as the witness's side, which it takes from the witness"
     ),
     "packing/tests/test_regularize_evand.py": (
         "a synthetic report for the driver's tests carries U as the driver writes it, so the "
@@ -124,9 +125,10 @@ DECLARED_CONSUMERS = {
         "entry; U is the ceiling the view's side is held to, never s(n)"
     ),
     "packing/devtools/regularized_drawings.py": (
-        "the regularized-drawings record reads a count's verified bound only where a view "
-        "sits exactly at it, to find the registered result whose evidence holds that ceiling "
-        "and name it as the drawn packing's result; a ceiling's holder, never s(n)"
+        "the regularized-drawings record reads a count's verified bound to test whether a "
+        "drawn view's exact side is at it and, only where it is, to find the registered result "
+        "whose evidence holds that ceiling and name it as the drawn packing's result; a "
+        "ceiling and its holder, never s(n)"
     ),
     "packing/atlas/known-best/regularized-atlas-index.schema.yaml": (
         "the regularized layer's index schema names the field `view_minus_verified_upper_bound`"

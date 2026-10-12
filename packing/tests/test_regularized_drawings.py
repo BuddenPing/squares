@@ -2,9 +2,10 @@
 
 Which registered result holds a drawn count's packing: the one attributing the
 witness's source for a view at the witness's side, the one the verified upper bound rests
-on for a view at the bound, and none where no result answers or several do. The generated
-block reads back as the data it was written from, and the register's checker holds each
-item to the register.
+on for a view at the bound or for a view at a witness's side that is exactly the bound
+where no result attributes the source, and none where no result answers or several do.
+The generated block reads back as the data it was written from, and the register's
+checker holds each item to the register.
 """
 
 from __future__ import annotations
@@ -64,6 +65,34 @@ def test_the_packing_is_the_result_holding_it_at_the_side_drawn() -> None:
     assert "several" in resolve(6, "[A]").reason
     assert resolve(6, "[A]", "bound", ["T-002"]).of == "T-002"
     assert resolve(6, "[A]", "bound", []).of is None
+
+
+def test_a_witness_side_exactly_at_the_bound_falls_back_to_the_bound_holder() -> None:
+    """T-151 certified witnesses' own sides exactly: a `same` view there that no result
+    attributes is held by the result the bound rests on, and only when the side is exact."""
+    found = entry(7, "same")
+    found["side"]["view"] = "33/5"
+
+    def resolve(holders: list[str], *, at: bool = True) -> Any:
+        return drawings.packing_result(
+            found, RESULTS, source_key="[B]", bound_holders=holders, side_at_bound=at
+        )
+
+    assert resolve(["T-002"]).of == "T-002"
+    assert resolve(["T-002"], at=False).of is None
+    assert resolve(["T-002", "T-003"]).of is None
+    # A source some result attributes keeps that result, at the bound or not.
+    attributed = drawings.packing_result(
+        entry(5, "same"), RESULTS, source_key="[A]", bound_holders=["T-002"], side_at_bound=True
+    )
+    assert attributed.of == "T-001"
+    assert drawings.at_bound(found, {"value": "6.6", "exact_form": "33/5"})
+    assert drawings.at_bound(found, {"value": "6.6"})
+    assert not drawings.at_bound(
+        found, {"value": "6.6000001", "exact_form": "330000001/50000000"}
+    )
+    assert not drawings.at_bound(found, {"value": "6.6", "exact_form": "4 + sqrt(2)"})
+    assert not drawings.at_bound(entry(7, "same"), {"value": "6.6"})
 
 
 def test_the_block_reads_back_as_the_items_it_was_written_from() -> None:
