@@ -145,10 +145,12 @@ attempt that reaches the regularizer is kept under `solve/`, the first attempt m
   timeout, from a copy of `search/exact` with the replica patch `probe-flat-stall-stop`
   applied (`vendor/evand-regularize/vendored.yaml`, kind `replica`, and its README's Local
   Changes): upstream's zero-mode probe also stops at its stall floor, which leaves the
-  KKT point and the certificate unchanged (n = 290: 222 s instead of more than 2,700).
-  A count solved so lists the patch in its report's `generator.patches` and its views'
-  `certificate.generator.patches`, its `method` names it, and the receipt lists it with
-  the counts that used it.
+  KKT point and the certificate unchanged. In the run of 12 October 2026, 290 certified
+  in 282 s with the outputs the study's patched solve gave, and 302's whole solve, two
+  active-set steps included, certified in 819 s, where the pristine first pass alone took
+  1,641 s and its active-set step did not finish in 1,800. A count solved so lists the
+  patch in its report's `generator.patches` and its views' `certificate.generator.patches`,
+  its `method` names it, and the receipt lists it with the counts that used it.
 
 Rung 4 of the study, a solve of the load-bearing sub-packing where upstream's promotion
 of wedged force-free squares sends Newton off (150), is not part of the ladder.
