@@ -4886,7 +4886,23 @@ issues:
     - think-0zd4
     - think-720n
     answer_bead: think-0zd4
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/503#issuecomment-6125247333
+      date: '2026-10-12'
+      by: jlevy
+      kind: confirmation
+      reported:
+      - result: n207-exact-certificate
+        id: T-147
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: n207-exact-certificate
+        id: E-pingyou-503-certificate-report
+        status: reviewed
+      - result: n207-exact-certificate
+        id: E-pingyou-503-exact-feasibility
+        status: confirmed
     close_when: The import and its disposition are on main, the house adoption at 207 has landed or
       is owned, the author has been asked which AI-assistance account stands, and the owner has
       posted the resulting state; optimality is outside this request.
@@ -4936,6 +4952,22 @@ issues:
       kind: acknowledgement
       reported:
       - result: n153-exact-certificate
+    - url: https://github.com/jlevy/squares/issues/504#issuecomment-6125249586
+      date: '2026-10-12'
+      by: jlevy
+      kind: confirmation
+      reported:
+      - result: n153-exact-certificate
+        id: T-148
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: n153-exact-certificate
+        id: E-pingyou-504-certificate-report
+        status: reviewed
+      - result: n153-exact-certificate
+        id: E-pingyou-504-exact-feasibility
+        status: confirmed
     close_when: The import and its disposition are on main, the house adoption at 153 has landed or
       is owned, and the owner has posted the resulting state; optimality and the undilated contact
       solution are outside this request.
@@ -4990,6 +5022,23 @@ issues:
       kind: acknowledgement
       reported:
       - result: three-records
+    - url: https://github.com/jlevy/squares/issues/501#issuecomment-6125250032
+      date: '2026-10-12'
+      by: jlevy
+      kind: confirmation
+      reported:
+      - result: three-records
+        id: T-149
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: three-records
+        id: E-ostashev-501-certificate-report
+        status: reviewed
+      - result: three-records
+        id: E-ostashev-501-exact-feasibility
+        status: confirmed
+      - result: kkt-exact-optima
     close_when: The import and its disposition are on main, the house adoption at 155, 156 and 211
       has landed or is owned, and the owner has posted the resulting state; the KKT statement and
       optimality are outside this request.
@@ -5032,7 +5081,23 @@ issues:
     - think-dzre
     - think-720n
     answer_bead: think-dzre
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/505#issuecomment-6125250423
+      date: '2026-10-12'
+      by: jlevy
+      kind: confirmation
+      reported:
+      - result: n146-n261-refinements
+        id: T-150
+        verification: V3
+        confirmation: C3
+        status: confirmed
+      - result: n146-n261-refinements
+        id: E-barnett-505-certificate-report
+        status: reviewed
+      - result: n146-n261-refinements
+        id: E-barnett-505-exact-feasibility
+        status: confirmed
     close_when: The import and its disposition are on main, the house adoption at 146 and 261 has
       landed or is owned, and the owner has posted the resulting state; the superseded and n = 2043
       certificates are not requested, and optimality is outside this request.

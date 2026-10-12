@@ -11,7 +11,8 @@ owner lifted that wait on 11 October 2026. For every count whose house moves, th
   kept as history; every confirmed certificate at the count, selected or not, joins the
   case's evidence roster, which is what lets `check_certificate_citations` drop its
   deferrals; the source joins the resources; a conjectured optimum the house beats is
-  withdrawn, and a blocker that only said the verified lane trailed the report goes;
+  withdrawn, and one it does not beat stops the adoption for a human to decide; a blocker
+  that only said the verified lane trailed the report goes;
 - **the case record's body**: a dated paragraph under the title that states the move,
   and a section after the verification code that says whose certificate the house is,
   how it was confirmed here and which certificates it replaces;
@@ -437,13 +438,12 @@ def display(side: Fraction) -> str:
     return select_houses.ceiling(side)
 
 
-def _bibliography() -> dict[str, Mapping[str, Any]]:
-    entries = safe_load(BIBLIOGRAPHY.read_text(encoding="utf-8"))["sources"]
-    return {str(entry["key"]): entry for entry in entries}
+def _bibliography() -> Mapping[str, Mapping[str, Any]]:
+    return _keyed(BIBLIOGRAPHY.read_text(encoding="utf-8"), "key")
 
 
-def _coverage_sources() -> list[Mapping[str, Any]]:
-    return list(safe_load(COVERAGE.read_text(encoding="utf-8"))["sources"])
+def _coverage_sources() -> Sequence[Mapping[str, Any]]:
+    return _listed(COVERAGE.read_text(encoding="utf-8"))
 
 
 def coverage_source(
@@ -468,20 +468,43 @@ def coverage_source(
     return found[0]
 
 
+@cache
+def _listed(text: str) -> tuple[Mapping[str, Any], ...]:
+    """A register's `sources` in order, parsed once for each text the file has held."""
+    return tuple(safe_load(text)["sources"])
+
+
+@cache
+def _keyed(text: str, key: str) -> Mapping[str, Mapping[str, Any]]:
+    """A register's `sources` by `key`, parsed once for each text the file has held."""
+    return {str(source[key]): source for source in _listed(text)}
+
+
 # ------------------------------------------------------------------------- the move
 
 
 @dataclass(frozen=True)
 class Move:
-    """One count's adoption: the selection, the house and what the case held before."""
+    """One count's adoption: the selection, the house and the record as it stood before."""
 
     selection: select_houses.Selection
     house: select_houses.Candidate
     packing: Mapping[str, Any]
+    #: The case record's complete text before the move, which `rewrite` rewrites.
+    text: str
 
     @property
     def n(self) -> int:
         return self.selection.n
+
+
+@cache
+def _claims(path: Path) -> Mapping[int, str]:
+    """A source's claims reparsed from its retained record, once a run: the records are
+    retained evidence, which an adoption reads and never writes."""
+    from devtools.check_source_coverage import load_claims  # noqa: PLC0415
+
+    return load_claims(path)
 
 
 def _value(candidate: select_houses.Candidate) -> str:
@@ -491,11 +514,9 @@ def _value(candidate: select_houses.Candidate) -> str:
     side that record prints; every other house is reported at its exact side rounded up
     at sixteen places, as the verified lane writes it.
     """
-    from devtools.check_source_coverage import load_claims  # noqa: PLC0415
-
     source = coverage_source(_coverage_sources(), candidate.source_key, candidate.n)
     if source.get("claims_record"):
-        printed = load_claims(ROOT / str(source["claims_record"])).get(candidate.n)
+        printed = _claims(ROOT / str(source["claims_record"])).get(candidate.n)
         if printed is None or Fraction(Decimal(printed)) != candidate.side:
             raise AdoptionError(
                 f"n={candidate.n}: {source['id']}'s claims record does not print the exact side"
@@ -565,8 +586,15 @@ def _holder(packing: Mapping[str, Any]) -> str:
     return text
 
 
-def plan(selections: Mapping[int, select_houses.Selection] | None = None) -> list[Move]:
-    """Every count whose derived house is below its case and is one this adoption houses."""
+def plan(
+    selections: Mapping[int, select_houses.Selection] | None = None,
+    texts: Mapping[int, str] | None = None,
+) -> list[Move]:
+    """Every count whose derived house is below its case and is one this adoption houses.
+
+    Each move carries its case record's text, read from the frontier unless `texts` holds
+    the count, as a replay of the retained prior state passes it.
+    """
     selections = select_houses.select() if selections is None else selections
     moves = []
     for n, selection in sorted(selections.items()):
@@ -580,8 +608,11 @@ def plan(selections: Mapping[int, select_houses.Selection] | None = None) -> lis
             )
         if house.result not in RESULTS or n not in CREDITS:
             raise AdoptionError(f"n={n}: no prose or credit for {house.result}")
-        text = select_houses.case_path(n).read_text(encoding="utf-8")
-        moves.append(Move(selection, house, _packing(_split(text)[1])))
+        if texts is not None and n in texts:
+            text = texts[n]
+        else:
+            text = select_houses.case_path(n).read_text(encoding="utf-8")
+        moves.append(Move(selection, house, _packing(_split(text)[1]), text))
     return moves
 
 
@@ -657,11 +688,17 @@ def _resource(move: Move) -> dict[str, Any]:
 
 def front_matter(move: Move, front: str) -> str:
     packing = move.packing
+    conjecture = conjectured(packing)
+    if conjecture is not None and move.house.side >= conjecture:
+        raise AdoptionError(
+            f"n={move.n}: the house {select_houses.ceiling(move.house.side)} does not "
+            f"beat the conjectured optimum {packing['conjectured_optimum']}; whether the "
+            "conjecture stands is decided by hand"
+        )
     reviewed = f"  source_reviewed: '{houses.adopted_on(move.n)}'"
     front = re.sub(r"^  source_reviewed: .*$", reviewed, front, count=1, flags=re.MULTILINE)
     front = _replace(front, "reported_upper_bound", reported_bound(move))
     front = _replace(front, "verified_upper_bound", verified_bound(move))
-    conjecture = packing.get("conjectured_optimum")
     if conjecture is not None:
         front = re.sub(
             r"^  conjectured_optimum: .*$",
@@ -681,6 +718,20 @@ def front_matter(move: Move, front: str) -> str:
     if kept != blockers:
         front = _replace(front, "blockers", kept)
     return front
+
+
+def conjectured(packing: Mapping[str, Any]) -> Fraction | None:
+    """The side a record conjectures optimal, if it conjectures one.
+
+    The generator writes `integer` for a grid case, whose conjecture is that the optimum
+    is the integer side the case reports (`generate_frontier_case`).
+    """
+    conjecture = packing.get("conjectured_optimum")
+    if conjecture is None:
+        return None
+    if conjecture == "integer":
+        conjecture = packing["reported_upper_bound"]["value"]
+    return Fraction(Decimal(str(conjecture)))
 
 
 def _trailing_blocker(blocker: Mapping[str, Any]) -> bool:
@@ -871,8 +922,8 @@ def adopted(move: Move) -> bool:
 
 
 def rewrite(move: Move) -> str:
-    path = select_houses.case_path(move.n)
-    opening_fence, front, rest = _split(path.read_text(encoding="utf-8"))
+    """The case record at its house: `move.text` with its front matter and body moved."""
+    opening_fence, front, rest = _split(move.text)
     closing, text = rest[:4], rest[4:]
     if closing != "---\n":
         raise AdoptionError(f"n={move.n}: front matter has no closing fence")
@@ -888,6 +939,10 @@ def _section_span(text: str, key: str) -> tuple[int, int]:
         raise AdoptionError(f"coverage register has no {key}")
     following = re.search(r"^[a-z_]+:", text[start.end() :], re.MULTILINE)
     return start.start(), start.end() + following.start() if following else len(text)
+
+
+#: The clause of a displaced house's row that names the certificate below it.
+DISPLACED_BY = re.compile(r"and T-\d+'s exact side is smaller\.$")
 
 
 def coverage(moves: Sequence[Move], text: str) -> str:
@@ -908,10 +963,15 @@ def coverage(moves: Sequence[Move], text: str) -> str:
             f"({house.result})."
         )
         # Every report the earlier house beat, a catalogue baseline's included, is beaten
-        # by the new one, which is smaller still.
+        # by the new one, which is smaller still. A row that an earlier adoption wrote for
+        # the house it displaced names the house that is smaller; that is now this one.
         for report in superseded:
             if report["n"] == n:
                 report["superseded_by"] = new
+                if "reason" in report:
+                    report["reason"] = DISPLACED_BY.sub(
+                        f"and {house.result}'s exact side is smaller.", str(report["reason"])
+                    )
         if old is not None and old["source_id"] in claims:
             superseded.append(
                 {
@@ -933,7 +993,7 @@ def coverage(moves: Sequence[Move], text: str) -> str:
             "evidence": house.report_evidence[0],
             "reason": reason,
         }
-    superseded.extend(_unaccounted(data, overrides, superseded, {move.n for move in moves}))
+    superseded.extend(_unaccounted(data, overrides, superseded, moves))
     data["selected_overrides"] = [overrides[n] for n in sorted(overrides)]
     data["superseded_reports"] = superseded
     for key in ("selected_overrides", "superseded_reports"):
@@ -949,42 +1009,67 @@ def _unaccounted(
     data: Mapping[str, Any],
     overrides: Mapping[int, Mapping[str, Any]],
     superseded: Sequence[Mapping[str, Any]],
-    moved: set[int],
+    moves: Sequence[Move],
 ) -> list[dict[str, Any]]:
-    """Each reparsed claim at a moved count that the new selection beats, as superseded.
+    """Each reparsed claim at a moved count that the new house holds, as superseded.
 
     `check_source_coverage` accounts for every claim a claims record prints, as a
     selected override, a superseded report or a beyond-horizon row. A claim at a moved
     count that was none of these, such as a certificate the issue did not name, is
-    superseded by the count's new house when the house is below it.
+    superseded by the count's new house when the house is not above it. Where the claim's
+    source has an exact reader the two exact sides are compared, so a certificate equal
+    to the house is said to be equal, whatever its print; otherwise the house is held to
+    the print, and the row says so.
     """
-    from devtools.check_source_coverage import load_claims  # noqa: PLC0415
-
+    held = {move.n: move.house for move in moves}
     accounted = {(str(e["source_id"]), int(e["n"])) for e in superseded}
     accounted |= {(str(o["source_id"]), n) for n, o in overrides.items()}
     added = []
     for source in data["sources"]:
         if not source.get("claims_record"):
             continue
-        for n, printed in sorted(load_claims(ROOT / str(source["claims_record"])).items()):
+        for n, printed in sorted(_claims(ROOT / str(source["claims_record"])).items()):
             selected = overrides.get(n)
-            if n not in moved or (str(source["id"]), n) in accounted or selected is None:
+            if n not in held or (str(source["id"]), n) in accounted or selected is None:
                 continue
-            if Decimal(str(selected["value"])) < Decimal(printed):
-                added.append(
-                    {
-                        "n": n,
-                        "source_id": source["id"],
-                        "value": printed,
-                        "reason": (
-                            "A certificate of the same release that no register entry cites; "
-                            "the side it prints is above the house adopted here on "
-                            f"{houses.adopted_on(n)}."
-                        ),
-                        "superseded_by": selected["source_id"],
-                    }
+            house, day = held[n], houses.adopted_on(n)
+            exact = _exact_side(str(source.get("source_key") or ""), n)
+            if exact is None and house.side < Fraction(Decimal(printed)):
+                standing = f"the side it prints is above the house adopted here on {day}"
+            elif exact is not None and house.side < exact:
+                standing = (
+                    f"its exact side is above the house adopted here on {day} ({house.result})"
                 )
+            elif exact is not None and house.side == exact:
+                standing = (
+                    f"its exact side equals the house adopted here on {day}, which "
+                    f"{house.result}'s registered certificate holds"
+                )
+            else:
+                continue
+            added.append(
+                {
+                    "n": n,
+                    "source_id": source["id"],
+                    "value": printed,
+                    "reason": (
+                        "A certificate of the same release that no register entry cites; "
+                        f"{standing}."
+                    ),
+                    "superseded_by": selected["source_id"],
+                }
+            )
     return added
+
+
+def _exact_side(key: str, n: int) -> Fraction | None:
+    """A claim's exact side where its source has a reader that rebuilds it at `n`."""
+    if key not in select_houses.reports.HOUSES:
+        return None
+    try:
+        return select_houses.reports.house_side(key, n)
+    except select_houses.reports.ReportError:
+        return None
 
 
 # ------------------------------------------------------------------------- deferrals
@@ -1008,10 +1093,14 @@ def deferrals(text: str, cited: set[str]) -> str:
     )
 
 
-def _cited() -> set[str]:
+def _cited(rewritten: Mapping[int, str] | None = None) -> set[str]:
+    """The evidence every case record cites, reading `rewritten`'s texts where it has them."""
+    rewritten = rewritten or {}
     found: set[str] = set()
     for path in sorted(FRONTIER.glob("n-[0-9][0-9][0-9].md")):
-        found |= _evidence(_packing(_split(path.read_text(encoding="utf-8"))[1]))
+        n = int(path.stem.removeprefix("n-"))
+        text = rewritten.get(n) or path.read_text(encoding="utf-8")
+        found |= _evidence(_packing(_split(text)[1]))
     return found
 
 
@@ -1136,18 +1225,23 @@ def _write(path: Path, text: str) -> bool:
 
 
 def write(moves: Sequence[Move]) -> list[int]:
+    """Write every move, so that a run stopped part-way is finished by running it again.
+
+    Every text is computed before any file is written, so a move the tool refuses writes
+    nothing. The case records are written last, since `plan` reads them: a rerun after an
+    interruption plans exactly the records not yet written, and the prior state, coverage
+    register and deferrals written before them are already what that rerun computes.
+    """
     pending = [move for move in moves if not adopted(move)]
-    retain_history(
-        {
-            move.n: select_houses.case_path(move.n).read_text(encoding="utf-8")
-            for move in pending
-        }
-    )
+    rewritten = {move.n: rewrite(move) for move in pending}
+    register = COVERAGE.read_text(encoding="utf-8")
+    covered = coverage(pending, register) if pending else register
+    deferred = deferrals(DEFERRALS.read_text(encoding="utf-8"), _cited(rewritten))
+    retain_history({move.n: move.text for move in pending})
+    _write(COVERAGE, covered)
+    _write(DEFERRALS, deferred)
     for move in pending:
-        _write(select_houses.case_path(move.n), rewrite(move))
-    if pending:
-        _write(COVERAGE, coverage(pending, COVERAGE.read_text(encoding="utf-8")))
-    _write(DEFERRALS, deferrals(DEFERRALS.read_text(encoding="utf-8"), _cited()))
+        _write(select_houses.case_path(move.n), rewritten[move.n])
     return [move.n for move in pending]
 
 

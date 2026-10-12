@@ -5810,13 +5810,13 @@ superseded_reports:
 - n: 146
   source_id: ry-xu-new-packings-2026-10-08
   value: '12.5837822775125838'
-  reason: The house until 2026-10-11; its certificate stays retained and verified, and T-146's exact
+  reason: The house until 2026-10-11; its certificate stays retained and verified, and T-150's exact
     side is smaller.
   superseded_by: barnett-refinements-2026-10-11
 - n: 153
   source_id: gupta-square-packing-refinements-2026-10-08
   value: '12.8796793733293146'
-  reason: The house until 2026-10-11; its certificate stays retained and verified, and T-146's exact
+  reason: The house until 2026-10-11; its certificate stays retained and verified, and T-148's exact
     side is smaller.
   superseded_by: pingyou-n153-certificate-2026-10-11
 - n: 154
@@ -5828,7 +5828,7 @@ superseded_reports:
 - n: 155
   source_id: squish-update-2026-10-07
   value: '12.9525032026045129'
-  reason: The house until 2026-10-11; its certificate stays retained and verified, and T-128's exact
+  reason: The house until 2026-10-11; its certificate stays retained and verified, and T-149's exact
     side is smaller.
   superseded_by: dostashev-records-2026-10-11
 - n: 175
@@ -5846,7 +5846,7 @@ superseded_reports:
 - n: 207
   source_id: gupta-square-packing-refinements-2026-10-08
   value: '14.8879922583026574'
-  reason: The house until 2026-10-11; its certificate stays retained and verified, and T-136's exact
+  reason: The house until 2026-10-11; its certificate stays retained and verified, and T-147's exact
     side is smaller.
   superseded_by: pingyou-n207-certificate-2026-10-11
 - n: 209
@@ -5942,8 +5942,8 @@ superseded_reports:
 - n: 305
   source_id: evand-record-hunt3-2026-10-10
   value: '17.951139772207'
-  reason: A certificate of the same release that no register entry cites; the side it prints is above
-    the house adopted here on 2026-10-11.
+  reason: A certificate of the same release that no register entry cites; its exact side is above
+    the house adopted here on 2026-10-12 (T-152).
   superseded_by: couzo-certificates-2026-10-11-in-corpus
 - n: 156
   source_id: evand-square-packing-2026-10-05

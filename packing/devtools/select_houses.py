@@ -12,7 +12,9 @@ derives the house again from the record, so it cannot go stale:
   and whose source's exact side at the count rebuilds from its retained packet through
   `upper_bound_reports.HOUSES`;
 - **the house** at a count is the candidate with the smallest exact side, compared
-  exactly, where it is below the case record's verified ceiling; ties go to the earlier
+  exactly, where it is below the case record's verified ceiling (a ceiling that is not
+  rational is held by its display, and a candidate below that is left to a human, since
+  it may lie between the two); ties go to the earlier
   finder, by the entry's `attribution.published`, and then to the earlier entry; the case
   record keeps its own house where nothing is below it;
 - **credit** follows the entry, except that a candidate listed in its entry's
@@ -30,7 +32,11 @@ Usage, from ``packing/`` with the project interpreter::
     python -m devtools.select_houses --check    # fail where a case is above its house
 
 ``--check`` exits non-zero where a case record's verified ceiling is above the derived
-house, which is what an unadopted, confirmed and reviewed certificate looks like.
+house, which is what an unadopted, confirmed and reviewed certificate looks like. It also
+fails where it cannot tell: a candidate below the rounded-up display of an algebraic
+ceiling, which a human orders, and an eligible entry with no exact reader that states a
+side below its case (`check_standing.improvements`), which no candidate can carry. It
+names every eligible entry it could not read.
 """
 
 from __future__ import annotations
@@ -43,7 +49,7 @@ from dataclasses import dataclass
 from fractions import Fraction
 from functools import cache
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from devtools import upper_bound_reports as reports
 from devtools.check_results import scope_values
@@ -86,13 +92,19 @@ class Candidate:
 
 @dataclass(frozen=True)
 class Case:
-    """What a case record holds now: its verified ceiling and the source of its house."""
+    """What a case record holds now: its verified ceiling and the source of its house.
+
+    `exact` says whether `verified` is the ceiling itself, a rational `exact_form`. An
+    algebraic ceiling is held by its display, rounded up at sixteen places, and a
+    candidate between the two cannot be ordered against it here.
+    """
 
     n: int
     verified: Fraction
     reported: Fraction
     source_key: str
     evidence: tuple[str, ...]
+    exact: bool = True
 
 
 @dataclass(frozen=True)
@@ -103,6 +115,10 @@ class Selection:
     case: Case
     house: Candidate | None
     candidates: tuple[Candidate, ...]
+    #: The best candidate is below the display of a ceiling that is not rational, so
+    #: whether it is below the ceiling is not decided here: the case stays, and a human
+    #: decides.
+    undecided: bool = False
 
     @property
     def moves(self) -> bool:
@@ -115,12 +131,18 @@ class Selection:
 
 
 def load_results() -> list[Mapping[str, Any]]:
-    return list(safe_load(RESULTS.read_text(encoding="utf-8"))["results"])
+    return list(_parsed(RESULTS.read_text(encoding="utf-8"))["results"])
 
 
 def load_evidence() -> dict[str, Mapping[str, Any]]:
-    entries = safe_load(EVIDENCE.read_text(encoding="utf-8"))["evidence"]
+    entries = _parsed(EVIDENCE.read_text(encoding="utf-8"))["evidence"]
     return {str(entry["id"]): entry for entry in entries}
+
+
+@cache
+def _parsed(text: str) -> Mapping[str, Any]:
+    """A register parsed once for each text it has held; callers read it, never write."""
+    return cast("Mapping[str, Any]", safe_load(text))
 
 
 def _fraction(value: object) -> Fraction | None:
@@ -139,10 +161,16 @@ def load_case(n: int) -> Case:
     path = case_path(n)
     if not path.is_file():
         raise SelectionError(f"n={n}: no case record at {path.relative_to(REPO)}")
-    packing = safe_load(path.read_text(encoding="utf-8").split("---", 2)[1])["packing"]
+    return parse_case(n, path.read_text(encoding="utf-8"))
+
+
+def parse_case(n: int, text: str) -> Case:
+    """What the case record `text` holds at `n`."""
+    packing = safe_load(text.split("---", 2)[1])["packing"]
     upper = packing["verified_upper_bound"]
     reported = packing["reported_upper_bound"]
-    verified = _fraction(upper.get("exact_form")) or _fraction(upper["value"])
+    exact = _fraction(upper.get("exact_form"))
+    verified = exact if exact is not None else _fraction(upper["value"])
     stated = _fraction(reported.get("exact_form")) or _fraction(reported["value"])
     if verified is None or stated is None:
         raise SelectionError(f"n={n}: the case's upper bounds are not numbers")
@@ -152,6 +180,7 @@ def load_case(n: int) -> Case:
         reported=stated,
         source_key=str(reported.get("source_key") or ""),
         evidence=tuple(str(item) for item in upper.get("evidence") or ()),
+        exact=exact is not None,
     )
 
 
@@ -272,18 +301,51 @@ def select(
     *,
     since: str | None = None,
     cases: Mapping[int, Case] | None = None,
+    unread: list[str] | None = None,
 ) -> dict[int, Selection]:
-    """The house at every count a candidate reaches, against the case records as they are."""
+    """The house at every count a candidate reaches, against the case records as they are.
+
+    A case whose ceiling is not rational moves only where its best candidate is not below
+    the ceiling's display; below it, the selection is `undecided` and the case stays.
+    """
     results = load_results() if results is None else results
     evidence = load_evidence() if evidence is None else evidence
     selections: dict[int, Selection] = {}
-    for n, found in sorted(candidates(results, evidence, since=since).items()):
+    found_at = candidates(results, evidence, since=since, unread=unread)
+    for n, found in sorted(found_at.items()):
         case = cases[n] if cases is not None else load_case(n)
         ranked = tuple(sorted(found, key=precedence))
         best = ranked[0]
-        house = best if best.side < case.verified else None
-        selections[n] = Selection(n=n, case=case, house=house, candidates=ranked)
+        below = best.side < case.verified
+        selections[n] = Selection(
+            n=n,
+            case=case,
+            house=best if below and case.exact else None,
+            candidates=ranked,
+            undecided=below and not case.exact,
+        )
     return selections
+
+
+def unread_pending(unread: Sequence[str]) -> dict[str, list[int]]:
+    """The unread entries that state a bound below their case: adoptions nothing here sees.
+
+    An eligible entry without an exact reader is never a candidate, so a confirmed and
+    reviewed side it states below a case would stay pending without this.
+    """
+    from devtools import check_standing  # noqa: PLC0415
+    from devtools import render_recent_results as view  # noqa: PLC0415
+
+    if not unread:
+        return {}
+    records = view.load_records()
+    entries = {str(entry["id"]): entry for entry in records.register.results}
+    pending = {}
+    for identifier in unread:
+        better = check_standing.improvements(entries[identifier], records)
+        if better:
+            pending[identifier] = sorted({finding.n for finding in better})
+    return pending
 
 
 def ceiling(side: Fraction, places: int = DISPLAY_PLACES) -> str:
@@ -323,10 +385,17 @@ def row(selection: Selection) -> dict[str, Any]:
 def table(selections: Mapping[int, Selection], *, everything: bool) -> str:
     lines = [f"{'n':>4}  {'case house':<44} {'new house':<9} {'side':<20} margin   credit"]
     for n, selection in sorted(selections.items()):
-        if not (selection.moves or everything):
+        if not (selection.moves or selection.undecided or everything):
             continue
         house = selection.house
         old = f"{selection.case.source_key} {ceiling(selection.case.verified)}"
+        if selection.undecided:
+            best = selection.candidates[0]
+            lines.append(
+                f"{n:>4}  {old:<44} {'(stays)':<9} {ceiling(best.side):<20} "
+                f"undecided: {best.result} is below the display of an algebraic ceiling"
+            )
+            continue
         if house is None:
             lines.append(f"{n:>4}  {old:<44} {'(stays)':<9}")
             continue
@@ -347,17 +416,37 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--check", action="store_true", help="fail where a house would move")
     parser.add_argument("--since", help="only entries registered on or after this date")
     arguments = parser.parse_args(argv)
-    selections = select(since=arguments.since)
+    unread: list[str] = []
+    selections = select(since=arguments.since, unread=unread)
     if arguments.json:
         rows = [row(s) for s in selections.values() if s.moves or arguments.all]
         print(json.dumps(rows, indent=2))
     else:
         print(table(selections, everything=arguments.all))
     if arguments.check:
+        failed = False
         moving = [n for n, selection in selections.items() if selection.moves]
         if moving:
             print(f"FAIL: a confirmed, reviewed side is below the case at n = {moving}")
-            return 1
+            failed = True
+        undecided = [n for n, selection in selections.items() if selection.undecided]
+        if undecided:
+            print(
+                "FAIL: a confirmed, reviewed side is below the display of an algebraic "
+                f"ceiling, undecided here, at n = {undecided}"
+            )
+            failed = True
+        print(
+            "unread, eligible but with no exact reader: "
+            f"{', '.join(unread) if unread else 'none'}"
+        )
+        for identifier, counts in unread_pending(unread).items():
+            print(
+                f"FAIL: {identifier} has no exact reader and states a side below its case "
+                f"at n = {counts}, pending an adoption this cannot select"
+            )
+            failed = True
+        return 1 if failed else 0
     return 0
 
 
