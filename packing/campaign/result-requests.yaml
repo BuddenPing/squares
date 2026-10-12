@@ -59,8 +59,10 @@ issues:
     kind: result-report
     triage: done
     summary: Pinned source metadata and Lean code imported as attributed reports, with source configurations
-      and proof obligations kept explicit.
-    read_through: '2026-10-09T02:57:00Z'
+      and proof obligations kept explicit. The author's comment of 11 October commits the Lean modules
+      that bind each exact form of field degree at most 20 to its configuration, and asks for the exact
+      quadratic side as the verified upper bound at 41 counts.
+    read_through: '2026-10-11T02:25:18Z'
     results:
     - key: new-exact-forms
       claim: Four newly derived exact feasible-side forms at102,106,152,177; polynomial minimality remains
@@ -78,8 +80,52 @@ issues:
         bounds. The complete reported catalogue is retained; PR403 owns canonical exact-form integration
         and the source flags are not local verifier outcomes.
       queued: false
+    - key: lean-packs-binding-2026-10-11
+      claim: >-
+        Lean modules lean/Sqpack/Exact/Packs/N<n>.lean, committed at evand/square-packing
+        6bbae379d23bd4a1d893f33fb254489eeb2cc3c0 (2026-10-11T02:23:00Z, after a first batch in
+        1b9dd35) with a SHA256SUMS of every file, prove for all 258 exact forms of this issue whose
+        field has degree at most 20 that the selected root of the minimal polynomial in its isolating
+        interval packs n squares, packs : exists s, peval pS s = 0, Sa <= s <= Sb and Packs n s, by
+        decide +kernel with the standard axioms only; for the 62 quadratic sides they also prove
+        packs_closed : Packs n (a + b sqrt d) and minSide_le_closed : minSide n <= a + b sqrt d, through
+        the rational root test quadOK proved sound once in lean/Sqpack/ExactQuad.lean (7d047a9). The
+        generator reads only the committed minpoly/data exact forms that verify_exact.py replays. The
+        author's rebuild costs about 10 process-hours, 14 s to about 5 minutes a count.
+      source: https://github.com/jlevy/squares/issues/419#issuecomment-6104596297
+      not_registered: >-
+        Evidence about the source configurations this entry already maps, T-120 to T-124 and the
+        retained catalogue, not a new bound. Not retained or built here: think-63vx owns taking the
+        Lean binding and the quadratic closed forms in as evidence, from a packet at 6bbae37 and a
+        build here. The author's per-count table at 6bbae37 (search/exact/lean_batch/results.md)
+        prices all 258 modules at 37,107 s and the 41 the ask names at 7,559 s (2.1 process-hours,
+        the longest n = 148 at 294 s); n = 129 and 146 need chunks of 10 because chunks of 25
+        exceed 14 GB.
+      queued: true
+      bead: think-63vx
+    asks:
+    - what: >-
+        Record the exact quadratic side a + b sqrt d, which minSide_le_closed at 6bbae37 states, as
+        the verified upper bound at 41 counts whose verified bound is today the rational rounding up
+        of the 2026-10-05 exact ceilings (E-evand-exact-ceilings-2026-10-05-*, 2e-15 to 1e-14 above
+        the exact side): sqrt 2 at 101, 104, 109, 122, 124, 125, 145, 147 to 150, 170, 173, 174, 197,
+        200 to 203, 226, 227, 229, 231 to 233, 257, 260, 262, 264, 265, 290, 291, 294, 296 and 298,
+        and (k + sqrt 7)/2 at 53, 151, 176, 204, 234 and 299.
+      state: queued
+      bead: think-63vx
+      note: >-
+        The author checked all 41 against reported_upper_bound. By the comment, at 15 counts (5, 10,
+        18, 19, 26, 27, 38, 40, 52, 65, 66, 67, 82, 85, 89) the exact form is already the verified
+        bound and the Lean proof is offered as an independent replay with nothing asked; at 84, 86, 127, 175 and
+        295 (Ryan Xu's rational records) and 258 (SQUISH) the quadratic form belongs to a packing that
+        is no longer the record; at 232 SQUISH's pending packing (15.76743) is below 8 + 11 sqrt 2/2,
+        so the exact bound there is useful only while that packing is pending. Confirmation priced:
+        lake build of the 41 modules at the pin, about 2.1 process-hours by the author's timings,
+        with the axiom receipt and a reading of the statement binding (Packs, minSide in
+        lean/Sqpack/Spec.lean); no Lean build ran in the 2026-10-11 pass.
     beads:
     - think-8sm2
+    - think-63vx
     answer_bead: think-8sm2
     replies:
     - url: https://github.com/jlevy/squares/issues/419#issuecomment-6065918715
@@ -521,7 +567,7 @@ issues:
       The 9 October update reports 38 rows; eleven of them, with a twelfth class outside the roster,
       were admitted to the n17 census ledger as kernel certificates through issue 472. Prior dated reports
       remain unchanged.
-    read_through: '2026-10-09T09:51:00Z'
+    read_through: '2026-10-11T02:22:21Z'
     results:
     - key: subpatterns-27
       claim: 29 source subpatterns, with 19 reported certificate verified and 10 computed; only rows
@@ -616,6 +662,26 @@ issues:
         and 38 marked admitted; issue 472's entry records the admission. The census ledger is not the result
         register, and the n17 bound is unchanged.
       queued: false
+    - key: kernel-rows-2026-10-11
+      claim: >-
+        Rows 1, 2, 3, 15, 27 and 33 now have kernel certificates, made with this repository's kernel
+        producer at 657cc48 and passed in full mode by the standing kernel verifier (blob be8135f6e),
+        4.7 to 61 MB each, filed for admission as issue 495 (m5181696, m5177920, m2031888, m459873,
+        m4000256 and m6160481 there). For row 3 this replaces the pending unmodified FULL receipt of
+        the branch-and-bound certificate; rows 15 and 33 had no checked certificate, their
+        branch-and-bound certificates being 133 GB and an estimated 480 GB. Row 4 still stalls under
+        the kernel, and the author is preparing the unmodified standing FULL receipt of its
+        branch-and-bound certificate.
+      source: https://github.com/jlevy/squares/issues/413#issuecomment-6104576642
+      not_registered: >-
+        Census-ledger candidates, not register entries: their admission to
+        certified-sub-patterns.yaml is issue 495's, which think-nmfl owns, held with the n = 17
+        intake (think-x4v4). No certificate, receipt or hosted object is retained here yet, and no
+        row's status changes before that admission.
+      queued: true
+      bead: think-nmfl
+      blocked_on:
+      - think-x4v4
     asks:
     - what: Acquire complete packages for rows 1–4 first and join exact named-cell, frame, cap, closed-domain
         and receipt custody before admission.
@@ -632,6 +698,7 @@ issues:
     beads:
     - think-x4v4
     - think-bmwd
+    - think-nmfl
     answer_bead: think-x4v4
     replies:
     - url: https://github.com/jlevy/squares/issues/413#issuecomment-6047161738
@@ -700,7 +767,11 @@ issues:
       9dcc05bc…. The author''s update of 09:51 UTC is recorded as subpatterns-38-status-2026-10-09 and
       kernel-rows-2026-10-09. The owner''s note of 23:26 UTC reports exp-317''s admission through PR475:
       rows 23, 24, 25, 29, 30, 31, 34, 35, 36, 37 and 38 are admitted, the other 27 rows remain open,
-      and the twelfth #472 class, m6177056, is outside this roster.'
+      and the twelfth #472 class, m6177056, is outside this roster. The author''s comment of 11 October
+      02:22 UTC is recorded as kernel-rows-2026-10-11: rows 1, 2, 3, 15, 27 and 33 have kernel certificates
+      filed for admission as issue 495 (think-nmfl), which would give rows 1–3 the kernel route the first
+      queued ask names a branch-and-bound route for; row 4 still waits on its unmodified standing FULL
+      receipt.'
   - number: 414
     title: 'Two preprints: k^2 - M(k) >= 0.1 k^{1/4} (k >= 4.62e12) and > 0.06 k^{1/3} (k >= 3.5e17)'
     author: squarepacker
@@ -3945,7 +4016,7 @@ issues:
     close_when: The import and its disposition, including the beyond-horizon counts, are on main and the
       owner has posted the resulting state; optimality is outside this request.
   - number: 485
-    title: 's(40) > 1340000/199529 (approximately 6.715815746082023): updated registration request'
+    title: 's(40) > 3359/500 = 6.718: updated registration request'
     author: Guzhou0806
     opened: '2026-10-10'
     state: open
@@ -3973,8 +4044,20 @@ issues:
       replayed in full here, the producer's code, with their controls; the finite steps decided again
       by a first-party exact audit and the near-axis statement by sqverify-fast; the mathematics
       reviewed with no blocking defect. It is registered as T-145, and n = 40's reported and verified
-      lower bounds move to 1340000/199529.
-    read_through: '2026-10-10T14:50:00Z'
+      lower bounds move to 1340000/199529. A comment of 11 October 07:39 UTC, with the issue retitled,
+      reports s(40) > 3359/500 = 6.718 from a new rational density of 685 positive D4 rectangle orbits,
+      522 from wand125's rect_n40_L67 pool and 163 outside it, decided by T-145's two kernels unchanged
+      at B = 3350/3359, at 6a65957e6c5c51cdf267917d882dab7f5b4928dd with release
+      n40-new-supports-6718-20261011, 217911/99764500 above T-145; and, separately, that no
+      nonnegative weighting of the 2,526 original orbits gives a uniform charging contradiction at
+      X >= 6.72. wand125's comment of 17:14 UTC reports a fresh run of the release's entry point,
+      COMPLETE and REPLAYED_SAME_KERNEL with every count equal, and an unpublished continuous-angle
+      mode of its own that verified the density; it publishes no receipt. Retained on 11 October in
+      the guzhou-n40-new-supports-2026-10-11 packet with both receipts; the density's orbit facts,
+      both kernel inputs and every finite step decided here by a first-party exact audit, and the
+      near-axis certificate reproduced with the CI run's axis binary and decided again by
+      sqverify-fast. The 43 slabs wait for an owner budget (think-tln9).
+    read_through: '2026-10-11T17:14:50Z'
     results:
     - key: s40-clipped-corner
       claim: s(40) > 335427/50000 = 6.70854, by excluding a container of side exactly 335427/50000 and
@@ -4010,9 +4093,42 @@ issues:
       - E-n040-guzhou-continuous-pose-kernel-replay
       - E-n040-guzhou-continuous-pose-finite-audit
       - E-n040-guzhou-continuous-pose-crate-axis
+    - key: s40-new-supports
+      claim: >-
+        s(40) > 3359/500 = 6.718, by excluding a container of side exactly 3359/500 and compactness:
+        a new rational density of 685 positive D4 rectangle orbits (522 inherited from wand125's
+        rect_n40_L67 pool, 163 generated outside it, all reweighted), mass 3999/100, captures at least
+        4999/5000 in every square of side 3350/3359 over the continuous pose domain, by T-145's
+        continuous-pose kernel unchanged over the same 43 slabs and an axis certificate at side
+        249329659/250000000 for t in [0, 10^-6]; 40 * 4999/5000 - 3999/100 = 1/500. It is
+        217911/99764500 above T-145.
+      source: https://github.com/jlevy/squares/issues/485#issuecomment-6106761997
+      not_registered: >-
+        Retained and its finite steps audited, not registered: the packet
+        guzhou-n40-new-supports-2026-10-11 retains the release, and devtools.audit_n40_new_supports
+        decided the finite steps and the near-axis statement. A later layer of the 2026-10-11 intake
+        registers it and takes its T-NNN. The complete replay of the 43 slabs is priced at about
+        0.74 CPU-hours here and has no owner budget yet.
+      queued: true
+      bead: think-tln9
+    - key: s40-support-family-obstruction
+      claim: >-
+        No nonnegative weighting of all 2,526 original uniform D4 rectangle orbits of rect_n40_L67
+        gives a strict uniform per-square charging contradiction at X >= 168/25 = 6.72: a positive
+        rational average over 388 legal poses captures at most
+        24998348431654956215746/1000000000003000000000000 < 1/40 of every unit-mass orbit, checked
+        exactly by a Python Fraction program and a C++ Boost rational program.
+      source: https://github.com/jlevy/squares/issues/485#issuecomment-6106761997
+      not_registered: >-
+        A statement about a family of certificates, not a bound on s(40): the release says it is not
+        an upper bound and not a lower-bound proof at 6.72, and new supports fall outside it. Retained
+        with the release in the guzhou-n40-new-supports-2026-10-11 packet; its two checkers were not
+        run here.
+      queued: false
     beads:
     - think-3oi5
     - think-xms6
+    - think-tln9
     answer_bead: think-3oi5
     replies: []
     close_when: The import and its review disposition are on main and the owner has posted the resulting
@@ -4160,3 +4276,289 @@ issues:
     close_when: The import and its disposition, including the beyond-horizon counts, are on main and the
       owner has posted the resulting state; Kevin Fang's credit for the two-wedge constructions and
       optimality stay with their sources.
+  - number: 494
+    title: 'n17 hard tail: wall-chain elimination (width 1) does not see m851903''s obstruction — float negative'
+    author: evand
+    opened: '2026-10-11'
+    state: open
+    kind: result-report
+    triage: done
+    summary: >-
+      Evan Daniel reports a negative, in floating point only: the width-1 wall-chain path relaxation that
+      X-052 section 2.5 suggests, an exact variable elimination along the ring of corner and side squares
+      with one interior square fixed as an obstacle, barely separates m851903 from the true endpoint state
+      3439615 (62 and 73 percent of 4,577 sampled interior poses leave the ring feasible, against 82
+      percent for the control), so the obstruction lives in what the relaxation drops. Code at
+      evand/square-packing cd55295 (search/wallchain/, search/WALLCHAIN.md); a width-2 band is estimated
+      at tens to hundreds of CPU-hours and was not run. Nothing is a certificate and nothing is claimed
+      for the register.
+    read_through: '2026-10-11T00:58:50Z'
+    results:
+    - key: wallchain-width1-negative
+      claim: >-
+        The width-1 wall-chain relaxation leaves every wall row loose by about 0.65 a square for
+        m851903 and the endpoint state alike, and conditioned on one interior square it leaves the ring
+        feasible at 62 percent (interior-S) and 73 percent (interior-W) of sampled poses for m851903,
+        against 82 percent for the true state; float evidence on sampled grids with squares shrunk to
+        side 1 - 0.003.
+      source: body
+      not_registered: >-
+        A negative method result for the n = 17 hard tail, in floating point, with no certificate and
+        no claim on any bound. It is to be recorded as a negative beside X-052 section 2.5 when the
+        n = 17 intake resumes, so that the width-1 relaxation is not repeated; think-lkbe owns that,
+        held with the n = 17 intake (think-x4v4).
+      queued: true
+      bead: think-lkbe
+      blocked_on:
+      - think-x4v4
+    beads:
+    - think-lkbe
+    answer_bead: think-lkbe
+    replies: []
+    close_when: The negative is recorded beside X-052 section 2.5 and the owner has acknowledged it on the
+      issue; it asks for nothing else.
+  - number: 495
+    title: 'n17: 15 more sub-pattern kernel certificates (upstream producer, standing verifier full PASS),
+      for admission'
+    author: wand125
+    opened: '2026-10-11'
+    state: open
+    kind: result-report
+    triage: done
+    summary: >-
+      wand125 continues closed #472: 15 n17 sub-pattern kernel certificates made with this repository's
+      kernel producer (devtools.check_n17_subpattern, mode A, at 657cc48, dirty false; 13 with --core
+      octagon) and each passed in full mode by devtools.verify_n17_kernel_certificate (blob be8135f6e),
+      hosted as release data/n17-kernel-batch3-v1 of wand125/square-packing (30 objects, 837 MB,
+      HostedData/v1 manifest, receipts.tar.gz, SHA256SUMS), and asks for their admission to
+      certified-sub-patterns.yaml. With main's 72 admitted entries they would leave 2,597 orbits and
+      20,316 states, down from 3,636 and 28,528. Six are #413 rows (1, 2, 3, 15, 27, 33). Each
+      verification receipt's directory field was rewritten by the author, the only change. A comment of
+      04:50 UTC adds a sixteenth, m4003392 (release data/n17-kernel-batch4-v1, 167 MB), leaving 2,560
+      orbits and 20,024 states, and reports that 9 of the 25 patterns that stalled under the default core
+      closed under the octagon core and 16 did not. The standing verifier's full-mode runs total 13,622
+      s for the 15 and 3,411 s for the sixteenth by the author's timings, about 4.7 CPU-hours, so the
+      replay needs an owner budget.
+    read_through: '2026-10-11T04:50:49Z'
+    results:
+    - key: kernel-certificates-15
+      claim: >-
+        Fifteen sub-pattern kernel certificates, masks 459873 (#413 row 15), 460400, 4000256 (row 27),
+        6160481 (row 33), 5964881, 6163488, 6161952, 5177920 (row 2), 5177424, 5177392, 2031888 (row
+        3), 7799873, 5181696 (row 1), 7800128 and 7803968, each passing the standing kernel verifier in
+        full mode at blob be8135f6e.
+      source: body
+      not_registered: >-
+        Candidates for the n17 sub-pattern census ledger, not the result register; admission needs
+        custody of the hosted objects and receipts, a fresh full-mode replay under a listed verifier,
+        and the census counting, as exp-317 did for #472. think-nmfl owns it, held with the n = 17
+        intake (think-x4v4); it may overlap H-342, which the comment of 02:10 UTC names.
+      queued: true
+      bead: think-nmfl
+      blocked_on:
+      - think-x4v4
+    - key: kernel-certificate-m4003392
+      claim: A sixteenth kernel certificate, m4003392, made and checked as the fifteen were, hosted as release
+        data/n17-kernel-batch4-v1.
+      source: https://github.com/jlevy/squares/issues/495#issuecomment-6105583083
+      not_registered: Admitted, if at all, with the fifteen by the same route; think-nmfl owns it, held with
+        the n = 17 intake.
+      queued: true
+      bead: think-nmfl
+      blocked_on:
+      - think-x4v4
+    beads:
+    - think-nmfl
+    answer_bead: think-nmfl
+    replies: []
+    close_when: The certificates are admitted to certified-sub-patterns.yaml or declined with a reason, and the
+      owner has posted the resulting state.
+  - number: 503
+    title: 's(207) ≤ 14.880960373044: registration request'
+    author: BuddenPing
+    opened: '2026-10-11'
+    state: open
+    kind: result-report
+    triage: done
+    summary: >-
+      PingYou Ltd reports an exact rational upper bound at n = 207 in
+      BuddenPing/square-packing-certificates at 9dc93b6ac2f8fefe038062a74c9a75bf05afdba6: rational
+      centre and half-angle rows with a corners Witness/v2, two differently placed patches of Ryan
+      Xu's n70 construction, taken from Evan Daniel's exact n70 certificate, with upright grids of
+      42 and 36 squares, 4.55e-3 below SQUISH's #481. Its own three exact checkers and this
+      repository's two exact checkers at 5b0eb012 are reported to accept it; no optimality is
+      claimed. Imported on 11 October 2026: the certificate kept as a derived exact fact in the
+      pingyou-n207-certificate-2026-10-11 packet, replayed on both maintained exact routes and
+      decided again by a third exact route in the review of the same day, which held the fact to
+      its pinned certificate and witness, measured the two patches where the source places them and
+      found no blocking defect. Registered as T-147 at V3/C3; the case record's house adoption is
+      the next layer. The first commit, 0d8b9c1, and the issue as first posted disclosed OpenAI
+      Codex assistance; the pinned commit and the edited issue removed it without a reason, and
+      which account stands is the author's to say.
+    read_through: '2026-10-11T10:27:00Z'
+    results:
+    - key: n207-exact-certificate
+      claim: s(207) <= 148809603730436756319360591381170501178639/10^40 =
+        14.8809603730436756319360591381170501178639, by n207.cert.json (SHA-256
+        1c334f3170ece68cf2c2f16341660f7a80ef44bf7a9cdb083940d1b99756c071) and its corners Witness/v2
+        pingyou-n207-rational.yaml (SHA-256 09e6d0dff17ae71ae84bde1466b805a67f3b1592496f9ca438b02bde603f6182).
+      source: body
+      register:
+      - T-147
+      evidence:
+      - E-pingyou-503-certificate-report
+      - E-pingyou-503-exact-feasibility
+    beads:
+    - think-0zd4
+    - think-720n
+    answer_bead: think-0zd4
+    replies: []
+    close_when: The import and its disposition are on main, the house adoption at 207 has landed or
+      is owned, the author has been asked which AI-assistance account stands, and the owner has
+      posted the resulting state; optimality is outside this request.
+  - number: 504
+    title: 's(153) ≤ 12.870013850408: registration request'
+    author: BuddenPing
+    opened: '2026-10-11'
+    state: open
+    kind: result-report
+    triage: done
+    summary: >-
+      PingYou Ltd reports an exact rational upper bound at n = 153 in
+      BuddenPing/square-packing-certificates at bc328a7d727aedd0eabebd6ea80285f572b65d2d: rational
+      centre and half-angle rows with a corners Witness/v2, by its account Ryan Xu's n70
+      construction, taken from Evan Daniel's exact n70 certificate, composed with its reflection by
+      the boundary-patch approach of #503 and reclosed at a new angle, exactly
+      0.002015998674135970992348937968 below Evan Daniel's T-146. Its own three exact checkers and
+      this repository's two exact checkers at 5b0eb012 are reported to accept it; no optimality is
+      claimed. Imported on 11 October 2026: the certificate kept as a derived exact fact in the
+      pingyou-n153-certificate-2026-10-11 packet, replayed on both maintained exact routes and
+      decided again by a third exact route in the review of the same day, which held the fact to
+      its pinned certificate and witness and found no blocking defect; the lineage from the n70 is
+      by construction, not by pose. Registered as T-148 at V3/C3; the case record's house adoption
+      is the next layer. The issue omits the template's AI-assistance section; the same author's
+      #503 disclosed OpenAI Codex assistance and then removed it.
+    read_through: '2026-10-11T20:26:51Z'
+    results:
+    - key: n153-exact-certificate
+      claim: s(153) <= 6435006925203522001385040447/500000000000000000000000000 =
+        12.870013850407044002770080894, by n153.cert.json (SHA-256
+        31b3fb3cba73528fab21d085a34f3209684a868e7116059ea5c21e664bca1ff2) and its corners Witness/v2
+        pingyou-n153-rational.yaml (SHA-256 963d6ca7cce053e7ff22baf6438bdf5776b7b06d01e1509e654c73966b9e4d41).
+      source: body
+      register:
+      - T-148
+      evidence:
+      - E-pingyou-504-certificate-report
+      - E-pingyou-504-exact-feasibility
+    beads:
+    - think-4znu
+    - think-720n
+    answer_bead: think-4znu
+    replies:
+    - url: https://github.com/jlevy/squares/issues/504#issuecomment-6113387339
+      date: '2026-10-11'
+      by: jlevy
+      kind: acknowledgement
+      reported:
+      - result: n153-exact-certificate
+    close_when: The import and its disposition are on main, the house adoption at 153 has landed or
+      is owned, and the owner has posted the resulting state; optimality and the undilated contact
+      solution are outside this request.
+  - number: 501
+    title: New results for n=155, n=156 and n=211 to the best of my knowledge
+    author: dostashev
+    opened: '2026-10-11'
+    state: open
+    kind: result-report
+    triage: done
+    summary: >-
+      Daniil Ostashev reports new packings at n = 155, 156 and 211 in dostashev/square-packing,
+      records/n0NNN.*, below Francisco Couzo's refinement at 155 and Evan Daniel's exact optima at
+      156 and 211, naming no revision; the issue's sides are the README's at 41019fb. Imported on
+      11 October 2026 at the head c3d17ab08bd5db65dc5ffe69e41f7b2ff0c2fc49, which later the same day
+      lowered 211 (662a13d, a31a747) and replaced all three certificates with smaller ones: the
+      repository is MIT-licensed and retained whole in the dostashev-records-2026-10-11 packet, the
+      three sqcert certificates replayed on both maintained exact routes and decided again by a
+      third exact route in the review of the same day, which found no blocking defect and measured
+      none of the three as a placement of a credited packing. Registered as T-149 at V3/C3 at the
+      head's sides, from which the issue's follow; the case records' house adoption is the next
+      layer. The owner asked to credit the name Daniil Ostashev and the author agreed. No AI
+      assistance is stated, and the issue omits the template's section.
+    read_through: '2026-10-11T22:02:58Z'
+    results:
+    - key: three-records
+      claim: s(155) <= 12.952425406986414, s(156) <= 12.979172613722533 and s(211) <=
+        14.996336737028043 as the issue prints them; the certificates retained at c3d17ab state the
+        smaller exact sides 12.952425406958456…, 12.979172613644426… and 14.996336721336315…, below
+        each by 2.80e-11, 7.81e-11 and 1.57e-08.
+      source: body
+      register:
+      - T-149
+      evidence:
+      - E-ostashev-501-certificate-report
+      - E-ostashev-501-exact-feasibility
+    - key: kkt-exact-optima
+      claim: Each side is the exact optimum of its packing's contact topology, with nonnegative KKT
+        multipliers (README at c3d17ab).
+      source: source
+      not_registered: A local-optimality report, not a bound on s(n); recorded as reported in
+        E-ostashev-501-certificate-report and not checked here.
+      queued: false
+    beads:
+    - think-e59i
+    - think-720n
+    answer_bead: think-e59i
+    replies:
+    - url: https://github.com/jlevy/squares/issues/501#issuecomment-6113368338
+      date: '2026-10-11'
+      by: jlevy
+      kind: acknowledgement
+      reported:
+      - result: three-records
+    close_when: The import and its disposition are on main, the house adoption at 155, 156 and 211
+      has landed or is owned, and the owner has posted the resulting state; the KKT statement and
+      optimality are outside this request.
+  - number: 505
+    title: 'Improved certified upper bounds for 146 and 261 squares: registration request'
+    author: RobertBarnettProjects
+    opened: '2026-10-11'
+    state: open
+    kind: result-report
+    triage: done
+    summary: >-
+      Robert Barnett reports exact rational certificates at n = 146 and 261 in
+      RobertBarnettProjects/square-packing-research at 2573ff51c4b160c952bbb2d1c399e7430d9f9ae2,
+      local refinements of Ryan Xu's #432 packings by sequential linear programming and exact
+      rational contraction, 7.35e-8 below Evan Daniel's regularized n146 (T-146) and 5.68e-11 below
+      Ryan Xu's printed n261, with OpenAI Codex assistance disclosed. Imported on 11 October 2026:
+      the repository states no licence, so the barnett-refinements-2026-10-11 packet keeps derived
+      exact facts of the two and of five certificates the README marks superseded (70, 103, 123,
+      237, 295), all replayed on both maintained exact routes; the review of the same day decided
+      the two again by a third exact route, found no blocking defect and measured both as Ryan Xu's
+      arrangements, the 146 locally re-optimized and the 261 refined in precision. Registered as
+      T-150 at V3/C3; the case records' house adoption is the next layer. The superseded five are
+      excluded by the author and registered nowhere; the n = 2043 certificate is beyond the corpus
+      and not replayed.
+    read_through: '2026-10-11T14:24:18Z'
+    results:
+    - key: n146-n261-refinements
+      claim: s(146) <= 12.583782203951046204 and s(261) <= 16.678779875343207747, each the exact
+        rational side of certificates/n146.cert (SHA-256
+        77b5524f387472a8e5996e319d05735e2a6a0046c24e7043995549bf3945fa3d) and certificates/n261.cert
+        (SHA-256 9141f7eb86ae23388d349efd810992727f16ca09bc9d0d1a5b94cd5e2a3f0019) rounded up at 18
+        places.
+      source: body
+      register:
+      - T-150
+      evidence:
+      - E-barnett-505-certificate-report
+      - E-barnett-505-exact-feasibility
+    beads:
+    - think-dzre
+    - think-720n
+    answer_bead: think-dzre
+    replies: []
+    close_when: The import and its disposition are on main, the house adoption at 146 and 261 has
+      landed or is owned, and the owner has posted the resulting state; the superseded and n = 2043
+      certificates are not requested, and optimality is outside this request.
