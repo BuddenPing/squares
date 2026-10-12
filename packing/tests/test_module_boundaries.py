@@ -1196,10 +1196,22 @@ def test_the_slow_marker_is_declared_only_by_measured_nodes() -> None:
         # the n207 patches, 49.61s and 57.11s for the Barnett and Ostashev gaps, so
         # neither shares a build. The three slow `pytest.param` cases this check cannot
         # see took 7.05s (#503 n207), 18.26s (#505 n261) and 11.40s (#501 n211).
+        # The four nodes of the #500 and #506 imports were measured on 2026-10-12 on four
+        # cores at load 15 to 24 (a shared box), each alone and again with the file's other
+        # slow nodes (`-m slow --durations=0`): the nine #500 receipt-plan cases 296.4s
+        # alone (22.7s to 39.4s each) and 297.4s together; the #500 pieces seen by eye and
+        # not by pose 292.9s and 224.2s; the eleven #506 receipt-plan cases 549.6s (33.4s
+        # to 63.2s each) and 237.1s; the #506 parents moved 628.9s and 427.0s. The box's
+        # load moved between runs, so these do not say whether two nodes share a build;
+        # each is far above the marking threshold either way.
         "test_check_half_angle_area.py": {
             "test_the_489_certificate_at_305_has_488s_side_in_a_quarter_turned_arrangement",
             "test_the_n207_certificate_is_two_placed_patches_of_the_n70_and_the_n153_is_not",
             "test_barnetts_refinements_are_ryan_xus_packings_moved_and_ostashevs_are_not",
+            "test_the_500_imports_agree_with_their_receipt_plan_and_print_to_every_digit",
+            "test_the_500_pieces_reappear_to_the_eye_and_not_by_pose",
+            "test_the_506_imports_agree_with_their_receipt_plan_and_print_to_every_digit",
+            "test_the_506_packings_are_their_named_parents_moved",
         },
         # 24s of call time across 1.
         "test_contact_assembly_labels.py": {
