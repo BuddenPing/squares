@@ -31025,7 +31025,10 @@ evidence:
       accept its corners Witness/v2; the checkers, the reconstruction and the conversion
       were prepared in one workflow, and none of the source's programs was run here. The
       first commit and the issue as first posted disclosed OpenAI Codex assistance, and the
-      pinned commit removed the disclosure (RV-1). The repository replay and its review are
+      pinned commit removed the disclosure (RV-1); asked which account stands, the author
+      answered on jlevy/squares#503 on 12 October 2026, for this release and the n153 one:
+      "Both solutions were AI assisted by 'PY', an unreleased agentic AI offering by
+      PingYou Ltd." The repository replay and its review are
       E-pingyou-503-exact-feasibility. No local or global optimality claim.
     source_reviewed: '2026-10-11'
 
@@ -31134,8 +31137,10 @@ evidence:
       The construction table comes from an exploratory selection and a floating-point solve
       the release does not repeat. The source makes no statement about AI assistance; the
       same author's n207 release disclosed OpenAI Codex assistance and removed the
-      disclosure at its pin (RV-1). The repository replay and its review are
-      E-pingyou-504-exact-feasibility. No local or global optimality claim, and no claim
+      disclosure at its pin (RV-1); asked on jlevy/squares#503 which account stands, the
+      author answered there on 12 October 2026, for both releases: "Both solutions were AI
+      assisted by 'PY', an unreleased agentic AI offering by PingYou Ltd." The repository
+      replay and its review are E-pingyou-504-exact-feasibility. No local or global optimality claim, and no claim
       that the undilated contact solution is feasible.
     source_reviewed: '2026-10-11'
 
