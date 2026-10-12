@@ -183,9 +183,14 @@ The axis tool’s own record of that count stays beside it as `reference`. Such 
 carries the credit line *Regularized by the Squares Project with Evan Daniel’s
 regularizer (evand/square-packing, MIT)*, in the index, in the view and in its drawing.
 
-On 12 October 2026 the index draws 71 views: 47 by the axis tool, 22 by Evan Daniel’s
-regularizer (16 at the witness’s side and 6 at the verified upper bound) and 2 by the
-grid-slack generator, with 182 records unchanged and 71 refused.
+On 12 October 2026 the index draws 87 views: 43 by the axis tool, 37 by Evan Daniel’s
+regularizer (24 at the witness’s side and 13 at the verified upper bound) and 7 by the
+grid-slack generator (2 by its version 0 and 5 by its version 1), with 182 records
+unchanged and 55 refused.
+At sixteen counts Evan Daniel’s views lay below the earlier ceilings and were held; they
+were admitted once T-151 registered their exact sides and the runs were decided again
+against the case records as they stand (`python -m devtools.regularize_evand reclassify
+--refresh-bounds`); at 227 the grid-slack view is drawn instead.
 Every drawn view carries its regularization in the register’s terms (`by: project`, the
 method, the side and the identity measured here), and `results.yaml`’s
 `regularized_drawings` records each one whose packing a registered result holds,
