@@ -621,6 +621,17 @@ def test_ci_jobs_fetch_provenance_history_and_key_the_uv_cache_from_the_lock() -
     assert f"/packing/resources/web/{squish_upper_bound_packets.PACKET.name}/" in sparse
     assert f"/packing/resources/web/{squish_followup_packets.PACKET.name}/" in sparse
     assert f"/packing/resources/web/{squish_second_update_packets.PACKET.name}/" in sparse
+    # `known-best atlas records and sample` rebuilds every house adopted on 11 October
+    # 2026 from its packet's private inputs (`upper_bound_houses.check_houses`), so each
+    # adopted source's packet rides in the slice, read from that module's own table; the
+    # slice without them failed on a missing acquisition report on jlevy/squares#518's
+    # first run (38196351783).
+    from devtools import upper_bound_houses  # noqa: PLC0415
+
+    assert {
+        f"/packing/resources/web/{source.packet.name}/"
+        for source in upper_bound_houses.sources().values()
+    } <= sparse
     full_step = next(
         _mapping(step)
         for step in validate_steps
