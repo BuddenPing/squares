@@ -47,7 +47,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 
-import yaml
+from sqpack.yamlio import safe_load
 
 REPO = Path(__file__).resolve().parents[2]
 #: Records that keep the paths they recorded, and trees that are not this repository's.
@@ -316,7 +316,7 @@ def _sorted_list(block: list[str], name: str) -> list[str]:
             return block
 
     def key(item: list[str]) -> str:
-        loaded = yaml.safe_load("".join(item))
+        loaded = safe_load("".join(item))
         value = loaded[0] if isinstance(loaded, list) and loaded else None
         if name == "exempt" and isinstance(value, dict):
             return str(value.get("path", ""))
