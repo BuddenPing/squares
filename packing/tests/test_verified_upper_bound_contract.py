@@ -104,7 +104,7 @@ DECLARED_CONSUMERS = {
         "never s(n)"
     ),
     "packing/devtools/register_regularized_bounds.py": (
-        "writes the ceiling an exact regularized view proves at 60 counts (T-154): the view's "
+        "writes the ceiling an exact regularized view proves at 59 counts (T-154): the view's "
         "exact side as the exact form, below the ceiling it replaces, and the decimal the "
         "record printed before as the value, an upper display of it; it keeps a blocker and a "
         "ceiling section where that value and the report disagree at the printed precision, "

@@ -32,24 +32,27 @@ policy’s decision table until it is registered.
 
 `select` read the reports of the full run and its re-runs, a later run’s report
 replacing an earlier one’s at the same count, and took every count with a view at row 3
-except two sets: $n = 17$, which the owner holds (think-x4v4), and the 42 counts
-jlevy/squares#518 re-houses, whose witnesses that pull request replaces.
+except three sets: $n = 17$, which the owner holds (think-x4v4), the 42 counts
+jlevy/squares#518 re-houses, and the nine jlevy/squares#553 re-housed after the run,
+whose witnesses those pull requests replace.
 At each count it registered the view with the least exact side, so that no view of the
 count lies below the new bound.
 It refused any report whose witness or bound was not the checkout’s.
 
-Of 71 counts with a view at row 3, 60 are registered here and 11 are left out: $n = 17$
-and 70, 102, 103, 123, 126, 129, 146, 232, 267 and 295, which jlevy/squares#518
-re-houses. At 34 counts the registered view is the regularizer’s certificate, and its
-side is exactly the side of Evan Daniel’s earlier certificate of the same packing
-(T-101), which the record had carried rounded up at the fourteen decimals the catalogue
-prints. At the other 26 it is a same-side view at the witness’s side: at 25 of them
+Of 71 counts with a view at row 3, 59 are registered here and 12 are left out: $n = 17$;
+70, 102, 103, 123, 126, 129, 146, 232, 267 and 295, which jlevy/squares#518 re-houses;
+and 176, where #553’s certificate proves $s(176) \le 13.8128562532770564$ (T-151), below
+the side of the run’s view.
+At 33 counts the registered view is the regularizer’s certificate, and its side is
+exactly the side of Evan Daniel’s earlier certificate of the same packing (T-101), which
+the record had carried rounded up at the fourteen decimals the catalogue prints.
+At the other 26 it is a same-side view at the witness’s side: at 25 of them
 $6.6 \times 10^{-20}$ to $1.8 \times 10^{-19}$ below that certificate’s side, and at
 $n = 29$ $5.4 \times 10^{-20}$ below the endpoint of the interval certificate (T-009).
 Every registered side lies $5.4 \times 10^{-20}$ to $9.9 \times 10^{-15}$ below the
 verified upper bound it replaces.
 
-At 37 counts the view draws the same picture as the witness; at the other 23 it redraws
+At 37 counts the view draws the same picture as the witness; at the other 22 it redraws
 the packing. Each case record carries the registered side as its verified upper bound’s
 `exact_form` and keeps the decimal it printed before as `value`, which lies above the
 side and so still bounds it from above, as the records at $n = 70$ and elsewhere print a
@@ -79,13 +82,13 @@ refusal of that mutant is circular; the mutant is invalid regardless, since a ne
 gap on every face axis means, by the separating-axis theorem, that the two interiors
 meet.
 
-Both routes accepted all 60 views on 12 October 2026, 1,066,641 pair decisions each, in
-633.8 CPU seconds for the two.
-The 34 regularizer certificates clear every wall by $5 \times 10^{-21}$ and every pair
+Both routes accepted all 59 views on 12 October 2026, 1,051,241 pair decisions each, in
+438.4 CPU seconds for the two.
+The 33 regularizer certificates clear every wall by $5 \times 10^{-21}$ and every pair
 by about $10^{-20}$; the 26 same-side views touch a wall and a neighbour exactly, and
-both routes accept contact, which is sound for $s(n)$. All 180 controls reached their
-required outcomes on both routes (1,900.6 CPU seconds): the overlap and the shrink past
-the clearance were refused at every view, and the one-unit shrink was accepted at the 34
+both routes accept contact, which is sound for $s(n)$. All 177 controls reached their
+required outcomes on both routes (1,307.2 CPU seconds): the overlap and the shrink past
+the clearance were refused at every view, and the one-unit shrink was accepted at the 33
 regularizer certificates and refused at the 26 same-side views, which touch the top or
 right wall.
 
@@ -144,7 +147,6 @@ registered; the regularized layer decides the drawing on its own.
 | 171 | `solved` | `13.5714285714285714288…` | `13.57142857142858` | `8.6e-15` | 0 | no | held, then admit | 12, `2.1e-2` |
 | 173 | `same` | `13.6568542494923801953…` | `13.65685424949239` | `9.8e-15` | `1.4e-19` | no | no-change, then no-change | none |
 | 174 | `solved` | `13.7071067811865475246…` | `13.70710678118655` | `2.5e-15` | 0 | no | no-change, then no-change | none |
-| 176 | `solved` | `13.8228756555322952954…` | `13.82287565553230` | `4.7e-15` | 0 | no | held, then refuse | 2, `8.3e-1` |
 | 178 | `same` | `13.8466671928434897830…` | `13.84666719284349` | `2.2e-16` | `1.4e-19` | no | held, then admit | 16, `1.3e-1` |
 | 197 | `same` | `14.5355339059327376221…` | `14.53553390593274` | `2.4e-15` | `1.5e-19` | no | no-change, then no-change | none |
 | 198 | `solved` | `14.5714285714285714288…` | `14.57142857142858` | `8.6e-15` | 0 | no | held, then admit | 12, `2.1e-2` |

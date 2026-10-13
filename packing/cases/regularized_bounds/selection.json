@@ -2,7 +2,7 @@
  "format": "regularized-bounds-receipt-v1",
  "tool": "python -m devtools.register_regularized_bounds select",
  "policy": "docs/project/policies/regularization-policy.md",
- "what": "Every count where a view of the regularization runs is decided at row 3 of the policy's table, its side below the case's verified upper bound, apart from the held n = 17 and the 42 counts jlevy/squares#518 re-houses: the view with the least exact side, retained under views/, with the bound the record held before, the printed side and closed form, the drawing decision, and the identity measured on the retained view against the witness's exact frame.",
+ "what": "Every count where a view of the regularization runs is decided at row 3 of the policy's table, its side below the case's verified upper bound, apart from the held n = 17 and the counts jlevy/squares#518 and #553 re-house: the view with the least exact side, retained under views/, with the bound the record held before, the printed side and closed form, the drawing decision, and the identity measured on the retained view against the witness's exact frame.",
  "runs": [
   {
    "run": "full",
@@ -223,6 +223,7 @@
   126,
   129,
   146,
+  176,
   232,
   267,
   295
@@ -258,7 +259,6 @@
   171,
   173,
   174,
-  176,
   178,
   197,
   198,
@@ -2381,75 +2381,6 @@
     },
     "max_move": 1.867767e-19,
     "max_turn_deg": 9.781e-35,
-    "turned": 0,
-    "unnamed_turns": [],
-    "symmetry": 0
-   },
-   "regularization": {
-    "of": "T-101",
-    "method": "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand",
-    "side": "solved",
-    "changes": {}
-   },
-   "generator": {
-    "name": "evand-regularize",
-    "pin": "675a5ea",
-    "patches": [],
-    "variant": "conservative",
-    "style": "coincide",
-    "orient": "0",
-    "frame": "kkt"
-   }
-  },
-  {
-   "n": 176,
-   "run": "full",
-   "output": "solved",
-   "outputs_at_row_3": [
-    "solved"
-   ],
-   "side": "110583005244258362363112293067/8000000000000000000000000000",
-   "side_decimal": "13.822875655532295295389036633375",
-   "side_text": "13.822875655532295295389036633375",
-   "value": "13.82287565553230",
-   "value_raised": false,
-   "earlier_verified": {
-    "value": "13.82287565553230",
-    "exact_form": "138228756555323/10000000000000",
-    "evidence": [
-     "E-evand-exact-ceilings-2026-10-05-exact-replay",
-     "E-evand-exact-ceilings-2026-10-05-source-replay"
-    ]
-   },
-   "below_earlier_by": 4.7046e-15,
-   "t101_side": "110583005244258362363112293067/8000000000000000000000000000",
-   "below_t101_side_by": 0.0,
-   "witness_side": "8639297284707684559531754923/625000000000000000000000000",
-   "witness_frame": "the 36-digit rational promotion at centre dilation 1",
-   "printed_side": "13.82287565553229",
-   "printed_exact_form": "(25/2) + (1/2)sqrt(7)",
-   "printed_exact_form_degree": 2,
-   "above_printed_side_by": 5.2954e-15,
-   "above_exact_side_by": 1.3823e-19,
-   "agrees_with_report": false,
-   "drawing": "held",
-   "after_registration": {
-    "decision": "refuse",
-    "index_record": "refused",
-    "reason": "a house or stage total of shared sides falls"
-   },
-   "identity": {
-    "one_to_one": true,
-    "moved": 2,
-    "moved_beyond": {
-     "1e-9": 30,
-     "1e-6": 30,
-     "1e-3": 2,
-     "1e-2": 2,
-     "1e-1": 2
-    },
-    "max_move": 0.8228757,
-    "max_turn_deg": 6.28599e-29,
     "turned": 0,
     "unnamed_turns": [],
     "symmetry": 0

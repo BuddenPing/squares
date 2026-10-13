@@ -95,8 +95,8 @@ PAGE_BUDGET_EXCEPTIONS: dict[str, tuple[int, str]] = {
     "result/t-154.html": (
         400_000,
         (
-            "Sixty counts' exact regularized sides, their regularizations and prepared "
-            "math measure 306,439 bytes."
+            "Fifty-nine counts' exact regularized sides, their regularizations and "
+            "prepared math measure 303,829 bytes."
         ),
     ),
     "atlas.html": (
