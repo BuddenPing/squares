@@ -380,11 +380,19 @@ where none is recorded, the default the policy applies until there is one.
     in the admission’s reason and decides nothing.
     Rows 7 and 8 stand, so a per-square loss of contact still goes to review.
     “Equal or better” is the choice rule of section 10, item 4, now an answer: a view
-    replaces the drawing when it is better on some measure of the drawing and worse on
-    none, or draws the packing at a smaller side and is worse on none.
-    The grid-slack generator’s straightening threshold is a per-run setting: a view from
-    a run at 1 or 5 degrees is admitted on the same terms as one from the default half
-    degree.
+    replaces the drawing when it is worse on no measure of the drawing and either better
+    on one or drawn at a smaller side.
+    The measures are seven: light, uneven and near-axis squares, angle classes and hues
+    (fewer is better), and the house and stage totals of shared sides (more is better);
+    classes and hues joined after a review of #559 found a view at 236 that tied the
+    other five and drew one more hue.
+    A view that improves no measure at the same side is not drawn, except where it
+    replaces a numerically checked witness with an exactly verified view at a side no
+    larger than $U$ (question 15). `devtools.regularize_select` applies the rule, and
+    the [regularization process](../guides/regularization-process.md) says how a pass
+    runs. The grid-slack generator’s straightening threshold is a per-run setting: a view
+    from a run at 1 or 5 degrees is admitted on the same terms as one from the default
+    half degree.
 
 15. **Exact verification of every packing:** *answered by the owner on 13 October 2026:*
     “Every packing, even after regularization, should be exactly verified.”
@@ -425,7 +433,8 @@ recorded where it is implemented, and reversing one is a change to that layer.
 4. **Choosing between generators:** where both yield an admissible view, Evan Daniel’s
    is drawn unless the grid-slack view is better on a measure of the drawing (light,
    uneven or near-axis squares, or a house or stage total) and worse on none (#548). The
-   owner confirmed this rule on 13 October 2026 (section 9, question 14).
+   owner confirmed this rule on 13 October 2026, with the measures section 9, question
+   14 lists.
 5. **The layer’s contract and checks:** every index entry names its generator; the
    records-tier check reads each non-axis view against its entry, and the full tier
    re-derives the axis tool’s views and decides every other view again on both exact
