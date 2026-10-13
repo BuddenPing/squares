@@ -383,10 +383,10 @@ recorded where it is implemented, and reversing one is a change to that layer.
    resolved to the registered result that holds the packing; a count whose packing no
    registered result holds is listed as unregistered (#548). A drawing proves no bound,
    so no register result is made for one.
-7. **Registering exact views below the bound** (question 3’s answer, to be carried out
-   in #549): the row 3 views outside the counts #518 and #553 re-housed are to be
-   registered as one batch result, `T-154`, with the case records’ exact forms moved to
-   the registered sides and their printed values kept, so no citation weakens.
+7. **Registering exact views below the bound** (question 3’s answer, carried out in
+   #549): the row 3 views outside the counts #518 and #553 re-housed are registered as
+   one batch result, `T-154`, with the case records’ exact forms moved to the registered
+   sides and their printed values kept, so no citation weakens.
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
