@@ -2,7 +2,7 @@ softschema:
   contract: packing.squares:ResultsRegister/v1
   schema: results.schema.yaml
   status: enforced
-last_reviewed: '2026-10-12'
+last_reviewed: '2026-10-13'
 results:
   - id: T-001
     kind: lower-bound
@@ -17334,11 +17334,12 @@ results:
     activity:
       state: in-analysis
       what: >-
-        A lane of the #557 intake replays the ten trees not yet run (JG, JPA_v5, G20S, HW,
-        JPG15m_v5, JPG17p_v5, JPG3m_v5, JPG3p_v5, JPW13 and JPWS_v4) with the producer's two
-        v3.0 checkers and h_report30.py.
-      since: '2026-10-12'
-      link: https://github.com/jlevy/squares/issues/557
+        A second adversarial review, written blind to the first and reading the normalized
+        52-row gate of G20S_PHYSICAL and the checkers' code, is under way here. The ten-tree
+        replay and the capture recomputation are held by the owner's decision of 13 October;
+        every remaining option, with its price, is tracked under think-lqtu.
+      since: '2026-10-13'
+      link: think-4j3n
     next_rung: >-
       V3 and C3 need every load-bearing part replayed in full, here or by a third party
       whose replay is retained here, the review's section 5:
@@ -17356,13 +17357,16 @@ results:
       accepted for rung 4, and the owner's oversight record naming trust-boundary,
       certificate-meaning and ai-findings. Rung 5 needs the Lean formalization the source
       plans and has not started.
+
+      On 13 October the owner held the ten-tree replay and the capture recomputation. Each
+      remaining option, with its price and where it could run, is a bead under think-lqtu.
     unfinished_confirmations:
       - what: >-
           all 98 capture statements recomputed in full with the producer's capture checkers,
           1,728,000 rows each, compared row for row with the stored receipts, with a
           mutated-certificate control refused
         rung: C3
-        link: https://github.com/jlevy/squares/issues/557
+        link: think-0at1
         estimated_cost:
           cpu_hours: 1273
           cpu_hours_high: 2347
@@ -17380,7 +17384,7 @@ results:
           h_report30.py, each report compared with the stored second execution, with a
           mutated-certificate control refused
         rung: C3
-        link: https://github.com/jlevy/squares/issues/557
+        link: think-fgmr
         estimated_cost:
           cpu_hours: 7.1
           cpu_hours_high: 21

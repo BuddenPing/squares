@@ -949,8 +949,10 @@ The next evidence-improving action or terminal rationale for each result, and un
 
   V4 and C4 need, on top of V3 and C3, a second adversarial AI review by a distinct reviewer whose verdict accepts, one that reads the normalized 52-row gate of G20S_PHYSICAL (PROOF.md P110), which this review did not read and would not count as accepted for rung 4, and the owner's oversight record naming trust-boundary, certificate-meaning and ai-findings. Rung 5 needs the Lean formalization the source plans and has not started.
 
-  - Unfinished, C3 (https://github.com/jlevy/squares/issues/557): all 98 capture statements recomputed in full with the producer's capture checkers, 1,728,000 rows each, compared row for row with the stored receipts, with a mutated-certificate control refused. About 1273 CPU-hours, up to about 2347 (priced 2026-10-12).
-  - Unfinished, C3 (https://github.com/jlevy/squares/issues/557): the ten trees not yet replayed (JG, JPA_v5, G20S, HW, JPG15m_v5, JPG17p_v5, JPG3m_v5, JPG3p_v5, JPW13 and JPWS_v4) with the producer's two v3.0 checkers and h_report30.py, each report compared with the stored second execution, with a mutated-certificate control refused. About 7.1 CPU-hours, up to about 21 (priced 2026-10-12).
+  On 13 October the owner held the ten-tree replay and the capture recomputation. Each remaining option, with its price and where it could run, is a bead under think-lqtu.
+
+  - Unfinished, C3 (think-0at1): all 98 capture statements recomputed in full with the producer's capture checkers, 1,728,000 rows each, compared row for row with the stored receipts, with a mutated-certificate control refused. About 1273 CPU-hours, up to about 2347 (priced 2026-10-12).
+  - Unfinished, C3 (think-fgmr): the ten trees not yet replayed (JG, JPA_v5, G20S, HW, JPG15m_v5, JPG17p_v5, JPG3m_v5, JPG3p_v5, JPW13 and JPWS_v4) with the producer's two v3.0 checkers and h_report30.py, each report compared with the stored second execution, with a mutated-certificate control refused. About 7.1 CPU-hours, up to about 21 (priced 2026-10-12).
 
 - **T-010** — V4 and C4 need two adversarial AI reviews by distinct reviewers and a human oversight record, and none is retained. A second independent mechanism, the pose-space interval audit built for T-001 run at side 2 + 4/sqrt(5) over the repaired twelve-point set, would be shown beside the rung. Rung 5 needs a proof-assistant formalization reviewed by human experts.
 - **T-017** — Two machine methods decide it. The independent re-derivation agrees but is exact-algebraic like the first; the second method is the interval-certified decision, which bounds coverage by branch and bound over boxes of centres with directed rounding: the two routes share the certificate and the closed-form conditions, and share no part of how Condition 5 is decided. The register shows the two methods beside the rung. V4 and C4 need two adversarial AI reviews by distinct reviewers and a human oversight record, and none is retained.
@@ -1225,7 +1227,7 @@ The next evidence-improving action or terminal rationale for each result, and un
 - **T-063** — Nothing of its own: this entry rises with T-062. wand125's point-only cover was replayed here by zmx2 (think-hxrz); replaying Daniel's zeromargin.py or zmcheck on it would give s(61) = 8 a route that rests neither on zmx2 nor on T-062's cover.
 - **T-129** — Optional scoped historical geometry replay requires dedicated complete deciding inputs and controls; it would not replace any current selected bound.
 
-Register reviewed 2026-10-12.
+Register reviewed 2026-10-13.
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
