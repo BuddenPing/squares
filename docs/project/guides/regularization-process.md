@@ -21,7 +21,9 @@ A pull request may change a count’s drawing only to a view that
 - both maintained exact routes accept, `sqpack.witness.exact_verify` and the independent
   checker (question 15);
 - has a side no larger than the verified upper bound $U$ (question 13), and no larger
-  than the side today’s drawing is drawn at where that drawing is exactly verified;
+  than the side today’s drawing is drawn at where that drawing is exactly verified (the
+  layer still draws seven views above $U$, at 18, 26, 66, 85, 110, 241 and 297, each an
+  exception question 13 names; a pass may replace them, never add to them);
 - row 10 of the decision table admits;
 - is worse than today’s drawing on none of the seven measures below, and is better on
   one or draws the packing at a smaller side (question 14).
@@ -84,8 +86,9 @@ python -m devtools.regularize_evand reclassify --run-dir $RUNS/redecided/evand \
 
 The selection needs no such step first: it decides every report as `reclassify` would,
 and the commands it prints for step 4 reclassify a copy of any run whose stored reports
-are stale. Grid-slack runs need no such step: `regularize_grid_slack.decided` decides
-their views when they are selected and again when they are admitted.
+are stale.
+Grid-slack runs need none: `regularize_grid_slack.decided` decides their views
+when they are selected and again when they are admitted.
 
 ### 3. Select
 
@@ -170,6 +173,8 @@ python -m devtools.release_pin --check
 drawings and checks the register.
 `--verify-atlas` decides every drawn view again on both exact routes and takes several
 minutes at four workers; CI runs it in the deferred `regularized-views` job.
+`test_regularize_select.py` holds every drawn view’s side to $U$, except at the counts
+question 13 names.
 
 ### 8. Open the Pull Request
 
