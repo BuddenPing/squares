@@ -1461,8 +1461,15 @@ def load_source(n: int) -> dict[str, Any]:
 def source_record(n: int, data: bytes, witness: Mapping[str, Any]) -> dict[str, Any]:
     """The witness a run read, as its report names it: path, id, the digest of the bytes
     read, and its exact side `s_W` where it has a rational frame (review B of #530, B3).
-    An admitting layer holds the witness it admits against to this digest, so a run made
-    before the witness changed is not admitted under the new one's name."""
+
+    The digest is provenance only. Nothing compares it, and no verdict is bound to it
+    (OR-18): an edit that leaves the packing as it was must not refuse a run. Nor can the
+    id tell a re-housed witness from the one the run read, since a known-best witness's
+    id is fixed per count. Whether a run still describes the witness a count holds today
+    is decided by the admitting layer (#548's `admitted()`): it holds `s_W_exact` to the
+    exact side of today's witness and measures identity again against it, comparing
+    regenerated semantic results as OR-16 asks.
+    """
     try:
         side: str | None = same.literal(same.exact_frame(witness).side)
     except same.SameSideError:
@@ -1480,7 +1487,9 @@ def run_one(n: int, run_dir: Path, settings: Settings) -> dict[str, Any]:
 
     An earlier run's view, drawing and report are removed first, so a re-run that finds
     no view, or stops, leaves none of them beside its own (review B of #530, B4). The
-    report names the view's bytes by their Git blob id, which binds its verdicts to them.
+    report records the view's bytes by their Git blob id as provenance only: nothing
+    compares it, and its verdicts are not bound to it (OR-18). The admitting layer
+    decides the view it admits again (`source_record`).
     """
     directory = _guard(run_dir) / f"n-{n:03d}"
     for stale in ("report.json", "view.yaml.gz", "drawing.svg"):
