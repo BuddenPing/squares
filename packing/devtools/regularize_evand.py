@@ -604,30 +604,40 @@ def solver_tree(replica: Path, patches: Sequence[str]) -> Path:
 
     With replica patches, a copy of the replica's `search/exact` modules with each patch
     applied (`check_vendored_evand.apply_patch`, exact context, refused rather than fuzzed)
-    under `replica/patched/NAME/`, built once: in a staging directory renamed into place,
-    so the pool's workers never run a half-written copy.
+    under `replica/patched/NAME-KEY/`, built once: in a staging directory renamed into
+    place, so the pool's workers never run a half-written copy. `KEY` names what the copy
+    is built from, the pinned modules' bytes and each patch's, so a re-pin or an edited
+    patch builds a new copy rather than running the old one under the new name (review B
+    of #511, B7). It is a cache key: nothing compares it.
     """
     exact = Path("search/exact")
     if not patches:
         return replica / exact
-    target = replica / "patched" / "+".join(patches)
+    recorded = replica_patches()
+    diffs: dict[str, str] = {}
+    for name in patches:
+        record = recorded.get(name)
+        if record is None:
+            raise EvandRunError(f"replica patch {name!r} is not recorded in vendored.yaml")
+        if Path(str(record["path"])).parent != exact:
+            raise EvandRunError(f"replica patch {name!r} patches outside {exact}")
+        diffs[name] = (REPO / str(record["patch"])).read_text(encoding="utf-8")
+    key = hashlib.sha256()
+    for name in REPLICA_FILES[str(exact)]:
+        key.update((VENDOR / exact / name).read_bytes())
+    for diff in diffs.values():
+        key.update(diff.encode("utf-8"))
+    target = replica / "patched" / f"{'+'.join(patches)}-{key.hexdigest()[:12]}"
     if (target / exact).is_dir():
         return target / exact
-    recorded = replica_patches()
     (replica / "patched").mkdir(parents=True, exist_ok=True)
     staging = Path(tempfile.mkdtemp(prefix=".staging-", dir=replica / "patched"))
     try:
         (staging / exact).mkdir(parents=True)
         for name in REPLICA_FILES[str(exact)]:
             shutil.copyfile(VENDOR / exact / name, staging / exact / name)
-        for name in patches:
-            record = recorded.get(name)
-            if record is None:
-                raise EvandRunError(f"replica patch {name!r} is not recorded in vendored.yaml")
-            if Path(str(record["path"])).parent != exact:
-                raise EvandRunError(f"replica patch {name!r} patches outside {exact}")
-            patched = staging / str(record["path"])
-            diff = (REPO / str(record["patch"])).read_text(encoding="utf-8")
+        for name, diff in diffs.items():
+            patched = staging / str(recorded[name]["path"])
             write_text(patched, apply_patch(patched.read_text(encoding="utf-8"), diff))
         try:
             staging.rename(target)

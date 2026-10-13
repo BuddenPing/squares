@@ -822,7 +822,8 @@ def test_a_replica_patch_is_applied_to_a_copy_and_never_under_vendor(tmp_path: P
     replica = drive.build_replica(tmp_path / "run", rows)
     assert drive.solver_tree(replica, []) == replica / "search/exact"
     patched = drive.solver_tree(replica, ["probe-flat-stall-stop"])
-    assert patched == replica / "patched/probe-flat-stall-stop/search/exact"
+    assert patched.parent.parent.parent == replica / "patched"
+    assert patched.parent.parent.name.startswith("probe-flat-stall-stop-")
     assert drive.solver_tree(replica, ["probe-flat-stall-stop"]) == patched
     assert vendor_listing() == before
     pristine = (drive.VENDOR / "search/exact/exactsolve.py").read_text()
@@ -905,3 +906,29 @@ def test_a_regularizer_refusal_keeps_its_reason_when_decided_again() -> None:
     }
     measured = drive.measured_from_report(relaxed, "solved")
     assert measured.status == "regularize: upstream's checker refused the certificate"
+
+
+# --------------------------------------------------------------------------------------
+# Review B of #511: the bound held exactly, stage reuse, the verdict bound to its bytes
+# --------------------------------------------------------------------------------------
+
+
+def test_a_patched_solver_is_rebuilt_when_its_patch_changes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """B7: the patched tree is named by what it is built from, so an edited patch never
+    runs as the old one."""
+    rows = [drive.batch_row(26, drive.case_facts(26), witness(26))]
+    replica = drive.build_replica(tmp_path / "run", rows)
+    first = drive.solver_tree(replica, ["probe-flat-stall-stop"])
+    record = drive.replica_patches()["probe-flat-stall-stop"]
+    edited = tmp_path / "edited.patch"
+    edited.write_text("an edited patch's prose\n" + (drive.REPO / record["patch"]).read_text())
+    monkeypatch.setattr(
+        drive,
+        "replica_patches",
+        lambda: {"probe-flat-stall-stop": {**record, "patch": str(edited)}},
+    )
+    second = drive.solver_tree(replica, ["probe-flat-stall-stop"])
+    assert second != first
+    assert (second / "exactsolve.py").read_text() == (first / "exactsolve.py").read_text()
