@@ -94,8 +94,18 @@ by the policy's decision table. Per count, in order:
 
 Every count writes `RUN/n-NNN/report.json`, and the run writes `RUN/receipt.json`: the
 generator (name, pin, local patches, interpreter), the parameters, one row per count with
-its sides, decision and seconds per stage, the register-result candidates of row 3, the
-review queue, and the run's CPU and wall seconds, children included.
+its sides, decision, own parameters and seconds per stage, the register-result candidates
+of row 3, the review queue, the solve's input and outputs by digest (kept for rows an
+earlier run into the same directory decided), and the run's CPU and wall seconds,
+children included. A count's report is removed when its run starts and written once it is
+decided, and each view's block names the view's bytes by their Git blob id, which `layer`
+holds the file to, so a verdict is never read beside bytes it was not reached on.
+
+**Stage reuse.** `--from-stage` reuses what the earlier stages left in the count's
+directory, and their settings and source with it. Reuse is refused, naming the stage to
+run from, where the witness's input today is not the stored `input.txt` (`input.json`
+records the witness it was written from), or where `--from-stage import` is asked for a
+variant, orientation or frame other than the stored regularization ran with.
 
 **What the measurements are.** Upstream's level, symmetry and moves are its own report,
 recorded as upstream's. The exact routes decide validity over Q and nothing else. The
@@ -2942,7 +2952,7 @@ def parser() -> argparse.ArgumentParser:
         "--from-stage",
         choices=STAGES,
         default="input",
-        help="reuse the outputs of the stages before this one",
+        help="reuse the outputs, settings and source of the stages before this one",
     )
     run_command.add_argument("--same-mode", choices=("relax", "refuse"), default="relax")
     run_command.add_argument(
