@@ -18,9 +18,9 @@ closes them, in five steps:
 1. **The exact frame.** `regularize_same_side.exact_frame`: a rational witness's own
    geometry, or a decimal witness's 36-digit rational promotion at centre dilation 1;
    its side is `s_W`. Where no view exists at `s_W` and the record's verified upper bound
-   `U` is above it, the same squares are tried again in a box of side `U`, the policy's
-   `bound` frame (a decimal witness whose printed side truncates its optimum, n = 171 and
-   198). Every rotation stays the witness's own exact one, except:
+   `U` is rational and above it, the same squares are tried again in a box of side `U`,
+   the policy's `bound` frame (a decimal witness whose printed side truncates its
+   optimum, n = 171 and 198). Every rotation stays the witness's own exact one, except:
 2. **Straightening.** Each square tilted by less than `--near-axis-degrees` (default half a
    degree, the workbench's colour tolerance; any nonzero tilt, including those under the
    house's `1e-6` radians) is turned to the axes about its centre, when the placement
@@ -33,7 +33,9 @@ closes them, in five steps:
    meeting those inequalities is a packing (upstream's `reg.place`, evand/square-packing,
    uses the same fact). Each centre may move by at most `--trust` per coordinate from the
    witness's and by at most `MOVE_BOUND` in L1, so by at most `1/2`, the policy's bound
-   on a move for automatic admission. A binary per *coincidence* -- two squares of
+   on a move for automatic admission. The bound holds in binary64, on the placement: the
+   exact re-solve may move a centre up to `BLOWUP` (`1e-6`) further, so a view's largest
+   move is at most `1/2 + 1e-6`. A binary per *coincidence* -- two squares of
    exactly one rotation class flush across a face with no offset along it, or an axis
    square flush on a wall: exactly a full shared side under the house rule -- is
    switched on by big-M constraints, and the objective maximizes full shared sides
@@ -110,6 +112,7 @@ from devtools import regularize_axis_components as layer
 from devtools import regularize_evand as driver
 from devtools import regularize_same_side as same
 from devtools.build_known_best_atlas import frame_from_witness
+from devtools.retained_data import git_blob
 from sqpack.render import render_packing_svg
 from sqpack.render.model import RenderSpec
 from sqpack.witness import validate_witness_document, witness_document
@@ -131,10 +134,11 @@ METHOD = (
 """The credit a view carries: the policy's section 7 credits a port of his method."""
 NEAR_AXIS_DEGREES = 0.5
 TRUST = 0.45
-"""Per coordinate; with `MOVE_BOUND` a centre moves less than `1/2` from the witness."""
+"""Per coordinate; with `MOVE_BOUND` a centre moves less than `1/2` from the witness in
+the placement. Positive: `--trust 0` is refused."""
 MOVE_BOUND = 0.5
-"""A centre's L1 move from the witness, so its distance stays within the policy's `1/2`
-for automatic admission."""
+"""A centre's L1 move from the witness in the binary64 placement, so its distance stays
+within the policy's `1/2` there; the exact re-solve may add up to `BLOWUP`."""
 TIME_LIMIT = 120.0
 STAGE_MARGIN = 0.0099
 """A kept stage contact stays this close; the stage's frame rounds centres to `1e-6`."""
@@ -183,6 +187,20 @@ class Settings:
     near_axis_degrees: float = NEAR_AXIS_DEGREES
     trust: float = TRUST
     time_limit: float = TIME_LIMIT
+
+    def __post_init__(self) -> None:
+        # The tie-break's weight divides by the trust region (`place`), and a region of
+        # no width moves nothing (review B of #530, B5).
+        if not self.trust > 0:
+            raise GridSlackError(f"the trust region must be positive, not {self.trust}")
+
+
+def positive(text: str) -> float:
+    """A command-line value that must be a positive number."""
+    value = float(text)
+    if not value > 0:
+        raise argparse.ArgumentTypeError(f"{text} is not positive")
+    return value
 
 
 @dataclass
@@ -515,17 +533,23 @@ def _l1_rows(rows: Rows, g: Geometry) -> None:
 
 
 def feasible(g: Geometry, kept: Rows, trust: float) -> bool:
-    """Whether any placement exists with these rotations: an LP with no objective."""
+    """Whether any placement exists with these rotations: an LP with no objective.
+
+    It holds the rows `place` holds, the move bound included (`_l1_rows`, with their
+    auxiliary columns), so a straightening it accepts never leaves the placement
+    infeasible (review B of #530, B5).
+    """
     n = len(g.rotation)
     rows = separation_rows(g, trust)
     _extend(rows, kept)
+    _l1_rows(rows, g)
     lo, hi = coordinate_bounds(g, trust)
     result = linprog(
-        np.zeros(2 * n),
-        bounds=list(zip(lo, hi, strict=True)),
+        np.zeros(4 * n),
+        bounds=[*zip(lo, hi, strict=True), *[(0.0, None)] * (2 * n)],
         method="highs",
         options={"primal_feasibility_tolerance": LP_TOLERANCE},
-        **_two_sided(rows, 2 * n),
+        **_two_sided(rows, 4 * n),
     )
     return bool(result.status == 0)
 
@@ -842,13 +866,30 @@ def float_poses(
     return poses, changed
 
 
+def rational_bound(n: int) -> Fraction | None:
+    """The record's verified upper bound `U` where it is a rational number exactly: its
+    exact form a fraction, or no exact form beside the printed decimal. A closed form's
+    60-digit value is not the bound, so no view is solved at it."""
+    facts = driver.case_facts(n)
+    if facts["verified_upper_bound"] is None:
+        return None
+    if facts["exact_form"] is not None:
+        try:
+            Fraction(str(facts["exact_form"]).replace(" ", ""))
+        except ValueError:
+            return None
+    return driver.upper_bound(facts)
+
+
 def frame_for(witness: Mapping[str, Any], relation: str) -> same.Frame | None:
     """The exact frame at `s_W` (`same`), or the same squares at `U` (`bound`) where the
-    record's verified upper bound is rational and above `s_W`."""
+    record's verified upper bound is rational and above `s_W` (`rational_bound`): a box
+    of a closed form's 60-digit value would be a side above `U`, labelled `bound` (review
+    B of #530, B1)."""
     frame = same.exact_frame(witness)
     if relation == "same":
         return frame
-    upper = driver.upper_bound(driver.case_facts(int(witness["n"])))
+    upper = rational_bound(int(witness["n"]))
     if upper is None or upper <= frame.side:
         return None
     return replace(
@@ -1417,19 +1458,46 @@ def load_source(n: int) -> dict[str, Any]:
     return document["witness"]
 
 
+def source_record(n: int, data: bytes, witness: Mapping[str, Any]) -> dict[str, Any]:
+    """The witness a run read, as its report names it: path, id, the digest of the bytes
+    read, and its exact side `s_W` where it has a rational frame (review B of #530, B3).
+    An admitting layer holds the witness it admits against to this digest, so a run made
+    before the witness changed is not admitted under the new one's name."""
+    try:
+        side: str | None = same.literal(same.exact_frame(witness).side)
+    except same.SameSideError:
+        side = None
+    return {
+        "path": f"packing/witnesses/known-best/n-{n:03d}.yaml",
+        "id": witness.get("id"),
+        "witness_sha256": hashlib.sha256(data).hexdigest(),
+        "s_W_exact": side,
+    }
+
+
 def run_one(n: int, run_dir: Path, settings: Settings) -> dict[str, Any]:
-    """Regularize one count into `run_dir/n-NNN/`, and its report."""
+    """Regularize one count into `run_dir/n-NNN/`, and its report.
+
+    An earlier run's view, drawing and report are removed first, so a re-run that finds
+    no view, or stops, leaves none of them beside its own (review B of #530, B4). The
+    report names the view's bytes by their Git blob id, which binds its verdicts to them.
+    """
     directory = _guard(run_dir) / f"n-{n:03d}"
-    witness = load_source(n)
+    for stale in ("report.json", "view.yaml.gz", "drawing.svg"):
+        (directory / stale).unlink(missing_ok=True)
+    data = (KNOWN_BEST / f"n-{n:03d}.yaml").read_bytes()
+    witness = load_yaml(data.decode("utf-8"))["witness"]
     view, report = regularize(witness, settings)
     report["n"] = n
-    report["source"] = f"packing/witnesses/known-best/n-{n:03d}.yaml"
+    report["source"] = source_record(n, data, witness)
     if view is not None:
         text = witness_document(view)
         validate_witness_document(
             load_yaml(text), path=directory / "view.yaml", fallback_schema=WITNESS_SCHEMA
         )
-        _write(directory / "view.yaml.gz", gzip.compress(text.encode("utf-8"), mtime=0))
+        stored = gzip.compress(text.encode("utf-8"), mtime=0)
+        _write(directory / "view.yaml.gz", stored)
+        report["view"] = {"path": "view.yaml.gz", "git_blob": git_blob(stored)}
         straightened = [row["square"] for row in report["straightened"]]
         report["measured"] = measure(n, witness, view, straightened)
         _write(directory / "drawing.svg", drawing(n, witness, view).encode("utf-8"))
@@ -1488,9 +1556,16 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
     """One count's grid-slack view, admitted by the decision table's row 10, in the
     layer's terms (`devtools.regularize_evand.admit_views` writes it).
 
-    The run read the known-best witness of the checkout it ran in, which its report
-    names by path; the layer records the digest of the witness this checkout holds, so
-    run and admit from one revision, and the layer's check names a later change.
+    The run read the known-best witness of the checkout it ran in; the entry is about the
+    witness this checkout holds. So admission holds the view to it, not to the run's
+    digests (#548 review B4): the run's exact side `s_W` (`source.s_W_exact`) must be this
+    witness's, and the view's identity, shades and contacts are measured again against
+    this witness (`measure`) and decided by the table on those measurements, so the entry
+    never records what was measured on another witness. A view that no longer pairs one
+    to one with it is refused. The run's witness digest and its view's blob id are its
+    provenance, kept in its report and compared with nothing (OR-16, OR-18). A report from
+    before the run recorded `s_W` is admitted on the measurement made here alone, and the
+    entry says so (`measured.source_note`).
     """
     report = json.loads((directory / "report.json").read_text(encoding="utf-8"))
     n = int(report["n"])
@@ -1499,11 +1574,28 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
     path = KNOWN_BEST / f"n-{n:03d}.yaml"
     data = path.read_bytes()
     witness = load_yaml(data.decode("utf-8"))["witness"]
+    ran_on = report.get("source")
+    ran_side = ran_on.get("s_W_exact") if isinstance(ran_on, Mapping) else None
+    view_path = directory / "view.yaml.gz"
+    view: dict[str, Any] = {}
+    if "measured" in report and view_path.is_file():
+        view = load_yaml(gzip.decompress(view_path.read_bytes()).decode())["witness"]
+        if ran_side is not None:
+            own = same.exact_frame(witness).side
+            if Fraction(str(ran_side)) != own:
+                raise GridSlackError(
+                    f"n={n}: the run read a witness at s_W = {ran_side}, and this checkout's "
+                    f"is at {same.literal(own)}: run the count again on this witness"
+                )
+        straightened = [row["square"] for row in report.get("straightened") or []]
+        report = {**report, "measured": measure(n, witness, view, straightened)}
+        if not report["measured"]["identity"].get("one_to_one"):
+            raise GridSlackError(
+                f"n={n}: the view does not pair one to one with this checkout's witness"
+            )
     decision = decided(report, witness)
     if decision.decision != "admit":
         raise GridSlackError(f"n={n}: not admitted: row {decision.row}, {decision.reason}")
-    view = load_yaml(gzip.decompress((directory / "view.yaml.gz").read_bytes()).decode())
-    view = view["witness"]
     measured = report["measured"]
     ident = measured["identity"]
     shaded = measured["shades"]
@@ -1515,11 +1607,9 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
     record: dict[str, Any] = {
         "n": n,
         "of_witness": witness["id"],
-        "provenance": {
-            "source_key": facts.get("source_key"),
-            "found_by": facts.get("found_by") or [],
-            "improved_by": facts.get("improved_by") or [],
-        },
+        "provenance": driver.packing_credit(
+            facts, (witness.get("source") or {}).get("key"), relation
+        ),
         "by": "project",
         "method": f"{METHOD}, through devtools.regularize_grid_slack",
         "side": "same" if relation == "same" else "solved",
@@ -1568,8 +1658,10 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
             "reason": decision.reason,
         },
         measured={
-            "identity_by": f"{driver.IDENTITY_BY}, in devtools.regularize_grid_slack",
-            "shades_by": f"{driver.SHADES_BY}, in devtools.regularize_grid_slack",
+            "identity_by": f"{driver.IDENTITY_BY}, in devtools.regularize_grid_slack, again "
+            "at admission against this checkout's witness",
+            "shades_by": f"{driver.SHADES_BY}, in devtools.regularize_grid_slack, again at "
+            "admission against this checkout's witness",
             "contacts": {
                 rule: {
                     "before": list(shaded[rule]["before"]),
@@ -1582,10 +1674,18 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
             + len(current.get("regressions") or []),
             "level": None,
             "groups": [],
+            **({} if ran_side is not None else {"source_note": UNRECORDED_SIDE}),
         },
         regularization=record,
         house_after=list(shaded["house"]["after"]),
     )
+
+
+UNRECORDED_SIDE = (
+    "the run's report records no exact side of the witness it read: the view is held to "
+    "this checkout's witness by the measurements made again at admission"
+)
+"""An entry's note where the grid run predates recording the witness's exact side."""
 
 
 def relative_source(n: int) -> str:
@@ -1683,7 +1783,7 @@ def parser() -> argparse.ArgumentParser:
     command.add_argument("--n", type=int, nargs="+", required=True)
     command.add_argument("--run-dir", type=Path, required=True)
     command.add_argument("--near-axis-degrees", type=float, default=NEAR_AXIS_DEGREES)
-    command.add_argument("--trust", type=float, default=TRUST)
+    command.add_argument("--trust", type=positive, default=TRUST)
     command.add_argument("--time-limit", type=float, default=TIME_LIMIT)
     return command
 
