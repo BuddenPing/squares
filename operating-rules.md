@@ -864,10 +864,16 @@ A read-only question or lookup needs no new bead.
   An accountable `assignee` does not replace the acting `delegate`.
 - **Dispatch disjoint work.** Every brief names the bead, acting agent, write scope,
   completion evidence, and tracker owner.
-  The coordinator publishes assignments and owns shared bead updates and sync for its
-  sub-agents; a worker acknowledges its assignment in the first line of its report and
-  reports results against that bead.
-  Independent sessions sync their own work.
+  For delegated work the coordinator claims: it runs
+  `tbd start <id> --as <worker name> --json` on each assigned bead, confirms `claimed`,
+  syncs, and puts the result in the brief.
+  The worker claims only beads it creates itself, under its own acting name.
+  The coordinator owns shared bead updates and sync for its sub-agents.
+  That reverses tbd’s own default, under which an agent syncs its own bead updates
+  unless its brief reserves sync, so every brief here says that sync is reserved.
+  A worker acknowledges its assignment in the first line of its report, reports results
+  against that bead, and does not sync unless its brief says so.
+  Independent sessions claim and sync their own work.
   Across separate clones, allocate overlapping work through one coordinator: tbd’s local
   claim check and Git sync are not a distributed lock.
 - **Checkpoint after each commit.** The tracker owner (the coordinator for delegated
