@@ -19,9 +19,10 @@ this file inlined, and no script. It reads a run directory in the layout
   default), with a note when its scalar kind or side is no longer what the report
   recorded, which means the record changed after the run;
 - **Regularized**: the run's chosen view, `view-same.yaml` when the same-side re-solve
-  succeeded and `view-solved.yaml` otherwise, labelled with its side relation; a view
-  file the count's report records no output for is an earlier run's, noted and not
-  drawn;
+  succeeded and `view-solved.yaml` otherwise, labelled with its side relation; a
+  same-side view the report keeps under `same_above_bound`, set aside because the
+  witness's side is above `U`, is noted as such and not drawn, and any other view file
+  the count's report records no output for is an earlier run's, noted and not drawn;
 - **Current layer**, with `--with-current-layer`: the view
   `atlas/known-best/regularized/index.json` holds for the count, which is the other
   generator's (`regularize_axis_components/2`), when the index has one.
@@ -696,6 +697,13 @@ def run_case(count_dir: Path, layer_index: Mapping[int, dict[str, Any]] | None) 
         if not path.is_file():
             continue
         if report and field(report, "outputs", relation_name) is None:
+            if relation_name == "same" and field(report, "outputs", "same_above_bound"):
+                # This run's own same-side view, which `yield_to_bound` set aside.
+                notes.append(
+                    f"{path.name} is this run's same-side view, set aside: the witness's "
+                    "side is above U, so the view at the bound is decided and drawn."
+                )
+                continue
             # A view the report does not name is an earlier run's, left on disk.
             notes.append(
                 f"{path.name} is on disk but the report records no {relation_name} "

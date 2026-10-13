@@ -287,6 +287,27 @@ def test_a_view_the_report_does_not_name_is_an_earlier_runs_and_is_not_drawn(
     assert "view-same.yaml is on disk but the report records no same output" in section
 
 
+def test_a_same_side_view_set_aside_above_the_bound_is_named_as_this_runs(
+    tmp_path: Path,
+) -> None:
+    """`yield_to_bound` keeps the same-side view's file and its block under
+    `same_above_bound`: it is this run's view, set aside, not an earlier run's (#580
+    review A5)."""
+    same = _report()["outputs"]["same"]
+    outputs = {"solved": None, "same": None, "same_above_bound": same, "same_refusal": None}
+    run = _run(tmp_path, _report(outputs=outputs))
+    case = gallery.run_case(run / "n-026", None)
+    named = (
+        "view-same.yaml is this run's same-side view, set aside: the witness's side is "
+        "above U, so the view at the bound is decided and drawn."
+    )
+    assert [note for note in case.notes if "view-same.yaml" in note] == [named]
+    section = _section(gallery.render_page([case], title="Gallery", source="run"), 26)
+    assert section.count('<svg class="drawing"') == 1
+    assert "set aside: the witness" in section
+    assert "earlier run" not in section
+
+
 @pytest.mark.parametrize(
     ("decision", "text", "tone"),
     [
