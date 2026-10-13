@@ -23,16 +23,20 @@ packing the witness retains: `of` is the registered result whose `attribution` n
 witness's source and whose scope holds the count. A view at the verified upper bound
 (`bound`, written `solved` in the register's terms) redraws the packing solved to that
 bound: `of` is the result the case's verified upper bound rests on
-(`build_bound_citations.results_carrying` on the bound's own evidence). A `same` view whose
-side is also exactly the verified upper bound, where no registered result attributes the
-witness's source, redraws the packing at that bound in the same way: the result the bound
-rests on holds it (T-154 certified 26 witnesses' own sides exactly from views that are
-drawn here). Where the bound rests on several results, the one whose `regularizations`
-registered a view of the count at that bound answers: at 33 counts T-154's view lies
-exactly at the side of Evan Daniel's earlier certificate, and the case cites both (T-101,
-T-154). Exactly one result must answer; where none does, or more than one, the count
-is listed under `unregistered`
-with the reason, and its record stays in the layer's index alone. The register holds a
+(`build_bound_citations.results_carrying` on the bound's own evidence), and only while the
+view's side is exactly that bound: a later result that lowers `U` leaves the view at a
+side no result holds, and the count is listed unregistered rather than credited to the
+new holder (#548 review B1). A `same` view whose side is also exactly the verified upper
+bound, where no registered result attributes the witness's source, redraws the packing
+at that bound in the same way: the result the bound rests on holds it (T-154 certified
+26 witnesses' own sides exactly from views that are drawn here). Where the bound rests on
+several results, the one whose `regularizations` registered a view of the count at that
+bound answers: at 33 counts T-154's view lies exactly at the side of Evan Daniel's
+earlier certificate, and the case cites both (T-101, T-154). An axis view is `same` where
+its regularization is, and a view at neither side is not a drawing frame (row 4).
+Exactly one result must answer; where none does, or more than one, the count is listed
+under `unregistered` with the reason, and its record stays in the layer's index alone.
+The register holds a
 result by others only when the record acts on it (`epistemics.md`, Results by Others), so a
 packing from before this project began that no replay here ever registered has no result to
 name, and inventing one is not this tool's to do.
@@ -95,9 +99,12 @@ class Resolved:
 
 
 def relation(entry: Mapping[str, Any]) -> str:
-    """A drawn entry's side relation: an axis view is always at the witness's side."""
+    """A drawn entry's side relation: the index's, or, for an axis view, which records
+    none, `same` where its regularization is at the witness's side and `solved` else."""
     side = entry.get("side") or {}
-    return str(side.get("relation") or "same")
+    if side.get("relation"):
+        return str(side["relation"])
+    return "same" if (entry.get("regularization") or {}).get("side") == "same" else "solved"
 
 
 def bound_side(bound: Mapping[str, Any]) -> Fraction | None:
@@ -147,6 +154,26 @@ def registering_holders(
     return registering if len(registering) == 1 else list(holders)
 
 
+def _bound_result(
+    n: int,
+    bound_holders: Sequence[str],
+    results: Sequence[Mapping[str, Any]],
+    *,
+    side_at_bound: bool,
+) -> Resolved:
+    """A `bound` view's result: the one its bound rests on, narrowed to the one that
+    registered a view of `n` there, and only while the view's side is that bound."""
+    holders = registering_holders(n, bound_holders, results, side="solved")
+    if side_at_bound and len(holders) == 1:
+        return Resolved(holders[0], "holds the verified upper bound the view is at")
+    return Resolved(
+        None,
+        f"the verified upper bound rests on {list(holders)}"
+        if side_at_bound
+        else "the view's side is no longer the verified upper bound",
+    )
+
+
 def packing_result(
     entry: Mapping[str, Any],
     results: Sequence[Mapping[str, Any]],
@@ -156,13 +183,12 @@ def packing_result(
     side_at_bound: bool = False,
 ) -> Resolved:
     """The registered result whose packing the drawn entry redraws (see the module).
-    `side_at_bound` says a `same` view's side is also exactly the verified upper bound."""
+    `side_at_bound` says the view's side is exactly the case's verified upper bound."""
     n = int(entry["n"])
+    if relation(entry) == "solved":
+        return Resolved(None, "the view is at neither the witness's side nor the bound (row 4)")
     if relation(entry) == "bound":
-        bound_holders = registering_holders(n, bound_holders, results, side="solved")
-        if len(bound_holders) == 1:
-            return Resolved(bound_holders[0], "holds the verified upper bound the view is at")
-        return Resolved(None, f"the verified upper bound rests on {list(bound_holders)}")
+        return _bound_result(n, bound_holders, results, side_at_bound=side_at_bound)
     if side_at_bound:
         bound_holders = registering_holders(n, bound_holders, results, side="same")
     holders = [
@@ -214,7 +240,7 @@ def expected(
         exact = False
         if relation(entry) in {"bound", "same"}:
             bound = load_case(n).get("verified_upper_bound") or {}
-            exact = relation(entry) == "same" and at_bound(entry, bound)
+            exact = at_bound(entry, bound)
             if relation(entry) == "bound" or exact:
                 own = own_evidence(bound.get("evidence") or [], register)
                 holders = results_carrying(n, own, results)

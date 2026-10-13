@@ -205,12 +205,21 @@ explains why the layer exists and what the axis tool changes.
 `--check-atlas` runs in the records tier on every pull request: it holds the index to
 the manifest, the witnesses and the views by digest, and reads each other generator’s
 view against its entry (label, generator, credit, side and regularization).
-`--verify-atlas` is the deferred step `regularized atlas views re-derive exactly`, on a
-`regularized-views` runner of its own in both the deep gate and the post-merge
-checkpoint
+It also holds every drawn view’s exact side to the witness’s own side $s_W$, which is
+what `same` means, and to the case record’s verified upper bound $U$, decided exactly
+for a closed-form $U$ as well: no view below $U$, a `bound` view exactly at it, and no
+view above it at a count the tool’s `ABOVE_U` list does not name with its reason.
+Fifteen views sit above $U$ at this layer, each a rounding above it: four of Evan
+Daniel’s about $10^{-30}$ above a closed-form optimum, his view at $n = 87$,
+$4.3 \times 10^{-16}$ above the exact ceiling the record carries, and ten at Francisco
+Couzo’s decimal side, $3 \times 10^{-12}$ to $3.6 \times 10^{-11}$ above Evan Daniel’s
+exact optimum. `--verify-atlas` is the deferred step
+`regularized atlas views re-derive exactly`, on a `regularized-views` runner of its own
+in both the deep gate and the post-merge checkpoint
 ([development.md](../../../development.md#the-deep-gate-the-deferred-surface-before-the-merge)):
 it re-derives every axis-tool record, the references included, and decides each other
-generator’s view again on both maintained exact routes.
+generator’s view again on both maintained exact routes, with its square count, its
+identity against the witness and its shades measured again.
 
 **The axis tool still refuses 71 Kingbird-derived records.** Their 36-digit poses
 overlap by a rounding sliver at centre dilation 1, the only factor the tool uses; Evan
