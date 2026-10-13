@@ -25,8 +25,8 @@ second implementation agrees.
 
 ## The Short Version
 
-- **115** programs: **43** external and **72** first-party; **85** decide claims and **30** check premises.
-- **453** of **521** evidence entries name the programs that verified them: 238 reproduced with the producer’s code, 187 independently re-implemented, 17 re-implemented, sharing the producer’s components, 11 no relation: a proof, a derivation or a report.
+- **117** programs: **44** external and **73** first-party; **86** decide claims and **31** check premises.
+- **454** of **522** evidence entries name the programs that verified them: 239 reproduced with the producer’s code, 187 independently re-implemented, 17 re-implemented, sharing the producer’s components, 11 no relation: a proof, a derivation or a report.
 
 ## Programs
 
@@ -73,6 +73,7 @@ second implementation agrees.
 | [`V-overbeck-n17-check-py`](#v-overbeck-n17-check-py) | check.py | Overbeck | external | decides | 2 | 1 |
 | [`V-overbeck-n17-capture-checkers`](#v-overbeck-n17-capture-checkers) | recompute_slice.py | Overbeck | external | decides | 2 | 1 |
 | [`V-overbeck-n17-tree-checkers`](#v-overbeck-n17-tree-checkers) | wxcheck_v30.py and wxcheck2_v30.js | Overbeck | external | decides | 2 | 1 |
+| [`V-fitzharding-n17-lean`](#v-fitzharding-n17-lean) | The sq17-lean Lean 4 development (Sq17Lean) | Fitzharding | external | decides | 1 | 1 |
 | [`V-check-basic-bounds`](#v-check-basic-bounds) | devtools.check_basic_bounds | Squares Project (Levy) | first-party | decides | 3 | 14 |
 | [`V-optimal-moduli`](#v-optimal-moduli) | cases.small_n.optimal_moduli | Squares Project (Levy) | first-party | decides | 1 | 0 |
 | [`V-sqpack-verify`](#v-sqpack-verify) | sqpack.verify | Squares Project (Levy) | first-party | decides | 41 | 31 |
@@ -117,6 +118,7 @@ second implementation agrees.
 | [`V-evand-exact-certificates`](#v-evand-exact-certificates) | devtools.evand_exact_certificates | Squares Project (Levy) | first-party | premises | 22 | 20 |
 | [`V-check-n11-final-composition`](#v-check-n11-final-composition) | devtools.check_n11_final_composition | Squares Project (Levy) | first-party | premises | 2 | 2 |
 | [`V-audit-n11-lean`](#v-audit-n11-lean) | devtools.audit_n11_lean | Squares Project (Levy) | first-party | premises | 2 | 1 |
+| [`V-fitzharding-n17-source-manifest`](#v-fitzharding-n17-source-manifest) | check_source_manifest.py | Squares Project (Levy) | first-party | premises | 1 | 1 |
 | [`V-audit-n17-endpoint-receipt`](#v-audit-n17-endpoint-receipt) | devtools.audit_n17_endpoint_receipt | Squares Project (Levy) | first-party | premises | 1 | 1 |
 | [`V-audit-tokoharu-density`](#v-audit-tokoharu-density) | devtools.audit_tokoharu_density | Squares Project (Levy) | first-party | premises | 1 | 1 |
 | [`V-audit-wand125-rectangles`](#v-audit-wand125-rectangles) | devtools.audit_wand125_rectangles | Squares Project (Levy) | first-party | premises | 4 | 4 |
@@ -976,6 +978,20 @@ Decides a tree certificate of the candidate n = 17 proof against SPEC_v3.0.md in
 | `E-n017-overbeck-optimality-candidate-report` | the source’s own run | no code | T-153 |
 | `E-n017-overbeck-tree-sample-replay` | replayed here | producer’s code | - |
 
+### `V-fitzharding-n17-lean`
+
+**The sq17-lean Lean 4 development (Sq17Lean), built by lake at its pinned toolchain, with scripts/unpack.py authenticating and extracting the three release archives against manifest.json and scripts/reproduce.py compiling the five checker modules to native libraries, building the theorem's import closure and printing its axioms** · Fitzharding · external · decides · Lean 4, Python · proof-assistant-checked
+
+Proves Sq17.square17_optimality, s(17) = L, in Lean 4.34.1 with Mathlib v4.34.1 at d13f23b7: the geometry, the endpoint root, the checkers' soundness and the assembly kernel-checked, and 13,343 finite certificate facts decided by native_decide through five checker modules compiled to native code. The driver accepts a build only on REPRODUCTION_ACCEPTED Sq17Lean.Square17Optimality with the axiom report.
+
+- Source: [`packing/resources/web/fitzharding-n17-lean-2026-10-13/sq17-lean/Sq17Lean/Square17Optimality.lean`](../../packing/resources/web/fitzharding-n17-lean-2026-10-13/sq17-lean/Sq17Lean/Square17Optimality.lean), [`packing/resources/web/fitzharding-n17-lean-2026-10-13/sq17-lean/scripts/reproduce.py`](../../packing/resources/web/fitzharding-n17-lean-2026-10-13/sq17-lean/scripts/reproduce.py), [`packing/resources/web/fitzharding-n17-lean-2026-10-13/sq17-lean/scripts/unpack.py`](../../packing/resources/web/fitzharding-n17-lean-2026-10-13/sq17-lean/scripts/unpack.py)
+- Versions run: revision `e6ee548090dc` (the pinned head, whose proof files are release v1.0.0's at 0a7167efa8dcae7fa73855890630fb7e2de550ed (the two later commits change only CITATION.cff), with the three release archives pinned by SHA-256 in the packet; the source reports a clean build of it, not built here)
+- Note: Only the theorem file, the nine files whose definitions its statements use, the two control modules, the build pins, manifest.json, the two scripts and verification/ are retained; the other 1,203 tree modules and the 3,738 archived modules are pinned by the commit, by manifest.json's SHA-256 of each, and by the archives' SHA-256. The README says the project "was developed with substantial assistance from Claude and Codex".
+
+| evidence | run | code | results |
+| --- | --- | --- | --- |
+| `E-n017-fitzharding-lean-report` | the source’s own run | producer’s code | T-154 |
+
 ### `V-check-basic-bounds`
 
 **devtools.check_basic_bounds** · Squares Project (Levy) · first-party · decides · Python · exact-algebraic
@@ -1753,6 +1769,19 @@ Stages the statement closure of the 11SquaresFormalized proof from retained byte
 | --- | --- | --- | --- |
 | `E-n011-lean-formalization-report` | the source’s own run | producer’s code | T-060 |
 | `E-n011-lean-statement-closure-build` | replayed here | producer’s code | - |
+
+### `V-fitzharding-n17-source-manifest`
+
+**check_source_manifest.py, the sq17-lean packet's consistency check** · Squares Project (Levy) · first-party · checks premises · Python · proof-assistant-checked
+
+Reads the sq17-lean packet and a checkout of its pin as data: holds every tree module and root file to the size and SHA-256 manifest.json gives, each archive's member count to the modules assigned to it, the axiom report of Sq17.square17_optimality to the three standard axioms and 13,343 native_decide facts with no other axiom and no sorryAx, and the axiom and control logs to the digests of the source's receipt. It builds nothing and decides no bound.
+
+- Source: [`packing/resources/web/fitzharding-n17-lean-2026-10-13/receipts/programs/check_source_manifest.py`](../../packing/resources/web/fitzharding-n17-lean-2026-10-13/receipts/programs/check_source_manifest.py)
+- Versions run: this repository's commits, which Git holds
+
+| evidence | run | code | results |
+| --- | --- | --- | --- |
+| `E-n017-fitzharding-lean-report` | the source’s own run | producer’s code | T-154 |
 
 ### `V-audit-n17-endpoint-receipt`
 
