@@ -179,6 +179,24 @@ def _link_problems(path: Path) -> list[str]:
     return problems
 
 
+#: An absolute link to a path on this repository's `main`. The relative-link check skips it
+#: as external, and GitHub does not redirect a moved file, so a move leaves it dead without
+#: a word; it is held to the tree instead (think-mv16). A link pinned to a commit is not.
+MAIN_LINK = re.compile(
+    r"https://github\.com/jlevy/squares/(?:blob|tree)/main/([^\s)<>\"'`#?]+)"
+)
+
+
+def _main_link_problems(path: Path) -> list[str]:
+    label = path.relative_to(REPO).as_posix()
+    targets = MAIN_LINK.findall(_outside_fences(path.read_text(encoding="utf-8")))
+    return [
+        f"{label}: dead link to main -> {target}"
+        for target in dict.fromkeys(target.rstrip(".,;:!") for target in targets)
+        if not (REPO / unquote(target)).exists()
+    ]
+
+
 def _layout_problem(relative: str) -> str | None:
     """Why a mapped document's place or name breaks the layout, or None if it does not."""
     parts = relative.split("/")
@@ -297,6 +315,11 @@ def check() -> list[str]:
         if FOOTER not in text:
             problems.append(f"{relative}: common-doc footer is missing")
         problems.extend(_link_problems(REPO / relative))
+        problems.extend(_main_link_problems(REPO / relative))
+    # GitHub's templates live in a dot-directory the map does not cover, and one of them
+    # sends a contributor to a runbook by its `main` address.
+    for template in sorted(REPO.glob(".github/**/*.md")):
+        problems.extend(_main_link_problems(template))
     problems.extend(_layout_problems(covered & actual))
 
     current_paths = {
