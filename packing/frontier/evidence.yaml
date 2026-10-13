@@ -12426,10 +12426,11 @@ evidence:
       intervals. Its ATTRIBUTION.md credits this repository's weighted-covering,
       strict-core, event-cell and threshold-budget lineage, Mira-acc/17squares
       and Guzhou0806 / N17 project's R038, claims no invention of those methods
-      and says attribution implies no upstream coauthorship. Its AUTHORS.md says
-      the work was produced with AI agents (OpenAI Codex) under Overbeck's
-      direction. The package keeps the v1.1.0 checkers byte for byte, measures
-      its advance against v1.1.0's 4.640020, and claims neither optimality nor
+      and says attribution implies no upstream coauthorship. Its AUTHORS.md names
+      Overbeck as Kleddamag and says the work was produced with AI agents (OpenAI
+      Codex) under his direction. The package keeps the v1.1.0 checkers byte for
+      byte, measures its advance against v1.1.0's 4.640020, and claims neither
+      optimality nor
       independent human peer review.
     source_reviewed: '2026-09-27'
 
@@ -12936,8 +12937,9 @@ evidence:
       Guzhou0806: it continues the same author's v1.0.0 architecture, and its
       ATTRIBUTION.md credits this repository's weighted-covering, parent-centre
       and threshold lineage, Mira-acc/17squares and Guzhou0806 / N17 project's
-      R038. Its AUTHORS.md says the work was produced with AI agents (OpenAI
-      Codex) under Overbeck's direction. It measures its advance against its
+      R038. Its AUTHORS.md names Overbeck as Kleddamag and says the work was
+      produced with AI agents (OpenAI Codex) under his direction. It measures its
+      advance against its
       own v1.0.0 value 4.619791..., not against Guzhou0806's R052, states that
       no R052 code was used, and claims neither priority, optimality nor
       independent human peer review.

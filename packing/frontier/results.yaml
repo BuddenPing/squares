@@ -3372,8 +3372,9 @@ results:
       Marc Leonard Overbeck,
       [17-squares-certified-bound](https://github.com/Kleddamag/17-squares-certified-bound/tree/a499e2c739ce7853fa04c8bcdc85caf1c2b01b37),
       in the lineage the release names itself: Mira, Guzhou0806 / N17 project, and this
-      repository's threshold-atom work. Its AUTHORS.md says the project was directed by
-      Overbeck with the research, implementation and verification done by OpenAI Codex.
+      repository's threshold-atom work. Its AUTHORS.md names Overbeck as Kleddamag and
+      says he directed the project, with the research, implementation and verification
+      done by OpenAI Codex.
     scope: {n_values: [17]}
     verification: V3
     confirmation: C3
@@ -3515,8 +3516,8 @@ results:
       Marc Leonard Overbeck,
       [17-squares-certified-bound](https://github.com/Kleddamag/17-squares-certified-bound/tree/13821ddfa24133a8d796648383464574404d5fa0/bounds/4.640020),
       building on Squares Project (Joshua Levy), Mira and Guzhou0806, as its ATTRIBUTION.md
-      states. Its AUTHORS.md says the work was produced with AI agents (OpenAI Codex) under
-      Overbeck's direction.
+      states. Its AUTHORS.md names Overbeck as Kleddamag and says the work was produced
+      with AI agents (OpenAI Codex) under his direction.
     scope: {n_values: [17]}
     verification: V3
     confirmation: C3
@@ -3588,7 +3589,8 @@ results:
       Marc Leonard Overbeck,
       [17-squares-certified-bound](https://github.com/Kleddamag/17-squares-certified-bound/tree/57519bb74085157cb7047ae94c599bce4a006430/bounds/4.66001),
       building on Squares Project (Joshua Levy), Mira and Guzhou0806, as its ATTRIBUTION.md
-      states, produced with AI agents (OpenAI Codex) under Overbeck's direction.
+      states. Its AUTHORS.md names Overbeck as Kleddamag and says the work was produced
+      with AI agents (OpenAI Codex) under his direction.
     scope: {n_values: [17]}
     verification: V3
     confirmation: C3
@@ -5846,8 +5848,8 @@ results:
 
       Marc Leonard Overbeck,
       [Kleddamag/17-squares-certified-bound](https://github.com/Kleddamag/17-squares-certified-bound),
-      for the rational witness of Bidwell's packing; its AUTHORS.md says the work was
-      produced with AI agents under Overbeck's direction.
+      for the rational witness of Bidwell's packing; its AUTHORS.md names Overbeck as
+      Kleddamag and says the work was produced with AI agents under his direction.
     scope: {n_values: [17]}
     verification: V3
     confirmation: C3

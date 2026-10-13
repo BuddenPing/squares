@@ -503,7 +503,7 @@ THRESHOLD_REVIEW_EDITION = " ".join(
 #: When Part II's text last changed, by the rule `OPTIMALITY_REVIEW_REVISED` follows: the
 #: author date of the last commit that changed `n11-threshold-bound-review-article.md`,
 #: held to git by `devtools.artifact_dates`.
-THRESHOLD_REVIEW_REVISED = "October 12, 2026"
+THRESHOLD_REVIEW_REVISED = "October 13, 2026"
 
 #: The day Overbeck published the proof Part II reviews (v1.0.2 of
 #: 11-squares-certified-bound), which its "Original proof" date prints.

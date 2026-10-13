@@ -125,8 +125,8 @@ STATEMENTS: tuple[Statement, ...] = (
         # Overbeck's releases, published under his handle Kleddamag; the keys keep the handle.
         anchor=re.compile(r"Overbeck"),
         sentence=(
-            "The source’s `AUTHORS.md` says Overbeck directed the research and OpenAI Codex "
-            "carried it out."
+            "The source’s `AUTHORS.md` names Overbeck as Kleddamag and says he directed the "
+            "research and OpenAI Codex carried it out."
         ),
         marker="OpenAI Codex",
     ),

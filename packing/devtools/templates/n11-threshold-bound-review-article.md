@@ -11,7 +11,7 @@ and
 at the reviewed release, v1.0.2, retained in this project’s
 [archive](../../resources/web/external-square-certificates-2026-09-22/kleddamag-11/README.md).
 The source’s `AUTHORS.md` says OpenAI Codex developed the mathematics and computation
-under Overbeck’s direction; the certificate develops this project’s T-026 certificate,
+under Kleddamag’s direction; the certificate develops this project’s T-026 certificate,
 the subject of [Part I]({{PAPER:n11-lower-bounds-explainer}}), and the result is
 registered here as T-037.[^authors]
 
@@ -830,7 +830,7 @@ supply.
 {{VERSION_HISTORY}}
 
 [^authors]: [`AUTHORS.md`](../../resources/web/external-square-certificates-2026-09-22/kleddamag-11/AUTHORS.md#L3-L8),
-    which says Overbeck commissioned and directed the research and OpenAI Codex
+    which says Kleddamag commissioned and directed the research and OpenAI Codex
     developed the mathematical and computational continuation; the
     [attribution’s lead](../../resources/web/external-square-certificates-2026-09-22/kleddamag-11/ATTRIBUTION.md#L3-L7),
     which names this project’s T-026 certificate at its revision.

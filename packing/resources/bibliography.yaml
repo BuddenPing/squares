@@ -251,7 +251,7 @@ sources:
       R038, and claims no invention of those methods. It was published under his handle,
       Kleddamag; his edition of 12 October 2026 names him ([Overbeck n17 candidate 2026]).
       Its AUTHORS.md says the work was produced with AI agents (OpenAI Codex)
-      under Overbeck's direction (web/n17-kleddamag-466001-2026-09-27/README.md).
+      under Kleddamag's direction (web/n17-kleddamag-466001-2026-09-27/README.md).
   - key: '[Kleddamag n17 4.640020]'
     authors: [Overbeck]
     year: 2026
@@ -263,8 +263,9 @@ sources:
       The v1.1.0 release of Kleddamag/17-squares-certified-bound at 13821ddf,
       2026-09-26, whose bounds/4.640020/ package proves s(17) > 232001/50000.
       Marc Leonard Overbeck, building on Squares Project (Joshua Levy), Mira and Guzhou0806, on
-      the same lineage its ATTRIBUTION.md states. Its AUTHORS.md says the work was
-      produced with AI agents (OpenAI Codex) under Overbeck's direction
+      the same lineage its ATTRIBUTION.md states. Its AUTHORS.md names Overbeck as
+      Kleddamag and says the work was produced with AI agents (OpenAI Codex) under his
+      direction
       (web/n17-kleddamag-4640020-2026-09-26/README.md).
   - key: '[Guzhou0806 n17 R052]'
     authors: [Guzhou0806]
@@ -621,7 +622,7 @@ sources:
       T-026 certificate; its reconstructed JavaScript checker adapts Guzhou0806 / N17
       project's R038 checker, and it records the Levy/Guzhou/Mira lineage inherited
       through the s(17) work (kleddamag-11/ATTRIBUTION.md, lines 3, 15 and 16). Its
-      AUTHORS.md says OpenAI Codex developed the continuation under Overbeck's
+      AUTHORS.md says OpenAI Codex developed the continuation under Kleddamag's
       direction. Dated by the release commit 6a733f33, 2026-09-22.
   - key: '[Wang Li n11 2026]'
     authors: [Ke Wang, Can Li]
@@ -2025,11 +2026,11 @@ sources:
       653b9589d0f8a152f01adc56b1d48ba53d49abc3 (committed 2026-10-12T14:40:59Z) with its
       release large-files-v1, pinned in web/kleddamag-n17-candidate-2026-10-12/. README.md
       and CITATION.cff name the author Marc Leonard Overbeck (ORCID 0009-0008-8607-8197), who
-      publishes on GitHub as Kleddamag and on X as @kleddamag, the handle of the
-      [Kleddamag n11 2026] and [Kleddamag n17 ...] keys. CREDITS.md says the result depends on, or follows the idea
-      of, Joshua Levy and the squares project (the charge method, the exact certification of
-      L, the core-stress and local-minimum recipe, the parent-centre contract and the plan to
-      follow the n = 11 proof shape), Manasseh Ahmed's 11SquaresOptimal (the proof shape),
+      publishes on GitHub as Kleddamag, the handle of the [Kleddamag n11 2026] and
+      [Kleddamag n17 ...] keys, and on X as @kleddamag. CREDITS.md says the result depends
+      on, or follows the idea of, Joshua Levy and the squares project (the charge method,
+      the exact certification of L, the core-stress and local-minimum recipe, the
+      parent-centre contract and the plan to follow the n = 11 proof shape), Manasseh Ahmed's 11SquaresOptimal (the proof shape),
       Mira-acc/17squares (the certificate frame), Guzhou0806's N17 project (the angle
       catalogue, the parent-side reduction and the first exact JavaScript checker) and
       Muhammad Maaz (the semidefinite leaves); Bidwell for the packing, and Gensane and
