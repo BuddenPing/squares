@@ -2852,6 +2852,14 @@ urls:
   first_published: '2026-10-07'
   lastmod: '2026-10-07'
   status: live
+- path: atlas/regularized/n-176.svg
+  canonical: atlas/regularized/n-176.svg
+  kind: asset-file
+  generator: devtools.render_overview:support_files
+  producer: overview
+  first_published: '2026-10-08'
+  lastmod: '2026-10-08'
+  status: live
 - path: atlas/regularized/n-177.svg
   canonical: atlas/regularized/n-177.svg
   kind: asset-file
@@ -4138,7 +4146,7 @@ urls:
   generator: devtools.render_case_pages:case_records
   producer: overview
   first_published: '2026-10-03'
-  lastmod: '2026-10-05'
+  lastmod: '2026-10-12'
   status: live
 - path: cases/182.html
   canonical: cases/182.html
@@ -4642,7 +4650,7 @@ urls:
   generator: devtools.render_case_pages:case_records
   producer: overview
   first_published: '2026-10-03'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-12'
   status: live
 - path: cases/239.html
   canonical: cases/239.html
@@ -4650,7 +4658,7 @@ urls:
   generator: devtools.render_case_pages:case_records
   producer: overview
   first_published: '2026-10-03'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-12'
   status: live
 - path: cases/24.html
   canonical: cases/24.html
@@ -4930,7 +4938,7 @@ urls:
   generator: devtools.render_case_pages:case_records
   producer: overview
   first_published: '2026-10-03'
-  lastmod: '2026-10-11'
+  lastmod: '2026-10-12'
   status: live
 - path: cases/271.html
   canonical: cases/271.html
@@ -4938,7 +4946,7 @@ urls:
   generator: devtools.render_case_pages:case_records
   producer: overview
   first_published: '2026-10-03'
-  lastmod: '2026-10-05'
+  lastmod: '2026-10-12'
   status: live
 - path: cases/272.html
   canonical: cases/272.html
@@ -4946,7 +4954,7 @@ urls:
   generator: devtools.render_case_pages:case_records
   producer: overview
   first_published: '2026-10-03'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-12'
   status: live
 - path: cases/273.html
   canonical: cases/273.html
@@ -5234,7 +5242,7 @@ urls:
   generator: devtools.render_case_pages:case_records
   producer: overview
   first_published: '2026-10-03'
-  lastmod: '2026-10-05'
+  lastmod: '2026-10-12'
   status: live
 - path: cases/305.html
   canonical: cases/305.html
@@ -5242,7 +5250,7 @@ urls:
   generator: devtools.render_case_pages:case_records
   producer: overview
   first_published: '2026-10-03'
-  lastmod: '2026-10-11'
+  lastmod: '2026-10-12'
   status: live
 - path: cases/306.html
   canonical: cases/306.html
@@ -12988,6 +12996,85 @@ urls:
     kind: upper-bound
     scope:
       n_values:
+      - 176
+      - 181
+      - 238
+      - 239
+      - 270
+      - 271
+      - 272
+      - 304
+      - 305
+    established: null
+    attribution:
+      source_keys:
+      - '[SQUISH fourth request 2026-10-11]'
+      published: '2026-10-11'
+    builds_on: null
+    evidence:
+    - E-squish-500-certificate-report
+    - E-squish-500-exact-feasibility
+    artifacts:
+    - packing/resources/web/squish-500-fourth-request-2026-10-11/README.md
+    - packing/resources/web/squish-500-fourth-request-2026-10-11/acquisition/claims.json
+    - packing/resources/web/squish-500-fourth-request-2026-10-11/facts/n-176.yaml.gz
+    - packing/resources/web/squish-500-fourth-request-2026-10-11/facts/n-181.yaml.gz
+    - packing/resources/web/squish-500-fourth-request-2026-10-11/facts/n-238.yaml.gz
+    - packing/resources/web/squish-500-fourth-request-2026-10-11/facts/n-239.yaml.gz
+    - packing/resources/web/squish-500-fourth-request-2026-10-11/facts/n-270.yaml.gz
+    - packing/resources/web/squish-500-fourth-request-2026-10-11/facts/n-271.yaml.gz
+    - packing/resources/web/squish-500-fourth-request-2026-10-11/facts/n-272.yaml.gz
+    - packing/resources/web/squish-500-fourth-request-2026-10-11/facts/n-304.yaml.gz
+    - packing/resources/web/squish-500-fourth-request-2026-10-11/facts/n-305.yaml.gz
+    - packing/resources/web/squish-500-fourth-request-2026-10-11/receipts/exact-certification.json.xz
+    - packing/devtools/upper_bound_reports.py
+    - packing/devtools/check_half_angle_area.py
+    - docs/project/reviews/review-2026-10-11-upper-bound-imports-500.md
+- path: result/t-152.html
+  canonical: result/t-152.html
+  kind: result
+  generator: devtools.render_overview:result_fragments
+  producer: overview
+  first_published: '2026-10-12'
+  lastmod: '2026-10-12'
+  status: live
+  identity:
+    kind: upper-bound
+    scope:
+      n_values:
+      - 304
+      - 305
+    established: null
+    attribution:
+      source_keys:
+      - '[Couzo certificates 2026-10-11]'
+      published: '2026-10-11'
+    builds_on: null
+    evidence:
+    - E-couzo-506-certificate-report
+    - E-couzo-506-exact-feasibility
+    artifacts:
+    - packing/resources/web/couzo-certificates-2026-10-11/README.md
+    - packing/resources/web/couzo-certificates-2026-10-11/acquisition/claims.json
+    - packing/resources/web/couzo-certificates-2026-10-11/acquisition/beyond-horizon-claims.json
+    - packing/resources/web/couzo-certificates-2026-10-11/source/certificates/n304.cert
+    - packing/resources/web/couzo-certificates-2026-10-11/source/certificates/n305.cert
+    - packing/resources/web/couzo-certificates-2026-10-11/receipts/exact-certification.json.xz
+    - packing/devtools/upper_bound_reports.py
+    - packing/devtools/check_half_angle_area.py
+    - docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md
+- path: result/t-154.html
+  canonical: result/t-154.html
+  kind: result
+  generator: devtools.render_overview:result_fragments
+  producer: overview
+  first_published: '2026-10-12'
+  lastmod: '2026-10-12'
+  status: live
+  identity:
+    kind: upper-bound
+    scope:
+      n_values:
       - 28
       - 29
       - 37
@@ -13018,7 +13105,6 @@ urls:
       - 171
       - 173
       - 174
-      - 176
       - 178
       - 197
       - 198

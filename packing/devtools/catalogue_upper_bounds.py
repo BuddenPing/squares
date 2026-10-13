@@ -266,7 +266,7 @@ def apply_case(n: int, text: str) -> str:
     agrees with it. The body is the case record's own, and is left as it is.
     ``devtools.generate_frontier_case`` applies this to its drafts of these counts, as it
     applies ``devtools.apply_upper_bound_packets`` to the counts T-056 and T-057 certified.
-    A record whose verified upper lane the regularized layer holds (T-151) is returned
+    A record whose verified upper lane the regularized layer holds (T-154) is returned
     unchanged, as ``devtools.apply_exact_ceilings`` returns it: that layer writes over
     this one and keeps this certificate's sentences as history.
     """

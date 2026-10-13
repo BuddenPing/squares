@@ -351,7 +351,7 @@ def test_n29_trails_its_report_and_keeps_its_own_ceiling() -> None:
     assert 29 not in certificates.CEILINGS
     case = certificates.case_record(29)
     # The interval certificate held it until 12 October 2026, when the exact regularized
-    # view at the witness's own side, below both, became its exact form (T-151), the
+    # view at the witness's own side, below both, became its exact form (T-154), the
     # endpoint still printed as its value; this survey never moved it.
     assert case["verified_upper_bound"]["evidence"] == [regularized.EVIDENCE]
     assert "E-n029-interval-certified-upper" in case["evidence"]
@@ -389,7 +389,7 @@ def test_each_ceiling_is_the_certified_side_rounded_up_at_the_printed_precision(
         verified = case["verified_upper_bound"]
         side = Fraction(row["certified_side"])
         if regularized.EVIDENCE in verified["evidence"]:
-            # A regularized view's exact side is now the lane's exact form (T-151): at most
+            # A regularized view's exact side is now the lane's exact form (T-154): at most
             # this certificate's side, and below its rounding up, which the record still
             # prints as the value; this certificate stays cited.
             assert verified["value"] == row["verified_value"], n

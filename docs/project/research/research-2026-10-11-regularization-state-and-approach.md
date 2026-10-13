@@ -26,10 +26,11 @@ hues.
 **Regularization** redraws a packing the record already holds so that it reads cleanly,
 without changing its side, its evidence tier or its credit.
 This document collects what the project has done about it so far, what each approach
-fixed and could not fix, what the spikes of 11 October 2026 showed on fifteen counts,
-and the standard approach recommended for regularizing every result: an automated pass
-under the [regularization policy](../policies/regularization-policy.md), with judgment
-reserved for the cases the automation cannot decide.
+fixed and could not fix, what the spikes of 11 October 2026 showed on 25 pilot counts
+and the full run of 12 October on all 324, and the standard approach recommended for
+regularizing every result: an automated pass under the
+[regularization policy](../policies/regularization-policy.md), with judgment reserved
+for the cases the automation cannot decide.
 
 The owner’s request (11 October 2026): regularize all current results “using something
 similar to what Evan Daniel has done”, with a standard policy and automation wherever
@@ -420,13 +421,14 @@ regularization in the register’s `regularizations` terms with identity measure
 The register gained a generated `regularized_drawings` block that lists each drawing
 under the result holding the drawn packing, and `check_results` checks the block.
 
-**The registration (#549).** T-151 registers the exact sides of 60 views that sat just
+**The registration (#549).** T-154 registers the exact sides of 59 views that sat just
 below their verified ceilings: 5.4e-20 to 9.9e-15 below, V3/C3, S1. Each case record
 keeps the decimal it printed.
-With the bounds refreshed from the records, 16 of the 23 counts held at row 3 are
-admitted. 39, 204 and 299 go to review, and 53, 151, 176 and 298 are refused.
+With the bounds refreshed from the records, 16 of the 22 counts held at row 3 are
+admitted. 39, 204 and 299 go to review, and 53, 151 and 298 are refused.
+A sixtieth count, 176, left the batch when #553 re-housed it below the side of its view.
 
-The end state, with #549 on top of the stack:
+The end state when T-154 was registered, before #518 and #553 re-housed 51 counts:
 
 | Drawing | Counts |
 | --- | --- |
@@ -441,7 +443,7 @@ The end state, with #549 on top of the stack:
   unregistered:
   - 18, 26, 66 and 85 are Kingbird and Friedman packings with verified bounds but no
     register result;
-  - 87 is drawn at the witness’s side, 4.3e-16 above T-151’s bound.
+  - 87 is drawn at the witness’s side, 4.3e-16 above T-154’s bound.
 - **Still to draw.** Every count is either drawn regularized or has a recorded reason
   for keeping its drawing:
   - the review queue goes to the owner;
@@ -468,16 +470,22 @@ Over the 42 counts, against #518’s drawings:
 - near-axis squares fall from 182 to 6;
 - house sides rise from 21,701 to 23,038.
 
-The end state is now:
+#553 then re-housed 270 and 305 again (T-151, T-152), so the Evan Daniel view at 270 and
+the grid view at 305 lapsed with the witnesses they were made from, and the axis tool’s
+views of #553’s witnesses are drawn there.
+The census above was measured before that; 17 Evan Daniel views and 10 grid views remain
+drawn among the 42.
 
-- 89 counts drawn from a regularized view: 16 axis tool, 55 Evan Daniel (42 at the
-  witness’s side, 13 at the bound) and 18 grid;
+The end state, with #553 merged:
+
+- 90 counts drawn from a regularized view: 25 axis tool, 48 Evan Daniel (37 at the
+  witness’s side, 11 at the bound) and 17 grid;
 - 181 unchanged;
-- 54 drawn as the witness.
+- 53 drawn as the witness.
 
-Light squares across the atlas fall from 5,506 to 5,382. The witnesses alone have 7,681,
-now that #518 has re-housed its 42 counts.
-84 drawings are recorded in `regularized_drawings`, with the same five listed
+Light squares across the atlas fall from 5,580 to 5,455. The witnesses alone have 7,628,
+now that #518 and #553 have re-housed their counts.
+85 drawings are recorded in `regularized_drawings`, with the same five listed
 unregistered.
 
 ## Key Insights
@@ -558,9 +566,9 @@ and as the non-regression reference.
 **Pros:** reaches tilted structure and hue classes at the record’s exact side; every
 view is exact and verified here; identity and shading are measured, not asserted.
 
-**Cons:** about 7 CPU-hours for a full run; same side is impossible at Göbel-family
-decimals; at counts where the witness is not at its optimum the re-solve moves the
-packing and the view lands below the bound instead.
+**Cons:** 13.7 CPU-hours for a full run, measured; same side is impossible at
+Göbel-family decimals; at counts where the witness is not at its optimum the re-solve
+moves the packing and the view lands below the bound instead.
 
 ### Option C: Draw Evan Daniel’s Certificates As They Are
 
@@ -644,18 +652,18 @@ $n = 260$), so 2 to 3 hours of wall time at three or four workers, mostly in the
 batch. Review: if a tenth to a fifth of counts reach the queue, 30 to 60 gallery entries
 for the owner, a few minutes each.
 *Measured* in the full run: 13.7 CPU-hours and 3.8 hours of wall time at four workers,
-and 13 counts in the review queue.
+and 13 counts in the review queue, 14 after the tolerance re-run.
 
 ## Next Steps
 
 - [x] Owner: answer the amendments and the two record changes above (think-pn0e;
   answered 12 October 2026).
-- [ ] Adopt the register’s lower exact certificates as the atlas witnesses, T-146 at its
-  15 counts first, and run the full pass only after the imports in flight at the same
-  counts (#470, #476, #481, #483, #488, #489) land, since a changed witness lapses every
-  review (think-cb34).
-- [x] Register the exact packings at printed sides in one batch (think-omqv): T-151 on
-  #549, which merges after #516’s T-147 to T-150.
+- [ ] Adopt the register’s lower exact certificates as the atlas witnesses (think-cb34).
+  #518 adopted them at 42 counts, T-146’s among them, and merged on 12 October 2026,
+  after the full pass had run on the witnesses before it; since a changed witness lapses
+  every review, those counts are run again (below).
+- [x] Register the exact packings at printed sides in one batch (think-omqv): T-154 on
+  #549.
 - [x] Amend the policy’s decision table, then teach `devtools.regularize_evand.classify`
   the amendments (think-up3h): the policy on #497, the driver on #511.
 - [x] The index contract for every generator (think-k35c), then the admission batches
@@ -670,10 +678,11 @@ and 13 counts in the review queue.
   (302, 303 and others; owner, 12 October 2026): `devtools.regularize_grid_slack`
   (#530). The owner confirms it as the third generator and chooses its threshold (0.5 or
   5 degrees; think-0mq7).
-- [ ] Re-run the 42 counts whose witnesses #518 changes, before any admission there
+- [ ] Re-run the 42 counts whose witnesses #518 changed, before any admission there
   (think-cb34, think-ux1v).
-- [x] Settle #515, a parallel implementation of this layer, with the owner: closed as
-  superseded, its rotation tolerance ported to #511.
+- [x] Settle #515, a parallel implementation of this layer, with the owner: closed
+  unmerged on 12 October 2026, its rotation tolerance and fixes ported to #511 in
+  f0371b68d.
 - [ ] After the full run: an explainer paper in the project’s own format, rendered by
   kpress like the $n = 11$ lower-bounds explainer, citing Evan Daniel’s work and
   summarizing this project’s changes with before/after figures (think-scua).

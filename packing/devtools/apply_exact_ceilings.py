@@ -674,7 +674,7 @@ def apply_case(n: int, text: str) -> str:
 
 def later_ceiling(front: str) -> bool:
     """Whether a later certificate holds the verified upper lane: an exact regularized
-    view below this import's rounded-up side (T-151), which writes over this layer at its
+    view below this import's rounded-up side (T-154), which writes over this layer at its
     counts and keeps this certificate's sentences as history."""
     from devtools import register_regularized_bounds as later  # noqa: PLC0415
 

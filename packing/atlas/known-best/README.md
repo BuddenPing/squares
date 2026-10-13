@@ -177,25 +177,30 @@ decided it:
   slack.
 
 A view from either of the last two enters only where the policy’s decision table admits
-it (row 10), by `python -m devtools.regularize_evand layer --select admitted`, and only
-where it shares at least as many full sides as the view it replaces.
+it (row 10), by `python -m devtools.regularize_evand layer --select admitted` (a
+grid-slack run’s views by adding `--grid-run DIR --grid-counts N ...`, which draws that
+run’s view at those counts in place of Evan Daniel’s), and only where it shares at least
+as many full sides as the view it replaces.
 The axis tool’s own record of that count stays beside it as `reference`. Such a view
 carries the credit line *Regularized by the Squares Project with Evan Daniel’s
 regularizer (evand/square-packing, MIT)*, in the index, in the view and in its drawing.
 
-On 12 October 2026 the index draws 89 views: 16 by the axis tool, 55 by Evan Daniel’s
-regularizer (42 at the witness’s side and 13 at the verified upper bound) and 18 by the
-grid-slack generator (2 by its version 0 and 16 by its version 1), with 181 records
-unchanged and 54 refused.
+On 12 October 2026 the index draws 90 views: 25 by the axis tool, 48 by Evan Daniel’s
+regularizer (37 at the witness’s side and 11 at the verified upper bound) and 17 by the
+grid-slack generator (2 by its version 0 and 15 by its version 1), with 181 records
+unchanged and 53 refused.
 At sixteen counts Evan Daniel’s views lay below the earlier ceilings and were held; they
-were admitted once T-151 registered their exact sides and the runs were decided again
+were admitted once T-154 registered their exact sides and the runs were decided again
 against the case records as they stand (`python -m devtools.regularize_evand reclassify
 --refresh-bounds`); at 227 the grid-slack view is drawn instead.
 At the 42 counts jlevy/squares#518 re-housed, both generators ran again on the new
-witnesses. 18 of Evan Daniel’s views are drawn, and 11 grid-slack views where his
+witnesses. 17 of Evan Daniel’s views are drawn, and 10 grid-slack views where his
 regularizer admitted none and the grid view draws better with nothing worse.
-The other 13 keep the axis tool’s view: 232’s grid view awaits review, and at the rest
-neither generator draws better.
+13 keep the axis tool’s view: 232’s grid view awaits review, and at the rest neither
+generator draws better.
+At 270 and 305, which jlevy/squares#553 re-housed again after those runs, the views
+lapsed with the witnesses they were made from, and the axis tool’s views of the new
+witnesses are drawn.
 Every drawn view carries its regularization in the register’s terms (`by: project`, the
 method, the side and the identity measured here), and `results.yaml`’s
 `regularized_drawings` records each one whose packing a registered result holds,
@@ -215,7 +220,7 @@ checkpoint
 it re-derives every axis-tool record, the references included, and decides each other
 generator’s view again on both maintained exact routes.
 
-**The axis tool still refuses the 73 Kingbird-derived records.** Their 36-digit poses
+**The axis tool still refuses 71 Kingbird-derived records.** Their 36-digit poses
 overlap by a rounding sliver at centre dilation 1, the only factor the tool uses; Evan
 Daniel’s regularizer, re-solved at that promotion’s side, now draws three of them
 ($n = 18$, $66$ and $85$), and the rest stay refused here.
@@ -240,12 +245,18 @@ rational packings; the historical census below describes the earlier poses:
 Every view passed both exact verifiers, and none made a square lighter or needed a hold.
 The views still fail the claim boundary, for two reasons:
 
-- **Most would promote a tier.** For 73 of the 89 the register’s verified upper bound is
-  the grid ceiling, because the Kingbird catalogue is reported evidence that has never
-  been replayed. An exactly verified view there is a rational packing 0.05 to 0.46 below
-  that bound. A drawing would then carry a certificate the register does not.
-  At $n = 17$ and $n = 29$ the view lies $10^{-22}$ and $5 \times 10^{-20}$ below the
-  certified endpoint the register holds, which is the same promotion at smaller scale.
+- **Most would promote a tier.** On 2026-10-02, for 73 of the 89 the register’s verified
+  upper bound was the grid ceiling, because the Kingbird catalogue was reported evidence
+  that had never been replayed.
+  An exactly verified view there was a rational packing 0.05 to 0.46 below that bound,
+  and a drawing would have carried a certificate the register did not.
+  At $n = 17$ and $n = 29$ the view lay $10^{-22}$ and $5 \times 10^{-20}$ below the
+  certified endpoint the register held, which is the same promotion at smaller scale.
+  The grid-ceiling count no longer holds: T-101 (registered 2026-10-06) made Evan
+  Daniel’s exact certificates the verified upper bound at 74 Kingbird counts, and on 11
+  October none of the 74 records the layer then refused had the grid ceiling as its
+  verified bound. The 72 it refuses now are among those 74
+  ([the assessment, section 3.2](../../../docs/project/research/research-2026-10-11-evand-regularization-assessment.md#32-the-side-relation-same-or-solved)).
 - **The rest would change the side.** For the other 14 the register already verifies the
   reported bound, but a dilated view’s container is $2.9 \times 10^{-31}$ to
   $8.8 \times 10^{-29}$ larger than the printed side and lies above the verified bound,

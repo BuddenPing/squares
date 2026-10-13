@@ -16,15 +16,16 @@ the views of the full run of 11 and 12 October 2026 (`devtools.regularize_evand 
 **Which views.** `select` reads the run directories' reports, a later directory's report
 replacing an earlier one's at the same count. A count is a candidate where either output,
 the vendored generator's certificate at its own side (`solved`) or the same-side view at
-the witness's side `s_W` (`same`), is decided at row 3. Two sets are left out: `n = 17`,
-held by the owner (think-x4v4), and the 42 counts jlevy/squares#518 re-houses
-(`EXCLUDED`), whose witnesses that pull request replaces. At each other candidate the view
+the witness's side `s_W` (`same`), is decided at row 3. Three sets are left out
+(`EXCLUDED`): `n = 17`, held by the owner (think-x4v4), the 42 counts jlevy/squares#518
+re-houses, and the nine jlevy/squares#553 re-houses, whose witnesses those pull requests
+replace; of the nine, only `n = 176` was a candidate. At each other candidate the view
 with the least exact side is registered, so that once its side is the verified upper bound
 no view of the count lies below it. A report is refused unless the witness it read is the
 checkout's, by its id and exact side, and the bound it compared with is the case
 record's; the identity measured against the checkout witness then shows any other drift.
 
-At 34 counts the registered view is a `solved` certificate, and its side is exactly the
+At 33 counts the registered view is a `solved` certificate, and its side is exactly the
 side of Evan Daniel's certificate of the same packing (T-101), which the record had
 carried rounded up at the fourteen decimals the catalogue prints. At the other 26 it is a
 `same` view, whose side is the witness's own, 6.6e-20 to 1.8e-19 below T-101's at 25 of
@@ -112,20 +113,23 @@ PACKAGE_LINK = "../cases/regularized_bounds/README.md"
 FORMAT = "regularized-bounds-receipt-v1"
 TOOL = "python -m devtools.register_regularized_bounds"
 POLICY = "docs/project/policies/regularization-policy.md"
-RESULT = "T-151"
+RESULT = "T-154"
 EVIDENCE = "E-regularized-bounds-2026-10-12-exact-decision"
 SOURCE_KEY = "[Daniel regularizer 2026-10-11]"
 REGISTERED = "2026-10-12"
 DATE_WORDS = "12 October 2026"
-#: The count the owner holds (think-x4v4), and the 42 counts jlevy/squares#518 re-houses,
-#: whose witnesses that pull request replaces; nothing here reads a view of them.
+#: The count the owner holds (think-x4v4), and the counts jlevy/squares#518 (42) and
+#: jlevy/squares#553 (nine) re-house, whose witnesses those pull requests replace; nothing
+#: here reads a view of them.
 HELD = frozenset({17})
 REHOUSED = frozenset(
     {70, 84, 86, 102, 103, 105, 108, 123, 126, 127, 129, 131, 132, 146, 153, 154, 155}
     | {156, 175, 180, 207, 209, 211, 228, 232, 236, 237, 258, 259, 261, 263, 267, 269}
     | {270, 292, 295, 302, 303, 305, 306, 307, 308}
 )
-EXCLUDED = HELD | REHOUSED
+#: #553 merged after the runs, re-housing 176 below the side its view would register.
+REHOUSED_553 = frozenset({176, 181, 238, 239, 270, 271, 272, 304, 305})
+EXCLUDED = HELD | REHOUSED | REHOUSED_553
 #: The decimal places at which prose writes an exact side: the exact decimal where it
 #: ends by then, else the side rounded up there.
 DISPLAY_PLACES = 36
@@ -483,7 +487,7 @@ def select(run_dirs: Sequence[Path]) -> dict[str, Any]:
         "what": (
             "Every count where a view of the regularization runs is decided at row 3 of the "
             "policy's table, its side below the case's verified upper bound, apart from the "
-            "held n = 17 and the 42 counts jlevy/squares#518 re-houses: the view with the "
+            "held n = 17 and the counts jlevy/squares#518 and #553 re-house: the view with the "
             "least exact side, retained under views/, with the bound the record held before, "
             "the printed side and closed form, the drawing decision, and the identity "
             "measured on the retained view against the witness's exact frame."

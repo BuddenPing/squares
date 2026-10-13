@@ -68,7 +68,7 @@ def test_the_packing_is_the_result_holding_it_at_the_side_drawn() -> None:
 
 
 def test_a_witness_side_exactly_at_the_bound_falls_back_to_the_bound_holder() -> None:
-    """T-151 certified witnesses' own sides exactly: a `same` view there that no result
+    """T-154 certified witnesses' own sides exactly: a `same` view there that no result
     attributes is held by the result the bound rests on, and only when the side is exact."""
     found = entry(7, "same")
     found["side"]["view"] = "33/5"

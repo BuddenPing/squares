@@ -1907,8 +1907,10 @@ sources:
       were measured here exactly where the source places them. The source checks with
       Squares Project (Levy) verification code and supplies a corners Witness/v2. Derived
       exact facts only; no upstream byte is retained. OpenAI Codex assistance was disclosed
-      in the first commit, 0d8b9c1, and the disclosure removed at the pin. No local or
-      global optimality claim.
+      in the first commit, 0d8b9c1, and the disclosure removed at the pin; asked which
+      account stands, the author answered on jlevy/squares#503 on 12 October 2026, for this
+      release and the n153 one: "Both solutions were AI assisted by 'PY', an unreleased
+      agentic AI offering by PingYou Ltd." No local or global optimality claim.
   - key: '[PingYou n153 certificate 2026-10-11]'
     authors: [PingYou Ltd]
     year: 2026
@@ -1927,7 +1929,10 @@ sources:
       source checks with Squares Project (Levy) verification code
       and supplies a corners Witness/v2. Derived exact facts only; no upstream byte is
       retained. No AI-assistance statement; the same author's n207 release disclosed OpenAI
-      Codex assistance and removed it. No local or global optimality claim.
+      Codex assistance and removed it. Asked on jlevy/squares#503 which account stands, the
+      author answered there on 12 October 2026, for both releases: "Both solutions were AI
+      assisted by 'PY', an unreleased agentic AI offering by PingYou Ltd." No local or global
+      optimality claim.
   - key: '[Ostashev records 2026-10-11]'
     authors: [Ostashev]
     year: 2026
@@ -1966,6 +1971,42 @@ sources:
       project; the comparisons are with Daniel's regularization and this project's register
       and atlas. Derived exact facts only; no upstream byte is retained. OpenAI Codex
       assistance disclosed. No local or global optimality claim.
+  - key: '[SQUISH fourth request 2026-10-11]'
+    authors: [Chaoweeraprasit]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-11'
+    lineage: builds-on-project
+    credit: Chaoweeraprasit after Couzo, Gupta, Ellsworth, Friedman, Levy
+    short_credit: Chaoweeraprasit after Couzo et al.
+    note: >-
+      Nine complete exact certificates at aeacc6c124df339074f7370e1e010bb6e8c1b5ca, reported
+      on jlevy/squares#500, at 176, 181, 238, 239, 270, 271, 272, 304 and 305, from SQUISH's
+      Mondrian composition of pieces of earlier packings: Couzo's s(127), the Kingbird
+      catalogue's s(5) and former records at 11, 19 and 182, SQUISH's own s(209) of issues
+      401 (as Gupta refined it) and 481, and SQUISH's unfiled packings, compared against
+      this project's register; the pieces were measured here to reappear to the eye and not
+      by pose. The issue's 15-digit sides are cuts of the exact fractions summary.csv
+      prints. Derived exact facts only; no upstream byte is retained. Claude assistance
+      disclosed. No KKT, interval, local or global optimality claim.
+  - key: '[Couzo certificates 2026-10-11]'
+    authors: [Couzo]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-11'
+    lineage: builds-on-project
+    credit: Couzo after Chaoweeraprasit, Fang, Daniel, Ellsworth, Levy
+    short_credit: Couzo after Chaoweeraprasit et al.
+    note: >-
+      Fifteen complete exact certificates at 337078ca3e05153aceb099237b175cf64af5748a,
+      eleven of them requested on jlevy/squares#506: exact optima from Daniel's exact
+      contact solver at 304 and 305, refined from Chaoweeraprasit's SQUISH Mondrian packings
+      of issue 500 with Daniel's fq, Couzo's search and Ellsworth's refine_packing and
+      measured here as those arrangements, and nine beyond the case corpus, one of them
+      (375) a dilated rational witness and one (344) a move of Fang's two-wedge packing. The
+      source checks with Squares Project (Levy) verification code; this project lineage is
+      not independent. The certificates are retained as factual data; the unlicensed prose
+      is hash-pinned. Claude assistance disclosed. No optimizer, local or global claim.
   - key: '[Daniel regularizer 2026-10-11]'
     authors: [Daniel]
     year: 2026

@@ -8,8 +8,8 @@ ours, which rest on someone else's argument, and how far each has been checked.
 
 ## The short version
 
-- **512** evidence records. **313** are formal; **306** of those were established here.
-- **191** rest on an argument made elsewhere, of which **7** have been read by nobody here.
+- **516** evidence records. **315** are formal; **308** of those were established here.
+- **193** rest on an argument made elsewhere, of which **7** have been read by nobody here.
 - **1** formal record proves a theorem only under a hypothesis nothing here has replayed, and is verified as that implication alone: `E-k2m4-evand-bentz4-lean-build` (ValidTilt9).
 - **42** claim to be first established here. **14** make no novelty statement at all - not assessed, which is not the same as not novel.
 
@@ -154,7 +154,7 @@ results, it is a statement about what this repository has itself examined.
 | `E-friedman-ds7-table2-opaque-lower` | 0 | lower-bound | reported | - | elsewhere | - | previously-published | unknown | - |
 | `E-n017-maciver-reported-lower` | 0 | lower-bound | reported | - | elsewhere | not-reviewed | previously-published | unknown | *none held* |
 | `E-green26-reported-lower` | 0 | lower-bound | reported | - | - | defect-found | previously-published | unknown | - |
-| `E-kingbird-upper-register` | 159 | upper-bound | reported | - | - | - | previously-published | producer’s code | - |
+| `E-kingbird-upper-register` | 158 | upper-bound | reported | - | - | - | previously-published | producer’s code | - |
 | `E-kingbird-grid-completeness` | 95 | upper-bound | reported | - | - | - | previously-published | producer’s code | - |
 | `E-unitsquare-release1-report` | 0 | upper-bound | reported | - | - | - | previously-published | producer’s code | *none held* |
 | `E-basic-grid-upper` | 175 | upper-bound | verified | equalities and inequalities, no tolerance | here | - | common-knowledge | independent | `V-check-basic-bounds` |
@@ -427,9 +427,9 @@ results, it is a statement about what this repository has itself examined.
 | `E-n094-wand125-mixed-992-sqverify-fast-replay` | 0 | lower-bound | verified | strict inequalities only | here | - | previously-published | independent | `V-sqverify-fast` |
 | `E-n095-wand125-mixed-996-sqverify-fast-replay` | 0 | lower-bound | verified | strict inequalities only | here | - | previously-published | independent | `V-sqverify-fast` |
 | `E-n096-wand125-mixed-997-sqverify-fast-replay` | 1 | lower-bound | verified | strict inequalities only | here | - | previously-published | independent | `V-sqverify-fast` |
-| `E-evand-exact-optima-2026-10-05-report` | 17 | upper-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | `V-evand-verify-cert-py`, `V-evand-verify-cert2-py` |
-| `E-evand-exact-optima-2026-10-05-exact-replay` | 17 | upper-bound | verified | equalities and inequalities, no tolerance | here | - | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-exact-certificates` |
-| `E-evand-exact-optima-2026-10-05-source-replay` | 17 | upper-bound | verified | equalities and inequalities, no tolerance | here | - | previously-published | producer’s code | `V-evand-verify-cert-py`, `V-evand-verify-cert2-py`, `V-evand-exact-certificates` |
+| `E-evand-exact-optima-2026-10-05-report` | 14 | upper-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | `V-evand-verify-cert-py`, `V-evand-verify-cert2-py` |
+| `E-evand-exact-optima-2026-10-05-exact-replay` | 14 | upper-bound | verified | equalities and inequalities, no tolerance | here | - | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-exact-certificates` |
+| `E-evand-exact-optima-2026-10-05-source-replay` | 14 | upper-bound | verified | equalities and inequalities, no tolerance | here | - | previously-published | producer’s code | `V-evand-verify-cert-py`, `V-evand-verify-cert2-py`, `V-evand-exact-certificates` |
 | `E-evand-exact-ceilings-2026-10-05-report` | 0 | upper-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | `V-evand-verify-cert-py`, `V-evand-verify-cert2-py` |
 | `E-evand-exact-ceilings-2026-10-05-exact-replay` | 2 | upper-bound | verified | equalities and inequalities, no tolerance | here | - | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-exact-certificates` |
 | `E-evand-exact-ceilings-2026-10-05-source-replay` | 2 | upper-bound | verified | equalities and inequalities, no tolerance | here | - | previously-published | producer’s code | `V-evand-verify-cert-py`, `V-evand-verify-cert2-py`, `V-evand-exact-certificates` |
@@ -473,19 +473,19 @@ results, it is a statement about what this repository has itself examined.
 | `E-evand-exact-form-n152-report` | 0 | upper-bound | reported | - | elsewhere | - | previously-published | producer’s code | *none held* |
 | `E-evand-exact-form-n177-report` | 0 | upper-bound | reported | - | elsewhere | - | previously-published | producer’s code | *none held* |
 | `E-evand-local-minima-178-report` | 0 | derived-structure | reported | - | elsewhere | - | previously-published | producer’s code | *none held* |
-| `E-evand-399-new-arrangements-report` | 2 | upper-bound | reported | - | elsewhere | - | previously-published | producer’s code | *none held* |
-| `E-evand-399-exact-feasibility` | 2 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-arrangement-receipts` |
+| `E-evand-399-new-arrangements-report` | 1 | upper-bound | reported | - | elsewhere | - | previously-published | producer’s code | *none held* |
+| `E-evand-399-exact-feasibility` | 1 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-arrangement-receipts` |
 | `E-rehwaldt-couzo-refinements-2026-10-07-exact-replay` | 0 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-refinement-custody` |
 | `E-rehwaldt-n68-refinement-2026-10-07-exact-replay` | 1 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | producer’s code | `V-rehwaldt-n68-verify`, `V-rehwaldt-n68-independent-support-check`, `V-refinement-custody` |
 | `E-ryxu-432-rational-report` | 0 | upper-bound | reported | - | elsewhere | - | previously-published | producer’s code | *none held* |
 | `E-ryxu-432-radical-n51-report` | 1 | upper-bound | reported | - | elsewhere | - | previously-published | producer’s code | *none held* |
 | `E-ryxu-432-rational-feasibility` | 0 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-ryxu-complete-custody` |
 | `E-ryxu-432-radical-n51-feasibility` | 1 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-ryxu-undilated-n51-independent`, `V-ryxu-complete-custody` |
-| `E-gupta-438-rational-report` | 7 | upper-bound | reported | - | elsewhere | - | previously-published | producer’s code | *none held* |
+| `E-gupta-438-rational-report` | 5 | upper-bound | reported | - | elsewhere | - | previously-published | producer’s code | *none held* |
 | `E-rehwaldt-n68-root-feasibility-v12-report` | 0 | upper-bound | reported | - | elsewhere | - | previously-published | producer’s code | *none held* |
 | `E-rehwaldt-n68-restricted-attainment-v12-report` | 0 | derived-structure | reported | - | elsewhere | - | previously-published | producer’s code | *none held* |
 | `E-wand125-fine-net-lower-bounds-446-report` | 0 | lower-bound | reported | - | elsewhere | - | previously-published | producer’s code | *none held* |
-| `E-gupta-438-exact-feasibility` | 7 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-gupta-complete-custody` |
+| `E-gupta-438-exact-feasibility` | 5 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-gupta-complete-custody` |
 | `E-couzo-451-rational-report` | 5 | upper-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | *none held* |
 | `E-couzo-451-exact-feasibility` | 5 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area`, `V-evand-exact-certificates`, `V-evand-arrangement-receipts` |
 | `E-wand125-fine-net-n27-5655-followup-report` | 0 | lower-bound | reported | - | elsewhere | - | previously-published | producer’s code | *none held* |
@@ -513,8 +513,8 @@ results, it is a statement about what this repository has itself examined.
 | `E-mishapolk-470-exact-feasibility` | 0 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-check-half-angle-area`, `V-evand-exact-certificates` |
 | `E-evand-trio126-certificate-report` | 1 | upper-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | *none held* |
 | `E-evand-trio126-exact-feasibility` | 1 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-check-half-angle-area`, `V-evand-exact-certificates` |
-| `E-couzo-488-certificate-report` | 5 | upper-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | *none held* |
-| `E-couzo-488-exact-feasibility` | 5 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-check-half-angle-area`, `V-evand-exact-certificates` |
+| `E-couzo-488-certificate-report` | 3 | upper-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | *none held* |
+| `E-couzo-488-exact-feasibility` | 3 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-check-half-angle-area`, `V-evand-exact-certificates` |
 | `E-evand-489-hunt3-report` | 2 | upper-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | *none held* |
 | `E-evand-489-exact-feasibility` | 2 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-check-half-angle-area`, `V-evand-exact-certificates` |
 | `E-wand125-fine-net-n28-57425-report` | 0 | lower-bound | reported | - | elsewhere | - | previously-published | producer’s code | `V-wand125-sqverify-proof-net` |
@@ -534,14 +534,18 @@ results, it is a statement about what this repository has itself examined.
 | `E-ostashev-501-exact-feasibility` | 3 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-check-half-angle-area`, `V-evand-exact-certificates` |
 | `E-barnett-505-certificate-report` | 2 | upper-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | *none held* |
 | `E-barnett-505-exact-feasibility` | 2 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-check-half-angle-area`, `V-evand-exact-certificates` |
-| `E-regularized-bounds-2026-10-12-exact-decision` | 60 | upper-bound | verified | equalities and inequalities, no tolerance | here | - | apparently-novel | producer’s code | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-register-regularized-bounds` |
+| `E-squish-500-certificate-report` | 7 | upper-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | *none held* |
+| `E-squish-500-exact-feasibility` | 7 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-check-half-angle-area`, `V-evand-exact-certificates` |
+| `E-couzo-506-certificate-report` | 2 | upper-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | *none held* |
+| `E-couzo-506-exact-feasibility` | 2 | upper-bound | verified | equalities and inequalities, no tolerance | here | informally-verified | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-check-half-angle-area`, `V-evand-exact-certificates` |
+| `E-regularized-bounds-2026-10-12-exact-decision` | 59 | upper-bound | verified | equalities and inequalities, no tolerance | here | - | apparently-novel | producer’s code | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-register-regularized-bounds` |
 
 ## What the register rests on
 
-- **assurance**: numerically-checked 4, reported 195, verified 313
-- **method**: exact-algebraic 132, interval-certified 165, numerical-multiprecision 4, proof-assistant-checked 5, proof-audited 4, published-proof 7, reported 195
-- **novelty**: apparently-novel 42, common-knowledge 4, not assessed 14, previously-published 452
-- **relationship to the producer's code**: generator 5, independent-implementation 183, not-applicable 22, same-implementation 279, shared-components 17, unknown-historical 6
+- **assurance**: numerically-checked 4, reported 197, verified 315
+- **method**: exact-algebraic 134, interval-certified 165, numerical-multiprecision 4, proof-assistant-checked 5, proof-audited 4, published-proof 7, reported 197
+- **novelty**: apparently-novel 42, common-knowledge 4, not assessed 14, previously-published 456
+- **relationship to the producer's code**: generator 5, independent-implementation 185, not-applicable 22, same-implementation 281, shared-components 17, unknown-historical 6
 
 The `cases` column is how many frontier records cite each piece of evidence, and it is the reason to read this table rather than count records. Ranked below are the *formal* records only: a `reported` record cited across the frontier may be a shared catalogue and is labelled as such, which is the register working rather than risk. The risk is a verified claim resting on an argument nobody has examined.
 
@@ -552,7 +556,7 @@ Claims marked `apparently-novel`: first established here as far as the archived 
 | result | n | what is new | cases | assurance |
 | --- | --- | --- | ---: | --- |
 | `E-translation-escape-not-rigid` | 303 sizes | A systematic screen over 318 configurations with replayable certificates; the idea of checking a slide is not new | 303 | numerically-checked |
-| `E-regularized-bounds-2026-10-12-exact-decision` | 60 sizes | Exact rational certificates of the catalogue's packings at sides below the record's ceilings: at 34 counts the exact side of Evan Daniel's own certificate of the packing, which the record carried rounded up, and at 26 the witness's own side. The packings are their finders'; the solver and the regularizer are Evan Daniel's. | 60 | verified |
+| `E-regularized-bounds-2026-10-12-exact-decision` | 59 sizes | Exact rational certificates of the catalogue's packings at sides below the record's ceilings: at 33 counts the exact side of Evan Daniel's own certificate of the packing, which the record carried rounded up, and at 26 the witness's own side. The packings are their finders'; the solver and the regularizer are Evan Daniel's. | 59 | verified |
 | `E-n005-fixed-side-local-rigidity` | 5 | The first exact PROOF that Goebel's n = 5 optimum is locally rigid at fixed side -- a property ASSERTED WITHOUT PROOF by Kingbird (archived main page, line 44, "Rigid." with a link and no argument), not stated by Goebel 1979 (zero occurrences of "rigid" or "uniqu" in the extraction) and not annotated by Friedman DS7, whose Theorem 2 is a lower bound only and analyses no equality case | 1 | verified |
 | `E-n005-second-order-rigidity` | 5 | That n = 5 is not infinitesimally rigid but is second-order rigid, proved exactly; the catalogue asserts 'Rigid.' without defining or arguing it | 1 | verified |
 | `E-n011-trump-local-rigidity` | 11 | Local rigidity proved by exhausting all 128 branchwise cones; sources assert rigidity, and zero algebraic freedom does not exclude a branching motion | 1 | verified |
@@ -601,7 +605,7 @@ The `n` column is what each covers and `cases` is how many frontier records cite
 | `E-karakus-strip-lower` | 203 | elsewhere | informally-verified |
 | `E-karakus-strip-measure-interval` | 203 | here | - |
 | `E-basic-grid-upper` | 175 | here | - |
-| `E-regularized-bounds-2026-10-12-exact-decision` | 60 | here | - |
+| `E-regularized-bounds-2026-10-12-exact-decision` | 59 | here | - |
 | `E-basic-area-lower` | 18 | here | - |
 
 The most-cited argument this repository did not produce is `E-karakus-strip-lower`, carrying 203 frontier cases. It is an external proof, and it has been read here: its record carries the review, what was re-derived, and the four things that were not. The arithmetic is what picked it out for reading -- being cited this heavily is the reason to open an argument, not a reason to trust it.

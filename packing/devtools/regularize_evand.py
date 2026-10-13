@@ -9,6 +9,7 @@ Usage, from `packing/`, each after
     input --n N --output FILE
     reclassify --run-dir DIR [--n N ...] [--refresh-bounds]
     layer --run-dir DIR [DIR ...] --repo-root TREE [--select admitted|preview]
+        [--exclude N ...] [--grid-run DIR --grid-counts N ...]
     report --run-dir DIR [--json]
 
 This is the automated pass of the regularization policy
@@ -1676,6 +1677,25 @@ def run_count(n: int, options: Options) -> dict[str, Any]:
     return report
 
 
+def kept_solve(directory: Path) -> dict[str, Any]:
+    """The kept solve, read back for `--from-stage regularize` or `import`.
+
+    A solve that wrote no `witness.json` (a timeout) stands as the count's previous report
+    recorded it, attempts and all, so a later stage's re-run keeps its decision; without
+    that record the count is run again from the solve."""
+    meta = directory / "solve/witness.json"
+    if meta.is_file():
+        solved = solve_block(read_json(meta))
+        solved["seconds"] = solved.get("solver_seconds")
+        solved.update(attempt_of(directory / "solve"))
+        return solved
+    previous = directory / "report.json"
+    stored = read_json(previous).get("solve") if previous.is_file() else None
+    if not isinstance(stored, dict) or stored.get("gate") is not None:
+        raise EvandRunError(f"{meta} is missing: run this count again from --from-stage solve")
+    return dict(stored)
+
+
 def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any]) -> None:
     pin = vendored_pin()
     path = witness_path(n)
@@ -1712,6 +1732,14 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
     seconds: dict[str, float | None] = {}
     report["seconds"] = seconds
     first = STAGES.index(options.from_stage)
+    # An earlier run's outputs must not outlive a re-run that stops sooner: the receipt
+    # digests `regularize.cert` and the gallery draws a view on disk. Every run makes its
+    # views again at the import stage, and the regularizer's outputs at its own stage.
+    stale = ["view-solved.yaml", "view-same.yaml"]
+    if first <= STAGES.index("regularize"):
+        stale += ["regularize.json", "regularize.cert"]
+    for name in stale:
+        (directory / name).unlink(missing_ok=True)
     replica = options.run_dir.resolve() / "replica"
 
     started = time.perf_counter()
@@ -1722,9 +1750,7 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
     if first <= STAGES.index("solve"):
         solved = solve_with_retries(directory, replica, options.timeout, frame.side)
     else:
-        solved = solve_block(read_json(directory / "solve/witness.json"))
-        solved["seconds"] = solved.get("solver_seconds")
-        solved.update(attempt_of(directory / "solve"))
+        solved = kept_solve(directory)
     # The replica patches the kept solve ran with are this count's, and its views' too.
     pin = {**pin, "patches": [*pin["patches"], *applied_patches(solved.get("patches") or [])]}
     report["generator"]["patches"] = pin["patches"]
@@ -2176,7 +2202,7 @@ def refresh_bound(report: dict[str, Any], n: int) -> dict[str, Any] | None:
     distance to it; the change, or `None` where the record still holds the same bound.
 
     A run stores the verified upper bound it compared with. When a register result moves
-    that bound afterwards (T-151 took 60 ceilings to the exact sides of row-3 views), the
+    that bound afterwards (T-154 took 59 ceilings to the exact sides of row-3 views), the
     run's decisions are stale until `U` is read again: `upper_bound` reads the exact form
     where it is rational, so a bound printed at the same decimal with a new exact form is a
     new `U`.
