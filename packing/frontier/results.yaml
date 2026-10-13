@@ -17576,7 +17576,7 @@ regularized_drawings:
       of: T-056
       by: project
       method: regularize_axis_components/2
-      side: solved
+      side: same
       identity:
         basis: measured
         measured_in: packing/atlas/known-best/regularized/index.json
@@ -17602,7 +17602,7 @@ regularized_drawings:
       of: T-056
       by: project
       method: regularize_axis_components/2
-      side: solved
+      side: same
       identity:
         basis: measured
         measured_in: packing/atlas/known-best/regularized/index.json
@@ -17719,7 +17719,7 @@ regularized_drawings:
       of: T-056
       by: project
       method: regularize_axis_components/2
-      side: solved
+      side: same
       identity:
         basis: measured
         measured_in: packing/atlas/known-best/regularized/index.json
@@ -17784,7 +17784,7 @@ regularized_drawings:
       of: T-056
       by: project
       method: regularize_axis_components/2
-      side: solved
+      side: same
       identity:
         basis: measured
         measured_in: packing/atlas/known-best/regularized/index.json
@@ -18287,7 +18287,7 @@ regularized_drawings:
       of: T-056
       by: project
       method: regularize_axis_components/2
-      side: solved
+      side: same
       identity:
         basis: measured
         measured_in: packing/atlas/known-best/regularized/index.json

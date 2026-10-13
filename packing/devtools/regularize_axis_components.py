@@ -1738,24 +1738,31 @@ def atlas_record(
         "passed": passed,
     }
     record["regularization"] = axis_regularization(
-        n, witness, report, measured_in=layout.relative(layout.index)
+        n,
+        witness,
+        report,
+        side=Fraction(str(view["side"])),
+        measured_in=layout.relative(layout.index),
     )
     return record, text if passed else None, time.perf_counter() - started
 
 
 def axis_regularization(
-    n: int, witness: dict[str, Any], report: dict[str, Any], *, measured_in: str
+    n: int, witness: dict[str, Any], report: dict[str, Any], *, side: Fraction, measured_in: str
 ) -> dict[str, Any]:
     """This tool's view of a record as the register's `regularizations` item would state
     it (`results.schema.yaml`), with `of_witness` standing in for `of` until the frontier
     record resolves the source witness to the registered result that holds its packing.
 
     The view keeps the frame's side, so it is `same` unless a dilated frame was asked
-    for; the identity is `square_identity`'s, measured here and retained in the index
-    (`measured_in`). It records no `changes`: the register counts there the free squares
-    a regularizer turns, and the squares this tool straightens are any within the snap
-    tolerance of the axes, load-bearing or not, so their largest turn is the identity's
-    `max_turn_deg` instead.
+    for. `same` is decided as the other generators decide it, against `s_W`
+    (`witness_side`, policy section 2), never against the printed decimal: a decimal
+    witness's `s_W` is its 36-digit promotion's side, which lies a rounding above the
+    decimal at 106, 110, 152, 172 and 301 (#548 review B2). The identity is
+    `square_identity`'s, measured here and retained in the index (`measured_in`). It
+    records no `changes`: the register counts there the free squares a regularizer turns,
+    and the squares this tool straightens are any within the snap tolerance of the axes,
+    load-bearing or not, so their largest turn is the identity's `max_turn_deg` instead.
     """
     identity = report["identity"]
     record: dict[str, Any] = {
@@ -1763,7 +1770,7 @@ def axis_regularization(
         "of_witness": witness["id"],
         "by": PROJECT_REGULARIZER,
         "method": ALGORITHM,
-        "side": "same" if report["exact_frame"]["side_minus_reported"] == "0" else "solved",
+        "side": "same" if side == witness_side(witness) else "solved",
     }
     record["identity"] = {
         "basis": "measured",
@@ -2167,9 +2174,12 @@ def _check_record(
             )
         if not record["exact_verification"]["passed"]:
             problems.append(f"n={n}: recorded exact verification did not pass")
-        problems.extend(_regularization_problems(n, record))
+        decoded = text.decode("utf-8")
+        side = view_side(decoded)
+        own = witness_side(load_yaml(source.read_text(encoding="utf-8"))["witness"])
+        problems.extend(_regularization_problems(n, record, side=side, own=own))
         if drawn_elsewhere(record):
-            problems.extend(_drawn_view_problems(layout, record, text.decode("utf-8")))
+            problems.extend(_drawn_view_problems(record, decoded, own=own))
     elif status in {"unchanged", "refused"}:
         if drawn_elsewhere(record):
             problems.append(f"n={n}: {status} by {generator}, which records only views")
@@ -2180,13 +2190,23 @@ def _check_record(
     return problems
 
 
-def _regularization_problems(n: int, record: dict[str, Any]) -> list[str]:
+def _regularization_problems(
+    n: int, record: dict[str, Any], *, side: Fraction, own: Fraction | None
+) -> list[str]:
     """A drawn view's regularization, in the register's terms, is of this record's
-    witness, by this project, and names the generator that made it."""
+    witness, by this project, and names the generator that made it; its `side` is `same`
+    exactly when the view's side `s_V` is the witness's own `s_W` (#548 review B2), for
+    every generator's view."""
     item = record.get("regularization")
     if not isinstance(item, dict):
         return [f"n={n}: a drawn view carries no regularization record"]
     problems: list[str] = []
+    expected = "same" if own is not None and side == own else "solved"
+    if item.get("side") != expected:
+        problems.append(
+            f"n={n}: the regularization's side is {item.get('side')!r}, and the view is "
+            f"{'at' if expected == 'same' else 'not at'} the witness's own side s_W"
+        )
     if item.get("n") != n or item.get("of_witness") != record["source"]["id"]:
         problems.append(f"n={n}: the regularization is not of this record's witness")
     if item.get("by") != PROJECT_REGULARIZER:
@@ -2207,7 +2227,9 @@ METHOD_MARKS = {
 """What each generator's regularization `method` names, so a record says who made it."""
 
 
-def _drawn_view_problems(layout: AtlasLayout, record: dict[str, Any], text: str) -> list[str]:
+def _drawn_view_problems(
+    record: dict[str, Any], text: str, *, own: Fraction | None
+) -> list[str]:
     """What another generator's admitted view says against its entry, read from the view.
 
     The view is the count's own Witness/v2 document labelled a regularized view of the
@@ -2242,8 +2264,6 @@ def _drawn_view_problems(layout: AtlasLayout, record: dict[str, Any], text: str)
     side = record["side"]
     if str(view.get("side")) != side["view"]:
         problems.append(f"n={n}: the view's side is not its entry's")
-    witness = load_yaml((layout.repo / record["source"]["witness"]).read_text(encoding="utf-8"))
-    own = witness_side(witness["witness"])
     if (side["relation"] == "same") != (Fraction(side["view"]) == own):
         problems.append(f"n={n}: the side relation {side['relation']!r} is not the view's")
     if (side["relation"] == "same") != (record["regularization"]["side"] == "same"):
@@ -2270,6 +2290,15 @@ def witness_side(witness: dict[str, Any]) -> Fraction | None:
         )
         return Fraction(side)
     return None
+
+
+def view_side(text: str) -> Fraction:
+    """A view's exact side `s_V`, read from the document's head, before its squares."""
+    head = text.split("\n  squares:\n", 1)[0]
+    found = (load_yaml(head).get("witness") or {}).get("side")
+    if found is None:
+        found = load_yaml(text)["witness"]["side"]
+    return Fraction(str(found))
 
 
 ADMITTING_ROW = 10

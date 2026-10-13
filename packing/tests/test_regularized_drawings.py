@@ -66,6 +66,16 @@ def test_the_packing_is_the_result_holding_it_at_the_side_drawn() -> None:
     assert resolve(6, "[A]", "bound", []).of is None
 
 
+def test_an_axis_view_is_at_the_side_its_regularization_states() -> None:
+    axis_view = entry(5)
+    assert drawings.relation(axis_view) == "same"
+    solved = {**axis_view, "regularization": {**axis_view["regularization"], "side": "solved"}}
+    assert drawings.relation(solved) == "solved"
+    found = drawings.packing_result(solved, RESULTS, source_key="[A]", bound_holders=[])
+    assert found.of is None
+    assert "row 4" in found.reason
+
+
 def test_the_block_reads_back_as_the_items_it_was_written_from() -> None:
     item = drawings.item(entry(5), "T-001")
     assert "of_witness" not in item

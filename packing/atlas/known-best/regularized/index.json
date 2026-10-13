@@ -402,7 +402,7 @@
       "view": {"path":"packing/atlas/known-best/regularized/n-106-regularized.yaml.gz","sha256":"14da54bf5251606e253283e29139e80f154f007b506ed6b95ad07fe75a5e852d"},
       "shades": {"house":{"green_before":83,"light_before":41,"green_after":83,"light_after":21},"stage":{"green_before":83,"light_before":21,"green_after":83,"light_after":21}},
       "exact_verification": {"repository_verifier":true,"independent_checker":true,"pairs_tested_independently":5565,"passed":true},
-      "regularization": {"n":106,"of_witness":"W-known-best-n106","by":"project","method":"regularize_axis_components/2","side":"solved","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":12,"max_move":0.006410016,"max_turn_deg":2.29187e-13}}
+      "regularization": {"n":106,"of_witness":"W-known-best-n106","by":"project","method":"regularize_axis_components/2","side":"same","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":12,"max_move":0.006410016,"max_turn_deg":2.29187e-13}}
     },
     {"n":107,"status":"refused","generator":"regularize_axis_components/2","source":{"witness":"packing/witnesses/known-best/n-107.yaml","id":"W-known-best-n107","scalar_kind":"decimal","sha256":"3e19c6f8218c78613764bd715641e27c9daf1bcbe6f0a80e27c5fd2431124dc6"},"refusal":{"kind":"promotion-overlap","reason":"the 36-digit rational pose at dilation 1 is not a packing (42 failures, first [('overlap', 'squares 0 and 8 overlap'), ('overlap', 'squares 1 and 9 overlap')]); only a dilated pose would be, and that is not the author's packing"},"shades":{"house":{"green_before":83,"light_before":19,"green_after":83,"light_after":19},"stage":{"green_before":83,"light_before":19,"green_after":83,"light_after":19}}},
     {
@@ -436,7 +436,7 @@
       "view": {"path":"packing/atlas/known-best/regularized/n-110-regularized.yaml.gz","sha256":"c13ccc5f505f8b751e648a4c4e8cbf9ca782c079f380aa943afefaed3d47b335"},
       "shades": {"house":{"green_before":67,"light_before":23,"green_after":67,"light_after":21},"stage":{"green_before":67,"light_before":23,"green_after":67,"light_after":21}},
       "exact_verification": {"repository_verifier":true,"independent_checker":true,"pairs_tested_independently":5995,"passed":true},
-      "regularization": {"n":110,"of_witness":"W-known-best-n110","by":"project","method":"regularize_axis_components/2","side":"solved","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":3,"max_move":0.05404527,"max_turn_deg":5.99868e-14}}
+      "regularization": {"n":110,"of_witness":"W-known-best-n110","by":"project","method":"regularize_axis_components/2","side":"same","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":3,"max_move":0.05404527,"max_turn_deg":5.99868e-14}}
     },
     {"n":111,"status":"unchanged","generator":"regularize_axis_components/2","source":{"witness":"packing/witnesses/known-best/n-111.yaml","id":"W-known-best-n111","scalar_kind":"rational","sha256":"9eaa79e2471d69d85b9999039626cb05e76bc90a12a857ad13620fe3ae7971dc"},"exact_frame":{"derivation":"the witness's own rational corners","retained_certificate":null,"matches_retained_certificate":null},"moves":{"accepted":0,"snaps":0,"compactions":0,"rejected":0,"largest_move_decimal":"0.000e+00"},"statuses":{"exact-axis":111},"non_regression":{"rounds":1,"held_slides":0,"held_pose":0,"residual_regressions":{"house":0,"stage":0}},"side":{"reported":"11","view_minus_reported":"0.000e+00","fits_reported_side":true},"shades":{"house":{"green_before":111,"light_before":11,"green_after":111,"light_after":11},"stage":{"green_before":111,"light_before":11,"green_after":111,"light_after":11}}},
     {"n":112,"status":"unchanged","generator":"regularize_axis_components/2","source":{"witness":"packing/witnesses/known-best/n-112.yaml","id":"W-known-best-n112","scalar_kind":"rational","sha256":"994dea1862d76ae52f1382c93f080e2e18f367770f4e865af687e8e0fb44e0e2"},"exact_frame":{"derivation":"the witness's own rational corners","retained_certificate":null,"matches_retained_certificate":null},"moves":{"accepted":0,"snaps":0,"compactions":0,"rejected":0,"largest_move_decimal":"0.000e+00"},"statuses":{"exact-axis":112},"non_regression":{"rounds":1,"held_slides":0,"held_pose":0,"residual_regressions":{"house":0,"stage":0}},"side":{"reported":"11","view_minus_reported":"0.000e+00","fits_reported_side":true},"shades":{"house":{"green_before":112,"light_before":10,"green_after":112,"light_after":10},"stage":{"green_before":112,"light_before":10,"green_after":112,"light_after":10}}},
@@ -649,7 +649,7 @@
       "view": {"path":"packing/atlas/known-best/regularized/n-152-regularized.yaml.gz","sha256":"735fd82cd1dc17de00220bffe928f4877234d7ddf9bde72f2e411759cb2ce9f0"},
       "shades": {"house":{"green_before":121,"light_before":66,"green_after":121,"light_after":25},"stage":{"green_before":123,"light_before":25,"green_after":123,"light_after":25}},
       "exact_verification": {"repository_verifier":true,"independent_checker":true,"pairs_tested_independently":11476,"passed":true},
-      "regularization": {"n":152,"of_witness":"W-known-best-n152","by":"project","method":"regularize_axis_components/2","side":"solved","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":5,"max_move":0.2217833,"max_turn_deg":1.0017e-11}}
+      "regularization": {"n":152,"of_witness":"W-known-best-n152","by":"project","method":"regularize_axis_components/2","side":"same","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":5,"max_move":0.2217833,"max_turn_deg":1.0017e-11}}
     },
     {
       "n": 153,
@@ -744,7 +744,7 @@
       "view": {"path":"packing/atlas/known-best/regularized/n-172-regularized.yaml.gz","sha256":"a71cca952bac6e9cfb4222791b7f5a071f13a9acba9c233eb940bc03f0ca2462"},
       "shades": {"house":{"green_before":121,"light_before":101,"green_after":122,"light_after":34},"stage":{"green_before":126,"light_before":79,"green_after":126,"light_after":37}},
       "exact_verification": {"repository_verifier":true,"independent_checker":true,"pairs_tested_independently":14706,"passed":true},
-      "regularization": {"n":172,"of_witness":"W-known-best-n172","by":"project","method":"regularize_axis_components/2","side":"solved","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":32,"max_move":0.1245741,"max_turn_deg":0.00492683}}
+      "regularization": {"n":172,"of_witness":"W-known-best-n172","by":"project","method":"regularize_axis_components/2","side":"same","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":32,"max_move":0.1245741,"max_turn_deg":0.00492683}}
     },
     {"n":173,"status":"refused","generator":"regularize_axis_components/2","source":{"witness":"packing/witnesses/known-best/n-173.yaml","id":"W-known-best-n173","scalar_kind":"decimal","sha256":"fd01dc9b32db257ca41fe1e5eb6277d40103f6a1aa21e3950fb1cb9028a637e2"},"refusal":{"kind":"promotion-overlap","reason":"the 36-digit rational pose at dilation 1 is not a packing (18 failures, first [('overlap', 'squares 110 and 111 overlap'), ('overlap', 'squares 110 and 119 overlap')]); only a dilated pose would be, and that is not the author's packing"},"shades":{"house":{"green_before":109,"light_before":28,"green_after":109,"light_after":28},"stage":{"green_before":109,"light_before":28,"green_after":109,"light_after":28}}},
     {"n":174,"status":"refused","generator":"regularize_axis_components/2","source":{"witness":"packing/witnesses/known-best/n-174.yaml","id":"W-known-best-n174","scalar_kind":"decimal","sha256":"45371deb27fe9887d3d9dcf32a943b901a5202a1815301ec8fc228eee81d0676"},"refusal":{"kind":"promotion-overlap","reason":"the 36-digit rational pose at dilation 1 is not a packing (18 failures, first [('overlap', 'squares 11 and 158 overlap'), ('overlap', 'squares 32 and 161 overlap')]); only a dilated pose would be, and that is not the author's packing"},"shades":{"house":{"green_before":158,"light_before":26,"green_after":158,"light_after":26},"stage":{"green_before":158,"light_before":26,"green_after":158,"light_after":26}}},
@@ -807,7 +807,7 @@
         "view": {"path":"packing/atlas/known-best/regularized/n-177-regularized.yaml.gz","sha256":"eea761deba14c286eaa5a09831b5f36a7c7acbd1b3c2f56a1d86ea70232670c6"},
         "shades": {"house":{"green_before":145,"light_before":65,"green_after":145,"light_after":26},"stage":{"green_before":146,"light_before":25,"green_after":146,"light_after":25}},
         "exact_verification": {"repository_verifier":true,"independent_checker":true,"pairs_tested_independently":15576,"passed":true},
-        "regularization": {"n":177,"of_witness":"W-known-best-n177","by":"project","method":"regularize_axis_components/2","side":"solved","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":16,"max_move":0.004070826,"max_turn_deg":1.64074e-12}}
+        "regularization": {"n":177,"of_witness":"W-known-best-n177","by":"project","method":"regularize_axis_components/2","side":"same","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":16,"max_move":0.004070826,"max_turn_deg":1.64074e-12}}
       }
     },
     {"n":178,"status":"refused","generator":"regularize_axis_components/2","source":{"witness":"packing/witnesses/known-best/n-178.yaml","id":"W-known-best-n178","scalar_kind":"decimal","sha256":"49473ce271977e0ceeb3f66b7297dbba979d25f7deae1da4a85c6f784cde0bc0"},"refusal":{"kind":"promotion-overlap","reason":"the 36-digit rational pose at dilation 1 is not a packing (33 failures, first [('overlap', 'squares 163 and 165 overlap'), ('overlap', 'squares 62 and 85 overlap')]); only a dilated pose would be, and that is not the author's packing"},"shades":{"house":{"green_before":146,"light_before":26,"green_after":146,"light_after":26},"stage":{"green_before":146,"light_before":26,"green_after":146,"light_after":26}}},
@@ -886,7 +886,7 @@
         "view": {"path":"packing/atlas/known-best/regularized/n-182-regularized.yaml.gz","sha256":"791b4410e3cf9a67dcde7c4178588257862fd60ab97234a865088d3bc745eaa1"},
         "shades": {"house":{"green_before":123,"light_before":75,"green_after":123,"light_after":34},"stage":{"green_before":123,"light_before":34,"green_after":123,"light_after":34}},
         "exact_verification": {"repository_verifier":true,"independent_checker":true,"pairs_tested_independently":16471,"passed":true},
-        "regularization": {"n":182,"of_witness":"W-known-best-n182","by":"project","method":"regularize_axis_components/2","side":"solved","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":21,"max_move":0.08738553,"max_turn_deg":7.88778e-13}}
+        "regularization": {"n":182,"of_witness":"W-known-best-n182","by":"project","method":"regularize_axis_components/2","side":"same","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":21,"max_move":0.08738553,"max_turn_deg":7.88778e-13}}
       }
     },
     {"n":183,"status":"unchanged","generator":"regularize_axis_components/2","source":{"witness":"packing/witnesses/known-best/n-183.yaml","id":"W-known-best-n183","scalar_kind":"rational","sha256":"c4c669d07df68ecc3ec19a50ec36f9099500299e26f9dfc65789d4ce8c5b0318"},"exact_frame":{"derivation":"the witness's own rational corners","retained_certificate":null,"matches_retained_certificate":null},"moves":{"accepted":0,"snaps":0,"compactions":0,"rejected":0,"largest_move_decimal":"0.000e+00"},"statuses":{"exact-axis":183},"non_regression":{"rounds":1,"held_slides":0,"held_pose":0,"residual_regressions":{"house":0,"stage":0}},"side":{"reported":"14","view_minus_reported":"0.000e+00","fits_reported_side":true},"shades":{"house":{"green_before":183,"light_before":14,"green_after":183,"light_after":14},"stage":{"green_before":183,"light_before":14,"green_after":183,"light_after":14}}},
@@ -954,7 +954,7 @@
         "view": {"path":"packing/atlas/known-best/regularized/n-206-regularized.yaml.gz","sha256":"8a0a891e46fdf57b7b926233a8d91708cb1ab47f4be2d161528438894b1a9a9f"},
         "shades": {"house":{"green_before":136,"light_before":104,"green_after":138,"light_after":64},"stage":{"green_before":172,"light_before":69,"green_after":172,"light_after":65}},
         "exact_verification": {"repository_verifier":true,"independent_checker":true,"pairs_tested_independently":21115,"passed":true},
-        "regularization": {"n":206,"of_witness":"W-known-best-n206","by":"project","method":"regularize_axis_components/2","side":"solved","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":15,"max_move":0.3654251,"max_turn_deg":0.000382907}}
+        "regularization": {"n":206,"of_witness":"W-known-best-n206","by":"project","method":"regularize_axis_components/2","side":"same","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":15,"max_move":0.3654251,"max_turn_deg":0.000382907}}
       }
     },
     {
@@ -1046,7 +1046,7 @@
         "view": {"path":"packing/atlas/known-best/regularized/n-210-regularized.yaml.gz","sha256":"e842f8b03a5dad55a329faa39ac177115cfe7d10054547d10d1614fec2a78a0e"},
         "shades": {"house":{"green_before":134,"light_before":80,"green_after":134,"light_after":38},"stage":{"green_before":135,"light_before":54,"green_after":135,"light_after":39}},
         "exact_verification": {"repository_verifier":true,"independent_checker":true,"pairs_tested_independently":21945,"passed":true},
-        "regularization": {"n":210,"of_witness":"W-known-best-n210","by":"project","method":"regularize_axis_components/2","side":"solved","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":23,"max_move":0.3430005,"max_turn_deg":2.13437e-12}}
+        "regularization": {"n":210,"of_witness":"W-known-best-n210","by":"project","method":"regularize_axis_components/2","side":"same","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":23,"max_move":0.3430005,"max_turn_deg":2.13437e-12}}
       }
     },
     {
@@ -1210,7 +1210,7 @@
         "view": {"path":"packing/atlas/known-best/regularized/n-240-regularized.yaml.gz","sha256":"de46a0ecb1f059f65a0ea5712ad2f67d1d8ab73a9797e277b5ce877549bf9e37"},
         "shades": {"house":{"green_before":155,"light_before":95,"green_after":155,"light_after":39},"stage":{"green_before":157,"light_before":72,"green_after":157,"light_after":38}},
         "exact_verification": {"repository_verifier":true,"independent_checker":true,"pairs_tested_independently":28680,"passed":true},
-        "regularization": {"n":240,"of_witness":"W-known-best-n240","by":"project","method":"regularize_axis_components/2","side":"solved","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":20,"max_move":0.3846198,"max_turn_deg":8.71259e-12}}
+        "regularization": {"n":240,"of_witness":"W-known-best-n240","by":"project","method":"regularize_axis_components/2","side":"same","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":20,"max_move":0.3846198,"max_turn_deg":8.71259e-12}}
       }
     },
     {
@@ -1240,7 +1240,7 @@
         "view": {"path":"packing/atlas/known-best/regularized/n-241-regularized.yaml.gz","sha256":"a6ce65b81c3fad716b9ca2bc53f610967dd6a5a6e6e0d43d4064c78a7f853082"},
         "shades": {"house":{"green_before":161,"light_before":79,"green_after":161,"light_after":40},"stage":{"green_before":162,"light_before":71,"green_after":162,"light_after":40}},
         "exact_verification": {"repository_verifier":true,"independent_checker":true,"pairs_tested_independently":28920,"passed":true},
-        "regularization": {"n":241,"of_witness":"W-known-best-n241","by":"project","method":"regularize_axis_components/2","side":"solved","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":28,"max_move":0.3106441,"max_turn_deg":3.47808e-11}}
+        "regularization": {"n":241,"of_witness":"W-known-best-n241","by":"project","method":"regularize_axis_components/2","side":"same","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":28,"max_move":0.3106441,"max_turn_deg":3.47808e-11}}
       }
     },
     {"n":242,"status":"unchanged","generator":"regularize_axis_components/2","source":{"witness":"packing/witnesses/known-best/n-242.yaml","id":"W-known-best-n242","scalar_kind":"rational","sha256":"bec19df3c42ff09581bc105523e8232b40b59c33f4bc2b6cd457185f8eba8675"},"exact_frame":{"derivation":"the witness's own rational corners","retained_certificate":null,"matches_retained_certificate":null},"moves":{"accepted":0,"snaps":0,"compactions":0,"rejected":0,"largest_move_decimal":"0.000e+00"},"statuses":{"exact-axis":242},"non_regression":{"rounds":1,"held_slides":0,"held_pose":0,"residual_regressions":{"house":0,"stage":0}},"side":{"reported":"16","view_minus_reported":"0.000e+00","fits_reported_side":true},"shades":{"house":{"green_before":242,"light_before":15,"green_after":242,"light_after":15},"stage":{"green_before":242,"light_before":15,"green_after":242,"light_after":15}}},
@@ -1400,7 +1400,7 @@
         "view": {"path":"packing/atlas/known-best/regularized/n-268-regularized.yaml.gz","sha256":"e6ae8fd541d1e1175be9ba8e818de9aaec9c6b4be67a2f764cce2bd60ca4ec1a"},
         "shades": {"house":{"green_before":198,"light_before":156,"green_after":198,"light_after":75},"stage":{"green_before":213,"light_before":86,"green_after":213,"light_after":68}},
         "exact_verification": {"repository_verifier":true,"independent_checker":true,"pairs_tested_independently":35778,"passed":true},
-        "regularization": {"n":268,"of_witness":"W-known-best-n268","by":"project","method":"regularize_axis_components/2","side":"solved","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":60,"max_move":0.3616834,"max_turn_deg":2.40496e-05}}
+        "regularization": {"n":268,"of_witness":"W-known-best-n268","by":"project","method":"regularize_axis_components/2","side":"same","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":60,"max_move":0.3616834,"max_turn_deg":2.40496e-05}}
       }
     },
     {
@@ -1494,7 +1494,7 @@
         "view": {"path":"packing/atlas/known-best/regularized/n-273-regularized.yaml.gz","sha256":"271a49bb932f7d95a0f567f0318907bdc3e41756b39e3cde8ca2d9b9589e51f2"},
         "shades": {"house":{"green_before":179,"light_before":72,"green_after":179,"light_after":48},"stage":{"green_before":180,"light_before":51,"green_after":180,"light_after":49}},
         "exact_verification": {"repository_verifier":true,"independent_checker":true,"pairs_tested_independently":37128,"passed":true},
-        "regularization": {"n":273,"of_witness":"W-known-best-n273","by":"project","method":"regularize_axis_components/2","side":"solved","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":14,"max_move":0.3040791,"max_turn_deg":2.11192e-12}}
+        "regularization": {"n":273,"of_witness":"W-known-best-n273","by":"project","method":"regularize_axis_components/2","side":"same","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":14,"max_move":0.3040791,"max_turn_deg":2.11192e-12}}
       }
     },
     {"n":274,"status":"unchanged","generator":"regularize_axis_components/2","source":{"witness":"packing/witnesses/known-best/n-274.yaml","id":"W-known-best-n274","scalar_kind":"rational","sha256":"5689c8c21a909b649779e6fc0328edb37a8b357c4b1eb7d0bad79c982f54bda5"},"exact_frame":{"derivation":"the witness's own rational corners","retained_certificate":null,"matches_retained_certificate":null},"moves":{"accepted":0,"snaps":0,"compactions":0,"rejected":0,"largest_move_decimal":"0.000e+00"},"statuses":{"exact-axis":274},"non_regression":{"rounds":1,"held_slides":0,"held_pose":0,"residual_regressions":{"house":0,"stage":0}},"side":{"reported":"17","view_minus_reported":"0.000e+00","fits_reported_side":true},"shades":{"house":{"green_before":274,"light_before":16,"green_after":274,"light_after":16},"stage":{"green_before":274,"light_before":16,"green_after":274,"light_after":16}}},
@@ -1577,7 +1577,7 @@
         "view": {"path":"packing/atlas/known-best/regularized/n-297-regularized.yaml.gz","sha256":"341481cd7ab0549a394f07c81ce40ea430bf30bfa1eea0375565e9a164540de5"},
         "shades": {"house":{"green_before":180,"light_before":117,"green_after":182,"light_after":45},"stage":{"green_before":190,"light_before":46,"green_after":190,"light_after":46}},
         "exact_verification": {"repository_verifier":true,"independent_checker":true,"pairs_tested_independently":43956,"passed":true},
-        "regularization": {"n":297,"of_witness":"W-known-best-n297","by":"project","method":"regularize_axis_components/2","side":"solved","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":20,"max_move":0.003502289,"max_turn_deg":0.000391965}}
+        "regularization": {"n":297,"of_witness":"W-known-best-n297","by":"project","method":"regularize_axis_components/2","side":"same","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":20,"max_move":0.003502289,"max_turn_deg":0.000391965}}
       }
     },
     {"n":298,"status":"refused","generator":"regularize_axis_components/2","source":{"witness":"packing/witnesses/known-best/n-298.yaml","id":"W-known-best-n298","scalar_kind":"decimal","sha256":"457db32964e93f6fb47757b90cf9d3420190106de71b7819105870eb43faccbf"},"refusal":{"kind":"promotion-overlap","reason":"the 36-digit rational pose at dilation 1 is not a packing (158 failures, first [('overlap', 'squares 15 and 177 overlap'), ('overlap', 'squares 28 and 180 overlap')]); only a dilated pose would be, and that is not the author's packing"},"shades":{"house":{"green_before":177,"light_before":36,"green_after":177,"light_after":36},"stage":{"green_before":177,"light_before":36,"green_after":177,"light_after":36}}},
@@ -1597,7 +1597,7 @@
       "view": {"path":"packing/atlas/known-best/regularized/n-301-regularized.yaml.gz","sha256":"4345f900ac91b884d1f955976d6c1706970172aefa974d1f2b2774e80ac86ae5"},
       "shades": {"house":{"green_before":149,"light_before":104,"green_after":149,"light_after":96},"stage":{"green_before":257,"light_before":135,"green_after":257,"light_after":135}},
       "exact_verification": {"repository_verifier":true,"independent_checker":true,"pairs_tested_independently":45150,"passed":true},
-      "regularization": {"n":301,"of_witness":"W-known-best-n301","by":"project","method":"regularize_axis_components/2","side":"solved","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":4,"max_move":0.006058074,"max_turn_deg":4.54805e-06}}
+      "regularization": {"n":301,"of_witness":"W-known-best-n301","by":"project","method":"regularize_axis_components/2","side":"same","identity":{"basis":"measured","measured_in":"packing/atlas/known-best/regularized/index.json","one_to_one":true,"moved":4,"max_move":0.006058074,"max_turn_deg":4.54805e-06}}
     },
     {
       "n": 302,

@@ -87,9 +87,12 @@ class Resolved:
 
 
 def relation(entry: Mapping[str, Any]) -> str:
-    """A drawn entry's side relation: an axis view is always at the witness's side."""
+    """A drawn entry's side relation: the index's, or, for an axis view, which records
+    none, `same` where its regularization is at the witness's side and `solved` else."""
     side = entry.get("side") or {}
-    return str(side.get("relation") or "same")
+    if side.get("relation"):
+        return str(side["relation"])
+    return "same" if (entry.get("regularization") or {}).get("side") == "same" else "solved"
 
 
 def witness_source_key(entry: Mapping[str, Any], repo: Path = REPO) -> str | None:
@@ -107,6 +110,8 @@ def packing_result(
 ) -> Resolved:
     """The registered result whose packing the drawn entry redraws (see the module)."""
     n = int(entry["n"])
+    if relation(entry) == "solved":
+        return Resolved(None, "the view is at neither the witness's side nor the bound (row 4)")
     if relation(entry) == "bound":
         if len(bound_holders) == 1:
             return Resolved(bound_holders[0], "holds the verified upper bound the view is at")

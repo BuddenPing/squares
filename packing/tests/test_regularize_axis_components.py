@@ -788,3 +788,23 @@ def test_an_oriented_atlas_view_derives_in_the_ancestor_pose_then_rechecks_the_i
     assert image["certificate"]["geometry_transform"]["parent"]["exact_certificate"] == (
         layout.relative(parent)
     )
+
+
+def test_a_views_side_relation_is_decided_against_the_witnesss_own_side(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """#548 review B2: `same` is `s_V = s_W`, for this tool's views as for any other's."""
+    monkeypatch.setenv("PACK_JOBS", "1")
+    layout = scratch_atlas(tmp_path)
+    assert main(["--update-atlas"], layout=layout) == 0
+    index = json.loads(layout.index.read_text())
+    (record,) = (entry for entry in index["entries"] if entry["n"] == 4)
+    assert record["regularization"]["side"] == "same"
+    record["regularization"]["side"] = "solved"
+    layout.index.write_text(json.dumps(index), encoding="utf-8")
+    assert check_atlas(layout) == [
+        (
+            "n=4: the regularization's side is 'solved', and the view is at the witness's "
+            "own side s_W"
+        )
+    ]
