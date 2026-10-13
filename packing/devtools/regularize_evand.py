@@ -2830,9 +2830,11 @@ def record_rungs(run_dirs: Sequence[Path], root: Path) -> dict[str, Any]:
     keeps as `retried_with`; between the two, the reports kept the rungs and the index
     nothing. A report answers for a drawn view only when its admitted view, recorded under
     the entry's own run, renders to the drawn view byte for byte: the same solve,
-    regularization and decision. Then its rungs are written, so a run of the same counts
-    again records the rungs of a solve that makes the very view drawn; a view that differs
-    records nothing and is listed.
+    regularization and decision. The comparison is of the text itself, the stored view
+    decompressed against the one rendered here, not of a digest (OR-16): the layer's check
+    (`check_atlas`) already holds the stored view to its index entry. Then its rungs are
+    written, so a run of the same counts again records the rungs of a solve that makes the
+    very view drawn; a view that differs records nothing and is listed.
     """
     root = root.resolve()
     index_path = root / LAYER_INDEX_PATH
@@ -2856,7 +2858,8 @@ def record_rungs(run_dirs: Sequence[Path], root: Path) -> dict[str, Any]:
                 continue
             admitted = evand_admitted(report, path.parent, str(entry["run"]["id"]))
             text = witness_document(layer_view(admitted), schema=layout.schema_reference())
-            if sha256_of(text.encode("utf-8")) != entry["view"]["sha256"]:
+            stored = gzip.decompress((root / entry["view"]["path"]).read_bytes())
+            if stored.decode("utf-8") != text:
                 summary["differs"].append(n)
                 continue
             entry["run"]["rungs"] = [str(rung) for rung in solved.get("rungs") or []]
