@@ -10,6 +10,7 @@ Usage, from `packing/`, each after
     reclassify --run-dir DIR [--n N ...] [--refresh-bounds]
     layer --run-dir DIR [DIR ...] --repo-root TREE [--select admitted|preview]
         [--exclude N ...] [--grid-run DIR --grid-counts N ...]
+    rungs --run-dir DIR [DIR ...] --repo-root TREE
     report --run-dir DIR [--json]
 
 This is the automated pass of the regularization policy
@@ -2458,9 +2459,13 @@ def evand_admitted(report: Mapping[str, Any], directory: Path, run_id: str) -> A
     regularized = report.get("regularize") or {}
     document = load_yaml((directory / f"view-{chosen}.yaml").read_text(encoding="utf-8"))
     run: dict[str, Any] = {"id": run_id, "output": chosen}
-    retried = (report.get("solve") or {}).get("retried_with")
+    solved = report.get("solve") or {}
+    # Before the retry ladder a report kept the retry's arguments; since, its rungs.
+    retried = solved.get("retried_with")
     if retried:
         run["retried_with"] = [str(argument) for argument in retried]
+    if "rungs" in solved:
+        run["rungs"] = [str(rung) for rung in solved.get("rungs") or []]
     decision = report.get("decision") or {}
     record = report.get("regularization")
     if not record:
@@ -2816,6 +2821,51 @@ def write_layer(
     return {"select": select, **summary}
 
 
+def record_rungs(run_dirs: Sequence[Path], root: Path) -> dict[str, Any]:
+    """Record in the layer's index the retry rungs each drawn view's solve climbed
+    (`run.rungs`), from finished runs' reports, for a view admitted without them.
+
+    `evand_admitted` records them from 13 October 2026. Before the retry ladder of 12
+    October a report kept only the arguments of the one retry it made, which the index
+    keeps as `retried_with`; between the two, the reports kept the rungs and the index
+    nothing. A report answers for a drawn view only when its admitted view, recorded under
+    the entry's own run, renders to the drawn view byte for byte: the same solve,
+    regularization and decision. Then its rungs are written, so a run of the same counts
+    again records the rungs of a solve that makes the very view drawn; a view that differs
+    records nothing and is listed.
+    """
+    root = root.resolve()
+    index_path = root / LAYER_INDEX_PATH
+    index = read_json(index_path)
+    entries = {int(entry["n"]): entry for entry in index["entries"]}
+    layout = layer_layout(root)
+    summary: dict[str, list[int]] = {"recorded": [], "differs": [], "not_drawn": []}
+    for run_dir in run_dirs:
+        for path in sorted(Path(run_dir).glob("n-*/report.json")):
+            report = read_json(path)
+            n = int(report["n"])
+            entry = entries.get(n) or {}
+            solved = report.get("solve") or {}
+            if (
+                entry.get("status") != "regularized"
+                or entry.get("generator") != axis.EVAND_GENERATOR
+                or layer_candidate(report, "admitted") is None
+                or "rungs" not in solved
+            ):
+                summary["not_drawn"].append(n)
+                continue
+            admitted = evand_admitted(report, path.parent, str(entry["run"]["id"]))
+            text = witness_document(layer_view(admitted), schema=layout.schema_reference())
+            if sha256_of(text.encode("utf-8")) != entry["view"]["sha256"]:
+                summary["differs"].append(n)
+                continue
+            entry["run"]["rungs"] = [str(rung) for rung in solved.get("rungs") or []]
+            summary["recorded"].append(n)
+    with atomic_output_file(index_path) as temporary:
+        temporary.write_text(axis.index_text(index), encoding="utf-8")
+    return {key: sorted(set(counts)) for key, counts in summary.items()}
+
+
 def write_receipt(
     run_dir: Path,
     reports: Mapping[int, Mapping[str, Any]],
@@ -3021,6 +3071,11 @@ def parser() -> argparse.ArgumentParser:
         default=[],
         help="the counts at which to draw the grid-slack run's view rather than this one's",
     )
+    rungs_command = sub.add_parser(
+        "rungs", help="record the retry rungs of drawn views that finished runs reproduce"
+    )
+    rungs_command.add_argument("--run-dir", type=Path, nargs="+", required=True)
+    rungs_command.add_argument("--repo-root", type=Path, required=True)
     report_command = sub.add_parser("report", help="print a run's receipt as a table")
     report_command.add_argument("--run-dir", type=Path, required=True)
     report_command.add_argument("--json", action="store_true")
@@ -3053,6 +3108,12 @@ def main(argv: list[str] | None = None) -> int:
                 exclude=exclude,
             )
         print(json.dumps(summary))
+        problems = axis.check_atlas(layer_layout(arguments.repo_root))
+        for problem in problems:
+            print(problem)
+        return 1 if problems else 0
+    if arguments.command == "rungs":
+        print(json.dumps(record_rungs(arguments.run_dir, arguments.repo_root)))
         problems = axis.check_atlas(layer_layout(arguments.repo_root))
         for problem in problems:
             print(problem)

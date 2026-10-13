@@ -251,9 +251,19 @@ $defs:
         type: object
         additionalProperties: false
         required: [id]
+        description: >-
+          The run a view came from. `retried_with` is the one retry's arguments a report
+          kept before the retry ladder of 12 October 2026; `rungs` the ladder rungs the
+          kept solve climbed, empty where it climbed none (the vendored driver's
+          `solve.rungs`), which `devtools.regularize_evand rungs` records for a view
+          admitted without them. A view with neither came from a run before the ladder
+          that retried nothing.
         properties:
           id: {type: string, pattern: '^[a-z0-9-]+$'}
           retried_with: {type: array, items: {type: string}}
+          rungs:
+            type: array
+            items: {enum: [dps-100, force-kkt, first-pass, stall-stop]}
           output: {enum: [same, solved, grid]}
       source: {$ref: '#/$defs/source'}
       side:

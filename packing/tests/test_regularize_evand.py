@@ -750,6 +750,49 @@ def test_an_admitted_view_enters_the_layer_under_its_contract(
     assert axis.main(["--verify-atlas"], layout=layout) == 0
 
 
+def test_a_ladder_report_admits_its_rungs_and_records_them_only_for_its_own_view(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Since the retry ladder a report keeps its solve's rungs, not `retried_with`, so
+    admission copies them; `rungs` records them for a view admitted without them, from a
+    report whose admitted view is the drawn view byte for byte, and from no other."""
+    monkeypatch.setenv("PACK_JOBS", "1")
+    root, layout = scratch_tree(tmp_path)
+    run_dir = a_run(root, layout, tmp_path / "full")
+    path = run_dir / "n-004" / "report.json"
+    report = json.loads(path.read_text(encoding="utf-8"))
+    report["solve"] = {"status": "KKT local min", "rungs": ["force-kkt"]}
+    path.write_text(json.dumps(report), encoding="utf-8")
+    drive.write_layer([run_dir], root, "admitted")
+    (entry,) = json.loads(layout.index.read_text())["entries"]
+    assert entry["run"] == {
+        "id": "evand-regularize-full",
+        "output": "same",
+        "rungs": ["force-kkt"],
+    }
+
+    # An entry admitted before the field gains it from its own run's report.
+    index = json.loads(layout.index.read_text())
+    del index["entries"][0]["run"]["rungs"]
+    layout.index.write_text(axis.index_text(index), encoding="utf-8")
+    assert drive.record_rungs([run_dir], root)["recorded"] == [4]
+    (entry,) = json.loads(layout.index.read_text())["entries"]
+    assert entry["run"]["rungs"] == ["force-kkt"]
+    assert axis.check_atlas(layout) == []
+
+    # A report whose view is not the drawn one, here decided for another reason, and a
+    # report from before the ladder, which kept no rungs, record nothing.
+    report["decision"] = {**report["decision"], "reason": "another reason"}
+    report["solve"]["rungs"] = []
+    path.write_text(json.dumps(report), encoding="utf-8")
+    assert drive.record_rungs([run_dir], root)["differs"] == [4]
+    del report["solve"]["rungs"]
+    path.write_text(json.dumps(report), encoding="utf-8")
+    assert drive.record_rungs([run_dir], root)["not_drawn"] == [4]
+    (entry,) = json.loads(layout.index.read_text())["entries"]
+    assert entry["run"]["rungs"] == ["force-kkt"]
+
+
 def test_only_an_admitted_grid_view_is_admitted() -> None:
     """The decision table decides a grid-slack view as it decides the driver's own."""
     grid = importlib.import_module("devtools.regularize_grid_slack")
