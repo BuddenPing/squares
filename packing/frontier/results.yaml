@@ -18622,6 +18622,7 @@ results:
           max_turn_deg: 8.418e-35
     evidence:
       - E-regularized-bounds-2026-10-13-grid-slack-exact-decision
+      - E-regularized-bounds-2026-10-12-exact-decision
     artifacts:
       - packing/cases/regularized_bounds/README.md
       - packing/cases/regularized_bounds/grid-slack-2026-10-13/selection.json

@@ -1064,6 +1064,7 @@ The programs behind each result, by its cited evidence: who ran each check, how 
   - `E-regularized-bounds-2026-10-12-exact-decision`, replayed here, reproduced with the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent` (first-party); `V-register-regularized-bounds` (first-party, premises)
 - **T-155** — confirmed, reproduced with the producer’s code
   - `E-regularized-bounds-2026-10-13-grid-slack-exact-decision`, replayed here, reproduced with the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent` (first-party); `V-register-regularized-bounds` (first-party, premises)
+  - `E-regularized-bounds-2026-10-12-exact-decision`, replayed here, reproduced with the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent` (first-party); `V-register-regularized-bounds` (first-party, premises)
 
 ## Next actions
 

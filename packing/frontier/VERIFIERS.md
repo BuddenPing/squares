@@ -1058,7 +1058,7 @@ Decides a packing pair by pair and wall by wall: by exact sign in a number field
 | `E-barnett-505-exact-feasibility` | replayed here | independent | T-150 |
 | `E-squish-500-exact-feasibility` | replayed here | independent | T-151 |
 | `E-couzo-506-exact-feasibility` | replayed here | independent | T-152 |
-| `E-regularized-bounds-2026-10-12-exact-decision` | replayed here | producer’s code | T-154 |
+| `E-regularized-bounds-2026-10-12-exact-decision` | replayed here | producer’s code | T-154, T-155 |
 | `E-regularized-bounds-2026-10-13-grid-slack-exact-decision` | replayed here | producer’s code | T-155 |
 
 ### `V-check-rational-witness-independent`
@@ -1110,7 +1110,7 @@ Decides a rational-corner witness pair by pair and wall by wall in Fraction arit
 | `E-barnett-505-exact-feasibility` | replayed here | independent | T-150 |
 | `E-squish-500-exact-feasibility` | replayed here | independent | T-151 |
 | `E-couzo-506-exact-feasibility` | replayed here | independent | T-152 |
-| `E-regularized-bounds-2026-10-12-exact-decision` | replayed here | producer’s code | T-154 |
+| `E-regularized-bounds-2026-10-12-exact-decision` | replayed here | producer’s code | T-154, T-155 |
 | `E-regularized-bounds-2026-10-13-grid-slack-exact-decision` | replayed here | producer’s code | T-155 |
 
 ### `V-check-nagamochi-lemma1-counterexample`
@@ -2358,7 +2358,7 @@ Selects the regularized views whose exact side lies below the case's verified up
 
 | evidence | run | code | results |
 | --- | --- | --- | --- |
-| `E-regularized-bounds-2026-10-12-exact-decision` | replayed here | producer’s code | T-154 |
+| `E-regularized-bounds-2026-10-12-exact-decision` | replayed here | producer’s code | T-154, T-155 |
 | `E-regularized-bounds-2026-10-13-grid-slack-exact-decision` | replayed here | producer’s code | T-155 |
 
 <!-- This document follows common-doc-guidelines.md.

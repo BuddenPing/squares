@@ -464,6 +464,9 @@ def test_n290s_bound_already_followed_from_t154s_certificate_at_n291() -> None:
     assert "and $s(290) \\le s(291)$, since deleting a square from a packing of 291" in text
     # The first batch's rows record no implication, and their records say none.
     assert not any("implied_by" in each for each in registered.committed().values())
+    # T-155 cites the evidence of the ceiling that implies its bound, as T-002 and T-016
+    # cite their parents', so its derived route is in the register (review C2).
+    assert registered.results_holding(290, implied["evidence"]) == ["T-155"]
 
 
 def test_a_second_grid_slack_batch_is_written_in_grid_slack_words(tmp_path: Path) -> None:
