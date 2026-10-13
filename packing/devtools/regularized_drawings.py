@@ -116,23 +116,37 @@ PROJECT_REGULARIZER = "project"
 #: The fields of a layer record the register's item keeps, in its order.
 ITEM_FIELDS = ("n", "of", "by", "method", "modifications", "side", "changes", "identity")
 #: The layer's generators, as its index names them.
+AXIS_GENERATOR = "regularize_axis_components/2"
 EVAND_GENERATOR = "evand-regularize"
-GRID_PREFIX = "regularize_grid_slack/"
+#: Whose code made each generator's view: this project's axis tool (`axis`), Evan Daniel's
+#: regularizer through the vendored driver (`evand`), or the grid-slack port of his
+#: placement (`grid`). A generator not named here is refused, not credited by a guess.
+GENERATOR_KINDS = {
+    AXIS_GENERATOR: "axis",
+    EVAND_GENERATOR: "evand",
+    "regularize_grid_slack/0": "grid",
+    "regularize_grid_slack/1": "grid",
+}
 #: The credit line of a view this project's axis tool made (policy section 7); the other
 #: generators' lines are their index blocks' `credit`.
 AXIS_CREDIT = (
     "Regularized by the Squares Project with its own axis tool (regularize_axis_components/2)"
 )
+#: The kind of result whose exact side a registered regularization proves, which the
+#: notes say it is.
+UPPER_BOUND = "upper-bound"
 #: How an item names each of this project's modifications to Evan Daniel's regularizer.
 SAME_SIDE_RESOLVE = "same-side exact re-solve (devtools.regularize_same_side)"
 BOUND_RESOLVE = "exact re-solve at the verified upper bound (devtools.regularize_same_side)"
 #: The retry rungs, by the name the driver records (`devtools.regularize_evand`). The
-#: stall-stop rung's one change is its replica patch, which the view's `method` names.
+#: stall-stop rung's one change is its replica patch, which the view's `method` names, so
+#: it has no words of its own (`SILENT_RUNGS`); any other rung is refused.
 RUNG_WORDS = {
     "dps-100": "retry rung dps-100",
     "force-kkt": "retry rung force-kkt",
     "first-pass": "retry rung first-pass (devtools.regularize_evand_first_pass)",
 }
+SILENT_RUNGS = frozenset({"stall-stop"})
 #: The patches a vendored view's `method` names after the pin, `@675a5ea+name`.
 _METHOD_PATCHES = re.compile(r"evand/square-packing@[0-9a-f]+((?:\+[^,+\s]+)*)")
 #: How a note reads a project item's side relation and a source item's.
@@ -142,6 +156,42 @@ SIDE_WORDS = {
     "solved": "solved to its side",
 }
 IDENTITY_FIELDS = ("basis", "measured_in", "one_to_one", "moved", "max_move", "max_turn_deg")
+
+
+class RegularizedDrawingsError(ValueError):
+    """The index or the register names something this tool has no words for: a generator,
+    a retry rung or retry argument, or a registering result that is not an upper bound."""
+
+
+def generator_kind(generator: str) -> str:
+    """Whose code made a generator's view (`GENERATOR_KINDS`); refused where unknown."""
+    try:
+        return GENERATOR_KINDS[generator]
+    except KeyError:
+        raise RegularizedDrawingsError(
+            f"generator {generator!r} is not one this tool knows; name it in GENERATOR_KINDS"
+        ) from None
+
+
+def generator_credit(generator: str, generators: Mapping[str, Any]) -> str:
+    """A generator's credit line: the axis tool's own, or its index block's `credit`."""
+    if generator_kind(generator) == "axis":
+        return AXIS_CREDIT
+    credit = (generators.get(generator) or {}).get("credit")
+    if not credit:
+        raise RegularizedDrawingsError(f"the index's {generator} block names no credit")
+    return str(credit)
+
+
+def upper_bound_result(result: Mapping[str, Any]) -> str:
+    """A registering result's id, refused unless it is an upper bound, which is what the
+    notes say its regularization's exact side proves."""
+    if result.get("kind") != UPPER_BOUND:
+        raise RegularizedDrawingsError(
+            f"{result['id']} registers a regularization but is a {result.get('kind')} result, "
+            f"not an {UPPER_BOUND}"
+        )
+    return str(result["id"])
 
 
 @dataclass(frozen=True)
@@ -244,17 +294,42 @@ def packing_result(
 
 def rungs(entry: Mapping[str, Any]) -> list[str]:
     """The retry rungs a drawn view's solve climbed, as its index entry records them:
-    `run.rungs`, or before the retry ladder the one retry's arguments, `retried_with`."""
+    `run.rungs`, or before the retry ladder the one retry's arguments, `retried_with`
+    (`--dps N` and `--force-kkt`; any other argument is refused)."""
     run = entry.get("run") or {}
     if "rungs" in run:
         return [str(rung) for rung in run["rungs"]]
     arguments = [str(argument) for argument in run.get("retried_with") or []]
     found = []
-    if "--dps" in arguments[:-1]:
-        found.append(f"dps-{arguments[arguments.index('--dps') + 1]}")
-    if "--force-kkt" in arguments:
-        found.append("force-kkt")
+    at = 0
+    while at < len(arguments):
+        if arguments[at] == "--dps" and at + 1 < len(arguments):
+            found.append(f"dps-{arguments[at + 1]}")
+            at += 2
+        elif arguments[at] == "--force-kkt":
+            found.append("force-kkt")
+            at += 1
+        else:
+            raise RegularizedDrawingsError(
+                f"n={entry.get('n')}: retry argument {arguments[at]!r} is not one this tool "
+                "knows"
+            )
     return found
+
+
+def rung_words(found: Sequence[str], n: object = None) -> list[str]:
+    """How an item names each rung a solve climbed (`RUNG_WORDS`), the stall-stop rung
+    by its patch alone; a rung with no words is refused rather than dropped."""
+    words = []
+    for rung in found:
+        if rung in SILENT_RUNGS:
+            continue
+        if rung not in RUNG_WORDS:
+            raise RegularizedDrawingsError(
+                f"n={n}: retry rung {rung!r} is not one this tool knows; name it in RUNG_WORDS"
+            )
+        words.append(RUNG_WORDS[rung])
+    return words
 
 
 @cache
@@ -281,15 +356,16 @@ def project_modifications(
     and its re-solve. An empty list: his regularizer ran unmodified. None: the view is
     this project's axis tool's, which is not his regularizer."""
     generator = str(entry.get("generator"))
+    kind = generator_kind(generator)
     resolve = SAME_SIDE_RESOLVE if relation(entry) == "same" else BOUND_RESOLVE
-    if generator.startswith(GRID_PREFIX):
+    if kind == "grid":
         return [
             f"port of his coincidence placement ({generator}) rather than his code",
             resolve,
         ]
-    if generator != EVAND_GENERATOR:
+    if kind == "axis":
         return None
-    found = [RUNG_WORDS[rung] for rung in rungs(entry) if rung in RUNG_WORDS]
+    found = rung_words(rungs(entry), entry.get("n"))
     method = str((entry.get("regularization") or {}).get("method") or "")
     match = _METHOD_PATCHES.search(method)
     named = [name for name in (match.group(1) if match else "").split("+") if name]
@@ -405,7 +481,7 @@ def source_regularizations(
                 "by": by,
                 "credit": credit,
                 "of": str(record["of"]),
-                "registered_in": str(result["id"]),
+                "registered_in": upper_bound_result(result),
                 "method": str(record["method"]),
                 "side": str(record["side"]),
             }
@@ -416,10 +492,9 @@ def project_case_item(count: Drawn, generators: Mapping[str, Any]) -> dict[str, 
     """This project's regularization of a drawn count, as its case record keeps it."""
     entry = count.entry
     generator = str(entry["generator"])
-    credit = (generators.get(generator) or {}).get("credit") or AXIS_CREDIT
     found: dict[str, Any] = {
         "by": PROJECT_REGULARIZER,
-        "credit": str(credit),
+        "credit": generator_credit(generator, generators),
         "generator": generator,
     }
     if count.modifications is not None:

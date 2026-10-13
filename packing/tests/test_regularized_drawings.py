@@ -12,6 +12,8 @@ from __future__ import annotations
 
 from typing import Any
 
+import pytest
+
 from devtools import regularized_drawings as drawings
 from devtools.check_results import regularized_drawings_problems
 from sqpack.yamlio import safe_load
@@ -215,6 +217,38 @@ def test_the_modifications_are_read_from_the_index_entry_alone() -> None:
     # The register's item carries them where his method made the view, and only there.
     assert drawings.item(evand, "T-001", [])["modifications"] == []
     assert "modifications" not in drawings.item(axis, "T-001", None)
+
+
+def test_an_unknown_generator_rung_or_registering_kind_is_refused() -> None:
+    """Credit and modifications fail closed: a generator the tool does not map, a rung or
+    retry argument it has no words for, and a registering result that is not an upper
+    bound are refused, never credited or read as unmodified by default. The stall-stop
+    rung alone is silent, since its one change is the replica patch `method` names."""
+    kinds: dict[str, str] = {}
+    stranger = {**entry(5, "same"), "generator": "someone-elses-tool"}
+    with pytest.raises(drawings.RegularizedDrawingsError, match="someone-elses-tool"):
+        drawings.project_modifications(stranger, kinds)
+    with pytest.raises(drawings.RegularizedDrawingsError, match="someone-elses-tool"):
+        drawings.project_case_item(
+            drawings.Drawn(stranger, drawings.Resolved("T-001", "x"), None), {}
+        )
+    evand = {**entry(5, "bound"), "generator": drawings.EVAND_GENERATOR}
+    with pytest.raises(drawings.RegularizedDrawingsError, match="names no credit"):
+        drawings.project_case_item(
+            drawings.Drawn(evand, drawings.Resolved("T-001", "x"), []), {}
+        )
+    for run in (
+        {"id": "r", "rungs": ["dps-200"]},
+        {"id": "r", "retried_with": ["--dps", "80"]},
+        {"id": "r", "retried_with": ["--relax"]},
+    ):
+        with pytest.raises(drawings.RegularizedDrawingsError, match="n=5"):
+            drawings.project_modifications({**evand, "run": run}, kinds)
+    stalled = {**evand, "run": {"id": "r", "rungs": ["stall-stop"]}}
+    assert drawings.project_modifications(stalled, kinds) == []
+    assert drawings.upper_bound_result({"id": "T-003", "kind": "upper-bound"}) == "T-003"
+    with pytest.raises(drawings.RegularizedDrawingsError, match="T-004 registers"):
+        drawings.upper_bound_result({"id": "T-004", "kind": "lower-bound"})
 
 
 def test_a_case_note_credits_the_regularizer_and_is_never_a_result() -> None:
