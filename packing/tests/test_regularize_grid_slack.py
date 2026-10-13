@@ -414,3 +414,36 @@ def test_the_layer_contract_names_this_version() -> None:
     assert axis.METHOD_MARKS[slack.GENERATOR] in slack.METHOD
     assert slack.GENERATOR in render.MADE_BY
     assert slack.GENERATOR in schema["properties"]["generators"]["properties"]
+
+
+def test_the_decision_reads_a_given_bound_in_place_of_the_records() -> None:
+    """`decided` takes `U` from the case record unless the caller gives one, as the
+    registration of a row-3 view asks how the view is decided once its side is the bound
+    (`register_regularized_bounds`, T-155): below the given bound the view is a row-3
+    register-result candidate; at it, its side the witness's own, it is not."""
+    side = Fraction(11, 5)
+    report = {
+        "n": 4,
+        "attempts": [
+            {
+                "exact": {
+                    "side": "11/5",
+                    "verdicts": {
+                        "exact_verify": {"passed": True},
+                        "independent": {"passed": True},
+                    },
+                }
+            }
+        ],
+        "measured": {
+            "identity": {"one_to_one": True, "max_move": "0"},
+            "shades": {"regressions": []},
+            "visible_change": False,
+            "totals_fall": False,
+        },
+    }
+    held = slack.decided(report, scattered(), upper=side + Fraction(1, 10**15))
+    assert (held.row, held.decision) == (3, "no-change")
+    registered = slack.decided(report, scattered(), upper=side)
+    assert registered.row != 3
+    assert registered.decision == "no-change"

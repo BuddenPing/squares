@@ -1487,12 +1487,19 @@ def run_one(n: int, run_dir: Path, settings: Settings) -> dict[str, Any]:
 # --------------------------------------------------------------------------------------
 
 
-def decided(report: Mapping[str, Any], witness: Mapping[str, Any]) -> driver.Decision:
+def decided(
+    report: Mapping[str, Any],
+    witness: Mapping[str, Any],
+    *,
+    upper: Fraction | None = None,
+) -> driver.Decision:
     """The policy's decision table (section 4) applied to one count's view, as the driver
     applies it to its own: the exact routes, the side against `s_W` and `U`, and the
     per-square and total contact counts decide; the pairing, unnamed turns and largest
     move are measured and named in the reason, and decide nothing (rows 6 and 9, retired
-    13 October 2026)."""
+    13 October 2026). `U` is the case record's unless `upper` is given, as
+    `devtools.register_regularized_bounds` gives the view's own side to ask how the view
+    is decided once it is registered."""
     if "measured" not in report:
         return driver.classify(
             driver.Measured("same", produced=False, status=str(report.get("refusal")))
@@ -1504,7 +1511,8 @@ def decided(report: Mapping[str, Any], witness: Mapping[str, Any]) -> driver.Dec
     side = Fraction(str(report["attempts"][-1]["exact"]["side"]))
     frame = driver.source_frame(witness)
     printed = frame.side if frame.side is not None else None
-    upper = driver.upper_bound(driver.case_facts(int(report["n"])))
+    if upper is None:
+        upper = driver.upper_bound(driver.case_facts(int(report["n"])))
     relation = driver.side_relation(side, printed, upper)
     current = shaded.get("against_current") or {}
     return driver.classify(
