@@ -49,6 +49,12 @@ Recorded 2026-10-03.
 <!-- END TBD POLICY GRANTS -->
 <!-- END TBD INTEGRATION -->
 
+In this repository, confirm a claim before editing: run
+`tbd start <id> --as <unique-agent-name> --json` and read `claimed` and `skipped`, since
+a skipped claim also exits zero.
+[OR-19](operating-rules.md#or-19-confirm-one-bead-owner-before-work-sync-at-session-start-after-commits-and-at-handoff-or-end)
+covers delegated work, handoffs and tracker audits.
+
 ## Operating Rules
 
 Generated from [`operating-rules.md`](operating-rules.md), which carries the evidence
@@ -81,6 +87,8 @@ for each rule. Edit there, not here.
   purpose.
 - **OR-18:** Keep bulk data out of Git, and never bind code or verdicts to a Git commit
   or blob.
+- **OR-19:** Confirm one bead owner before work; sync at session start, after commits,
+  and at handoff or end.
 <!-- END OPERATING RULES SUMMARY -->
 
 ## Build & Test
