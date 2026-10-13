@@ -228,7 +228,11 @@ def regularized_drawings(
             f"its finder{APOSTROPHE}s credit, and changes no side, frontier value or rung. "
             f"Each identity was measured here; the layer{APOSTROPHE}s index "
             "([`index.json`](../atlas/known-best/regularized/index.json)) retains the "
-            "measurements and the view."
+            "measurements and the view. Where Evan Daniel"
+            f"{APOSTROPHE}s regularizer or the grid-slack port of his placement made a view, "
+            f"its line names this project{APOSTROPHE}s modifications to it, or says it ran "
+            f"unmodified, and each count{APOSTROPHE}s case record carries the same credit in "
+            "its `regularization` note. A regularization is never a result."
         ),
         "",
     ]

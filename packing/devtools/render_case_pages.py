@@ -695,6 +695,19 @@ def _rigidity(case: dict[str, Any]) -> str:
     )
 
 
+def _regularization(case: dict[str, Any]) -> str:
+    """Who regularized the drawing the atlas shows, and that it is not a result: the
+    record's generated note (`devtools.regularized_drawings`), one short credit line;
+    nothing for a record without one."""
+    note = (case.get("regularization") or {}).get("note")
+    if not note:
+        return ""
+    return (
+        '<div class="site-case-note"><span class="site-card-label">Regularized drawing</span>'
+        f"<p>{_esc(' '.join(str(note).split()))}</p></div>"
+    )
+
+
 def _open_questions(case: dict[str, Any]) -> str:
     items = []
     for label, entries in (("Conflict", case["conflicts"]), ("Blocker", case["blockers"])):
@@ -905,7 +918,8 @@ def record_head(
         f"{verified_lower}"
         f"{_gap_panel(case)}</div>"
         f'<h3 class="site-case-heading">Results in the register</h3>{results_block(n)}'
-        f"{_verification(case)}{_rigidity(case)}{_open_questions(case)}"
+        f"{_verification(case)}{_rigidity(case)}{_regularization(case)}"
+        f"{_open_questions(case)}"
         '<div class="site-case-note"><span class="site-card-label">Evidence and sources</span>'
         f"<details><summary>{len(evidence)} evidence entries</summary>"
         f"<p>{frontier.evidence_links(evidence)}</p></details>{_sources(case)}</div>"

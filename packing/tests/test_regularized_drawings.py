@@ -173,3 +173,100 @@ def test_the_checker_holds_each_item_to_the_register() -> None:
         "regularized drawing at n = 9: identity.moved, 10, is more squares than n = 9",
         "regularized drawing at n = 5 is both an item and unregistered",
     ]
+
+
+def test_the_modifications_are_read_from_the_index_entry_alone() -> None:
+    """Which of this project's modifications to Evan Daniel's regularizer made a view
+    (the owner, 13 October 2026): the rungs its solve climbed, the patches its method
+    names, the same-side re-solve; the grid-slack port names itself; the axis tool is not
+    his regularizer, so it has none to name."""
+    kinds = {"probe-flat-stall-stop": "replica"}
+    evand = {**entry(5, "same"), "generator": drawings.EVAND_GENERATOR}
+    assert drawings.project_modifications(evand, kinds) == [drawings.SAME_SIDE_RESOLVE]
+    bound = {**entry(5, "bound"), "generator": drawings.EVAND_GENERATOR}
+    assert drawings.project_modifications(bound, kinds) == []
+    # Before the retry ladder the index kept the one retry's arguments.
+    legacy = {**evand, "run": {"id": "r", "retried_with": ["--dps", "100"]}}
+    assert drawings.project_modifications(legacy, kinds) == [
+        "retry rung dps-100",
+        drawings.SAME_SIDE_RESOLVE,
+    ]
+    patched = {
+        **bound,
+        "run": {"id": "r", "rungs": ["force-kkt", "stall-stop", "first-pass"]},
+        "regularization": {
+            **bound["regularization"],
+            "method": "Evan Daniel's search/regularize (MIT), "
+            "evand/square-packing@675a5ea+probe-flat-stall-stop, conservative, coincide",
+        },
+    }
+    assert drawings.project_modifications(patched, kinds) == [
+        "retry rung force-kkt",
+        "retry rung first-pass (devtools.regularize_evand_first_pass)",
+        "replica patch probe-flat-stall-stop",
+    ]
+    grid = {**entry(5, "same"), "generator": "regularize_grid_slack/1"}
+    assert drawings.project_modifications(grid, kinds) == [
+        "port of his coincidence placement (regularize_grid_slack/1) rather than his code",
+        drawings.SAME_SIDE_RESOLVE,
+    ]
+    axis = {**entry(5), "generator": "regularize_axis_components/2"}
+    assert drawings.project_modifications(axis, kinds) is None
+    # The register's item carries them where his method made the view, and only there.
+    assert drawings.item(evand, "T-001", [])["modifications"] == []
+    assert "modifications" not in drawings.item(axis, "T-001", None)
+
+
+def test_a_case_note_credits_the_regularizer_and_is_never_a_result() -> None:
+    evand = {**entry(5, "same"), "generator": drawings.EVAND_GENERATOR}
+    count = drawings.Drawn(evand, drawings.Resolved("T-001", "x"), [drawings.SAME_SIDE_RESOLVE])
+    generators = {drawings.EVAND_GENERATOR: {"credit": "Regularized by the Squares Project"}}
+    ours = drawings.project_case_item(count, generators)
+    assert ours["by"] == "project"
+    assert ours["side"] == "same"
+    note = drawings.case_note([ours])
+    assert note == (
+        "Regularized by the Squares Project, with the project's modifications: "
+        f"{drawings.SAME_SIDE_RESOLVE}. A drawing of T-001's packing at the witness's own "
+        "side, not a result."
+    )
+    plain = drawings.project_case_item(
+        drawings.Drawn(evand, drawings.Resolved(None, "none"), []), generators
+    )
+    assert plain["of"] is None
+    assert drawings.case_note([plain]).startswith(
+        "Regularized by the Squares Project, unmodified."
+    )
+    axis = {**entry(5), "generator": "regularize_axis_components/2"}
+    own = drawings.project_case_item(
+        drawings.Drawn(axis, drawings.Resolved("T-001", "x"), None), {}
+    )
+    assert own["credit"] == drawings.AXIS_CREDIT
+    assert "modifications" not in own
+    source = {
+        "by": "[A]",
+        "credit": "A after B",
+        "of": "T-002",
+        "registered_in": "T-003",
+        "method": "fewest",
+        "side": "solved",
+    }
+    assert drawings.case_note([source, own]).endswith(
+        "The house is itself its source's regularization of T-002's packing (A after B), "
+        "registered as T-003 for the upper bound its exact side proves."
+    )
+
+
+def test_the_case_field_is_written_in_place_and_removed_whole() -> None:
+    text = "---\npacking:\n  n: 5\n  resources: []\n---\n# s(5)\n"
+    field = {"note": "A drawing, not a result.", "items": [{"by": "project", "of": None}]}
+    written = drawings.with_case_field(text, field)
+    front = safe_load(written.split("---\n")[1])["packing"]
+    assert front[drawings.CASE_FIELD] == field
+    assert written.endswith("---\n# s(5)\n")
+    assert drawings.with_case_field(written, field) == written
+    changed = drawings.with_case_field(written, {**field, "note": "Another."})
+    assert safe_load(changed.split("---\n")[1])["packing"][drawings.CASE_FIELD]["note"] == (
+        "Another."
+    )
+    assert drawings.with_case_field(written, None) == text

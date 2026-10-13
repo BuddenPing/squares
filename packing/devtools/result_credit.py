@@ -104,11 +104,20 @@ def regularization_sentence(
     item: Mapping[str, Any], sources: Mapping[str, Mapping[str, Any]]
 ) -> str:
     """One item of a result's `regularizations` as a reader is told it: the count, whose
-    packing it regularizes and who regularized it, then the method, the side, what the
-    regularization changed, and what the identity rests on with what was measured here.
+    packing it regularizes and who regularized it, then the method, this project's
+    modifications to Evan Daniel's regularizer where a drawing names them, the side, what
+    the regularization changed, and what the identity rests on with what was measured here.
     `n = 70: a regularization of T-125's packing by Daniel (fewest; solved to its side;
     rotation groups merged by up to 0.93°; identity: the source's claim; ...).`"""
-    parts = [str(item["method"]), _SIDES[str(item["side"])]]
+    parts = [str(item["method"])]
+    if "modifications" in item:
+        modifications = ", ".join(str(found) for found in item["modifications"])
+        parts.append(
+            f"the project{_APOSTROPHE}s modifications: {modifications}"
+            if modifications
+            else "unmodified"
+        )
+    parts.append(_SIDES[str(item["side"])])
     changes = item.get("changes")
     if changes:
         changed = []
