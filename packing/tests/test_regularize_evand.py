@@ -996,6 +996,54 @@ def n26_run(tmp_path_factory: pytest.TempPathFactory) -> Path:
     return run_dir
 
 
+def _copy_run(n26_run: Path, tmp_path: Path) -> Path:
+    import shutil  # noqa: PLC0415
+
+    return Path(shutil.copytree(n26_run, tmp_path / "run", symlinks=True))
+
+
+def test_the_verdict_is_bound_to_the_view_bytes_it_was_reached_on(
+    n26_run: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """B5: an interrupted re-run leaves no earlier verdict beside its views, and `layer`
+    takes a view only with the bytes its report decided."""
+    from devtools.retained_data import git_blob  # noqa: PLC0415
+
+    run_dir = _copy_run(n26_run, tmp_path)
+    directory = drive.count_dir(run_dir, 26)
+    report = json.loads((directory / "report.json").read_text())
+    for name in ("solved", "same"):
+        block = report["outputs"][name]
+        assert block["git_blob"] == git_blob((directory / block["path"]).read_bytes())
+
+    def killed(**_kwargs: object) -> None:
+        raise KeyboardInterrupt
+
+    with monkeypatch.context() as patch:
+        patch.setattr(drive, "_measure_view", killed)
+        with pytest.raises(KeyboardInterrupt):
+            drive.run_count(26, Options(run_dir=run_dir, from_stage="import"))
+    assert not (directory / "report.json").exists()
+
+    tree = tmp_path / "tree"
+    index = tree / drive.LAYER_DIR / "index.json"
+    index.parent.mkdir(parents=True)
+    index.write_text(json.dumps({"entries": []}))
+    assert drive.write_layer([run_dir], tree, "admitted")["written"] == []
+    decided = drive.run_count(26, Options(run_dir=run_dir, from_stage="import"))
+    decided["decision"] = {"row": 10, "decision": "admit"}
+    (directory / "report.json").write_text(json.dumps(decided))
+    chosen = drive.layer_candidate(decided, "admitted")
+    assert chosen == "same"
+    view = directory / f"view-{chosen}.yaml"
+    pristine = view.read_text()
+    view.write_text(pristine.replace("-regularized", "-edited", 1))
+    summary = drive.write_layer([run_dir], tree, "admitted")
+    assert (summary["written"], summary["not_the_decided_bytes"]) == ([], [26])
+    view.write_text(pristine)
+    assert drive.write_layer([run_dir], tree, "admitted")["written"] == [26]
+
+
 def test_a_patched_solver_is_rebuilt_when_its_patch_changes(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

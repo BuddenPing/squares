@@ -197,6 +197,7 @@ from devtools import check_half_angle_area as area
 from devtools import check_rational_witness_independent as independent
 from devtools import evand_exact_certificates as evand
 from devtools.check_vendored_evand import apply_patch
+from devtools.retained_data import git_blob
 from devtools.upper_bound_packets import RATIONAL_DIGITS
 from sqpack.witness import (
     # The 36-digit rational pose at dilation 1 is the decimal witness's exact frame, as
@@ -1324,9 +1325,10 @@ def solved_view(
     if decided["exact_verify"]["passed"] and decided["independent"]["passed"]:
         document["claim"]["coordinate_provenance"] = "verified"
     path = directory / "view-solved.yaml"
-    write_view(path, document)
+    blob = write_view(path, document)
     block = {
         "path": path.name,
+        "git_blob": blob,
         "id": document["id"],
         "side": decimal_text(certificate.side, 40),
         "side_exact": literal(certificate.side),
@@ -1345,11 +1347,18 @@ def write_text(path: Path, text: str) -> None:
         temporary.write_text(text, encoding="utf-8")
 
 
-def write_view(path: Path, document: Mapping[str, Any]) -> None:
-    """A view as a Witness/v2 file, held to the witness schema before it is written."""
+def write_view(path: Path, document: Mapping[str, Any]) -> str:
+    """A view as a Witness/v2 file, held to the witness schema before it is written.
+
+    Returns the Git blob id of the bytes written, which the report keeps beside the
+    view's verdict, so that the verdict names the bytes it was reached on and `layer`
+    takes no other (review B of #511, B5). The run directory is outside Git; Git's own
+    name for the bytes is what binds them.
+    """
     text = witness_document(document)
     validate_witness_document(load_yaml(text), path=path, fallback_schema=WITNESS_SCHEMA)
     write_text(path, text)
+    return git_blob(text.encode("utf-8"))
 
 
 def same_side_module() -> tuple[Any | None, str | None]:
@@ -1408,12 +1417,13 @@ def same_view(
         stated["resolver"] = replaced
     document["certificate"] = stated
     path = directory / "view-same.yaml"
-    write_view(path, document)
+    blob = write_view(path, document)
     side, _placements, corners = view_geometry(document)
     result, _report = exact_verify(document)
     second = independent.check_squares(corners, side)
     block = {
         "path": path.name,
+        "git_blob": blob,
         "id": document.get("id"),
         "side": decimal_text(side, 40),
         "side_exact": literal(side),
@@ -1837,14 +1847,30 @@ def _regression_count(shaded: Mapping[str, Any]) -> int:
     return len(shaded["regressions"]) + len(current.get("regressions") or [])
 
 
+def _previous_report(path: Path) -> dict[str, Any] | None:
+    """The count's report from the run before, if there is one that reads."""
+    try:
+        previous = read_json(path)
+    except FileNotFoundError, json.JSONDecodeError:
+        return None
+    return previous if isinstance(previous, dict) else None
+
+
 def run_count(n: int, options: Options) -> dict[str, Any]:
-    """Every stage for one count; the report is written and returned, never raised."""
+    """Every stage for one count; the report is written and returned, never raised.
+
+    The earlier run's report is removed first and written again only once the count is
+    decided, so a re-run that is interrupted leaves no verdict beside the views it was
+    remaking (review B of #511, B5); its solve record is kept in memory for `kept_solve`.
+    """
     directory = count_dir(options.run_dir, n)
     directory.mkdir(parents=True, exist_ok=True)
+    previous = _previous_report(directory / "report.json")
+    (directory / "report.json").unlink(missing_ok=True)
     report: dict[str, Any] = {"format": REPORT_FORMAT, "n": n, "status": "ok", "error": None}
     wall, cpu = time.perf_counter(), _self_cpu() + _children_cpu()
     try:
-        _run_stages(n, options, directory, report)
+        _run_stages(n, options, directory, report, previous)
     except Exception as error:  # noqa: BLE001 -- one count's failure must not stop the run
         report["status"] = "error"
         report["error"] = f"{type(error).__name__}: {error}"
@@ -1858,7 +1884,7 @@ def run_count(n: int, options: Options) -> dict[str, Any]:
     return report
 
 
-def kept_solve(directory: Path) -> dict[str, Any]:
+def kept_solve(directory: Path, previous: Mapping[str, Any] | None) -> dict[str, Any]:
     """The kept solve, read back for `--from-stage regularize` or `import`.
 
     A solve that wrote no `witness.json` (a timeout) stands as the count's previous report
@@ -1870,14 +1896,19 @@ def kept_solve(directory: Path) -> dict[str, Any]:
         solved["seconds"] = solved.get("solver_seconds")
         solved.update(attempt_of(directory / "solve"))
         return solved
-    previous = directory / "report.json"
-    stored = read_json(previous).get("solve") if previous.is_file() else None
+    stored = (previous or {}).get("solve")
     if not isinstance(stored, dict) or stored.get("gate") is not None:
         raise EvandRunError(f"{meta} is missing: run this count again from --from-stage solve")
     return dict(stored)
 
 
-def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any]) -> None:
+def _run_stages(
+    n: int,
+    options: Options,
+    directory: Path,
+    report: dict[str, Any],
+    previous: Mapping[str, Any] | None = None,
+) -> None:
     pin = vendored_pin()
     path = witness_path(n)
     witness = load_witness(path, fallback_schema=WITNESS_SCHEMA)
@@ -1933,7 +1964,7 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
     if first <= STAGES.index("solve"):
         solved = solve_with_retries(directory, replica, options.timeout, frame.side)
     else:
-        solved = kept_solve(directory)
+        solved = kept_solve(directory, previous)
     # The replica patches the kept solve ran with are this count's, and its views' too.
     pin = {**pin, "patches": [*pin["patches"], *applied_patches(solved.get("patches") or [])]}
     report["generator"]["patches"] = pin["patches"]
@@ -2538,7 +2569,8 @@ def write_layer(run_dirs: Sequence[Path], root: Path, select: str) -> dict[str, 
     """Write the selected views of finished runs into the layer under `root`, a scratch
     tree and never this checkout (`SELECTIONS`), merged with the index already there, a
     later run winning at a count two runs decided. Returns what was written, what kept
-    the current view, and what was left out."""
+    the current view, what was left out, and the views whose bytes are not the ones their
+    report decided (or whose report predates binding them), which are never written."""
     if select not in SELECTIONS:
         raise EvandRunError(f"unknown selection {select!r}")
     root = root.resolve()
@@ -2558,16 +2590,25 @@ def write_layer(run_dirs: Sequence[Path], root: Path, select: str) -> dict[str, 
     written: list[int] = []
     kept: list[int] = []
     left_out: list[int] = []
+    unbound: list[int] = []
     for n in sorted(found):
         directory, report = found[n]
         chosen = layer_candidate(report, select)
         if chosen is None:
             left_out.append(n)
             continue
+        # The verdict is the one reached on these bytes, or the view is not taken: a
+        # re-run interrupted after writing its views, or an edited file, would otherwise
+        # be written under a verdict no route reached on it (review B of #511, B5).
+        data = (directory / f"view-{chosen}.yaml").read_bytes()
+        decided_on = (report.get("outputs") or {})[chosen].get("git_blob")
+        if decided_on is None or git_blob(data) != decided_on:
+            unbound.append(n)
+            continue
         if not replaces_current(entries.get(n), root, report):
             kept.append(n)
             continue
-        document = load_yaml((directory / f"view-{chosen}.yaml").read_text(encoding="utf-8"))
+        document = load_yaml(data.decode("utf-8"))
         text = witness_document(layer_view(report, document["witness"]))
         view_path = f"{LAYER_DIR}/n-{n:03d}-regularized.yaml.gz"
         target = root / view_path
@@ -2590,7 +2631,13 @@ def write_layer(run_dirs: Sequence[Path], root: Path, select: str) -> dict[str, 
             "views the policy holds or refuses, for the owner to see before deciding"
         )
     write_json(index_path, index)
-    return {"select": select, "written": written, "kept_current": kept, "left_out": left_out}
+    return {
+        "select": select,
+        "written": written,
+        "kept_current": kept,
+        "left_out": left_out,
+        "not_the_decided_bytes": unbound,
+    }
 
 
 def write_receipt(
