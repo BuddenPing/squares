@@ -2536,14 +2536,27 @@ def reclassify(run_dir: Path, counts: Sequence[int] | None = None) -> dict[str, 
     For a change to the decision table or to how decisions are reported: every count's
     `decision` and `decisions` are rewritten from its stored measurements, and the
     receipt's rows and lists follow; its cost and parameters are left as they were.
+
+    It decides on the `U` each report stored when its count ran, not on the case record
+    as it stands. A count whose record has moved `U` since (T-151 moved 60 ceilings) is
+    listed in the receipt's `reclassified.stale_bounds` and printed by the command, so a
+    stale row 3 or 4 is never decided again silently (review B of #511, B10).
     """
     path = run_dir / "receipt.json"
     receipt = read_json(path)
     rows = {int(row["n"]): row for row in receipt.get("counts", [])}
     chosen = sorted(rows) if counts is None else list(counts)
+    stale: list[int] = []
     for n in chosen:
         report_path = count_dir(run_dir, n) / "report.json"
         report = read_json(report_path)
+        facts = case_facts(n)
+        stored = (
+            report.get("verified_upper_bound"),
+            report.get("verified_upper_bound_exact_form"),
+        )
+        if stored != (facts["verified_upper_bound"], facts["exact_form"]):
+            stale.append(n)
         _current_histograms(n, report)
         outputs = report.get("outputs") or {}
         solved = measured_from_report(report, "solved")
@@ -2554,7 +2567,6 @@ def reclassify(run_dir: Path, counts: Sequence[int] | None = None) -> dict[str, 
         decide(report, solved, same, outputs.get("same_refusal"))
         source = report.setdefault("source", {})
         if not source.get("provenance"):
-            facts = case_facts(n)
             source["provenance"] = {
                 "source_key": facts.get("source_key"),
                 "found_by": facts.get("found_by") or [],
@@ -2565,7 +2577,7 @@ def reclassify(run_dir: Path, counts: Sequence[int] | None = None) -> dict[str, 
         rows[n] = receipt_row(report)
     ordered = [rows[n] for n in sorted(rows)]
     receipt.update({"counts": ordered, **receipt_lists(ordered)})
-    receipt["reclassified"] = {"policy": POLICY, "counts": chosen}
+    receipt["reclassified"] = {"policy": POLICY, "counts": chosen, "stale_bounds": stale}
     write_json(path, receipt)
     return receipt
 
@@ -2969,6 +2981,13 @@ def main(argv: list[str] | None = None) -> int:
         counts = None if arguments.n is None else parse_counts(arguments.n)
         receipt = reclassify(arguments.run_dir, counts)
         print(report_table(receipt))
+        stale = receipt["reclassified"]["stale_bounds"]
+        if stale:
+            print(
+                f"decided on the U each report stored; the case record has moved U since "
+                f"at {stale}: run those counts again (--from-stage import) to decide them "
+                "on today's U"
+            )
         return 0
     if arguments.command == "layer":
         summary = write_layer(arguments.run_dir, arguments.repo_root, arguments.select)

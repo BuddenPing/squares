@@ -1217,3 +1217,15 @@ def test_the_same_side_view_names_its_source_by_digest(n26_run: Path) -> None:
         "derived_from": "W-known-best-n026",
     }
     assert certificate["resolve"]["tool"] == "devtools.regularize_same_side"
+
+
+def test_reclassify_says_when_a_stored_bound_is_stale(n26_run: Path, tmp_path: Path) -> None:
+    """B10: `reclassify` decides on the stored `U` and lists the counts whose case record
+    has moved it since."""
+    run_dir = _copy_run(n26_run, tmp_path)
+    assert drive.reclassify(run_dir)["reclassified"]["stale_bounds"] == []
+    path = drive.count_dir(run_dir, 26) / "report.json"
+    report = json.loads(path.read_text())
+    report["verified_upper_bound"], report["verified_upper_bound_exact_form"] = "5.7", None
+    path.write_text(json.dumps(report))
+    assert drive.reclassify(run_dir)["reclassified"]["stale_bounds"] == [26]
