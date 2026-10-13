@@ -142,18 +142,28 @@ There are two checks, because the offline one cannot see upstream.
   It holds the copy to `vendored.yaml`: every pinned file’s size, SHA-256 and executable
   bit, each recorded local change, and no other file in the directory.
   It refuses a symbolic link anywhere in the copy.
-  It also refuses a module file named after a standard-library module or a dependency
-  the scripts import, such as a `numpy.py`: five of the scripts put
-  `search/regularize/` first on `sys.path` and two put `search/exact/` there, so such a
-  file would be imported in that module’s place.
+  It also refuses a module file named after a standard-library module, a dependency the
+  scripts import, such as a `numpy.py`, or a module a dependency looks up as it loads,
+  such as a `gmpy2.py`, which mpmath tries at import and falls back from silently: five
+  of the scripts put `search/regularize/` first on `sys.path` and two put
+  `search/exact/` there, so such a file would be imported in that module’s place.
+  The last group is measured by a test, with the optional modules installed and with
+  them hidden; what it cannot measure is named by hand, and anything a dependency
+  imports only later, at call time, is left to `--upstream`, which refuses any file
+  upstream’s tree does not hold.
   **It catches accidental edits only.** Its expected values come from the manifest, so
   a change that edits a vendored file and that file’s manifest line together passes it.
 - **Upstream**: the same command with `--upstream`.
-  It fetches the pinned commit’s trees, without blobs, into a temporary bare repository
-  and deletes it afterwards.
+  It first fetches the commits of every upstream branch and tag, without trees or
+  blobs, and refuses a pin none of them holds: GitHub serves a pull request’s head by
+  id through upstream’s own URL, so a third party’s unmerged commit would otherwise
+  pass as upstream’s.
+  It then fetches the pinned commit’s trees, without blobs, into a temporary bare
+  repository, and deletes both afterwards.
   It requires the commit’s tree, date and subject to be the manifest’s, every pristine
   file’s Git blob id and mode to be upstream’s at the pin, and every file here to be in
-  upstream’s tree unless it is a recorded addition.
+  upstream’s tree unless it is a recorded addition, and it names the branches and tags
+  that hold the pin.
   It fetches only from `https://github.com/evand/square-packing`, and refuses a
   manifest that names another source.
   It needs the network, so no offline tier runs it.
@@ -225,6 +235,8 @@ One replica patch is recorded:
    It compares every vendored file with the checkout’s blob at the commit, byte for
    byte and mode for mode, refuses on any difference or symbolic link, and rewrites
    `vendored.yaml`.
+   It needs the network: it refuses a checkout whose `origin` is not upstream, and a
+   commit none of upstream’s branches or tags holds, such as a pull request’s head.
 5. Run the check with `--upstream`, which holds the rewritten manifest to upstream
    itself rather than to the local checkout.
 6. Update Source and Pin and the credit lines above.
