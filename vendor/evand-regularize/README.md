@@ -115,6 +115,10 @@ its default of 0; the conservative and coincide path never imports it, and sympy
 is locked anyway through the `symbolic` extra and the `dev` group.
 matplotlib is imported by `gallery.py` at load and by `atlas.py draw`; it is not in the
 lockfile and `atlas.py compute` does not need it.
+This project runs neither.
+If a drawing path ever needs them, matplotlib enters through `packing/uv.lock` under the
+dependency cool-off (`tbd guidelines supply-chain-hardening`), never through an ad-hoc
+`pip install` or an unpinned `uvx`.
 
 ## How This Project Runs It
 
