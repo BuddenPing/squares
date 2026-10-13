@@ -18,9 +18,9 @@ closes them, in five steps:
 1. **The exact frame.** `regularize_same_side.exact_frame`: a rational witness's own
    geometry, or a decimal witness's 36-digit rational promotion at centre dilation 1;
    its side is `s_W`. Where no view exists at `s_W` and the record's verified upper bound
-   `U` is above it, the same squares are tried again in a box of side `U`, the policy's
-   `bound` frame (a decimal witness whose printed side truncates its optimum, n = 171 and
-   198). Every rotation stays the witness's own exact one, except:
+   `U` is rational and above it, the same squares are tried again in a box of side `U`,
+   the policy's `bound` frame (a decimal witness whose printed side truncates its
+   optimum, n = 171 and 198). Every rotation stays the witness's own exact one, except:
 2. **Straightening.** Each square tilted by less than `--near-axis-degrees` (default half a
    degree, the workbench's colour tolerance; any nonzero tilt, including those under the
    house's `1e-6` radians) is turned to the axes about its centre, when the placement
@@ -835,13 +835,30 @@ def float_poses(
     return poses, changed
 
 
+def rational_bound(n: int) -> Fraction | None:
+    """The record's verified upper bound `U` where it is a rational number exactly: its
+    exact form a fraction, or no exact form beside the printed decimal. A closed form's
+    60-digit value is not the bound, so no view is solved at it."""
+    facts = driver.case_facts(n)
+    if facts["verified_upper_bound"] is None:
+        return None
+    if facts["exact_form"] is not None:
+        try:
+            Fraction(str(facts["exact_form"]).replace(" ", ""))
+        except ValueError:
+            return None
+    return driver.upper_bound(facts)
+
+
 def frame_for(witness: Mapping[str, Any], relation: str) -> same.Frame | None:
     """The exact frame at `s_W` (`same`), or the same squares at `U` (`bound`) where the
-    record's verified upper bound is rational and above `s_W`."""
+    record's verified upper bound is rational and above `s_W` (`rational_bound`): a box
+    of a closed form's 60-digit value would be a side above `U`, labelled `bound` (review
+    B of #530, B1)."""
     frame = same.exact_frame(witness)
     if relation == "same":
         return frame
-    upper = driver.upper_bound(driver.case_facts(int(witness["n"])))
+    upper = rational_bound(int(witness["n"]))
     if upper is None or upper <= frame.side:
         return None
     return replace(

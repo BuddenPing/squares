@@ -194,6 +194,24 @@ def test_no_bound_frame_below_the_witness_side() -> None:
     assert frame.side == Fraction(11, 5)
 
 
+def test_no_bound_attempt_at_a_closed_form_bound() -> None:
+    """Review B of #530, B1: n = 5's bound is 2 + (1/2)sqrt(2). Its 60-digit value is
+    1.3e-61 above it, and a view solved in a box of that side was exactly verified above
+    `U` and labelled `bound`; a closed form is no frame, so n = 5 tries `s_W` alone."""
+    witness = slack.load_source(5)
+    assert slack.rational_bound(5) is None
+    assert slack.frame_for(witness, "bound") is None
+    view, report = slack.regularize(witness, slack.Settings())
+    assert [row["relation"] for row in report["attempts"]] == ["same", "same"]
+    assert view is None
+    # A rational `U` above `s_W` is still a frame (n = 171's printed side truncates it).
+    upper = slack.rational_bound(171)
+    assert upper is not None
+    bound = slack.frame_for(slack.load_source(171), "bound")
+    assert bound is not None
+    assert bound.side == upper
+
+
 def beside_a_tilted_square() -> dict[str, Any]:
     """Two axis squares on the floor a tenth apart, and a square turned by
     `arctan(3/4)` (about 36.9 degrees) wedged into the opposite corner of a side-3 box:
