@@ -101,8 +101,11 @@ its sides, decision, own parameters and seconds per stage, the register-result c
 of row 3, the review queue, the solve's input and outputs by digest (kept for rows an
 earlier run into the same directory decided), and the run's CPU and wall seconds,
 children included. A count's report is removed when its run starts and written once it is
-decided, and each view's block names the view's bytes by their Git blob id, which `layer`
-holds the file to, so a verdict is never read beside bytes it was not reached on.
+decided, so a verdict is never read beside views a re-run was remaking. Each view's block
+records the view's bytes by their Git blob id, as provenance only: nothing compares it
+(OR-18). `layer` decides the file it is about to write again instead, on both maintained
+exact routes, and takes it only with the side, relation and id its report decided, and
+only from a report whose settings are the ones its stored regularization ran with.
 
 **Stage reuse.** `--from-stage` reuses what the earlier stages left in the count's
 directory, and their settings and source with it. Reuse is refused, naming the stage to
@@ -1341,26 +1344,69 @@ def stored_settings(regularized: Mapping[str, Any], options: Options) -> Options
     as `conservative` (review B of #511, B1). An output written before the frame was
     recorded started from the KKT point, the only frame there was.
     """
-    stored = {
-        "variant": regularized.get("variant"),
-        "orient": regularized.get("orient"),
-        "frame": regularized.get("frame", "kkt"),
-    }
     asked = {"variant": options.variant, "orient": options.orient, "frame": options.frame}
-    differ = [
-        f"--{name} {value} (asked: {asked[name]})"
-        for name, value in stored.items()
-        if value is not None and str(value) != asked[name]
-    ]
-    style = regularized.get("style")
-    if style is not None and style != STYLE:
-        differ.append(f"style {style} (this driver runs {STYLE})")
+    differ = settings_differ(regularized, asked, "asked")
     if differ:
         raise EvandRunError(
             f"the stored regularization ran with {', '.join(differ)}: run this count again "
             "from --from-stage regularize, or ask for the settings it ran with"
         )
+    stored = _stored(regularized)
     return replace(options, **{name: str(value) for name, value in stored.items() if value})
+
+
+def _stored(regularized: Mapping[str, Any]) -> dict[str, Any]:
+    """The variant, orientation and frame a regularization ran with, as it recorded them;
+    one written before the frame was recorded started from the KKT point."""
+    return {
+        "variant": regularized.get("variant"),
+        "orient": regularized.get("orient"),
+        "frame": regularized.get("frame", "kkt"),
+    }
+
+
+def settings_differ(
+    regularized: Mapping[str, Any], stated: Mapping[str, str], word: str
+) -> list[str]:
+    """Each setting a stored regularization ran with that is not the one `stated`, in the
+    command line's terms, with the stated value after `word`; and a style not this
+    driver's."""
+    differ = [
+        f"--{name} {value} ({word}: {stated[name]})"
+        for name, value in _stored(regularized).items()
+        if value is not None and str(value) != stated[name]
+    ]
+    style = regularized.get("style")
+    if style is not None and style != STYLE:
+        differ.append(f"style {style} (this driver runs {STYLE})")
+    return differ
+
+
+def settings_disagreement(directory: Path, report: Mapping[str, Any]) -> str | None:
+    """Why a count's report is not labelled with the settings its stored regularization
+    ran with, or None; None too where there is no stored regularization to hold it to.
+
+    A report written before review B's B1 fix of #511 could call a `fewest` regularization
+    `conservative`, and a decision read from its labels is then the wrong variant's row.
+    `reclassify` and `layer` hold each report to the `regularize.json` beside it (review
+    C of #511, C1 and C3).
+    """
+    path = directory / "regularize.json"
+    if not path.is_file():
+        return None
+    generator = report.get("generator") or {}
+    stated = {
+        "variant": str(generator.get("variant", "conservative")),
+        "orient": str(generator.get("orient", "0")),
+        "frame": str(generator.get("frame", "kkt")),
+    }
+    differ = settings_differ(read_json(path), stated, "its report says")
+    if not differ:
+        return None
+    return (
+        f"its stored regularization ran with {', '.join(differ)}: run this count again "
+        "from --from-stage import, asking for the settings it ran with"
+    )
 
 
 # --------------------------------------------------------------------------------------
@@ -1469,9 +1515,8 @@ def write_view(path: Path, document: Mapping[str, Any]) -> str:
     """A view as a Witness/v2 file, held to the witness schema before it is written.
 
     Returns the Git blob id of the bytes written, which the report keeps beside the
-    view's verdict, so that the verdict names the bytes it was reached on and `layer`
-    takes no other (review B of #511, B5). The run directory is outside Git; Git's own
-    name for the bytes is what binds them.
+    view's verdict as provenance: it says which bytes were decided, and nothing compares
+    it (OR-18). `layer` decides the file it takes again (`layer_refusal`).
     """
     text = witness_document(document)
     validate_witness_document(load_yaml(text), path=path, fallback_schema=WITNESS_SCHEMA)
@@ -2508,6 +2553,29 @@ def receipt_lists(ordered: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     }
 
 
+def report_bound(report: Mapping[str, Any]) -> VerifiedBound | None:
+    """The verified upper bound a report stored when its count ran, held exactly."""
+    return verified_bound(
+        {
+            "verified_upper_bound": report.get("verified_upper_bound"),
+            "exact_form": report.get("verified_upper_bound_exact_form"),
+        }
+    )
+
+
+def report_relation(
+    report: Mapping[str, Any], side: Fraction
+) -> Literal["same", "bound", "solved"]:
+    """`side_relation` of `side` against the witness side and the bound a report stored."""
+    bound = report_bound(report)
+    printed = (report.get("source") or {}).get("s_W_exact")
+    return side_relation(
+        side,
+        Fraction(printed) if printed else None,
+        bound.rational if bound is not None else None,
+    )
+
+
 def measured_from_report(report: Mapping[str, Any], name: Output) -> Measured:
     """What the decision table reads of one output, from a written report.
 
@@ -2530,18 +2598,12 @@ def measured_from_report(report: Mapping[str, Any], name: Output) -> Measured:
             return Measured(name, produced=False, status=failure)
         return Measured(name, produced=False, status=f"solve {status}")
     regularized = report.get("regularize") or {}
-    bound = verified_bound(
-        {
-            "verified_upper_bound": report.get("verified_upper_bound"),
-            "exact_form": report.get("verified_upper_bound_exact_form"),
-        }
-    )
+    bound = report_bound(report)
     upper = bound.rational if bound is not None else None
     side = Fraction(block["side_exact"])
-    printed = (report.get("source") or {}).get("s_W_exact")
     # Derived again rather than read, so reports written before `bound` existed decide
     # as the table now does.
-    relation = side_relation(side, Fraction(printed) if printed else None, upper)
+    relation = report_relation(report, side)
     chosen = "same" if outputs.get("same") else "solved"
     ident: Mapping[str, Any] | None = None
     shaded: Mapping[str, Any] | None = None
@@ -2650,6 +2712,13 @@ def reclassify(
     (`refresh_bound`), for a run decided before a register result moved the bound; the
     receipt lists every count whose `U` changed, and those are then not stale. Run it on
     a copy of a run directory to keep the run as it was decided.
+
+    It decides only a report labelled with the settings its stored regularization ran
+    with (`settings_disagreement`). A report written before review B's B1 fix could call
+    a `fewest` regularization `conservative`, and its row is then the wrong variant's: such
+    a count is not decided again but sent to review, with no regularization record,
+    listed in `reclassified.stale_settings` and printed, to be run again from
+    `--from-stage import` (review C of #511, C3).
     """
     path = run_dir / "receipt.json"
     receipt = read_json(path)
@@ -2657,6 +2726,7 @@ def reclassify(
     chosen = sorted(rows) if counts is None else list(counts)
     refreshed: list[dict[str, Any]] = []
     stale: list[int] = []
+    unsettled: list[int] = []
     for n in chosen:
         report_path = count_dir(run_dir, n) / "report.json"
         report = read_json(report_path)
@@ -2669,6 +2739,17 @@ def reclassify(
         )
         if stored != (facts["verified_upper_bound"], facts["exact_form"]):
             stale.append(n)
+        mislabelled = settings_disagreement(count_dir(run_dir, n), report)
+        if mislabelled is not None:
+            unsettled.append(n)
+            report["decision"] = asdict(
+                Decision(None, "review", None, None, f"not decided again: {mislabelled}")
+            )
+            report["decisions"] = {"solved": None, "same": None}
+            report["regularization"] = None
+            write_json(report_path, report)
+            rows[n] = receipt_row(report)
+            continue
         _current_histograms(n, report)
         outputs = report.get("outputs") or {}
         solved = measured_from_report(report, "solved")
@@ -2689,7 +2770,12 @@ def reclassify(
         rows[n] = receipt_row(report)
     ordered = [rows[n] for n in sorted(rows)]
     receipt.update({"counts": ordered, **receipt_lists(ordered)})
-    receipt["reclassified"] = {"policy": POLICY, "counts": chosen, "stale_bounds": stale}
+    receipt["reclassified"] = {
+        "policy": POLICY,
+        "counts": chosen,
+        "stale_bounds": stale,
+        "stale_settings": unsettled,
+    }
     if refresh_bounds:
         receipt["reclassified"]["refreshed_bounds"] = refreshed
     write_json(path, receipt)
@@ -2732,7 +2818,7 @@ def total_contacts(counts: Sequence[int]) -> int:
     return sum(k * count for k, count in enumerate(counts))
 
 
-def layer_candidate(report: Mapping[str, Any], select: str) -> str | None:
+def layer_candidate(report: Mapping[str, Any], select: str) -> Output | None:
     """Which view of a decided count `select` takes, `same` or `solved`, or None."""
     decision = report.get("decision") or {}
     outputs = report.get("outputs") or {}
@@ -2786,8 +2872,11 @@ def layer_regularization(record: Mapping[str, Any]) -> dict[str, Any]:
     return kept
 
 
-def evand_admitted(report: Mapping[str, Any], directory: Path, run_id: str) -> Admitted:
-    """A driver report's admitted view (row 10), in the layer's terms."""
+def evand_admitted(
+    report: Mapping[str, Any], directory: Path, run_id: str, *, text: str | None = None
+) -> Admitted:
+    """A driver report's admitted view (row 10), in the layer's terms: `text`, the view as
+    `layer_refusal` decided it, or else the file as it is."""
     chosen = layer_candidate(report, "admitted")
     if chosen is None:
         raise EvandRunError(f"n={report['n']}: not admitted")
@@ -2798,7 +2887,9 @@ def evand_admitted(report: Mapping[str, Any], directory: Path, run_id: str) -> A
     ident = report.get("identity") or {}
     shaded = report.get("shades") or {}
     regularized = report.get("regularize") or {}
-    document = load_yaml((directory / f"view-{chosen}.yaml").read_text(encoding="utf-8"))
+    if text is None:
+        text = (directory / f"view-{chosen}.yaml").read_text(encoding="utf-8")
+    document = load_yaml(text)
     run: dict[str, Any] = {"id": run_id, "output": chosen}
     retried = (report.get("solve") or {}).get("retried_with")
     if retried:
@@ -2979,6 +3070,78 @@ def current_house_total(entry: Mapping[str, Any] | None, root: Path) -> int | No
     return total_contacts(histogram(contact_partners(load_yaml(text)["witness"])["house"]))
 
 
+def layer_refusal(
+    directory: Path, report: Mapping[str, Any], chosen: Output
+) -> tuple[str | None, str | None]:
+    """The view `chosen` of a decided count as `layer` would write it, or why it may not.
+
+    Returns the file's text and None, or None and the refusal. The file is decided as it
+    is now, not identified (`view_refusal`), so an edit that leaves the same valid view, a
+    comment say, is taken, and any other is refused. The report's settings must also be
+    its stored regularization's (`settings_disagreement`), which keeps out a report
+    labelled before that was checked. Nothing is compared by digest or Git blob id (OR-16,
+    OR-18); `git_blob` stays in the report as provenance. An interrupted re-run leaves no
+    report beside its views (`run_count`), so they are never reached here.
+    """
+    refusal = settings_disagreement(directory, report)
+    if refusal is None and not (directory / "regularize.json").is_file():
+        refusal = "no regularize.json beside the report to hold its settings to"
+    if refusal is not None:
+        return None, refusal
+    path = directory / f"view-{chosen}.yaml"
+    try:
+        text = path.read_text(encoding="utf-8")
+        document = load_yaml(text)
+        validate_witness_document(document, path=path, fallback_schema=WITNESS_SCHEMA)
+        refusal = view_refusal(report, chosen, path.name, document["witness"])
+    except Exception as error:  # noqa: BLE001 -- a view that does not read is refused
+        return None, f"{path.name} does not read as a rational view: {error}"
+    return (None, refusal) if refusal is not None else (text, None)
+
+
+def view_refusal(
+    report: Mapping[str, Any], chosen: Output, name: str, witness: Mapping[str, Any]
+) -> str | None:
+    """Why a view's witness, as it is now, is not the view its report decided, or None.
+
+    `exact_verify` and the independent checker must both accept it; for the solved view,
+    converted from a certificate, the half-angle route must decide it as the report
+    recorded; and its exact side, its relation to the witness's side and the bound the
+    report stored, and its id must be the ones its report decided on.
+    """
+    block = (report.get("outputs") or {})[chosen]
+    side, placements, corners = view_geometry(witness)
+    result, _report = exact_verify(witness)
+    now = {
+        "exact_verify": bool(result["verification_passed"]),
+        "independent": bool(independent.check_squares(corners, side)["verification_passed"]),
+    }
+    if chosen == "solved":
+        now["half_angle"] = bool(area.decide_placed(side, placements).passed)
+    recorded = block.get("routes") or {}
+    stated = {
+        "side": (literal(side), block.get("side_exact")),
+        "relation": (report_relation(report, side), block.get("relation")),
+        "id": (witness.get("id"), block.get("id")),
+    }
+    failed = [route for route in ("exact_verify", "independent") if not now[route]]
+    differ = [route for route, passed in now.items() if bool(recorded.get(route)) != passed]
+    problems = [
+        *([f"{name} as it is now fails {' and '.join(failed)}"] if failed else []),
+        *(
+            [f"{name} as it is now is decided otherwise by {', '.join(differ)}"]
+            if differ and not failed
+            else []
+        ),
+        *(
+            f"{name}'s {field} is {found}, not the {decided} its report decided"
+            for field, (found, decided) in stated.items()
+            if found != decided
+        ),
+    ]
+    return "; ".join(problems) or None
+
+
 def admit_views(
     candidates: Sequence[Admitted],
     root: Path,
@@ -3073,30 +3236,52 @@ def dated_runs(
     return found
 
 
-def evand_candidates(run_dirs: Sequence[Path]) -> tuple[list[Admitted], list[dict[str, Any]]]:
+def evand_candidates(
+    run_dirs: Sequence[Path],
+) -> tuple[list[Admitted], list[dict[str, Any]], dict[str, str]]:
     """Every count finished runs admitted (row 10), a later run winning at a count two
-    decided, with the runs they came from. A report's blob ids for its views
-    (`outputs.<name>.git_blob`) are its provenance and are compared with nothing (OR-16,
-    OR-18): a drawn view is decided again on both routes, its identity and shades measured
-    again, by `--verify-atlas`."""
+    decided, with the runs they came from, and, with the reason, each admitted view
+    `layer_refusal` refused.
+
+    Each view is decided again as it is now, on both maintained exact routes, and taken
+    only with the side, relation and id its report decided, from a report whose settings
+    are its stored regularization's (review C of #511, C1). A report's blob ids for its
+    views (`outputs.<name>.git_blob`) are its provenance and are compared with nothing
+    (OR-16, OR-18); `--verify-atlas` decides every drawn view again, its identity and
+    shades measured again."""
     found: dict[int, tuple[Path, str, dict[str, Any]]] = {}
     for run_dir in run_dirs:
         run_id = f"{axis.EVAND_GENERATOR}-{Path(run_dir).name}"
         for path in sorted(Path(run_dir).glob("n-*/report.json")):
             report = read_json(path)
             found[int(report["n"])] = (path.parent, run_id, report)
-    admitted = [
-        evand_admitted(report, directory, run_id)
-        for directory, run_id, report in found.values()
-        if layer_candidate(report, "admitted") is not None
-    ]
+    admitted, refused = decided_candidates(found)
     used = {item.run["id"] for item in admitted}
     runs = [
         run_block(Path(run_dir), run_id)
         for run_dir in run_dirs
         if (run_id := f"{axis.EVAND_GENERATOR}-{Path(run_dir).name}") in used
     ]
-    return admitted, runs
+    return admitted, runs, refused
+
+
+def decided_candidates(
+    found: Mapping[int, tuple[Path, str, dict[str, Any]]],
+) -> tuple[list[Admitted], dict[str, str]]:
+    """Each found report's admitted view, decided again as it is now (`layer_refusal`),
+    and, with the reason, each one refused, which is never admitted."""
+    admitted: list[Admitted] = []
+    refused: dict[str, str] = {}
+    for n, (directory, run_id, report) in sorted(found.items()):
+        chosen = layer_candidate(report, "admitted")
+        if chosen is None:
+            continue
+        text, refusal = layer_refusal(directory, report, chosen)
+        if text is None:
+            refused[str(n)] = refusal or "refused"
+            continue
+        admitted.append(evand_admitted(report, directory, run_id, text=text))
+    return admitted, refused
 
 
 def write_preview(run_dirs: Sequence[Path], root: Path, select: str) -> dict[str, Any]:
@@ -3115,10 +3300,7 @@ def write_preview(run_dirs: Sequence[Path], root: Path, select: str) -> dict[str
             # A preview draws what row 10 would have drawn: the record is the run's.
             report = {**report, "decision": {**report["decision"], "decision": "admit"}}
             found[int(report["n"])] = (path.parent, run_id, report)
-    admitted = [
-        evand_admitted(report, directory, run_id)
-        for directory, run_id, report in found.values()
-    ]
+    admitted, refused = decided_candidates(found)
     runs = [
         run_block(Path(run_dir), f"{axis.EVAND_GENERATOR}-{Path(run_dir).name}")
         for run_dir in run_dirs
@@ -3126,7 +3308,7 @@ def write_preview(run_dirs: Sequence[Path], root: Path, select: str) -> dict[str
     summary = admit_views(
         admitted, root, generators={axis.EVAND_GENERATOR: evand_generator_block()}, runs=runs
     )
-    return {"select": select, **summary}
+    return {"select": select, **summary, "refused": refused}
 
 
 def layer_layout(root: Path) -> Any:
@@ -3197,7 +3379,7 @@ def write_layer_with_grid(
     """Admit finished runs' views and, at `grid_counts`, the grid-slack run's view instead
     (`devtools.regularize_grid_slack.admitted_views`), in one write of the layer."""
     grid = importlib.import_module("devtools.regularize_grid_slack")
-    admitted, runs = evand_candidates(run_dirs)
+    admitted, runs, refused = evand_candidates(run_dirs)
     chosen = set(grid_counts)
     views, grid_run_block, grid_generator = grid.admitted_views(grid_run, sorted(chosen))
     candidates = [item for item in admitted if item.n not in chosen] + list(views)
@@ -3212,19 +3394,22 @@ def write_layer_with_grid(
         runs=[run for run in [*runs, grid_run_block] if run["id"] in used],
         exclude=exclude,
     )
-    return {"select": "admitted", "grid_counts": sorted(chosen), **summary}
+    refused = {n: why for n, why in refused.items() if int(n) not in chosen}
+    return {"select": "admitted", "grid_counts": sorted(chosen), **summary, "refused": refused}
 
 
 def write_layer(
     run_dirs: Sequence[Path], root: Path, select: str, exclude: Collection[int] = ()
 ) -> dict[str, Any]:
     """Write finished runs' admitted views into the layer under `root` (`admit_views`),
-    or with `preview`, every drawable view into a scratch tree (`write_preview`)."""
+    or with `preview`, every drawable view into a scratch tree (`write_preview`). Each
+    view is decided again as it is now first (`layer_refusal`); a refused one is never
+    written, and the summary's `refused` names it with the reason."""
     if select not in SELECTIONS:
         raise EvandRunError(f"unknown selection {select!r}")
     if select != "admitted":
         return write_preview(run_dirs, root, select)
-    admitted, runs = evand_candidates(run_dirs)
+    admitted, runs, refused = evand_candidates(run_dirs)
     summary = admit_views(
         admitted,
         root,
@@ -3232,7 +3417,7 @@ def write_layer(
         runs=runs,
         exclude=exclude,
     )
-    return {"select": select, **summary}
+    return {"select": select, **summary, "refused": refused}
 
 
 def write_receipt(
@@ -3483,6 +3668,13 @@ def main(argv: list[str] | None = None) -> int:
                 f"decided on the U each report stored; the case record has moved U since "
                 f"at {stale}: run those counts again (--from-stage import) to decide them "
                 "on today's U"
+            )
+        unsettled = receipt["reclassified"]["stale_settings"]
+        if unsettled:
+            print(
+                f"not decided again, sent to review: at {unsettled} the report's settings "
+                "are not the ones its stored regularization ran with; run those counts "
+                "again (--from-stage import), asking for the settings they ran with"
             )
         return 0
     if arguments.command == "layer":

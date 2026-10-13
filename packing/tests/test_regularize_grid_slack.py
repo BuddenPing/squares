@@ -156,7 +156,10 @@ def test_a_run_writes_its_view_report_and_drawing(tmp_path: Path) -> None:
 
 def test_a_report_names_the_witness_it_read_and_the_view_it_wrote(tmp_path: Path) -> None:
     """Review B of #530, B3: the source witness by digest and exact side, and the view's
-    bytes by their Git blob id, so an admitting layer can hold both to the report."""
+    bytes by their Git blob id. The digest and the blob id are provenance only, checked
+    here for being the right values and compared by nothing (OR-18). The admitting layer
+    (#548) decides instead, holding `s_W_exact` to today's witness and measuring identity
+    again."""
     import hashlib  # noqa: PLC0415
 
     from devtools.retained_data import git_blob  # noqa: PLC0415
