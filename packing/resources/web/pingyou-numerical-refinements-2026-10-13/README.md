@@ -114,6 +114,11 @@ This packet requests maintainer intake under the
 It reserves no result identifier, changes no accepted case record, and assigns no
 confirmation score.
 
+
+## Further exact certificate updates
+
+The [algebraic supplement](../pingyou-algebraic-refinements-2026-10-13/README.md) replaces 59 of these 147 witnesses with strictly tighter exact certificates and adds the further refinement of the separately submitted N261. The cumulative PR therefore covers 148 counts. The earlier exact N153 and N302 supplement remains in place. Original attribution and the immutable v1/v2 archives are preserved.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->
