@@ -113,6 +113,7 @@ def test_review_coverage_refuses_omissions_duplicates_and_unsupported_closures(
             "expected_version": 2,
             "expected_status": "open",
             "status": "closed",
+            "close_reason": "All done",
         },
     }
     incomplete = review_coverage(report, [{"beads": [item, item]}])
@@ -283,6 +284,7 @@ def test_close_resolution_is_known_and_a_duplicate_names_its_target() -> None:
                 "expected_version": 2,
                 "expected_status": "open",
                 "status": "closed",
+                "close_reason": "Superseded",
                 **targets,
             },
         }
@@ -443,7 +445,7 @@ def test_verify_applied_finds_unapplied_closes_moves_and_stale_paths(tmp_path: P
     ]
     result = verify_applied(snapshot, [review], tmp_path)
     assert result["checked"] == 5
-    assert result["not_in_snapshot"] == 1
+    assert result["unchecked_fields"] == {"hold": 1, "resolution": 2}
     assert result["problems"] == [
         "moved spec missing from docs/project/specs/paused/stuck.md",
         "moved spec still at docs/project/specs/active/stuck.md",
@@ -614,3 +616,347 @@ def test_cli_rejects_conflicting_output_modes(
         main()
     assert error.value.code == 2
     assert "not allowed with argument" in capsys.readouterr().err
+
+
+def round_one_receipt() -> dict[str, object]:
+    """The 10 October applied receipt's shape: past-tense actions, targets at the top."""
+    return {
+        "beads": [
+            {"id": "think-a111", "action": "closed", "previous_version": 5},
+            {
+                "id": "think-b111",
+                "action": "closed_duplicate",
+                "duplicate_of": "think-z111",
+            },
+            {"id": "think-c111", "action": "updated", "hold": "paused", "previous_version": 3},
+            {"id": "think-d111", "action": "notes_updated"},
+        ],
+        "path_repairs": [
+            {
+                "id": "think-e111",
+                "from": "explorations/packing/docs/project/specs/active/plan.md",
+                "to": "docs/project/specs/active/plan.md",
+                "previous_version": 2,
+            }
+        ],
+    }
+
+
+def test_verify_reads_the_round_one_receipt_and_fails_what_was_not_applied(
+    tmp_path: Path,
+) -> None:
+    snapshot = [
+        {"id": "think-a111", "status": "open"},
+        {"id": "think-b111", "status": "in_progress"},
+        {"id": "think-c111", "status": "open"},
+        {"id": "think-d111", "status": "open"},
+        {"id": "think-e111", "status": "open", "spec_path": "explorations/packing/x.md"},
+    ]
+    result = verify_applied(snapshot, [round_one_receipt()], tmp_path)
+    assert result["problems"] == [
+        "not closed: think-a111 is open",
+        "not closed: think-b111 is in_progress",
+        "spec_path not applied: think-e111 has explorations/packing/x.md",
+    ]
+    assert result["checked"] == 3
+    assert result["unchecked_fields"] == {
+        "close_reason": 2,
+        "duplicate_of": 1,
+        "hold": 1,
+        "notes": 1,
+        "resolution": 2,
+        "version": 3,
+    }
+
+
+def test_verify_passes_the_round_one_receipt_once_it_holds(tmp_path: Path) -> None:
+    snapshot = [
+        {"id": "think-a111", "internalId": "is-a", "status": "closed"},
+        {"id": "think-b111", "internalId": "is-b", "status": "closed"},
+        {"id": "think-c111", "internalId": "is-c", "status": "open"},
+        {"id": "think-d111", "internalId": "is-d", "status": "open"},
+        {
+            "id": "think-e111",
+            "internalId": "is-e",
+            "status": "open",
+            "spec_path": "docs/project/specs/active/plan.md",
+        },
+        {"id": "think-z111", "internalId": "is-z", "status": "open"},
+    ]
+    shown = {
+        "think-a111": {"status": "closed", "version": 6},
+        "think-b111": {"status": "closed", "resolution": "duplicate", "duplicate_of": "is-z"},
+        "think-c111": {"status": "open", "hold": "paused", "version": 4},
+        "think-d111": {"status": "open", "version": 2},
+        "think-e111": {
+            "status": "open",
+            "version": 3,
+            "spec_path": "docs/project/specs/active/plan.md",
+        },
+    }
+    result = verify_applied(snapshot, [round_one_receipt()], tmp_path, shown)
+    assert result["problems"] == []
+    assert result["unchecked_fields"] == {"close_reason": 2, "notes": 1}
+
+
+def test_verify_fails_an_unknown_action_and_a_record_it_cannot_read(tmp_path: Path) -> None:
+    typo = {"beads": [{"id": "think-a111", "action": "Close", "updates": {"status": "closed"}}]}
+    result = verify_applied([{"id": "think-a111", "status": "open"}], [typo], tmp_path)
+    assert result["problems"] == [
+        "unknown bead action: think-a111: Close",
+        "nothing verified: no recognized close, update, move or path repair",
+    ]
+    moved = {"specs": [{"path": "docs/project/specs/active/x.md", "action": "move_dnoe"}]}
+    assert (
+        "unknown spec action: docs/project/specs/active/x.md: move_dnoe"
+        in (verify_applied([], [moved], tmp_path)["problems"])
+    )
+
+
+def test_cli_verify_exits_nonzero_when_nothing_is_recognized(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    snapshot = tmp_path / "snapshot.json"
+    snapshot.write_text(json.dumps([{"id": "think-a111", "status": "open"}]), encoding="utf-8")
+    receipt = tmp_path / "receipt.json"
+    receipt.write_text(
+        json.dumps({"beads": [{"id": "think-a111", "action": "retain"}]}), encoding="utf-8"
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "reconcile_work",
+            str(snapshot),
+            "--repo",
+            str(tmp_path),
+            "--verify",
+            str(receipt),
+            "--snapshot-only",
+        ],
+    )
+    with pytest.raises(SystemExit) as error:
+        main()
+    assert error.value.code == 1
+    assert "nothing verified" in capsys.readouterr().out
+
+
+def duplicate_close() -> dict[str, object]:
+    return {
+        "beads": [
+            {
+                "id": "think-a111",
+                "action": "close",
+                "updates": {
+                    "expected_version": 3,
+                    "expected_status": "open",
+                    "status": "closed",
+                    "resolution": "duplicate",
+                    "duplicate_of": "think-z111",
+                    "close_reason": "Same as think-z111",
+                },
+            }
+        ]
+    }
+
+
+def test_verify_checks_resolution_duplicate_and_reason_from_tbd_show(tmp_path: Path) -> None:
+    snapshot = [
+        {"id": "think-a111", "internalId": "is-a", "status": "closed"},
+        {"id": "think-z111", "internalId": "is-z", "status": "open"},
+    ]
+    applied_as_plain = {
+        "think-a111": {"status": "closed", "version": 4, "close_reason": "Done"}
+    }
+    result = verify_applied(snapshot, [duplicate_close()], tmp_path, applied_as_plain)
+    assert result["problems"] == [
+        "close_reason not applied: think-a111 has 'Done'",
+        "duplicate_of not applied: think-a111 has None",
+        "resolution not applied: think-a111 has completed",
+    ]
+    held = {
+        "think-a111": {
+            "status": "closed",
+            "version": 3,
+            "resolution": "duplicate",
+            "duplicate_of": "is-z",
+            "close_reason": "Same as think-z111",
+        }
+    }
+    assert verify_applied(snapshot, [duplicate_close()], tmp_path, held)["problems"] == [
+        "version not advanced: think-a111 is at 3, recorded as applied at 3"
+    ]
+
+
+def test_verify_counts_what_a_list_snapshot_cannot_show(tmp_path: Path) -> None:
+    result = verify_applied(
+        [{"id": "think-a111", "status": "closed"}], [duplicate_close()], tmp_path
+    )
+    assert result["problems"] == []
+    assert result["checked"] == 1
+    assert result["unchecked_fields"] == {
+        "close_reason": 1,
+        "duplicate_of": 1,
+        "resolution": 1,
+        "version": 1,
+    }
+
+
+def test_verify_follows_a_spec_moved_twice_and_a_later_repair(tmp_path: Path) -> None:
+    archive = tmp_path / "docs/project/specs/archive"
+    archive.mkdir(parents=True)
+    (archive / "x.md").write_text("A plan.\n", encoding="utf-8")
+    (tmp_path / "docs/project/specs/done").mkdir(parents=True)
+    (tmp_path / "docs/project/specs/done/y.md").write_text("A plan.\n", encoding="utf-8")
+    first = {
+        "specs": [
+            {"path": "docs/project/specs/active/x.md", "action": "move_done"},
+            {"path": "docs/project/specs/active/y.md", "action": "move_done"},
+        ],
+        "beads": [
+            {
+                "id": "think-a111",
+                "action": "update",
+                "updates": {"spec_path": "docs/project/specs/draft/old.md"},
+            },
+            {
+                "id": "think-b111",
+                "action": "update",
+                "updates": {"spec_path": "docs/project/specs/active/x.md"},
+            },
+        ],
+    }
+    second = {
+        "specs": [
+            {
+                "path": "docs/project/specs/done/x.md",
+                "action": "move_archive",
+                "new_status": "Archived.",
+            },
+            {"path": "docs/project/specs/done/y.md", "action": "move_done"},
+        ],
+        "beads": [
+            {
+                "id": "think-a111",
+                "action": "update",
+                "updates": {"spec_path": "docs/project/specs/archive/x.md"},
+            }
+        ],
+    }
+    snapshot = [
+        {"id": "think-a111", "status": "open", "spec_path": "docs/project/specs/archive/x.md"},
+        {"id": "think-b111", "status": "open", "spec_path": "docs/project/specs/archive/x.md"},
+    ]
+    result = verify_applied(snapshot, [first, second], tmp_path)
+    assert result["problems"] == []
+    assert result["checked"] == 4
+    assert result["unchecked_fields"] == {"new_status": 1}
+    stale = [
+        *snapshot,
+        {"id": "think-c111", "status": "open", "spec_path": "docs/project/specs/done/x.md"},
+    ]
+    assert verify_applied(stale, [first, second], tmp_path)["problems"] == [
+        "bead still names a moved spec's old path: think-c111"
+    ]
+
+
+def test_cited_commits_checks_its_base_and_can_fail_on_unresolved_tokens(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    subprocess.run(["git", "init", "-q", "-b", "main", str(tmp_path)], check=True)
+    review = {"beads": [{"id": "think-a111", "action": "close", "evidence": ["deadbeefcafe"]}]}
+    missing = cited_commits([review], tmp_path, base="origin/main")
+    assert missing["problems"] == ["base does not resolve to a commit: origin/main"]
+    receipt = tmp_path / "receipt.json"
+    receipt.write_text(json.dumps(review), encoding="utf-8")
+    argv = ["reconcile_work", "--repo", str(tmp_path), "--check-commits", str(receipt)]
+    for extra, code in (([], 1), (["--base", "HEAD"], 1)):
+        monkeypatch.setattr(sys, "argv", [*argv, *extra])
+        with pytest.raises(SystemExit) as error:
+            main()
+        assert error.value.code == code
+    capsys.readouterr()
+    git = ["git", "-C", str(tmp_path), "-c", "user.email=t@example.org", "-c", "user.name=t"]
+    subprocess.run([*git, "commit", "-q", "--allow-empty", "-m", "base"], check=True)
+    for extra, code in (([], 0), (["--strict"], 1)):
+        monkeypatch.setattr(sys, "argv", [*argv, "--base", "main", *extra])
+        with pytest.raises(SystemExit) as error:
+            main()
+        assert error.value.code == code
+    out = json.loads(capsys.readouterr().out.split("\n}\n")[0] + "\n}")
+    assert out["unresolved"] == ["think-a111: deadbeefcafe"]
+    assert "not fetched here" in out["note"]
+
+
+def test_review_coverage_requires_a_close_reason_and_no_updates_on_a_retain() -> None:
+    baseline = {"beads": ["think-a111", "think-b111", "think-c111"], "specs": []}
+    updates = {"expected_version": 2, "expected_status": "open", "status": "closed"}
+    review = {
+        "beads": [
+            {
+                "id": "think-a111",
+                "action": "close",
+                "reason": "Done",
+                "evidence": ["Receipt"],
+                "updates": updates,
+            },
+            {
+                "id": "think-b111",
+                "action": "retain",
+                "reason": "Live",
+                "evidence": ["Open"],
+                "updates": {"expected_version": 2, "expected_status": "open", "hold": "paused"},
+            },
+            {
+                "id": "think-c111",
+                "action": "close",
+                "reason": "Same",
+                "evidence": ["Twin"],
+                "updates": {
+                    **updates,
+                    "close_reason": "Same",
+                    "resolution": "duplicate",
+                    "duplicate_of": "think-c111",
+                },
+            },
+        ]
+    }
+    assert review_coverage(baseline, [review])["problems"] == [
+        "close without close_reason: think-a111",
+        "updates on a disposition that changes nothing: think-b111",
+        "duplicate of itself: think-c111",
+    ]
+
+
+def test_prior_dispositions_do_not_cross_folders_that_share_a_filename(tmp_path: Path) -> None:
+    for folder in ("active", "done"):
+        directory = tmp_path / "docs/project/specs" / folder
+        directory.mkdir(parents=True)
+        (directory / "same.md").write_text("A plan.\n", encoding="utf-8")
+    report = annotate_prior(
+        inventory([], tmp_path),
+        [
+            {
+                "specs": [
+                    {
+                        "path": "docs/project/specs/active/same.md",
+                        "action": "retain",
+                        "reason": "Live",
+                    }
+                ]
+            }
+        ],
+    )
+    priors = {
+        spec["path"]: spec.get("prior")
+        for lane in report["lanes"].values()
+        for spec in lane["specs"]
+    }
+    assert priors == {
+        "docs/project/specs/active/same.md": {"action": "retain", "reason": "Live"},
+        "docs/project/specs/done/same.md": None,
+    }

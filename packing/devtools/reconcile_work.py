@@ -3,12 +3,29 @@
 Read a ``tbd list --all --json`` snapshot, including closed children so an
 undecomposed epic cannot be mistaken for a completed one. Emit disjoint review queues
 with explicit coverage; a flag is a question to investigate, not a verdict.
-``--split N`` regroups the queues so each spec travels with the beads it governs, and
-``--prior`` carries an earlier round's dispositions onto the items it reviewed.
 Children are direct children only, and the default spec lanes alternate by sorted path,
 so a lane assignment is stable only against the frozen baseline it was cut from.
-``--needs-evidence`` lists what earlier rounds left waiting on a named fact and is still
-open, so that list has one place to be worked down from.
+
+Modes, each printing JSON:
+
+- the default inventory, or one lane with ``--lane``; ``--split N`` regroups the queues
+  so each spec travels with the beads it governs, and ``--prior`` carries an earlier
+  round's dispositions onto the items it reviewed;
+- ``--baseline`` freezes the review scope, and ``--reviews`` checks lane records against
+  a snapshot or that baseline: every item disposed of exactly once, with evidence;
+- ``--path-repairs`` lists exact former-root moves;
+- ``--duplicates`` lists bead pairs whose titles share most of their words;
+- ``--needs-evidence`` lists what earlier rounds left waiting on a named fact and is
+  still open, so that list has one place to be worked down from;
+- ``--branch-only-paths`` lists beads whose ``spec_path`` exists here but not at a ref;
+- ``--check-commits`` checks that every commit a close cites is on ``--base``, and needs
+  no snapshot;
+- ``--verify`` checks a fresh snapshot, the beads' ``tbd show`` records and the tree
+  against applied dispositions, and fails when it recognizes nothing.
+
+Every mode but ``--check-commits`` needs a full ``tbd list --all --json`` snapshot, apart
+from ``--reviews``, which also takes a retained baseline. Records are passed oldest
+first wherever several are read.
 """
 
 from __future__ import annotations
@@ -44,6 +61,17 @@ TARGET_UPDATE_FIELDS = {
     "update": frozenset({"hold", "notes_append", "spec_path"}),
 }
 CLOSE_RESOLUTIONS = frozenset({"canceled", "completed", "duplicate"})
+#: Dispositions that change nothing, so a record of them has nothing to verify.
+UNCHANGED_ACTIONS = frozenset({"needs_evidence", "retain"})
+#: Round 1's applied receipt records what was done, in the past tense, with each target
+#: beside the action; later records carry the lane action and its ``updates``.
+APPLIED_ACTIONS = frozenset({"closed", "closed_duplicate", "notes_updated", "updated"})
+#: The fields a ``tbd list --all --json`` snapshot carries; the rest need ``tbd show``.
+SNAPSHOT_FIELDS = frozenset({"spec_path", "status"})
+SHOW_BATCH = 100
+#: A field a record says it set without recording the value, such as round 1's notes
+#: and close reasons: counted as unchecked, never compared.
+UNRECORDED = "<unrecorded>"
 # A spec is read in full and decides the folder for every bead it governs, so it
 # costs a reviewer several beads' worth of time when lanes are balanced.
 SPEC_REVIEW_WEIGHT = 5
@@ -220,29 +248,42 @@ def split_lanes(report: dict[str, Any], count: int, repo: Path) -> dict[str, Any
 def annotate_prior(report: dict[str, Any], reviews: list[dict[str, Any]]) -> dict[str, Any]:
     """Attach an earlier round's disposition to each item it covered.
 
-    Specs match by filename, since an earlier round may have moved them between
-    lifecycle folders. The prior disposition is context for the reviewer, not a verdict
-    carried forward.
+    A spec matches the path the earlier round reviewed, or the folder it moved the spec
+    to; failing both, its filename, but only while one spec in the report carries that
+    name, since the same name can stand in two folders. The prior disposition is
+    context for the reviewer, not a verdict carried forward.
     """
     beads = {
         str(item["id"]): {"action": item.get("action"), "reason": item.get("reason")}
         for review in reviews
         for item in review.get("beads", [])
     }
-    specs = {
-        Path(str(item["path"])).name: {
-            "action": item.get("action"),
-            "reason": item.get("reason"),
-        }
-        for review in reviews
-        for item in review.get("specs", [])
-    }
+    by_path: dict[str, dict[str, Any]] = {}
+    by_name: dict[str, dict[str, Any]] = {}
+    for review in reviews:
+        for item in review.get("specs", []):
+            path, action = str(item["path"]), str(item.get("action", ""))
+            prior = {"action": item.get("action"), "reason": item.get("reason")}
+            by_path[path] = by_name[Path(path).name] = prior
+            if action.startswith("move_"):
+                by_path[
+                    f"docs/project/specs/{action.removeprefix('move_')}/{Path(path).name}"
+                ] = prior
+    names = Counter(
+        Path(str(spec["path"])).name
+        for lane in report["lanes"].values()
+        for spec in lane["specs"]
+    )
     for lane in report["lanes"].values():
         for bead in lane["beads"]:
             if (prior := beads.get(str(bead["id"]))) is not None:
                 bead["prior"] = prior
         for spec in lane["specs"]:
-            if (prior := specs.get(Path(str(spec["path"])).name)) is not None:
+            path = str(spec["path"])
+            prior = by_path.get(path)
+            if prior is None and names[Path(path).name] == 1:
+                prior = by_name.get(Path(path).name)
+            if prior is not None:
                 spec["prior"] = prior
     return report
 
@@ -280,6 +321,10 @@ def review_coverage(report: dict[str, Any], reviews: list[dict[str, Any]]) -> di
                 isinstance(value, str) and value.strip() for value in evidence
             ):
                 problems.append(f"disposition without evidence: {item.get(key)}")
+            if kind == "beads" and action in UNCHANGED_ACTIONS and item.get("updates"):
+                problems.append(
+                    f"updates on a disposition that changes nothing: {item.get(key)}"
+                )
             if kind == "beads" and action in {"close", "update"}:
                 updates = item.get("updates")
                 if not isinstance(updates, dict):
@@ -312,6 +357,10 @@ def review_coverage(report: dict[str, Any], reviews: list[dict[str, Any]]) -> di
                     problems.append(
                         f"duplicate close needs exactly one target: {item.get(key)}"
                     )
+                if action == "close" and not str(updates.get("close_reason") or "").strip():
+                    problems.append(f"close without close_reason: {item.get(key)}")
+                if updates.get("duplicate_of") == item.get(key):
+                    problems.append(f"duplicate of itself: {item.get(key)}")
         totals[kind] = len(entries)
     return {"reviewed": totals, "problems": problems}
 
@@ -394,57 +443,231 @@ def open_needs_evidence(
     return {"open": len(waiting), "items": waiting}
 
 
+def recorded_targets(item: dict[str, Any]) -> tuple[dict[str, Any], int | None] | None:
+    """The fields one bead disposition set, and the version it was applied against.
+
+    ``None`` for a disposition that changes nothing. Round 1's past-tense actions carry
+    their targets beside the action, and record neither a close's reason nor the text
+    ``notes_updated`` wrote, so those targets are ``UNRECORDED``. Raises ``ValueError``
+    for an action outside both vocabularies.
+    """
+    action = item.get("action")
+    if action in UNCHANGED_ACTIONS:
+        return None
+    if action in {"close", "update"}:
+        updates = dict(item.get("updates") or {})
+        version = updates.pop("expected_version", None)
+        for guard in EXPECTED_UPDATE_FIELDS:
+            updates.pop(guard, None)
+        if action == "close":
+            updates.setdefault("resolution", "completed")
+        return updates, version
+    version = item.get("previous_version")
+    closed = {"status": "closed", "close_reason": UNRECORDED}
+    if action == "closed":
+        return {**closed, "resolution": "completed"}, version
+    if action == "closed_duplicate":
+        return {
+            **closed,
+            "resolution": "duplicate",
+            "duplicate_of": item.get("duplicate_of"),
+        }, version
+    if action == "updated" and "hold" in item:
+        return {"hold": item["hold"]}, version
+    if action == "notes_updated":
+        return {"notes": UNRECORDED}, version
+    raise ValueError(f"unknown bead action: {item.get('id')}: {action}")
+
+
+def show_records(ids: list[str], repo: Path) -> dict[str, dict[str, Any]]:
+    """The full ``tbd show --json`` record of each bead, by public ID, read in batches."""
+    shown: dict[str, dict[str, Any]] = {}
+    for start in range(0, len(ids), SHOW_BATCH):
+        listed = subprocess.run(
+            [
+                "tbd",
+                "show",
+                "--json",
+                "--no-parent",
+                "--ignore-missing",
+                *ids[start : start + SHOW_BATCH],
+            ],
+            cwd=repo,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout
+        records = json.loads(listed) if listed.strip() else []
+        for record in records if isinstance(records, list) else [records]:
+            shown[str(record.get("displayId") or record.get("id"))] = record
+    return shown
+
+
+def applied_expectations(
+    reviews: list[dict[str, Any]],
+) -> tuple[dict[str, dict[str, Any]], dict[str, int], list[list[str]], set[str], list[str]]:
+    """What a sequence of records, oldest first, leaves each bead and spec holding.
+
+    For each bead field the latest record wins; a close clears an earlier hold, as tbd
+    requires before closing; appended notes accumulate under ``notes_append``; and the
+    version guard keeps the highest version a mutation was applied against. Each moved
+    spec is followed as one chain of places, so a spec moved twice ends at its last.
+    The places whose plans a record gave a ``new_status`` are returned too.
+    """
+    expected: dict[str, dict[str, Any]] = {}
+    versions: dict[str, int] = {}
+    chains: list[list[str]] = []
+    at: dict[str, int] = {}
+    statuses: set[str] = set()
+    problems: list[str] = []
+
+    def target(bead_id: str, fields: dict[str, Any], version: Any) -> None:
+        current = expected.setdefault(bead_id, {})
+        if fields.get("status") == "closed":
+            current.pop("hold", None)
+        if (appended := fields.pop("notes_append", None)) is not None:
+            current.setdefault("notes_append", []).append(str(appended))
+        current.update(fields)
+        if type(version) is int:
+            versions[bead_id] = max(versions.get(bead_id, version), version)
+
+    for review in reviews:
+        for spec in review.get("specs", []):
+            path, action = str(spec.get("path", "")), str(spec.get("action", ""))
+            if "new_status" in spec:
+                folder = action.removeprefix("move_") if action.startswith("move_") else ""
+                place = f"docs/project/specs/{folder}/{Path(path).name}" if folder else path
+                statuses.add(place)
+            if action in UNCHANGED_ACTIONS or action == "update_status":
+                continue
+            if action not in SPEC_ACTIONS:
+                problems.append(f"unknown spec action: {path}: {action}")
+                continue
+            new = f"docs/project/specs/{action.removeprefix('move_')}/{Path(path).name}"
+            index = at.pop(path, None)
+            if index is None:
+                index = len(chains)
+                chains.append([path])
+            chains[index].append(new)
+            at[new] = index
+        for item in review.get("beads", []):
+            try:
+                recorded = recorded_targets(item)
+            except ValueError as error:
+                problems.append(str(error))
+                continue
+            if recorded is not None:
+                target(str(item.get("id")), *recorded)
+        for repair in review.get("path_repairs", []):
+            target(
+                str(repair["id"]), {"spec_path": repair["to"]}, repair.get("previous_version")
+            )
+    return expected, versions, chains, statuses, problems
+
+
 def verify_applied(
-    beads: list[dict[str, Any]], reviews: list[dict[str, Any]], repo: Path
+    beads: list[dict[str, Any]],
+    reviews: list[dict[str, Any]],
+    repo: Path,
+    shown: dict[str, dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Check a fresh snapshot and tree against the dispositions that were applied.
 
-    Every close is closed, every ``spec_path`` update holds, every moved spec stands in
-    its new folder and not its old one, and no bead still names a moved spec's old
-    path. Holds and notes are not in a list snapshot, so they are counted, not checked.
+    Pass the records oldest first: the latest record wins for each bead field, so a
+    repair a later round superseded is not a problem, and a spec moved twice is checked
+    at its last place, with no bead left naming any place it left. Round 1's receipt
+    (past-tense actions and ``path_repairs``) is read as well as the lane shape.
+
+    A list snapshot shows only ``status`` and ``spec_path``. With ``shown``, the beads'
+    ``tbd show --json`` records, the resolution, ``duplicate_of``, ``close_reason``,
+    hold, appended notes and the version guard are checked too. Whatever stays
+    unchecked is counted by field, including each plan's recorded ``new_status``, which
+    a status line wrapped and retyped by the formatter cannot be matched against; an
+    unknown action is a problem, and so is a set of records in which nothing could be
+    verified.
     """
+    expected, versions, chains, statuses, problems = applied_expectations(reviews)
     by_id = {str(bead["id"]): bead for bead in beads}
-    moved: dict[str, str] = {}
-    problems: list[str] = []
-    checked = unverifiable = 0
-    for review in reviews:
-        for spec in review.get("specs", []):
-            action = str(spec.get("action", ""))
-            if not action.startswith("move_"):
+    public = {
+        str(bead["internalId"]): str(bead["id"]) for bead in beads if "internalId" in bead
+    }
+    for bead_id, record in (shown or {}).items():
+        if record.get("id"):
+            public.setdefault(str(record["id"]), bead_id)
+    unchecked: Counter[str] = Counter()
+    checked = 0
+    final: dict[str, str] = {}
+    for chain in chains:
+        last = chain[-1]
+        checked += 1
+        if not (repo / last).is_file():
+            problems.append(f"moved spec missing from {last}")
+        for place in dict.fromkeys(chain[:-1]):
+            if place != last:
+                final[place] = last
+                if (repo / place).exists():
+                    problems.append(f"moved spec still at {place}")
+    if statuses:
+        unchecked["new_status"] = len({final.get(place, place) for place in statuses})
+    for bead_id, fields in expected.items():
+        if shown is not None:
+            if bead_id not in shown:
+                problems.append(f"bead not shown by tbd: {bead_id}")
                 continue
-            old = str(spec["path"])
-            new = f"docs/project/specs/{action.removeprefix('move_')}/{Path(old).name}"
-            moved[old] = new
+            bead = shown[bead_id]
+        elif bead_id in by_id:
+            bead = by_id[bead_id]
+        else:
+            problems.append(f"bead not in snapshot: {bead_id}")
+            continue
+        for name in sorted(fields):
+            want = fields[name]
+            if want == UNRECORDED or (shown is None and name not in SNAPSHOT_FIELDS):
+                unchecked[name] += 1
+                continue
             checked += 1
-            if not (repo / new).is_file():
-                problems.append(f"moved spec missing from {new}")
-            if (repo / old).exists():
-                problems.append(f"moved spec still at {old}")
-    for review in reviews:
-        for item in review.get("beads", []):
-            action = item.get("action")
-            if action not in {"close", "update"}:
+            if name == "notes_append":
+                notes = str(bead.get("notes") or "")
+                if not all(text.strip() in notes for text in want):
+                    problems.append(f"notes lack the appended text: {bead_id}")
                 continue
-            bead = by_id.get(str(item["id"]))
-            updates = item.get("updates", {})
-            if bead is None:
-                problems.append(f"bead not in snapshot: {item['id']}")
+            have = bead.get(name)
+            if name == "spec_path":
+                want = final.get(str(want), want)
+            elif name == "resolution":
+                have = have or "completed"
+            elif name == "duplicate_of" and have is not None:
+                have = public.get(str(have), have)
+            elif name == "close_reason":
+                have, want = str(have or "").strip(), str(want or "").strip()
+            if have == want:
                 continue
-            if action == "close":
+            if name == "status":
+                problems.append(f"not closed: {bead_id} is {have}")
+            else:
+                shown_value = repr(have) if name == "close_reason" else have
+                problems.append(f"{name} not applied: {bead_id} has {shown_value}")
+        if bead_id in versions:
+            if shown is None:
+                unchecked["version"] += 1
+            else:
                 checked += 1
-                if bead.get("status") != "closed":
-                    problems.append(f"not closed: {item['id']} is {bead.get('status')}")
-            if "spec_path" in updates:
-                checked += 1
-                want = moved.get(updates["spec_path"], updates["spec_path"])
-                if bead.get("spec_path") != want:
+                if int(bead.get("version", 0)) <= versions[bead_id]:
                     problems.append(
-                        f"spec_path not applied: {item['id']} has {bead.get('spec_path')}"
+                        f"version not advanced: {bead_id} is at {bead.get('version')}, "
+                        f"recorded as applied at {versions[bead_id]}"
                     )
-            unverifiable += sum(field in updates for field in ("hold", "notes_append"))
-    stale = sorted(str(b["id"]) for b in beads if str(b.get("spec_path") or "") in moved)
+    stale = sorted(str(b["id"]) for b in beads if str(b.get("spec_path") or "") in final)
     problems.extend(f"bead still names a moved spec's old path: {bead}" for bead in stale)
-    return {"checked": checked, "not_in_snapshot": unverifiable, "problems": problems}
+    if not checked:
+        problems.append("nothing verified: no recognized close, update, move or path repair")
+    return {
+        "checked": checked,
+        "unchecked": sum(unchecked.values()),
+        "unchecked_fields": dict(sorted(unchecked.items())),
+        "source": "tbd show" if shown is not None else "snapshot",
+        "problems": problems,
+    }
 
 
 def title_tokens(title: str) -> frozenset[str]:
@@ -499,8 +722,9 @@ def cited_commits(
     """Every commit a close cites must be on ``base``; a close resting on a commit that
     is not is a question to answer before applying it.
 
-    Tokens that do not name a commit at all (digests, abbreviated ids of other things)
-    are listed as unresolved, which is information rather than a fault.
+    ``base`` must resolve, so fetch it first. Tokens that name no commit here are listed
+    as unresolved: digests, other repositories' commits, and commits of this repository
+    that were never fetched, which is why ``--strict`` can fail on them.
     """
 
     def git(*arguments: str) -> int:
@@ -508,6 +732,9 @@ def cited_commits(
             ["git", "-C", str(repo), *arguments], capture_output=True, check=False
         ).returncode
 
+    problems: list[str] = []
+    if git("rev-parse", "--verify", "--quiet", f"{base}^{{commit}}"):
+        problems.append(f"base does not resolve to a commit: {base}")
     off_base: list[str] = []
     unresolved: list[str] = []
     closes = citing = 0
@@ -528,20 +755,31 @@ def cited_commits(
             for token in tokens:
                 if git("rev-parse", "--verify", "--quiet", f"{token}^{{commit}}"):
                     unresolved.append(f"{item['id']}: {token}")
-                elif git("merge-base", "--is-ancestor", token, base):
+                elif not problems and git("merge-base", "--is-ancestor", token, base):
                     off_base.append(f"{item['id']}: {token} is not on {base}")
     return {
+        "base": base,
         "closes": closes,
         "citing_commits": citing,
         "off_base": off_base,
         "unresolved": unresolved,
+        "note": (
+            "unresolved tokens name no commit here: digests, other repositories' commits, "
+            "or this repository's commits not fetched here"
+        ),
+        "problems": problems,
     }
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument(
-        "snapshot", type=Path, help="tbd snapshot or retained coverage baseline"
+        "snapshot",
+        type=Path,
+        nargs="?",
+        help="tbd snapshot or retained coverage baseline; --check-commits needs none",
     )
     parser.add_argument("--repo", type=Path, default=REPO)
     output = parser.add_mutually_exclusive_group()
@@ -580,14 +818,27 @@ def main() -> None:
         type=Path,
         nargs="+",
         metavar="REVIEW",
-        help="check that every commit a close cites is on origin/main",
+        help="check that every commit a close cites is on --base",
     )
     output.add_argument(
         "--verify",
         type=Path,
         nargs="+",
         metavar="REVIEW",
-        help="check a fresh snapshot and tree against applied dispositions",
+        help="check a fresh snapshot, tbd show and the tree against applied dispositions",
+    )
+    parser.add_argument(
+        "--base", default="origin/main", help="--check-commits: the ref closes must be on"
+    )
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="--check-commits: also fail on tokens that name no commit here",
+    )
+    parser.add_argument(
+        "--snapshot-only",
+        action="store_true",
+        help="--verify: read only the snapshot, and count what it cannot show",
     )
     parser.add_argument(
         "--split", type=int, metavar="N", help="regroup into N lanes by governing spec"
@@ -596,6 +847,17 @@ def main() -> None:
         "--prior", type=Path, nargs="+", help="annotate items with earlier dispositions"
     )
     args = parser.parse_args()
+    if args.check_commits:
+        cited = cited_commits(
+            [json.loads(path.read_text(encoding="utf-8")) for path in args.check_commits],
+            args.repo,
+            args.base,
+        )
+        print(json.dumps(cited, indent=2))
+        failed = cited["off_base"] or cited["problems"] or (args.strict and cited["unresolved"])
+        raise SystemExit(bool(failed))
+    if args.snapshot is None:
+        parser.error("a snapshot is required except with --check-commits")
     snapshot = json.loads(args.snapshot.read_text(encoding="utf-8"))
     is_inventory = isinstance(snapshot, list)
     if not is_inventory and (
@@ -632,22 +894,17 @@ def main() -> None:
         print(json.dumps({"threshold": args.duplicates, "pairs": found}, indent=2))
         return
     if args.verify:
-        verified = verify_applied(
-            snapshot,
-            [json.loads(path.read_text(encoding="utf-8")) for path in args.verify],
-            args.repo,
+        reviews = [json.loads(path.read_text(encoding="utf-8")) for path in args.verify]
+        shown = (
+            None
+            if args.snapshot_only
+            else show_records(sorted(applied_expectations(reviews)[0]), args.repo)
         )
+        verified = verify_applied(snapshot, reviews, args.repo, shown)
         print(json.dumps(verified, indent=2))
         raise SystemExit(bool(verified["problems"]))
     if args.split is not None and args.split < 1:
         parser.error("--split needs a positive lane count")
-    if args.check_commits:
-        cited = cited_commits(
-            [json.loads(path.read_text(encoding="utf-8")) for path in args.check_commits],
-            args.repo,
-        )
-        print(json.dumps(cited, indent=2))
-        raise SystemExit(bool(cited["off_base"]))
     result = inventory(snapshot, args.repo) if is_inventory else snapshot
     if args.split:
         result = split_lanes(result, args.split, args.repo)
