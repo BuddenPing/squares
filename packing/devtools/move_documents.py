@@ -68,8 +68,9 @@ REFERENCE_LINK = re.compile(
 )
 FENCE_OPEN = re.compile(r"^[ \t]*(`{3,}|~{3,})(.*)$")
 FENCE_CLOSE = re.compile(r"^[ \t]*(`{3,}|~{3,})[ \t]*$")
-#: A code span: matched backtick runs, never across a blank line.
-CODE_SPAN = re.compile(r"(?<!`)(`+)(?!`)((?:(?!\n[ \t]*\r?\n).)+?)(?<!`)\1(?!`)", re.DOTALL)
+#: A code span: matched backtick runs, never across a blank line; a backslash-escaped
+#: backtick opens none.
+CODE_SPAN = re.compile(r"(?<![`\\])(`+)(?!`)((?:(?!\n[ \t]*\r?\n).)+?)(?<!`)\1(?!`)", re.DOTALL)
 #: A path character before a match, and after it; a period ends a path unless a path
 #: character follows it, so a path that ends a sentence still matches.
 PATH_BEFORE = r"(?<![A-Za-z0-9_.\-/])"
@@ -479,14 +480,19 @@ def main(argv: list[str] | None = None) -> int:
         return 1
     for old, new in moves.items():
         print(f"move {old} -> {new}")
+
+    def place(path: str) -> str:
+        """A moved file by both paths, so a report still points at it after --apply."""
+        return f"{path} -> {moves[path]}" if path in moves else path
+
     for path, count in sorted(result.counts.items()):
-        print(f"  {count:3d} reference(s) in {path}")
+        print(f"  {count:3d} reference(s) in {place(path)}")
     for path in result.kept:
-        print(f"  kept, its blob is pinned by a tool: {path}")
+        print(f"  kept, its blob is pinned by a tool: {place(path)}")
     for path in result.skipped:
-        print(f"  skipped, not text: {path}")
+        print(f"  skipped, not text: {place(path)}")
     for path, count in sorted(result.fenced.items()):
-        print(f"  left in fenced code, decide by hand: {path} ({count})")
+        print(f"  left in fenced code, decide by hand: {place(path)} ({count})")
     if args.apply:
         apply(result, args.repo)
         print(f"applied {len(moves)} move(s), rewrote {len(result.rewrites)} file(s)")

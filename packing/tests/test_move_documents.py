@@ -339,3 +339,24 @@ def test_a_link_whose_label_is_a_code_span_is_relinked() -> None:
         "See [`b.md`](../active/b.md) and [`the plan`][plan].\n\n[plan]: ../active/b.md\n"
     )
     assert count == 2
+
+
+def test_reports_name_a_moved_file_by_its_new_path(
+    tree: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    (tree / ACTIVE / "a.md").write_text(
+        f"[b](b.md)\n\n```bash\ntbd list --spec {ACTIVE}/a.md\n```\n", encoding="utf-8"
+    )
+    subprocess.run(["git", "-C", str(tree), "add", f"{ACTIVE}/a.md"], check=True)
+    assert main([f"{ACTIVE}/a.md={DONE}/a.md", "--repo", str(tree)]) == 0
+    out = capsys.readouterr().out
+    assert f"  1 reference(s) in {ACTIVE}/a.md -> {DONE}/a.md" in out
+    assert f"left in fenced code, decide by hand: {ACTIVE}/a.md -> {DONE}/a.md (1)" in out
+
+
+def test_an_escaped_backtick_opens_no_code_span() -> None:
+    moves = {f"{ACTIVE}/a.md": f"{DONE}/a.md"}
+    text = "Type \\` to quote, then see [b](b.md) and `x`.\n"
+    rewritten, count = rewrite(text, f"{ACTIVE}/a.md", moves)
+    assert rewritten == "Type \\` to quote, then see [b](../active/b.md) and `x`.\n"
+    assert count == 1
