@@ -1184,6 +1184,7 @@ case or experiment separately.
 | [Enumerated Contact-Scaffold Atlas](packing/atlas/enumerated/README.md) | component scope and use | supporting | maintained | — |
 | [Known-Best Packing Atlas, `n = 1..324`](packing/atlas/known-best/README.md) | component scope and use | supporting | maintained | — |
 | [Composite figure playbook](packing/atlas/known-best/figure-playbook.md) | component scope and use | supporting | maintained | — |
+| [Design System](packing/devtools/templates/paper-design.md) | component scope and use | supporting | maintained | — |
 | [Prospective Packing Atlas, `n = 101..324`](packing/atlas/prospective/README.md) | component scope and use | supporting | maintained | — |
 | [Deterministic SVG Gallery](packing/atlas/rendering/README.md) | component scope and use | supporting | maintained | — |
 | [Conventions for `packing/`](conventions.md) | artifact and naming conventions | definitive | maintained | — |

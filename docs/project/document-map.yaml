@@ -580,6 +580,7 @@ documents:
   - {path: packing/atlas/enumerated/README.md, role: component-guide, authority: supporting, lifecycle: maintained}
   - {path: packing/atlas/known-best/README.md, role: component-guide, authority: supporting, lifecycle: maintained}
   - {path: packing/atlas/known-best/figure-playbook.md, role: component-guide, authority: supporting, lifecycle: maintained}
+  - {path: packing/devtools/templates/paper-design.md, role: component-guide, authority: supporting, lifecycle: maintained}
   - {path: packing/atlas/prospective/README.md, role: component-guide, authority: supporting, lifecycle: maintained}
   - {path: packing/atlas/rendering/README.md, role: component-guide, authority: supporting, lifecycle: maintained}
   - {path: conventions.md, role: conventions, authority: definitive, lifecycle: maintained}
@@ -1332,8 +1333,19 @@ exclusions:
     reason: >-
       Test inputs whose exact text is what a test or a measuring tool reads, such as the
       GitHub math probe `devtools.check_github_math --probe` fetches: not documents.
-  - pattern: packing/devtools/templates/*.md
+  - pattern: packing/devtools/templates/*-article.md
     reason: >-
-      Manuscripts and templates for the paper, site and claim renderers:
-      Markdown with placeholders and stamping markers. The rendered papers and pages
-      and the generated claim documents are the published documents.
+      Manuscripts for the paper and site renderers: Markdown with placeholders and
+      stamping markers. The rendered papers and pages are the published documents.
+  - pattern: packing/devtools/templates/report-results.md
+    reason: >-
+      A fragment with a placeholder that `render_overview` inlines into the site's
+      results pages; the rendered pages are the published documents.
+  - pattern: packing/devtools/templates/proof_card.md
+    reason: >-
+      The claim renderer's template; the generated proof cards are the published
+      documents.
+  - pattern: packing/devtools/templates/*verifiable_claim.md
+    reason: >-
+      The claim renderer's two templates; the generated verifiable claims are the
+      published documents.
