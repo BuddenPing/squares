@@ -350,8 +350,11 @@ policy applies until there is one.
 7. **Method credit:** the owner directed on 11 October 2026 that the vendored code be
    properly credited, so its notice and the vendored README carry Evan Daniel’s credit.
    Until the owner says where else, the index, the drawings and a register result’s
-   `builds_on` carry it as [section 7](#7-credit) states; the atlas README and the
-   composites do not yet.
+   `builds_on` carry it as [section 7](#7-credit) states.
+   Since the regularized view became the default picture
+   ([section 12](#12-the-default-picture)), the composites carry it too, in a credit
+   paragraph for their regularized tiles, and so does the case page that draws one; the
+   atlas README names it in its account of the layer.
 
 8. **Retention of the solve:** kept.
    The solved points and contact structures go in a pinned packet or release asset
@@ -408,20 +411,18 @@ policy applies until there is one.
     Rows 6 and 9 are retired: no pairing, an unnamed turn or a move over $1/2$ is named
     in the admission’s reason and decides nothing.
     Rows 7 and 8 stand, so a per-square loss of contact still goes to review.
-    “Equal or better” is the choice rule of section 10, item 4, now an answer: a view
-    replaces the drawing when it is worse on no measure of the drawing and either better
-    on one or drawn at a smaller side.
-    The measures are seven: light, uneven and near-axis squares, angle classes and hues
-    (fewer is better), and the house and stage totals of shared sides (more is better);
-    classes and hues joined after a review of #559 found a view at 236 that tied the
-    other five and drew one more hue.
-    A view that improves no measure at the same side is not drawn, except where it
-    replaces a numerically checked witness with an exactly verified view at a side no
-    larger than $U$ (question 15). `devtools.regularize_select` applies the rule, and
-    the [regularization process](../guides/regularization-process.md) says how a pass
-    runs. The grid-slack generator’s straightening threshold is a per-run setting: a view
-    from a run at 1 or 5 degrees is admitted on the same terms as one from the default
-    half degree.
+    “Equal or better” is the choice rule of section 10, item 4, now an answer, and since
+    the owner’s further answer of the same day it is the improvement rule of
+    [section 11](#11-the-improvement-rule), which is stated there and nowhere else: a
+    view replaces the drawing only when it improves on it.
+    Of the rule’s seven measures, classes and hues joined after a review of #559 found a
+    view at 236 that tied the other five and drew one more hue; exactness counts as a
+    goal because an exactly verified view at a side no larger than $U$ replaces a
+    numerically checked witness (question 15). `devtools.regularize_select` applies the
+    rule, and the [regularization process](../guides/regularization-process.md) says how
+    a pass runs. The grid-slack generator’s straightening threshold is a per-run setting:
+    a view from a run at 1 or 5 degrees is admitted on the same terms as one from the
+    default half degree.
 
 15. **Exact verification of every packing:** *answered by the owner on 13 October 2026:*
     “Every packing, even after regularization, should be exactly verified.”
@@ -525,6 +526,72 @@ recorded where it is implemented, and reversing one is a change to that layer.
    Where a registered side is exactly the side of an earlier exact certificate, as it is
    of Evan Daniel’s (T-101) at 33 counts, that bound was already published, and the
    records cite the earlier certificate’s independent replay beside the batch’s.
+
+## 11. The Improvement Rule
+
+The owner, 13 October 2026: “tie is fine on exactness or regularity as long as it is
+making some improvement wrt our regularity or heuristic goals”, and “that should be
+codified in our regularization standards doc”.
+The rule below is that answer.
+It decides whether a view is drawn in place of today’s drawing (question 14), and
+whether a drawn view is a count’s default picture in place of its house drawing
+([section 12](#12-the-default-picture)).
+
+<!-- BEGIN RULE: improvement (devtools.improvement_rule) -->
+
+A view improves on a drawing when it is worse than the drawing on none of the goals and
+better on at least one.
+Ties on the other goals are fine, and a tie on every goal is no improvement.
+The goals are regularity, measured by the house renderer’s colouring as light, uneven
+and near-axis squares, distinct angle classes and hues, fewer being better, and by the
+house and stage totals of full shared sides, more being better; the side, where a
+smaller exact side is better and a larger one worse; and exactness, where an exactly
+verified view is better than a numerically checked witness.
+
+<!-- END RULE: improvement -->
+
+The marked text is the rule’s one statement.
+`devtools.improvement_rule` reads it from this file and decides it, and its readers take
+it from there: `devtools.regularize_select` prints it in the rule it reports, and
+`devtools.default_drawings` prints it with its check, which also fails when the
+statement stops naming a goal the code judges.
+Every view the layer draws is exactly verified, so exactness is never worse.
+A change to the rule is an owner decision recorded here, made to the statement and to
+the code together.
+
+## 12. The Default Picture
+
+**Owner decision, 13 October 2026.** Asked “why do we even have ‘house’ on the diagrams?
+are there any benefits other than the historic accuracy?
+I’d be inclined to make all diagrams just default to regularized ones”, the owner
+approved the plan “regularized drawing is the default where one exists; house kept as
+‘as published’ on case pages and the toggle; posters redrawn”, adding that “having
+original records seems good but it seems like regularization should be a strict
+improvement if we’ve done it correctly”.
+
+So a count’s default picture is its regularized view wherever the layer draws one that
+is valid and improves on the house drawing:
+
+1. both maintained exact routes accept it, as its index entry records;
+2. its exact side is at most $U$, or it is one of the views question 13 names above it;
+3. it improves on the house drawing under the rule of
+   [section 11](#11-the-improvement-rule), measured as the selection measures a view
+   against today’s drawing.
+
+Everywhere else the house drawing is the picture.
+That includes a drawn view that ties the house drawing on every goal, an exact house
+redrawn at its own side whose picture is the house’s to well under a pixel; the layer
+keeps such views, admitted before this rule, and draws none of them by default.
+
+Where the default is the view, the homepage and atlas tiles, the frontier survey’s
+thumbnail, both posters and the case page draw it, and the case page keeps the house
+drawing one click away as *as published*, with its source credit.
+The house witness stays the record’s witness, and the view changes no side, value, tier
+or credit (section 1). `devtools.default_drawings` writes each count’s default and its
+reason to `packing/atlas/known-best/default-drawings.json`; its check, in the records
+tier on every pull request, measures every view against its house drawing again, fails
+when the record or a default departs from the rule, and lists the counts that keep the
+house picture and why.
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
