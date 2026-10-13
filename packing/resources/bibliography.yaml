@@ -2039,7 +2039,13 @@ sources:
       mathematics, the engines, the certificates, the checkers, the reviews and the text
       were produced by AI systems under his direction and to his instructions: Codex
       (OpenAI) and Claude (Anthropic). They are named and are not authors", and "Within the
-      project no human has read the mathematics." No licence for reuse.
+      project no human has read the mathematics." No licence for reuse. He announced it on
+      X on 12 October 2026 at 14:52:55Z
+      (https://x.com/kleddamag/status/2109658579678761429): "A proof candidate for 17
+      squares: the 1998 packing cannot be beaten. s(17) = 4.67553009…", "Built with @OpenAI
+      Codex and @AnthropicAI Claude. Thanks to @ojoshe, @_Mira___Mira_, @guzhou0806 and
+      @ManassehA06, whose work this builds on."; the post is retained in the packet's
+      receipts/announcement/.
   - key: '[Fitzharding n17 Lean 2026]'
     authors: [Fitzharding]
     year: 2026
