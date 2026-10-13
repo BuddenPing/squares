@@ -445,9 +445,9 @@ policy applies until there is one.
     “Any new upper bounds should also be recorded as results.
     Pure regularization should not be considered a new result, but it is a credited part
     of the frontier record.”
-    A pure regularization, one that proves no new bound, redraws a registered packing
-    and is never a result: it changes no side, frontier value, evidence tier or credit,
-    and no register result is made for one.
+    A pure regularization, one whose exact side is not below $U$ and which so proves no
+    new bound, redraws a registered packing and is never a result: it changes no side,
+    frontier value, evidence tier or credit, and no register result is made for one.
     It is credited in `results.yaml`’s `regularized_drawings` and on the case record of
     every count the atlas draws regularized.
     The record’s generated `regularization` field says who regularized the drawing
@@ -478,15 +478,18 @@ policy applies until there is one.
     records tier holds every case record to the index, and the site’s case page prints
     its note. An exactly verified side below $U$ is always registered as a result however
     it was made (row 3, question 3), as `T-154` registered the exact views below the
-    bound and `T-155` the grid-slack view of $n = 290$ on 13 October 2026, at the
-    witness’s own side `2.4e-15` below $U$; that view draws no change, so the atlas
-    draws nothing new there.
-    It is a new upper bound unless an earlier certificate already stated that side
-    exactly, as Evan Daniel’s did at 33 of `T-154`’s counts.
-    `T-155`’s bound was not new: `T-154`’s certificate at $n = 291$ is at the same side,
-    and $s(290) \le s(291)$. The owner decided on 13 October 2026 to keep `T-155`, to
-    say that its bound follows from `T-154` by monotonicity, and to keep the grid-slack
-    view as the certificate of $n = 290$’s own packing at that side (jlevy/squares#587).
+    bound. It is a new upper bound only where no earlier certificate already stated that
+    side exactly and no larger count’s verified upper bound is at or below it, since
+    $s(n) \le s(m)$ for $m > n$. Otherwise the result says that its bound is not new and
+    names the result that already proves it: at the 33 of `T-154`’s counts where Evan
+    Daniel’s certificate stated the side first, the item names `T-101` as
+    `first_certified_in`, and `T-155`, which registered the grid-slack view of $n = 290$
+    on 13 October 2026 at the witness’s own side `2.4e-15` below $U$, says that its
+    bound follows by monotonicity from `T-154`’s certificate at $n = 291$, at the same
+    side. The owner decided on 13 October 2026 to keep `T-155`, to say so, and to keep
+    the grid-slack view as the certificate of $n = 290$’s own packing at that side
+    (jlevy/squares#587); that view draws no change, so the atlas draws nothing new
+    there.
 
 An answer, like any other change to this policy, is an owner decision recorded here with
 its date. It replaces the default, and the counts it bears on are re-reviewed.

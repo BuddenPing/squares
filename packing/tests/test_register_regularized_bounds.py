@@ -410,8 +410,9 @@ def test_the_second_batchs_record_names_its_result_and_its_generator() -> None:
     assert registered.GRID.dated in text
     assert registered.FIRST.dated not in text
     assert "the verified upper bound (T-155)" in text
-    # T-154 is named only where the record says its n = 291 certificate implied the bound.
-    assert text.count("T-154") == 2
+    # T-154 is named only where the record says its n = 291 certificate implied the bound:
+    # the dated paragraph, the section and the regularization note (review C1).
+    assert text.count("T-154") == 3
     assert "grid-slack regularizer" in text
     assert "the verified upper bound from 6 to 13 October 2026 (T-101)" in text
     assert f"]({registered.GRID.link})" in text

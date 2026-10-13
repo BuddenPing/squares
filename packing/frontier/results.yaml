@@ -18640,24 +18640,27 @@ results:
       catalogue's side is an irrational closed form, which the verified upper bound reaches
       only through an exact algebraic certificate of the packing at that side.
     notes: >-
-      Registered on 13 October 2026 under the owner's rule of that day, recorded as the
-      regularization policy's section 9, question 16: "Any new upper bounds should also be
-      recorded as results. Pure regularization should not be considered a new result, but
-      it is a credited part of the frontier record." The rule restates the owner's answer
-      to question 3 of 12 October 2026, "regularize and correct always", under which T-154
-      registered the first batch; this is the second, from the grid-slack runs of 13
-      October 2026.
+      Kept on the owner's decision of 13 October 2026 (jlevy/squares#587): this result
+      stays, says that its bound follows from T-154 by monotonicity and so is no new upper
+      bound, and keeps the grid-slack view as its own certificate of n = 290's packing at
+      that side. The regularization policy's section 9, question 16 registers an exactly
+      verified side below the verified upper bound as a result however it was made, and
+      calls it a new upper bound only where no larger count's verified upper bound is at or
+      below it; here T-154's at n = 291 is.
+
+      The owner's words of that day were "Any new upper bounds should also be recorded as
+      results. Pure regularization should not be considered a new result, but it is a
+      credited part of the frontier record", which restate the answer to question 3 of 12
+      October 2026, "regularize and correct always", under which T-154 registered the
+      first batch; this is the second, from the grid-slack runs of 13 October 2026.
 
       Its count is not among T-154's, but its bound was: T-154's certificate at n = 291
       is at exactly this side, and deleting square 139 from it, the square the n = 290
       witness lacks, leaves a packing of 290 that both exact routes accept, 41905 pair
       decisions each (review B of jlevy/squares#587, reproduced by the registering
       lane). The registration as first drafted compared the side with n = 290's own
-      ceiling only and missed this. The owner decided on 13 October 2026 to keep this
-      result, say that its bound follows from T-154 by monotonicity, and keep the
-      grid-slack view as its own certificate of n = 290's packing at that side; the
-      selection row records the next count's ceiling (implied_by), and the case record
-      says both.
+      ceiling only and missed this. The selection row records the next count's ceiling
+      (implied_by), and the case record says both.
 
       The grid-slack regularizer's run at 5 degrees on 13 October 2026, recorded in the
       regularized layer's index as grid-slack-deg5-1013-a, held the view at row 3 of the

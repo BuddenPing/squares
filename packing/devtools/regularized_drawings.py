@@ -50,7 +50,14 @@ is new at 26 counts, and at the other 33 it is the side of Evan Daniel's certifi
 (T-101), which the record had carried rounded up, so there the note says that the side
 is registered in T-154, that his certificate first certified it, naming T-101, and that
 it proves no new bound. `first_certified_problems` holds the field to the case records,
-whose verified upper bound rests on both results exactly where an item names one.
+whose verified upper bound rests on both results exactly where an item names one. Nor is
+the bound new where a larger count's verified upper bound already proved it when the
+side was registered, which the result's registration receipt records at the count
+(`implied_by`, read by `implied_bounds`): T-155's side at n = 290 is that of T-154's
+certificate at n = 291, and `s(290) ≤ s(291)`, so its note says that the side is
+registered in T-155, that the certificate registered at n = 291 (T-154) already proved
+the bound by monotonicity, and that it proves no new bound (the policy's section 9,
+question 16).
 
 **Whose regularization, and whether it was modified.** The owner asked on 13 October 2026
 that the frontier records say which counts have been regularized and whether the
@@ -917,14 +924,28 @@ def credit_sentence(found: Mapping[str, Any], *, also: bool = False) -> str:
     return head + "."
 
 
-def registered_words(found: Mapping[str, Any], certificates: Mapping[str, str]) -> str:
+def registered_words(
+    found: Mapping[str, Any],
+    certificates: Mapping[str, str],
+    implied: Mapping[str, Any] | None = None,
+) -> str:
     """What a note says of a registered regularization's exact side: that its result
     registers it as the upper bound it proves, or, where an earlier result's certificate
     first stated that side (`FIRST_CERTIFIED`), that its result registers it and that
-    certificate first certified it, naming that result, so it proves no new bound.
-    `certificates` gives whose certificate each result is (`certificate_words`)."""
+    certificate first certified it, naming that result, so it proves no new bound; or,
+    where a larger count's verified upper bound already proved the bound when the side
+    was registered (`implied`, from `implied_bounds`), that its result registers it and
+    that the certificate registered at that count proved it by monotonicity, naming its
+    results, so it proves no new bound. `certificates` gives whose certificate each
+    result is (`certificate_words`)."""
     registered_in = found["registered_in"]
     first = found.get(FIRST_CERTIFIED)
+    if not first and implied:
+        return (
+            f"its exact side is registered in {registered_in}, and the certificate "
+            f"registered at n = {implied['n']} ({', '.join(implied['results'])}) already "
+            "proved the bound by monotonicity, so it proves no new bound"
+        )
     if not first:
         return f"its exact side is registered as {registered_in}, the upper bound it proves"
     whose = certificates.get(str(first)) or f"{first}'s certificate"
@@ -955,17 +976,48 @@ def certificate_words(rid: str, register: Register) -> str:
     return f"{who}'s certificate"
 
 
+def implied_bounds(
+    results: Sequence[Mapping[str, Any]], repo: Path = REPO
+) -> dict[tuple[str, int], Mapping[str, Any]]:
+    """The registered regularizations whose bound a larger count's verified upper bound
+    already proved when they were registered, by (result, count), each with that ceiling
+    as the result's registration receipt records it at the count (`implied_by`, which
+    `register_regularized_bounds.implied_by` writes): T-155's at n = 290, T-154's
+    certificate at n = 291. Such a result says that its bound follows by monotonicity
+    (the policy's section 9, question 16), and so does the case note
+    (`registered_words`)."""
+    found: dict[tuple[str, int], Mapping[str, Any]] = {}
+    for result in results:
+        counts = {
+            int(record["n"])
+            for record in result.get("regularizations") or []
+            if record["by"] == PROJECT_REGULARIZER
+        }
+        if not counts:
+            continue
+        rows, _runs = registration_receipt(result, repo)
+        for n in sorted(counts & set(rows)):
+            if rows[n].get("implied_by"):
+                found[(str(result["id"]), n)] = rows[n]["implied_by"]
+    return found
+
+
 def case_note(
-    items: Sequence[Mapping[str, Any]], certificates: Mapping[str, str] | None = None
+    items: Sequence[Mapping[str, Any]],
+    certificates: Mapping[str, str] | None = None,
+    implied: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> str:
     """The record's one paragraph: who regularized the drawing, with which modifications,
     and either that it is a pure regularization, proving no new bound, so no result, or
     that its exact side is registered as the result that proves it, or where an earlier
     certificate first stated that side, that it is registered there and whose certificate
-    first certified it (`registered_words`); then this project's registered
-    regularization of the count where the layer does not draw it, naming the result; then
-    who regularized the house, where its source did."""
+    first certified it, or where a larger count's ceiling already proved the bound, that
+    it is registered there and which certificate proved it by monotonicity
+    (`registered_words`, `implied` by the registering result's id); then this project's
+    registered regularization of the count where the layer does not draw it, naming the
+    result; then who regularized the house, where its source did."""
     certificates = certificates or {}
+    implied = implied or {}
     sentences: list[str] = []
     for found in items:
         if found["by"] != PROJECT_REGULARIZER or "view" not in found:
@@ -973,7 +1025,9 @@ def case_note(
         sentences.append(credit_sentence(found))
         where = SIDE_WORDS[str(found["side"])]
         if found.get("registered_in"):
-            words = registered_words(found, certificates)
+            words = registered_words(
+                found, certificates, implied.get(str(found["registered_in"]))
+            )
             sentences.append(
                 f"A drawing of {found['of']}'s packing {where}. {words[:1].upper()}"
                 f"{words[1:]}; the drawing itself is no further result."
@@ -991,9 +1045,10 @@ def case_note(
         if found["by"] != PROJECT_REGULARIZER or "view" in found:
             continue
         sentences.append(credit_sentence(found, also=bool(sentences)))
+        words = registered_words(found, certificates, implied.get(str(found["registered_in"])))
         sentences.append(
             f"A regularization of {found['of']}'s packing {SIDE_WORDS[str(found['side'])]}, "
-            f"not drawn here; {registered_words(found, certificates)}."
+            f"not drawn here; {words}."
         )
     for found in items:
         if found["by"] == PROJECT_REGULARIZER:
@@ -1044,12 +1099,14 @@ def case_fields(
             if found.get(FIRST_CERTIFIED)
         }
     }
+    implied = implied_bounds(register.results, repo)
     fields: dict[int, dict[str, Any]] = {}
     for n in sorted(set(by_source) | set(projects) | set(registered)):
         items = [
             found for found in (by_source.get(n), projects.get(n), registered.get(n)) if found
         ]
-        fields[n] = {"note": case_note(items, certificates), "items": items}
+        here = {rid: ceiling for (rid, count), ceiling in implied.items() if count == n}
+        fields[n] = {"note": case_note(items, certificates, here), "items": items}
     return fields
 
 

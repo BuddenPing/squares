@@ -787,3 +787,57 @@ def test_t154_names_daniels_earlier_certificate_where_its_side_is_his() -> None:
     ]  # fmt: skip
     for n, item in items.items():
         assert ("modifications_unrecorded" in item) == (("T-154", n) not in solves), n
+
+
+def test_a_side_a_larger_counts_ceiling_already_proved_is_no_new_bound() -> None:
+    """Where a larger count's verified upper bound already proved the bound when the side
+    was registered, as T-154's certificate at n = 291 proved T-155's at n = 290, the
+    registering result's receipt records it (`implied_by`), and the note says the side is
+    registered in the result and that the certificate registered at that count already
+    proved the bound by monotonicity, so it proves no new bound, rather than calling it the
+    upper bound it proves (PR #587, review C1)."""
+    record = {
+        "n": 5,
+        "of": "T-101",
+        "by": "project",
+        "method": EVAND_METHOD,
+        "side": "same",
+        "identity": {"basis": "measured"},
+    }
+    results = [{"id": "T-155", "kind": "upper-bound", "regularizations": [record]}]
+    undrawn = drawings.registered_case_items(results, GENERATORS)[5]
+    implied = {"n": 6, "side": "3", "evidence": ["E-x"], "results": ["T-154"]}
+    note = drawings.case_note([undrawn], {}, {"T-155": implied})
+    assert note.endswith(
+        "not drawn here; its exact side is registered in T-155, and the certificate "
+        "registered at n = 6 (T-154) already proved the bound by monotonicity, so it "
+        "proves no new bound."
+    )
+    assert "the upper bound it proves" not in note
+    # Another result's ceiling says nothing of this one's.
+    assert drawings.case_note([undrawn], {}, {"T-999": implied}).endswith(
+        "its exact side is registered as T-155, the upper bound it proves."
+    )
+
+
+def test_t155s_note_says_its_bound_follows_from_t154_by_monotonicity() -> None:
+    """On the record: T-155's receipt records T-154's certificate at n = 291 as the ceiling
+    that already proved its bound, and it is the only registered regularization whose
+    receipt records one, so n = 290's note says so and no note calls T-155's side the
+    upper bound it proves (PR #587, review C1)."""
+    register = drawings.load_register()
+    implied = drawings.implied_bounds(register.results)
+    assert set(implied) == {("T-155", 290)}
+    assert implied["T-155", 290]["n"] == 291
+    assert implied["T-155", 290]["results"] == ["T-154"]
+    front = safe_load(
+        (drawings.REPO / "packing/frontier/n-290.md")
+        .read_text(encoding="utf-8")
+        .split("---\n")[1]
+    )
+    note = " ".join(front["packing"][drawings.CASE_FIELD]["note"].split())
+    assert (
+        "its exact side is registered in T-155, and the certificate registered at n = 291 "
+        "(T-154) already proved the bound by monotonicity, so it proves no new bound."
+    ) in note
+    assert "the upper bound it proves" not in note

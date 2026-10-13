@@ -33,21 +33,24 @@ them; at `n = 29` it lies 5.4e-20 below the interval certificate's endpoint (T-0
 packings are the catalogue's; only the ceiling's exact identity moves, by 5.4e-20 to
 9.9e-15 at each count.
 
-**The second batch.** The owner's rule of 13 October 2026 (the policy's section 9,
-question 16) records any new upper bound as a result, however it was made. A view of
+**The second batch.** Under the policy's section 9, question 16 (the owner, 13 October
+2026), an exactly verified side below `U` is registered as a result however it was made.
+It is a new upper bound only where no larger count's verified upper bound is at or below
+it; otherwise the result says that its bound follows by monotonicity and names the
+result that proves it (**A bound already implied**, below). A view of
 `devtools.regularize_grid_slack`, this project's port of Evan Daniel's coincidence
-placement, decided at row 3 is registered as its own batch, T-155 (`GRID`): `select
---batch grid-slack` reads the named counts' reports in the named runs, decides each view
-by the policy's table against the case record's bound (`regularize_grid_slack.decided`),
-and takes at each count the row-3 view with the least exact side, the first run named
-among equals. A view is refused unless it was derived from the checkout's witness and its
-side is that witness's own `s_W`, which every row-3 grid-slack view's is: the generator's
-other side is the bound itself. The row records `s_W` as read from the witness, and
-`--check` reads the witness again. Its receipts and view lie under
-`cases/regularized_bounds/grid-slack-2026-10-13/`, laid out as the first batch's are,
-and the case-record layer below writes each count in the words of its batch's generator
-kind (`Batch.kind`), so a later grid-slack batch is written as this one is. The batches
-are disjoint.
+placement, decided at row 3 is registered so, as a batch of its own, T-155 the first
+(`GRID`): `select --batch grid-slack` reads the named counts' reports in the named runs,
+decides each view by the policy's table against the case record's bound
+(`regularize_grid_slack.decided`), and takes at each count the row-3 view with the least
+exact side, the first run named among equals. A view is refused unless it was derived
+from the checkout's witness and its side is that witness's own `s_W`, which every row-3
+grid-slack view's is: the generator's other side is the bound itself. The row records
+`s_W` as read from the witness, and `--check` reads the witness again. Its receipts and
+view lie under `cases/regularized_bounds/grid-slack-2026-10-13/`, laid out as the first
+batch's are, and the case-record layer below writes each count in the words of its
+batch's generator kind (`Batch.kind`), so a later grid-slack batch is written as this
+one is. The batches are disjoint.
 
 **A bound already implied.** `s(n) ≤ s(n + 1)`, since deleting a square from a packing
 leaves a packing in the same square, so a ceiling at the next count at or below a view's

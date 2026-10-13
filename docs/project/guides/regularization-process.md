@@ -144,10 +144,10 @@ These redraw the views, regenerate `results.yaml`’s `regularized_drawings` and
 record’s `regularization` note, and regenerate `frontier/RESULTS.md`. Update the layer’s
 counts in the atlas README’s regularized-views section by hand.
 
-The note says who regularized the drawing and that a pure regularization, one that
-proves no new bound, is not a result (the policy’s section 9, question 16): by the
-Squares Project, with the generator’s credit line, the side relation, the registered
-result that holds the packing and the view.
+The note says who regularized the drawing and that a pure regularization, one whose side
+is not below $U$ and which so proves no new bound, is not a result (the policy’s section
+9, question 16): by the Squares Project, with the generator’s credit line, the side
+relation, the registered result that holds the packing and the view.
 Where the drawn regularization’s exact side is itself registered as an upper bound, the
 note names that result instead; where a result registers this project’s regularization
 of a count the layer does not draw by that method, the note credits it and names the
@@ -232,9 +232,12 @@ section 5 describes and which does not exist yet.
 
 ## Register Candidates
 
-A view whose side is below $U$ proves a new upper bound (row 3), unless an earlier
-certificate already stated that side exactly and the record carried it rounded up.
-The selection lists it under register candidates and never admits it.
+A view whose side is below $U$ is registered as a result (row 3), however it was made.
+Its bound is new only where no earlier certificate already stated that side exactly, as
+one had at the 33 counts where the record carried Evan Daniel’s side rounded up, and no
+larger count’s verified upper bound is at or below it; otherwise the result says which
+result already proves the bound (the policy’s section 9, question 16). The selection
+lists it under register candidates and never admits it.
 Register such views as one batch result through the
 [import runbook’s](../../../packing/campaign/result-import.md#stage-3-record) record and
 validate stages, with a `regularizations` item for each count, as `T-154` registered 59

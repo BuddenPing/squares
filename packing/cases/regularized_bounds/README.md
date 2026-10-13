@@ -6,12 +6,14 @@ registered as results under the
 [regularization policy](../../../docs/project/policies/regularization-policy.md) (row 3,
 “register first”, and the owner’s answer to its question 3 of 12 October 2026,
 “regularize and correct always”). Under `grid-slack-2026-10-13/` it holds the second
-batch, T-155, the grid-slack view of $n = 290$ ([below](#the-grid-slack-batch)),
-registered under the owner’s rule of 13 October 2026 that any new upper bound is
-recorded as a result.
-Its bound was not new: T-154’s certificate at $n = 291$ is at the same side and already
-implied it by monotonicity, and T-155 is kept as the certificate of $n = 290$’s own
-packing at that side.
+batch, T-155, the grid-slack view of $n = 290$ ([below](#the-grid-slack-batch)). Under
+the policy’s question 16, as the owner answered it on 13 October 2026, a side below the
+verified upper bound is registered as a result however it was made, and is a new upper
+bound only where no earlier certificate stated that side exactly, as Evan Daniel’s had
+at 33 of T-154’s counts, and no larger count’s verified upper bound is at or below it.
+T-155’s bound was not new: T-154’s certificate at $n = 291$ is at the same side and
+already implied it by monotonicity, and T-155 is kept as the certificate of $n = 290$’s
+own packing at that side.
 [`devtools.register_regularized_bounds`](../../devtools/register_regularized_bounds.py)
 wrote everything here and holds it to the case records.
 
@@ -203,11 +205,15 @@ registered; the regularized layer decides the drawing on its own.
 
 The owner wrote on 13 October 2026: “Any new upper bounds should also be recorded as
 results. Pure regularization should not be considered a new result, but it is a credited
-part of the frontier record” (the policy’s section 9, question 16). A view of
-[`devtools.regularize_grid_slack`](../../devtools/regularize_grid_slack.py), this
-project’s port of Evan Daniel’s coincidence placement, is such a bound where its side
-lies below the case’s verified upper bound $U$, and is registered as T-155, a batch of
-its own.
+part of the frontier record” (the policy’s section 9, question 16). The policy reads it
+so: a side below the case’s verified upper bound $U$ is registered as a result however
+it was made, and it is a new upper bound only where no larger count’s verified upper
+bound is at or below it; otherwise the result says that its bound follows by
+monotonicity and names the result that proves it.
+A view of [`devtools.regularize_grid_slack`](../../devtools/regularize_grid_slack.py),
+this project’s port of Evan Daniel’s coincidence placement, whose side lies below $U$ is
+registered so, as a batch of its own; T-155 registered the first, and its bound was not
+new (below).
 
 **The view.** The grid-slack run of 13 October 2026 at 5 degrees, recorded in the
 regularized layer’s index as `grid-slack-deg5-1013-a`, made a view of $n = 290$ at the
