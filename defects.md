@@ -2,7 +2,7 @@
 
 # Defect log
 
-520 defects recorded across the packing toolchain.
+521 defects recorded across the packing toolchain.
 One line each here; the narrative lives in the artifact named by every row.
 Source of truth is [`defects.yaml`](packing/defects.yaml).
 
@@ -20,12 +20,12 @@ Source of truth is [`defects.yaml`](packing/defects.yaml).
 | `control_cell` | 29 | a cell of the sweep whose answer is known in advance |
 | `review` | 306 | a human or agent reading the work against a checklist |
 | `anomaly` | 16 | a result that made no sense, chased down |
-| `inspection` | 66 | reading the code or the design with intent |
+| `inspection` | 67 | reading the code or the design with intent |
 | `drift_check` | 17 | a generated view disagreeing with its source |
 | `design` | 1 | caught while designing, before it reached data |
 | `gate` | 82 | the automated test suite |
 
-The line worth reading twice: **the automated gate caught 82 of 520, and none of the 109 soundness defects.** Gates confirm what you already thought to check. The rest were found by a device built to be *surprised* — a control cell, a pre-registered rule, a generated view contradicting itself — or by someone reading carefully.
+The line worth reading twice: **the automated gate caught 82 of 521, and none of the 109 soundness defects.** Gates confirm what you already thought to check. The rest were found by a device built to be *surprised* — a control cell, a pre-registered rule, a generated view contradicting itself — or by someone reading carefully.
 
 ## Where they arise
 
@@ -35,7 +35,7 @@ The line worth reading twice: **the automated gate caught 82 of 520, and none of
 | quench | 23 |
 | verifier | 15 |
 | record | 161 |
-| tooling | 194 |
+| tooling | 195 |
 | docs | 116 |
 
 ## By kind
@@ -44,7 +44,7 @@ The line worth reading twice: **the automated gate caught 82 of 520, and none of
 | --- | ---: |
 | soundness | 109 |
 | validity | 128 |
-| bookkeeping | 194 |
+| bookkeeping | 195 |
 | robustness | 70 |
 | performance | 19 |
 
@@ -253,7 +253,7 @@ This is the actionable list.
 | D-490 | contained | medium | Two renders of the explainer disagreed by two bytes and the check could not say where | `think-ptit` |
 | D-502 | outstanding | high | Costly partial pre-push selections kept pytest serial until the command timed out | `think-1i1x` |
 | D-509 | contained | medium | One math glyph's baseline is decided per page load, so drawing each load twice does not contain it | `think-6dle` |
-| D-520 | outstanding | medium | Numerical witness receipts record tolerance-blurred values as the minimum clearance and pair gap | `think-jtot` |
+| D-521 | outstanding | medium | Numerical witness receipts record tolerance-blurred values as the minimum clearance and pair gap | `think-jtot` |
 
 ## Every defect
 
@@ -778,7 +778,8 @@ This is the actionable list.
 | [D-517](packing/devtools/check_nagamochi_bounds.py) | 2026-10-04 | tooling | soundness | flattering | `review` | low | fixed | Borrowed lower bounds were rounded to nearest, and the checker's two-sided tolerance passed a floor rounded up |
 | [D-518](docs/project/reviews/review-2026-10-02-nagamochi-lemma1-karakus.md) | 2026-10-04 | tooling | validity | flattering | `review` | medium | fixed | The Lemma 1 checker's Karakuş ordering tested only k^2 <= N, and the evidence register called it an exact check |
 | [D-519](docs/project/postmortems/postmortem-2026-10-05-orphaned-catalogue-intake.md) | 2026-10-05 | record | bookkeeping | conservative | `inspection` | medium | fixed | Three Kingbird counts held as pending catalogue intake named no owning bead, and the record trailed the catalogue for five days |
-| [D-520](docs/project/reviews/review-2026-10-13-verification-gaps.md) | 2026-10-13 | verifier | soundness | flattering | `review` | medium | outstanding | Numerical witness receipts record tolerance-blurred values as the minimum clearance and pair gap |
+| [D-520](packing/tests/test_gap_ranking.py) | 2026-10-12 | tooling | bookkeeping | conservative | `inspection` | medium | fixed | The open-gap ranking filtered on the reported status, so a case reported closed but open in the verified lane left the table |
+| [D-521](docs/project/reviews/review-2026-10-13-verification-gaps.md) | 2026-10-13 | verifier | soundness | flattering | `review` | medium | outstanding | Numerical witness receipts record tolerance-blurred values as the minimum clearance and pair gap |
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.

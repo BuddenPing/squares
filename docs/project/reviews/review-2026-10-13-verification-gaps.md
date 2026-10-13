@@ -154,7 +154,7 @@ tolerance-aware sign the check uses, so a value replaces the running minimum onl
 it is lower by more than the tolerance.
 The recorded figures are therefore some value within `1e-8` (or `1e-12`) of the true
 minimum, not the minimum itself.
-This review logs that as [D-520](../../../defects.md), a `soundness` defect in the
+This review logs that as [D-521](../../../defects.md), a `soundness` defect in the
 `flattering` direction, outstanding under `think-jtot`. At `n = 10` the receipt records
 0 for both, while the exact reading below finds four overlaps of `6.9e-30`. Six receipts
 record a negative figure:
@@ -370,7 +370,7 @@ tolerance-blurred receipts and full-precision infeasibility (2), and the totals.
   open), `think-tow1` (slackened rational promotion; P1, open) and `think-omqv`
   (register exact packings at the printed sides; carried out as `T-154` on the stack).
 - `packing/defects.yaml` recorded no defect for any of these gaps.
-  This review adds [D-520](../../../defects.md) for the receipts’ minima.
+  This review adds [D-521](../../../defects.md) for the receipts’ minima.
 
 ## Filling the Gaps
 
@@ -412,7 +412,7 @@ In order of what it buys, each with the bead that tracks it:
      closed form names, which needs the number-field views the stack defers
      (`think-yk2h`).
 
-4. **Fix the receipts** (Gap 2 and D-520; `think-jtot`, and `think-8ucp` for the full
+4. **Fix the receipts** (Gap 2 and D-521; `think-jtot`, and `think-8ucp` for the full
    exact reading). Make `_margin_summary` report true minima at the working precision,
    regenerate the 92 receipts, and record each witness’s full-precision exact-reading
    outcome beside its numerical one.
