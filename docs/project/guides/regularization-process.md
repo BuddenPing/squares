@@ -154,7 +154,8 @@ ran unmodified (the policy’s section 7): the owner asked on 13 October 2026 th
 noted. They are read from the view’s index entry, so the retry rungs must be there.
 `layer` records them from a run’s reports; for a view admitted without them, run the
 counts again and record them from the new run, which writes only where its view is the
-drawn view byte for byte:
+drawn view byte for byte and the entry records no rungs or retry yet, names the new run
+as the entry’s `run.rungs_from`, and adds its receipt’s block to the index’s `runs`:
 
 ```bash
 python -m devtools.regularize_evand rungs --run-dir $RUNS/evand --repo-root ..

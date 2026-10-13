@@ -286,7 +286,8 @@ from the view’s index entry alone: the rungs from `run.rungs`, or before the r
 ladder from `run.retried_with`, and the patches from `method`. A view admitted after the
 ladder and before `run.rungs` existed has its rungs recorded from its run’s reports by
 `python -m devtools.regularize_evand rungs`, which writes them only where a report
-reproduces the drawn view byte for byte.
+reproduces the drawn view byte for byte, never over rungs or a retry already recorded,
+and names the run that supplied them as `run.rungs_from`.
 
 ## 8. Gates
 

@@ -755,7 +755,8 @@ def test_a_ladder_report_admits_its_rungs_and_records_them_only_for_its_own_view
 ) -> None:
     """Since the retry ladder a report keeps its solve's rungs, not `retried_with`, so
     admission copies them; `rungs` records them for a view admitted without them, from a
-    report whose admitted view is the drawn view byte for byte, and from no other."""
+    report whose admitted view is the drawn view byte for byte, and from no other, names
+    the run that supplied them, and never writes over rungs or a retry already recorded."""
     monkeypatch.setenv("PACK_JOBS", "1")
     root, layout = scratch_tree(tmp_path)
     run_dir = a_run(root, layout, tmp_path / "full")
@@ -771,26 +772,70 @@ def test_a_ladder_report_admits_its_rungs_and_records_them_only_for_its_own_view
         "rungs": ["force-kkt"],
     }
 
-    # An entry admitted before the field gains it from its own run's report.
-    index = json.loads(layout.index.read_text())
-    del index["entries"][0]["run"]["rungs"]
-    layout.index.write_text(axis.index_text(index), encoding="utf-8")
+    def admitted_without(*fields: str) -> None:
+        index = json.loads(layout.index.read_text())
+        for field in fields:
+            index["entries"][0]["run"].pop(field, None)
+        layout.index.write_text(axis.index_text(index), encoding="utf-8")
+
+    # An entry admitted before the field gains it from its own run's report, which it
+    # names as the run that supplied them.
+    admitted_without("rungs")
     assert drive.record_rungs([run_dir], root)["recorded"] == [4]
     (entry,) = json.loads(layout.index.read_text())["entries"]
     assert entry["run"]["rungs"] == ["force-kkt"]
+    assert entry["run"]["rungs_from"] == "evand-regularize-full"
+    assert axis.check_atlas(layout) == []
+
+    # Rungs already recorded, or a retry recorded before the ladder, are never written
+    # over, whatever a later report says.
+    report["solve"]["rungs"] = []
+    path.write_text(json.dumps(report), encoding="utf-8")
+    assert drive.record_rungs([run_dir], root)["already_recorded"] == [4]
+    (entry,) = json.loads(layout.index.read_text())["entries"]
+    assert entry["run"]["rungs"] == ["force-kkt"]
+    admitted_without("rungs", "rungs_from")
+    index = json.loads(layout.index.read_text())
+    index["entries"][0]["run"]["retried_with"] = ["--dps", "100"]
+    layout.index.write_text(axis.index_text(index), encoding="utf-8")
+    assert drive.record_rungs([run_dir], root)["already_recorded"] == [4]
+    assert "rungs" not in json.loads(layout.index.read_text())["entries"][0]["run"]
+    admitted_without("retried_with")
+
+    # A fresh run of the count that makes the very view drawn supplies them, and enters
+    # the index's runs so that `rungs_from` names a run it records.
+    again = tmp_path / "again"
+    again.mkdir()
+    (again / "receipt.json").write_bytes((run_dir / "receipt.json").read_bytes())
+    for source in run_dir.glob("n-*/*"):
+        target = again / source.parent.name / source.name
+        target.parent.mkdir(exist_ok=True)
+        target.write_bytes(source.read_bytes())
+    assert drive.record_rungs([again], root)["recorded"] == [4]
+    index = json.loads(layout.index.read_text())
+    assert index["entries"][0]["run"] == {
+        "id": "evand-regularize-full",
+        "output": "same",
+        "rungs": [],
+        "rungs_from": "evand-regularize-again",
+    }
+    assert [run["id"] for run in index["runs"]] == [
+        "evand-regularize-full",
+        "evand-regularize-again",
+    ]
     assert axis.check_atlas(layout) == []
 
     # A report whose view is not the drawn one, here decided for another reason, and a
     # report from before the ladder, which kept no rungs, record nothing.
+    admitted_without("rungs", "rungs_from")
     report["decision"] = {**report["decision"], "reason": "another reason"}
-    report["solve"]["rungs"] = []
     path.write_text(json.dumps(report), encoding="utf-8")
     assert drive.record_rungs([run_dir], root)["differs"] == [4]
     del report["solve"]["rungs"]
     path.write_text(json.dumps(report), encoding="utf-8")
     assert drive.record_rungs([run_dir], root)["not_drawn"] == [4]
     (entry,) = json.loads(layout.index.read_text())["entries"]
-    assert entry["run"]["rungs"] == ["force-kkt"]
+    assert "rungs" not in entry["run"]
 
 
 def test_only_an_admitted_grid_view_is_admitted() -> None:
