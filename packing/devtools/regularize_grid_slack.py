@@ -1488,9 +1488,13 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
     """One count's grid-slack view, admitted by the decision table's row 10, in the
     layer's terms (`devtools.regularize_evand.admit_views` writes it).
 
-    The run read the known-best witness of the checkout it ran in, which its report
-    names by path; the layer records the digest of the witness this checkout holds, so
-    run and admit from one revision, and the layer's check names a later change.
+    The run read the known-best witness of the checkout it ran in. A report that records
+    that witness's digest (`source.witness_sha256`) binds the view to it: admission
+    refuses a checkout whose witness differs, since the identity, shades and contacts the
+    report carries were measured on the run's (#548 review B4). A report from before the
+    digest was recorded is admitted against this checkout's witness, as before, and the
+    entry says so (`measured.source_digest_by`), so run and admit such a run from one
+    revision.
     """
     report = json.loads((directory / "report.json").read_text(encoding="utf-8"))
     n = int(report["n"])
@@ -1498,6 +1502,14 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
         raise GridSlackError(f"n={n}: a view of {report.get('generator')}, not {GENERATOR}")
     path = KNOWN_BEST / f"n-{n:03d}.yaml"
     data = path.read_bytes()
+    digest = hashlib.sha256(data).hexdigest()
+    ran_on = report.get("source")
+    measured_digest = ran_on.get("witness_sha256") if isinstance(ran_on, Mapping) else None
+    if measured_digest is not None and measured_digest != digest:
+        raise GridSlackError(
+            f"n={n}: the run measured witness {measured_digest}, and this checkout holds "
+            f"{digest}: run the count again on this checkout's witness"
+        )
     witness = load_yaml(data.decode("utf-8"))["witness"]
     decision = decided(report, witness)
     if decision.decision != "admit":
@@ -1543,7 +1555,7 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
             "witness": relative_source(n),
             "id": str(witness["id"]),
             "scalar_kind": str(witness["scalar"]["kind"]),
-            "sha256": hashlib.sha256(data).hexdigest(),
+            "sha256": digest,
         },
         side={
             "reported": str(witness["side"]),
@@ -1580,10 +1592,18 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
             + len(current.get("regressions") or []),
             "level": None,
             "groups": [],
+            **({} if measured_digest is not None else {"source_digest_by": UNRECORDED_DIGEST}),
         },
         regularization=record,
         house_after=list(shaded["house"]["after"]),
     )
+
+
+UNRECORDED_DIGEST = (
+    "this checkout's witness at admission: the run's report records no digest of the "
+    "witness it measured"
+)
+"""Where an entry's `source.sha256` came from when the grid run predates recording it."""
 
 
 def relative_source(n: int) -> str:

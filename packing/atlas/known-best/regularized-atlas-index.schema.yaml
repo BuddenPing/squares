@@ -298,6 +298,12 @@ $defs:
           regressions: {type: integer, minimum: 0}
           level: {type: [integer, 'null']}
           groups: {type: array, items: {type: integer}}
+          source_digest_by:
+            description: >-
+              Where `source.sha256` came from when the run's report recorded no digest of
+              the witness it measured: the admitting checkout's witness.
+            type: string
+            minLength: 1
       regularization: {$ref: '#/$defs/regularization'}
       reference: {$ref: '#/$defs/axis_record'}
   histograms:

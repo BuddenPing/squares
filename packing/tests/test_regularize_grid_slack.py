@@ -13,6 +13,8 @@ on to the next way rather than refusing the count.
 
 from __future__ import annotations
 
+import hashlib
+import json
 from fractions import Fraction
 from pathlib import Path
 from typing import Any
@@ -23,7 +25,7 @@ from devtools import census_drawing_regularity as census
 from devtools import regularize_axis_components as axis
 from devtools import regularize_grid_slack as slack
 from devtools import render_regularized_atlas as render
-from devtools.regularize_evand import view_geometry
+from devtools.regularize_evand import Decision, view_geometry
 from sqpack.yamlio import load_yaml
 
 HALF = Fraction(1, 2)
@@ -316,3 +318,58 @@ def test_the_layer_contract_names_this_version() -> None:
     assert axis.METHOD_MARKS[slack.GENERATOR] in slack.METHOD
     assert slack.GENERATOR in render.MADE_BY
     assert slack.GENERATOR in schema["properties"]["generators"]["properties"]
+
+
+def test_admission_binds_the_view_to_the_witness_the_run_measured(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """#548 review B4: a report that records the digest of the witness it measured is
+    admitted only on that witness; one from before the digest was recorded is admitted on
+    this checkout's witness, and its entry says so."""
+    n = 241
+    index = json.loads(axis.ATLAS.index.read_text(encoding="utf-8"))
+    (entry,) = (record for record in index["entries"] if record["n"] == n)
+    assert entry["generator"] in axis.GRID_GENERATORS
+    directory = tmp_path / f"n-{n:03d}"
+    directory.mkdir()
+    (directory / "view.yaml.gz").write_bytes((axis.REPO / entry["view"]["path"]).read_bytes())
+    contacts = entry["measured"]["contacts"]
+    report: dict[str, Any] = {
+        "n": n,
+        "generator": slack.GENERATOR,
+        "source": f"packing/witnesses/known-best/n-{n:03d}.yaml",
+        "attempts": [
+            {
+                "exact": {
+                    "verdicts": {
+                        "exact_verify": {"passed": True},
+                        "independent": {"passed": True},
+                    }
+                }
+            }
+        ],
+        "measured": {
+            "identity": {**entry["regularization"]["identity"], "symmetry": 0},
+            "shades": {
+                **{rule: dict(contacts[rule]) for rule in ("house", "stage")},
+                "regressions": [],
+                "against_current": {"regressions": []},
+            },
+        },
+    }
+    admit = Decision(10, "admit", None, None, "every admission condition holds")
+    monkeypatch.setattr(slack, "decided", lambda _report, _witness: admit)
+
+    def admitted(source: Any) -> Any:
+        (directory / "report.json").write_text(json.dumps({**report, "source": source}))
+        return slack.admitted(directory, "grid-slack-fixture")
+
+    held = hashlib.sha256((axis.REPO / entry["source"]["witness"]).read_bytes()).hexdigest()
+    older = admitted(report["source"])
+    assert older.source["sha256"] == held
+    assert older.measured["source_digest_by"] == slack.UNRECORDED_DIGEST
+    bound = admitted({"witness": report["source"], "witness_sha256": held})
+    assert bound.source["sha256"] == held
+    assert "source_digest_by" not in bound.measured
+    with pytest.raises(slack.GridSlackError, match="run the count again"):
+        admitted({"witness": report["source"], "witness_sha256": "0" * 64})
