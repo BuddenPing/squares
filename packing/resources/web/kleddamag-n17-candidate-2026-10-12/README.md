@@ -204,6 +204,18 @@ receipts, each reading the edition as data and run with `-I` from outside it:
 `derive_facts.py` (the comparison and the facts, Python 3.14 with this repository’s
 `devtools`), and `price_recomputation.py` (the prices).
 
+[review-2/programs/](review-2/programs/) holds the seventeen programs the
+[second adversarial review](../../../../docs/project/reviews/review-2026-10-13-overbeck-n17-candidate-second.md)
+wrote and ran on 13 October 2026, each reading the edition’s files as data from a
+checkout of the pin. Among them are `geom.py` (the exact-root layout and its Krawczyk
+boxes), `identities.py` (the 52 base-gap identities in the ideal of `F` and `G`),
+`audit.py` (the 152 separating options), `rows.py` with `check_rows.py` (the
+independent row builder against the five stored stopped models), `replay.py` (the
+duality bounds and the contraction ratio), `stops.py`, `budgets.py`, `admission.py` and
+`profiles.py`. [review-2/RESULTS.txt](review-2/RESULTS.txt) is their output, which the
+review’s “Checks Run Here” section summarizes. They decide nothing on the register’s
+behalf: no evidence entry cites them, and T-153’s rungs rest on neither review’s checks.
+
 ## Commands
 
 From `packing/`:
