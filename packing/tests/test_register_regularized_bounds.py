@@ -651,11 +651,27 @@ def _no_writes(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(registered, "write_json", refused)
 
 
-def test_the_grid_batch_reproduces_its_row_and_writes_nothing(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
-    """From a run directory holding the retained view, `select_grid` rebuilds the
-    committed row's facts and returns the view's bytes for `retain`, writing nothing."""
+#: The row facts `select_grid` rebuilds from a run directory holding the retained view.
+_REBUILT = (
+    "side",
+    "value",
+    "earlier_verified",
+    "below_earlier_by",
+    "implied_by",
+    "t101_side",
+    "below_t101_side_by",
+    "witness_side",
+    "witness_frame",
+    "above_exact_side_by",
+    "agrees_with_report",
+    "identity",
+    "regularization",
+)
+
+
+def _reproduce(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """`select_grid` on a run directory holding the retained view: the committed row's
+    facts, the view's bytes for `retain`, and nothing written."""
     selection = registered.GRID.selection.read_bytes()
     retained = registered.view_path(290, registered.GRID).read_bytes()
     run = _grid_run(tmp_path, "deg5-1013-a", _grid_report(), _retained())
@@ -663,24 +679,39 @@ def test_the_grid_batch_reproduces_its_row_and_writes_nothing(
     receipt, views = registered.select_grid([run], [290])
     assert views == {290: _retained()}
     row, committed = receipt["rows"][0], registered.committed(registered.GRID)[290]
-    for key in (
-        "side",
-        "value",
-        "earlier_verified",
-        "below_earlier_by",
-        "implied_by",
-        "t101_side",
-        "below_t101_side_by",
-        "witness_side",
-        "witness_frame",
-        "above_exact_side_by",
-        "agrees_with_report",
-        "identity",
-        "regularization",
-    ):
+    for key in _REBUILT:
         assert row[key] == committed[key], key
     assert registered.GRID.selection.read_bytes() == selection
     assert registered.view_path(290, registered.GRID).read_bytes() == retained
+
+
+@pytest.mark.slow
+def test_the_grid_batch_reproduces_its_row_and_writes_nothing(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """From a run directory holding the retained view, `select_grid` rebuilds the
+    committed row's facts, the identity measured again included, and returns the view's
+    bytes for `retain`, writing nothing. The exact identity measurement takes 5 to 6 s
+    here (review C5), so this runs in the deep surface; the quick lane runs the rest."""
+    _reproduce(monkeypatch, tmp_path)
+
+
+def test_the_grid_batch_rebuilds_its_row_and_writes_nothing_on_the_quick_lane(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """The reproduction above with the identity measurement taken as committed, so the
+    pull-request surface still holds every other fact of the row and that nothing is
+    written; the measurement's own refusals are tested directly (PR #587, review C5)."""
+    committed = registered.committed(registered.GRID)[290]["identity"]
+    measured: list[int] = []
+
+    def measure(n: int, *_args: object) -> dict[str, object]:
+        measured.append(n)
+        return dict(committed)
+
+    monkeypatch.setattr(registered, "measure_identity", measure)
+    _reproduce(monkeypatch, tmp_path)
+    assert measured == [290]
 
 
 def test_problems_names_a_count_both_batches_register(monkeypatch: pytest.MonkeyPatch) -> None:
