@@ -6,19 +6,26 @@ drawing on no measure (light, uneven and near-axis squares, angle classes and hu
 and stage sides) while better on one or drawn at a smaller side, unless it replaces a
 numerically checked witness. Each refusal is named. Among adoptable views the first in
 preference order (Evan Daniel's, then grid-slack by rising threshold) that no other
-dominates is chosen, and the `layer` commands admit exactly the chosen views. One real
-count (n = 18, drawn from Evan Daniel's view) checks that today's drawing is measured
-from the layer a tree holds.
+dominates is chosen, and the `layer` commands admit exactly the chosen views: a driver
+run whose stored report `layer` would read differently, such as one written before a
+same-side view above `U` was set aside, is copied and the copy reclassified first. One
+real count (n = 18, drawn from Evan Daniel's view) checks that today's drawing is
+measured from the layer a tree holds.
 """
 
 from __future__ import annotations
 
+import json
+import shutil
+from pathlib import Path
 from typing import Any
 
 import pytest
 
 from devtools import census_drawing_regularity as census
+from devtools import regularize_evand as drive
 from devtools import regularize_select as select
+from tests.test_regularize_evand import both_outputs
 
 TODAY = {
     "side": "3",
@@ -262,20 +269,111 @@ def test_a_count_two_evand_runs_report_is_admitted_run_by_run() -> None:
     """`layer` lets a later run's report of a count replace an earlier one's, admitted or
     not, so runs that share a chosen count are admitted one by one."""
     layer = "python -m devtools.regularize_evand layer"
+    reclassify = "python -m devtools.regularize_evand reclassify"
     chosen = [
         {"n": 87, "kind": "evand", "run": "/r/a", "rank": 0},
         {"n": 301, "kind": "evand", "run": "/r/b", "rank": 1},
     ]
     admitted = [_evand(87, "/r/a"), _evand(87, "/r/b"), _evand(301, "/r/b", stale=True)]
+    # The stale run is copied, the copy decided again and admitted from.
     assert select.layer_commands(chosen, admitted) == [
-        "python -m devtools.regularize_evand reclassify --run-dir /r/b --refresh-bounds",
+        'copies="$(mktemp -d)"',
+        'mkdir "$copies/0" && cp -R /r/b "$copies/0/b"',
+        f'{reclassify} --run-dir "$copies/0/b" --refresh-bounds',
         f"{layer} --run-dir /r/a --repo-root ..",
-        f"{layer} --run-dir /r/b --repo-root .. --exclude 87",
+        f'{layer} --run-dir "$copies/0/b" --repo-root .. --exclude 87',
     ]
     held = [_evand(87, "/r/a"), _evand(87, "/r/b", decision="review"), _evand(301, "/r/b")]
     assert select.layer_commands(chosen, held) == [
         f"{layer} --run-dir /r/a --repo-root ..",
         f"{layer} --run-dir /r/b --repo-root ..",
+    ]
+
+
+BOUND_FACTS = {
+    "verified_upper_bound": "5.62",
+    "exact_form": None,
+    "reported": "5.62",
+    "found_by": [],
+    "improved_by": [],
+    "source_key": None,
+}
+
+
+def _written_before_the_yield(tmp_path: Path) -> Path:
+    """A driver run of n = 26 as the driver wrote it before `yield_to_bound`: the
+    same-side view, above `U`, decided and admitted, and the view at exactly `U` measured
+    beside it (`test_regularize_evand.both_outputs`; #580 review B1)."""
+    report = both_outputs(same_side="563/100", solved_side="281/50", bound="5.62")
+    beside = report["outputs"]["solved"]
+    for measured in (report, beside):
+        # As the driver writes them: a decimal largest move and the regressions found.
+        measured["identity"] = {**measured["identity"], "max_move": "0.1"}
+        measured["shades"] = {**measured["shades"], "regressions": []}
+    report["regularize"] = {"level": 2}
+    report["source"] = {**report["source"], "provenance": {"source_key": None}}
+    same = drive.measured_from_report(report, "same")
+    drive.decide(report, drive.measured_from_report(report, "solved"), same)
+    report["regularization"] = drive.regularization_record(report)
+    run = tmp_path / "evand-1012"
+    (run / "n-026").mkdir(parents=True)
+    (run / "n-026" / "report.json").write_text(json.dumps(report), encoding="utf-8")
+    receipt = {"counts": [drive.receipt_row(report)], "cost": {"cpu_seconds": 1.0}}
+    (run / "receipt.json").write_text(json.dumps(receipt), encoding="utf-8")
+    return run
+
+
+def test_a_run_written_before_the_yield_is_reclassified_on_a_copy_before_layer(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The selection decides a count as `reclassify --refresh-bounds` would, and `layer`
+    reads the stored report: where they would draw different views, the printed commands
+    copy the run, reclassify the copy and admit from it, so `layer` draws the chosen view
+    and the run stays as it was decided."""
+    monkeypatch.setattr(drive, "case_facts", lambda _n: dict(BOUND_FACTS))
+    run = _written_before_the_yield(tmp_path / "runs")
+    stored = drive.read_json(run / "n-026" / "report.json")
+    assert (stored["decision"]["row"], stored["decision"]["decision"]) == (10, "admit")
+    assert drive.layer_candidate(stored, "admitted") == "same"
+
+    rows = select.evand_candidates(select.Job("evand", run, 26, 0))
+    assert {row["governing_output"] for row in rows} == {"solved"}
+    assert {row["governing_decision"] for row in rows} == {"admit"}
+    assert all(row["stale"] for row in rows)
+    chosen = [{"n": 26, "kind": "evand", "run": str(run), "rank": 0}]
+    commands = select.layer_commands(chosen, rows)
+    prefix = "python -m devtools.regularize_evand"
+    copy = '"$copies/0/evand-1012"'
+    assert commands == [
+        'copies="$(mktemp -d)"',
+        f'mkdir "$copies/0" && cp -R {run} {copy}',
+        f"{prefix} reclassify --run-dir {copy} --refresh-bounds",
+        f"{prefix} layer --run-dir {copy} --repo-root ..",
+    ]
+    # The copy keeps the run's name, which `layer` records it by, however it is spelled.
+    assert select.copy_of(1, "/r/my run") == "\"$copies/1/\"'my run'"
+
+    # What the commands do: the copy, decided again, admits the view the selection chose.
+    before = (run / "n-026" / "report.json").read_bytes()
+    copied = tmp_path / "copies" / "0" / run.name
+    shutil.copytree(run, copied)
+    drive.reclassify(copied, refresh_bounds=True)
+    redone = drive.read_json(copied / "n-026" / "report.json")
+    assert drive.layer_candidate(redone, "admitted") == "solved"
+    assert (run / "n-026" / "report.json").read_bytes() == before
+
+
+def test_a_run_decided_as_the_table_now_decides_is_admitted_as_it_stands(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(drive, "case_facts", lambda _n: dict(BOUND_FACTS))
+    run = _written_before_the_yield(tmp_path)
+    drive.reclassify(run, refresh_bounds=True)
+    rows = select.evand_candidates(select.Job("evand", run, 26, 0))
+    assert not any(row["stale"] for row in rows)
+    chosen = [{"n": 26, "kind": "evand", "run": str(run), "rank": 0}]
+    assert select.layer_commands(chosen, rows) == [
+        f"python -m devtools.regularize_evand layer --run-dir {run} --repo-root .."
     ]
 
 

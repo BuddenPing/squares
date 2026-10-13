@@ -487,7 +487,7 @@ def test_the_preview_takes_visible_exact_one_to_one_views_that_lose_no_contact()
     assert drive.layer_candidate(lost, "preview") is None
 
 
-def _both_outputs(*, same_side: str, solved_side: str, bound: str) -> dict[str, Any]:
+def both_outputs(*, same_side: str, solved_side: str, bound: str) -> dict[str, Any]:
     """A report whose run measured the same-side view as the drawing and the solved one
     beside it, as `measure` writes one."""
     same_ident = {"of": "same", "one_to_one": True, "moved": 2, "max_move": "1/10"}
@@ -517,7 +517,7 @@ def test_a_same_side_view_above_the_bound_yields_to_the_view_at_the_bound() -> N
     """Owner, 13 October 2026: a valid view has "equal or smaller side", drawn "optimal as
     best as known"; where the witness sits above the bound the solve reached, the view at
     the bound is drawn, and the same-side one is kept with its measurements."""
-    report = _both_outputs(same_side="563/100", solved_side="281/50", bound="5.62")
+    report = both_outputs(same_side="563/100", solved_side="281/50", bound="5.62")
     assert drive.yield_to_bound(report)
     outputs = report["outputs"]
     assert outputs["same"] is None
@@ -546,7 +546,7 @@ def test_a_same_side_view_above_the_bound_yields_to_the_view_at_the_bound() -> N
 def test_a_same_side_view_at_or_below_the_bound_stays(
     same_side: str, solved_side: str, bound: str
 ) -> None:
-    report = _both_outputs(same_side=same_side, solved_side=solved_side, bound=bound)
+    report = both_outputs(same_side=same_side, solved_side=solved_side, bound=bound)
     assert not drive.yield_to_bound(report)
     assert report["outputs"]["same"] is not None
     assert report["identity"]["of"] == "same"
@@ -554,7 +554,7 @@ def test_a_same_side_view_at_or_below_the_bound_stays(
 
 def test_a_view_at_the_bound_never_measured_leaves_the_same_side_view() -> None:
     """A run written before views at the bound were measured has nothing to decide on."""
-    report = _both_outputs(same_side="563/100", solved_side="281/50", bound="5.62")
+    report = both_outputs(same_side="563/100", solved_side="281/50", bound="5.62")
     del report["outputs"]["solved"]["identity"]
     assert not drive.yield_to_bound(report)
     assert report["outputs"]["same"] is not None

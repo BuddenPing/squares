@@ -2282,18 +2282,54 @@ def refresh_bound(report: dict[str, Any], n: int) -> dict[str, Any] | None:
     return {"n": n, "before": before, "after": after}
 
 
+def redecide(
+    report: dict[str, Any], n: int, *, refresh_bounds: bool = False
+) -> dict[str, Any] | None:
+    """Decide one written report again in place, from its stored measurements.
+
+    What `reclassify` does to each count, and what `devtools.regularize_select` does to a
+    copy to learn what `layer` will draw once a run is reclassified, so the two cannot
+    decide a count differently: with `refresh_bounds`, `U` read again from the case
+    record (`refresh_bound`); the replaced view's histograms added where this checkout's
+    layer still holds it (`_current_histograms`); a same-side view above the bound set
+    aside (`yield_to_bound`); then both outputs decided, the source's provenance filled
+    in where the run predates it, and the regularization record written again. Returns
+    the bound's change, or None.
+    """
+    change = refresh_bound(report, n) if refresh_bounds else None
+    _current_histograms(n, report)
+    yield_to_bound(report)
+    outputs = report.get("outputs") or {}
+    solved = measured_from_report(report, "solved")
+    same = measured_from_report(report, "same") if outputs.get("same") else None
+    for measured in (solved, same):
+        if measured is not None and measured.produced:
+            outputs[measured.output]["relation"] = measured.relation
+    decide(report, solved, same, outputs.get("same_refusal"))
+    source = report.setdefault("source", {})
+    if not source.get("provenance"):
+        facts = case_facts(n)
+        source["provenance"] = {
+            "source_key": facts.get("source_key"),
+            "found_by": facts.get("found_by") or [],
+            "improved_by": facts.get("improved_by") or [],
+        }
+    report["regularization"] = regularization_record(report)
+    return change
+
+
 def reclassify(
     run_dir: Path, counts: Sequence[int] | None = None, *, refresh_bounds: bool = False
 ) -> dict[str, Any]:
     """Decide a finished run again from its reports, without re-running any stage.
 
     For a change to the decision table or to how decisions are reported: every count's
-    `decision` and `decisions` are rewritten from its stored measurements, and the
-    receipt's rows and lists follow; its cost and parameters are left as they were. With
-    `refresh_bounds`, each report's `U` is first read again from the case record
-    (`refresh_bound`), for a run decided before a register result moved the bound; the
-    receipt lists every count whose `U` changed. Run it on a copy of a run directory to
-    keep the run as it was decided.
+    `decision` and `decisions` are rewritten from its stored measurements (`redecide`),
+    and the receipt's rows and lists follow; its cost and parameters are left as they
+    were. With `refresh_bounds`, each report's `U` is first read again from the case
+    record (`refresh_bound`), for a run decided before a register result moved the bound;
+    the receipt lists every count whose `U` changed. Run it on a copy of a run directory
+    to keep the run as it was decided.
     """
     path = run_dir / "receipt.json"
     receipt = read_json(path)
@@ -2303,26 +2339,8 @@ def reclassify(
     for n in chosen:
         report_path = count_dir(run_dir, n) / "report.json"
         report = read_json(report_path)
-        if refresh_bounds and (change := refresh_bound(report, n)) is not None:
+        if (change := redecide(report, n, refresh_bounds=refresh_bounds)) is not None:
             refreshed.append(change)
-        _current_histograms(n, report)
-        yield_to_bound(report)
-        outputs = report.get("outputs") or {}
-        solved = measured_from_report(report, "solved")
-        same = measured_from_report(report, "same") if outputs.get("same") else None
-        for measured in (solved, same):
-            if measured is not None and measured.produced:
-                outputs[measured.output]["relation"] = measured.relation
-        decide(report, solved, same, outputs.get("same_refusal"))
-        source = report.setdefault("source", {})
-        if not source.get("provenance"):
-            facts = case_facts(n)
-            source["provenance"] = {
-                "source_key": facts.get("source_key"),
-                "found_by": facts.get("found_by") or [],
-                "improved_by": facts.get("improved_by") or [],
-            }
-        report["regularization"] = regularization_record(report)
         write_json(report_path, report)
         rows[n] = receipt_row(report)
     ordered = [rows[n] for n in sorted(rows)]

@@ -72,15 +72,20 @@ admitted on the same terms.
 ### 2. Decide Finished Runs Again After a Change
 
 When the decision table changes, or a register result moves $U$, decide a finished
-driver run again from its reports:
+driver run again from its reports.
+`reclassify` rewrites the reports in place, so run it on a copy to keep the run as it
+was decided, and keep the copy’s directory name, which `layer` records the run by:
 
 ```bash
-python -m devtools.regularize_evand reclassify --run-dir $RUNS/evand --refresh-bounds
+mkdir -p $RUNS/redecided && cp -R $RUNS/evand $RUNS/redecided/evand
+python -m devtools.regularize_evand reclassify --run-dir $RUNS/redecided/evand \
+  --refresh-bounds
 ```
 
-It rewrites the run’s reports, so run it on a copy to keep the run as it was decided.
-Grid-slack runs need no such step: `regularize_grid_slack.decided` decides their views
-when they are selected and again when they are admitted.
+The selection needs no such step first: it decides every report as `reclassify` would,
+and the commands it prints for step 4 reclassify a copy of any run whose stored reports
+are stale. Grid-slack runs need no such step: `regularize_grid_slack.decided` decides
+their views when they are selected and again when they are admitted.
 
 ### 3. Select
 
@@ -101,14 +106,22 @@ layer changed after the run; run that count again before admitting it.
 
 ### 4. Admit
 
-Run the commands the selection printed, in order.
-They are a `reclassify` of any driver run whose stored decisions are stale, then one
-`layer` call for the driver runs, whose `--exclude` leaves out the counts those runs
-would admit but were not chosen from them, then one call per grid-slack run, with an
-empty `--run-dir`:
+Run the commands the selection printed, in order and in one shell.
+`layer` reads a driver run’s stored reports, so where a stored report differs from the
+selection’s decision of it (a run written before a same-side view above $U$ was set
+aside, say, which as stored would admit that view), the commands first copy the run into
+a scratch directory under its own name and `reclassify` the copy, and admit from the
+copy; the run itself is never rewritten.
+Then comes one `layer` call for the driver runs, whose `--exclude` leaves out the counts
+those runs would admit but were not chosen from them, then one call per grid-slack run,
+with an empty `--run-dir`:
 
 ```bash
-python -m devtools.regularize_evand layer --run-dir $RUNS/evand --repo-root .. --exclude 110
+copies="$(mktemp -d)"
+mkdir "$copies/0" && cp -R $RUNS/evand "$copies/0/evand"
+python -m devtools.regularize_evand reclassify --run-dir "$copies/0/evand" --refresh-bounds
+python -m devtools.regularize_evand layer --run-dir "$copies/0/evand" --repo-root .. \
+  --exclude 110
 python -m devtools.regularize_evand layer --run-dir "$(mktemp -d)" --repo-root .. \
   --grid-run $RUNS/grid-5 --grid-counts 146 176
 ```

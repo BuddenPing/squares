@@ -25,10 +25,10 @@ decided on four counts:
    candidate (policy row 3): listed apart, registered through the import runbook first,
    never admitted here.
 3. **Table.** The decision table as it stands. An Evan Daniel report is decided again on
-   a copy as `regularize_evand reclassify --refresh-bounds` would decide it (`U` read
-   again from the case record, a same-side view above it set aside); a grid-slack report
-   by `regularize_grid_slack.decided`. Only row 10 (`admit`) is adoptable; rows 7 and 8
-   go to the owner.
+   a copy by the driver's own `regularize_evand.redecide`, the function `reclassify
+   --refresh-bounds` runs (`U` read again from the case record, a same-side view above it
+   set aside); a grid-slack report by `regularize_grid_slack.decided`. Only row 10
+   (`admit`) is adoptable; rows 7 and 8 go to the owner.
 4. **Drawing.** Seven measures against today's drawing. Five come from the house
    renderer's colouring (`census_drawing_regularity.regularity`), fewer being better: light,
    uneven and near-axis squares, distinct angle classes and hues; a square turned a hair
@@ -48,12 +48,15 @@ adoptable view dominates (better on some measure, worse on none) is chosen.
 
 The output is every candidate with its verdicts and the reasons it was not adopted, a
 Markdown table of the choices and the register candidates, and the `regularize_evand
-layer` commands that admit the chosen views: the Evan Daniel runs in one invocation, the
-counts they would admit but were not chosen from them excluded, after a `reclassify` of
-any run whose stored decisions are stale; one invocation per grid-slack run, with an empty
-`--run-dir`. Nothing is written but the files named. Case records and witnesses are this
-checkout's; only today's drawing comes from `--tree`, and a report measured against
-another drawing than the tree's is noted.
+layer` commands that admit the chosen views, to be run in order in one shell: the Evan
+Daniel runs in one invocation, the counts they would admit but were not chosen from them
+excluded; one invocation per grid-slack run, with an empty `--run-dir`. A driver run with
+a count whose stored report differs from the one decided here (`layer` reads the stored
+report) is copied to a scratch directory first, and the copy is reclassified and admitted
+from, so `layer` draws exactly the chosen views and the run stays as it was decided.
+Nothing is written but the files named. Case records and witnesses are this checkout's;
+only today's drawing comes from `--tree`, and a report measured against another drawing
+than the tree's is noted.
 """
 
 from __future__ import annotations
@@ -213,28 +216,35 @@ def _set_aside(report: Mapping[str, Any]) -> driver.Measured:
 
 
 def evand_candidates(job: Job) -> list[dict[str, Any]]:
-    """Every view of one count of a driver run, decided as `reclassify --refresh-bounds`
-    would decide the run now, on a copy of its report."""
+    """Every view of one count of a driver run, decided on a copy of its report by the
+    driver's own `redecide`, exactly as `reclassify --refresh-bounds` will decide it.
+
+    The count is stale when that copy differs from the stored report in anything at all:
+    `layer` reads the stored report, so where the two differ (another view admitted, as
+    for a run written before `yield_to_bound`; another decision, bound or record) the
+    printed commands reclassify a copy of the run first and admit from it.
+    """
     directory = driver.count_dir(job.run, job.n)
     stored = driver.read_json(directory / "report.json")
     report = copy.deepcopy(stored)
-    refreshed = driver.refresh_bound(report, job.n) is not None
-    driver.yield_to_bound(report)
+    driver.redecide(report, job.n, refresh_bounds=True)
     outputs = report.get("outputs") or {}
     solved = driver.measured_from_report(report, "solved")
     same = driver.measured_from_report(report, "same") if outputs.get("same") else None
     governing = "same" if same is not None else "solved"
-    decision = driver.classify(same or solved)
+    decision = report.get("decision") or {}
     was = stored.get("decision") or {}
-    stale = refreshed or (was.get("row"), was.get("decision")) != (
-        decision.row,
-        decision.decision,
-    )
+    # As written: the decision helpers return JSON's own types, but a round trip is what
+    # `reclassify` leaves on disk, so it is what the stored report is compared with.
+    redone = json.loads(json.dumps(report))
     common = {
         "governing_output": governing,
-        "governing_decision": decision.decision,
+        "governing_decision": decision.get("decision"),
         "stored_decision": was.get("decision"),
-        "stale": stale,
+        # What `layer --select admitted` draws from this count now, and once reclassified.
+        "stored_layer_output": driver.layer_candidate(stored, "admitted"),
+        "layer_output": driver.layer_candidate(redone, "admitted"),
+        "stale": redone != stored,
     }
     rows: list[dict[str, Any]] = []
     for name in EVAND_OUTPUTS:
@@ -259,7 +269,7 @@ def evand_candidates(job: Job) -> list[dict[str, Any]]:
         view = load_yaml(path.read_text(encoding="utf-8"))["witness"]
         rows.append(decided_view(record, view, driver.classify(measured), ident, shaded))
     if not rows:
-        rows.append({**_record(job, None), **common, "why": decision.reason})
+        rows.append({**_record(job, None), **common, "why": decision.get("reason")})
     return rows
 
 
@@ -431,7 +441,17 @@ def notes(row: Mapping[str, Any], now: Mapping[str, Any]) -> list[str]:
     elif now.get("side") is None:
         found.append("today's drawing has no rational side: only U holds the side")
     if row.get("stale"):
-        found.append("the run's stored decision is stale: reclassify it before `layer`")
+        as_stored = row.get("stored_layer_output") or "nothing"
+        decided = row.get("layer_output") or "nothing"
+        drawn = (
+            f": as stored, `layer` would draw {as_stored} here, not {decided}"
+            if as_stored != decided
+            else ""
+        )
+        found.append(
+            f"the run's stored report is stale{drawn}; the commands reclassify a copy of the "
+            "run and admit from the copy"
+        )
     return found
 
 
@@ -463,13 +483,12 @@ def choose(rows: Sequence[Mapping[str, Any]]) -> Mapping[str, Any] | None:
 
 def layer_admits(rows: Sequence[Mapping[str, Any]]) -> dict[str, set[int]]:
     """The counts `regularize_evand layer` would admit from each Evan Daniel run: those
-    whose run draws an admitted view, as stored or as decided now."""
+    decided `admit` now. `layer` reads what the printed commands leave it, a run as it
+    stands where no count of it is stale and its reclassified copy where one is, and
+    either way the counts are decided as they are now."""
     found: dict[str, set[int]] = {}
     for row in rows:
-        if row["kind"] != "evand":
-            continue
-        admitted = "admit" in {row.get("governing_decision"), row.get("stored_decision")}
-        if admitted:
+        if row["kind"] == "evand" and row.get("governing_decision") == "admit":
             found.setdefault(row["run"], set()).add(int(row["n"]))
     return found
 
@@ -478,18 +497,34 @@ def _counts(counts: Sequence[int] | set[int]) -> str:
     return " ".join(str(n) for n in sorted(counts))
 
 
+COPIES = "copies"
+"""The shell variable the printed commands keep the copies of stale runs under."""
+
+
+def copy_of(index: int, run: str) -> str:
+    """Where the printed commands copy a stale run: a directory of its own under
+    `$copies`, under the run's own name, since `layer` names a run by its directory."""
+    name = Path(run).name
+    quoted = shlex.quote(name)
+    return f'"${COPIES}/{index}/{name}"' if quoted == name else f'"${COPIES}/{index}/"{quoted}'
+
+
 def layer_commands(
     chosen: Sequence[Mapping[str, Any]],
     rows: Sequence[Mapping[str, Any]],
     *,
     repo_root: str = "..",
 ) -> list[str]:
-    """The commands, from `packing/`, that admit exactly the chosen views.
+    """The commands, from `packing/`, that admit exactly the chosen views, to be run in
+    order in one shell.
 
-    `layer` reads its driver runs in order and lets a later run's report of a count
-    replace an earlier one's, admitted or not, so the driver runs share one invocation
-    only where no chosen count appears in another of them; otherwise each run is admitted
-    on its own, excluding what it would admit and was not chosen from it.
+    A driver run with a stale count is copied first, the copy decided again
+    (`reclassify --refresh-bounds`) and admitted from, so `layer` draws what the
+    selection chose and the run stays as it was decided. `layer` reads its driver runs in
+    order and lets a later run's report of a count replace an earlier one's, admitted or
+    not, so the driver runs share one invocation only where no chosen count appears in
+    another of them; otherwise each run is admitted on its own, excluding what it would
+    admit and was not chosen from it.
     """
     prefix = "python -m devtools.regularize_evand"
     root = shlex.quote(repo_root)
@@ -510,9 +545,14 @@ def layer_commands(
         {row["run"] for row in rows if row["kind"] == "evand" and row.get("stale")}
         & set(evand_runs)
     )
-    commands = [
-        f"{prefix} reclassify --run-dir {shlex.quote(run)} --refresh-bounds" for run in stale
-    ]
+    read_from = {run: shlex.quote(run) for run in evand_runs}
+    commands = [f'{COPIES}="$(mktemp -d)"'] if stale else []
+    for index, run in enumerate(stale):
+        read_from[run] = copy_of(index, run)
+        commands += [
+            f'mkdir "${COPIES}/{index}" && cp -R {shlex.quote(run)} {read_from[run]}',
+            f"{prefix} reclassify --run-dir {read_from[run]} --refresh-bounds",
+        ]
     admits = layer_admits(rows)
     runs = list(evand_runs)
     shared = any(
@@ -525,7 +565,7 @@ def layer_commands(
     for group in [[run] for run in runs] if shared else [runs] if runs else []:
         admitted = set().union(*(admits.get(run, set()) for run in group))
         wanted = set().union(*(evand_runs[run] for run in group))
-        command = f"{prefix} layer --run-dir {' '.join(shlex.quote(run) for run in group)} "
+        command = f"{prefix} layer --run-dir {' '.join(read_from[run] for run in group)} "
         command += f"--repo-root {root}"
         if admitted - wanted:
             command += f" --exclude {_counts(admitted - wanted)}"
