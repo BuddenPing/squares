@@ -109,6 +109,12 @@ DECLARED_CONSUMERS = {
         "side, labelled as the certified upper bound; a ceiling shown for comparison, never "
         "s(n)"
     ),
+    "packing/devtools/regularize_grid_slack.py": (
+        "the grid-slack generator re-solves a view at the case's verified bound U where the "
+        "witness's own side is not a frame, and only where U is rational exactly "
+        "(`rational_bound`): a closed form's evaluation is not U; U is the ceiling the "
+        "view's side is held to, never s(n)"
+    ),
     "packing/tests/test_regularize_gallery.py": (
         "a synthetic run report for the gallery's tests carries U as the driver writes it; "
         "the test checks it is printed, and reads no value from it"
