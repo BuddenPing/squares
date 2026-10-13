@@ -131,7 +131,8 @@ allowlist:
       upstream repository, without trusting this one: it fetches the pin's trees and
       compares Git blob ids, modes and the tree, catching a silent fork the credit
       and pin would misdescribe, or a manifest a re-pin left stale. It needs the
-      network and is run at a re-pin and on any change to the manifest. Nothing else
+      network, so it is run by hand at a re-pin and by whoever reviews a change to
+      the vendored directory; no gate runs it yet (think-vwlm). Nothing else
       reads these digests: no tool refuses to run the generator on a mismatch, and
       the exact checkers, not the generator, decide every result.
   - path: packing/devtools/n17_shared_centre_lp.py

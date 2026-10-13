@@ -22,8 +22,9 @@ what each file is for, how the credit is written and how the copy is forked or r
   `git ls-tree`, so the identity is Git's own), every pinned mode to be upstream's, and
   every file here to be in upstream's tree unless it is a recorded addition. With the
   offline check passing, that makes every pinned SHA-256 the digest of upstream's bytes.
-  It needs the network, so it runs at a re-pin and whenever `vendored.yaml` changes,
-  never in an offline tier.
+  It needs the network, so it is run by hand at a re-pin and by whoever reviews a
+  change to the vendored directory; no gate runs it yet (`think-vwlm`), and no offline
+  tier ever will.
 
 **Why a digest here, against OR-16's default.** The rule reserves checksums for a real
 trust boundary, and requires three answers beside one:
@@ -154,10 +155,11 @@ HEADER = """\
 # downloaded from another party's repository. The expected value of each digest is the
 # upstream blob at `source_commit`. The offline check holds the copy to this file, so it
 # catches accidental edits only: an edit made here together with this file passes it.
-# `--upstream` holds this file to upstream, comparing Git blob ids and modes at the pin;
-# it needs the network and is run at a re-pin and whenever this file changes. Nothing
-# but these checks reads the digests: no tool refuses to run the generator, and no
-# result is invalidated, on a mismatch.
+# `--upstream` holds this file to upstream, comparing Git blob ids and modes at the pin.
+# It needs the network, so it is run by hand at a re-pin and by whoever reviews a change
+# to this directory; no gate runs it yet (think-vwlm). Nothing but these checks reads
+# the digests: no tool refuses to run the generator, and no result is invalidated, on a
+# mismatch.
 """
 
 
