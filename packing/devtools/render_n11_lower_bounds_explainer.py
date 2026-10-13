@@ -2395,7 +2395,7 @@ def shared_substitutions(facts: list[Facts], headline: Facts, default: Facts) ->
             f"side specified in the [case record]({repo_url(FRONTIER_N11)}). The decimal "
             f"${verified_tex}$ is a truncated display, not the definition of $T$. "
             "[Part II]({{PAPER:n11-threshold-bound-review}}) of this series explains "
-            "Overbeck's intermediate $s(11) \\gt 31/8$ (T-037), "
+            "Marc Leonard Overbeck's intermediate $s(11) \\gt 31/8$ (T-037), "
             "[Part III]({{PAPER:n11-optimality-review}}) explains that proof, and the "
             f"[mathematical review]({repo_url(OPTIMALITY_REVIEW)}) records its "
             "independent checks. This article retains the earlier T-018, T-025, and T-026 "
