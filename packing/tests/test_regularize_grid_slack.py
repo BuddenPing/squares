@@ -8,7 +8,9 @@ by `2 arctan(1/500)` (about 0.229 degrees) beside an axis square is straightened
 slid flush. A run directory under `witnesses/` is refused before anything is written.
 When both ways of closing the tight set fail, the re-solve holds the unchanged squares at
 their exact centres and tries again, and a literal past Python's integer-text limit moves
-on to the next way rather than refusing the count.
+on to the next way rather than refusing the count. A rational `U` below the witness's side
+is tried first, and one above it only after the witness's own side; the layer's generator
+block keeps the defaults whatever threshold a run used.
 """
 
 from __future__ import annotations
@@ -224,6 +226,66 @@ def test_a_witness_above_the_bound_is_solved_at_the_bound_first(
         (Fraction(3, 2), HALF),
         (Fraction(3, 2), Fraction(3, 2)),
     ]
+
+
+def test_a_bound_above_the_witness_is_tried_after_its_own_side(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Where `U` is above `s_W` (n = 171 and 198 in the record), a view at the witness's
+    own side is already at most `U`, so the same side is tried first and the bound only
+    after no view there could be found (#580 review A6)."""
+    for n in (171, 198):
+        witness = slack.load_source(n)
+        upper = REAL_RATIONAL_BOUND(n)
+        assert upper is not None
+        assert upper > slack.same.exact_frame(witness).side
+        monkeypatch.setattr(slack, "rational_bound", REAL_RATIONAL_BOUND)
+        assert slack.attempts_for(witness) == slack.ATTEMPTS
+
+    above = Fraction(12, 5)
+    monkeypatch.setattr(slack, "rational_bound", lambda _n: above)
+    assert slack.attempts_for(scattered()) == slack.ATTEMPTS
+    real = slack.attempt
+    tried: list[tuple[str, bool, Fraction]] = []
+
+    def same_side_refused(
+        witness: dict[str, Any],
+        frame: Any,
+        relation: str,
+        settings: slack.Settings,
+        *,
+        freeze: bool,
+    ) -> Any:
+        tried.append((relation, freeze, frame.side))
+        if relation == "same":
+            refused = {"relation": relation, "frozen_tilted": freeze, "refusal": "by the test"}
+            return None, refused, []
+        return real(witness, frame, relation, settings, freeze=freeze)
+
+    monkeypatch.setattr(slack, "attempt", same_side_refused)
+    view, report = slack.regularize(scattered(), slack.Settings())
+    assert tried == [
+        ("same", False, Fraction(11, 5)),
+        ("same", True, Fraction(11, 5)),
+        ("bound", False, above),
+    ]
+    assert view is not None
+    assert report["relation"] == "bound"
+    assert Fraction(view["side"]) == above
+
+
+def test_admitted_views_describe_the_generator_by_its_defaults(tmp_path: Path) -> None:
+    """A run at 5 degrees keeps its threshold in its own parameters, and the generator
+    block the layer's index shares is the defaults, so runs at 0.5, 1 and 5 degrees are
+    admitted side by side (owner, 13 October 2026; #580 review A6)."""
+    run = tmp_path / "grid-5"
+    report = slack.run_one(1, run, slack.Settings(near_axis_degrees=5.0))
+    assert report["settings"]["near_axis_degrees"] == 5.0
+    views, run_block, generator = slack.admitted_views(run, [])
+    assert views == []
+    assert run_block["parameters"]["near_axis_degrees"] == 5.0
+    assert generator["settings"] == slack.DEFAULT_SETTINGS
+    assert generator["settings"]["near_axis_degrees"] == slack.NEAR_AXIS_DEGREES
 
 
 def test_a_closed_form_bound_is_never_a_frame(monkeypatch: pytest.MonkeyPatch) -> None:
