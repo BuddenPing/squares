@@ -123,8 +123,16 @@ DECLARED_CONSUMERS = {
         "states a difference to a ceiling, never s(n)"
     ),
     "packing/tests/test_regularize_axis_components.py": (
-        "a synthetic index entry for the axis tool's tests carries the v2 contract's "
-        "`view_minus_verified_upper_bound` as null; the test reads no value from it"
+        "synthetic index entries and case records for the axis tool's tests carry the v2 "
+        "contract's `view_minus_verified_upper_bound` and a case's verified bound U, so the "
+        "test can check the layer's check holds a drawn view's side to U; a ceiling there, "
+        "never s(n)"
+    ),
+    "packing/devtools/regularize_axis_components.py": (
+        "the regularized layer's check reads each drawn count's verified bound U from its "
+        "case record and decides the view's exact side against it: none below U, a `bound` "
+        "view at it, and the views above it named; U is the ceiling a drawing frame is held "
+        "to, never s(n) (#548 review B1)"
     ),
     "packing/tests/test_regularize_gallery.py": (
         "a synthetic run report for the gallery's tests carries U as the driver writes it; "
