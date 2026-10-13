@@ -17401,6 +17401,10 @@ results:
       asks: the only entry for the whole lower half is the source's report, and the source's
       own executions and internal audit are retained in the source and not here.
 
+      On 13 October the owner confirmed that n = 17 is recorded as reported proved on this
+      claim, at the rungs its evidence earns, and that its verified status stays open until
+      the complete replay passes.
+
       The review lists ten non-blocking defects, among them the ROOT_ADMISSION geometry,
       written only in the proof text and a script comment (KNOWN_ISSUES.md item 1), two
       routes with different constants for the same step of G20S_PHYSICAL, and file
