@@ -271,6 +271,28 @@ def test_a_standing_entry_whose_every_bound_is_beaten_is_refused(records: view.R
     assert "does not state the verified value" in second
 
 
+def test_a_simplification_of_a_reported_value_is_a_reported_second_certificate(
+    records: view.Records,
+) -> None:
+    """T-154, Fitzharding's Lean proof of s(17) = L, is a simplification at C1 of the value
+    T-153 holds in n = 17's reported lane, and holds no bound itself. It restates the
+    reported value, so it is a reported second certificate, held to the reported lane, and
+    not superseded. Replayed, the same words would be held to the verified lane, where n =
+    17's lower bound is lower; and a bound kind with the same words is superseded."""
+    record = records.results["T-154"]
+    assert record["kind"] == "simplification"
+    assert check_standing.restates(record, records)
+    reported = view.SECOND_CERTIFICATE_REPORTED
+    assert view.standing(record, records) == reported
+    assert check_standing.problems(record, reported, records) == []
+    line = check_standing.summary(record, reported, records)
+    assert "equals the reported bound at n = 17" in line
+    (verified,) = check_standing.problems(record, view.SECOND_CERTIFICATE, records)
+    assert "does not state the verified value" in verified
+    assert not check_standing.restates({**record, "confirmation": "C3"}, records)
+    assert view.standing({**record, "kind": "optimality"}, records) == view.SUPERSEDED
+
+
 def test_an_entry_that_holds_one_case_of_several_stands(records: view.Records) -> None:
     """T-069 is beaten at n = 66, 90 and 92 and holds n = 37 and 65. It still holds a
     case bound, so it is not superseded, and the summary names both. The example was T-047

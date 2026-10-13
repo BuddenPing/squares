@@ -25,16 +25,20 @@ the interval decision several first-party certificates cite, does not make every
 decided hold the bound. Where only a reported bound rests on an entry, it is the current
 best as reported. An entry that holds no bound is a *second certificate* where it proves
 the exact value of a proved case (it cites that case's verified upper bound beside a
-lower bound of its own). Any other bound that holds none is *superseded* where its case
-records hold a bound at least as good as every bound it states, and *pending adoption*
-(`PENDING_ADOPTION`) where one it states is strictly better than the case record's, in
-a lane it can hold (`check_standing.improvements`): a report the case records have not
-taken in yet, such as `T-128`'s eight rational certificates, which nothing on record has
-replaced. Superseded means replaced, so it is decided by the numbers the entry's words
-state, compared exactly where the case record's bound is exact and, beside a closed form,
-within one unit of its printed value's last place (`span`), where a tie is all that can
-be said; an entry whose words state no bound the check reads is held to the structure
-alone, and is superseded wherever no case bound rests on it.
+lower bound of its own), or where it is a simplification, a second proof of a value the
+record holds, whose every stated bound equals its case record's in the lane it can hold
+(`check_standing.restates`): `T-154`, Fitzharding's Lean proof of the value `T-153` holds
+in n = 17's reported lane, is one, reported. Any other bound that holds none is
+*superseded* where its case records hold a bound at least as good as every bound it
+states, and *pending adoption* (`PENDING_ADOPTION`) where one it states is strictly
+better than the case record's, in a lane it can hold (`check_standing.improvements`): a
+report the case records have not taken in yet, such as `T-128`'s eight rational
+certificates, which nothing on record has replaced. Superseded means replaced, so it is
+decided by the numbers the entry's words state, compared exactly where the case record's
+bound is exact and, beside a closed form, within one unit of its printed value's last
+place (`span`), where a tie is all that can be said; an entry whose words state no bound
+the check reads is held to the structure alone, and is superseded wherever no case bound
+rests on it.
 
 **Standing is about bounds, so an entry whose evidence claims none has no standing**
 (`NO_STANDING`): no later bound supersedes a rigidity or a case exclusion. The views show
@@ -87,7 +91,7 @@ from devtools.build_bound_citations import (
     project_result,
     results_carrying,
 )
-from devtools.check_results import BOUND_KINDS, recent_evidence, scope_values
+from devtools.check_results import BOUND_KINDS, SIMPLIFICATION, recent_evidence, scope_values
 from devtools.result_credit import source_lineage
 from devtools.result_status import CONFIRMED_FROM
 from sqpack.assurance import bounds_agree_at_declared_precision
@@ -117,8 +121,9 @@ ELLIPSIS = "…"
 HOLDS = "current best"
 HOLDS_REPORTED = "current best, reported"
 SECOND_CERTIFICATE = "second certificate"
-#: A second route to a proved value that this repository has not replayed: the same word
-#: as a replayed one would say it had been checked here.
+#: A second route to a value the case records hold, proved or reported, that this
+#: repository has not replayed: the same word as a replayed one would say it had been
+#: checked here.
 SECOND_CERTIFICATE_REPORTED = "second certificate, reported"
 #: A bound no case bound rests on, that states one strictly better than its case record
 #: holds in a lane it can hold: not yet taken into the case records, and replaced by
@@ -542,15 +547,18 @@ def standing(record: Mapping[str, Any], records: Records) -> str:
     claims = {records.register.evidence[item].get("claim") for item in cited}
     if not claims & BOUND_CLAIMS:
         return NO_STANDING
-    if "lower-bound" in claims and any(
-        case.proved and cited & case.upper_evidence for case in cases
-    ):
-        if str(record["confirmation"]) in REPLAYED_RUNGS:
-            return SECOND_CERTIFICATE
-        return SECOND_CERTIFICATE_REPORTED
     # `check_standing` reads this module, so its reader of stated bounds is imported here.
-    from devtools.check_standing import improvements  # noqa: PLC0415
+    from devtools.check_standing import improvements, restates  # noqa: PLC0415
 
+    # A second proof: of a proved case's value, or a simplification that restates the
+    # value its case records hold in the lane it can hold.
+    second = (
+        "lower-bound" in claims
+        and any(case.proved and cited & case.upper_evidence for case in cases)
+    ) or (str(record.get("kind")) == SIMPLIFICATION and restates(record, records))
+    if second:
+        replayed = str(record["confirmation"]) in REPLAYED_RUNGS
+        return SECOND_CERTIFICATE if replayed else SECOND_CERTIFICATE_REPORTED
     return PENDING_ADOPTION if improvements(record, records) else SUPERSEDED
 
 

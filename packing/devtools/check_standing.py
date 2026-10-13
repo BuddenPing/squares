@@ -31,7 +31,9 @@ same direction, in both lanes:
 - an entry that is the **current best** states, at some case, exactly the verified bound
   (the reported one, where it is the current best as reported), and never more than the
   record carries;
-- a **second certificate** states exactly the verified value at every case;
+- a **second certificate** states exactly the verified value at every case, and a
+  reported one may state exactly the reported value instead: `T-154`, a second proof of
+  the value `T-153` holds in n = 17's reported lane (`restates`);
 - an entry with **no standing**, one whose evidence claims no bound, states none.
 
 An entry that still holds one case of several is not superseded, and this reports the
@@ -266,6 +268,20 @@ def improvements(record: Mapping[str, Any], records: view.Records) -> list[Findi
     ]
 
 
+def restates(record: Mapping[str, Any], records: view.Records) -> bool:
+    """Whether an entry states at least one bound and every one equals its case record's
+    bound of the same direction in the lane the entry can hold: the reported lane for a
+    report (`UNREPLAYED`), the verified lane for a replayed result. A simplification that
+    holds no bound and restates its case record's value so is a second certificate
+    (`render_recent_results.standing`): `T-154`, Fitzharding's Lean proof of n = 17's
+    reported value, which `T-153` holds."""
+    found = findings(record, records)
+    report = str(record.get("confirmation")) in UNREPLAYED
+    return bool(found) and all(
+        (finding.reported if report else finding.verified) == EQUAL for finding in found
+    )
+
+
 def citing(record: Mapping[str, Any], records: view.Records) -> list[int]:
     """The cases in an entry's scope whose bounds, in either lane and direction, cite
     evidence of its own (not the grid's or the area bound's). Read from the evidence ids
@@ -340,7 +356,13 @@ def problems(record: Mapping[str, Any], standing: str, records: view.Records) ->
                 "cites its evidence: the record has taken it in"
             )
     elif standing in {view.SECOND_CERTIFICATE, view.SECOND_CERTIFICATE_REPORTED}:
-        off = [f for f in found if f.verified != EQUAL]
+        # A reported second certificate may restate the reported value of an open case.
+        reported_ok = standing == view.SECOND_CERTIFICATE_REPORTED
+        off = [
+            f
+            for f in found
+            if f.verified != EQUAL and not (reported_ok and f.reported == EQUAL)
+        ]
         if off:
             wrong.append(
                 f"{entry} is a second certificate, yet at {_at(off)} it does not state "
@@ -366,7 +388,10 @@ def problems(record: Mapping[str, Any], standing: str, records: view.Records) ->
 def summary(record: Mapping[str, Any], standing: str, records: view.Records) -> str:
     """One line for an entry: its standing, and where its stated bounds still hold."""
     found = findings(record, records)
-    lane = "reported" if standing == view.HOLDS_REPORTED else "verified"
+    reported = standing == view.HOLDS_REPORTED or (
+        standing == view.SECOND_CERTIFICATE_REPORTED and restates(record, records)
+    )
+    lane = "reported" if reported else "verified"
     holds = [f for f in found if (f.reported if lane == "reported" else f.verified) == EQUAL]
     better = improvements(record, records) if standing == view.PENDING_ADOPTION else []
     beaten = [f for f in found if f.verified == BEATEN and f not in holds]
