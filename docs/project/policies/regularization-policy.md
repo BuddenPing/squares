@@ -450,10 +450,16 @@ policy applies until there is one.
     new upper bound, as `T-154`’s are at fifteen drawn counts, the field names that
     result (`registered_in`) and the note says the exact side is registered as it; the
     drawing adds no further result.
-    Where the house is itself a regularization its source published, as `T-146`’s
-    certificates are, the field credits the source first, in the register’s terms (`by`
-    its bibliography key, `of` the result whose packing it regularizes, `registered_in`
-    the result that registered it).
+    Where a result registers this project’s own regularization of a count that the atlas
+    does not draw, as `T-154` does at 43 counts, or draws by another method, as at 227,
+    the field carries it too, after any drawing: in the register’s terms (`method`,
+    `side`, `of`, `registered_in`) with the generator its method names, its credit line
+    and its modifications, and the note credits the Squares Project and names the
+    result, so every record whose count this project regularized says so whether or not
+    the view is drawn. Where the house is itself a regularization its source published,
+    as `T-146`’s certificates are, the field credits the source first, in the register’s
+    terms (`by` its bibliography key, `of` the result whose packing it regularizes,
+    `registered_in` the result that registered it).
     `devtools.regularized_drawings` writes it from the layer’s index, its check in the
     records tier holds every case record to the index, and the site’s case page prints
     its note. A new upper bound, an exactly verified side below $U$, is always registered

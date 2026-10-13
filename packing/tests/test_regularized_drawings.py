@@ -436,6 +436,50 @@ def test_registered_modifications_are_written_in_place_and_held() -> None:
     assert "['T-153']" in problem
 
 
+def test_a_registered_regularization_the_layer_does_not_draw_is_credited() -> None:
+    """Where a result registers this project's regularization of a count and the layer
+    does not draw it, the case record still credits the Squares Project and names the
+    result, in the register's terms; a drawn regularization the result registers is the
+    drawn item's, and a source's regularization is not this project's."""
+    results = safe_load(REGISTER.format(method=EVAND_METHOD))["results"]
+    found = drawings.registered_case_items(results, GENERATORS, {("T-153", 8)})
+    assert sorted(found) == [7]
+    seven = found[7]
+    assert seven == {
+        "by": "project",
+        "credit": GENERATORS[drawings.EVAND_GENERATOR]["credit"],
+        "generator": drawings.EVAND_GENERATOR,
+        "method": EVAND_METHOD,
+        "modifications": [drawings.SAME_SIDE_RESOLVE],
+        "modifications_unrecorded": ["retry rungs"],
+        "side": "same",
+        "of": "T-001",
+        "registered_in": "T-153",
+    }
+    assert drawings.case_note([seven]) == (
+        "Regularized by the Squares Project with Evan Daniel's regularizer, with the "
+        f"project's modifications: {drawings.SAME_SIDE_RESOLVE}; whether its solve climbed "
+        "a retry rung is not recorded. A regularization of T-001's packing at the "
+        "witness's own side, not drawn here; its exact side is registered as T-153, the "
+        "upper bound it proves."
+    )
+    solved = drawings.registered_case_items(results, GENERATORS)[8]
+    assert drawings.case_note([solved]).startswith(
+        "Regularized by the Squares Project with Evan Daniel's regularizer, with none of "
+        "the project's modifications established; whether its solve climbed a retry rung "
+        "is not recorded."
+    )
+    # Beside a drawing by another method, it follows the drawing's sentences.
+    grid = {**entry(7, "same"), "generator": "regularize_grid_slack/0"}
+    drawn = drawings.project_case_item(
+        drawings.Drawn(grid, drawings.Resolved("T-153", "x"), []), GENERATORS
+    )
+    assert "Also regularized by the Squares Project" in drawings.case_note([drawn, seven])
+    lower = [{**results[0], "kind": "lower-bound"}]
+    with pytest.raises(drawings.RegularizedDrawingsError, match="not an upper-bound"):
+        drawings.registered_case_items(lower, GENERATORS)
+
+
 def test_the_case_field_is_written_in_place_and_removed_whole() -> None:
     text = "---\npacking:\n  n: 5\n  resources: []\n---\n# s(5)\n"
     field = {"note": "A drawing, not a result.", "items": [{"by": "project", "of": None}]}

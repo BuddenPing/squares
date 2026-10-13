@@ -64,17 +64,23 @@ place after its `method`; an item records no solve, so where his regularizer mad
 it also says that whether the solve climbed a retry rung is not recorded
 (`modifications_unrecorded`), rather than reading as unmodified.
 
-**The case records.** Each case record whose count the layer draws, or whose house is
-itself a regularization its source published (a register result's `regularizations`
-item whose `by` is the bibliography key of the source the witness names, as `T-146`'s
-are), carries a generated `regularization` field in its front matter: a one-paragraph
-`note` the site's case page prints, then its `items`, the source's regularization first
-in the register's own terms and this project's after it, with the generator, the credit
+**The case records.** Each case record whose count the layer draws, whose count a
+registered result holds this project's own regularization of (as T-154's 59 are), or
+whose house is itself a regularization its source published (a register result's
+`regularizations` item whose `by` is the bibliography key of the source the witness
+names, as `T-146`'s are), carries a generated `regularization` field in its front
+matter: a one-paragraph `note` the site's case page prints, then its `items`, the
+source's regularization first in the register's own terms and this project's after it,
+with the generator, the credit
 line, the modifications, the side relation (`same` or `bound`), the registered result
 that holds the packing (`of`, or null where none does), the result that registers the
-drawn regularization itself where one does (`registered_in`) and the view's path. A
-record the layer does not draw and whose house no source regularized carries no such
-field.
+drawn regularization itself where one does (`registered_in`) and the view's path. Last
+comes this project's regularization a result registers where the layer does not draw it
+(`registered_case_items`), in the register's terms like a source's, with its generator,
+credit line and modifications: T-154's at 43 undrawn counts, and at 227, where the
+grid-slack view is drawn instead. A record the layer does not draw, whose count no
+result holds a regularization of by this project, and whose house no source regularized
+carries no such field.
 
 The register's list is a block at the end of `results.yaml`, from `MARKER` on, which this
 tool writes whole, and each case record's field is written in place, at the end of its
@@ -88,7 +94,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
-from collections.abc import Mapping, Sequence
+from collections.abc import Collection, Mapping, Sequence
 from dataclasses import dataclass
 from fractions import Fraction
 from functools import cache
@@ -673,22 +679,85 @@ def project_case_item(
     return found
 
 
+def registered_case_items(
+    results: Sequence[Mapping[str, Any]],
+    generators: Mapping[str, Any],
+    drawn: Collection[tuple[str, int]] = (),
+) -> dict[int, dict[str, Any]]:
+    """The counts at which a registered result holds this project's own regularization
+    (`by: project`) that the layer does not draw, each as its case record keeps it: in
+    the register's terms, like a source's (`method`, `side`, `of`, `registered_in`),
+    with the generator its method names, its credit line and its modifications. T-154
+    holds 59; at the fifteen in `drawn`, (result, count) pairs whose drawing is that
+    regularization itself, the drawn item names the result instead."""
+    found: dict[int, dict[str, Any]] = {}
+    for result in results:
+        for record in result.get("regularizations") or []:
+            n = int(record["n"])
+            if record["by"] != PROJECT_REGULARIZER or (str(result["id"]), n) in drawn:
+                continue
+            method = str(record["method"])
+            generator = method_generator(method, generators)
+            modifications, unrecorded = registered_modifications(record, generators)
+            item: dict[str, Any] = {
+                "by": PROJECT_REGULARIZER,
+                "credit": generator_credit(generator, generators),
+                "generator": generator,
+                "method": method,
+            }
+            if modifications is not None:
+                item["modifications"] = modifications
+            if unrecorded:
+                item["modifications_unrecorded"] = list(unrecorded)
+            item["side"] = str(record["side"])
+            item["of"] = str(record["of"])
+            item["registered_in"] = upper_bound_result(result)
+            if n in found:
+                raise RegularizedDrawingsError(
+                    f"n={n}: two registered results hold this project's regularization"
+                )
+            found[n] = item
+    return found
+
+
+#: How a note says what a registered item cannot establish (`modifications_unrecorded`).
+UNRECORDED_WORDS = {UNRECORDED_RUNGS: "whether its solve climbed a retry rung"}
+
+
+def credit_sentence(found: Mapping[str, Any], *, also: bool = False) -> str:
+    """Who made a project regularization, with which of this project's modifications to
+    Evan Daniel's regularizer, and what of them is not recorded."""
+    head = str(found["credit"])
+    if also:
+        head = f"Also {head[:1].lower()}{head[1:]}"
+    modifications = found.get("modifications")
+    unrecorded = [str(word) for word in found.get("modifications_unrecorded") or []]
+    if modifications:
+        head += f", with the project's modifications: {', '.join(modifications)}"
+    elif modifications is not None:
+        head += (
+            ", with none of the project's modifications established"
+            if unrecorded
+            else ", unmodified"
+        )
+    for word in unrecorded:
+        if word not in UNRECORDED_WORDS:
+            raise RegularizedDrawingsError(f"no words for what is unrecorded: {word!r}")
+        head += f"; {UNRECORDED_WORDS[word]} is not recorded"
+    return head + "."
+
+
 def case_note(items: Sequence[Mapping[str, Any]]) -> str:
     """The record's one paragraph: who regularized the drawing, with which modifications,
     and either that it is a pure regularization, proving no new bound, so no result, or
-    that its exact side is registered as the result that proves it; then who regularized
-    the house, where its source did."""
+    that its exact side is registered as the result that proves it; then this project's
+    registered regularization of the count where the layer does not draw it, naming the
+    result; then who regularized the house, where its source did."""
     sentences: list[str] = []
     for found in items:
-        if found["by"] != PROJECT_REGULARIZER:
+        if found["by"] != PROJECT_REGULARIZER or "view" not in found:
             continue
-        modifications = found.get("modifications")
-        head = str(found["credit"])
-        if modifications:
-            head += f", with the project's modifications: {', '.join(modifications)}"
-        elif modifications is not None:
-            head += ", unmodified"
-        sentences.append(head + ".")
+        sentences.append(credit_sentence(found))
         where = SIDE_WORDS[str(found["side"])]
         if found.get("registered_in"):
             sentences.append(
@@ -706,6 +775,15 @@ def case_note(items: Sequence[Mapping[str, Any]]) -> str:
                 "packing."
             )
     for found in items:
+        if found["by"] != PROJECT_REGULARIZER or "view" in found:
+            continue
+        sentences.append(credit_sentence(found, also=bool(sentences)))
+        sentences.append(
+            f"A regularization of {found['of']}'s packing {SIDE_WORDS[str(found['side'])]}, "
+            f"not drawn here; its exact side is registered as {found['registered_in']}, the "
+            "upper bound it proves."
+        )
+    for found in items:
         if found["by"] == PROJECT_REGULARIZER:
             continue
         sentences.append(
@@ -720,7 +798,9 @@ def case_fields(
     index: Mapping[str, Any], repo: Path = REPO, drawn: Sequence[Drawn] | None = None
 ) -> dict[int, dict[str, Any]]:
     """Each case record's `regularization` field, by count, for the records that carry
-    one: the source's regularization of the house first, then this project's drawing."""
+    one: the source's regularization of the house first, then this project's drawing,
+    then this project's regularization a result registers where the layer does not draw
+    it (`registered_case_items`)."""
     register = load_register()
     by_source = source_regularizations(register.results, register.sources, repo)
     generators = index.get("generators") or {}
@@ -730,9 +810,20 @@ def case_fields(
         )
         for count in (drawn_counts(index, repo) if drawn is None else drawn)
     }
+    registered = registered_case_items(
+        register.results,
+        generators,
+        {
+            (str(found["registered_in"]), n)
+            for n, found in projects.items()
+            if found.get("registered_in")
+        },
+    )
     fields: dict[int, dict[str, Any]] = {}
-    for n in sorted(set(by_source) | set(projects)):
-        items = [found for found in (by_source.get(n), projects.get(n)) if found]
+    for n in sorted(set(by_source) | set(projects) | set(registered)):
+        items = [
+            found for found in (by_source.get(n), projects.get(n), registered.get(n)) if found
+        ]
         fields[n] = {"note": case_note(items), "items": items}
     return fields
 

@@ -238,17 +238,20 @@ registered as that result
 ([the policy’s question 16](../../../docs/project/policies/regularization-policy.md#9-owner-decisions)).
 Where the house is itself a regularization its source published, as at the thirteen
 counts drawn from `T-146`’s certificates, the note credits the source first.
-No view changes a side, a frontier value, an evidence tier or a credit, and none
-replaces a witness. The modifications are read from each entry’s `run` and `method`: the
-retry rungs the solve climbed (`run.rungs`), or before the retry ladder of 12 October
-the one retry’s arguments (`run.retried_with`). The 23 vendored views admitted after the
-ladder had no rungs recorded; on 13 October 2026
-`python -m devtools.regularize_evand rungs` recorded them from their runs’ retained
-reports at eight counts and, at the fifteen drawn from the run on jlevy/squares#518’s
-witnesses, from a fresh run of those counts, `evand-regularize-adopt518-v2` (917 s of
-wall, 2,097 CPU seconds at three workers), whose views came out byte for byte the drawn
-ones. Each entry names the run that supplied its rungs as `run.rungs_from`, and the
-index’s `runs` records the fresh run beside the runs whose views it draws.
+The 44 counts where `T-154` registered this project’s regularization but the layer draws
+another view or none carry the note as well, crediting the Squares Project and naming
+`T-154`. No view changes a side, a frontier value, an evidence tier or a credit, and
+none replaces a witness.
+The modifications are read from each entry’s `run` and `method`: the retry rungs the
+solve climbed (`run.rungs`), or before the retry ladder of 12 October the one retry’s
+arguments (`run.retried_with`). The 23 vendored views admitted after the ladder had no
+rungs recorded; on 13 October 2026 `python -m devtools.regularize_evand rungs` recorded
+them from their runs’ retained reports at eight counts and, at the fifteen drawn from
+the run on jlevy/squares#518’s witnesses, from a fresh run of those counts,
+`evand-regularize-adopt518-v2` (917 s of wall, 2,097 CPU seconds at three workers),
+whose views came out byte for byte the drawn ones.
+Each entry names the run that supplied its rungs as `run.rungs_from`, and the index’s
+`runs` records the fresh run beside the runs whose views it draws.
 The tool never writes over rungs or a retry an entry already records.
 Only 152 climbed a rung (`force-kkt`); with 18’s earlier `dps-100`, those are the two
 vendored views drawn with a retry, and none used a replica patch.
