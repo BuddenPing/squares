@@ -74,8 +74,10 @@ def test_each_receipts_verified_value_trails_the_printed_side_and_was_superseded
         assert Fraction(case["verified_upper_bound"]["exact_form"]) < Fraction(
             row["exact_form"]
         ), n
+        # T-154's view lies exactly at T-101's side at all three, so the lane cites T-101's
+        # replays, which prove that side, and T-154's decision after them.
         later = (
-            [regularized.EVIDENCE]
+            regularized.verified_block(regularized.committed()[n])["evidence"]
             if n in regularized.committed()
             else [exact_ceilings.EXACT_REPLAY, exact_ceilings.SOURCE_REPLAY]
         )

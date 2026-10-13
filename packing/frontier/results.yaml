@@ -17215,15 +17215,18 @@ results:
     established: '2026-10-12'
     claim: >-
       For each of 59 counts n from 28 to 300, s(n) <= s_n, where s_n is the exact side of a
-      rational packing of the register's known-best packing at n that this project made with
-      Evan Daniel's exact solver and regularizer and decided here over Q. Each s_n lies
-      below the verified upper bound the record held, by 5.4e-20 at n = 29 to 9.9e-15 at n =
-      37, and each is now the exact form of its case's verified upper bound, which the case
-      record still prints at the decimal it printed before. The counts are 28, 29, 37, 39,
-      41, 50, 53, 54, 55, 69, 71, 83, 87, 101, 104, 107, 109, 122, 124, 125, 128, 145, 147,
-      148, 149, 151, 170, 171, 173, 174, 178, 197, 198, 200, 201, 202, 203, 204, 205, 226,
-      227, 229, 230, 231, 233, 234, 235, 257, 260, 262, 264, 265, 291, 293, 294, 296, 298,
-      299 and 300.
+      rational packing that this project made from the register's known-best witness at n
+      with Evan Daniel's exact solver and regularizer and decided here over Q; at 57 of the
+      counts it is measured here as the witness's packing, and at n = 204 and 299 that is
+      not decided.
+
+      Each s_n lies below the verified upper bound the record held, by 5.4e-20 at n = 29 to
+      9.9e-15 at n = 37, and each is now the exact form of its case's verified upper bound,
+      which the case record still prints at the decimal it printed before. The counts are
+      28, 29, 37, 39, 41, 50, 53, 54, 55, 69, 71, 83, 87, 101, 104, 107, 109, 122, 124, 125,
+      128, 145, 147, 148, 149, 151, 170, 171, 173, 174, 178, 197, 198, 200, 201, 202, 203,
+      204, 205, 226, 227, 229, 230, 231, 233, 234, 235, 257, 260, 262, 264, 265, 291, 293,
+      294, 296, 298, 299 and 300.
 
       The bounds are s(28) <= 5.824444616674059297016873205016, s(29) <=
       5.93383346267692918968946061635201914, s(37) <= 6.59861960924436011617837046268, s(39)
@@ -17273,10 +17276,17 @@ results:
       At 33 counts the certificate is the regularizer's own, at the side the solve reached,
       scaled by 1 + 1e-20 and rounded up, and that side is exactly the side of Evan Daniel's
       earlier certificate of the same packing (T-101), which the record had carried rounded
-      up at the fourteen decimals the catalogue prints. At 25 the certificate is this
-      project's same-side re-solve of the regularized view at the witness's own side,
-      6.6e-20 to 1.8e-19 below that certificate's side; at n = 29 it is the same, 5.4e-20
-      below the endpoint of the interval certificate (T-009).
+      up at the fourteen decimals the catalogue prints.
+
+      Those 33 bounds are previously published: Evan Daniel's certificates of 5 October 2026
+      state each side exactly, and T-101's replay here, by two checkers that share no code
+      with each other or with the source, already proves each. The case records cite that
+      replay beside this result's there; what is new at those counts is a second certificate
+      at the same side and the record carrying the side exactly rather than rounded up.
+
+      At 25 the certificate is this project's same-side re-solve of the regularized view at
+      the witness's own side, 6.6e-20 to 1.8e-19 below that certificate's side; at n = 29 it
+      is the same, 5.4e-20 below the endpoint of the interval certificate (T-009).
 
       Every certificate was decided here on 12 October 2026, every pair and every wall over
       Q, by sqpack.witness.exact_verify and devtools.check_rational_witness_independent,
@@ -17296,10 +17306,10 @@ results:
       0.82. At 37 counts the certificate draws the same picture as the witness; at the other
       22 it redraws the packing, and the regularized layer decides that drawing on its own.
 
-      The packings are the ones the Kingbird catalogue credits to their finders, as T-101
-      and T-009 record them, and the regularizations below name those results. The solver
-      and the regularizer are Evan Daniel's (https://github.com/evand/square-packing, MIT),
-      vendored here; the run, the same-side re-solve, the exact decisions and the
+      The views were made from the packings the Kingbird catalogue credits to their finders,
+      as T-101 and T-009 record them, and the regularizations below name those results. The
+      solver and the regularizer are Evan Daniel's (https://github.com/evand/square-packing,
+      MIT), vendored here; the run, the same-side re-solve, the exact decisions and the
       registration are this project's. No optimality, local minimum or rigidity is claimed.
     scope: {n_values: [28, 29, 37, 39, 41, 50, 53, 54, 55, 69, 71, 83, 87, 101, 104, 107, 109, 122, 124, 125, 128, 145, 147, 148, 149, 151, 170, 171, 173, 174, 178, 197, 198, 200, 201, 202, 203, 204, 205, 226, 227, 229, 230, 231, 233, 234, 235, 257, 260, 262, 264, 265, 291, 293, 294, 296, 298, 299, 300]}
     verification: V3
@@ -17324,7 +17334,10 @@ results:
       the checkers the producing run used, so reproduced with the producer's code. That is
       C3 with one machine method. The identity measurements, the drawing decisions and the
       comparisons with the earlier ceilings, the printed sides and the closed forms are
-      recorded values and set no rung.
+      recorded values and set no rung. At the 33 counts whose side is that of Evan Daniel's
+      certificate, T-101's replay by an independent implementation proves the same bound,
+      and the case records cite it beside this entry; this result's rung rests on its own
+      entry alone.
     regularizations:
       - n: 28
         of: T-101

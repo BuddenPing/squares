@@ -10,6 +10,7 @@ its own output, and the controls' construction to the outcomes it promises.
 from __future__ import annotations
 
 import json
+import re
 from decimal import Decimal
 from fractions import Fraction
 
@@ -174,7 +175,9 @@ def test_the_controls_refuse_an_overlap_and_a_shrink_and_accept_one_unit() -> No
 
 def test_a_trailing_blocker_names_the_gap_and_what_would_close_it() -> None:
     row = {
+        "side": "5.824444616674059297016873205016",
         "side_text": "5.824444616674059297016873205016",
+        "t101_side": None,
         "value": "5.824444616674059297016873205016",
         "printed_side": "5.82444461667405",
         "printed_exact_form": None,
@@ -185,3 +188,157 @@ def test_a_trailing_blocker_names_the_gap_and_what_would_close_it() -> None:
     assert blocker["kind"] == "mathematics"
     assert "9.297016873205016e-15" in blocker["detail"]
     assert blocker["evidence"] == ["E-kingbird-upper-register"]
+
+
+def test_t101s_replays_stay_cited_where_they_prove_the_same_side() -> None:
+    """At the 33 counts whose registered side is exactly the side of Evan Daniel's earlier
+    certificate (T-101), T-101's replays prove the same bound, the independent one among
+    them, so the lane cites them first and this layer's decision after; elsewhere this
+    layer's decision alone proves the side (PR #549, review B2)."""
+    same = [n for n, row in registered.committed().items() if registered.at_t101_side(row)]
+    assert len(same) == 33
+    replays = [apply_exact_ceilings.EXACT_REPLAY, apply_exact_ceilings.SOURCE_REPLAY]
+    for n in registered.committed():
+        evidence = registered.case_front(n)["verified_upper_bound"]["evidence"]
+        assert evidence == (
+            [*replays, registered.EVIDENCE] if n in same else [registered.EVIDENCE]
+        ), n
+
+
+def _flat(n: int) -> str:
+    """A record's text with the formatter's line breaks folded into spaces."""
+    return " ".join((registered.FRONTIER / f"n-{n:03d}.md").read_text(encoding="utf-8").split())
+
+
+def test_prose_calls_a_side_exact_only_where_its_decimal_is_the_side() -> None:
+    """Where the side's decimal never ends within the places prose writes, the decimal is
+    the side rounded up and is never called the side exactly, its exact side or the exact
+    form; where it ends, the ceiling section still says exactly (review B3)."""
+    rounded = []
+    for n, row in registered.committed().items():
+        text, shown = _flat(n), re.escape(row["side_text"])
+        if registered.rounded_up(Fraction(row["side"])):
+            rounded.append(n)
+            assert not re.search(rf"{shown}\$?, exactly", text), n
+            assert not re.search(rf"exact side, {shown}", text), n
+            assert not re.search(
+                rf"{shown}\$?, the verified upper bound \(T-154\), the exact", text
+            ), n
+            assert f"{row['side_text']}$ (rounded up at 36 places)" in text, n
+            assert "the verified upper bound (T-154) rounded up at 36 places" in text, n
+        else:
+            assert "rounded up at 36 places" not in text, n
+            if not row["agrees_with_report"]:
+                assert re.search(rf"{shown}\$, exactly", text), n
+    assert rounded == [41, 53, 54, 71, 128, 178, 300]
+
+
+def test_a_trailing_blocker_of_a_rounded_side_does_not_call_it_exact() -> None:
+    row = {
+        "side": "22/3",
+        "side_text": registered.side_text(Fraction(22, 3)),
+        "t101_side": None,
+        "value": "7.33333333333334",
+        "printed_side": "7.33333333333333",
+        "printed_exact_form": None,
+        "printed_exact_form_degree": None,
+        "above_exact_side_by": None,
+    }
+    detail = registered.trailing_blocker(row, ["E-kingbird-upper-register"])["detail"]
+    assert f"exact side, {row['side_text']}," not in detail
+    assert f"({row['side_text']} rounded up at 36 places)" in detail
+
+
+def test_a_view_not_paired_with_its_witness_is_not_called_its_arrangement() -> None:
+    """Where nearest centres do not pair the view's squares one to one with the witness's,
+    its identity with the credited packing is undecided, and the dated paragraph says the
+    view was made from the witness, not that it is the arrangement (review B5)."""
+    for n, row in registered.committed().items():
+        text = _flat(n)
+        paired = row["identity"]["one_to_one"]
+        assert ("exact rational packing of this arrangement" in text) == paired, n
+        assert ("exact rational packing from that witness" in text) == (not paired), n
+    assert [
+        n for n, row in registered.committed().items() if not row["identity"]["one_to_one"]
+    ] == [204, 299]
+
+
+@pytest.mark.parametrize(
+    ("n", "sentence", "reworded"),
+    [
+        (
+            28,
+            r"the\s+verified\s+upper\s+bound\s+from\s+6\s+to\s+12\s+October\s+2026\s+\(T-101\)",
+            "a ceiling then (T-101)",
+        ),
+        (
+            28,
+            r"the\s+verified\s+upper\s+bound\s+until\s+12\s+October\s+2026:",
+            "a ceiling then:",
+        ),
+        (
+            28,
+            r"Its\s+rounded-up\s+side\s+and\s+the\s+printed\s+side\s+agree\s+to\s+one",
+            "They agree to one",
+        ),
+        (29, r"own\s+interval\s+certificate\s+verified", "own interval certificate showed"),
+    ],
+)
+def test_a_reworded_earlier_sentence_is_refused_rather_than_left_present(
+    n: int, sentence: str, reworded: str
+) -> None:
+    """An earlier layer's sentence this layer puts in the past must be found in one tense or
+    the other; reworded past both, the record is refused, since a sentence no longer
+    matched would keep calling a superseded ceiling the verified upper bound (review A3)."""
+    text = (registered.FRONTIER / f"n-{n:03d}.md").read_text(encoding="utf-8")
+    changed, count = re.subn(sentence, reworded, text)
+    assert count == 1
+    with pytest.raises(registered.RegistrationError, match=f"n={n}: neither"):
+        registered.apply_case(n, changed)
+
+
+def test_the_least_row_three_view_is_registered_and_its_choice_checked() -> None:
+    """`select` keeps every row-3 output's side beside the one it takes, the least, and
+    `problems` holds a row to it; a row of the first selection, which records no such
+    sides, is held to the same-side view's side, the witness's own (review A4)."""
+    report = {
+        "decisions": {"same": {"row": 3}, "solved": {"row": 3}},
+        "outputs": {"same": {"side_exact": "7/2"}, "solved": {"side_exact": "13/4"}},
+    }
+    assert registered.least_output(report) == ("solved", {"same": "7/2", "solved": "13/4"})
+    base = {"side": "13/4", "output": "solved", "outputs_at_row_3": ["same", "solved"]}
+    assert (
+        registered.least_view_problems(
+            1, {**base, "row_three_sides": {"same": "7/2", "solved": "13/4"}}
+        )
+        == []
+    )
+    assert registered.least_view_problems(
+        1,
+        {
+            **base,
+            "side": "7/2",
+            "output": "same",
+            "row_three_sides": {"same": "7/2", "solved": "13/4"},
+        },
+    ) == ["n=1: the registered view is not the least row-3 output"]
+    assert registered.least_view_problems(1, {**base, "witness_side": "7/2"}) == []
+    assert registered.least_view_problems(1, {**base, "witness_side": "3"}) == [
+        "n=1: the registered view lies above the same-side view"
+    ]
+
+
+def test_the_controls_are_151_distinct_mutants() -> None:
+    """At a same-side view the least top or right clearance is 0, so the box shrunk past it
+    is the box shrunk by one unit: the 177 decisions are of 151 distinct mutants, as the
+    evidence entry and the package README say (review B6)."""
+    receipt = json.loads(registered.CONTROLS.read_text(encoding="utf-8"))
+    touching = {
+        row["n"]
+        for row in receipt["rows"]
+        if row["control"] == "side-shrunk-past-clearance" and row["clearance"] == 0
+    }
+    assert touching == {
+        n for n, row in registered.committed().items() if row["output"] == "same"
+    }
+    assert receipt["controls"] - len(touching) == 151

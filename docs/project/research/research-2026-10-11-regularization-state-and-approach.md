@@ -424,7 +424,10 @@ under the result holding the drawn packing, and `check_results` checks the block
 **The registration (#549).** T-154 registers the exact sides of 59 views that sat just
 below their verified ceilings: 5.4e-20 to 9.9e-15 below, V3/C3, S1. Each case record
 keeps the decimal it printed.
-With the bounds refreshed from the records, 16 of the 22 counts held at row 3 are
+At 33 counts the side is exactly that of Evan Daniel’s certificate of the same packing
+(T-101), so those bounds were already published, and the records cite T-101’s
+independent replay beside T-154’s decision; the 26 other sides, the witnesses’ own, are
+new. With the bounds refreshed from the records, 16 of the 22 counts held at row 3 are
 admitted. 39, 204 and 299 go to review, and 53, 151 and 298 are refused.
 A sixtieth count, 176, left the batch when #553 re-housed it below the side of its view.
 
