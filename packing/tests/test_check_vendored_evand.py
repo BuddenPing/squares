@@ -9,6 +9,8 @@ from __future__ import annotations
 
 import hashlib
 import os
+import re
+import stat
 import subprocess
 import time
 from pathlib import Path
@@ -400,7 +402,89 @@ def test_the_command_reports_and_fails_on_a_finding(
 
 
 # ---------------------------------------------------------------------------
-# Re-pinning: the commit
+# Links and modes
+# ---------------------------------------------------------------------------
+
+
+def _pin(directory: Path, path: str, *, executable: bool = False) -> None:
+    """Declare `path`, as it now is, in the manifest's `files` (a forged manifest line)."""
+    data = (directory / path).read_bytes()
+    manifest = directory / vendored.MANIFEST_NAME
+    text = manifest.read_text()
+    files = [
+        pinned
+        for pinned in vendored.load_manifest(manifest).files.values()
+        if pinned.path != path
+    ]
+    files.append(vendored.Pinned(path, len(data), hashlib.sha256(data).hexdigest(), executable))
+    record = safe_load(text)
+    rendered = vendored.render_manifest(
+        metadata={key: str(record[key]) for key in METADATA},
+        files=sorted(files, key=lambda item: item.path),
+        retrieved=str(record["retrieved"]),
+    )
+    manifest.write_text(rendered, encoding="utf-8")
+
+
+@pytest.mark.parametrize("indexed", [False, True], ids=["walked", "git"])
+def test_a_symbolic_link_is_refused_even_to_identical_bytes(
+    tmp_path: Path, *, indexed: bool
+) -> None:
+    if indexed:
+        _git(tmp_path, "init", "-q")
+    directory = _copy(tmp_path)
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / "data.json").write_bytes(UPSTREAM["search/data.json"])
+    (directory / "search/data.json").unlink()
+    (directory / "search/data.json").symlink_to(outside / "data.json")
+    assert _problems(directory) == [
+        "search/data.json: a symbolic link; the vendored copy holds regular files only"
+    ]
+    (directory / "search/data.json").unlink()
+    (directory / "search/data.json").write_bytes(UPSTREAM["search/data.json"])
+    (directory / "search/linked").symlink_to(outside, target_is_directory=True)
+    assert _problems(directory)[0] == (
+        "search/linked: a symbolic link; the vendored copy holds regular files only"
+    )
+
+
+def test_a_linked_directory_holding_pinned_files_is_refused(tmp_path: Path) -> None:
+    directory = _copy(tmp_path)
+    moved = tmp_path / "elsewhere"
+    (directory / "search").rename(moved)
+    (directory / "search").symlink_to(moved, target_is_directory=True)
+    assert _problems(directory) == [
+        "search: a symbolic link; the vendored copy holds regular files only"
+    ]
+
+
+def test_the_executable_bit_is_held_to_the_manifest(tmp_path: Path) -> None:
+    directory = _copy(tmp_path)
+    tool = directory / "search/tool.py"
+    tool.chmod(tool.stat().st_mode | stat.S_IXUSR)
+    assert _problems(directory) == [
+        "search/tool.py: mode 100755, not the pinned 100644; the copy keeps upstream's modes"
+    ]
+    _pin(directory, "search/tool.py", executable=True)
+    assert _problems(directory) == []
+    tool.chmod(tool.stat().st_mode & ~0o111)
+    assert _problems(directory) == [
+        "search/tool.py: mode 100644, not the pinned 100755; the copy keeps upstream's modes"
+    ]
+
+
+def test_the_executable_field_is_a_boolean(tmp_path: Path) -> None:
+    directory = _copy(tmp_path)
+    _pin(directory, "search/tool.py", executable=True)
+    manifest = directory / vendored.MANIFEST_NAME
+    manifest.write_text(manifest.read_text().replace("executable: true", "executable: 1"))
+    with pytest.raises(vendored.ManifestError, match="`executable` is `true` or absent"):
+        vendored.load_manifest(manifest)
+
+
+# ---------------------------------------------------------------------------
+# Re-pinning: the commit, the mode and links
 # ---------------------------------------------------------------------------
 
 
@@ -434,3 +518,39 @@ def test_a_full_id_the_checkout_does_not_hold_is_a_refusal_not_a_traceback(
     directory = _copy(tmp_path / "project")
     with pytest.raises(vendored.ManifestError, match="is not a commit in"):
         vendored.repin(directory, checkout, commit="f" * 40, retrieved="2026-10-12")
+
+
+def test_a_repin_records_upstream_modes_and_refuses_links(tmp_path: Path) -> None:
+    checkout = _upstream(tmp_path)
+    for root in (checkout, _copy(tmp_path / "project")):
+        script = root / "search/tool.py"
+        script.chmod(script.stat().st_mode | stat.S_IXUSR)
+    _git(checkout, "commit", "-q", "-a", "-m", "tool.py is executable")
+    directory = tmp_path / "project" / "vendor" / "upstream"
+    text = vendored.repin(directory, checkout, commit=_head(checkout), retrieved="2026-10-12")
+    tool = UPSTREAM["search/tool.py"]
+    assert (
+        f"{{path: search/tool.py, bytes: {len(tool)}, "
+        f"sha256: {hashlib.sha256(tool).hexdigest()}, executable: true}}"
+    ) in text
+    assert text.count(", executable: true}") == 1
+    (directory / vendored.MANIFEST_NAME).write_text(text, encoding="utf-8")
+    assert (
+        vendored.load_manifest(directory / vendored.MANIFEST_NAME)
+        .files["search/tool.py"]
+        .executable
+    )
+    assert _problems(directory) == []
+    script = directory / "search/tool.py"
+    script.chmod(script.stat().st_mode & ~0o111)
+    with pytest.raises(
+        vendored.ManifestError, match=re.escape("search/tool.py: not upstream's mode")
+    ):
+        vendored.repin(directory, checkout, commit=_head(checkout), retrieved="2026-10-12")
+    script.chmod(script.stat().st_mode | stat.S_IXUSR)
+    (directory / "search/data.json").unlink()
+    (directory / "search/data.json").symlink_to(checkout / "search/data.json")
+    with pytest.raises(
+        vendored.ManifestError, match=re.escape("search/data.json: a symbolic link")
+    ):
+        vendored.repin(directory, checkout, commit=_head(checkout), retrieved="2026-10-12")

@@ -15,8 +15,8 @@ The code is under the MIT licence, whose notice is kept with this copy in
 [LICENSE](LICENSE).
 
 [vendored.yaml](vendored.yaml) is the machine-readable manifest: the pin, the licence
-and every file’s size and SHA-256. `devtools.check_vendored_evand` holds the directory
-to it in the edit tier.
+and every file’s size, SHA-256 and executable bit.
+`devtools.check_vendored_evand` holds the directory to it in the edit tier.
 
 ## Source and Pin
 
@@ -153,7 +153,8 @@ None. Every file is byte-identical to the pin.
    `uv run --frozen --all-extras --group dev python -m devtools.check_vendored_evand --write --checkout ../attic/evand-square-packing --commit <commit> --retrieved <date>`,
    with the full 40-digit commit id.
    It compares every vendored file with the checkout’s blob at the commit, byte for
-   byte, refuses on any difference, and rewrites `vendored.yaml`.
+   byte and mode for mode, refuses on any difference or symbolic link, and rewrites
+   `vendored.yaml`.
 5. Update Source and Pin and the credit lines above.
    Records made at the old pin keep naming it as their provenance.
 6. Re-apply and re-record any local changes, then run the check and the edit tier.

@@ -27,25 +27,25 @@ Nothing else may refuse anything on these digests. No tool that runs the generat
 them, and a mismatch here fails this check alone; it never blocks a regularization run or
 invalidates a result, whose soundness rests on the exact checkers, not on the generator.
 
-**What passes.** Every pinned file is present with its size and SHA-256, unless the
-manifest's `local_changes` records it: `modified` (present, no longer the pinned bytes,
-and for code a header comment naming `vendor/evand-regularize/README.md`), `removed`
-(absent), or `added` (a file upstream never had, present). The README's Local Changes
-section names each recorded change's path, so the prose account and the manifest cannot
-drift apart; the section alone counts, since the README's role table names every file. The
-licence file is never a local change: the MIT grant requires its notice with every copy.
-Nothing else is in the directory besides its `README.md` and `vendored.yaml`, the
-project's own two files. What the directory holds is asked of git -- tracked
-files and untracked files git would commit, so a stray run output is a finding before it
-is staged and a gitignored `__pycache__` is not -- and walked from the filesystem only
-where there is no index to ask.
+**What passes.** Every pinned file is present with its size, SHA-256 and executable
+bit, unless the manifest's `local_changes` records it: `modified` (present, no longer the
+pinned bytes, and for code a header comment naming `vendor/evand-regularize/README.md`),
+`removed` (absent), or `added` (a file upstream never had, present). The README's Local
+Changes section names each recorded change's path, so the prose account and the manifest
+cannot drift apart; the section alone counts, since the README's role table names every
+file. The licence file is never a local change: the MIT grant requires its notice with
+every copy. Nothing else is in the directory besides its `README.md` and `vendored.yaml`,
+the project's own two files, and no path in it is a symbolic link. What the directory
+holds is asked of git -- tracked files and untracked files git would commit, so a stray
+run output is a finding before it is staged and a gitignored `__pycache__` is not -- and
+walked from the filesystem only where there is no index to ask.
 
 **Re-pinning** is `--write`: from a clean upstream checkout at the new pin, after the
 vendored files have been replaced with the new pin's bytes, it compares every vendored
-file with the checkout's blob at that commit, byte for byte, and rewrites the manifest.
-`--commit` is the full 40-digit id, so git can never read it as an option. It refuses
-while local changes are recorded, because a re-pin must start from the pristine copy
-(the README, "Re-pinning").
+file with the checkout's blob at that commit, byte for byte and mode for mode, and
+rewrites the manifest. `--commit` is the full 40-digit id, so git can never read it as
+an option. It refuses while local changes are recorded, because a re-pin must start
+from the pristine copy (the README, "Re-pinning").
 
 Usage, from `packing/`, each after `uv run --frozen --all-extras --group dev`:
     python -m devtools.check_vendored_evand
@@ -61,6 +61,7 @@ import argparse
 import hashlib
 import os
 import re
+import stat
 import subprocess
 import sys
 from collections.abc import Iterable, Mapping, Sequence
@@ -87,6 +88,9 @@ KINDS = ("modified", "added", "removed")
 #: A patched or added file of these kinds carries a header comment pointing here.
 COMMENTED_SUFFIXES = frozenset({".py", ".sh"})
 HEADER_LINES = 20
+#: Git's modes for a regular file and an executable one; the copy holds nothing else.
+REGULAR = "100644"
+EXECUTABLE = "100755"
 #: The README heading under which each recorded local change is described. Only the text
 #: from it to the next heading of any level names a change: the role table names them all.
 LOCAL_CHANGES = "### Local Changes"
@@ -130,6 +134,7 @@ class Pinned:
     path: str
     size: int
     sha256: str
+    executable: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -188,10 +193,14 @@ def _pinned(entry: object, place: int) -> Pinned:
     if not _HEX256.match(sha256):
         msg = f"{where} ({path}): `sha256` must be 64 lowercase hex digits"
         raise ManifestError(msg)
+    executable = record.get("executable", False)
+    if not isinstance(executable, bool):
+        msg = f"{where} ({path}): `executable` is `true` or absent"
+        raise ManifestError(msg)
     if path in OWN_FILES:
         msg = f"{where}: {path} is this project's own file, not an upstream one"
         raise ManifestError(msg)
-    return Pinned(path, size, sha256)
+    return Pinned(path, size, sha256, executable)
 
 
 def _change(entry: object, place: int) -> Change:
@@ -279,7 +288,8 @@ def _git_listed(directory: Path) -> set[str] | None:
 
     Asked from the work tree's top so that a directory git ignores as a whole answers
     `None` (no index speaks for it) rather than an empty listing that would read as every
-    file missing.
+    file missing. A symbolic link is listed whatever it points at, so the check can
+    refuse it.
     """
     try:
         top = subprocess.run(
@@ -316,12 +326,22 @@ def _git_listed(directory: Path) -> set[str] | None:
     ).stdout
     prefix = "" if inside == "." else inside + "/"
     names = (os.fsdecode(name) for name in listed.split(b"\0") if name)
-    return {name.removeprefix(prefix) for name in names if (root / name).is_file()}
+    return {
+        name.removeprefix(prefix)
+        for name in names
+        if (root / name).is_file() or (root / name).is_symlink()
+    }
 
 
 def _walked(directory: Path) -> set[str]:
     found: set[str] = set()
     for here, names, files in os.walk(directory):
+        # A linked directory is not descended into; it is a finding in its own right.
+        found.update(
+            (Path(here) / name).relative_to(directory).as_posix()
+            for name in names
+            if (Path(here) / name).is_symlink()
+        )
         names[:] = [name for name in names if name not in _SKIP]
         found.update(
             (Path(here) / name).relative_to(directory).as_posix()
@@ -344,6 +364,15 @@ def present_files(directory: Path) -> set[str]:
 
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _mode(path: Path) -> str:
+    """Git's mode for a regular file: executable when its owner may execute it."""
+    return EXECUTABLE if path.stat().st_mode & stat.S_IXUSR else REGULAR
+
+
+def _pinned_mode(pinned: Pinned) -> str:
+    return EXECUTABLE if pinned.executable else REGULAR
 
 
 def _names_vendored(path: Path) -> bool:
@@ -379,7 +408,19 @@ def local_changes_text(prose: str) -> str:
     return "\n".join(section or ())
 
 
-def _pinned_problems(directory: Path, manifest: Manifest, present: set[str]) -> list[str]:
+def link_in(directory: Path, path: str) -> str | None:
+    """The first component of `path` under `directory` that is a symbolic link, if any."""
+    parts = path.split("/")
+    for end in range(1, len(parts) + 1):
+        prefix = "/".join(parts[:end])
+        if (directory / prefix).is_symlink():
+            return prefix
+    return None
+
+
+def _pinned_problems(
+    directory: Path, manifest: Manifest, present: set[str], linked: set[str]
+) -> list[str]:
     problems: list[str] = []
     for path, pinned in sorted(manifest.files.items()):
         change = manifest.changes.get(path)
@@ -389,43 +430,81 @@ def _pinned_problems(directory: Path, manifest: Manifest, present: set[str]) -> 
         elif change is not None and change.kind == "removed":
             if path in present:
                 problems.append(f"{path}: recorded as removed, but it is still here")
+        elif path in linked:
+            continue  # refused as a link; its bytes are not this copy's to compare
         elif path not in present:
             problems.append(f"{path}: pinned, but missing from the vendored copy")
-        elif change is None:
-            size = where.stat().st_size
-            if size != pinned.size:
+        else:
+            mode = _mode(where)
+            if mode != _pinned_mode(pinned):
                 problems.append(
-                    f"{path}: {size} bytes, not the pinned {pinned.size}; an edit to vendored "
-                    "code is a local change, recorded in vendored.yaml (README.md, Forking)"
+                    f"{path}: mode {mode}, not the pinned {_pinned_mode(pinned)}; the copy "
+                    "keeps upstream's modes"
                 )
-            elif _sha256(where) != pinned.sha256:
-                problems.append(
+            problems += _content_problems(where, path, pinned, change)
+    return problems
+
+
+def _content_problems(
+    where: Path, path: str, pinned: Pinned, change: Change | None
+) -> list[str]:
+    if change is None:
+        size = where.stat().st_size
+        if size != pinned.size:
+            return [
+                (
+                    f"{path}: {size} bytes, not the pinned {pinned.size}; an edit to "
+                    "vendored code is a local change, recorded in vendored.yaml "
+                    "(README.md, Forking)"
+                )
+            ]
+        if _sha256(where) != pinned.sha256:
+            return [
+                (
                     f"{path}: not the pinned bytes; an edit to vendored code is a local "
                     "change, recorded in vendored.yaml (README.md, Forking)"
                 )
-        elif _sha256(where) == pinned.sha256:
-            problems.append(f"{path}: recorded as modified, but it is still the pinned bytes")
-        elif where.suffix in COMMENTED_SUFFIXES and not _names_vendored(where):
-            problems.append(
+            ]
+        return []
+    if _sha256(where) == pinned.sha256:
+        return [f"{path}: recorded as modified, but it is still the pinned bytes"]
+    if where.suffix in COMMENTED_SUFFIXES and not _names_vendored(where):
+        return [
+            (
                 f"{path}: modified, but its first {HEADER_LINES} lines carry no comment "
                 f"naming {HEADER_MARK}"
             )
-    return problems
+        ]
+    return []
 
 
 def check(directory: Path, manifest: Manifest, present: Iterable[str]) -> list[str]:
     """Every way the vendored copy at `directory` disagrees with `manifest`."""
     held = set(present)
+    links = {
+        found
+        for found in (link_in(directory, path) for path in held | set(manifest.files))
+        if found is not None
+    }
+    linked = {
+        path
+        for path in held | set(manifest.files)
+        if any(path == link or path.startswith(link + "/") for link in links)
+    }
     problems = [
         f"{name}: this project's file is missing from the vendored directory"
         for name in sorted(OWN_FILES - held)
+    ]
+    problems += [
+        f"{link}: a symbolic link; the vendored copy holds regular files only"
+        for link in sorted(links)
     ]
     if manifest.license_file in manifest.changes:
         problems.append(
             f"{manifest.license_file}: the licence file is never a local change; the MIT "
             "grant requires its notice with every copy"
         )
-    problems += _pinned_problems(directory, manifest, held)
+    problems += _pinned_problems(directory, manifest, held, linked)
     for path, change in sorted(manifest.changes.items()):
         if path in manifest.files:
             continue
@@ -433,8 +512,10 @@ def check(directory: Path, manifest: Manifest, present: Iterable[str]) -> list[s
             problems.append(f"{path}: recorded as {change.kind}, but upstream has no such file")
         elif path not in held:
             problems.append(f"{path}: recorded as added, but it is not here")
-        elif (directory / path).suffix in COMMENTED_SUFFIXES and not _names_vendored(
-            directory / path
+        elif (
+            path not in linked
+            and (directory / path).suffix in COMMENTED_SUFFIXES
+            and not _names_vendored(directory / path)
         ):
             problems.append(
                 f"{path}: added, but its first {HEADER_LINES} lines carry no comment "
@@ -448,7 +529,7 @@ def check(directory: Path, manifest: Manifest, present: Iterable[str]) -> list[s
         for path in sorted(manifest.changes)
         if path not in described
     ]
-    expected = set(manifest.files) | set(manifest.changes) | OWN_FILES
+    expected = set(manifest.files) | set(manifest.changes) | OWN_FILES | linked
     problems += [
         f"{path}: not in the manifest; vendored code changes only by a recorded local "
         "change, and run outputs belong in a scratch directory, not here"
@@ -484,6 +565,18 @@ def _git(repository: Path, *arguments: str) -> bytes:
         capture_output=True,
         env={**environment, "GIT_TERMINAL_PROMPT": "0"},
     ).stdout
+
+
+def tree_entries(repository: Path, commit: str) -> dict[str, tuple[str, str]]:
+    """Every file in `commit`'s tree, as path -> (mode, object id); reads trees only."""
+    listed = _git(repository, "ls-tree", "-r", "-z", "--full-tree", "--end-of-options", commit)
+    entries: dict[str, tuple[str, str]] = {}
+    for record in listed.split(b"\0"):
+        if record:
+            head, _, name = record.partition(b"\t")
+            mode, _, oid = head.decode().split(" ")
+            entries[os.fsdecode(name)] = (mode, oid)
+    return entries
 
 
 def _commit_fields(repository: Path, commit: str) -> list[str]:
@@ -534,9 +627,11 @@ def render_manifest(
         "files:",
     ]
     lines.extend(
-        f"  - {{path: {item.path}, bytes: {item.size}, sha256: {item.sha256}}}"
+        f"  - {{path: {item.path}, bytes: {item.size}, sha256: {item.sha256}"
+        + (", executable: true}" if item.executable else "}")
         for item in files
     )
+
     return "\n".join(lines) + "\n"
 
 
@@ -544,8 +639,9 @@ def repin(directory: Path, checkout: Path, *, commit: str, retrieved: str) -> st
     """The manifest for `directory` as a copy of `checkout` at `commit`, or a refusal.
 
     Each vendored file is compared byte for byte with the checkout's blob at the commit,
-    read from the checkout's object store, so a modified working tree there is harmless.
-    `commit` is a full commit id, never a name git could read as an option.
+    read from the checkout's object store, so a modified working tree there is harmless,
+    and its mode with the tree's. `commit` is a full commit id, never a name git could
+    read as an option.
     """
     if not _COMMIT.match(commit):
         msg = f"--commit must be the full 40-digit commit id, not {commit!r}"
@@ -572,19 +668,31 @@ def repin(directory: Path, checkout: Path, *, commit: str, retrieved: str) -> st
         "subject": fields[3],
         "copyright": holder,
     }
+    entries = tree_entries(checkout, commit)
     pinned: list[Pinned] = []
     mismatched: list[str] = []
     for path in sorted(present_files(directory) - OWN_FILES):
+        if link_in(directory, path) is not None:
+            mismatched.append(f"{path}: a symbolic link; the vendored copy holds files only")
+            continue
+        entry = entries.get(path)
+        if entry is None:
+            mismatched.append(f"{path}: upstream has no such file at {commit[:12]}")
+            continue
+        mode, oid = entry
+        if mode not in {REGULAR, EXECUTABLE}:
+            mismatched.append(f"{path}: upstream holds mode {mode} there, not a file")
+            continue
         data = (directory / path).read_bytes()
-        try:
-            blob = _git(checkout, "cat-file", "blob", "--end-of-options", f"{commit}:{path}")
-        except subprocess.CalledProcessError:
-            mismatched.append(f"{path}: upstream has no such file at {fields[0][:12]}")
+        if _git(checkout, "cat-file", "blob", oid) != data:
+            mismatched.append(f"{path}: not upstream's bytes at {commit[:12]}")
             continue
-        if blob != data:
-            mismatched.append(f"{path}: not upstream's bytes at {fields[0][:12]}")
+        if _mode(directory / path) != mode:
+            mismatched.append(f"{path}: not upstream's mode {mode} at {commit[:12]}")
             continue
-        pinned.append(Pinned(path, len(data), hashlib.sha256(data).hexdigest()))
+        pinned.append(
+            Pinned(path, len(data), hashlib.sha256(data).hexdigest(), mode == EXECUTABLE)
+        )
     if mismatched:
         raise ManifestError("; ".join(mismatched))
     return render_manifest(metadata=metadata, files=pinned, retrieved=retrieved)
