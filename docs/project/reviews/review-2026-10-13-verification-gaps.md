@@ -1,15 +1,18 @@
 # Review: Verification Gaps in the Drawn Packings and the Upper-Bound Register
 
 **Date:** 13 October 2026. **Verdict: five standing gaps, each to be filled; no bound in
-the register is wrong.** Every count’s verified upper bound rests on an exact
+the register is wrong.** At the stack top every count’s verified upper bound rests on an
+exact certificate; on `main` all but `n = 29`, whose bound rests on an interval
 certificate. What falls short of the owner’s standard is what the project *draws* and
 what it *reports*. Of the 324 drawings on the site’s atlas, 58 at the stack top (77 on
 `main`) show a packing that is only numerically checked.
 15 on each tree show an exactly verified packing at a side above the verified upper
 bound. The case pages and the composites draw all 92 numerically checked witnesses on
 both trees. At the exact 36-digit reading the project’s own regularizer makes, 79 of
-those 92 are not packings at their printed sides, and all five read here at full
-precision fail. 63 case records report a side that no exact certificate reaches.
+those 92 are not packings at their printed sides.
+Four of the five read here at full precision fail too; the fifth, `n = 172`, is a
+packing once translated to the lower-left corner.
+63 case records report a side that no exact certificate reaches.
 
 The owner set the standard on 13 October 2026: “Every packing, even after
 regularization, should be exactly verified”, where “valid means a valid packing with
@@ -43,11 +46,12 @@ numerical check at any tolerance is neither.
 Below, R is the case record’s reported upper bound and U its verified upper bound, the
 best side the record verifies exactly.
 A drawn packing is **valid** when it is exactly verified at a side no larger than U.
-That is how the stack’s regularization policy records the owner’s answer (section 9,
-question 13): a view is valid when both maintained exact routes accept it and its side
-is at most U, the best side the record verifies, since the owner asked for a packing
-“optimal as best as known”.
-R cannot be the line.
+That is how the regularization policy records the owner’s answer, as section 9, question
+13, on the stack’s next layer (pull request 580, commit `051082536`); the policy at
+`408e4c42f` has twelve items.
+A view is valid when both maintained exact routes accept it and its side is at most U,
+the best side the record verifies, since the owner asked for a packing “optimal as best
+as known”. R cannot be the line.
 It is a printed decimal that often truncates the optimum, and no exact packing may reach
 it. Where R lies below U, that is its own gap (Gap 4).
 
@@ -61,7 +65,7 @@ Counts out of 324.
 | 1b. Case pages, composites and survey thumbnails draw one | 92 | 92 | measured |
 | 2a. Numerically checked witness, all known-best | 92 | 92 | measured |
 | 2b. Of those, the axis tool’s exact 36-digit reading is no packing at the printed side | 79 (71 overlap, 8 too large) | 79 | read from the index |
-| 2c. Of those, read exactly at full precision and found infeasible | 5 of 5 sampled | same files | measured |
+| 2c. Of those, read exactly at full precision and infeasible at the printed side | 4 of 5 sampled | same files | measured |
 | 3. Drawn exact view sits above U | 15 | 15 | measured |
 | 4a. R below U: the reported side is not exactly certified | 63 | 63 | measured |
 | 4b. U rests on an interval certificate, not an exact one | 1 (n = 29) | 0 | measured |
@@ -150,18 +154,20 @@ tolerance-aware sign the check uses, so a value replaces the running minimum onl
 it is lower by more than the tolerance.
 The recorded figures are therefore some value within `1e-8` (or `1e-12`) of the true
 minimum, not the minimum itself.
-At `n = 10` the receipt records 0 for both, while the exact reading below finds four
-overlaps of `6.9e-30`. Six receipts record a negative figure:
+This review logs that as [D-520](../../../defects.md), a `soundness` defect in the
+`flattering` direction, outstanding under `think-jtot`. At `n = 10` the receipt records
+0 for both, while the exact reading below finds four overlaps of `6.9e-30`. Six receipts
+record a negative figure:
 
-| n | Source, tolerance | Receipt’s figure | Exact reading at the printed side |
-| ---: | --- | --- | --- |
-| 5 | Kingbird, `1e-8` | pair gap `−2.6e-100` | **4 overlaps**, pair gap `−6.86e-30` |
-| 10 | Kingbird, `1e-8` | 0 and 0 | **4 overlaps**, pair gap `−6.86e-30` |
-| 71 | Kingbird, `1e-8` | pair gap `−3.2e-100` | not read here; the axis tool’s reading overlaps |
-| 106 | Couzo, `1e-12` | containment `−3.10e-16` | **34 wall violations**, clearance `−8.28e-16`; pairs separated by at least `1.98e-13` |
-| 172 | Couzo, `1e-12` | containment `−3.15e-18` | **22 wall violations**, clearance `−5.09e-17`; pairs separated by at least `2.01e-13` |
-| 257 | Kingbird, `1e-8` | pair gap `−1.5e-120` | not read here; the axis tool’s reading overlaps |
-| 301 | Couzo, `1e-12` | containment `−3.24e-17` | **27 wall violations**, clearance `−5.14e-16`; pairs separated by at least `1.99e-13` |
+| n | Source, tolerance | Receipt’s figure | Exact reading, as printed | Exact reading, translated to the lower-left corner |
+| ---: | --- | --- | --- | --- |
+| 5 | Kingbird, `1e-8` | pair gap `−2.6e-100` | **4 overlaps**, pair gap `−6.858e-30` | the same |
+| 10 | Kingbird, `1e-8` | 0 and 0 | **4 overlaps**, pair gap `−6.858e-30` | the same |
+| 71 | Kingbird, `1e-8` | pair gap `−3.2e-100` | not read here; the axis tool’s reading overlaps | — |
+| 106 | Couzo, `1e-12` | containment `−3.10e-16` | **34 wall violations**, clearance `−8.28e-16` | **6 wall violations**, clearance `−3.47e-16` |
+| 172 | Couzo, `1e-12` | containment `−3.15e-18` | **22 wall violations**, clearance `−5.09e-17` | **a packing**: clearance 0 |
+| 257 | Kingbird, `1e-8` | pair gap `−1.5e-120` | not read here; the axis tool’s reading overlaps | — |
+| 301 | Couzo, `1e-12` | containment `−3.24e-17` | **27 wall violations**, clearance `−5.14e-16` | **1 wall violation**, clearance `−5.60e-16` |
 
 The `n = 10` row records no negative figure and is included as the counterexample.
 
@@ -169,13 +175,19 @@ The `n = 10` row records no negative figure and is included as the counterexampl
 the exact rationals its decimal centres and side denote.
 Each printed angle became the exact rotation built from its half-angle tangent rounded
 to 60 digits, so that cos² + sin² = 1 exactly.
-The resulting rational witness was decided with `sqpack.witness.exact_verify`. That
-rounding moves a corner by less than `1e-59`, far below every margin found.
-At `n = 5` a 150-digit tangent gives the same result.
-All five sampled witnesses are refused.
+The resulting rational witness was decided with `sqpack.witness.exact_verify`, once
+where it is printed and once translated so that its least corner sits at the origin, the
+translation the axis tool applies before it decides its 36-digit reading.
+The tangent’s rounding moves a corner by less than `1e-59`, far below every margin
+found. At `n = 5` a 150-digit tangent gives the same result.
+Four of the five are infeasible at their printed sides, translated or not.
 The Kingbird pair overlaps at `5` and `10` are at the level of the 30-digit truncation
-of `√2/2` in their printed sides.
-The Couzo witnesses are pairwise disjoint but cross a wall by up to `8.3e-16`.
+of `√2/2` in their printed sides, and translation does not change them.
+The three Couzo witnesses have no overlaps: every pair is separated by at least
+`1.98e-13`, and only walls fail.
+Translated, `106` and `301` still cross a wall, by the axis tool’s side excesses, and
+`172` is a packing: a correctly shaped packing placed `5.1e-17` off, which matches the
+axis tool’s “fits”.
 
 **The axis tool’s exact reading.** **Read** from the index on both trees.
 For each decimal witness, `devtools.regularize_axis_components` builds the 36-digit
@@ -223,7 +235,7 @@ Couzo’s earlier decimal pose, `3e-12` to `3.6e-11` larger.
 
 **Measured.** These site-atlas drawings are exactly verified, but at a side above U, so
 they are not valid by the standard above.
-All are views of decimal witnesses, and at every one R = U.
+All are views of decimal witnesses, and at every one but `87` on the stack top, R = U.
 
 - **`main`, 15 counts:** 26, `5.5e-30` above a closed-form U, and the 14 Couzo counts
   106, 110, 152, 172, 177, 182, 206, 210, 240, 241, 268, 273, 297 and 301, `2.8e-12` to
@@ -233,9 +245,10 @@ All are views of decimal witnesses, and at every one R = U.
   - 18, 26, 66 and 85, `3.7e-31` to `5.5e-30` above a closed-form U. These are the
     status quo of the stack policy’s section 9, item 4 (“irrational optima”).
   - 87, `4.3e-16` above U.
-  - The ten Couzo counts 106, 110, 152, 172, 182, 206, 241, 268, 297 and 301, each drawn
-    at the witness’s side, `2.8e-12` to `3.6e-11` above U. Of these, 110 and 301 are the
-    axis tool’s views.
+  - The ten Couzo counts 106, 110, 152, 172, 182, 206, 241, 268, 297 and 301, `2.8e-12`
+    to `3.6e-11` above U. Each is drawn within `1.6e-15` of the witness’s printed side,
+    on either side of it (`268` at `−1.61e-15`, `206` at `+1.12e-15`). The axis tool’s
+    views at 110 and 301 sit `8.9e-17` and `5.6e-16` above it.
 
 At 177, 210, 240 and 273 the stack draws Daniel’s view at exactly U = R. Those drawings
 are valid.
@@ -278,15 +291,20 @@ on both trees. Each closed form was evaluated to 100 digits with
     truncated print, so the truncation, not the packing, is what falls short.
   - All 63 have a numerically checked witness.
     R exceeds U nowhere.
-- **The record already says so, count by count.** Thirteen of the 16 decimal-only
-  records say “The printed side itself is not certified here”, and all 47 closed-form
-  records say that U is the certificate’s side rounded up at fourteen decimals (for
-  example, [`n-028.md`](../../../packing/frontier/n-028.md)). The rule comes from
-  [`catalogue_upper_bounds.py`](../../../packing/devtools/catalogue_upper_bounds.py):
-  the verified value is the larger of the printed side and the certified side rounded up
-  at the printed precision, and the record compares the two to one unit of the printed
-  last place. Under that convention the 63 counts are agreements.
-  Under the owner’s standard they are gaps.
+- **The record already says so, count by count, and its own rule splits the 63.** The
+  agreement rule is `sqpack.assurance.bounds_agree_at_declared_precision`, under which
+  conflicting exact identities never agree.
+  On both trees it accepts R and U at 15 counts, the decimal-only 11, 17, 28, 37, 39,
+  41, 55, 69, 71, 83, 87, 128, 205, 235 and 300. Thirteen of the 16 decimal-only records
+  say “The printed side itself is not certified here” (for example,
+  [`n-028.md`](../../../packing/frontier/n-028.md)). It rejects the other 48, all 47
+  closed-form counts and `n = 29`. The records hold those as trailing ceilings: each of
+  the 48 carries a section headed “The verified upper bound is a ceiling” and a
+  `mathematics` blocker on both trees, and says that U is the certificate’s side rounded
+  up at fourteen decimals (for example,
+  [`n-050.md`](../../../packing/frontier/n-050.md), where U “is **larger** than the best
+  known”). Under the record’s rule, then, 15 counts agree and 48 are recorded
+  disagreements. Under the owner’s standard all 63 are gaps.
 
 ## Gap 5. Labels
 
@@ -304,9 +322,10 @@ on both trees. Each closed form was evaluated to 100 digits with
   regularization policy repeats the rule.
   The cost is that a reader cannot tell which drawings are exact.
 - **Decimal witnesses keep a label that is literally true but misleading.**
-  “(numerically checked)” on a witness whose exact reading overlaps — 71 at the 36-digit
-  reading, and every one sampled at full precision — does not tell a reader that the
-  drawn pose is not a packing.
+  “(numerically checked)” on a witness whose exact reading is no packing at its printed
+  side — 79 at the 36-digit reading, 71 of them with overlaps, and 4 of the 5 sampled at
+  full precision, two with overlaps and two crossing a wall — does not tell a reader
+  that the drawn pose is not a packing.
   The tier vocabulary has no word for that finding.
 
 ## What the Record’s Own Tools Enforce
@@ -346,19 +365,21 @@ tolerance-blurred receipts and full-precision infeasibility (2), and the totals.
   66 and 85.
 - [The upper-bound certification plan](../specs/active/plan-2026-09-22-upper-bound-certification-blocks.md)
   plans the certification of reported bounds.
-- Beads: `think-75ll` (bridge numerical witnesses to exact certificates; P1, paused),
-  `think-2716` (certify the reported upper bounds; P2, open), `think-tow1` (slackened
-  rational promotion; P1, open) and `think-omqv` (register exact packings at the printed
-  sides; carried out as `T-154` on the stack).
-- `packing/defects.yaml` records no defect for any of these gaps.
+- Beads: `think-75ll` (bridge numerical witnesses to exact certificates; P1, in
+  progress, with its plan paused), `think-2716` (certify the reported upper bounds; P2,
+  open), `think-tow1` (slackened rational promotion; P1, open) and `think-omqv`
+  (register exact packings at the printed sides; carried out as `T-154` on the stack).
+- `packing/defects.yaml` recorded no defect for any of these gaps.
+  This review adds [D-520](../../../defects.md) for the receipts’ minima.
 
 ## Filling the Gaps
 
 Each gap is serious under the owner’s standard and is to be filled later.
-In order of what it buys:
+In order of what it buys, each with the bead that tracks it:
 
-1. **Make every house exact** (Gaps 1b and 2). Replace each of the 92 decimal witnesses
-   with an exact witness built from the certificate the record already holds at U.
+1. **Make every house exact** (Gaps 1b and 2; `think-ybuz`). Replace each of the 92
+   decimal witnesses with an exact witness built from the certificate the record already
+   holds at U.
    - 14 Couzo counts: Daniel’s rational optima, which the converter in
      [`evand_exact_certificates.py`](../../../packing/devtools/evand_exact_certificates.py)
      already turns into rational witnesses.
@@ -378,63 +399,77 @@ In order of what it buys:
    machinery. A house change re-triggers review of any regularized view derived from the
    old witness.
 
-2. **Draw exactly verified views at U** (Gaps 1a and 3). The regularization stack’s next
-   layer, in progress on branch `claude/upbeat-ptolemy-1lxxx8`, draws views at U at the
-   Couzo counts where the solve reaches it.
-   Number-field views settle 18, 26, 66 and 85.
+2. **Draw exactly verified views at U** (Gaps 1a and 3; `think-4s3n`). The
+   regularization stack’s next layer, in progress on branch
+   `claude/upbeat-ptolemy-1lxxx8`, draws views at U at the Couzo counts where the solve
+   reaches it. Number-field views settle 18, 26, 66 and 85.
 
-3. **Decide what R means where no exact certificate reaches it** (Gap 4).
+3. **Decide what R means where no exact certificate reaches it** (Gap 4; `think-p0tk`,
+   with `think-yk2h` for the closed forms).
    - For the 16 decimal-only counts, the reported side should become the exact side of
      the certified packing, with the catalogue’s print kept as the citation.
    - For the 47 closed-form counts, R can be certified only over the number field its
      closed form names, which needs the number-field views the stack defers
      (`think-yk2h`).
 
-4. **Fix the receipts** (Gap 2). Make `_margin_summary` report true minima at the
-   working precision, regenerate the 92 receipts, and record each witness’s
-   full-precision exact-reading outcome beside its numerical one.
+4. **Fix the receipts** (Gap 2 and D-520; `think-jtot`, and `think-8ucp` for the full
+   exact reading). Make `_margin_summary` report true minima at the working precision,
+   regenerate the 92 receipts, and record each witness’s full-precision exact-reading
+   outcome beside its numerical one.
    The full exact reading of all 92 costs about 32 CPU-minutes, scaled from `n = 301`’s
    59 seconds.
 
-5. **Gate it.** Build one tool that reproduces this review’s tables, as `OR-1` requires.
-   It should fail when a drawing on any surface is not exactly verified at a side no
-   larger than U, against an allowlist that only shrinks.
+5. **Gate it** (`think-du42`). Build one tool that reproduces this review’s tables, as
+   `OR-1` requires. It should fail when a drawing on any surface is not exactly verified
+   at a side no larger than U, against an allowlist that only shrinks.
    It should report R below U separately.
-   This review’s measurements ran as one-off scripts over the repository functions named
-   below, and that tool replaces them.
+   This review’s measurements ran as the two scripts retained in
+   [Appendix: Measurement Scripts](#appendix-measurement-scripts), and that tool takes
+   them over.
 
-6. **Decide the label** (Gap 5). Either let a view of a decimal witness state its own
-   exact tier, or keep the record’s tier and add a mark that the drawn view is exact.
-   This is an owner decision, because the current rule is deliberate.
+6. **Decide the label** (Gap 5; `think-droj`). Either let a view of a decimal witness
+   state its own exact tier, or keep the record’s tier and add a mark that the drawn
+   view is exact. This is an owner decision, because the current rule is deliberate.
 
 ## How This Was Measured
 
-Everything ran in a worktree of `main` at `ea227e62d`, with the project interpreter
-(CPython 3.14.7). The stack top was read with `git show` and `git archive` from
-`origin/claude/busy-pascal-vgiccb-518` at `408e4c42f`.
+Every measured figure comes from the two scripts in
+[Appendix: Measurement Scripts](#appendix-measurement-scripts), run with the project
+interpreter (CPython 3.14.7). They are retained here, not as repository tools;
+`think-du42` will own them as one.
+The stack top is extracted from `408e4c42f` first:
 
-- **Witness census:** each `packing/witnesses/known-best/n-NNN.yaml` was loaded for its
-  `claim` (provenance, method, precision, tolerance), its `scalar.kind`, its `side` and
-  its `certificate.result`. Witness files are byte-identical on the two trees: the
-  stack’s diff touches no file under `packing/witnesses/`.
-- **Register census:** the front matter of each `packing/frontier/n-NNN.md` was loaded,
-  and R (its exact form where present, else its value) and U (its exact form) were
-  evaluated to 100 digits with `sqpack.kingbird_catalogue.evaluate_exact_form`. The one
-  named root, `n = 11`’s `root(P_trump11, …)`, was read at its printed enclosure.
-  Two values are treated as equal when they agree to `1e-90`. Evidence methods come from
-  `packing/frontier/evidence.yaml`.
-- **Drawn packings:** each tree’s `regularized/index.json` names the drawn view; each
-  view’s exact side was read from its gzip YAML. A view is exact when its entry’s
-  `exact_verification.passed` holds; a witness is exact when its provenance is
-  `verified`.
-- **Exact readings:** for `n = 5, 10, 106, 172, 301`, as Gap 2 describes, decided with
-  `sqpack.witness.exact_verify`; for `n = 5` also with a 150-digit tangent.
-  They took between under a second and 59 seconds each.
-- **House check:** `python -m devtools.select_houses --check` on `main` reported “0 of
-  57 counts move”.
+```bash
+cd packing   # in a worktree of main at ea227e62d
+git archive 408e4c42f packing/frontier packing/witnesses/known-best \
+    packing/atlas/known-best/regularized | tar -x -C /tmp/stack
+PYTHONPATH=src .venv/bin/python census.py ..          # main
+PYTHONPATH=src .venv/bin/python census.py /tmp/stack  # stack top
+for n in 005 010 106 172 301; do
+  PYTHONPATH=src .venv/bin/python exact_reading.py witnesses/known-best/n-$n.yaml 60
+  PYTHONPATH=src .venv/bin/python exact_reading.py witnesses/known-best/n-$n.yaml 60 --translate
+done
+PYTHONPATH=src .venv/bin/python exact_reading.py witnesses/known-best/n-005.yaml 150
+```
 
-The scripts were scratch files and are not retained; item 5 of
-[Filling the Gaps](#filling-the-gaps) replaces them with a tool.
+- **`census.py`** reads one tree: its regularized index and, per count, the case record,
+  the known-best witness and the drawn view’s gzip YAML. It evaluates R (its exact form
+  where present, else its value) and U (its exact form) to 100 digits with
+  `sqpack.kingbird_catalogue.evaluate_exact_form`, reading `n = 11`’s named root at its
+  printed enclosure. Two values are equal when they agree to `1e-90`. A view is exact
+  when its entry’s `exact_verification.passed` holds; a witness is exact when its
+  provenance is `verified`. It prints the counts and lists of Gaps 1, 3 and 4, the
+  agreement split under `bounds_agree_at_declared_precision`, the printed-side
+  comparisons and receipts of Gap 2, and the appendix rows.
+  The appendix joins the two trees’ rows on n.
+- **`exact_reading.py`** reads one witness exactly at its printed side, as Gap 2
+  describes, and decides it with `sqpack.witness.exact_verify`; `--translate` first
+  moves its least corner to the origin.
+  The runs took between under a second and a minute each.
+- **Read, not scripted:** witness files are byte-identical on the two trees (the stack’s
+  diff touches no file under `packing/witnesses/`); the record’s per-count wording in
+  Gap 4 was counted with `grep` over the 63 case records; and
+  `python -m devtools.select_houses --check` on `main` reported “0 of 57 counts move”.
 
 ## Appendix: The 92 Decimal Witnesses
 
@@ -540,6 +575,189 @@ would be built from.
 | 299 | K | 1e-8 | −2.0e-29 | overlaps (66) | witness | witness | Daniel ceiling | T-154 view |
 | 300 | K | 1e-8 | +3.5e-15 | overlaps (59) | witness | witness | Daniel ceiling | T-154 view |
 | 301 | C | 1e-12 | +4.6e-12 | side +5.6e-16 | view, U +4.6e-12 | view, U +4.6e-12 | Daniel optimum | Daniel optimum |
+
+## Appendix: Measurement Scripts
+
+Both scripts run from a worktree’s `packing/` with `PYTHONPATH=src`, as
+[How This Was Measured](#how-this-was-measured) shows.
+
+`census.py`:
+
+```python
+"""Census of drawn packings and upper bounds for one tree, read from ROOT.
+
+Usage, from a worktree's packing/: PYTHONPATH=src .venv/bin/python census.py ROOT
+ROOT holds packing/frontier, packing/witnesses/known-best and the regularized layer.
+"""
+
+import gzip
+import json
+import math
+import re
+import sys
+from collections import Counter
+from decimal import Decimal, getcontext
+from fractions import Fraction
+from pathlib import Path
+
+import yaml
+
+from sqpack.assurance import bounds_agree_at_declared_precision
+from sqpack.kingbird_catalogue import evaluate_exact_form
+
+getcontext().prec = 120
+ROOT = Path(sys.argv[1])
+EPS = Decimal("1e-90")
+
+
+def value(form: str) -> Decimal:
+    if form.startswith("root("):  # n = 11's named root: its printed enclosure
+        return Decimal(form.split(",")[1].strip(" )"))
+    return evaluate_exact_form(form, 100)
+
+
+def dec(text: str) -> Decimal:
+    f = Fraction(str(text))
+    return Decimal(f.numerator) / Decimal(f.denominator)
+
+
+def sign(d: Decimal) -> int:
+    return 0 if abs(d) < EPS else (1 if d > 0 else -1)
+
+
+def mag(x: float) -> str:
+    if x == 0:
+        return "0"
+    e = math.floor(math.log10(abs(x)))
+    return ("+" if x > 0 else "−") + f"{abs(x) / 10**e:.1f}e{e}"
+
+
+NAMES = {  # the appendix's short names for the evidence behind U
+    "E-evand-exact-ceilings-2026-10-05-exact-replay": "Daniel ceiling",
+    "E-evand-exact-optima-2026-10-05-exact-replay": "Daniel optimum",
+    "E-regularized-bounds-2026-10-12-exact-decision": "T-154 view",
+    "E-gobel-strip-upper": "Göbel strip", "E-lifted-q2-upper": "lifted Q(√2)",
+    "E-gobel-offcentre-upper": "Göbel off-centre", "E-gobel-family-upper": "Göbel family",
+    "E-n005-gobel-upper": "Göbel n=5", "E-n010-gobel-upper": "Göbel n=10",
+    "E-n011-trump-upper": "Trump n=11", "E-n017-certified-endpoint": "n=17 endpoint",
+    "E-lifted-q7-upper": "lifted Q(√7)", "E-n029-interval-certified-upper": "interval n=29",
+    "E-n040-gobel-upper": "Göbel n=40", "E-n082-gobel-l-upper": "Göbel L",
+}
+
+
+evidence = {e["id"]: e for e in yaml.safe_load((ROOT / "packing/frontier/evidence.yaml").read_text())["evidence"]}
+index = json.loads((ROOT / "packing/atlas/known-best/regularized/index.json").read_text())
+rows = []
+for entry in index["entries"]:
+    n = entry["n"]
+    case = yaml.safe_load((ROOT / f"packing/frontier/n-{n:03d}.md").read_text().split("---", 2)[1])["packing"]
+    rep, ver = case["reported_upper_bound"], case["verified_upper_bound"]
+    R = value(rep["exact_form"]) if rep.get("exact_form") else Decimal(rep["value"])
+    U = value(ver["exact_form"])
+    w = yaml.safe_load((ROOT / f"packing/witnesses/known-best/n-{n:03d}.yaml").read_text())["witness"]
+    exact_witness = w["claim"]["coordinate_provenance"] == "verified"
+    side_w = U if isinstance(w["side"], list) else dec(w["side"])  # n = 51: number field, side = U
+    if entry["status"] == "regularized":
+        view = yaml.safe_load(gzip.decompress((ROOT / entry["view"]["path"]).read_bytes()))["witness"]
+        drawn, exact, side_d = "view", entry["exact_verification"]["passed"], dec(view["side"])
+    else:
+        drawn, exact, side_d = "witness", exact_witness, side_w
+    axis = entry if entry["status"] != "regularized" or "reference" not in entry else entry["reference"]
+    if axis["status"] == "refused":
+        found = re.search(r"\((\d+) failures", axis["refusal"]["reason"])
+        axis_reading = f"overlaps ({found.group(1)})" if found else axis["refusal"]["kind"]
+    elif axis["side"]["fits_reported_side"]:
+        axis_reading = "fits"
+    else:
+        axis_reading = "side " + mag(float(axis["side"]["view_minus_reported"]))
+    receipt = (w.get("certificate") or {}).get("result") or {}
+    rows.append({
+        "n": n, "drawn": drawn, "exact": exact, "decimal_witness": not exact_witness,
+        "tolerance": w["claim"].get("tolerance"),
+        "R_vs_U": sign(R - U), "witness_vs_R": sign(side_w - R), "witness_vs_U": sign(side_w - U),
+        "drawn_vs_U": sign(side_d - U), "drawn_minus_U": float(side_d - U),
+        "drawn_minus_witness": float(side_d - side_w), "closed_form_R": bool(rep.get("exact_form")),
+        "agree": bounds_agree_at_declared_precision(rep, ver),
+        "U_methods": sorted({evidence[i]["method"] for i in ver["evidence"]}),
+        "U_minus_R": float(U - R), "witness_minus_R": float(side_w - R), "axis": axis_reading,
+        "source": "K" if str((w.get("source") or {}).get("key", "")).startswith("Kingbird") else "C",
+        "U_name": NAMES.get(ver["evidence"][0], ver["evidence"][0]),
+        "receipt": (receipt.get("minimum_containment_clearance"), receipt.get("minimum_best_pair_gap")),
+    })
+
+dw = [r for r in rows if r["decimal_witness"]]
+print("decimal witnesses", len(dw), dict(Counter(r["tolerance"] for r in dw)))
+print("site draws decimal witness", [r["n"] for r in rows if not r["exact"]])
+valid = [r for r in rows if r["exact"] and r["drawn_vs_U"] <= 0]
+print("site valid", len(valid), dict(Counter(r["drawn"] for r in valid)))
+print("exact above U", [(r["n"], f"{r['drawn_minus_U']:.2e}", f"{r['drawn_minus_witness']:.2e}") for r in rows if r["exact"] and r["drawn_vs_U"] > 0])
+print("exact at U with R < U", [r["n"] for r in rows if r["exact"] and r["drawn_vs_U"] == 0 and r["R_vs_U"] < 0])
+low = [r for r in rows if r["R_vs_U"] < 0]
+print("R below U", len(low), "closed form", sum(r["closed_form_R"] for r in low))
+print("R below U and agree at declared precision", [r["n"] for r in low if r["agree"]])
+print("R below U and disagree", [r["n"] for r in low if not r["agree"]])
+print("R above U", [r["n"] for r in rows if r["R_vs_U"] > 0])
+print("U methods", dict(Counter(tuple(r["U_methods"]) for r in rows)))
+print("decimal witness side vs R", dict(Counter(r["witness_vs_R"] for r in dw)), "vs U", dict(Counter(r["witness_vs_U"] for r in dw)))
+for closed in (True, False):
+    gaps = [r["U_minus_R"] for r in low if r["closed_form_R"] == closed]
+    print("U - R", "closed form" if closed else "decimal only", f"{min(gaps):.2e} to {max(gaps):.2e}")
+print("negative receipts", [(r["n"], r["receipt"]) for r in dw if any(str(v).startswith("-") for v in r["receipt"])])
+for r in dw:  # the appendix rows: printed - R, axis reading, site draw against U, evidence for U
+    site = "witness" if r["drawn"] == "witness" else ("view, at U" if r["drawn_vs_U"] == 0 else "view, U " + mag(r["drawn_minus_U"]))
+    print(f"| {r['n']} | {r['source']} | {r['tolerance']} | {mag(r['witness_minus_R'])} | {r['axis']} | {site} | {r['U_name']} |")
+```
+
+`exact_reading.py`:
+
+```python
+"""Decide a decimal centre-angle witness exactly at its printed side.
+
+Usage, from a worktree's packing/:
+    PYTHONPATH=src .venv/bin/python exact_reading.py WITNESS DIGITS [--translate]
+"""
+
+import sys
+from fractions import Fraction
+from pathlib import Path
+
+import mpmath as mp
+
+from sqpack.witness import exact_verify, load_witness
+
+
+def lit(f: Fraction) -> str:
+    return str(f.numerator) if f.denominator == 1 else f"{f.numerator}/{f.denominator}"
+
+
+path, digits, translate = Path(sys.argv[1]), int(sys.argv[2]), "--translate" in sys.argv
+w = load_witness(path)
+assert (w["coordinates"]["origin"], w["coordinates"]["axes"]) == ("lower-left", "x-right-y-up")
+mp.mp.dps = digits + 30
+unit = mp.pi / 180 if w["coordinates"]["angle_unit"] == "degrees" else mp.mpf(1)
+poses = []
+for s in w["squares"]:
+    t = Fraction(mp.nstr(mp.tan(mp.mpf(s["angle"]) * unit / 2), digits))  # half-angle tangent
+    c, si = (1 - t * t) / (1 + t * t), 2 * t / (1 + t * t)  # c^2 + si^2 = 1 exactly
+    poses.append((s["id"], Fraction(s["center"][0]), Fraction(s["center"][1]), c, si))
+dx = dy = Fraction(0)
+if translate:  # the axis tool's translation: the least corner to the origin
+    dx = min(x - (abs(c) + abs(si)) / 2 for _, x, _, c, si in poses)
+    dy = min(y - (abs(c) + abs(si)) / 2 for _, _, y, c, si in poses)
+reading = dict(w)
+reading.update(
+    id=w["id"] + "-exact-reading", side=lit(Fraction(w["side"])), representation="center-basis",
+    scalar={"kind": "rational"}, coordinates={**w["coordinates"], "angle_unit": "not-applicable"},
+    claim={"coordinate_provenance": "verified", "method": "exact-algebraic", "limitations": "audit"},
+    squares=[{"id": i, "center": [lit(x - dx), lit(y - dy)], "basis": [lit(c), lit(si)]} for i, x, y, c, si in poses],
+)
+result, _ = exact_verify(reading)
+kinds = sorted({kind for kind, _ in result["failures"]})
+print(w["n"], "translated" if translate else "as printed", "passed" if result["verification_passed"] else "refused",
+      f"{len(result['failures'])} failures {kinds}",
+      f"clearance {float(Fraction(result['minimum_containment_clearance'])):.3e}",
+      f"pair gap {float(Fraction(result['minimum_best_pair_gap'])):.3e}")
+```
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
