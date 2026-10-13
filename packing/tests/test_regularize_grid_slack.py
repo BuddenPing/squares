@@ -26,6 +26,7 @@ from devtools import regularize_axis_components as axis
 from devtools import regularize_grid_slack as slack
 from devtools import render_regularized_atlas as render
 from devtools.regularize_evand import Decision, view_geometry
+from devtools.retained_data import git_blob
 from sqpack.yamlio import load_yaml
 
 HALF = Fraction(1, 2)
@@ -431,6 +432,15 @@ def test_admission_binds_the_view_to_the_witness_the_run_measured(
     # names stale, as it does a driver run's (`evand_admitted`).
     elsewhere = admitted({"witness": report["source"], "witness_sha256": "0" * 64})
     assert elsewhere.source["sha256"] == "0" * 64
+
+    # A report that names its view's bytes is admitted only with those bytes (review B of
+    # #530, B4).
+    stored = (directory / "view.yaml.gz").read_bytes()
+    report["view"] = {"path": "view.yaml.gz", "git_blob": git_blob(stored)}
+    assert admitted(report["source"]).n == n
+    report["view"]["git_blob"] = git_blob(stored + b"\n")
+    with pytest.raises(slack.GridSlackError, match="not the ones its report decided"):
+        admitted(report["source"])
 
 
 def test_feasibility_holds_the_move_bound_and_a_zero_trust_is_refused() -> None:

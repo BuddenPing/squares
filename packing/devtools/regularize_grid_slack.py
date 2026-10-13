@@ -1578,8 +1578,13 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
     decision = decided(report, witness)
     if decision.decision != "admit":
         raise GridSlackError(f"n={n}: not admitted: row {decision.row}, {decision.reason}")
-    view = load_yaml(gzip.decompress((directory / "view.yaml.gz").read_bytes()).decode())
-    view = view["witness"]
+    stored = (directory / "view.yaml.gz").read_bytes()
+    # The verdicts are the ones reached on these bytes (`report.view.git_blob`, review B
+    # of #530, B4); a report from before the run recorded them is admitted as before.
+    decided_on = (report.get("view") or {}).get("git_blob")
+    if decided_on is not None and git_blob(stored) != decided_on:
+        raise GridSlackError(f"n={n}: the view's bytes are not the ones its report decided")
+    view = load_yaml(gzip.decompress(stored).decode())["witness"]
     measured = report["measured"]
     ident = measured["identity"]
     shaded = measured["shades"]
