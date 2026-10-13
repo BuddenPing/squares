@@ -83,6 +83,7 @@ from __future__ import annotations
 
 import argparse
 import gzip
+import hashlib
 import json
 import math
 import time
@@ -103,6 +104,7 @@ from devtools import census_drawing_regularity as regularity
 from devtools import regularize_evand as driver
 from devtools import regularize_same_side as same
 from devtools.build_known_best_atlas import frame_from_witness
+from devtools.retained_data import git_blob
 from sqpack.render import render_packing_svg
 from sqpack.render.model import RenderSpec
 from sqpack.witness import validate_witness_document, witness_document
@@ -1427,19 +1429,43 @@ def load_source(n: int) -> dict[str, Any]:
     return document["witness"]
 
 
+def source_record(n: int, data: bytes, witness: Mapping[str, Any]) -> dict[str, Any]:
+    """The witness a run read, as its report names it: path, id, the digest of the bytes
+    read, and its exact side `s_W` where it has a rational frame (review B of #530, B3).
+    An admitting layer holds the witness it admits against to this digest, so a run made
+    before the witness changed is not admitted under the new one's name."""
+    try:
+        side: str | None = same.literal(same.exact_frame(witness).side)
+    except same.SameSideError:
+        side = None
+    return {
+        "path": f"packing/witnesses/known-best/n-{n:03d}.yaml",
+        "id": witness.get("id"),
+        "witness_sha256": hashlib.sha256(data).hexdigest(),
+        "s_W_exact": side,
+    }
+
+
 def run_one(n: int, run_dir: Path, settings: Settings) -> dict[str, Any]:
-    """Regularize one count into `run_dir/n-NNN/`, and its report."""
+    """Regularize one count into `run_dir/n-NNN/`, and its report.
+
+    The report names the view's bytes by their Git blob id, which binds its verdicts to
+    them.
+    """
     directory = _guard(run_dir) / f"n-{n:03d}"
-    witness = load_source(n)
+    data = (KNOWN_BEST / f"n-{n:03d}.yaml").read_bytes()
+    witness = load_yaml(data.decode("utf-8"))["witness"]
     view, report = regularize(witness, settings)
     report["n"] = n
-    report["source"] = f"packing/witnesses/known-best/n-{n:03d}.yaml"
+    report["source"] = source_record(n, data, witness)
     if view is not None:
         text = witness_document(view)
         validate_witness_document(
             load_yaml(text), path=directory / "view.yaml", fallback_schema=WITNESS_SCHEMA
         )
-        _write(directory / "view.yaml.gz", gzip.compress(text.encode("utf-8"), mtime=0))
+        stored = gzip.compress(text.encode("utf-8"), mtime=0)
+        _write(directory / "view.yaml.gz", stored)
+        report["view"] = {"path": "view.yaml.gz", "git_blob": git_blob(stored)}
         straightened = [row["square"] for row in report["straightened"]]
         report["measured"] = measure(n, witness, view, straightened)
         _write(directory / "drawing.svg", drawing(n, witness, view).encode("utf-8"))

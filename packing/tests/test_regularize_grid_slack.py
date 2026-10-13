@@ -149,6 +149,24 @@ def test_a_run_writes_its_view_report_and_drawing(tmp_path: Path) -> None:
     assert (directory / "drawing.svg").read_text(encoding="utf-8").startswith("<?xml")
 
 
+def test_a_report_names_the_witness_it_read_and_the_view_it_wrote(tmp_path: Path) -> None:
+    """Review B of #530, B3: the source witness by digest and exact side, and the view's
+    bytes by their Git blob id, so an admitting layer can hold both to the report."""
+    import hashlib  # noqa: PLC0415
+
+    from devtools.retained_data import git_blob  # noqa: PLC0415
+
+    report = slack.run_one(1, tmp_path, slack.Settings())
+    path = slack.KNOWN_BEST / "n-001.yaml"
+    source = report["source"]
+    assert source["path"] == "packing/witnesses/known-best/n-001.yaml"
+    assert source["witness_sha256"] == hashlib.sha256(path.read_bytes()).hexdigest()
+    assert source["id"] == slack.load_source(1)["id"]
+    assert Fraction(source["s_W_exact"]) == 1
+    view = tmp_path / "n-001" / report["view"]["path"]
+    assert report["view"]["git_blob"] == git_blob(view.read_bytes())
+
+
 def _row(coefficients: dict[int, int], rhs: Fraction, priority: tuple[int, ...]) -> Any:
     return slack.same.Row(
         "pair" if len(coefficients) > 1 else "wall",
