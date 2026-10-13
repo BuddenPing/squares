@@ -29,6 +29,16 @@ from sqpack.yamlio import load_yaml
 HALF = Fraction(1, 2)
 
 
+REAL_RATIONAL_BOUND = slack.rational_bound
+
+
+@pytest.fixture(autouse=True)
+def _no_record_bound(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The synthetic fixtures borrow real counts (2, 4) whose case records' bounds would
+    otherwise be tried first; a test that wants a record's bound restores it."""
+    monkeypatch.setattr(slack, "rational_bound", lambda _n: None)
+
+
 def _basis_witness(
     rows: list[tuple[Fraction, Fraction, Fraction, Fraction]], side: str = "11/5"
 ) -> dict[str, Any]:
@@ -189,12 +199,38 @@ def test_a_left_open_row_the_solve_penetrates_is_closed_after_all() -> None:
     assert solution.values[4] == Fraction(5, 2)
 
 
-def test_no_bound_frame_below_the_witness_side() -> None:
-    # n = 4's verified upper bound is 2, below the fixture's 11/5.
-    assert slack.frame_for(scattered(), "bound") is None
-    frame = slack.frame_for(scattered(), "same")
+def test_a_witness_above_the_bound_is_solved_at_the_bound_first(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Owner, 13 October 2026: a valid view has "equal or smaller side". The fixture's
+    four squares sit in a box of 11/5, above n = 4's verified upper bound 2, so the box
+    of side 2 is tried first and closes them into the 2 x 2 block, at the bound."""
+    monkeypatch.setattr(slack, "rational_bound", REAL_RATIONAL_BOUND)
+    assert slack.rational_bound(4) == 2
+    assert slack.attempts_for(scattered()) == slack.BOUND_FIRST
+    frame = slack.frame_for(scattered(), "bound")
     assert frame is not None
-    assert frame.side == Fraction(11, 5)
+    assert frame.side == 2
+    same_frame = slack.frame_for(scattered(), "same")
+    assert same_frame is not None
+    assert same_frame.side == Fraction(11, 5)
+    view, report = slack.regularize(scattered(), slack.Settings())
+    assert view is not None
+    assert report["relation"] == "bound"
+    assert Fraction(view["side"]) == 2
+    assert sorted(_centres(view)) == [
+        (HALF, HALF),
+        (HALF, Fraction(3, 2)),
+        (Fraction(3, 2), HALF),
+        (Fraction(3, 2), Fraction(3, 2)),
+    ]
+
+
+def test_a_closed_form_bound_is_never_a_frame(monkeypatch: pytest.MonkeyPatch) -> None:
+    """n = 5's bound is 2 + (1/2)sqrt(2): its 60-digit value is not the bound."""
+    monkeypatch.setattr(slack, "rational_bound", REAL_RATIONAL_BOUND)
+    assert slack.rational_bound(5) is None
+    assert slack.rational_bound(301) is not None
 
 
 def beside_a_tilted_square() -> dict[str, Any]:

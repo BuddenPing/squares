@@ -87,12 +87,15 @@ by the policy's decision table. Per count, in order:
    counts the source's), so nothing is refused or held that would not change; `held` for a
    visible view at rows 3 and 4; `refuse` for row 2 and for row 7 where a house or stage
    total falls. The owner's answers of 12 October 2026 admit a view at the bound as a
-   same-side one is admitted, and send what the rules cannot settle to review: row 6, and
-   row 7 where per-square counts fall but no total does. A row 3 candidate is listed in the
-   receipt whatever it is reported as, for registration first. `reclassify` decides a
-   finished run again from its reports, for a change to the table, without re-running a
-   stage; with `--refresh-bounds` it first reads each count's `U` again from the case
-   record, for a run decided before a register result moved the bound.
+   same-side one is admitted, and send what the rules cannot settle to review: row 7 where
+   per-square counts fall but no total does. Those of 13 October 2026 retire rows 6 and 9,
+   so a changed pose is named in the admission's reason and stops nothing, and draw the
+   view at the bound where the witness's side is above it (`yield_to_bound`). A row 3
+   candidate is listed in the receipt whatever it is reported as, for registration
+   first. `reclassify` decides a finished run again from its reports, for a change to the
+   table, without re-running a stage; with `--refresh-bounds` it first reads each count's
+   `U` again from the case record, for a run decided before a register result moved the
+   bound.
 
 Every count writes `RUN/n-NNN/report.json`, and the run writes `RUN/receipt.json`: the
 generator (name, pin, local patches, interpreter), the parameters, one row per count with
@@ -1521,8 +1524,9 @@ def classify(measured: Measured) -> Decision:
     change" whatever row matched, since there is nothing to refuse or hold; a register
     candidate under it is still row 3, and the receipt still lists it. Row 1 is "no
     view"; a visible view held by rows 3 or 4 is "held"; "refuse" is left for an exact
-    route's refusal (row 2) and a falling total (row 7), and rows 6 and 7 otherwise send
-    the view to review (owner, 12 October 2026).
+    route's refusal (row 2) and a falling total (row 7), and row 7 otherwise sends the
+    view to review (owner, 12 October 2026). Rows 6 and 9 are retired (owner, 13 October
+    2026): a changed pose is named in the reason and decides nothing.
     """
     decided = table_row(measured)
     if decided.row in {1, 2} or measured.visible_change:
@@ -1579,21 +1583,12 @@ def table_row(measured: Measured) -> Decision:  # noqa: PLR0911 -- one return pe
         return Decision(None, "review", None, None, "the view was not measured")
     if m.pose_equals_witness:
         return Decision(5, "no-change", "unchanged", None, "the view is the witness's pose")
-    # What the rules cannot settle goes to a person, not to refusal (owner, 12 October
-    # 2026): the review admits the view as the packing or records it as an alternate.
-    if not m.one_to_one:
-        return Decision(
-            6, "review", None, "not-one-to-one", "no one-to-one pairing: for review"
-        )
-    if m.unnamed_turns:
-        return Decision(
-            6,
-            "review",
-            None,
-            "unnamed-turn",
-            f"squares {list(m.unnamed_turns)} turned without a recorded angle change: "
-            "for review",
-        )
+    # Rows 6 and 9, a changed pose, no longer stop a view (owner, 13 October 2026: "the
+    # pose doesn't matter if it changes as long as it's optimal and conforms with our
+    # regularization guidelines"). Every row above has held it to both exact routes at
+    # the witness's side or the bound; the change is named in the reason it is admitted
+    # with, and the rows below still decide it.
+    pose = pose_changes(m)
     if m.regressions and m.totals_fall:
         return Decision(
             7, "refuse", "refused", "regression", "a house or stage total of shared sides falls"
@@ -1608,13 +1603,27 @@ def table_row(measured: Measured) -> Decision:  # noqa: PLR0911 -- one return pe
         )
     if (m.variant == "fewest" and m.determined_merge) or m.level == 3:
         return Decision(8, "alternate", None, None, "review only, never drawn as the packing")
-    if m.max_move is not None and m.max_move > MOVE_BOUND:
-        return Decision(
-            9, "review", None, None, f"a square moved {float(m.max_move):.4g} > 1/2"
-        )
     if m.variant == "conservative" and (m.level is None or m.level <= 2):
-        return Decision(10, "admit", "regularized", None, "every admission condition holds")
+        reason = "every admission condition holds"
+        if pose:
+            reason = f"{reason}; the pose changes: {'; '.join(pose)}"
+        return Decision(10, "admit", "regularized", None, reason)
     return Decision(None, "review", None, None, "no row of the table matches")
+
+
+def pose_changes(m: Measured) -> list[str]:
+    """What rows 6 and 9 once sent to review, named for the reason a view is admitted
+    with: no one-to-one pairing, turns no recorded angle change names, a move over 1/2."""
+    changes = []
+    if not m.one_to_one:
+        changes.append("no one-to-one pairing")
+    if m.unnamed_turns:
+        changes.append(
+            f"squares {list(m.unnamed_turns)} turned without a recorded angle change"
+        )
+    if m.max_move is not None and m.max_move > MOVE_BOUND:
+        changes.append(f"a square moved {float(m.max_move):.4g} > 1/2")
+    return changes
 
 
 # --------------------------------------------------------------------------------------
@@ -1649,6 +1658,50 @@ def side_relation(
     if upper is not None and side == upper:
         return "bound"
     return "solved"
+
+
+ABOVE_BOUND = (
+    "same-side-above-bound: the witness's side is above the verified upper bound, and the "
+    "view at the bound is drawn (owner, 13 October 2026)"
+)
+
+
+def yield_to_bound(report: dict[str, Any]) -> bool:
+    """Set a same-side view aside when the solved view sits at the bound below it.
+
+    The owner, 13 October 2026: a valid view has "equal or smaller side", and the drawing
+    is "optimal as best as known". Where the witness's side is above the verified bound
+    and the solve reached the bound exactly, the same-side view would draw the packing
+    at a side worse than the record's, so the view at the bound is the one decided and
+    drawn. The same-side view stays in the report under `same_above_bound`, with the
+    measurements it was taken with, so nothing measured is lost. Returns whether it moved.
+    """
+    outputs = report.get("outputs") or {}
+    same, solved = outputs.get("same"), outputs.get("solved")
+    if not same or not solved:
+        return False
+    upper = upper_bound(
+        {
+            "verified_upper_bound": report.get("verified_upper_bound"),
+            "exact_form": report.get("verified_upper_bound_exact_form"),
+        }
+    )
+    side = Fraction(solved["side_exact"])
+    if upper is None or side != upper or Fraction(same["side_exact"]) <= side:
+        return False
+    ident, shaded = report.get("identity"), report.get("shades")
+    if (ident or {}).get("of") == "same":
+        if not (solved.get("identity") and solved.get("shades")):
+            # A run written before views at the bound were measured: nothing to decide on.
+            return False
+        # The run measured the same-side view as the drawing; the solved view's own
+        # measurements, taken because it was at the bound, become the report's.
+        same = {**same, "identity": ident, "shades": shaded}
+        report["identity"], report["shades"] = solved.pop("identity"), solved.pop("shades")
+    outputs["same_above_bound"] = same
+    outputs["same"] = None
+    outputs["same_refusal"] = ABOVE_BOUND
+    return True
 
 
 def _regression_count(shaded: Mapping[str, Any]) -> int:
@@ -1852,6 +1905,9 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
             **common, **fields,
         )  # fmt: skip
     seconds["measure"] = round(time.perf_counter() - started, 3)
+    if yield_to_bound(report):
+        measured.pop("same")
+        same_refusal = ABOVE_BOUND
     decide(report, measured["solved"], measured.get("same"), same_refusal)
     report["regularization"] = regularization_record(report)
 
@@ -2248,6 +2304,7 @@ def reclassify(
         if refresh_bounds and (change := refresh_bound(report, n)) is not None:
             refreshed.append(change)
         _current_histograms(n, report)
+        yield_to_bound(report)
         outputs = report.get("outputs") or {}
         solved = measured_from_report(report, "solved")
         same = measured_from_report(report, "same") if outputs.get("same") else None

@@ -6,7 +6,8 @@ algebraic witness's field values) and to upstream's own batch inputs where the w
 has not changed since upstream solved it. The replica builder is held to its boundary:
 it copies the seven modules the pipeline runs byte for byte and writes nothing under
 `vendor/`. The decision table is run as a pure function over synthetic measurements, one
-for each of its ten rows and one that no row matches. One count, n = 26, runs end to end
+for each of its eight live rows (6 and 9 retired on 13 October 2026) and one that no row
+matches. One count, n = 26, runs end to end
 through the real solver and regularizer.
 """
 
@@ -205,10 +206,8 @@ ROWS = {
         "dilated-side",
     ),
     5: (replace(SAME, pose_equals_witness=True), None),
-    6: (replace(SAME, one_to_one=False), "not-one-to-one"),
     7: (replace(SAME, regressions=2), "regression"),
     8: (replace(SAME, level=3), None),
-    9: (replace(SAME, max_move=Fraction(6, 10)), None),
     10: (SAME, None),
 }
 EXPECTED = {
@@ -217,10 +216,8 @@ EXPECTED = {
     3: ("held", None),
     4: ("held", None),
     5: ("no-change", "unchanged"),
-    6: ("review", None),
     7: ("review", None),
     8: ("alternate", None),
-    9: ("review", None),
     10: ("admit", "regularized"),
 }
 
@@ -247,12 +244,39 @@ def test_the_first_matching_row_decides() -> None:
     assert classify(both).row == 2
     turned = replace(SAME, unnamed_turns=(3,), regressions=1)
     assert classify(turned) == Decision(
-        6,
+        7,
         "review",
         None,
-        "unnamed-turn",
-        "squares [3] turned without a recorded angle change: for review",
+        "regression",
+        "1 per-square counts fell while no total did: for review",
     )
+
+
+@pytest.mark.parametrize(
+    ("changed", "named"),
+    [
+        (replace(SAME, one_to_one=False), "no one-to-one pairing"),
+        (
+            replace(SAME, unnamed_turns=(3, 7)),
+            "squares [3, 7] turned without a recorded angle change",
+        ),
+        (replace(SAME, max_move=Fraction(6, 10)), "a square moved 0.6 > 1/2"),
+    ],
+)
+def test_a_changed_pose_is_named_and_admitted(changed: Measured, named: str) -> None:
+    """Owner, 13 October 2026: "the pose doesn't matter if it changes as long as it's
+    optimal and conforms with our regularization guidelines", so rows 6 and 9 are retired:
+    the change is named in the reason, and the rows that remain decide the view."""
+    decided = classify(changed)
+    assert (decided.row, decided.decision, decided.index_record) == (
+        10,
+        "admit",
+        "regularized",
+    )
+    assert decided.reason == f"every admission condition holds; the pose changes: {named}"
+    assert classify(replace(changed, regressions=1)).row == 7
+    assert classify(replace(changed, regressions=1, totals_fall=True)).decision == "refuse"
+    assert classify(replace(changed, level=3)).row == 8
 
 
 def test_a_falling_total_is_refused_and_per_square_losses_alone_go_to_review() -> None:
@@ -461,6 +485,79 @@ def test_the_preview_takes_visible_exact_one_to_one_views_that_lose_no_contact()
     fewer = {"before": [0, 0, 13, 5, 8], "after": [0, 1, 12, 6, 7]}
     lost = {**DECIDED, "shades": {"house": fewer, "stage": DECIDED["shades"]["stage"]}}
     assert drive.layer_candidate(lost, "preview") is None
+
+
+def _both_outputs(*, same_side: str, solved_side: str, bound: str) -> dict[str, Any]:
+    """A report whose run measured the same-side view as the drawing and the solved one
+    beside it, as `measure` writes one."""
+    same_ident = {"of": "same", "one_to_one": True, "moved": 2, "max_move": "1/10"}
+    solved_ident = {"of": "solved", "one_to_one": True, "moved": 3, "max_move": "1/10"}
+    return {
+        **DECIDED,
+        "verified_upper_bound": bound,
+        "verified_upper_bound_exact_form": None,
+        "source": {"s_W_exact": same_side},
+        "outputs": {
+            "same": {"side_exact": same_side, "relation": "same", "routes": ROUTES_OK},
+            "solved": {
+                "side_exact": solved_side,
+                "relation": "bound",
+                "routes": ROUTES_OK,
+                "identity": solved_ident,
+                "shades": {**DECIDED["shades"], "of": "solved"},
+            },
+            "same_refusal": None,
+        },
+        "identity": same_ident,
+        "shades": {**DECIDED["shades"], "of": "same"},
+    }
+
+
+def test_a_same_side_view_above_the_bound_yields_to_the_view_at_the_bound() -> None:
+    """Owner, 13 October 2026: a valid view has "equal or smaller side", drawn "optimal as
+    best as known"; where the witness sits above the bound the solve reached, the view at
+    the bound is drawn, and the same-side one is kept with its measurements."""
+    report = _both_outputs(same_side="563/100", solved_side="281/50", bound="5.62")
+    assert drive.yield_to_bound(report)
+    outputs = report["outputs"]
+    assert outputs["same"] is None
+    assert outputs["same_refusal"] == drive.ABOVE_BOUND
+    assert outputs["same_above_bound"]["identity"]["of"] == "same"
+    assert report["identity"]["of"] == "solved"
+    assert report["shades"]["of"] == "solved"
+    assert "identity" not in outputs["solved"]
+    assert drive.layer_candidate({**report, "decision": {"decision": "admit"}}, "admitted") == (
+        "solved"
+    )
+    assert not drive.yield_to_bound(report)
+
+
+@pytest.mark.parametrize(
+    ("same_side", "solved_side", "bound"),
+    [
+        # The witness is at the bound: the same-side view is at the best known side.
+        ("281/50", "281/50", "5.62"),
+        # The solve stopped short of the bound.
+        ("563/100", "5621/1000", "5.62"),
+        # The witness is below the bound: a register candidate, decided as before.
+        ("5619/1000", "281/50", "5.62"),
+    ],
+)
+def test_a_same_side_view_at_or_below_the_bound_stays(
+    same_side: str, solved_side: str, bound: str
+) -> None:
+    report = _both_outputs(same_side=same_side, solved_side=solved_side, bound=bound)
+    assert not drive.yield_to_bound(report)
+    assert report["outputs"]["same"] is not None
+    assert report["identity"]["of"] == "same"
+
+
+def test_a_view_at_the_bound_never_measured_leaves_the_same_side_view() -> None:
+    """A run written before views at the bound were measured has nothing to decide on."""
+    report = _both_outputs(same_side="563/100", solved_side="281/50", bound="5.62")
+    del report["outputs"]["solved"]["identity"]
+    assert not drive.yield_to_bound(report)
+    assert report["outputs"]["same"] is not None
 
 
 def test_a_report_written_before_bound_existed_is_decided_as_the_table_now_does() -> None:
@@ -687,12 +784,22 @@ def test_only_an_admitted_grid_view_is_admitted() -> None:
         **report["measured"],
         "identity": {**report["measured"]["identity"], "unnamed_turns": [3]},
     }
-    assert grid.decided({**report, "measured": turned}, source).row == 6
+    # Rows 6 and 9 are retired (owner, 13 October 2026): a changed pose is named.
+    decided = grid.decided({**report, "measured": turned}, source)
+    assert (decided.row, decided.decision) == (10, "admit")
+    assert "squares [3] turned" in decided.reason
     far = {
         **report["measured"],
         "identity": {**report["measured"]["identity"], "max_move": "0.6"},
     }
-    assert grid.decided({**report, "measured": far}, source).row == 9
+    decided = grid.decided({**report, "measured": far}, source)
+    assert (decided.row, decided.decision) == (10, "admit")
+    assert "moved 0.6 > 1/2" in decided.reason
+    lost = {
+        **report["measured"],
+        "shades": {"regressions": [4], "against_current": {"regressions": []}},
+    }
+    assert grid.decided({**report, "measured": lost}, source).decision == "review"
     assert grid.decided({"n": 26, "refusal": "no-exact-frame"}, source).decision == "no-view"
 
 

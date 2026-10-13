@@ -18,9 +18,11 @@ closes them, in five steps:
 1. **The exact frame.** `regularize_same_side.exact_frame`: a rational witness's own
    geometry, or a decimal witness's 36-digit rational promotion at centre dilation 1;
    its side is `s_W`. Where no view exists at `s_W` and the record's verified upper bound
-   `U` is above it, the same squares are tried again in a box of side `U`, the policy's
-   `bound` frame (a decimal witness whose printed side truncates its optimum, n = 171 and
-   198). Every rotation stays the witness's own exact one, except:
+   `U` is rational and above it, the same squares are tried again in a box of side `U`,
+   the policy's `bound` frame (a decimal witness whose printed side truncates its
+   optimum, n = 171 and 198). Where `U` is rational and below `s_W`, the box of side `U`
+   is tried first: a view at `s_W` would draw the packing above the best known side
+   (owner, 13 October 2026). Every rotation stays the witness's own exact one, except:
 2. **Straightening.** Each square tilted by less than `--near-axis-degrees` (default half a
    degree, the workbench's colour tolerance; any nonzero tilt, including those under the
    house's `1e-6` radians) is turned to the axes about its centre, when the placement
@@ -138,6 +140,13 @@ for automatic admission."""
 TIME_LIMIT = 120.0
 STAGE_MARGIN = 0.0099
 """A kept stage contact stays this close; the stage's frame rounds centres to `1e-6`."""
+DEFAULT_SETTINGS = {
+    "near_axis_degrees": NEAR_AXIS_DEGREES,
+    "trust": TRUST,
+    "time_limit": TIME_LIMIT,
+    "stage_margin": STAGE_MARGIN,
+}
+"""What a run reports in `settings` when no option changes it; the layer's generator block."""
 EPSILON = 1e-9
 """A kept house residual may always grow to this, three orders under the house's `2e-6`.
 A floor at the LP's own noise (`1e-12`) leaves rows a few `1e-12` wide, which HiGHS
@@ -842,20 +851,49 @@ def float_poses(
     return poses, changed
 
 
+def rational_bound(n: int) -> Fraction | None:
+    """The record's verified upper bound `U` where it is a rational number exactly: its
+    exact form a fraction, or no exact form beside the printed decimal. A closed form's
+    60-digit value is not the bound, so no view is solved at it."""
+    facts = driver.case_facts(n)
+    if facts["verified_upper_bound"] is None:
+        return None
+    if facts["exact_form"] is not None:
+        try:
+            Fraction(str(facts["exact_form"]).replace(" ", ""))
+        except ValueError:
+            return None
+    return driver.upper_bound(facts)
+
+
 def frame_for(witness: Mapping[str, Any], relation: str) -> same.Frame | None:
     """The exact frame at `s_W` (`same`), or the same squares at `U` (`bound`) where the
-    record's verified upper bound is rational and above `s_W`."""
+    record's verified upper bound is rational and not `s_W`: above it, a box the view may
+    still fit; below it, the best known side, which the owner asked a view to reach (13
+    October 2026)."""
     frame = same.exact_frame(witness)
     if relation == "same":
         return frame
-    upper = driver.upper_bound(driver.case_facts(int(witness["n"])))
-    if upper is None or upper <= frame.side:
+    upper = rational_bound(int(witness["n"]))
+    if upper is None or upper == frame.side:
         return None
     return replace(
         frame,
         side=upper,
         derivation=f"{frame.derivation}, in a box of the verified upper bound U",
     )
+
+
+def attempts_for(witness: Mapping[str, Any]) -> tuple[tuple[str, bool], ...]:
+    """`ATTEMPTS`, or `BOUND_FIRST` where the witness's side is above a rational `U`: a
+    view at `s_W` would draw the packing above the best known side (owner, 13 October
+    2026), so it is tried only after no view at the bound could be found."""
+    try:
+        side = same.exact_frame(witness).side
+    except same.SameSideError:
+        return ATTEMPTS
+    upper = rational_bound(int(witness["n"]))
+    return BOUND_FIRST if upper is not None and upper < side else ATTEMPTS
 
 
 @dataclass
@@ -1214,6 +1252,8 @@ def exact_view(
 
 ATTEMPTS = (("same", False), ("same", True), ("bound", False), ("bound", True))
 """Frames and whether tilted squares are frozen, tried in order until one gives a view."""
+BOUND_FIRST = (("bound", False), ("bound", True), ("same", False), ("same", True))
+"""The order where the witness's side is above the bound (`attempts_for`)."""
 
 
 def attempt(
@@ -1284,7 +1324,7 @@ def regularize(
         },
         "attempts": [],
     }
-    for relation, freeze in ATTEMPTS:
+    for relation, freeze in attempts_for(witness):
         try:
             frame = frame_for(witness, relation)
         except same.SameSideError as error:
@@ -1655,8 +1695,10 @@ def admitted_views(
     the run and this generator as the layer's index records them."""
     run_id = f"grid-slack-{run_dir.name}"
     views = [admitted(run_dir / f"n-{n:03d}", run_id) for n in counts]
-    run, settings = run_block(run_dir, run_id)
-    return views, run, generator_block(settings)
+    run, _settings = run_block(run_dir, run_id)
+    # The generator's block keeps its defaults: runs at other thresholds are admitted
+    # beside one another (owner, 13 October 2026), and each run's parameters say its own.
+    return views, run, generator_block(DEFAULT_SETTINGS)
 
 
 def summary(report: Mapping[str, Any]) -> str:
