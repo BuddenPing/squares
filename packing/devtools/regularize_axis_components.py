@@ -70,7 +70,8 @@ verification and the side difference. A record whose view would change no square
 reason. `--check-atlas` is cheap: it compares the index with the manifest, the witnesses
 and the retained views by digest and re-verifies nothing; it also holds every drawn view's
 exact side to the witness's own side `s_W` and to its case record's verified upper bound
-`U`, decided exactly (`side_against_bound`), with the views above `U` named in `ABOVE_U`.
+`U`, decided exactly (`regularize_evand.verified_bound`), with the views above `U` named in
+`ABOVE_U`.
 `--verify-atlas` re-derives every record and requires the index and the views to come out
 identical, and decides every other generator's view again, its square count, identity and
 shades measured again.
@@ -108,7 +109,6 @@ from collections.abc import Collection, Mapping, Sequence
 from concurrent.futures import Future, ProcessPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from fractions import Fraction
-from functools import cache
 from pathlib import Path
 from typing import Any
 
@@ -2329,110 +2329,6 @@ def case_bound(frontier: Path, n: int) -> dict[str, Any] | None:
     return (front.get("packing") or {}).get("verified_upper_bound") or None
 
 
-BRACKET_WIDTH = Fraction(1, 10**40)
-"""The first width `bound_bracket` narrows a closed-form `U` to; each refinement after it is
-another forty digits narrower."""
-
-
-def bound_bracket(
-    bound: Mapping[str, Any], width: Fraction = BRACKET_WIDTH
-) -> tuple[Fraction, Fraction]:
-    """Rationals `lo <= U <= hi` with `hi - lo < width`, held exactly; `lo == hi` where `U`
-    is rational.
-
-    A rational `U` is its own bracket: its exact form where that is a rational, else its
-    printed decimal, which a bound stating no exact form is exactly. A closed form is an
-    algebraic number, so its bracket is an isolating interval of a real root of its
-    minimal polynomial over `Q`, narrowed by SymPy's exact real-root refinement; a
-    50-digit evaluation only picks out which root, among intervals at least `10^-40`
-    apart. Nothing is compared against a rounded value of `U`: a rational side either lies
-    outside the bracket or is `U` (#548 review B1).
-    """
-    exact = bound.get("exact_form")
-    text = str(exact if exact is not None else bound.get("value"))
-    try:
-        value = Fraction(text)
-    except ValueError:
-        return _closed_form_bracket(text, width)
-    return value, value
-
-
-@cache
-def _closed_form_bracket(exact_form: str, width: Fraction) -> tuple[Fraction, Fraction]:
-    import sympy as sp  # noqa: PLC0415 - imported only where a bound is a closed form
-    from sympy.parsing.sympy_parser import (  # noqa: PLC0415
-        implicit_multiplication_application,
-        parse_expr,
-        standard_transformations,
-    )
-
-    value = parse_expr(
-        exact_form,
-        transformations=(*standard_transformations, implicit_multiplication_application),
-    )
-    if value.free_symbols:
-        message = f"the exact form {exact_form!r} is not a number"
-        raise ValueError(message)
-    x = sp.Symbol("x")
-    poly = sp.Poly(sp.minimal_polynomial(value, x), x)
-
-    def rational(number: Any) -> Fraction:
-        number = sp.Rational(number)
-        return Fraction(int(number.p), int(number.q))
-
-    if poly.degree() == 1:
-        lead, constant = poly.all_coeffs()
-        root = rational(-sp.Rational(constant) / sp.Rational(lead))
-        return root, root
-    near = rational(sp.Rational(str(sp.N(value, 50))))
-    reach = Fraction(1, 10**40)
-    # SymPy's isolating intervals for the real roots, as ((low, high), multiplicity).
-    isolated: list[Any] = list(poly.intervals())
-    holding = [
-        interval
-        for interval, _multiplicity in isolated
-        if rational(interval[0]) - reach <= near <= rational(interval[1]) + reach
-    ]
-    if len(holding) != 1:
-        message = (
-            f"{len(holding)} real roots of {exact_form!r}'s minimal polynomial lie near it"
-        )
-        raise ValueError(message)
-    ((low, high),) = holding
-    low, high = poly.refine_root(low, high, eps=sp.Rational(width.numerator, width.denominator))
-    return rational(low), rational(high)
-
-
-def side_against_bound(side: Fraction, bound: Mapping[str, Any]) -> int:
-    """The sign of `side - U`, decided exactly (`bound_bracket`): -1 below, 0 at, 1 above."""
-    width = BRACKET_WIDTH
-    for _ in range(8):
-        low, high = bound_bracket(bound, width)
-        if side < low:
-            return -1
-        if side > high:
-            return 1
-        if low == high:
-            return 0
-        width /= 10**40
-    message = f"side {side} is within {float(width)} of U {bound!r} and not decided"
-    raise ValueError(message)
-
-
-def side_minus_bound_text(side: Fraction, bound: Mapping[str, Any]) -> str:
-    """`side - U` as the index writes it (`.3e`), decided exactly: the bracket is narrowed
-    until both of its ends print the same."""
-    width = BRACKET_WIDTH
-    for _ in range(8):
-        low, high = bound_bracket(bound, width)
-        text = f"{float(side - high):.3e}"
-        if text == f"{float(side - low):.3e}":
-            return text
-        width /= 10**40
-    message = f"side {side} minus U {bound!r} does not settle at four digits"
-    raise ValueError(message)
-
-
 ABOVE_U: dict[int, str] = {
     18: "Evan Daniel's view, 3.7e-31 above a closed-form optimum no rational side reaches "
     "(question 4's status quo); the owner keeps it (13 October 2026)",
@@ -2476,22 +2372,32 @@ at a count not named here, and on a count named here once its view is no longer 
 def _bound_problems(
     layout: AtlasLayout, records: Mapping[int, dict[str, Any]], sides: Mapping[int, Fraction]
 ) -> list[str]:
-    """Every drawn view's exact side `s_V` against its case record's `U`, decided exactly
-    (#548 review B1): a view below `U` is a new result, registered before it is drawn
-    (policy section 4, row 3); a `bound` view is exactly at `U`; another generator's entry
-    records `s_V - U` as it is; and a view above `U` is one `ABOVE_U` names."""
+    """Every drawn view's exact side `s_V` against its case record's `U` (#548 review B1),
+    decided exactly as the driver holds `U` (`regularize_evand.verified_bound`: a closed
+    form as the one root of its minimal polynomial in a rational interval, never a rounded
+    value): a view below `U` is a new result, registered before it is drawn (policy
+    section 4, row 3); a `bound` view is exactly at `U`; another generator's entry records
+    `s_V - U` as the driver prints it; and a view above `U` is one `ABOVE_U` names."""
     if layout.frontier is None:
         return []
+    from devtools import regularize_evand as driver  # noqa: PLC0415 - it imports this module
+
     problems: list[str] = []
     above: set[int] = set()
     for n, side in sorted(sides.items()):
         record = records[n]
-        bound = case_bound(layout.frontier, n)
-        if bound is None:
+        bound = case_bound(layout.frontier, n) or {}
+        held = driver.verified_bound(
+            {"verified_upper_bound": bound.get("value"), "exact_form": bound.get("exact_form")}
+        )
+        if held is None:
             problems.append(f"n={n}: its case record states no verified upper bound U")
             continue
-        sign = side_against_bound(side, bound)
-        gap = side_minus_bound_text(side, bound)
+        sign = held.compare(side)
+        if sign is None:
+            problems.append(f"n={n}: U's exact form is not read exactly: {held.unread}")
+            continue
+        gap = f"{held.difference(side):.3e}"
         if sign < 0:
             problems.append(
                 f"n={n}: the view is {gap} from U, below it: a new result, registered "

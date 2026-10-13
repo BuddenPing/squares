@@ -690,12 +690,15 @@ def _closed_form_bound(form: str) -> VerifiedBound:
     approximate = sp.N(value, 80)
     width = sp.Rational(BOUND_INTERVAL_WIDTH.numerator, BOUND_INTERVAL_WIDTH.denominator)
     # Real root isolation over Q: each interval holds exactly one root; the 80-digit value
-    # only picks which.
+    # only picks which. It lies within `reach` of the root, and SymPy may refine an interval
+    # far below `width`, past that error (to 1.6e-82 for sqrt(16 + 10^-40)), so a root is
+    # matched within that reach rather than strictly inside.
+    reach = sp.Rational(1, 10**70)
     isolated: Any = polynomial.intervals(eps=width)
     found = [
         (Fraction(str(low)), Fraction(str(high)))
         for (low, high), _multiplicity in isolated
-        if low <= approximate <= high
+        if low - reach <= approximate <= high + reach
     ]
     if len(found) != 1:
         return VerifiedBound(form, unread="no single root of its minimal polynomial is it")
