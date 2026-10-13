@@ -3,16 +3,17 @@
 # is for, the credit, the licence, how a fork is recorded and how to re-pin.
 #
 # Checked by `python -m devtools.check_vendored_evand` from packing/ (edit tier), which
-# also writes this file on a re-pin (`--write --checkout DIR`); edit `local_changes` by
-# hand, never the pinned digests.
+# also writes this file on a re-pin (`--write --checkout DIR --commit ID`); edit
+# `local_changes` by hand, never the pinned digests or modes.
 #
 # Why SHA-256 here (OR-16): these bytes cross a real trust boundary -- they were
 # downloaded from another party's repository. The expected value of each digest is the
-# upstream blob at `source_commit`, which anyone can re-derive from the upstream
-# repository without trusting this one. The failure it detects is an unrecorded edit,
-# removal or addition in the vendored copy (a silent fork) or a manifest left stale by a
-# re-pin. Nothing but that check reads these digests: no tool refuses to run the
-# generator, and no result is invalidated, on a mismatch.
+# upstream blob at `source_commit`. The offline check holds the copy to this file, so it
+# catches accidental edits only: an edit made here together with this file passes it.
+# `--upstream` holds this file to upstream, comparing Git blob ids and modes at the pin;
+# it needs the network and is run at a re-pin and whenever this file changes. Nothing
+# but these checks reads the digests: no tool refuses to run the generator, and no
+# result is invalidated, on a mismatch.
 
 format: vendored-source-v1
 source_url: https://github.com/evand/square-packing

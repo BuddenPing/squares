@@ -16,7 +16,9 @@ The code is under the MIT licence, whose notice is kept with this copy in
 
 [vendored.yaml](vendored.yaml) is the machine-readable manifest: the pin, the licence
 and every file’s size, SHA-256 and executable bit.
-`devtools.check_vendored_evand` holds the directory to it in the edit tier.
+`devtools.check_vendored_evand` holds the directory to the manifest in the edit tier and
+on every pull request, and its `--upstream` mode holds the manifest to upstream
+([Checking the Copy](#checking-the-copy)).
 
 ## Source and Pin
 
@@ -117,6 +119,36 @@ directory, the integrity-ceremony scan skips `vendor/`, flowmark and Biome ignor
 `vendor/`, and the document map and the retained-JSON layout exempt it.
 The embedded-JavaScript scan reads its Python like any other and finds none.
 
+## Checking the Copy
+
+There are two checks, because the offline one cannot see upstream.
+
+- **Offline**: `python -m devtools.check_vendored_evand` from `packing/`, in the edit
+  tier and on every pull request.
+  It holds the copy to `vendored.yaml`: every pinned file’s size, SHA-256 and executable
+  bit, each recorded local change, and no other file in the directory.
+  It refuses a symbolic link anywhere in the copy.
+  It also refuses a module file named after a standard-library module or a dependency
+  the scripts import, such as a `numpy.py`: five of the scripts put
+  `search/regularize/` first on `sys.path` and two put `search/exact/` there, so such a
+  file would be imported in that module’s place.
+  **It catches accidental edits only.** Its expected values come from the manifest, so
+  a change that edits a vendored file and that file’s manifest line together passes it.
+- **Upstream**: the same command with `--upstream`.
+  It fetches the pinned commit’s trees, without blobs, into a temporary bare repository
+  and deletes it afterwards.
+  It requires the commit’s tree, date and subject to be the manifest’s, every pristine
+  file’s Git blob id and mode to be upstream’s at the pin, and every file here to be in
+  upstream’s tree unless it is a recorded addition.
+  It fetches only from `https://github.com/evand/square-packing`, and refuses a
+  manifest that names another source.
+  It needs the network, so no offline tier runs it.
+  Run it at every re-pin and before merging any change to `vendored.yaml` or to a
+  vendored file.
+
+No gate runs `--upstream` yet, so the person reviewing a change to this directory runs
+it; `think-vwlm` tracks a networked gate that would.
+
 ## Forking
 
 The copy may be adjusted, and every adjustment is a reviewed patch:
@@ -155,9 +187,12 @@ None. Every file is byte-identical to the pin.
    It compares every vendored file with the checkout’s blob at the commit, byte for
    byte and mode for mode, refuses on any difference or symbolic link, and rewrites
    `vendored.yaml`.
-5. Update Source and Pin and the credit lines above.
+5. Run the check with `--upstream`, which holds the rewritten manifest to upstream
+   itself rather than to the local checkout.
+6. Update Source and Pin and the credit lines above.
    Records made at the old pin keep naming it as their provenance.
-6. Re-apply and re-record any local changes, then run the check and the edit tier.
+7. Re-apply and re-record any local changes, then run the check, `--upstream` again,
+   and the edit tier.
    A re-pin invalidates nothing the exact checkers have already decided.
 
 <!-- This document follows common-doc-guidelines.md.

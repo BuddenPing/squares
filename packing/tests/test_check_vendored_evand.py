@@ -1,17 +1,22 @@
-"""The vendored regularizer is held to its manifest, and every way out of it is refused.
+"""The vendored regularizer is held to its manifest, the manifest to upstream, and every
+way out of either is refused.
 
 `devtools.check_vendored_evand` passes the real copy, then each rule is rehearsed on a
-small copy built here: an unrecorded edit, a dropped file, a stray file, each kind of
-local change done right and done wrong, the licence, and the re-pin writer.
+small copy built here: an unrecorded edit, a dropped file, a stray file, a link, a mode,
+a module that would shadow a dependency, each kind of local change done right and done
+wrong, the licence, the re-pin writer, and `--upstream` against a local upstream
+repository, which refuses the edits a matching manifest edit hides from the offline check.
 """
 
 from __future__ import annotations
 
+import ast
 import hashlib
 import os
 import re
 import stat
 import subprocess
+import sys
 import time
 from pathlib import Path
 
@@ -106,8 +111,11 @@ def test_the_real_vendored_copy_matches_its_manifest(
     assert vendored.main([]) == 0
     assert time.perf_counter() - started < 5  # the step is priced at under a second
     output = capsys.readouterr().out
-    assert "vendored copy check passed: 351 files match" in output
+    # The count and the commit are written here, not read from the manifest, so a file
+    # or a pin added to the manifest alone fails this test even where it passes the check.
+    assert "vendored copy check passed: 351 files match vendored.yaml" in output
     assert "square-packing@675a5ea" in output
+    assert "not compared with upstream (--upstream does that)" in output
 
 
 def test_the_real_manifest_pins_the_licence_and_the_commit() -> None:
@@ -402,7 +410,7 @@ def test_the_command_reports_and_fails_on_a_finding(
 
 
 # ---------------------------------------------------------------------------
-# Links and modes
+# Links, modes and shadowing modules (offline)
 # ---------------------------------------------------------------------------
 
 
@@ -483,6 +491,58 @@ def test_the_executable_field_is_a_boolean(tmp_path: Path) -> None:
         vendored.load_manifest(manifest)
 
 
+@pytest.mark.parametrize(
+    ("path", "module"),
+    [
+        ("search/numpy.py", "numpy"),
+        ("search/yaml/__init__.py", "yaml"),
+        ("search/json.py", "json"),
+        ("search/sitecustomize.py", "sitecustomize"),
+        ("search/scipy.cpython-314-x86_64-linux-gnu.so", "scipy"),
+    ],
+)
+def test_a_module_that_would_shadow_an_import_is_refused_even_when_pinned(
+    tmp_path: Path, path: str, module: str
+) -> None:
+    """R3 of Review B: a forged `files:` line cannot admit a `numpy.py` beside the code."""
+    directory = _copy(tmp_path)
+    (directory / path).parent.mkdir(parents=True, exist_ok=True)
+    (directory / path).write_bytes(b"import os\n")
+    _pin(directory, path)
+    assert _problems(directory) == [
+        (
+            f"{path}: would be imported in place of the `{module}` module the vendored "
+            "scripts load, since they put its directory on sys.path"
+        )
+    ]
+
+
+def test_the_declared_dependencies_are_what_the_vendored_code_imports() -> None:
+    """`DEPENDENCIES` is read off the vendored code, so a re-pin that adds one fails here."""
+    sources = sorted(vendored.VENDORED.rglob("*.py"))
+    own = {source.stem for source in sources}
+    imported: set[str] = set()
+    for source in sources:
+        for node in ast.walk(ast.parse(source.read_bytes(), str(source))):
+            if isinstance(node, ast.Import):
+                imported |= {alias.name.partition(".")[0] for alias in node.names}
+            elif isinstance(node, ast.ImportFrom) and node.level == 0 and node.module:
+                imported.add(node.module.partition(".")[0])
+    assert imported - own - set(sys.stdlib_module_names) == vendored.DEPENDENCIES
+    assert not {name for name in own if name in vendored.RESERVED_MODULES}
+
+
+def test_the_manifest_must_name_the_upstream_this_tool_fetches_from(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    directory = _copy(tmp_path)
+    assert vendored.main(["--directory", str(directory)]) == 1
+    assert (
+        "`source_url` is https://example.invalid/upstream, not "
+        "https://github.com/evand/square-packing"
+    ) in capsys.readouterr().err
+
+
 # ---------------------------------------------------------------------------
 # Re-pinning: the commit, the mode and links
 # ---------------------------------------------------------------------------
@@ -554,3 +614,119 @@ def test_a_repin_records_upstream_modes_and_refuses_links(tmp_path: Path) -> Non
         vendored.ManifestError, match=re.escape("search/data.json: a symbolic link")
     ):
         vendored.repin(directory, checkout, commit=_head(checkout), retrieved="2026-10-12")
+
+
+# ---------------------------------------------------------------------------
+# --upstream: the manifest against a local upstream repository
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture
+def pinned_copy(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    """A copy re-pinned from a local upstream that `--upstream` may fetch from."""
+    checkout = _upstream(tmp_path)
+    _git(checkout, "remote", "set-url", "origin", checkout.as_uri())
+    monkeypatch.setattr(vendored, "UPSTREAM_URL", checkout.as_uri())
+    directory = _copy(tmp_path / "project")
+    text = vendored.repin(directory, checkout, commit=_head(checkout), retrieved="2026-10-12")
+    (directory / vendored.MANIFEST_NAME).write_text(text, encoding="utf-8")
+    return directory
+
+
+def _upstream_run(directory: Path, capsys: pytest.CaptureFixture[str]) -> tuple[int, str]:
+    status = vendored.main(["--directory", str(directory), "--upstream"])
+    captured = capsys.readouterr()
+    return status, captured.out + captured.err
+
+
+def test_upstream_mode_passes_a_faithful_copy(
+    pinned_copy: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    status, output = _upstream_run(pinned_copy, capsys)
+    assert status == 0, output
+    assert "vendored.yaml matches upstream at that commit by tree, Git blob ids" in output
+
+
+def test_upstream_mode_refuses_an_edit_the_manifest_was_edited_to_hide(
+    pinned_copy: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """R2 of Review B: the offline check passes this; only upstream can refuse it."""
+    (pinned_copy / "search/tool.py").write_bytes(b"import os; os.system('id')\n")
+    _pin(pinned_copy, "search/tool.py")
+    assert _problems(pinned_copy) == []
+    status, output = _upstream_run(pinned_copy, capsys)
+    assert status == 1
+    assert "search/tool.py: Git blob " in output
+    assert "not upstream's" in output
+
+
+def test_upstream_mode_refuses_a_file_upstream_never_had(
+    pinned_copy: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    (pinned_copy / "search/helper.py").write_bytes(b"x = 1\n")
+    _pin(pinned_copy, "search/helper.py")
+    assert _problems(pinned_copy) == []
+    status, output = _upstream_run(pinned_copy, capsys)
+    assert status == 1
+    assert "search/helper.py: pinned, but upstream's tree at " in output
+
+
+def test_upstream_mode_refuses_a_mode_upstream_does_not_have(
+    pinned_copy: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    script = pinned_copy / "search/tool.py"
+    script.chmod(script.stat().st_mode | stat.S_IXUSR)
+    _pin(pinned_copy, "search/tool.py", executable=True)
+    assert _problems(pinned_copy) == []
+    status, output = _upstream_run(pinned_copy, capsys)
+    assert status == 1
+    assert "search/tool.py: vendored.yaml pins mode 100755, upstream's is 100644" in output
+
+
+@pytest.mark.parametrize("key", ["git_tree", "committed", "subject"])
+def test_upstream_mode_holds_the_recorded_commit_fields(
+    pinned_copy: Path, capsys: pytest.CaptureFixture[str], key: str
+) -> None:
+    manifest = pinned_copy / vendored.MANIFEST_NAME
+    record = safe_load(manifest.read_text())
+    forged = {"git_tree": "e" * 40, "committed": "2026-01-01T00:00:00Z", "subject": "other"}
+    text = manifest.read_text().replace(str(record[key]), forged[key], 1)
+    manifest.write_text(text, encoding="utf-8")
+    status, output = _upstream_run(pinned_copy, capsys)
+    assert status == 1
+    assert f"vendored.yaml: `{key}` is {forged[key]!r}, but " in output
+
+
+def test_upstream_mode_holds_a_modified_files_pinned_entry_to_the_blob(
+    pinned_copy: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    manifest = pinned_copy / vendored.MANIFEST_NAME
+    manifest.write_text(
+        manifest.read_text().replace(
+            "local_changes: []", f"local_changes: {_change('search/data.json', 'modified')}"
+        ),
+        encoding="utf-8",
+    )
+    (pinned_copy / "search/data.json").write_bytes(b'{"n": 2}\n')
+    _describe(pinned_copy, "`search/data.json` holds 2.")
+    status, output = _upstream_run(pinned_copy, capsys)
+    assert status == 0, output
+    pristine = hashlib.sha256(UPSTREAM["search/data.json"]).hexdigest()
+    manifest.write_text(manifest.read_text().replace(pristine, "a" * 64), encoding="utf-8")
+    status, output = _upstream_run(pinned_copy, capsys)
+    assert status == 1
+    assert "search/data.json: the pinned size and SHA-256 are not upstream's blob" in output
+
+
+def test_upstream_mode_never_fetches_from_another_source(
+    pinned_copy: Path, capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(vendored, "UPSTREAM_URL", "https://example.invalid/the-real-one")
+
+    def refuse(*_arguments: object) -> Path:
+        pytest.fail("fetched from a source the tool was not written for")
+
+    monkeypatch.setattr(vendored, "fetch_pin", refuse)
+    status, output = _upstream_run(pinned_copy, capsys)
+    assert status == 1
+    assert "not https://example.invalid/the-real-one" in output
