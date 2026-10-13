@@ -196,7 +196,11 @@ def regularizations(results: list[dict], sources: Mapping[str, Mapping[str, Any]
             f"packing keeps its finder{APOSTROPHE}s credit through it, and the regularizer "
             "is credited with the arrangement. That a regularization is still the same "
             f"packing is the source{APOSTROPHE}s claim unless it was measured here "
-            "([`epistemics.md`](../../epistemics.md#results-by-others))."
+            "([`epistemics.md`](../../epistemics.md#results-by-others)). Where this "
+            f"project{APOSTROPHE}s own regularization was made with Evan Daniel{APOSTROPHE}s "
+            f"regularizer, its line names this project{APOSTROPHE}s modifications to it as "
+            f"far as the item establishes them; an item records no solve, so whether the "
+            "solve climbed a retry rung is said to be not recorded."
         ),
         "",
     ]
@@ -232,7 +236,9 @@ def regularized_drawings(
             f"{APOSTROPHE}s regularizer or the grid-slack port of his placement made a view, "
             f"its line names this project{APOSTROPHE}s modifications to it, or says it ran "
             f"unmodified, and each count{APOSTROPHE}s case record carries the same credit in "
-            "its `regularization` note. A regularization is never a result."
+            "its `regularization` note. A pure regularization, one that proves no new "
+            "bound, is never a result; one whose exact side proves a new upper bound is "
+            "registered as a result and listed under that result above."
         ),
         "",
     ]

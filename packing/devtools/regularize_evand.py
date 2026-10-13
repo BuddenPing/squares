@@ -2823,24 +2823,38 @@ def write_layer(
 
 def record_rungs(run_dirs: Sequence[Path], root: Path) -> dict[str, Any]:
     """Record in the layer's index the retry rungs each drawn view's solve climbed
-    (`run.rungs`), from finished runs' reports, for a view admitted without them.
+    (`run.rungs`), from finished runs' reports, for a view admitted without them, and the
+    run whose report supplied them (`run.rungs_from`).
 
     `evand_admitted` records them from 13 October 2026. Before the retry ladder of 12
     October a report kept only the arguments of the one retry it made, which the index
     keeps as `retried_with`; between the two, the reports kept the rungs and the index
-    nothing. A report answers for a drawn view only when its admitted view, recorded under
-    the entry's own run, renders to the drawn view byte for byte: the same solve,
-    regularization and decision. Then its rungs are written, so a run of the same counts
-    again records the rungs of a solve that makes the very view drawn; a view that differs
-    records nothing and is listed.
+    nothing. An entry that already records either is left as it is and listed
+    (`already_recorded`): what admission or an earlier pass recorded is never written over.
+    A report answers for a drawn view only when its admitted view, recorded under the
+    entry's own run, renders to the drawn view byte for byte: the same solve,
+    regularization and decision. The comparison is of the text itself, the stored view
+    decompressed against the one rendered here, not of a digest (OR-16): the layer's check
+    (`check_atlas`) already holds the stored view to its index entry. Then its rungs are
+    written, so a run of the same counts again records the rungs of a solve that makes the
+    very view drawn; a view that differs records nothing and is listed. A supplying run
+    other than the entry's own enters the index's `runs` from its receipt, as an admitted
+    one does, so `rungs_from` names a run the index records.
     """
     root = root.resolve()
     index_path = root / LAYER_INDEX_PATH
     index = read_json(index_path)
     entries = {int(entry["n"]): entry for entry in index["entries"]}
     layout = layer_layout(root)
-    summary: dict[str, list[int]] = {"recorded": [], "differs": [], "not_drawn": []}
+    summary: dict[str, list[int]] = {
+        "recorded": [],
+        "already_recorded": [],
+        "differs": [],
+        "not_drawn": [],
+    }
+    supplying: dict[str, Path] = {}
     for run_dir in run_dirs:
+        run_id = f"{axis.EVAND_GENERATOR}-{Path(run_dir).name}"
         for path in sorted(Path(run_dir).glob("n-*/report.json")):
             report = read_json(path)
             n = int(report["n"])
@@ -2854,13 +2868,29 @@ def record_rungs(run_dirs: Sequence[Path], root: Path) -> dict[str, Any]:
             ):
                 summary["not_drawn"].append(n)
                 continue
-            admitted = evand_admitted(report, path.parent, str(entry["run"]["id"]))
+            run = entry["run"]
+            if "rungs" in run or "retried_with" in run:
+                summary["already_recorded"].append(n)
+                continue
+            admitted = evand_admitted(report, path.parent, str(run["id"]))
             text = witness_document(layer_view(admitted), schema=layout.schema_reference())
-            if sha256_of(text.encode("utf-8")) != entry["view"]["sha256"]:
+            stored = gzip.decompress((root / entry["view"]["path"]).read_bytes())
+            if stored.decode("utf-8") != text:
                 summary["differs"].append(n)
                 continue
-            entry["run"]["rungs"] = [str(rung) for rung in solved.get("rungs") or []]
+            run["rungs"] = [str(rung) for rung in solved.get("rungs") or []]
+            run["rungs_from"] = run_id
+            supplying[run_id] = Path(run_dir)
             summary["recorded"].append(n)
+    known = {str(block["id"]) for block in index.get("runs") or []}
+    index["runs"] = [
+        *(index.get("runs") or []),
+        *(
+            run_block(run_dir, run_id)
+            for run_id, run_dir in supplying.items()
+            if run_id not in known
+        ),
+    ]
     with atomic_output_file(index_path) as temporary:
         temporary.write_text(axis.index_text(index), encoding="utf-8")
     return {key: sorted(set(counts)) for key, counts in summary.items()}

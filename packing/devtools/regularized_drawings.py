@@ -37,11 +37,14 @@ result by others only when the record acts on it (`epistemics.md`, Results by Ot
 packing from before this project began that no replay here ever registered has no result to
 name, and inventing one is not this tool's to do.
 
-**What is not a result.** A drawing changes no side, frontier value, evidence tier or
-credit (the policy, section 1), so these items are not a register result and carry no rung:
-they are this project's regularizations of results the register already holds. A view
-whose side lies below the verified upper bound is a result first (row 3) and is registered
-by its own entry's `regularizations`.
+**What is not a result.** A pure regularization, one that proves no new bound, is never
+a result. A drawing changes no side, frontier value, evidence tier or credit (the policy,
+section 1), so these items are not a register result and carry no rung: they are this
+project's regularizations of results the register already holds. A view whose side lies
+below the verified upper bound proves a new bound, so it is a result first (row 3) and is
+registered by its own entry's `regularizations`, as T-154 registered 59; where such a
+view is also drawn, at fifteen counts, its case note says that its exact side is
+registered as that result (`registering_result`).
 
 **Whose regularization, and whether it was modified.** The owner asked on 13 October 2026
 that the frontier records say which counts have been regularized and whether the
@@ -54,17 +57,30 @@ retry rungs the kept solve climbed (`run.rungs`, or before the retry ladder
 `run.retried_with`), the replica patches its `method` names, the same-side exact re-solve a
 view at the witness's side was brought to it by, and for a grid-slack view the port
 itself, which is this project's code and not his. An empty list says his regularizer ran
-unmodified; a view of this project's axis tool has no such field.
+unmodified; a view of this project's axis tool has no such field. A registered result's
+own regularization (`by: project`, as T-154's 59 are) names them in its item too, read
+from its `method` and `side` the same way (`registered_modifications`) and written in
+place after its `method`; an item records no solve, so where his regularizer made the view
+it also says that whether the solve climbed a retry rung is not recorded
+(`modifications_unrecorded`), rather than reading as unmodified.
 
-**The case records.** Each case record whose count the layer draws, or whose house is
-itself a regularization its source published (a register result's `regularizations`
-item whose `by` is the bibliography key of the source the witness names, as `T-146`'s
-are), carries a generated `regularization` field in its front matter: a one-paragraph
-`note` the site's case page prints, then its `items`, the source's regularization first
-in the register's own terms and this project's after it, with the generator, the credit
+**The case records.** Each case record whose count the layer draws, whose count a
+registered result holds this project's own regularization of (as T-154's 59 are), or
+whose house is itself a regularization its source published (a register result's
+`regularizations` item whose `by` is the bibliography key of the source the witness
+names, as `T-146`'s are), carries a generated `regularization` field in its front
+matter: a one-paragraph `note` the site's case page prints, then its `items`, the
+source's regularization first in the register's own terms and this project's after it,
+with the generator, the credit
 line, the modifications, the side relation (`same` or `bound`), the registered result
-that holds the packing (`of`, or null where none does) and the view's path. A record the
-layer does not draw and whose house no source regularized carries no such field.
+that holds the packing (`of`, or null where none does), the result that registers the
+drawn regularization itself where one does (`registered_in`) and the view's path. Last
+comes this project's regularization a result registers where the layer does not draw it
+(`registered_case_items`), in the register's terms like a source's, with its generator,
+credit line and modifications: T-154's at 43 undrawn counts, and at 227, where the
+grid-slack view is drawn instead. A record the layer does not draw, whose count no
+result holds a regularization of by this project, and whose house no source regularized
+carries no such field.
 
 The register's list is a block at the end of `results.yaml`, from `MARKER` on, which this
 tool writes whole, and each case record's field is written in place, at the end of its
@@ -78,7 +94,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
-from collections.abc import Mapping, Sequence
+from collections.abc import Collection, Mapping, Sequence
 from dataclasses import dataclass
 from fractions import Fraction
 from functools import cache
@@ -116,25 +132,45 @@ PROJECT_REGULARIZER = "project"
 #: The fields of a layer record the register's item keeps, in its order.
 ITEM_FIELDS = ("n", "of", "by", "method", "modifications", "side", "changes", "identity")
 #: The layer's generators, as its index names them.
+AXIS_GENERATOR = "regularize_axis_components/2"
 EVAND_GENERATOR = "evand-regularize"
-GRID_PREFIX = "regularize_grid_slack/"
+#: Whose code made each generator's view: this project's axis tool (`axis`), Evan Daniel's
+#: regularizer through the vendored driver (`evand`), or the grid-slack port of his
+#: placement (`grid`). A generator not named here is refused, not credited by a guess.
+GENERATOR_KINDS = {
+    AXIS_GENERATOR: "axis",
+    EVAND_GENERATOR: "evand",
+    "regularize_grid_slack/0": "grid",
+    "regularize_grid_slack/1": "grid",
+}
 #: The credit line of a view this project's axis tool made (policy section 7); the other
 #: generators' lines are their index blocks' `credit`.
 AXIS_CREDIT = (
     "Regularized by the Squares Project with its own axis tool (regularize_axis_components/2)"
 )
+#: The kind of result whose exact side a registered regularization proves, which the
+#: notes say it is.
+UPPER_BOUND = "upper-bound"
 #: How an item names each of this project's modifications to Evan Daniel's regularizer.
 SAME_SIDE_RESOLVE = "same-side exact re-solve (devtools.regularize_same_side)"
 BOUND_RESOLVE = "exact re-solve at the verified upper bound (devtools.regularize_same_side)"
 #: The retry rungs, by the name the driver records (`devtools.regularize_evand`). The
-#: stall-stop rung's one change is its replica patch, which the view's `method` names.
+#: stall-stop rung's one change is its replica patch, which the view's `method` names, so
+#: it has no words of its own (`SILENT_RUNGS`); any other rung is refused.
 RUNG_WORDS = {
     "dps-100": "retry rung dps-100",
     "force-kkt": "retry rung force-kkt",
     "first-pass": "retry rung first-pass (devtools.regularize_evand_first_pass)",
 }
+SILENT_RUNGS = frozenset({"stall-stop"})
+#: What a registered result's item cannot establish of the modifications: it records no
+#: solve, so whether the solve that made the view climbed a retry rung.
+UNRECORDED_RUNGS = "retry rungs"
 #: The patches a vendored view's `method` names after the pin, `@675a5ea+name`.
 _METHOD_PATCHES = re.compile(r"evand/square-packing@[0-9a-f]+((?:\+[^,+\s]+)*)")
+#: What a drawing is when no result registers it (the owner, 13 October 2026: "Pure
+#: regularization should not be considered a new result").
+PURE = "a pure regularization, which proves no new bound"
 #: How a note reads a project item's side relation and a source item's.
 SIDE_WORDS = {
     "same": "at the witness's own side",
@@ -142,6 +178,42 @@ SIDE_WORDS = {
     "solved": "solved to its side",
 }
 IDENTITY_FIELDS = ("basis", "measured_in", "one_to_one", "moved", "max_move", "max_turn_deg")
+
+
+class RegularizedDrawingsError(ValueError):
+    """The index or the register names something this tool has no words for: a generator,
+    a retry rung or retry argument, or a registering result that is not an upper bound."""
+
+
+def generator_kind(generator: str) -> str:
+    """Whose code made a generator's view (`GENERATOR_KINDS`); refused where unknown."""
+    try:
+        return GENERATOR_KINDS[generator]
+    except KeyError:
+        raise RegularizedDrawingsError(
+            f"generator {generator!r} is not one this tool knows; name it in GENERATOR_KINDS"
+        ) from None
+
+
+def generator_credit(generator: str, generators: Mapping[str, Any]) -> str:
+    """A generator's credit line: the axis tool's own, or its index block's `credit`."""
+    if generator_kind(generator) == "axis":
+        return AXIS_CREDIT
+    credit = (generators.get(generator) or {}).get("credit")
+    if not credit:
+        raise RegularizedDrawingsError(f"the index's {generator} block names no credit")
+    return str(credit)
+
+
+def upper_bound_result(result: Mapping[str, Any]) -> str:
+    """A registering result's id, refused unless it is an upper bound, which is what the
+    notes say its regularization's exact side proves."""
+    if result.get("kind") != UPPER_BOUND:
+        raise RegularizedDrawingsError(
+            f"{result['id']} registers a regularization but is a {result.get('kind')} result, "
+            f"not an {UPPER_BOUND}"
+        )
+    return str(result["id"])
 
 
 @dataclass(frozen=True)
@@ -244,17 +316,42 @@ def packing_result(
 
 def rungs(entry: Mapping[str, Any]) -> list[str]:
     """The retry rungs a drawn view's solve climbed, as its index entry records them:
-    `run.rungs`, or before the retry ladder the one retry's arguments, `retried_with`."""
+    `run.rungs`, or before the retry ladder the one retry's arguments, `retried_with`
+    (`--dps N` and `--force-kkt`; any other argument is refused)."""
     run = entry.get("run") or {}
     if "rungs" in run:
         return [str(rung) for rung in run["rungs"]]
     arguments = [str(argument) for argument in run.get("retried_with") or []]
     found = []
-    if "--dps" in arguments[:-1]:
-        found.append(f"dps-{arguments[arguments.index('--dps') + 1]}")
-    if "--force-kkt" in arguments:
-        found.append("force-kkt")
+    at = 0
+    while at < len(arguments):
+        if arguments[at] == "--dps" and at + 1 < len(arguments):
+            found.append(f"dps-{arguments[at + 1]}")
+            at += 2
+        elif arguments[at] == "--force-kkt":
+            found.append("force-kkt")
+            at += 1
+        else:
+            raise RegularizedDrawingsError(
+                f"n={entry.get('n')}: retry argument {arguments[at]!r} is not one this tool "
+                "knows"
+            )
     return found
+
+
+def rung_words(found: Sequence[str], n: object = None) -> list[str]:
+    """How an item names each rung a solve climbed (`RUNG_WORDS`), the stall-stop rung
+    by its patch alone; a rung with no words is refused rather than dropped."""
+    words = []
+    for rung in found:
+        if rung in SILENT_RUNGS:
+            continue
+        if rung not in RUNG_WORDS:
+            raise RegularizedDrawingsError(
+                f"n={n}: retry rung {rung!r} is not one this tool knows; name it in RUNG_WORDS"
+            )
+        words.append(RUNG_WORDS[rung])
+    return words
 
 
 @cache
@@ -281,27 +378,144 @@ def project_modifications(
     and its re-solve. An empty list: his regularizer ran unmodified. None: the view is
     this project's axis tool's, which is not his regularizer."""
     generator = str(entry.get("generator"))
-    resolve = SAME_SIDE_RESOLVE if relation(entry) == "same" else BOUND_RESOLVE
-    if generator.startswith(GRID_PREFIX):
-        return [
-            f"port of his coincidence placement ({generator}) rather than his code",
-            resolve,
-        ]
-    if generator != EVAND_GENERATOR:
+    kind = generator_kind(generator)
+    if kind == "grid":
+        return grid_modifications(generator, same=relation(entry) == "same")
+    if kind == "axis":
         return None
-    found = [RUNG_WORDS[rung] for rung in rungs(entry) if rung in RUNG_WORDS]
-    method = str((entry.get("regularization") or {}).get("method") or "")
-    match = _METHOD_PATCHES.search(method)
-    named = [name for name in (match.group(1) if match else "").split("+") if name]
-    if kinds is None:
-        kinds = patch_kinds() if named else {}
+    found = rung_words(rungs(entry), entry.get("n"))
     found.extend(
-        f"replica patch {name}" if kinds.get(name) == "replica" else f"local change {name}"
-        for name in named
+        patch_words(str((entry.get("regularization") or {}).get("method") or ""), kinds)
     )
     if relation(entry) == "same":
         found.append(SAME_SIDE_RESOLVE)
     return found
+
+
+def grid_modifications(generator: str, *, same: bool) -> list[str]:
+    """A grid-slack view's modifications: the port of his placement, which is this
+    project's code, and the exact re-solve that brought it to its side."""
+    return [
+        f"port of his coincidence placement ({generator}) rather than his code",
+        SAME_SIDE_RESOLVE if same else BOUND_RESOLVE,
+    ]
+
+
+def patch_words(method: str, kinds: Mapping[str, str] | None = None) -> list[str]:
+    """The vendored copy's patches a `method` names after the pin, `@675a5ea+name`, each as
+    a replica patch or another local change (`patch_kinds`)."""
+    match = _METHOD_PATCHES.search(method)
+    named = [name for name in (match.group(1) if match else "").split("+") if name]
+    if kinds is None:
+        kinds = patch_kinds() if named else {}
+    return [
+        f"replica patch {name}" if kinds.get(name) == "replica" else f"local change {name}"
+        for name in named
+    ]
+
+
+# ------------------------------------------------- the registered results' own items
+
+
+def method_generator(method: str, generators: Mapping[str, Any]) -> str:
+    """The layer generator a registered regularization's `method` names: the one whose
+    index block's `method` it is, less any patches after the pin; refused where no
+    generator, or more than one, answers."""
+    base = _METHOD_PATCHES.sub(
+        lambda match: match.group(0)[: match.start(1) - match.start()], method
+    )
+    found = [
+        generator
+        for generator in GENERATOR_KINDS
+        if str((generators.get(generator) or {}).get("method") or "") == base
+    ]
+    if len(found) != 1:
+        raise RegularizedDrawingsError(
+            f"method {method!r} names {found or 'no generator'} among the layer's generators"
+        )
+    return found[0]
+
+
+def registered_modifications(
+    record: Mapping[str, Any],
+    generators: Mapping[str, Any],
+    kinds: Mapping[str, str] | None = None,
+) -> tuple[list[str] | None, list[str]]:
+    """This project's modifications to Evan Daniel's regularizer that made a registered
+    result's own regularization (`by: project`), as far as its item establishes them, read
+    as a drawing's are (`project_modifications`): the patches its `method` names and the
+    same-side re-solve of a view at the witness's side; for a grid-slack view the port and
+    its re-solve. Then what the item cannot establish: it records no solve, so where his
+    regularizer made the view, whether the solve climbed a retry rung (`UNRECORDED_RUNGS`).
+    None, with nothing unrecorded: the axis tool's, which is not his regularizer."""
+    method = str(record["method"])
+    generator = method_generator(method, generators)
+    kind = generator_kind(generator)
+    same = str(record["side"]) == "same"
+    if kind == "axis":
+        return None, []
+    if kind == "grid":
+        return grid_modifications(generator, same=same), []
+    found = patch_words(method, kinds)
+    if same:
+        found.append(SAME_SIDE_RESOLVE)
+    return found, [UNRECORDED_RUNGS]
+
+
+def registered_lines(found: list[str] | None, unrecorded: Sequence[str]) -> list[str]:
+    """The `modifications` lines of a registered item, as the register writes them."""
+    lines = []
+    if found is not None:
+        inner = ", ".join(json.dumps(word, ensure_ascii=False) for word in found)
+        lines.append(f"        modifications: [{inner}]")
+    if unrecorded:
+        inner = ", ".join(json.dumps(word, ensure_ascii=False) for word in unrecorded)
+        lines.append(f"        modifications_unrecorded: [{inner}]")
+    return lines
+
+
+_RESULT_HEAD = re.compile(r"^  - id: (T-[0-9]{3})$")
+_ITEM_HEAD = re.compile(r"^      - n: ([0-9]+)$")
+_MODIFICATION_LINE = re.compile(r"^        modifications(?:_unrecorded)?: ")
+
+
+def with_registered_modifications(
+    text: str, results: Sequence[Mapping[str, Any]], generators: Mapping[str, Any]
+) -> str:
+    """`results.yaml`'s hand-written register with each result's `by: project`
+    regularization carrying the `modifications` its `method` and `side` give, written
+    after its `method`; every other line left as it was."""
+    wanted = {
+        (str(result["id"]), int(record["n"])): registered_lines(
+            *registered_modifications(record, generators)
+        )
+        for result in results
+        for record in result.get("regularizations") or []
+        if record["by"] == PROJECT_REGULARIZER
+    }
+    if not wanted:
+        return text
+    out: list[str] = []
+    rid: str | None = None
+    current: tuple[str, int] | None = None
+    # The lines owed after the `method` just read, written once its folded lines end.
+    pending: list[str] | None = None
+    for line in text.split("\n"):
+        if pending is not None and not line.startswith("          "):
+            out.extend(pending)
+            pending = None
+        if head := _RESULT_HEAD.match(line):
+            rid, current = head.group(1), None
+        elif not line.startswith("      ") and line.strip():
+            current = None
+        elif (item_head := _ITEM_HEAD.match(line)) and rid is not None:
+            current = (rid, int(item_head.group(1)))
+        if current in wanted and _MODIFICATION_LINE.match(line):
+            continue
+        out.append(line)
+        if current in wanted and line.startswith("        method:"):
+            pending = wanted[current]
+    return "\n".join(out)
 
 
 def item(
@@ -405,53 +619,170 @@ def source_regularizations(
                 "by": by,
                 "credit": credit,
                 "of": str(record["of"]),
-                "registered_in": str(result["id"]),
+                "registered_in": upper_bound_result(result),
                 "method": str(record["method"]),
                 "side": str(record["side"]),
             }
     return found
 
 
-def project_case_item(count: Drawn, generators: Mapping[str, Any]) -> dict[str, Any]:
-    """This project's regularization of a drawn count, as its case record keeps it."""
+#: A drawn view's side relation in the register's terms (`results.schema.yaml`).
+REGISTER_SIDES = {"same": "same", "bound": "solved"}
+
+
+def registering_result(count: Drawn, results: Sequence[Mapping[str, Any]]) -> str | None:
+    """The result that registers the drawn regularization itself as an upper bound: the
+    drawn packing's own result (`of`), where its `regularizations` hold a `by: project`
+    item at the count by the drawn view's method and at its side relation. T-154 does so
+    at fifteen drawn counts, whose exact sides it registered; elsewhere a drawing is a
+    pure regularization, proving no new bound."""
+    of = count.resolved.of
+    if of is None:
+        return None
+    entry = count.entry
+    n = int(entry["n"])
+    method = str(entry["regularization"]["method"])
+    side = REGISTER_SIDES[relation(entry)]
+    for result in results:
+        if str(result["id"]) != of:
+            continue
+        for record in result.get("regularizations") or []:
+            if (
+                int(record["n"]) == n
+                and record["by"] == PROJECT_REGULARIZER
+                and str(record["method"]) == method
+                and record["side"] == side
+            ):
+                return upper_bound_result(result)
+    return None
+
+
+def project_case_item(
+    count: Drawn, generators: Mapping[str, Any], registered_in: str | None = None
+) -> dict[str, Any]:
+    """This project's regularization of a drawn count, as its case record keeps it, with
+    the result that registers it where one does (`registering_result`)."""
     entry = count.entry
     generator = str(entry["generator"])
-    credit = (generators.get(generator) or {}).get("credit") or AXIS_CREDIT
     found: dict[str, Any] = {
         "by": PROJECT_REGULARIZER,
-        "credit": str(credit),
+        "credit": generator_credit(generator, generators),
         "generator": generator,
     }
     if count.modifications is not None:
         found["modifications"] = list(count.modifications)
     found["side"] = relation(entry)
     found["of"] = count.resolved.of
+    if registered_in is not None:
+        found["registered_in"] = registered_in
     found["view"] = str(entry["view"]["path"])
     return found
 
 
+def registered_case_items(
+    results: Sequence[Mapping[str, Any]],
+    generators: Mapping[str, Any],
+    drawn: Collection[tuple[str, int]] = (),
+) -> dict[int, dict[str, Any]]:
+    """The counts at which a registered result holds this project's own regularization
+    (`by: project`) that the layer does not draw, each as its case record keeps it: in
+    the register's terms, like a source's (`method`, `side`, `of`, `registered_in`),
+    with the generator its method names, its credit line and its modifications. T-154
+    holds 59; at the fifteen in `drawn`, (result, count) pairs whose drawing is that
+    regularization itself, the drawn item names the result instead."""
+    found: dict[int, dict[str, Any]] = {}
+    for result in results:
+        for record in result.get("regularizations") or []:
+            n = int(record["n"])
+            if record["by"] != PROJECT_REGULARIZER or (str(result["id"]), n) in drawn:
+                continue
+            method = str(record["method"])
+            generator = method_generator(method, generators)
+            modifications, unrecorded = registered_modifications(record, generators)
+            item: dict[str, Any] = {
+                "by": PROJECT_REGULARIZER,
+                "credit": generator_credit(generator, generators),
+                "generator": generator,
+                "method": method,
+            }
+            if modifications is not None:
+                item["modifications"] = modifications
+            if unrecorded:
+                item["modifications_unrecorded"] = list(unrecorded)
+            item["side"] = str(record["side"])
+            item["of"] = str(record["of"])
+            item["registered_in"] = upper_bound_result(result)
+            if n in found:
+                raise RegularizedDrawingsError(
+                    f"n={n}: two registered results hold this project's regularization"
+                )
+            found[n] = item
+    return found
+
+
+#: How a note says what a registered item cannot establish (`modifications_unrecorded`).
+UNRECORDED_WORDS = {UNRECORDED_RUNGS: "whether its solve climbed a retry rung"}
+
+
+def credit_sentence(found: Mapping[str, Any], *, also: bool = False) -> str:
+    """Who made a project regularization, with which of this project's modifications to
+    Evan Daniel's regularizer, and what of them is not recorded."""
+    head = str(found["credit"])
+    if also:
+        head = f"Also {head[:1].lower()}{head[1:]}"
+    modifications = found.get("modifications")
+    unrecorded = [str(word) for word in found.get("modifications_unrecorded") or []]
+    if modifications:
+        head += f", with the project's modifications: {', '.join(modifications)}"
+    elif modifications is not None:
+        head += (
+            ", with none of the project's modifications established"
+            if unrecorded
+            else ", unmodified"
+        )
+    for word in unrecorded:
+        if word not in UNRECORDED_WORDS:
+            raise RegularizedDrawingsError(f"no words for what is unrecorded: {word!r}")
+        head += f"; {UNRECORDED_WORDS[word]} is not recorded"
+    return head + "."
+
+
 def case_note(items: Sequence[Mapping[str, Any]]) -> str:
     """The record's one paragraph: who regularized the drawing, with which modifications,
-    and that it is a drawing, not a result; then who regularized the house, where its
-    source did."""
+    and either that it is a pure regularization, proving no new bound, so no result, or
+    that its exact side is registered as the result that proves it; then this project's
+    registered regularization of the count where the layer does not draw it, naming the
+    result; then who regularized the house, where its source did."""
     sentences: list[str] = []
     for found in items:
-        if found["by"] != PROJECT_REGULARIZER:
+        if found["by"] != PROJECT_REGULARIZER or "view" not in found:
             continue
-        modifications = found.get("modifications")
-        head = str(found["credit"])
-        if modifications:
-            head += f", with the project's modifications: {', '.join(modifications)}"
-        elif modifications is not None:
-            head += ", unmodified"
-        sentences.append(head + ".")
+        sentences.append(credit_sentence(found))
         where = SIDE_WORDS[str(found["side"])]
-        if found.get("of"):
-            sentences.append(f"A drawing of {found['of']}'s packing {where}, not a result.")
+        if found.get("registered_in"):
+            sentences.append(
+                f"A drawing of {found['of']}'s packing {where}. Its exact side is registered "
+                f"as {found['registered_in']}, the upper bound it proves; the drawing itself "
+                "is no further result."
+            )
+        elif found.get("of"):
+            sentences.append(
+                f"A drawing of {found['of']}'s packing {where}: {PURE}, so not a result."
+            )
         else:
             sentences.append(
-                f"A drawing {where}, not a result; no registered result holds the packing."
+                f"A drawing {where}: {PURE}, so not a result; no registered result holds the "
+                "packing."
             )
+    for found in items:
+        if found["by"] != PROJECT_REGULARIZER or "view" in found:
+            continue
+        sentences.append(credit_sentence(found, also=bool(sentences)))
+        sentences.append(
+            f"A regularization of {found['of']}'s packing {SIDE_WORDS[str(found['side'])]}, "
+            f"not drawn here; its exact side is registered as {found['registered_in']}, the "
+            "upper bound it proves."
+        )
     for found in items:
         if found["by"] == PROJECT_REGULARIZER:
             continue
@@ -467,17 +798,32 @@ def case_fields(
     index: Mapping[str, Any], repo: Path = REPO, drawn: Sequence[Drawn] | None = None
 ) -> dict[int, dict[str, Any]]:
     """Each case record's `regularization` field, by count, for the records that carry
-    one: the source's regularization of the house first, then this project's drawing."""
+    one: the source's regularization of the house first, then this project's drawing,
+    then this project's regularization a result registers where the layer does not draw
+    it (`registered_case_items`)."""
     register = load_register()
     by_source = source_regularizations(register.results, register.sources, repo)
     generators = index.get("generators") or {}
     projects = {
-        int(count.entry["n"]): project_case_item(count, generators)
+        int(count.entry["n"]): project_case_item(
+            count, generators, registering_result(count, register.results)
+        )
         for count in (drawn_counts(index, repo) if drawn is None else drawn)
     }
+    registered = registered_case_items(
+        register.results,
+        generators,
+        {
+            (str(found["registered_in"]), n)
+            for n, found in projects.items()
+            if found.get("registered_in")
+        },
+    )
     fields: dict[int, dict[str, Any]] = {}
-    for n in sorted(set(by_source) | set(projects)):
-        items = [found for found in (by_source.get(n), projects.get(n)) if found]
+    for n in sorted(set(by_source) | set(projects) | set(registered)):
+        items = [
+            found for found in (by_source.get(n), projects.get(n), registered.get(n)) if found
+        ]
         fields[n] = {"note": case_note(items), "items": items}
     return fields
 
@@ -619,15 +965,17 @@ def index_document(path: Path = INDEX) -> dict[str, Any]:
 def problems(
     register_text: str | None = None, index: Mapping[str, Any] | None = None
 ) -> list[str]:
-    """Where `results.yaml`'s generated block, or a case record's `regularization` field,
-    differs from what the layer's index gives."""
+    """Where `results.yaml`'s generated block, a registered result's own regularization's
+    `modifications`, or a case record's `regularization` field differs from what the
+    layer's index and the register give."""
     text = RESULTS.read_text(encoding="utf-8") if register_text is None else register_text
-    _head, block = split(text)
+    head, block = split(text)
     document = index_document() if index is None else index
     drawn = drawn_counts(document)
     items, unregistered = expected(document, drawn=drawn)
     wanted = block_text(items, unregistered)
-    found_problems = case_problems(document, case_fields(document, drawn=drawn))
+    found_problems = registered_problems(head, document.get("generators") or {})
+    found_problems += case_problems(document, case_fields(document, drawn=drawn))
     if block == wanted:
         return found_problems
     found = (safe_load(block) or {}).get(KEY) or {} if block else {}
@@ -644,12 +992,39 @@ def problems(
     ]
 
 
+def registered_problems(head: str, generators: Mapping[str, Any]) -> list[str]:
+    """Whether each registered result's own regularization (`by: project`) carries the
+    `modifications` its `method` and `side` give (`registered_modifications`)."""
+    results = (safe_load(head) or {}).get("results") or []
+    if with_registered_modifications(head, results, generators) == head:
+        return []
+    owed = sorted(
+        {
+            str(result["id"])
+            for result in results
+            for record in result.get("regularizations") or []
+            if record["by"] == PROJECT_REGULARIZER
+            and (record.get("modifications"), record.get("modifications_unrecorded") or [])
+            != registered_modifications(record, generators)
+        }
+    )
+    return [
+        (
+            f"results.yaml's `by: project` regularizations of {owed or 'some result'} do "
+            f"not carry the modifications their methods and sides give; run {GENERATOR}"
+        )
+    ]
+
+
 def update() -> tuple[int, int, int]:
     """Write the generated block and the case records' fields; return the items, the
     unregistered counts and the case records changed."""
     text = RESULTS.read_text(encoding="utf-8")
     head, _block = split(text)
     document = index_document()
+    head = with_registered_modifications(
+        head, (safe_load(head) or {}).get("results") or [], document.get("generators") or {}
+    )
     drawn = drawn_counts(document)
     items, unregistered = expected(document, drawn=drawn)
     with atomic_output_file(RESULTS) as temporary:

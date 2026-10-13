@@ -696,14 +696,19 @@ def _rigidity(case: dict[str, Any]) -> str:
 
 
 def _regularization(case: dict[str, Any]) -> str:
-    """Who regularized the drawing the atlas shows, and that it is not a result: the
-    record's generated note (`devtools.regularized_drawings`), one short credit line;
-    nothing for a record without one."""
-    note = (case.get("regularization") or {}).get("note")
+    """Who regularized the drawing the atlas shows, and whether it is a pure
+    regularization, which is no result, or one whose exact side a result registers, or
+    where the atlas draws no regularized view, this project's regularization a result
+    registers: the record's generated note (`devtools.regularized_drawings`), one short
+    credit line, labelled for what it credits; nothing for a record without one."""
+    field = case.get("regularization") or {}
+    note = field.get("note")
     if not note:
         return ""
+    drawn = any(item.get("view") for item in field.get("items") or [])
+    label = "Regularized drawing" if drawn else "Regularization"
     return (
-        '<div class="site-case-note"><span class="site-card-label">Regularized drawing</span>'
+        f'<div class="site-case-note"><span class="site-card-label">{label}</span>'
         f"<p>{_esc(' '.join(str(note).split()))}</p></div>"
     )
 

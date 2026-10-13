@@ -51,8 +51,9 @@ properties:
       regularize_grid_slack/1: {$ref: '#/$defs/generator'}
   runs:
     description: >-
-      The generator runs whose views the layer draws, each as its receipt recorded it: the
-      run receipts themselves stay outside the repository with the solves.
+      The generator runs whose views the layer draws, or whose reports supplied a drawn
+      view's retry rungs after admission (`run.rungs_from`), each as its receipt recorded
+      it: the run receipts themselves stay outside the repository with the solves.
     type: array
     items: {$ref: '#/$defs/run'}
   totals: {type: object}
@@ -256,14 +257,17 @@ $defs:
           kept before the retry ladder of 12 October 2026; `rungs` the ladder rungs the
           kept solve climbed, empty where it climbed none (the vendored driver's
           `solve.rungs`), which `devtools.regularize_evand rungs` records for a view
-          admitted without them. A view with neither came from a run before the ladder
-          that retried nothing.
+          admitted without them, never over either field, naming in `rungs_from` the run
+          whose report rendered the drawn view byte for byte and supplied them (the
+          index's `runs` records it). A view with neither came from a run before the
+          ladder that retried nothing.
         properties:
           id: {type: string, pattern: '^[a-z0-9-]+$'}
           retried_with: {type: array, items: {type: string}}
           rungs:
             type: array
             items: {enum: [dps-100, force-kkt, first-pass, stall-stop]}
+          rungs_from: {type: string, pattern: '^[a-z0-9-]+$'}
           output: {enum: [same, solved, grid]}
       source: {$ref: '#/$defs/source'}
       side:

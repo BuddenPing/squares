@@ -144,17 +144,23 @@ These redraw the views, regenerate `results.yaml`’s `regularized_drawings` and
 record’s `regularization` note, and regenerate `frontier/RESULTS.md`. Update the layer’s
 counts in the atlas README’s regularized-views section by hand.
 
-The note says who regularized the drawing and that it is not a result (the policy’s
-section 9, question 16): by the Squares Project, with the generator’s credit line, the
-side relation, the registered result that holds the packing and the view; where the
-house is itself a regularization its source published, the source is credited first.
-Where Evan Daniel’s regularizer or the grid-slack port of his placement made the view,
-the note and the register’s item also name this project’s modifications to it, or say it
-ran unmodified (the policy’s section 7): the owner asked on 13 October 2026 that they be
-noted. They are read from the view’s index entry, so the retry rungs must be there.
+The note says who regularized the drawing and that a pure regularization, one that
+proves no new bound, is not a result (the policy’s section 9, question 16): by the
+Squares Project, with the generator’s credit line, the side relation, the registered
+result that holds the packing and the view.
+Where the drawn regularization’s exact side is itself registered as an upper bound, the
+note names that result instead; where a result registers this project’s regularization
+of a count the layer does not draw by that method, the note credits it and names the
+result; where the house is itself a regularization its source published, the source is
+credited first. Where Evan Daniel’s regularizer or the grid-slack port of his placement
+made the view, the note and the register’s item also name this project’s modifications
+to it, or say it ran unmodified (the policy’s section 7): the owner asked on 13 October
+2026 that they be noted.
+They are read from the view’s index entry, so the retry rungs must be there.
 `layer` records them from a run’s reports; for a view admitted without them, run the
 counts again and record them from the new run, which writes only where its view is the
-drawn view byte for byte:
+drawn view byte for byte and the entry records no rungs or retry yet, names the new run
+as the entry’s `run.rungs_from`, and adds its receipt’s block to the index’s `runs`:
 
 ```bash
 python -m devtools.regularize_evand rungs --run-dir $RUNS/evand --repo-root ..

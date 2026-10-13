@@ -18,7 +18,7 @@ from typing import Any
 
 import pytest
 
-from devtools import render_case_pages, render_overview
+from devtools import render_case_pages, render_frontier_page, render_overview
 from devtools.preview_site import serve
 from sqpack.probes import probe
 from tests import site_browser, site_renders
@@ -64,6 +64,37 @@ def served(tmp_path_factory: pytest.TempPathFactory) -> Iterator[str]:
     finally:
         server.shutdown()
         server.server_close()
+
+
+def test_a_case_page_prints_its_regularization_note_and_nothing_without_one() -> None:
+    """The case page prints the record's generated `regularization` note
+    (`devtools.regularized_drawings`) as one labelled line: for a drawn count who
+    regularized the drawing, with its source's regularization of the house after it where
+    one exists; for a count the layer does not draw whose regularization a result
+    registers, the credit to the Squares Project and the result; and nothing at all for a
+    record without the field."""
+    cases = {case["n"]: case for case in render_frontier_page.frontier_cases()}
+    regularization = render_case_pages._regularization  # noqa: SLF001  # pyright: ignore[reportPrivateUsage]
+
+    drawn = regularization(cases[152])
+    assert drawn.startswith(
+        '<div class="site-case-note"><span class="site-card-label">Regularized drawing</span>'
+    )
+    assert "Regularized by the Squares Project with Evan Daniel" in drawn
+    assert "retry rung force-kkt" in drawn
+    assert "a pure regularization, which proves no new bound, so not a result" in drawn
+
+    housed = regularization(cases[70])
+    assert "Regularized drawing" in housed
+    assert "The house is itself its source" in housed
+
+    registered = regularization(cases[28])
+    assert '<span class="site-card-label">Regularization</span>' in registered
+    assert "Regularized by the Squares Project" in registered
+    assert "not drawn here; its exact side is registered as T-154" in registered
+
+    assert "regularization" not in cases[1]
+    assert regularization(cases[1]) == ""
 
 
 @pytest.fixture(scope="module")

@@ -105,18 +105,23 @@ def regularization_sentence(
 ) -> str:
     """One item of a result's `regularizations` as a reader is told it: the count, whose
     packing it regularizes and who regularized it, then the method, this project's
-    modifications to Evan Daniel's regularizer where a drawing names them, the side, what
-    the regularization changed, and what the identity rests on with what was measured here.
+    modifications to Evan Daniel's regularizer where the item names them and what of them
+    it does not record, the side, what the regularization changed, and what the identity
+    rests on with what was measured here.
     `n = 70: a regularization of T-125's packing by Daniel (fewest; solved to its side;
     rotation groups merged by up to 0.93°; identity: the source's claim; ...).`"""
     parts = [str(item["method"])]
     if "modifications" in item:
         modifications = ", ".join(str(found) for found in item["modifications"])
-        parts.append(
-            f"the project{_APOSTROPHE}s modifications: {modifications}"
-            if modifications
-            else "unmodified"
-        )
+        unrecorded = [str(found) for found in item.get("modifications_unrecorded") or []]
+        if modifications:
+            parts.append(f"the project{_APOSTROPHE}s modifications: {modifications}")
+        elif unrecorded:
+            parts.append(f"none of the project{_APOSTROPHE}s modifications established")
+        else:
+            parts.append("unmodified")
+        if unrecorded:
+            parts.append(f"{' and '.join(unrecorded)} not recorded")
     parts.append(_SIDES[str(item["side"])])
     changes = item.get("changes")
     if changes:

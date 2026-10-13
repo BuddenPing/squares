@@ -12,6 +12,8 @@ from __future__ import annotations
 
 from typing import Any
 
+import pytest
+
 from devtools import regularized_drawings as drawings
 from devtools.check_results import regularized_drawings_problems
 from sqpack.yamlio import safe_load
@@ -217,6 +219,38 @@ def test_the_modifications_are_read_from_the_index_entry_alone() -> None:
     assert "modifications" not in drawings.item(axis, "T-001", None)
 
 
+def test_an_unknown_generator_rung_or_registering_kind_is_refused() -> None:
+    """Credit and modifications fail closed: a generator the tool does not map, a rung or
+    retry argument it has no words for, and a registering result that is not an upper
+    bound are refused, never credited or read as unmodified by default. The stall-stop
+    rung alone is silent, since its one change is the replica patch `method` names."""
+    kinds: dict[str, str] = {}
+    stranger = {**entry(5, "same"), "generator": "someone-elses-tool"}
+    with pytest.raises(drawings.RegularizedDrawingsError, match="someone-elses-tool"):
+        drawings.project_modifications(stranger, kinds)
+    with pytest.raises(drawings.RegularizedDrawingsError, match="someone-elses-tool"):
+        drawings.project_case_item(
+            drawings.Drawn(stranger, drawings.Resolved("T-001", "x"), None), {}
+        )
+    evand = {**entry(5, "bound"), "generator": drawings.EVAND_GENERATOR}
+    with pytest.raises(drawings.RegularizedDrawingsError, match="names no credit"):
+        drawings.project_case_item(
+            drawings.Drawn(evand, drawings.Resolved("T-001", "x"), []), {}
+        )
+    for run in (
+        {"id": "r", "rungs": ["dps-200"]},
+        {"id": "r", "retried_with": ["--dps", "80"]},
+        {"id": "r", "retried_with": ["--relax"]},
+    ):
+        with pytest.raises(drawings.RegularizedDrawingsError, match="n=5"):
+            drawings.project_modifications({**evand, "run": run}, kinds)
+    stalled = {**evand, "run": {"id": "r", "rungs": ["stall-stop"]}}
+    assert drawings.project_modifications(stalled, kinds) == []
+    assert drawings.upper_bound_result({"id": "T-003", "kind": "upper-bound"}) == "T-003"
+    with pytest.raises(drawings.RegularizedDrawingsError, match="T-004 registers"):
+        drawings.upper_bound_result({"id": "T-004", "kind": "lower-bound"})
+
+
 def test_a_case_note_credits_the_regularizer_and_is_never_a_result() -> None:
     evand = {**entry(5, "same"), "generator": drawings.EVAND_GENERATOR}
     count = drawings.Drawn(evand, drawings.Resolved("T-001", "x"), [drawings.SAME_SIDE_RESOLVE])
@@ -228,7 +262,7 @@ def test_a_case_note_credits_the_regularizer_and_is_never_a_result() -> None:
     assert note == (
         "Regularized by the Squares Project, with the project's modifications: "
         f"{drawings.SAME_SIDE_RESOLVE}. A drawing of T-001's packing at the witness's own "
-        "side, not a result."
+        "side: a pure regularization, which proves no new bound, so not a result."
     )
     plain = drawings.project_case_item(
         drawings.Drawn(evand, drawings.Resolved(None, "none"), []), generators
@@ -255,6 +289,195 @@ def test_a_case_note_credits_the_regularizer_and_is_never_a_result() -> None:
         "The house is itself its source's regularization of T-002's packing (A after B), "
         "registered as T-003 for the upper bound its exact side proves."
     )
+
+
+def test_a_drawing_whose_exact_side_is_registered_says_so() -> None:
+    """Where the drawn packing's own result registers this very regularization (a
+    `by: project` item at the count, by the drawn view's method, at its side relation),
+    the item names it as `registered_in` and the note says its exact side is registered
+    as that result, which proves a new bound; a drawing by another method or at another
+    side is a pure regularization."""
+    method = "Evan Daniel's search/regularize, through devtools.regularize_evand"
+    results = [
+        {
+            "id": "T-154",
+            "kind": "upper-bound",
+            "regularizations": [
+                {"n": 5, "of": "T-001", "by": "project", "method": method, "side": "solved"}
+            ],
+        }
+    ]
+    bound = {**entry(5, "bound"), "generator": drawings.EVAND_GENERATOR}
+    count = drawings.Drawn(bound, drawings.Resolved("T-154", "x"), [])
+    assert drawings.registering_result(count, results) == "T-154"
+    generators = {drawings.EVAND_GENERATOR: {"credit": "Regularized by the Squares Project"}}
+    ours = drawings.project_case_item(count, generators, "T-154")
+    assert ours["registered_in"] == "T-154"
+    assert drawings.case_note([ours]) == (
+        "Regularized by the Squares Project, unmodified. A drawing of T-154's packing at the "
+        "verified upper bound. Its exact side is registered as T-154, the upper bound it "
+        "proves; the drawing itself is no further result."
+    )
+    same = drawings.Drawn(
+        {**entry(5, "same"), "generator": drawings.EVAND_GENERATOR},
+        drawings.Resolved("T-154", "x"),
+        [],
+    )
+    assert drawings.registering_result(same, results) is None
+    grid = {**bound, "generator": "regularize_grid_slack/1"}
+    grid["regularization"] = {**bound["regularization"], "method": "regularize_grid_slack/1"}
+    assert (
+        drawings.registering_result(drawings.Drawn(grid, count.resolved, []), results) is None
+    )
+    elsewhere = drawings.Drawn(bound, drawings.Resolved("T-001", "x"), [])
+    assert drawings.registering_result(elsewhere, results) is None
+    lower = [{**results[0], "kind": "lower-bound"}]
+    with pytest.raises(drawings.RegularizedDrawingsError, match="not an upper-bound"):
+        drawings.registering_result(count, lower)
+
+
+GENERATORS = {
+    drawings.EVAND_GENERATOR: {
+        "method": "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, "
+        "conservative",
+        "credit": "Regularized by the Squares Project with Evan Daniel's regularizer",
+    },
+    "regularize_grid_slack/0": {"method": "regularize_grid_slack/0: a port", "credit": "G"},
+    drawings.AXIS_GENERATOR: {"method": "regularize_axis_components/2"},
+}
+EVAND_METHOD = GENERATORS[drawings.EVAND_GENERATOR]["method"]
+REGISTER = """results:
+  - id: T-153
+    kind: upper-bound
+    regularizations:
+      - n: 7
+        of: T-001
+        by: project
+        method: "{method}"
+        side: same
+        identity:
+          basis: measured
+      - n: 8
+        of: T-001
+        by: project
+        method: "{method}"
+        modifications: ["stale"]
+        side: solved
+        identity:
+          basis: measured
+  - id: T-154
+    kind: upper-bound
+    regularizations:
+      - n: 9
+        of: T-001
+        by: "[A]"
+        method: fewest
+        side: solved
+        identity:
+          basis: source-claim
+"""
+
+
+def test_a_registered_regularization_names_what_its_item_establishes() -> None:
+    """A registered result's own regularization names this project's modifications as a
+    drawing's are read, from its method and side, and says the retry rungs are not
+    recorded, since an item records no solve; an unknown method is refused."""
+    same = {"method": EVAND_METHOD, "side": "same"}
+    assert drawings.registered_modifications(same, GENERATORS, {}) == (
+        [drawings.SAME_SIDE_RESOLVE],
+        [drawings.UNRECORDED_RUNGS],
+    )
+    solved = {"method": EVAND_METHOD, "side": "solved"}
+    assert drawings.registered_modifications(solved, GENERATORS, {}) == (
+        [],
+        [drawings.UNRECORDED_RUNGS],
+    )
+    patched = {
+        "method": EVAND_METHOD.replace("@675a5ea", "@675a5ea+probe-flat-stall-stop"),
+        "side": "solved",
+    }
+    assert drawings.registered_modifications(
+        patched, GENERATORS, {"probe-flat-stall-stop": "replica"}
+    ) == (["replica patch probe-flat-stall-stop"], [drawings.UNRECORDED_RUNGS])
+    grid = {"method": "regularize_grid_slack/0: a port", "side": "same"}
+    assert drawings.registered_modifications(grid, GENERATORS, {}) == (
+        drawings.grid_modifications("regularize_grid_slack/0", same=True),
+        [],
+    )
+    axis = {"method": "regularize_axis_components/2", "side": "same"}
+    assert drawings.registered_modifications(axis, GENERATORS, {}) == (None, [])
+    with pytest.raises(drawings.RegularizedDrawingsError, match="no generator"):
+        drawings.registered_modifications({"method": "x", "side": "same"}, GENERATORS)
+
+
+def test_registered_modifications_are_written_in_place_and_held() -> None:
+    """The register's `by: project` items gain their modifications after `method`, a stale
+    value is replaced, a source's item is left alone, and the check names the result."""
+    text = REGISTER.format(method=EVAND_METHOD)
+    results = safe_load(text)["results"]
+    written = drawings.with_registered_modifications(text, results, GENERATORS)
+    found = safe_load(written)["results"]
+    seven, eight = found[0]["regularizations"]
+    assert seven["modifications"] == [drawings.SAME_SIDE_RESOLVE]
+    assert seven["modifications_unrecorded"] == ["retry rungs"]
+    assert eight["modifications"] == []
+    assert "modifications" not in found[1]["regularizations"][0]
+    assert list(seven)[:6] == [
+        "n",
+        "of",
+        "by",
+        "method",
+        "modifications",
+        "modifications_unrecorded",
+    ]
+    assert drawings.with_registered_modifications(written, found, GENERATORS) == written
+    assert drawings.registered_problems(written, GENERATORS) == []
+    (problem,) = drawings.registered_problems(text, GENERATORS)
+    assert "['T-153']" in problem
+
+
+def test_a_registered_regularization_the_layer_does_not_draw_is_credited() -> None:
+    """Where a result registers this project's regularization of a count and the layer
+    does not draw it, the case record still credits the Squares Project and names the
+    result, in the register's terms; a drawn regularization the result registers is the
+    drawn item's, and a source's regularization is not this project's."""
+    results = safe_load(REGISTER.format(method=EVAND_METHOD))["results"]
+    found = drawings.registered_case_items(results, GENERATORS, {("T-153", 8)})
+    assert sorted(found) == [7]
+    seven = found[7]
+    assert seven == {
+        "by": "project",
+        "credit": GENERATORS[drawings.EVAND_GENERATOR]["credit"],
+        "generator": drawings.EVAND_GENERATOR,
+        "method": EVAND_METHOD,
+        "modifications": [drawings.SAME_SIDE_RESOLVE],
+        "modifications_unrecorded": ["retry rungs"],
+        "side": "same",
+        "of": "T-001",
+        "registered_in": "T-153",
+    }
+    assert drawings.case_note([seven]) == (
+        "Regularized by the Squares Project with Evan Daniel's regularizer, with the "
+        f"project's modifications: {drawings.SAME_SIDE_RESOLVE}; whether its solve climbed "
+        "a retry rung is not recorded. A regularization of T-001's packing at the "
+        "witness's own side, not drawn here; its exact side is registered as T-153, the "
+        "upper bound it proves."
+    )
+    solved = drawings.registered_case_items(results, GENERATORS)[8]
+    assert drawings.case_note([solved]).startswith(
+        "Regularized by the Squares Project with Evan Daniel's regularizer, with none of "
+        "the project's modifications established; whether its solve climbed a retry rung "
+        "is not recorded."
+    )
+    # Beside a drawing by another method, it follows the drawing's sentences.
+    grid = {**entry(7, "same"), "generator": "regularize_grid_slack/0"}
+    drawn = drawings.project_case_item(
+        drawings.Drawn(grid, drawings.Resolved("T-153", "x"), []), GENERATORS
+    )
+    assert "Also regularized by the Squares Project" in drawings.case_note([drawn, seven])
+    lower = [{**results[0], "kind": "lower-bound"}]
+    with pytest.raises(drawings.RegularizedDrawingsError, match="not an upper-bound"):
+        drawings.registered_case_items(lower, GENERATORS)
 
 
 def test_the_case_field_is_written_in_place_and_removed_whole() -> None:

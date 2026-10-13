@@ -286,7 +286,15 @@ from the view’s index entry alone: the rungs from `run.rungs`, or before the r
 ladder from `run.retried_with`, and the patches from `method`. A view admitted after the
 ladder and before `run.rungs` existed has its rungs recorded from its run’s reports by
 `python -m devtools.regularize_evand rungs`, which writes them only where a report
-reproduces the drawn view byte for byte.
+reproduces the drawn view byte for byte, never over rungs or a retry already recorded,
+and names the run that supplied them as `run.rungs_from`. A registered result’s own
+regularization (`by: project` in its `regularizations`, as `T-154`’s 59 are) names them
+too, written by the same tool from the item’s `method` and `side`: the patches and the
+same-side re-solve.
+An item records no solve, and `T-154`’s selection kept none while its
+runs’ reports are not retained, so its items say in `modifications_unrecorded` that
+whether the solve climbed a retry rung is not recorded, rather than reading as
+*unmodified*.
 
 ## 8. Gates
 
@@ -429,18 +437,29 @@ policy applies until there is one.
     “Any new upper bounds should also be recorded as results.
     Pure regularization should not be considered a new result, but it is a credited part
     of the frontier record.”
-    A regularization redraws a registered packing and is never a result: it changes no
-    side, frontier value, evidence tier or credit, and no register result is made for
-    one. It is credited in `results.yaml`’s `regularized_drawings` and on the case record
-    of every count the atlas draws regularized.
+    A pure regularization, one that proves no new bound, redraws a registered packing
+    and is never a result: it changes no side, frontier value, evidence tier or credit,
+    and no register result is made for one.
+    It is credited in `results.yaml`’s `regularized_drawings` and on the case record of
+    every count the atlas draws regularized.
     The record’s generated `regularization` field says who regularized the drawing
     (`by: project`, with the generator, its credit line and this project’s
     modifications, section 7), at which side relation (`same` or `bound`), which
     registered result holds the packing (`of`, or that none does), and the view’s path.
-    Where the house is itself a regularization its source published, as `T-146`’s
-    certificates are, the field credits the source first, in the register’s terms (`by`
-    its bibliography key, `of` the result whose packing it regularizes, `registered_in`
-    the result that registered it).
+    Where the drawn regularization is itself registered, because its exact side proved a
+    new upper bound, as `T-154`’s are at fifteen drawn counts, the field names that
+    result (`registered_in`) and the note says the exact side is registered as it; the
+    drawing adds no further result.
+    Where a result registers this project’s own regularization of a count that the atlas
+    does not draw, as `T-154` does at 43 counts, or draws by another method, as at 227,
+    the field carries it too, after any drawing: in the register’s terms (`method`,
+    `side`, `of`, `registered_in`) with the generator its method names, its credit line
+    and its modifications, and the note credits the Squares Project and names the
+    result, so every record whose count this project regularized says so whether or not
+    the view is drawn. Where the house is itself a regularization its source published,
+    as `T-146`’s certificates are, the field credits the source first, in the register’s
+    terms (`by` its bibliography key, `of` the result whose packing it regularizes,
+    `registered_in` the result that registered it).
     `devtools.regularized_drawings` writes it from the layer’s index, its check in the
     records tier holds every case record to the index, and the site’s case page prints
     its note. A new upper bound, an exactly verified side below $U$, is always registered
