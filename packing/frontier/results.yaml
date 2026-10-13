@@ -17364,7 +17364,9 @@ results:
       - what: >-
           all 98 capture statements recomputed in full with the producer's capture checkers,
           1,728,000 rows each, compared row for row with the stored receipts, with a
-          mutated-certificate control refused
+          mutated-certificate control refused: one of the two unfinished parts of C3, which
+          T-153 reaches only when the ten-tree replay below has passed too, so this item
+          stays listed until both have
         rung: C3
         link: think-0at1
         estimated_cost:
@@ -17382,7 +17384,9 @@ results:
           the ten trees not yet replayed (JG, JPA_v5, G20S, HW, JPG15m_v5, JPG17p_v5,
           JPG3m_v5, JPG3p_v5, JPW13 and JPWS_v4) with the producer's two v3.0 checkers and
           h_report30.py, each report compared with the stored second execution, with a
-          mutated-certificate control refused
+          mutated-certificate control refused: the other unfinished part of C3, which T-153
+          reaches only when the capture recomputation above has passed too, so this item
+          stays listed until both have
         rung: C3
         link: think-fgmr
         estimated_cost:
