@@ -1489,12 +1489,14 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
     layer's terms (`devtools.regularize_evand.admit_views` writes it).
 
     The run read the known-best witness of the checkout it ran in. A report that records
-    that witness's digest (`source.witness_sha256`) binds the view to it: admission
-    refuses a checkout whose witness differs, since the identity, shades and contacts the
-    report carries were measured on the run's (#548 review B4). A report from before the
-    digest was recorded is admitted against this checkout's witness, as before, and the
-    entry says so (`measured.source_digest_by`), so run and admit such a run from one
-    revision.
+    that witness's digest (`source.witness_sha256`) gives the entry that digest, as the
+    driver's admission takes its run's (`evand_admitted`), so the identity, shades and
+    contacts the report carries stay bound to the witness they were measured on, and
+    `--check-atlas`, which `layer` runs on what it wrote, refuses a checkout whose witness
+    differs as stale (#548 review B4). Nothing compares the two here (OR-16). A report
+    from before the digest was recorded is admitted against this checkout's witness, as
+    before, and the entry says so (`measured.source_digest_by`), so run and admit such a
+    run from one revision.
     """
     report = json.loads((directory / "report.json").read_text(encoding="utf-8"))
     n = int(report["n"])
@@ -1502,14 +1504,8 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
         raise GridSlackError(f"n={n}: a view of {report.get('generator')}, not {GENERATOR}")
     path = KNOWN_BEST / f"n-{n:03d}.yaml"
     data = path.read_bytes()
-    digest = hashlib.sha256(data).hexdigest()
     ran_on = report.get("source")
     measured_digest = ran_on.get("witness_sha256") if isinstance(ran_on, Mapping) else None
-    if measured_digest is not None and measured_digest != digest:
-        raise GridSlackError(
-            f"n={n}: the run measured witness {measured_digest}, and this checkout holds "
-            f"{digest}: run the count again on this checkout's witness"
-        )
     witness = load_yaml(data.decode("utf-8"))["witness"]
     decision = decided(report, witness)
     if decision.decision != "admit":
@@ -1555,7 +1551,7 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
             "witness": relative_source(n),
             "id": str(witness["id"]),
             "scalar_kind": str(witness["scalar"]["kind"]),
-            "sha256": digest,
+            "sha256": measured_digest or hashlib.sha256(data).hexdigest(),
         },
         side={
             "reported": str(witness["side"]),

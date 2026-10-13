@@ -371,5 +371,7 @@ def test_admission_binds_the_view_to_the_witness_the_run_measured(
     bound = admitted({"witness": report["source"], "witness_sha256": held})
     assert bound.source["sha256"] == held
     assert "source_digest_by" not in bound.measured
-    with pytest.raises(slack.GridSlackError, match="run the count again"):
-        admitted({"witness": report["source"], "witness_sha256": "0" * 64})
+    # A run on another witness keeps that witness's digest, which the layer's check then
+    # names stale, as it does a driver run's (`evand_admitted`).
+    elsewhere = admitted({"witness": report["source"], "witness_sha256": "0" * 64})
+    assert elsewhere.source["sha256"] == "0" * 64
