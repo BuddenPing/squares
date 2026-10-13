@@ -247,8 +247,10 @@ first batch keys them by output (`row_three_sides`, `outputs_at_row_3`), and rec
 witness’s own side as read from the witness (`witness_side`), which `--check` reads
 again. It refuses a view of another generator, one not derived from the checkout’s
 witness, one not at that witness’s own side or labelled other than the same-side view,
-two runs of one name, and a count the owner holds or another batch registers, and it
-writes the view and the selection only once every refusal has run.
+one whose side lies above the next count’s verified upper bound, which already proves
+more than the view and whose count is registered by monotonicity instead, two runs of
+one name, and a count the owner holds or another batch registers, and it writes the view
+and the selection only once every refusal has run.
 
 **Decision.** Both maintained routes accepted the view on 13 October 2026, 41,905 pair
 decisions each, in 14.9 CPU seconds for the two; it touches a wall and a neighbour

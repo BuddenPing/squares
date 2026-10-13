@@ -707,3 +707,58 @@ def test_the_check_reads_the_witness_again(
     found = side if side is not None else Fraction(row["side"])
     monkeypatch.setattr(registered, "checkout_witness", lambda _n: (identity, found))
     assert message in registered.problems(registered.GRID)
+
+
+def test_the_grid_batch_refuses_a_view_above_a_larger_counts_ceiling(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """Where the next count's verified upper bound lies below the view's side, the record
+    already proves more than the view, and registering the view would leave the case
+    record a weaker ceiling than the register proves: `select_grid` refuses it and says to
+    register the count by monotonicity (PR #587, review C4)."""
+    row = registered.committed(registered.GRID)[290]
+    below = Fraction(row["side"]) - Fraction(1, 10**20)
+    monkeypatch.setattr(
+        registered,
+        "next_count_ceiling",
+        lambda _n: {"bound": below, "evidence": [registered.EVIDENCE]},
+    )
+    run = _grid_run(tmp_path, "run", _grid_report(), _retained())
+    with pytest.raises(
+        registered.RegistrationError,
+        match=(
+            re.escape(
+                f"n=290: the record already proves s(290) ≤ {registered.side_text(below)}"
+            )
+            + re.escape(" by monotonicity from T-154; register the count by monotonicity")
+        ),
+    ):
+        registered.select_grid([run], [290])
+
+
+def _with_implied(monkeypatch: pytest.MonkeyPatch, implied: dict[str, object]) -> None:
+    """`committed` with the grid batch's row at n = 290 recording `implied` as the ceiling
+    that implies its bound."""
+    real = registered.committed
+
+    def rows(batch: registered.Batch = registered.FIRST) -> dict[int, dict]:
+        found = dict(real(batch))
+        if batch == registered.GRID:
+            found[290] = {**found[290], "implied_by": implied}
+        return found
+
+    monkeypatch.setattr(registered, "committed", rows)
+
+
+def test_problems_names_a_row_whose_implied_ceiling_lies_below_its_side(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A committed row whose next-count ceiling lies below its own side is the record
+    `select_grid` now refuses to write, and `--check` names it (PR #587, review C4)."""
+    row = registered.committed(registered.GRID)[290]
+    below = registered.literal(Fraction(row["side"]) - Fraction(1, 10**20))
+    _with_implied(monkeypatch, {**row["implied_by"], "side": below})
+    assert (
+        "n=290: the ceiling at n = 291 lies below the side, so the record would carry a "
+        "weaker ceiling than the register proves"
+    ) in registered.problems(registered.GRID)

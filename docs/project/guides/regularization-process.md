@@ -251,6 +251,9 @@ is at or below the view’s side, the bound is not new.
 selection records such a ceiling (`implied_by`), and the result says its bound follows
 by monotonicity, as `T-002` says of a lower bound, and is kept as the certificate of the
 count’s own packing.
+The selection refuses a view whose side lies above the next count’s ceiling: that
+ceiling already proves more than the view, and the count’s bound is registered by
+monotonicity instead.
 Once the register moves $U$ to the view’s side, the view is at the bound:
 `reclassify --refresh-bounds` decides a driver run’s view again, the selection decides a
 grid-slack view against the new $U$, and the next selection can draw either.

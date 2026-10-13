@@ -51,11 +51,15 @@ are disjoint.
 
 **A bound already implied.** `s(n) ≤ s(n + 1)`, since deleting a square from a packing
 leaves a packing in the same square, so a ceiling at the next count at or below a view's
-side already proves the view's bound. A grid-slack row records that ceiling, its evidence
-and the results that hold it (`implied_by`), and the case record says the bound was not
-new: T-154's certificate at `n = 291`, at exactly the side T-155 registers, proved
-`s(290)`'s bound from 12 October 2026, and T-155 is kept as the certificate of 290's own
-packing at that side (the owner's decision of 13 October 2026, on jlevy/squares#587).
+side already proves the view's bound. A grid-slack row records a ceiling at the view's
+side, its evidence and the results that hold it (`implied_by`), and the case record says
+the bound was not new: T-154's certificate at `n = 291`, at exactly the side T-155
+registers, proved `s(290)`'s bound from 12 October 2026, and T-155 is kept as the
+certificate of 290's own packing at that side (the owner's decision of 13 October 2026,
+on jlevy/squares#587). `select` refuses a view whose side lies above the next count's
+ceiling, since the record would then carry a weaker ceiling than the register proves; such
+a count's bound is registered by monotonicity instead. The next count suffices, since
+`test_verified_upper_bound_contract` holds every ceiling at or below the next count's.
 
 **What is retained.** Each registered view as the run wrote it, gzip-compressed, under
 `cases/regularized_bounds/views/`, and `selection.json`, a row per count: the view's side
@@ -800,6 +804,15 @@ def grid_selection_row(
         )
     if frame.side is None or side != frame.side:
         raise RegistrationError(f"n={n}: the view's side is not the checkout witness's own s_W")
+    # A larger count's ceiling below the side proves more than the view does: the record
+    # would carry a weaker ceiling than the register proves (review C4).
+    implied = implied_by(n, side)
+    if implied is not None and Fraction(implied["side"]) < side:
+        raise RegistrationError(
+            f"n={n}: the record already proves s({n}) ≤ "
+            f"{side_text(Fraction(implied['side']))} by monotonicity from "
+            f"{', '.join(implied['results'])}; register the count by monotonicity"
+        )
     straightened = [int(row["square"]) for row in report.get("straightened") or []]
     identity = measure_identity(
         n,
@@ -829,7 +842,7 @@ def grid_selection_row(
         "value_raised": raised,
         "earlier_verified": earlier,
         "below_earlier_by": float(f"{float(upper - side):.4e}"),
-        "implied_by": implied_by(n, side),
+        "implied_by": implied,
         "t101_side": literal(t101_side) if t101_side is not None else None,
         "below_t101_side_by": (
             float(f"{float(t101_side - side):.4e}") if t101_side is not None else None
@@ -1272,6 +1285,11 @@ def problems(batch: Batch = FIRST) -> list[str]:
             int(implied["n"]) > n and Fraction(implied["side"]) <= side
         ):
             found.append(f"n={n}: the ceiling the row says implies the bound does not")
+        elif implied is not None and Fraction(implied["side"]) < side:
+            found.append(
+                f"n={n}: the ceiling at n = {implied['n']} lies below the side, so the "
+                "record would carry a weaker ceiling than the register proves"
+            )
     return found
 
 
@@ -1519,25 +1537,22 @@ def _implied(n: int, row: Mapping[str, Any]) -> tuple[str, str]:
     if not implied:
         return "", ""
     later, results = int(implied["n"]), ", ".join(implied["results"])
-    there = (
-        "at the same side"
-        if Fraction(implied["side"]) == Fraction(row["side"])
-        else f"at `{side_text(Fraction(implied['side']))}`, below this side"
-    )
+    # `select` refuses a view above a larger count's ceiling, and `problems` a row that
+    # records one, so the ceiling is at the view's own side (review C4).
     step = (
         f"`s({n}) ≤ s({later})`, since deleting a square from a packing of {later} leaves a "
         f"packing of {n} in the same square"
     )
     dated = (
         f" The bound was not new: the certificate registered at `n = {later}` ({results}), "
-        f"{there}, already proved it by monotonicity; this one certifies this count’s own "
-        "packing."
+        "at the same side, already proved it by monotonicity; this one certifies this "
+        "count’s own packing."
     )
     section = (
         f" The bound was not new when it was registered. The exact certificate registered at "
-        f"`n = {later}` ({results}) is {there}, and {step}, so that certificate already "
-        "proved the bound. This one is a certificate of this count’s own packing, the one the "
-        "record credits."
+        f"`n = {later}` ({results}) is at the same side, and {step}, so that certificate "
+        "already proved the bound. This one is a certificate of this count’s own packing, the "
+        "one the record credits."
     )
     return dated, section
 
