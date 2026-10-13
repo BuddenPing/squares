@@ -18916,15 +18916,14 @@ regularized_drawings:
     - n: 180
       of: T-128
       by: project
-      method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+      method: regularize_axis_components/2
       side: same
-      changes: {straightened: 1, re_angled: 1}
       identity:
         basis: measured
         measured_in: packing/atlas/known-best/regularized/index.json
         one_to_one: true
-        moved: 25
-        max_move: 0.04796917
+        moved: 21
+        max_move: 0.0327378
         max_turn_deg: 0.00572958
       view: packing/atlas/known-best/regularized/n-180-regularized.yaml.gz
     - n: 181
@@ -18998,15 +18997,14 @@ regularized_drawings:
     - n: 207
       of: T-147
       by: project
-      method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+      method: regularize_axis_components/2
       side: same
-      changes: {straightened: 2, re_angled: 5}
       identity:
         basis: measured
         measured_in: packing/atlas/known-best/regularized/index.json
         one_to_one: true
-        moved: 6
-        max_move: 0.01762143
+        moved: 0
+        max_move: 1.251e-09
         max_turn_deg: 0.0
       view: packing/atlas/known-best/regularized/n-207-regularized.yaml.gz
     - n: 208
