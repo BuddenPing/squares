@@ -696,7 +696,8 @@ def _rigidity(case: dict[str, Any]) -> str:
 
 
 def _regularization(case: dict[str, Any]) -> str:
-    """Who regularized the drawing the atlas shows, and that it is not a result: the
+    """Who regularized the drawing the atlas shows, and whether it is a pure
+    regularization, which is no result, or one whose exact side a result registers: the
     record's generated note (`devtools.regularized_drawings`), one short credit line;
     nothing for a record without one."""
     note = (case.get("regularization") or {}).get("note")

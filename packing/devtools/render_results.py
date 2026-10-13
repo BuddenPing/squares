@@ -232,7 +232,9 @@ def regularized_drawings(
             f"{APOSTROPHE}s regularizer or the grid-slack port of his placement made a view, "
             f"its line names this project{APOSTROPHE}s modifications to it, or says it ran "
             f"unmodified, and each count{APOSTROPHE}s case record carries the same credit in "
-            "its `regularization` note. A regularization is never a result."
+            "its `regularization` note. A pure regularization, one that proves no new "
+            "bound, is never a result; one whose exact side proves a new upper bound is "
+            "registered as a result and listed under that result above."
         ),
         "",
     ]

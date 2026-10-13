@@ -430,14 +430,19 @@ policy applies until there is one.
     “Any new upper bounds should also be recorded as results.
     Pure regularization should not be considered a new result, but it is a credited part
     of the frontier record.”
-    A regularization redraws a registered packing and is never a result: it changes no
-    side, frontier value, evidence tier or credit, and no register result is made for
-    one. It is credited in `results.yaml`’s `regularized_drawings` and on the case record
-    of every count the atlas draws regularized.
+    A pure regularization, one that proves no new bound, redraws a registered packing
+    and is never a result: it changes no side, frontier value, evidence tier or credit,
+    and no register result is made for one.
+    It is credited in `results.yaml`’s `regularized_drawings` and on the case record of
+    every count the atlas draws regularized.
     The record’s generated `regularization` field says who regularized the drawing
     (`by: project`, with the generator, its credit line and this project’s
     modifications, section 7), at which side relation (`same` or `bound`), which
     registered result holds the packing (`of`, or that none does), and the view’s path.
+    Where the drawn regularization is itself registered, because its exact side proved a
+    new upper bound, as `T-154`’s are at fifteen drawn counts, the field names that
+    result (`registered_in`) and the note says the exact side is registered as it; the
+    drawing adds no further result.
     Where the house is itself a regularization its source published, as `T-146`’s
     certificates are, the field credits the source first, in the register’s terms (`by`
     its bibliography key, `of` the result whose packing it regularizes, `registered_in`

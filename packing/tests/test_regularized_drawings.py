@@ -262,7 +262,7 @@ def test_a_case_note_credits_the_regularizer_and_is_never_a_result() -> None:
     assert note == (
         "Regularized by the Squares Project, with the project's modifications: "
         f"{drawings.SAME_SIDE_RESOLVE}. A drawing of T-001's packing at the witness's own "
-        "side, not a result."
+        "side: a pure regularization, which proves no new bound, so not a result."
     )
     plain = drawings.project_case_item(
         drawings.Drawn(evand, drawings.Resolved(None, "none"), []), generators
@@ -289,6 +289,51 @@ def test_a_case_note_credits_the_regularizer_and_is_never_a_result() -> None:
         "The house is itself its source's regularization of T-002's packing (A after B), "
         "registered as T-003 for the upper bound its exact side proves."
     )
+
+
+def test_a_drawing_whose_exact_side_is_registered_says_so() -> None:
+    """Where the drawn packing's own result registers this very regularization (a
+    `by: project` item at the count, by the drawn view's method, at its side relation),
+    the item names it as `registered_in` and the note says its exact side is registered
+    as that result, which proves a new bound; a drawing by another method or at another
+    side is a pure regularization."""
+    method = "Evan Daniel's search/regularize, through devtools.regularize_evand"
+    results = [
+        {
+            "id": "T-154",
+            "kind": "upper-bound",
+            "regularizations": [
+                {"n": 5, "of": "T-001", "by": "project", "method": method, "side": "solved"}
+            ],
+        }
+    ]
+    bound = {**entry(5, "bound"), "generator": drawings.EVAND_GENERATOR}
+    count = drawings.Drawn(bound, drawings.Resolved("T-154", "x"), [])
+    assert drawings.registering_result(count, results) == "T-154"
+    generators = {drawings.EVAND_GENERATOR: {"credit": "Regularized by the Squares Project"}}
+    ours = drawings.project_case_item(count, generators, "T-154")
+    assert ours["registered_in"] == "T-154"
+    assert drawings.case_note([ours]) == (
+        "Regularized by the Squares Project, unmodified. A drawing of T-154's packing at the "
+        "verified upper bound. Its exact side is registered as T-154, the upper bound it "
+        "proves; the drawing itself is no further result."
+    )
+    same = drawings.Drawn(
+        {**entry(5, "same"), "generator": drawings.EVAND_GENERATOR},
+        drawings.Resolved("T-154", "x"),
+        [],
+    )
+    assert drawings.registering_result(same, results) is None
+    grid = {**bound, "generator": "regularize_grid_slack/1"}
+    grid["regularization"] = {**bound["regularization"], "method": "regularize_grid_slack/1"}
+    assert (
+        drawings.registering_result(drawings.Drawn(grid, count.resolved, []), results) is None
+    )
+    elsewhere = drawings.Drawn(bound, drawings.Resolved("T-001", "x"), [])
+    assert drawings.registering_result(elsewhere, results) is None
+    lower = [{**results[0], "kind": "lower-bound"}]
+    with pytest.raises(drawings.RegularizedDrawingsError, match="not an upper-bound"):
+        drawings.registering_result(count, lower)
 
 
 def test_the_case_field_is_written_in_place_and_removed_whole() -> None:

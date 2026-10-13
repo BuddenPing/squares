@@ -37,11 +37,14 @@ result by others only when the record acts on it (`epistemics.md`, Results by Ot
 packing from before this project began that no replay here ever registered has no result to
 name, and inventing one is not this tool's to do.
 
-**What is not a result.** A drawing changes no side, frontier value, evidence tier or
-credit (the policy, section 1), so these items are not a register result and carry no rung:
-they are this project's regularizations of results the register already holds. A view
-whose side lies below the verified upper bound is a result first (row 3) and is registered
-by its own entry's `regularizations`.
+**What is not a result.** A pure regularization, one that proves no new bound, is never
+a result. A drawing changes no side, frontier value, evidence tier or credit (the policy,
+section 1), so these items are not a register result and carry no rung: they are this
+project's regularizations of results the register already holds. A view whose side lies
+below the verified upper bound proves a new bound, so it is a result first (row 3) and is
+registered by its own entry's `regularizations`, as T-154 registered 59; where such a
+view is also drawn, at fifteen counts, its case note says that its exact side is
+registered as that result (`registering_result`).
 
 **Whose regularization, and whether it was modified.** The owner asked on 13 October 2026
 that the frontier records say which counts have been regularized and whether the
@@ -63,8 +66,10 @@ are), carries a generated `regularization` field in its front matter: a one-para
 `note` the site's case page prints, then its `items`, the source's regularization first
 in the register's own terms and this project's after it, with the generator, the credit
 line, the modifications, the side relation (`same` or `bound`), the registered result
-that holds the packing (`of`, or null where none does) and the view's path. A record the
-layer does not draw and whose house no source regularized carries no such field.
+that holds the packing (`of`, or null where none does), the result that registers the
+drawn regularization itself where one does (`registered_in`) and the view's path. A
+record the layer does not draw and whose house no source regularized carries no such
+field.
 
 The register's list is a block at the end of `results.yaml`, from `MARKER` on, which this
 tool writes whole, and each case record's field is written in place, at the end of its
@@ -149,6 +154,9 @@ RUNG_WORDS = {
 SILENT_RUNGS = frozenset({"stall-stop"})
 #: The patches a vendored view's `method` names after the pin, `@675a5ea+name`.
 _METHOD_PATCHES = re.compile(r"evand/square-packing@[0-9a-f]+((?:\+[^,+\s]+)*)")
+#: What a drawing is when no result registers it (the owner, 13 October 2026: "Pure
+#: regularization should not be considered a new result").
+PURE = "a pure regularization, which proves no new bound"
 #: How a note reads a project item's side relation and a source item's.
 SIDE_WORDS = {
     "same": "at the witness's own side",
@@ -488,8 +496,42 @@ def source_regularizations(
     return found
 
 
-def project_case_item(count: Drawn, generators: Mapping[str, Any]) -> dict[str, Any]:
-    """This project's regularization of a drawn count, as its case record keeps it."""
+#: A drawn view's side relation in the register's terms (`results.schema.yaml`).
+REGISTER_SIDES = {"same": "same", "bound": "solved"}
+
+
+def registering_result(count: Drawn, results: Sequence[Mapping[str, Any]]) -> str | None:
+    """The result that registers the drawn regularization itself as an upper bound: the
+    drawn packing's own result (`of`), where its `regularizations` hold a `by: project`
+    item at the count by the drawn view's method and at its side relation. T-154 does so
+    at fifteen drawn counts, whose exact sides it registered; elsewhere a drawing is a
+    pure regularization, proving no new bound."""
+    of = count.resolved.of
+    if of is None:
+        return None
+    entry = count.entry
+    n = int(entry["n"])
+    method = str(entry["regularization"]["method"])
+    side = REGISTER_SIDES[relation(entry)]
+    for result in results:
+        if str(result["id"]) != of:
+            continue
+        for record in result.get("regularizations") or []:
+            if (
+                int(record["n"]) == n
+                and record["by"] == PROJECT_REGULARIZER
+                and str(record["method"]) == method
+                and record["side"] == side
+            ):
+                return upper_bound_result(result)
+    return None
+
+
+def project_case_item(
+    count: Drawn, generators: Mapping[str, Any], registered_in: str | None = None
+) -> dict[str, Any]:
+    """This project's regularization of a drawn count, as its case record keeps it, with
+    the result that registers it where one does (`registering_result`)."""
     entry = count.entry
     generator = str(entry["generator"])
     found: dict[str, Any] = {
@@ -501,14 +543,17 @@ def project_case_item(count: Drawn, generators: Mapping[str, Any]) -> dict[str, 
         found["modifications"] = list(count.modifications)
     found["side"] = relation(entry)
     found["of"] = count.resolved.of
+    if registered_in is not None:
+        found["registered_in"] = registered_in
     found["view"] = str(entry["view"]["path"])
     return found
 
 
 def case_note(items: Sequence[Mapping[str, Any]]) -> str:
     """The record's one paragraph: who regularized the drawing, with which modifications,
-    and that it is a drawing, not a result; then who regularized the house, where its
-    source did."""
+    and either that it is a pure regularization, proving no new bound, so no result, or
+    that its exact side is registered as the result that proves it; then who regularized
+    the house, where its source did."""
     sentences: list[str] = []
     for found in items:
         if found["by"] != PROJECT_REGULARIZER:
@@ -521,11 +566,20 @@ def case_note(items: Sequence[Mapping[str, Any]]) -> str:
             head += ", unmodified"
         sentences.append(head + ".")
         where = SIDE_WORDS[str(found["side"])]
-        if found.get("of"):
-            sentences.append(f"A drawing of {found['of']}'s packing {where}, not a result.")
+        if found.get("registered_in"):
+            sentences.append(
+                f"A drawing of {found['of']}'s packing {where}. Its exact side is registered "
+                f"as {found['registered_in']}, the upper bound it proves; the drawing itself "
+                "is no further result."
+            )
+        elif found.get("of"):
+            sentences.append(
+                f"A drawing of {found['of']}'s packing {where}: {PURE}, so not a result."
+            )
         else:
             sentences.append(
-                f"A drawing {where}, not a result; no registered result holds the packing."
+                f"A drawing {where}: {PURE}, so not a result; no registered result holds the "
+                "packing."
             )
     for found in items:
         if found["by"] == PROJECT_REGULARIZER:
@@ -547,7 +601,9 @@ def case_fields(
     by_source = source_regularizations(register.results, register.sources, repo)
     generators = index.get("generators") or {}
     projects = {
-        int(count.entry["n"]): project_case_item(count, generators)
+        int(count.entry["n"]): project_case_item(
+            count, generators, registering_result(count, register.results)
+        )
         for count in (drawn_counts(index, repo) if drawn is None else drawn)
     }
     fields: dict[int, dict[str, Any]] = {}

@@ -144,10 +144,13 @@ These redraw the views, regenerate `results.yaml`’s `regularized_drawings` and
 record’s `regularization` note, and regenerate `frontier/RESULTS.md`. Update the layer’s
 counts in the atlas README’s regularized-views section by hand.
 
-The note says who regularized the drawing and that it is not a result (the policy’s
-section 9, question 16): by the Squares Project, with the generator’s credit line, the
-side relation, the registered result that holds the packing and the view; where the
-house is itself a regularization its source published, the source is credited first.
+The note says who regularized the drawing and that a pure regularization, one that
+proves no new bound, is not a result (the policy’s section 9, question 16): by the
+Squares Project, with the generator’s credit line, the side relation, the registered
+result that holds the packing and the view.
+Where the drawn regularization’s exact side is itself registered as an upper bound, the
+note names that result instead; where the house is itself a regularization its source
+published, the source is credited first.
 Where Evan Daniel’s regularizer or the grid-slack port of his placement made the view,
 the note and the register’s item also name this project’s modifications to it, or say it
 ran unmodified (the policy’s section 7): the owner asked on 13 October 2026 that they be

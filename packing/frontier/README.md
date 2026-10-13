@@ -156,8 +156,10 @@ The ones that carry the most weight:
   layer’s index and never written by hand, is present where the atlas draws the count
   from a regularized view or the house is itself a regularization its source published.
   Its `note` says who regularized the drawing, with which of this project’s
-  modifications to Evan Daniel’s regularizer, and that a regularization is a credited
-  part of the record but never a result
+  modifications to Evan Daniel’s regularizer, and that a pure regularization, one that
+  proves no new bound, is a credited part of the record but never a result; where the
+  drawn regularization’s exact side is registered as a result, as at fifteen of
+  `T-154`’s counts, the note says so
   ([the regularization policy, question 16](../../docs/project/policies/regularization-policy.md#9-owner-decisions)).
 
 The assurance states are `reported`, `numerically-checked`, and `verified`. The method

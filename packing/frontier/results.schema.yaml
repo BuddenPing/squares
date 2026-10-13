@@ -26,10 +26,10 @@ properties:
       atlas's regularized layer draws them (docs/project/policies/regularization-policy.md):
       one item a drawn count, in the terms of a result's `regularizations` item, with
       `of` the registered result that holds the packing and `view` the layer's view it is
-      drawn from. A drawing changes no side, frontier value, evidence tier or credit, so
-      these are no result and carry no rung; a regularization whose side lies below the
-      verified upper bound is a result first and is listed by that result's
-      `regularizations`. Counts the layer draws whose packing no registered result holds
+      drawn from. A drawing changes no side, frontier value, evidence tier or credit: a
+      pure regularization, one that proves no new bound, is no result, so these carry no
+      rung. A regularization whose side lies below the verified upper bound proves a new
+      bound, so it is a result first and is listed by that result's `regularizations`. Counts the layer draws whose packing no registered result holds
       are `unregistered`, each with the reason, and their record stays in the layer's
       index alone. Where Evan Daniel's regularizer or the grid-slack port of his placement
       made the view, `modifications` names this project's modifications to it (the
