@@ -150,7 +150,8 @@ None. Every file is byte-identical to the pin.
    (`git -C <checkout> show <commit>:<path>`), add any file the pipeline newly needs,
    and delete any the new commit no longer has.
 4. From `packing/`, run
-   `uv run --frozen --all-extras --group dev python -m devtools.check_vendored_evand --write --checkout ../attic/evand-square-packing --commit <commit> --retrieved <date>`.
+   `uv run --frozen --all-extras --group dev python -m devtools.check_vendored_evand --write --checkout ../attic/evand-square-packing --commit <commit> --retrieved <date>`,
+   with the full 40-digit commit id.
    It compares every vendored file with the checkout’s blob at the commit, byte for
    byte, refuses on any difference, and rewrites `vendored.yaml`.
 5. Update Source and Pin and the credit lines above.

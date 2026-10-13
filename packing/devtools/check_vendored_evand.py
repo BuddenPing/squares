@@ -43,12 +43,14 @@ where there is no index to ask.
 **Re-pinning** is `--write`: from a clean upstream checkout at the new pin, after the
 vendored files have been replaced with the new pin's bytes, it compares every vendored
 file with the checkout's blob at that commit, byte for byte, and rewrites the manifest.
-It refuses while local changes are recorded, because a re-pin must start from the
-pristine copy (the README, "Re-pinning").
+`--commit` is the full 40-digit id, so git can never read it as an option. It refuses
+while local changes are recorded, because a re-pin must start from the pristine copy
+(the README, "Re-pinning").
 
 Usage, from `packing/`, each after `uv run --frozen --all-extras --group dev`:
     python -m devtools.check_vendored_evand
-    python -m devtools.check_vendored_evand --write --checkout ../attic/evand-square-packing
+    python -m devtools.check_vendored_evand --write \
+        --checkout ../attic/evand-square-packing --commit <40-hex id>
 
 It runs under the project interpreter (`except A, B:` parses on 3.14 only, `D-397`).
 """
@@ -460,10 +462,45 @@ def check(directory: Path, manifest: Manifest, present: Iterable[str]) -> list[s
 # ---------------------------------------------------------------------------
 
 
-def _git(checkout: Path, *arguments: str) -> bytes:
+#: Variables that would aim git at another repository than the one `-C` names.
+_GIT_LOCATORS = frozenset(
+    {
+        "GIT_ALTERNATE_OBJECT_DIRECTORIES",
+        "GIT_COMMON_DIR",
+        "GIT_DIR",
+        "GIT_INDEX_FILE",
+        "GIT_OBJECT_DIRECTORY",
+        "GIT_WORK_TREE",
+    }
+)
+
+
+def _git(repository: Path, *arguments: str) -> bytes:
+    """Git in `repository` (a work tree, or a bare repository), with no hooks to run."""
+    environment = {key: value for key, value in os.environ.items() if key not in _GIT_LOCATORS}
     return subprocess.run(
-        ("git", "-C", str(checkout), *arguments), check=True, capture_output=True
+        ("git", "-C", str(repository), "-c", "core.hooksPath=/dev/null", *arguments),
+        check=True,
+        capture_output=True,
+        env={**environment, "GIT_TERMINAL_PROMPT": "0"},
     ).stdout
+
+
+def _commit_fields(repository: Path, commit: str) -> list[str]:
+    """`commit`'s id, tree, committer date and subject, or a refusal."""
+    try:
+        answer = _git(
+            repository, "log", "-1", "--format=%H%n%T%n%cI%n%s", "--end-of-options", commit
+        )
+    except subprocess.CalledProcessError as failure:
+        detail = os.fsdecode(failure.stderr).strip()
+        msg = f"{commit} is not a commit in {repository}: {detail}"
+        raise ManifestError(msg) from failure
+    fields = answer.decode().split("\n")
+    if len(fields) < 4 or fields[0] != commit:
+        msg = f"git answered {answer.decode()!r} for commit {commit}, not its four fields"
+        raise ManifestError(msg)
+    return fields[:4]
 
 
 def _quoted(value: str) -> str:
@@ -508,7 +545,14 @@ def repin(directory: Path, checkout: Path, *, commit: str, retrieved: str) -> st
 
     Each vendored file is compared byte for byte with the checkout's blob at the commit,
     read from the checkout's object store, so a modified working tree there is harmless.
+    `commit` is a full commit id, never a name git could read as an option.
     """
+    if not _COMMIT.match(commit):
+        msg = f"--commit must be the full 40-digit commit id, not {commit!r}"
+        raise ManifestError(msg)
+    if not _DAY.match(retrieved):
+        msg = f"--retrieved must be YYYY-MM-DD, not {retrieved!r}"
+        raise ManifestError(msg)
     manifest_path = directory / MANIFEST_NAME
     if manifest_path.is_file() and load_manifest(manifest_path).changes:
         msg = (
@@ -516,9 +560,7 @@ def repin(directory: Path, checkout: Path, *, commit: str, retrieved: str) -> st
             "each change and record it again (README.md, Re-pinning)"
         )
         raise ManifestError(msg)
-    fields = (
-        _git(checkout, "log", "-1", "--format=%H%n%T%n%cI%n%s", commit).decode().split("\n")
-    )
+    fields = _commit_fields(checkout, commit)
     url = _git(checkout, "remote", "get-url", "origin").decode().strip().removesuffix(".git")
     licence = (directory / "LICENSE").read_text(encoding="utf-8")
     holder = next(line for line in licence.splitlines() if line.startswith("Copyright"))
@@ -535,7 +577,7 @@ def repin(directory: Path, checkout: Path, *, commit: str, retrieved: str) -> st
     for path in sorted(present_files(directory) - OWN_FILES):
         data = (directory / path).read_bytes()
         try:
-            blob = _git(checkout, "cat-file", "blob", f"{fields[0]}:{path}")
+            blob = _git(checkout, "cat-file", "blob", "--end-of-options", f"{commit}:{path}")
         except subprocess.CalledProcessError:
             mismatched.append(f"{path}: upstream has no such file at {fields[0][:12]}")
             continue
@@ -560,7 +602,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--write", action="store_true", help="rewrite the manifest from an upstream checkout"
     )
     parser.add_argument("--checkout", type=Path, help="upstream checkout, for --write")
-    parser.add_argument("--commit", default="HEAD", help="the pin, for --write")
+    parser.add_argument("--commit", help="the pin's full 40-digit commit id, for --write")
     parser.add_argument(
         "--retrieved",
         default=datetime.now(tz=UTC).date().isoformat(),
@@ -570,8 +612,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     directory: Path = args.directory
     try:
         if args.write:
-            if args.checkout is None:
-                parser.error("--write needs --checkout")
+            if args.checkout is None or args.commit is None:
+                parser.error("--write needs --checkout and --commit")
             text = repin(directory, args.checkout, commit=args.commit, retrieved=args.retrieved)
             (directory / MANIFEST_NAME).write_text(text, encoding="utf-8")
             written = load_manifest(directory / MANIFEST_NAME)

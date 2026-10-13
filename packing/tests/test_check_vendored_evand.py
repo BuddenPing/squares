@@ -352,11 +352,15 @@ def _upstream(tmp_path: Path) -> Path:
     return checkout
 
 
+def _head(checkout: Path) -> str:
+    return _git(checkout, "rev-parse", "HEAD")
+
+
 def test_a_repin_binds_each_file_to_the_upstream_blob(tmp_path: Path) -> None:
     checkout = _upstream(tmp_path)
     directory = _copy(tmp_path / "project")
     commit = _git(checkout, "rev-parse", "HEAD")
-    text = vendored.repin(directory, checkout, commit="HEAD", retrieved="2026-10-12")
+    text = vendored.repin(directory, checkout, commit=commit, retrieved="2026-10-12")
     (directory / vendored.MANIFEST_NAME).write_text(text, encoding="utf-8")
     manifest = vendored.load_manifest(directory / vendored.MANIFEST_NAME)
     assert manifest.source_commit == commit
@@ -365,7 +369,7 @@ def test_a_repin_binds_each_file_to_the_upstream_blob(tmp_path: Path) -> None:
     assert _problems(directory) == []
     # A working-tree edit in the checkout is not the commit, and does not move the pin.
     (checkout / "search/tool.py").write_text("edited after the commit\n")
-    assert vendored.repin(directory, checkout, commit="HEAD", retrieved="2026-10-12") == text
+    assert vendored.repin(directory, checkout, commit=commit, retrieved="2026-10-12") == text
 
 
 def test_a_repin_refuses_bytes_the_commit_does_not_hold(tmp_path: Path) -> None:
@@ -374,7 +378,7 @@ def test_a_repin_refuses_bytes_the_commit_does_not_hold(tmp_path: Path) -> None:
     (directory / "search/tool.py").write_text("not upstream's\n")
     (directory / "search/local.py").write_text("upstream never had this\n")
     with pytest.raises(vendored.ManifestError) as refusal:
-        vendored.repin(directory, checkout, commit="HEAD", retrieved="2026-10-12")
+        vendored.repin(directory, checkout, commit=_head(checkout), retrieved="2026-10-12")
     assert "search/tool.py: not upstream's bytes at" in str(refusal.value)
     assert "search/local.py: upstream has no such file at" in str(refusal.value)
 
@@ -383,7 +387,7 @@ def test_a_repin_refuses_while_local_changes_are_recorded(tmp_path: Path) -> Non
     checkout = _upstream(tmp_path)
     directory = _copy(tmp_path / "project", _change("search/data.json", "modified"))
     with pytest.raises(vendored.ManifestError, match="restore the pristine copy"):
-        vendored.repin(directory, checkout, commit="HEAD", retrieved="2026-10-12")
+        vendored.repin(directory, checkout, commit=_head(checkout), retrieved="2026-10-12")
 
 
 def test_the_command_reports_and_fails_on_a_finding(
@@ -393,3 +397,40 @@ def test_the_command_reports_and_fails_on_a_finding(
     (directory / "stray.txt").write_text("x")
     assert vendored.main(["--directory", str(directory)]) == 1
     assert "stray.txt: not in the manifest" in capsys.readouterr().err
+
+
+# ---------------------------------------------------------------------------
+# Re-pinning: the commit
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize("commit", ["--output={target}", "HEAD", "-1", "0123abc"])
+def test_a_commit_that_is_not_a_full_id_is_refused_before_git_sees_it(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str], commit: str
+) -> None:
+    """B2 of Review B: `--commit=--output=PATH` once had `git log` write PATH."""
+    checkout = _upstream(tmp_path)
+    directory = _copy(tmp_path / "project")
+    target = tmp_path / "injected.txt"
+    argv = [
+        "--write",
+        "--directory",
+        str(directory),
+        "--checkout",
+        str(checkout),
+        f"--commit={commit.format(target=target)}",
+    ]
+    before = (directory / vendored.MANIFEST_NAME).read_text()
+    assert vendored.main(argv) == 1
+    assert "--commit must be the full 40-digit commit id" in capsys.readouterr().err
+    assert not target.exists()
+    assert (directory / vendored.MANIFEST_NAME).read_text() == before
+
+
+def test_a_full_id_the_checkout_does_not_hold_is_a_refusal_not_a_traceback(
+    tmp_path: Path,
+) -> None:
+    checkout = _upstream(tmp_path)
+    directory = _copy(tmp_path / "project")
+    with pytest.raises(vendored.ManifestError, match="is not a commit in"):
+        vendored.repin(directory, checkout, commit="f" * 40, retrieved="2026-10-12")
