@@ -17361,14 +17361,15 @@ results:
       - packing/resources/web/kleddamag-n17-candidate-2026-10-12/receipts-here/trees.json
       - docs/project/reviews/review-2026-10-12-kleddamag-n17-candidate.md
     activity:
-      state: in-analysis
+      state: waiting
+      party: owner
       what: >-
-        A second adversarial review, written blind to the first and reading the normalized
-        52-row gate of G20S_PHYSICAL and the checkers' code, is under way here. The ten-tree
-        replay and the capture recomputation are held by the owner's decision of 13 October;
-        every remaining option, with its price, is tracked under think-lqtu.
+        Both adversarial reviews are on file and accept. The owner held the ten-tree replay
+        and the capture recomputation on 13 October; the next move is the owner's decision to
+        run them, and every option, with its price and where it could run, is a bead under
+        think-lqtu.
       since: '2026-10-13'
-      link: think-4j3n
+      link: think-lqtu
     next_rung: >-
       V3 and C3 need every load-bearing part replayed in full, here or by a third party
       whose replay is retained here, the review's section 5:
