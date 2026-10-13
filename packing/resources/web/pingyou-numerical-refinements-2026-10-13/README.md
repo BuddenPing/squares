@@ -19,6 +19,11 @@ N154 remains held back because
 unavailable linked certificate.
 Earlier reports are linked in the corresponding claim rows.
 
+The [exact N153/N302 supplement](../pingyou-exact-153-302-2026-10-13/README.md)
+supersedes the rational witnesses for those two counts with attained algebraic sides.
+The 147-count scope is unchanged; the other 145 entries and these v2 archives remain
+available as submitted.
+
 ## Source and custody
 
 The versioned
