@@ -152,16 +152,20 @@ Their bytes are not retained (`OR-18`); they are pinned here by name, size and S
 The import’s triage compared these digests with the SHA-256 digests GitHub reports for
 the release assets and found them equal. This lane could not repeat that comparison:
 GitHub’s API for the repository was not enabled in the session, and only Git reads were
-served.
+served. On 13 October 2026, addressing review A of PR #588, `generated-sources.tar.gz`
+was downloaded from the release and found to have the size and SHA-256 `manifest.json`
+gives ([`receipts/closures.json`](receipts/closures.json)); it was then deleted. The other
+two archives were not downloaded (`think-c1kz`).
 
 ## What Is Retained
 
 The scope is what a reader needs to judge the statement and the source’s own replay
 receipt: the root files and build pins, `manifest.json`, the two scripts, `verification/`,
-the theorem file, the nine files whose definitions its two statements use, and the two
-optional control modules. Its 26 files, 3,477,245 bytes, are in the manifest
-([`acquisition/upstream-subtree.sha256`](acquisition/upstream-subtree.sha256)); 25 are
-retained under [`sq17-lean/`](sq17-lean/), byte-identical, 3,314,628 bytes, two of them
+the theorem file, the nine files whose definitions its two statements use, the two
+optional control modules, and the two data files the packet’s comparisons read beside
+this project’s own. Its 28 files, 3,694,177 bytes, are in the manifest
+([`acquisition/upstream-subtree.sha256`](acquisition/upstream-subtree.sha256)); 27 are
+retained under [`sq17-lean/`](sq17-lean/), byte-identical, 3,531,560 bytes, two of them
 as deterministic gzip (below).
 
 | Retained | Why |
@@ -175,12 +179,13 @@ as deterministic gzip (below).
 | `PackingStatement.lean`, `HalfPlaneAssemblySkeleton.lean`, `SquareBase.lean`, `PropagationWall.lean` | `PlainPacking`, `Feasible`, unit squares, the container |
 | `EndpointGeometry.lean`, `EndpointRoot.lean`, `EndpointRootData.lean`, `PolynomialNewtonRoot.lean`, `PolynomialBoxContraction.lean` | The side and the algebraic root that defines it; with `SquareBase.lean` they are the whole project-internal import closure of `EndpointGeometry.lean` |
 | `HalfPlanePositiveControl.lean`, `HalfPlaneBoundaryControl.lean` | The two optional controls whose logs `verification/` keeps |
+| `ExactCellCoverData.lean`, `RepresentativeCaseData.lean` | The 24 cells of the centre-box cover and the 35 excluded patterns, which [`receipts/cover-comparison.json`](receipts/cover-comparison.json) compares with this project’s cover and certified sub-pattern ledger; retained after review A of PR #588 |
 
 **Pinned by digest only:** `.gitignore` (162,617 bytes, 3,746 lines), almost all of it
 the paths of the generated modules that the archives carry, each of which
 `manifest.json` lists.
 
-**Not retained:** the other 1,203 Lean modules in the tree, 22,464,029 bytes of proofs
+**Not retained:** the other 1,201 Lean modules in the tree, 22,247,097 bytes of proofs
 and certificate data, which the commit pins and `manifest.json` lists with their
 digests; and the three archives above.
 [`devtools.acquire_source`](../../../devtools/acquire_source.py) `--check` re-derives the
@@ -196,11 +201,43 @@ packet from its manifest.
   retained files and a checkout of the pin as data. It finds that the 1,215 modules
   `manifest.json` places outside the archives are exactly the tree’s 1,215 `.lean` files
   and that each has the size and SHA-256 recorded for it, as does each of the 12 root
-  files it lists. It finds that each archive’s member count equals the modules assigned
-  to it. In the axiom report it finds `Sq17.square17_optimality` depending on `propext`,
-  `Classical.choice`, `Quot.sound` and 13,343 distinct `native_decide` facts and on no
-  other axiom, with no `sorryAx` anywhere in the log. The log’s SHA-256 equals the
-  receipt’s `final_log_sha256`, and each control log equals the receipt’s digest.
+  files it lists. For each archive it lists the member count `manifest.json` records
+  beside the modules `manifest.json` assigns to that archive, and the two agree; it opens
+  no archive, so both counts are the manifest’s own. In the axiom report it finds
+  `Sq17.square17_optimality` depending on `propext`, `Classical.choice`, `Quot.sound` and
+  13,343 distinct `native_decide` facts and on no other axiom, with no `sorryAx` anywhere
+  in the log. The log’s SHA-256 equals the receipt’s `final_log_sha256`, and each control
+  log equals the receipt’s digest. The root files were held to their SHA-256 alone until
+  review B of PR #588 found the size missing; the program now compares both, and its
+  output did not change.
+- The review’s comparisons of the source with this project’s own $n = 17$ data
+  ([review of 13 October](../../../../docs/project/reviews/review-2026-10-13-fitzharding-n17-lean.md),
+  section 10) were scratch programs. After review A of PR #588 they are retained as
+  first-party programs, `V-fitzharding-n17-premise-comparisons`, each reading the
+  source’s files as text and executing nothing from it:
+  - [`receipts/programs/compare_endpoint.py`](receipts/programs/compare_endpoint.py) →
+    [`receipts/endpoint-comparison.json`](receipts/endpoint-comparison.json): the
+    endpoint’s two polynomials, midpoint and radius equal exp-237’s certificate and
+    H-255’s formulas term for term, and the side map is the record’s; the Lean’s Newton
+    contraction certificate holds when recomputed; the side to 60 places,
+    `4.675530093604550951634111270483146648767143855015879695416889`, lies in exp-245’s
+    enclosure, is a root of the catalogue’s degree-18 polynomial by a sign change across
+    $\pm 10^{-40}$, and is $1.04 \times 10^{-22}$ below the verified ceiling.
+  - [`receipts/programs/compare_cover.py`](receipts/programs/compare_cover.py) →
+    [`receipts/cover-comparison.json`](receipts/cover-comparison.json): the 24 cells equal
+    `UNIQUE_24`’s (exp-247’s `ring-3-voronoi-8-tabbed-unique`) vertex for vertex, in the
+    same order and under the same names, and none of the three other designs’; 32 of the
+    35 patterns equal admitted entries of the certified sub-pattern ledger up to the
+    cover’s eight symmetries (A, W7 and SW9; 18 admitted in exp-251, exp-254 and exp-256;
+    11 of wand125’s, admitted in exp-317), and the other three lie strictly inside
+    admitted entries.
+  - [`receipts/programs/check_closures.py`](receipts/programs/check_closures.py) →
+    [`receipts/closures.json`](receipts/closures.json): read on a checkout of the pin and
+    `generated-sources.tar.gz`, every module of the 241-module import closure of
+    `PackingStatement` (219 in the tree, 22 in that archive) and of the 18-module closure
+    of `EndpointPacking` has the size and SHA-256 `manifest.json` gives, and none uses
+    `native_decide` in code; the one textual match is a comment,
+    `InteriorCellCapacity.lean` line 134.
 - `sq17-lean/verification/` is the source’s own replay receipt, retained as it is
   published. Nothing here rebuilt any module, ran `#print axioms`, or ran the controls.
 
@@ -222,11 +259,17 @@ From `packing/`:
 uv run --frozen --all-extras --group dev python -m devtools.acquire_source fitzharding-n17-lean-2026-10-13 --check
 uv run --frozen --all-extras --group dev python -m devtools.acquire_source fitzharding-n17-lean-2026-10-13 --checkout CLONE
 .venv/bin/python3 -I resources/web/fitzharding-n17-lean-2026-10-13/receipts/programs/check_source_manifest.py resources/web/fitzharding-n17-lean-2026-10-13 CLONE
+.venv/bin/python3 -I resources/web/fitzharding-n17-lean-2026-10-13/receipts/programs/compare_endpoint.py resources/web/fitzharding-n17-lean-2026-10-13 ..
+.venv/bin/python3 -I resources/web/fitzharding-n17-lean-2026-10-13/receipts/programs/compare_cover.py resources/web/fitzharding-n17-lean-2026-10-13 ..
+.venv/bin/python3 -I resources/web/fitzharding-n17-lean-2026-10-13/receipts/programs/check_closures.py resources/web/fitzharding-n17-lean-2026-10-13 CLONE ARCHIVE
 ```
 
 `--check` re-derives the record from this packet alone; `--checkout` needs a clone at
 the pin and refuses one that does not yield this record and manifest. The third command
-reproduces `receipts/source-consistency.json`.
+reproduces `receipts/source-consistency.json`. The fourth and fifth need only this
+packet and the repository, and reproduce `receipts/endpoint-comparison.json` and
+`receipts/cover-comparison.json`; the last needs a clone at the pin and the release’s
+`generated-sources.tar.gz` (`ARCHIVE`), and reproduces `receipts/closures.json`.
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.

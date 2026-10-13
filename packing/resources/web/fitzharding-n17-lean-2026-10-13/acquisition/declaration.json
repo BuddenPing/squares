@@ -5,7 +5,7 @@
   "source_ref": "main",
   "source_commit": "e6ee548090dc1dbf938ecf8590481de837a6a454",
   "retrieved_at_utc": "2026-10-13T17:37Z",
-  "git_scope": "A full clone of the public repository (four commits, 1,229 tracked files, about 26 MB), fetched at 2026-10-13T17:37Z when main was this commit. Its tree differs from that of 0a7167efa8dcae7fa73855890630fb7e2de550ed, the commit CITATION.cff names for release v1.0.0, only by CITATION.cff. The declared paths are digested: the root files and build pins, manifest.json, the source's two scripts and its verification receipts, the theorem file, the nine files whose definitions the theorem file's two statements use (the plain-packing predicate and Feasible, unit squares, the container, the endpoint side and the algebraic root that defines it), and the two optional control modules. The other 1,203 tracked Lean modules (about 22 MB) are pinned by the commit and by manifest.json, which gives the SHA-256 of every source module and of the three release archives; the 3,738 modules those archives carry (about 6.99 GB of Lean source) are pinned by manifest.json alone.",
+  "git_scope": "A full clone of the public repository (four commits, 1,229 tracked files, about 26 MB), fetched at 2026-10-13T17:37Z when main was this commit. Its tree differs from that of 0a7167efa8dcae7fa73855890630fb7e2de550ed, the commit CITATION.cff names for release v1.0.0, only by CITATION.cff. The declared paths are digested: the root files and build pins, manifest.json, the source's two scripts and its verification receipts, the theorem file, the nine files whose definitions the theorem file's two statements use (the plain-packing predicate and Feasible, unit squares, the container, the endpoint side and the algebraic root that defines it), the two optional control modules, and the two data files that the review's comparisons read beside this project's own: the 24-cell cover (ExactCellCoverData.lean) and the 35 excluded patterns (RepresentativeCaseData.lean). The other 1,201 tracked Lean modules (about 22 MB) are pinned by the commit and by manifest.json, which gives the SHA-256 of every source module and of the three release archives; the 3,738 modules those archives carry (about 6.99 GB of Lean source) are pinned by manifest.json alone.",
   "archived_dir": "sq17-lean",
   "license": "MIT. LICENSE: \"Copyright (c) 2026 Oscar Fitzharding\"; README.md: \"Project sources are licensed under the MIT License. Dependencies, including Mathlib, retain their own licenses.\"; CITATION.cff: license MIT. CITATION.cff names the author Oscar Fitzharding; README.md says the project \"was developed with substantial assistance from Claude and Codex\".",
   "claims": [
@@ -36,7 +36,9 @@
     "Sq17Lean/PolynomialNewtonRoot.lean",
     "Sq17Lean/PolynomialBoxContraction.lean",
     "Sq17Lean/HalfPlanePositiveControl.lean",
-    "Sq17Lean/HalfPlaneBoundaryControl.lean"
+    "Sq17Lean/HalfPlaneBoundaryControl.lean",
+    "Sq17Lean/ExactCellCoverData.lean",
+    "Sq17Lean/RepresentativeCaseData.lean"
   ],
   "pinned_only": [
     {

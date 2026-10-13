@@ -4,10 +4,11 @@ Reads, as data, the packet's retained ``manifest.json.gz``, ``clean-build-receip
 and verification logs, and a checkout of ``ofitzharding/sq17-lean`` at the pin; runs
 nothing from either. Prints one JSON object:
 
-- every source module ``manifest.json`` lists outside the release archives, compared by
-  size and SHA-256 with the checkout's file, and every root file it lists;
+- every source module ``manifest.json`` lists outside the release archives, and every
+  root file it lists, compared by size and SHA-256 with the checkout's file;
 - the three release archives, with the size, SHA-256 and member count it records, and how
-  many modules it assigns to each;
+  many modules it assigns to each: both counts are ``manifest.json``'s own, and no
+  archive is opened here;
 - the axiom report: its SHA-256 against the receipt's ``final_log_sha256``, the theorem it
   is for, the standard axioms, the count of ``native_decide`` facts against the receipt's,
   and whether ``sorryAx`` or any other axiom appears;
@@ -72,7 +73,8 @@ def main(packet: Path, checkout: Path) -> dict[str, object]:
     root_mismatched = [
         path
         for path, entry in sorted(manifest["files"].items())
-        if sha256((checkout / path).read_bytes()) != entry["sha256"]
+        if sha256(data := (checkout / path).read_bytes()) != entry["sha256"]
+        or len(data) != entry["bytes"]
     ]
     tracked = sorted(
         path.relative_to(checkout).as_posix()
