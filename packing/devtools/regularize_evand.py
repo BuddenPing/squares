@@ -233,6 +233,11 @@ POLICY = "docs/project/policies/regularization-policy.md"
 GENERATOR = "evand-regularize"
 GENERATED_BY = "python -m devtools.regularize_evand run"
 RECEIPT_FORMAT = "evand-regularization-receipt-v1"
+RUN_MEASURED_BY = (
+    "resource.getrusage: each count's worker RUSAGE_SELF plus RUSAGE_CHILDREN (its "
+    "solve and shim), summed, plus the driver's RUSAGE_SELF"
+)
+"""How `run` measures a run's cost, in its receipt's `cost.measured_by`."""
 REPORT_FORMAT = "evand-regularization-report-v1"
 #: The vendored modules the pipeline runs, by their upstream directory.
 REPLICA_FILES: dict[str, tuple[str, ...]] = {
@@ -2051,10 +2056,7 @@ def run(counts: Sequence[int], options: Options, workers: int) -> dict[str, Any]
         "count_cpu_seconds": round(counted, 2),
         "workers": workers,
         "counts": len(counts),
-        "measured_by": (
-            "resource.getrusage: each count's worker RUSAGE_SELF plus RUSAGE_CHILDREN (its "
-            "solve and shim), summed, plus the driver's RUSAGE_SELF"
-        ),
+        "measured_by": RUN_MEASURED_BY,
     }
     receipt = write_receipt(run_dir, reports, options, workers, cost)
     print(f"receipt: {run_dir / 'receipt.json'} ({cost['wall_seconds']} s wall)")
@@ -2515,9 +2517,10 @@ def run_block(run_dir: Path, run_id: str) -> dict[str, Any]:
         "wall_seconds": float(cost.get("wall_seconds") or 0),
         "workers": int(cost.get("workers") or parameters.get("workers") or 1),
     }
-    # A receipt that says how its cost was measured -- one rebuilt after the run, say --
-    # keeps that sentence beside the numbers, so the index does not read it as measured.
-    if note := cost.get("measured_by"):
+    # A receipt whose cost was not measured by the run itself -- one rebuilt after the
+    # run, say -- keeps the sentence that says how, so the index does not read it as
+    # measured. A run's own sentence (`RUN_MEASURED_BY`) is the default and says nothing.
+    if (note := cost.get("measured_by")) and note != RUN_MEASURED_BY:
         measured["note"] = str(note)
     return {
         "id": run_id,

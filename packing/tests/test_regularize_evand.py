@@ -1253,6 +1253,10 @@ def test_a_run_block_keeps_how_a_receipts_cost_was_measured(tmp_path: Path) -> N
     receipt = {"counts": [{"n": 26, "decision": "admit"}], "cost": {"cpu_seconds": 2.5}}
     (measured / "receipt.json").write_text(json.dumps(receipt), encoding="utf-8")
     assert "note" not in drive.run_block(measured, "measured")["cost"]
+    # A run writes how it measured itself; that default is not a note (#559 review A1).
+    receipt["cost"] = {"cpu_seconds": 2.5, "measured_by": drive.RUN_MEASURED_BY}
+    (measured / "receipt.json").write_text(json.dumps(receipt), encoding="utf-8")
+    assert "note" not in drive.run_block(measured, "measured")["cost"]
 
     rebuilt = tmp_path / "rebuilt"
     rebuilt.mkdir()

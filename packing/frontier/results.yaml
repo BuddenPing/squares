@@ -18876,16 +18876,15 @@ regularized_drawings:
     - n: 236
       of: T-146
       by: project
-      method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+      method: regularize_axis_components/2
       side: same
-      changes: {straightened: 5, re_angled: 4}
       identity:
         basis: measured
         measured_in: packing/atlas/known-best/regularized/index.json
         one_to_one: true
         moved: 0
-        max_move: 8.732759e-06
-        max_turn_deg: 0.000537058
+        max_move: 1.350926e-19
+        max_turn_deg: 0.0
       view: packing/atlas/known-best/regularized/n-236-regularized.yaml.gz
     - n: 237
       of: T-140
