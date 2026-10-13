@@ -45,6 +45,7 @@ from devtools.regularize_axis_components import (
     axis_square,
     centre,
     check_atlas,
+    decide_drawn_view,
     exact_frame,
     house_count_of,
     house_partners,
@@ -808,6 +809,46 @@ def edit_drawn(
     entry["view"]["sha256"] = hashlib.sha256(text.encode()).hexdigest()
     layout.index.write_text(json.dumps(index), encoding="utf-8")
     return entry
+
+
+def test_the_deep_re_decision_re_measures_the_identity_and_the_count(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """#548 review B3: the register publishes a drawn view's identity as measured, so the
+    re-decision measures it again against the witness, and counts the squares."""
+    monkeypatch.setenv("PACK_JOBS", "1")
+    layout = scratch_atlas(tmp_path)
+    assert main(["--update-atlas"], layout=layout) == 0
+    drawn_by_another_generator(layout, 4)
+    retained = (layout.index.read_text(), layout.view(4).read_bytes())
+
+    def entry() -> dict[str, Any]:
+        index = json.loads(layout.index.read_text())
+        return next(record for record in index["entries"] if record["n"] == 4)
+
+    assert decide_drawn_view(entry(), layout)[1] == []
+
+    # "Moved 0", written into the entry and the view's certificate together: the cheap
+    # check reads the two as consistent, and only measuring again refuses it.
+    def unmoved(record: dict[str, Any], view: dict[str, Any]) -> None:
+        for item in (record["regularization"], view["certificate"]["regularization"]):
+            item["identity"].update(moved=0, max_move=1e-9, max_turn_deg=0.0)
+
+    edit_drawn(layout, 4, unmoved)
+    assert check_atlas(layout) == []
+    (problem,) = decide_drawn_view(entry(), layout)[1]
+    assert problem.startswith(
+        "n=4: the drawn view's identity measures {'one_to_one': True, 'moved': 3"
+    )
+    assert main(["--verify-atlas"], layout=layout) == 1
+
+    # A view one square short is still a valid packing on both routes.
+    layout.index.write_text(retained[0], encoding="utf-8")
+    layout.view(4).write_bytes(retained[1])
+    edit_drawn(layout, 4, lambda _record, view: view["squares"].pop())
+    assert check_atlas(layout) == []
+    problems = decide_drawn_view(entry(), layout)[1]
+    assert "n=4: the drawn view holds 3 squares" in problems
 
 
 def case_record(layout: AtlasLayout, n: int, value: str, exact_form: str | None) -> None:

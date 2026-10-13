@@ -212,7 +212,8 @@ optimum. `--verify-atlas` is the deferred step
 in both the deep gate and the post-merge checkpoint
 ([development.md](../../../development.md#the-deep-gate-the-deferred-surface-before-the-merge)):
 it re-derives every axis-tool record, the references included, and decides each other
-generator’s view again on both maintained exact routes.
+generator’s view again on both maintained exact routes, with its square count, its
+identity against the witness and its shades measured again.
 
 **The axis tool still refuses 71 Kingbird-derived records.** Their 36-digit poses
 overlap by a rounding sliver at centre dilation 1, the only factor the tool uses; Evan

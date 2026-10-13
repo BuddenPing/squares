@@ -624,8 +624,13 @@ view to come out byte-identical.
 Since 12 October 2026 the layer also draws views by Evan Daniel’s regularizer and by the
 grid-slack generator; for each of those the step requires the axis tool’s re-derived
 record to equal the `reference` kept beside it, and decides the drawn view again over
-the rationals on both maintained routes, with its shades measured again.
-Its stand-in on every pull request is the records-tier step `regularized atlas views
+the rationals on both maintained routes, with its square count, its identity against the
+witness and its shades measured again.
+The identity is the costly part: `arrangement_gap` takes 40 to 65 seconds a view at
+$n = 182$, $241$ and $297$, and the whole step took 326 s of wall at four workers over
+74 drawn views (measured on 2026-10-13), inside its 450 s ceiling, which `think-uomm`
+revisits. Its stand-in on every pull request is the records-tier step
+`regularized atlas views
 match their index`, which compares the same index with the manifest, the witnesses and
 the views by digest, reads each other generator’s view against its entry, and holds
 every drawn view’s exact side to the witness’s $s_W$ and to the case record’s $U$, in

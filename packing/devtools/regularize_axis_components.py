@@ -72,7 +72,8 @@ and the retained views by digest and re-verifies nothing; it also holds every dr
 exact side to the witness's own side `s_W` and to its case record's verified upper bound
 `U`, decided exactly (`side_against_bound`), with the views above `U` named in `ABOVE_U`.
 `--verify-atlas` re-derives every record and requires the index and the views to come out
-identical.
+identical, and decides every other generator's view again, its square count, identity and
+shades measured again.
 
 The index's SHA-256 values are cache keys, not integrity claims (development.md, "Hashes
 and Repository-Owned Artifacts"). The source's says whether a view was derived from the
@@ -2651,12 +2652,37 @@ def view_corners(view: dict[str, Any]) -> tuple[Fraction, list[Corners]]:
     return Fraction(str(view["side"])), squares
 
 
+IDENTITY_FIELDS = ("one_to_one", "moved", "max_move", "max_turn_deg")
+"""The identity measurements a regularization records, as `decide_drawn_view` re-measures
+them."""
+
+
+def measured_identity(witness: dict[str, Any], view: dict[str, Any]) -> dict[str, Any]:
+    """Obligation 3's identity of another generator's view against its source witness, as
+    both of them measure it at admission (`regularize_evand.identity`: the half-angle
+    route's `arrangement_gap` against the witness's frame) and record it in the register's
+    terms (`IDENTITY_FIELDS`)."""
+    from devtools import regularize_evand as driver  # noqa: PLC0415 - it imports this module
+
+    frame = driver.source_frame(witness)
+    side, placements, _corners = driver.view_geometry(view)
+    reference = frame.side if frame.side is not None else Fraction(frame.side_text)
+    found = driver.identity((side, placements), (reference, frame.placements), (), "witness")
+    measured: dict[str, Any] = {"one_to_one": bool(found.get("one_to_one"))}
+    for key, kind in (("moved", int), ("max_move", float), ("max_turn_deg", float)):
+        if found.get(key) is not None:
+            measured[key] = kind(found[key])
+    return measured
+
+
 def decide_drawn_view(
     record: dict[str, Any], layout: AtlasLayout
 ) -> tuple[int, list[str], float]:
     """One other generator's view decided again over Q on both maintained routes, the
-    repository's separating-axis verifier and the independent checker, and its house and
-    stage shades measured again by the census, against its entry. Runs in a worker."""
+    repository's separating-axis verifier and the independent checker, with n squares; its
+    identity against the source witness measured again (`measured_identity`) and held to
+    the regularization's at the precision recorded; and its house and stage shades
+    measured again by the census, against its entry. Runs in a worker."""
     started = time.perf_counter()
     n = record["n"]
     path = layout.repo / record["view"]["path"]
@@ -2664,6 +2690,16 @@ def decide_drawn_view(
     view = load_yaml(text)["witness"]
     side, squares = view_corners(view)
     problems: list[str] = []
+    if len(squares) != n:
+        problems.append(f"n={n}: the drawn view holds {len(squares)} squares")
+    source = load_yaml((layout.repo / record["source"]["witness"]).read_text(encoding="utf-8"))
+    recorded = record["regularization"]["identity"]
+    measured = measured_identity(source["witness"], view)
+    if measured != {key: recorded.get(key) for key in IDENTITY_FIELDS if key in measured}:
+        problems.append(
+            f"n={n}: the drawn view's identity measures {measured}, its entry records "
+            f"{ {key: recorded.get(key) for key in IDENTITY_FIELDS} }"
+        )
     if not verify_packing(squares, side, sign=rational_sign, bucket=True).valid:
         problems.append(f"n={n}: the repository verifier refuses the drawn view")
     if not independent.check_squares(squares, side)["verification_passed"]:

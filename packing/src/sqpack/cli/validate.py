@@ -3654,9 +3654,10 @@ def _regularized_atlas_verify(context: Context) -> str:
     census's shades of each file -- and requires every index record and every retained
     view to come out byte-identical. Where the layer draws another generator's view, the
     axis tool's record of the count is held to the `reference` beside it, and the drawn
-    view is decided again over `Q` on both maintained routes, with its shades measured
-    again. It is the only check that the verdicts the index records were earned by the
-    code that now ships.
+    view is decided again over `Q` on both maintained routes, with its square count, its
+    identity against the source witness (the half-angle route's `arrangement_gap`, as at
+    admission; #548 review B3) and its shades measured again. It is the only check that
+    the verdicts the index records were earned by the code that now ships.
 
     Deferred on its own measurement: about 800 cpu-seconds on a four-cpu host, 223s of
     wall at four workers, against the 0.1s digest check that stays on every pull
