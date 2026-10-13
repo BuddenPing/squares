@@ -142,20 +142,25 @@ python -m devtools.reconcile_work SNAPSHOT.json --split 5 \
   --prior ../docs/project/reviews/review-2026-10-12-bead-reconciliation-applied.json
 python -m devtools.reconcile_work SNAPSHOT.json --split 5 --baseline
 python -m devtools.reconcile_work BASELINE.json --reviews LANE-1.json ... LANE-5.json
-python -m devtools.reconcile_work BASELINE.json --check-commits FINAL.json
-python -m devtools.move_documents OLD=NEW ...          # dry run; --apply writes and git-mvs
-python -m devtools.reconcile_work FRESH-SNAPSHOT.json --verify FINAL.json
+git fetch origin main
+python -m devtools.reconcile_work --check-commits FINAL.json   # --strict: fail on unresolved
+python -m devtools.move_documents OLD=NEW ...          # dry run; --apply git-mvs and writes
+python -m devtools.reconcile_work FRESH-SNAPSHOT.json --verify EARLIER.json ... FINAL.json
 python -m devtools.check_bead_tree
-python -m devtools.check_math_markup     # a moved path can unsort `migrated`
+python -m devtools.check_math_markup     # move_documents keeps `migrated` sorted
 ```
 
 `--split` keeps each spec with the beads it governs, and `--prior` carries the last
 round’s dispositions forward as context.
 Each spec now reports its folder and whole status line.
-`--check-commits` refuses a close that cites a commit missing from `main`.
-`move_documents` repoints bare, `./`, `../` and repository-relative references, and
-leaves frozen records alone.
-`--verify` checks a fresh snapshot and the tree against what was applied.
+`--check-commits` refuses a close that cites a commit missing from `--base`
+(`origin/main`, fetched first), and a base that does not resolve.
+`move_documents` repoints bare, `./`, `../` and repository-relative references, leaves
+frozen records alone (every reconciliation record here among them), and reports a moved
+path it leaves in fenced code.
+`--verify` checks a fresh snapshot, each bead’s `tbd show` record and the tree against
+what was applied; give it every round’s records, oldest first, so that a later repair
+supersedes an earlier one and a plan moved twice is found at its last place.
 Run `check_bead_tree` before `tbd sync`, since CI reads the synced store and a close
 that breaks an invariant turns every pull request red.
 
@@ -186,6 +191,30 @@ The review rests on recorded evidence and does not re-verify the scientific resu
 behind any close. A version check before each mutation cannot exclude a concurrent write
 between check and update; three beads created by other agents during the round are
 outside its baseline.
+
+## Status Addendum, 13 October: A Move Without a Record, and a Stronger `--verify`
+
+Under review A on [#493](https://github.com/jlevy/squares/pull/493) (finding A2, fixed
+in `c60db5740` on its branch), the numeric-symbolic round-trip plan moved from `draft/`,
+where this round retained it, to `archive/`: the promotion-pipeline plan superseded it,
+and agenda-005 built the round trip.
+No round’s record carried that move.
+The [addendum record](review-2026-10-12-bead-reconciliation-addendum.json) now does,
+read after this round’s applied record; the applied records themselves are unchanged.
+[#579](https://github.com/jlevy/squares/pull/579), which replaced #493, carries the move
+in `2a8ce4aea`.
+
+Reviews B and C on #579 found that `--verify` skipped round 1’s past-tense actions
+without a word, saw only `status` and `spec_path`, and judged each record alone.
+It now reads round 1’s receipt and its `path_repairs`, checks resolution,
+`duplicate_of`, `close_reason`, holds, appended notes and the version guard through
+`tbd show`, follows a plan moved twice, lets a later record supersede an earlier one,
+counts what it cannot check by field, and fails when it recognizes nothing.
+On 13 October, lanes A and B, the three applied records and the addendum, read oldest
+first, gave 1,941 checks and no problems.
+Thirty-seven targets stayed unchecked: 28 plans’ `new_status` lines, which the formatter
+rewraps and retypes, and eight close reasons and one note that round 1 did not record.
+The procedure above was updated the same day to match.
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.

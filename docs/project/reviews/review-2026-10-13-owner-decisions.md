@@ -32,7 +32,8 @@ The coordinator added four items and two holds, merged the lanes, and applied th
 result.
 Where lanes disagreed, a close outranked a hold and a hold outranked a retain; no
 field conflicted. The [applied record](review-2026-10-13-owner-decisions-applied.json)
-holds the final disposition for each bead and plan and its receipt.
+holds the final disposition for each bead and plan and its receipt, apart from the
+native-rectangle status edit described under Results.
 
 ## Results
 
@@ -56,13 +57,15 @@ Two n = 11 beads are obsolete but stay open, held paused: Sessions 151 and 138 n
 `think-gvlg` and `think-qqzs` as `certification_pending` owners, and the session gate
 fails a closed owner.
 
-Three plans moved.
-The n = 11 daytime strategy plan is archived, superseded by T-060. The
-n = 17 three-block session plan joins the eight-hour proof block in `future/`, both
-marked suspended pending Overbeck’s proof.
-The native-rectangle plan’s status no longer lists the retired replay.
-Links, the document map and SYNOPSIS follow the moves, and 168 closed beads naming the
-two moved plans were repointed.
+Two plans moved, and two plans’ status lines changed.
+The n = 11 daytime strategy plan is archived, superseded by T-060. The n = 17
+three-block session plan joins the eight-hour proof block in `future/`, and the
+eight-hour block’s status line now marks it suspended pending Overbeck’s proof too.
+The native-rectangle plan’s status line no longer lists the retired replay
+(`think-190a`); that edit is the one plan change missing from the applied record’s
+`specs` list.
+Links, the document map and SYNOPSIS follow the moves, and 168 closed beads
+naming the two moved plans were repointed.
 
 `reconcile_work --verify` reports 44 checks with no problems, and fresh bead records
 confirm all 45 holds and 65 notes.

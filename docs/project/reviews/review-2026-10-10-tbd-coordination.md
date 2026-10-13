@@ -182,6 +182,12 @@ so a declined move is undone with
 `tbd update <id> --spec docs/project/specs/active/<file>` for each bead the listing
 names. The applied records also keep each repair’s `from` and `to`.
 
+Neither plan this round filed in `draft/` stayed there.
+[Round 2](review-2026-10-12-bead-reconciliation-round-2.md) moved interval certification
+to `done/`, since it had been built the day after it was written, and review A on #493
+(finding A2) moved the numeric-symbolic round trip to `archive/`, as round 2’s addendum
+records. `draft/` is empty.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->
