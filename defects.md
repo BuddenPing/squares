@@ -2,7 +2,7 @@
 
 # Defect log
 
-519 defects recorded across the packing toolchain.
+520 defects recorded across the packing toolchain.
 One line each here; the narrative lives in the artifact named by every row.
 Source of truth is [`defects.yaml`](packing/defects.yaml).
 
@@ -20,12 +20,12 @@ Source of truth is [`defects.yaml`](packing/defects.yaml).
 | `control_cell` | 29 | a cell of the sweep whose answer is known in advance |
 | `review` | 305 | a human or agent reading the work against a checklist |
 | `anomaly` | 16 | a result that made no sense, chased down |
-| `inspection` | 66 | reading the code or the design with intent |
+| `inspection` | 67 | reading the code or the design with intent |
 | `drift_check` | 17 | a generated view disagreeing with its source |
 | `design` | 1 | caught while designing, before it reached data |
 | `gate` | 82 | the automated test suite |
 
-The line worth reading twice: **the automated gate caught 82 of 519, and none of the 108 soundness defects.** Gates confirm what you already thought to check. The rest were found by a device built to be *surprised* — a control cell, a pre-registered rule, a generated view contradicting itself — or by someone reading carefully.
+The line worth reading twice: **the automated gate caught 82 of 520, and none of the 108 soundness defects.** Gates confirm what you already thought to check. The rest were found by a device built to be *surprised* — a control cell, a pre-registered rule, a generated view contradicting itself — or by someone reading carefully.
 
 ## Where they arise
 
@@ -35,7 +35,7 @@ The line worth reading twice: **the automated gate caught 82 of 519, and none of
 | quench | 23 |
 | verifier | 14 |
 | record | 161 |
-| tooling | 194 |
+| tooling | 195 |
 | docs | 116 |
 
 ## By kind
@@ -44,7 +44,7 @@ The line worth reading twice: **the automated gate caught 82 of 519, and none of
 | --- | ---: |
 | soundness | 108 |
 | validity | 128 |
-| bookkeeping | 194 |
+| bookkeeping | 195 |
 | robustness | 70 |
 | performance | 19 |
 
@@ -277,13 +277,13 @@ This is the actionable list.
 | [D-017](packing/campaign/series/series-000-smoke-and-calibration/experiments/exp-006-lp-quench-n5-n10-n11.md) | 2026-08-23 | record | bookkeeping |  | `review` | medium | fixed | A three-cell sweep recorded as a one-cell round, again |
 | [D-018](packing/campaign/series/series-000-smoke-and-calibration/experiments/exp-010-angle-kink-n11.md) | 2026-08-23 | record | bookkeeping |  | `drift_check` | high | fixed | One round, two hypotheses, one verdict |
 | [D-019](packing/campaign/series/series-000-smoke-and-calibration/experiments/exp-009-quench-bracket-n11.md) | 2026-08-23 | quench | robustness | conservative | `anomaly` | medium | fixed | The bracketing quench does not always terminate |
-| [D-020](docs/project/specs/active/plan-2026-08-22-minimal-packing-toolkit.md) | 2026-08-23 | quench | soundness | flattering | `inspection` | high | fixed | The quench's answer depends on a tuning parameter, and basin identity would inherit it |
+| [D-020](docs/project/specs/paused/plan-2026-08-22-minimal-packing-toolkit.md) | 2026-08-23 | quench | soundness | flattering | `inspection` | high | fixed | The quench's answer depends on a tuning parameter, and basin identity would inherit it |
 | [D-021](packing/campaign/series/series-000-smoke-and-calibration/experiments/exp-007-quench-bracket-n5.md) | 2026-08-23 | quench | soundness | flattering | `inspection` | medium | contained | Floating LP refinement has a noise floor, and eight rounds sit on it |
 | [D-022](packing/devtools/controls.yaml) | 2026-08-23 | record | bookkeeping |  | `control_cell` | low | fixed | A numeric field and its display duplicate could disagree in silence |
 | [D-023](packing/devtools/run_negative_controls.py) | 2026-08-23 | tooling | bookkeeping |  | `review` | medium | fixed | Verification was done in throwaway snippets and left nothing behind |
 | [D-024](packing/frontier/strategy-catalogue.schema.yaml) | 2026-08-23 | record | bookkeeping |  | `gate` | low | fixed | A strategy's enum and its prose said opposite things |
-| [D-025](docs/project/specs/active/plan-2026-08-22-minimal-packing-toolkit.md) | 2026-08-23 | record | bookkeeping |  | `review` | medium | fixed | Two bead trees claimed the same spec phase after the plan was rebuilt |
-| [D-026](docs/project/specs/active/plan-2026-08-22-minimal-packing-toolkit.md) | 2026-08-23 | record | bookkeeping |  | `review` | medium | fixed | The plan spec's checklist contradicted the state the spec was cited as authority for |
+| [D-025](docs/project/specs/paused/plan-2026-08-22-minimal-packing-toolkit.md) | 2026-08-23 | record | bookkeeping |  | `review` | medium | fixed | Two bead trees claimed the same spec phase after the plan was rebuilt |
+| [D-026](docs/project/specs/paused/plan-2026-08-22-minimal-packing-toolkit.md) | 2026-08-23 | record | bookkeeping |  | `review` | medium | fixed | The plan spec's checklist contradicted the state the spec was cited as authority for |
 | [D-027](packing/devtools/check_generated_markdown.py) | 2026-08-23 | tooling | bookkeeping |  | `review` | medium | fixed | A generated view was left reflowable by the Markdown auto-formatter |
 | [D-028](packing/devtools/render_defects.py) | 2026-08-23 | record | bookkeeping |  | `drift_check` | low | fixed | A defect-log headline stayed asserted after it stopped being true |
 | [D-029](docs/project/research/research-2026-08-23-search-philosophy-and-landscape-cartography.md) | 2026-08-23 | quench | validity | conservative | `review` | medium | fixed | A single fixed-angle LP solve was called "the quench", and retracted a correct finding |
@@ -777,6 +777,7 @@ This is the actionable list.
 | [D-517](packing/devtools/check_nagamochi_bounds.py) | 2026-10-04 | tooling | soundness | flattering | `review` | low | fixed | Borrowed lower bounds were rounded to nearest, and the checker's two-sided tolerance passed a floor rounded up |
 | [D-518](docs/project/reviews/review-2026-10-02-nagamochi-lemma1-karakus.md) | 2026-10-04 | tooling | validity | flattering | `review` | medium | fixed | The Lemma 1 checker's Karakuş ordering tested only k^2 <= N, and the evidence register called it an exact check |
 | [D-519](docs/project/postmortems/postmortem-2026-10-05-orphaned-catalogue-intake.md) | 2026-10-05 | record | bookkeeping | conservative | `inspection` | medium | fixed | Three Kingbird counts held as pending catalogue intake named no owning bead, and the record trailed the catalogue for five days |
+| [D-520](packing/tests/test_gap_ranking.py) | 2026-10-12 | tooling | bookkeeping | conservative | `inspection` | medium | fixed | The open-gap ranking filtered on the reported status, so a case reported closed but open in the verified lane left the table |
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
