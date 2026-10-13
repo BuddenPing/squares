@@ -448,8 +448,9 @@ def recorded_targets(item: dict[str, Any]) -> tuple[dict[str, Any], int | None] 
 
     ``None`` for a disposition that changes nothing. Round 1's past-tense actions carry
     their targets beside the action, and record neither a close's reason nor the text
-    ``notes_updated`` wrote, so those targets are ``UNRECORDED``. Raises ``ValueError``
-    for an action outside both vocabularies.
+    ``notes_updated`` wrote, so those targets are ``UNRECORDED``. A close always targets
+    ``closed``, whether or not its record says so. Raises ``ValueError`` for an action
+    outside both vocabularies, and for a receipt item that records no target.
     """
     action = item.get("action")
     if action in UNCHANGED_ACTIONS:
@@ -460,23 +461,23 @@ def recorded_targets(item: dict[str, Any]) -> tuple[dict[str, Any], int | None] 
         for guard in EXPECTED_UPDATE_FIELDS:
             updates.pop(guard, None)
         if action == "close":
+            updates.setdefault("status", "closed")
             updates.setdefault("resolution", "completed")
         return updates, version
+    if action not in APPLIED_ACTIONS:
+        raise ValueError(f"unknown bead action: {item.get('id')}: {action}")
     version = item.get("previous_version")
     closed = {"status": "closed", "close_reason": UNRECORDED}
     if action == "closed":
         return {**closed, "resolution": "completed"}, version
     if action == "closed_duplicate":
-        return {
-            **closed,
-            "resolution": "duplicate",
-            "duplicate_of": item.get("duplicate_of"),
-        }, version
-    if action == "updated" and "hold" in item:
-        return {"hold": item["hold"]}, version
+        duplicate = {"resolution": "duplicate", "duplicate_of": item.get("duplicate_of")}
+        return {**closed, **duplicate}, version
     if action == "notes_updated":
         return {"notes": UNRECORDED}, version
-    raise ValueError(f"unknown bead action: {item.get('id')}: {action}")
+    if "hold" in item:
+        return {"hold": item["hold"]}, version
+    raise ValueError(f"receipt item with no recorded target: {item.get('id')}: {action}")
 
 
 def show_records(ids: list[str], repo: Path) -> dict[str, dict[str, Any]]:
@@ -558,7 +559,8 @@ def applied_expectations(
                 continue
             if recorded is not None:
                 target(str(item.get("id")), *recorded)
-        for repair in review.get("path_repairs", []):
+        receipt = review.get("receipt") or {}
+        for repair in [*review.get("path_repairs", []), *receipt.get("path_repoints", [])]:
             target(
                 str(repair["id"]), {"spec_path": repair["to"]}, repair.get("previous_version")
             )
@@ -576,7 +578,8 @@ def verify_applied(
     Pass the records oldest first: the latest record wins for each bead field, so a
     repair a later round superseded is not a problem, and a spec moved twice is checked
     at its last place, with no bead left naming any place it left. Round 1's receipt
-    (past-tense actions and ``path_repairs``) is read as well as the lane shape.
+    (past-tense actions and ``path_repairs``) is read as well as the lane shape, and so
+    are the ``path_repoints`` later receipts record for beads that named a moved plan.
 
     A list snapshot shows only ``status`` and ``spec_path``. With ``shown``, the beads'
     ``tbd show --json`` records, the resolution, ``duplicate_of``, ``close_reason``,

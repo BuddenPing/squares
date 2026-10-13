@@ -960,3 +960,46 @@ def test_prior_dispositions_do_not_cross_folders_that_share_a_filename(tmp_path:
         "docs/project/specs/active/same.md": {"action": "retain", "reason": "Live"},
         "docs/project/specs/done/same.md": None,
     }
+
+
+def test_verify_checks_a_receipt_s_path_repoints(tmp_path: Path) -> None:
+    review = {
+        "beads": [],
+        "receipt": {
+            "path_repoints": [
+                {"id": "think-a111", "from": "old/a.md", "to": "new/a.md", "status": "open"},
+                {"id": "think-b111", "from": "old/b.md", "to": "new/b.md", "status": "open"},
+            ]
+        },
+    }
+    later = {"receipt": {"path_repoints": [{"id": "think-a111", "to": "newer/a.md"}]}}
+    snapshot = [
+        {"id": "think-a111", "status": "open", "spec_path": "newer/a.md"},
+        {"id": "think-b111", "status": "open", "spec_path": "wrong/b.md"},
+    ]
+    result = verify_applied(snapshot, [review, later], tmp_path)
+    assert result["checked"] == 2
+    assert result["problems"] == ["spec_path not applied: think-b111 has wrong/b.md"]
+
+
+def test_verify_holds_a_close_to_its_closed_status_and_names_an_empty_receipt_item(
+    tmp_path: Path,
+) -> None:
+    close = {
+        "beads": [
+            {
+                "id": "think-a111",
+                "action": "close",
+                "updates": {"expected_version": 1, "expected_status": "open"},
+            }
+        ]
+    }
+    shown = {"think-a111": {"status": "open", "version": 2}}
+    snapshot = [{"id": "think-a111", "status": "open"}]
+    assert verify_applied(snapshot, [close], tmp_path, shown)["problems"] == [
+        "not closed: think-a111 is open"
+    ]
+    empty = {"beads": [{"id": "think-a111", "action": "updated", "previous_version": 1}]}
+    assert verify_applied(snapshot, [empty], tmp_path)["problems"][0] == (
+        "receipt item with no recorded target: think-a111: updated"
+    )
