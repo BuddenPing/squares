@@ -10,11 +10,11 @@
 # downloaded from another party's repository. The expected value of each digest is the
 # upstream blob at `source_commit`. The offline check holds the copy to this file, so it
 # catches accidental edits only: an edit made here together with this file passes it.
-# `--upstream` holds this file to upstream, comparing Git blob ids and modes at the pin.
-# It needs the network, so it is run by hand at a re-pin and by whoever reviews a change
-# to this directory; no gate runs it yet (think-vwlm). Nothing but these checks reads
-# the digests: no tool refuses to run the generator, and no result is invalidated, on a
-# mismatch.
+# `--upstream` holds this file to upstream, at a commit one of upstream's branches or tags
+# holds, comparing Git blob ids and modes at the pin. It needs the network, so it is run
+# by hand at a re-pin and by whoever reviews a change to this directory; no gate runs it
+# yet (think-vwlm). Nothing but these checks reads the digests: no tool refuses to run
+# the generator, and no result is invalidated, on a mismatch.
 
 format: vendored-source-v1
 source_url: https://github.com/evand/square-packing

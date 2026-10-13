@@ -350,16 +350,23 @@ def test_a_path_listed_twice_or_outside_the_copy_is_refused(tmp_path: Path) -> N
         vendored.load_manifest(manifest)
 
 
-def _upstream(tmp_path: Path) -> Path:
+@pytest.fixture
+def upstream(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    """A local upstream repository standing in for `UPSTREAM_URL`, its own `origin`.
+
+    Its one commit is on its `main` branch, so a re-pin or `--upstream` finds the commit
+    on one of upstream's branches, as it must.
+    """
     checkout = tmp_path / "upstream"
     checkout.mkdir()
-    _git(checkout, "init", "-q")
+    _git(checkout, "init", "-q", "--initial-branch=main")
     for path, data in UPSTREAM.items():
         (checkout / path).parent.mkdir(parents=True, exist_ok=True)
         (checkout / path).write_bytes(data)
     _git(checkout, "add", ".")
     _git(checkout, "commit", "-q", "-m", "a subject: with a colon")
-    _git(checkout, "remote", "add", "origin", "https://example.invalid/upstream.git")
+    _git(checkout, "remote", "add", "origin", checkout.as_uri())
+    monkeypatch.setattr(vendored, "UPSTREAM_URL", checkout.as_uri())
     return checkout
 
 
@@ -367,15 +374,15 @@ def _head(checkout: Path) -> str:
     return _git(checkout, "rev-parse", "HEAD")
 
 
-def test_a_repin_binds_each_file_to_the_upstream_blob(tmp_path: Path) -> None:
-    checkout = _upstream(tmp_path)
+def test_a_repin_binds_each_file_to_the_upstream_blob(tmp_path: Path, upstream: Path) -> None:
+    checkout = upstream
     directory = _copy(tmp_path / "project")
     commit = _git(checkout, "rev-parse", "HEAD")
     text = vendored.repin(directory, checkout, commit=commit, retrieved="2026-10-12")
     (directory / vendored.MANIFEST_NAME).write_text(text, encoding="utf-8")
     manifest = vendored.load_manifest(directory / vendored.MANIFEST_NAME)
     assert manifest.source_commit == commit
-    assert manifest.source_url == "https://example.invalid/upstream"
+    assert manifest.source_url == checkout.as_uri()
     assert sorted(manifest.files) == sorted(UPSTREAM)
     assert _problems(directory) == []
     # A working-tree edit in the checkout is not the commit, and does not move the pin.
@@ -383,8 +390,8 @@ def test_a_repin_binds_each_file_to_the_upstream_blob(tmp_path: Path) -> None:
     assert vendored.repin(directory, checkout, commit=commit, retrieved="2026-10-12") == text
 
 
-def test_a_repin_refuses_bytes_the_commit_does_not_hold(tmp_path: Path) -> None:
-    checkout = _upstream(tmp_path)
+def test_a_repin_refuses_bytes_the_commit_does_not_hold(tmp_path: Path, upstream: Path) -> None:
+    checkout = upstream
     directory = _copy(tmp_path / "project")
     (directory / "search/tool.py").write_text("not upstream's\n")
     (directory / "search/local.py").write_text("upstream never had this\n")
@@ -394,8 +401,10 @@ def test_a_repin_refuses_bytes_the_commit_does_not_hold(tmp_path: Path) -> None:
     assert "search/local.py: upstream has no such file at" in str(refusal.value)
 
 
-def test_a_repin_refuses_while_local_changes_are_recorded(tmp_path: Path) -> None:
-    checkout = _upstream(tmp_path)
+def test_a_repin_refuses_while_local_changes_are_recorded(
+    tmp_path: Path, upstream: Path
+) -> None:
+    checkout = upstream
     directory = _copy(tmp_path / "project", _change("search/data.json", "modified"))
     with pytest.raises(vendored.ManifestError, match="restore the pristine copy"):
         vendored.repin(directory, checkout, commit=_head(checkout), retrieved="2026-10-12")
@@ -637,10 +646,10 @@ def test_the_manifest_must_name_the_upstream_this_tool_fetches_from(
 
 @pytest.mark.parametrize("commit", ["--output={target}", "HEAD", "-1", "0123abc"])
 def test_a_commit_that_is_not_a_full_id_is_refused_before_git_sees_it(
-    tmp_path: Path, capsys: pytest.CaptureFixture[str], commit: str
+    tmp_path: Path, upstream: Path, capsys: pytest.CaptureFixture[str], commit: str
 ) -> None:
     """B2 of Review B: `--commit=--output=PATH` once had `git log` write PATH."""
-    checkout = _upstream(tmp_path)
+    checkout = upstream
     directory = _copy(tmp_path / "project")
     target = tmp_path / "injected.txt"
     argv = [
@@ -658,17 +667,31 @@ def test_a_commit_that_is_not_a_full_id_is_refused_before_git_sees_it(
     assert (directory / vendored.MANIFEST_NAME).read_text() == before
 
 
-def test_a_full_id_the_checkout_does_not_hold_is_a_refusal_not_a_traceback(
-    tmp_path: Path,
+def test_a_repin_refuses_a_checkout_whose_origin_is_not_upstream(
+    tmp_path: Path, upstream: Path
 ) -> None:
-    checkout = _upstream(tmp_path)
+    _git(upstream, "remote", "set-url", "origin", "https://example.invalid/a-fork.git")
+    directory = _copy(tmp_path / "project")
+    with pytest.raises(
+        vendored.ManifestError,
+        match=re.escape("the checkout's origin is https://example.invalid/a-fork"),
+    ):
+        vendored.repin(directory, upstream, commit=_head(upstream), retrieved="2026-10-12")
+
+
+def test_a_full_id_the_checkout_does_not_hold_is_a_refusal_not_a_traceback(
+    tmp_path: Path, upstream: Path
+) -> None:
+    checkout = upstream
     directory = _copy(tmp_path / "project")
     with pytest.raises(vendored.ManifestError, match="is not a commit in"):
         vendored.repin(directory, checkout, commit="f" * 40, retrieved="2026-10-12")
 
 
-def test_a_repin_records_upstream_modes_and_refuses_links(tmp_path: Path) -> None:
-    checkout = _upstream(tmp_path)
+def test_a_repin_records_upstream_modes_and_refuses_links(
+    tmp_path: Path, upstream: Path
+) -> None:
+    checkout = upstream
     for root in (checkout, _copy(tmp_path / "project")):
         script = root / "search/tool.py"
         script.chmod(script.stat().st_mode | stat.S_IXUSR)
@@ -709,11 +732,9 @@ def test_a_repin_records_upstream_modes_and_refuses_links(tmp_path: Path) -> Non
 
 
 @pytest.fixture
-def pinned_copy(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+def pinned_copy(tmp_path: Path, upstream: Path) -> Path:
     """A copy re-pinned from a local upstream that `--upstream` may fetch from."""
-    checkout = _upstream(tmp_path)
-    _git(checkout, "remote", "set-url", "origin", checkout.as_uri())
-    monkeypatch.setattr(vendored, "UPSTREAM_URL", checkout.as_uri())
+    checkout = upstream
     directory = _copy(tmp_path / "project")
     text = vendored.repin(directory, checkout, commit=_head(checkout), retrieved="2026-10-12")
     (directory / vendored.MANIFEST_NAME).write_text(text, encoding="utf-8")
@@ -731,7 +752,10 @@ def test_upstream_mode_passes_a_faithful_copy(
 ) -> None:
     status, output = _upstream_run(pinned_copy, capsys)
     assert status == 0, output
-    assert "vendored.yaml matches upstream at that commit by tree, Git blob ids" in output
+    assert (
+        "vendored.yaml matches upstream at that commit, on upstream's branch main, "
+        "by tree, Git blob ids"
+    ) in output
 
 
 def test_upstream_mode_refuses_an_edit_the_manifest_was_edited_to_hide(
@@ -817,3 +841,63 @@ def test_upstream_mode_never_fetches_from_another_source(
     status, output = _upstream_run(pinned_copy, capsys)
     assert status == 1
     assert "not https://example.invalid/the-real-one" in output
+
+
+# ---------------------------------------------------------------------------
+# --upstream and --write: the pin must be upstream's, not merely served by it
+# ---------------------------------------------------------------------------
+
+
+def _move_pin_off_main(upstream: Path) -> str:
+    """Leave upstream's pinned commit under `refs/pull/1/head` alone, as GitHub keeps a
+    pull request's head: `main` steps back to a commit of its own, and the pin is on no
+    branch or tag. It changes no vendored file, so only reachability can refuse it."""
+    pin = _head(upstream)
+    _git(upstream, "update-ref", "refs/pull/1/head", pin)
+    _git(upstream, "checkout", "-q", "--orphan", "fresh")
+    _git(upstream, "commit", "-q", "-m", "main without the pull request")
+    _git(upstream, "branch", "-q", "-f", "main", "fresh")
+    _git(upstream, "checkout", "-q", "main")
+    _git(upstream, "branch", "-q", "-D", "fresh")
+    return pin
+
+
+def test_upstream_mode_refuses_a_pin_held_only_by_a_pull_request(
+    pinned_copy: Path,
+    upstream: Path,
+    capsys: pytest.CaptureFixture[str],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """C1 of Review C: GitHub serves `refs/pull/N/head` by id through upstream's URL, so a
+    third party's unmerged commit once passed `--upstream` as upstream's."""
+    pin = _move_pin_off_main(upstream)
+    assert _git(upstream, "for-each-ref", f"--contains={pin}", "--format=%(refname)") == (
+        "refs/pull/1/head"
+    )
+
+    def refuse(*_arguments: object) -> Path:
+        pytest.fail("fetched a pin no upstream branch or tag holds")
+
+    monkeypatch.setattr(vendored, "fetch_pin", refuse)
+    status, output = _upstream_run(pinned_copy, capsys)
+    assert status == 1
+    assert f"`source_commit` {pin[:12]} is on no branch or tag of {upstream.as_uri()}" in output
+
+
+def test_a_repin_refuses_a_commit_held_only_by_a_pull_request(
+    tmp_path: Path, upstream: Path
+) -> None:
+    pin = _move_pin_off_main(upstream)
+    directory = _copy(tmp_path / "project")
+    with pytest.raises(vendored.ManifestError, match="is on no branch or tag of"):
+        vendored.repin(directory, upstream, commit=pin, retrieved="2026-10-13")
+
+
+def test_upstream_mode_accepts_a_pin_a_tag_holds_and_names_it(
+    pinned_copy: Path, upstream: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    pin = _move_pin_off_main(upstream)
+    _git(upstream, "tag", "exact-data", pin)
+    status, output = _upstream_run(pinned_copy, capsys)
+    assert status == 0, output
+    assert "on upstream's tag exact-data, by tree" in output
