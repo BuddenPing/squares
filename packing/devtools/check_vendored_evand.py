@@ -15,15 +15,19 @@ what each file is for, how the credit is written and how the copy is forked or r
   `vendored.yaml`. It catches accidental edits only: a stray run output, a dropped file,
   an edit someone forgot to record. It cannot catch a deliberate one, because the
   expected values come from the manifest, which the same change can edit.
-- *`--upstream`*: the manifest against upstream. It fetches the pinned commit's trees,
-  without blobs, from `UPSTREAM_URL` into a temporary bare repository, then requires
-  the commit's tree, date and subject to be the ones the manifest records, every
-  pristine file's Git blob id to be upstream's at the pin (`git hash-object` against
-  `git ls-tree`, so the identity is Git's own), every pinned mode to be upstream's, and
-  every file here to be in upstream's tree unless it is a recorded addition. With the
-  offline check passing, that makes every pinned SHA-256 the digest of upstream's bytes.
-  It needs the network, so it runs at a re-pin and whenever `vendored.yaml` changes,
-  never in an offline tier.
+- *`--upstream`*: the manifest against upstream. It first fetches the commits of every
+  branch and tag of `UPSTREAM_URL`, without trees or blobs, and requires one of them to
+  hold the pin: GitHub serves any pull request's head by id through the base
+  repository's URL, so a fetch by id alone would take a third party's unmerged commit
+  for upstream's. It then fetches the pinned commit's trees, without blobs, into a
+  temporary bare repository, and requires the commit's tree, date and subject to be the
+  ones the manifest records, every pristine file's Git blob id to be upstream's at the
+  pin (`git hash-object` against `git ls-tree`, so the identity is Git's own), every
+  pinned mode to be upstream's, and every file here to be in upstream's tree unless it
+  is a recorded addition. With the offline check passing, that makes every pinned
+  SHA-256 the digest of upstream's bytes. It needs the network, so it is run by hand at
+  a re-pin and by whoever reviews a change to the vendored directory; no gate runs it
+  yet (`think-vwlm`), and no offline tier ever will.
 
 **Why a digest here, against OR-16's default.** The rule reserves checksums for a real
 trust boundary, and requires three answers beside one:
@@ -33,7 +37,8 @@ trust boundary, and requires three answers beside one:
   which upstream bytes ran.
 - *The independently supplied expected value*: each file's SHA-256 as the upstream blob at
   the pinned commit, recorded at the re-pin and re-derived from the upstream repository,
-  without trusting this one, by `--upstream`.
+  without trusting this one, by `--upstream`, at a commit one of upstream's own branches
+  or tags holds.
 - *The failure it detects*: an in-place edit of the vendored code that is not recorded as
   a reviewed local change (a silent fork, after which the credit and the pin would both
   misdescribe what ran), a vendored file dropped, an unrecorded file added beside them,
@@ -56,9 +61,11 @@ the manifest cannot drift apart; the section alone counts, since the
 README's role table names every file. The licence file is never a local change: the MIT
 grant requires its notice with every copy. Nothing else is in the directory besides its
 `README.md` and `vendored.yaml`, the project's own two files. No path in it is a symbolic
-link, and no module file in it takes the name of a standard-library module or of a
-dependency the vendored scripts import (`DEPENDENCIES`): five of them put
-`search/regularize/` first on `sys.path`, so a `numpy.py` there would run in numpy's place.
+link, and no module file in it takes the name of a standard-library module, of a
+dependency the vendored scripts import (`DEPENDENCIES`), or of a module a dependency
+looks up as it loads (`LOADED_BY_DEPENDENCIES`): five of them put `search/regularize/`
+first on `sys.path`, so a `numpy.py` there would run in numpy's place, and mpmath tries
+`gmpy2` at load, so a `gmpy2.py` beside `exactsolve.py` would run silently.
 Whether a file is in upstream's tree at all is knowable only from upstream, so a file
 declared in the manifest under any other name is `--upstream`'s to refuse. What the
 directory holds is asked of git -- tracked files and untracked files git would commit, so
@@ -70,7 +77,9 @@ vendored files have been replaced with the new pin's bytes, it compares every ve
 file with the checkout's blob at that commit, byte for byte and mode for mode, and
 rewrites the manifest. `--commit` is the full 40-digit id. It refuses while local changes
 are recorded, because a re-pin must start from the pristine copy (the README,
-"Re-pinning"). Run `--upstream` after it.
+"Re-pinning"), and it refuses a checkout whose `origin` is not `UPSTREAM_URL` or a commit
+none of upstream's branches or tags holds, which it fetches as `--upstream` does, so it
+needs the network too. Run `--upstream` after it.
 
 Usage, from `packing/`, each after `uv run --frozen --all-extras --group dev`:
     python -m devtools.check_vendored_evand
@@ -129,9 +138,45 @@ LOCAL_CHANGES = "### Local Changes"
 #: whole. With the standard library and the two startup hooks, no vendored module file
 #: may take one of these names.
 DEPENDENCIES = frozenset({"matplotlib", "mpmath", "numpy", "scipy", "sympy", "yaml"})
-RESERVED_MODULES = (
-    frozenset(sys.stdlib_module_names) | DEPENDENCIES | {"sitecustomize", "usercustomize"}
+#: The top-level modules the dependencies themselves look up while the vendored scripts
+#: import them. Most are optional and a failed import falls back quietly, so a file of one
+#: of these names on `sys.path` would run unseen: mpmath tries `gmpy2`, then `gmpy`, at
+#: load. A test measures the set, once with every optional module the environment has and
+#: once with all of them hidden, so each fallback is tried; it must stay inside this one.
+#: Three groups are not measured and are named by hand: `sage`, which mpmath tries only
+#: when `SAGE_ROOT` or `MPMATH_SAGE` is set; matplotlib's required packages by import
+#: name, since matplotlib is not installed here; and CPython's own `_sysconfigdata_*`
+#: modules, whose names carry the platform (`RESERVED_PREFIXES`).
+LOADED_BY_DEPENDENCIES = frozenset(
+    {
+        "charset_normalizer",
+        "cython",
+        "flint",
+        "gmpy",
+        "gmpy2",
+        "sage",
+        "scikits",
+        "sksparse",
+        "uarray",
+        # matplotlib's requirements, read from its metadata rather than measured.
+        "PIL",
+        "contourpy",
+        "cycler",
+        "dateutil",
+        "fontTools",
+        "kiwisolver",
+        "packaging",
+        "pyparsing",
+    }
 )
+RESERVED_MODULES = (
+    frozenset(sys.stdlib_module_names)
+    | DEPENDENCIES
+    | LOADED_BY_DEPENDENCIES
+    | {"sitecustomize", "usercustomize"}
+)
+#: Reserved by prefix: CPython's build-configuration modules, named for the platform.
+RESERVED_PREFIXES = ("_sysconfigdata_",)
 #: Git's modes for a regular file and an executable one; the copy holds nothing else.
 REGULAR = "100644"
 EXECUTABLE = "100755"
@@ -160,10 +205,11 @@ HEADER = """\
 # downloaded from another party's repository. The expected value of each digest is the
 # upstream blob at `source_commit`. The offline check holds the copy to this file, so it
 # catches accidental edits only: an edit made here together with this file passes it.
-# `--upstream` holds this file to upstream, comparing Git blob ids and modes at the pin;
-# it needs the network and is run at a re-pin and whenever this file changes. Nothing
-# but these checks reads the digests: no tool refuses to run the generator, and no
-# result is invalidated, on a mismatch.
+# `--upstream` holds this file to upstream, at a commit one of upstream's branches or tags
+# holds, comparing Git blob ids and modes at the pin. It needs the network, so it is run
+# by hand at a re-pin and by whoever reviews a change to this directory; no gate runs it
+# yet (think-vwlm). Nothing but these checks reads the digests: no tool refuses to run
+# the generator, and no result is invalidated, on a mismatch.
 """
 
 
@@ -593,7 +639,8 @@ def shadowed_module(path: str) -> str | None:
     name = parts[-1].split(".", 1)[0]
     if name == "__init__":
         name = parts[-2] if len(parts) > 1 else ""
-    return name if name in RESERVED_MODULES else None
+    reserved = name in RESERVED_MODULES or name.startswith(RESERVED_PREFIXES)
+    return name if reserved else None
 
 
 def _pinned_problems(
@@ -705,7 +752,7 @@ def check(directory: Path, manifest: Manifest, present: Iterable[str]) -> list[s
             )
     problems += [
         f"{path}: would be imported in place of the `{module}` module the vendored scripts "
-        "load, since they put its directory on sys.path"
+        "or their dependencies load, since the scripts put its directory on sys.path"
         for path, module in sorted((path, shadowed_module(path)) for path in held - OWN_FILES)
         if module is not None
     ]
@@ -801,6 +848,81 @@ def _commit_fields(repository: Path, commit: str) -> list[str]:
         msg = f"git answered {answer.decode()!r} for commit {commit}, not its four fields"
         raise ManifestError(msg)
     return fields[:4]
+
+
+#: Every branch and tag of upstream, as the temporary repository holds them. A pull
+#: request's head (`refs/pull/N/head`) is neither, and is never fetched.
+UPSTREAM_REFS = ("+refs/heads/*:refs/remotes/origin/*", "+refs/tags/*:refs/tags/*")
+
+
+def fetch_refs(url: str, into: Path) -> Path:
+    """A bare repository at `into` holding the commits of every branch and tag of `url`.
+
+    `--filter=tree:0` leaves out every tree and blob, so this is the history alone: about
+    1 s and 520 KB for upstream on 2026-10-13. Nothing is checked out and no hook runs.
+    """
+    _git(into.parent, "init", "-q", "--bare", "--", str(into))
+    _git(into, "remote", "add", "--", "origin", url)
+    _git(
+        into,
+        "fetch",
+        "-q",
+        "--filter=tree:0",
+        "--no-tags",
+        "--end-of-options",
+        "origin",
+        *UPSTREAM_REFS,
+    )
+    return into
+
+
+def _ref_name(ref: str) -> str:
+    if ref.startswith("refs/tags/"):
+        return f"tag {ref.removeprefix('refs/tags/')}"
+    return f"branch {ref.removeprefix('refs/remotes/origin/')}"
+
+
+def containing_refs(repository: Path, commit: str) -> list[str]:
+    """The branches and tags in `repository` whose history holds `commit`, by short name.
+
+    Membership is read from the history the refs reach, never by looking `commit` up: in
+    a partial clone a missing object is fetched on demand, and GitHub would serve a pull
+    request's head that way as readily as a branch's.
+    """
+    if commit not in set(_git(repository, "rev-list", "--all").decode().split()):
+        return []
+    listed = _git(
+        repository,
+        "for-each-ref",
+        f"--contains={commit}",
+        "--format=%(refname)",
+        "refs/remotes/origin",
+        "refs/tags",
+    )
+    return [_ref_name(ref) for ref in listed.decode().split()]
+
+
+def upstream_refs(commit: str) -> list[str]:
+    """The branches and tags of `UPSTREAM_URL` whose history holds `commit`.
+
+    Fetched into a temporary directory, removed afterwards; it needs the network.
+    """
+    with tempfile.TemporaryDirectory(prefix="evand-upstream-") as scratch:
+        return containing_refs(fetch_refs(UPSTREAM_URL, Path(scratch) / "refs.git"), commit)
+
+
+def _held_by(refs: Sequence[str]) -> str:
+    """`refs` for a message: up to three by name, then how many more."""
+    shown = [*refs[:3], f"{len(refs) - 3} more"] if len(refs) > 3 else list(refs)
+    return shown[0] if len(shown) == 1 else f"{', '.join(shown[:-1])} and {shown[-1]}"
+
+
+def _on_no_ref(commit: str) -> str:
+    return (
+        f"{commit[:12]} is on no branch or tag of {UPSTREAM_URL}, so it is not upstream's "
+        "commit, though GitHub serves it by id (a pull request's or a fork's head is served "
+        "that way); pin a commit one of upstream's branches or tags holds"
+    )
 
 
 def fetch_pin(url: str, commit: str, into: Path) -> Path:
@@ -962,6 +1084,20 @@ def repin(directory: Path, checkout: Path, *, commit: str, retrieved: str) -> st
         raise ManifestError(msg)
     fields = _commit_fields(checkout, commit)
     url = _git(checkout, "remote", "get-url", "origin").decode().strip().removesuffix(".git")
+    if url != UPSTREAM_URL:
+        msg = (
+            f"the checkout's origin is {url}, not {UPSTREAM_URL}; a re-pin is taken from "
+            "upstream, and a new upstream is a change to this tool, reviewed as such"
+        )
+        raise ManifestError(msg)
+    try:
+        held = upstream_refs(commit)
+    except subprocess.CalledProcessError as failure:
+        detail = os.fsdecode(failure.stderr).strip()
+        msg = f"could not read upstream's branches and tags from {UPSTREAM_URL}: {detail}"
+        raise ManifestError(msg) from failure
+    if not held:
+        raise ManifestError(_on_no_ref(commit))
     licence = (directory / "LICENSE").read_text(encoding="utf-8")
     holder = next(line for line in licence.splitlines() if line.startswith("Copyright"))
     metadata = {
@@ -1007,22 +1143,30 @@ def repin(directory: Path, checkout: Path, *, commit: str, retrieved: str) -> st
 # ---------------------------------------------------------------------------
 
 
-def upstream_problems(directory: Path, manifest: Manifest, present: set[str]) -> list[str]:
-    """`compare_upstream` against a fetch of the pin into a temporary directory."""
+def upstream_problems(
+    directory: Path, manifest: Manifest, present: set[str]
+) -> tuple[list[str], list[str]]:
+    """Every way `manifest` disagrees with upstream, and the upstream refs holding the pin.
+
+    The pin must be on one of upstream's branches or tags (`upstream_refs`) before it is
+    fetched and held to the manifest (`compare_upstream`), each in a temporary directory.
+    """
     if source_problems(manifest):
-        return []  # never fetched from a source this tool was not written for
-    pin = f"{manifest.source_url}@{manifest.source_commit[:7]}"
-    with tempfile.TemporaryDirectory(prefix="evand-upstream-") as scratch:
-        try:
-            repository = fetch_pin(
-                manifest.source_url, manifest.source_commit, Path(scratch) / "pin.git"
-            )
-            return compare_upstream(directory, manifest, present, repository)
-        except subprocess.CalledProcessError as failure:
-            detail = os.fsdecode(failure.stderr).strip()
-            return [f"could not read {pin} from upstream: {detail}"]
-        except ManifestError as refusal:
-            return [str(refusal)]
+        return [], []  # never fetched from a source this tool was not written for
+    commit = manifest.source_commit
+    pin = f"{UPSTREAM_URL}@{commit[:7]}"
+    try:
+        held = upstream_refs(commit)
+        if not held:
+            return [f"vendored.yaml: `source_commit` {_on_no_ref(commit)}"], []
+        with tempfile.TemporaryDirectory(prefix="evand-upstream-") as scratch:
+            repository = fetch_pin(UPSTREAM_URL, commit, Path(scratch) / "pin.git")
+            return compare_upstream(directory, manifest, present, repository), held
+    except subprocess.CalledProcessError as failure:
+        detail = os.fsdecode(failure.stderr).strip()
+        return [f"could not read {pin} from upstream: {detail}"], []
+    except ManifestError as refusal:
+        return [str(refusal)], []
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -1054,7 +1198,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             written = load_manifest(directory / MANIFEST_NAME)
             print(
                 f"wrote {MANIFEST_NAME}: {len(written.files)} files at "
-                f"{written.source_commit}; run --upstream to hold it to upstream"
+                f"{written.source_commit}, which one of upstream's branches or tags holds; "
+                "run --upstream to hold it to upstream"
             )
             return 0
         manifest = load_manifest(directory / MANIFEST_NAME)
@@ -1063,14 +1208,17 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 1
     present = present_files(directory)
     problems = source_problems(manifest) + check(directory, manifest, present)
+    refs: list[str] = []
     if args.upstream:
-        problems += upstream_problems(directory, manifest, present)
+        found, refs = upstream_problems(directory, manifest, present)
+        problems += found
     for problem in problems:
         print(f"check_vendored_evand: {problem}", file=sys.stderr)
     if problems:
         return 1
     held = (
-        "and vendored.yaml matches upstream at that commit by tree, Git blob ids and modes"
+        f"and vendored.yaml matches upstream at that commit, on upstream's "
+        f"{_held_by(refs)}, by tree, Git blob ids and modes"
         if args.upstream
         else "not compared with upstream (--upstream does that)"
     )
