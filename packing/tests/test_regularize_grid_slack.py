@@ -167,6 +167,26 @@ def test_a_report_names_the_witness_it_read_and_the_view_it_wrote(tmp_path: Path
     assert report["view"]["git_blob"] == git_blob(view.read_bytes())
 
 
+def test_a_rerun_without_a_view_leaves_no_earlier_view_or_drawing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Review B of #530, B4: a re-run that finds no view removes the run before's view,
+    drawing and report before it writes its own."""
+    slack.run_one(1, tmp_path, slack.Settings())
+    directory = tmp_path / "n-001"
+    assert (directory / "view.yaml.gz").is_file()
+
+    def no_view(*_arguments: object) -> tuple[None, dict[str, Any]]:
+        return None, {"attempts": [], "refusal": "no view this time", "seconds": 0}
+
+    monkeypatch.setattr(slack, "regularize", no_view)
+    report = slack.run_one(1, tmp_path, slack.Settings())
+    assert "measured" not in report
+    assert "view" not in report
+    assert not (directory / "view.yaml.gz").exists()
+    assert not (directory / "drawing.svg").exists()
+
+
 def _row(coefficients: dict[int, int], rhs: Fraction, priority: tuple[int, ...]) -> Any:
     return slack.same.Row(
         "pair" if len(coefficients) > 1 else "wall",

@@ -1449,10 +1449,13 @@ def source_record(n: int, data: bytes, witness: Mapping[str, Any]) -> dict[str, 
 def run_one(n: int, run_dir: Path, settings: Settings) -> dict[str, Any]:
     """Regularize one count into `run_dir/n-NNN/`, and its report.
 
-    The report names the view's bytes by their Git blob id, which binds its verdicts to
-    them.
+    An earlier run's view, drawing and report are removed first, so a re-run that finds
+    no view, or stops, leaves none of them beside its own (review B of #530, B4). The
+    report names the view's bytes by their Git blob id, which binds its verdicts to them.
     """
     directory = _guard(run_dir) / f"n-{n:03d}"
+    for stale in ("report.json", "view.yaml.gz", "drawing.svg"):
+        (directory / stale).unlink(missing_ok=True)
     data = (KNOWN_BEST / f"n-{n:03d}.yaml").read_bytes()
     witness = load_yaml(data.decode("utf-8"))["witness"]
     view, report = regularize(witness, settings)
