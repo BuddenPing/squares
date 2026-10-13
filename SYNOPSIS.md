@@ -4817,7 +4817,7 @@ Two refinements carry the rest of the story:
   Each row fixes a half-angle interval for the parent square, a core direction and a
   core side chosen so that the core fits strictly inside every parent in the interval,
   and the charge is required only at centres a legal parent can occupy
-  ([Overbeck review](docs/project/reviews/review-2026-09-22-kleddamag-n11-mathematics.md)).
+  ([review of Overbeck’s n = 11 proof](docs/project/reviews/review-2026-09-22-kleddamag-n11-mathematics.md)).
 
 **Point certificates have a proved ceiling.** An exact depth-one family of eighty-eight
 closed shrunken squares at six net directions, of total weight exactly eleven, shows
@@ -4913,7 +4913,7 @@ cores need $107{,}864$ units more than the budget holds.
 The 12,028 parent half-angle intervals run from $0$ to $207107/500000$, past
 $\tan(\pi/8)$. A 2-of-5 feature costs twice its weight, and the review checked that the
 source’s proof and its budget computation both charge it so
-([Overbeck review](docs/project/reviews/review-2026-09-22-kleddamag-n11-mathematics.md)).
+([review of Overbeck’s n = 11 proof](docs/project/reviews/review-2026-09-22-kleddamag-n11-mathematics.md)).
 The source credits this repository’s `T-026`.
 
 **Which ingredient beat the first-party ceilings is not established.** The threshold
@@ -5084,7 +5084,7 @@ the certificate carries no transferable slack to $U$.
 
 | Item | Outcome | Evidence |
 | --- | --- | --- |
-| External intake: pin, replay, audit, native re-decision | Worked: two complete methods and a mathematical review in about a day, leaving an $n$-general native parent-core verifier | [Overbeck review](docs/project/reviews/review-2026-09-22-kleddamag-n11-mathematics.md), [native review](docs/project/reviews/review-2026-09-22-native-n11-parent-core.md) |
+| External intake: pin, replay, audit, native re-decision | Worked: two complete methods and a mathematical review in about a day, leaving an $n$-general native parent-core verifier | [review of Overbeck’s n = 11 proof](docs/project/reviews/review-2026-09-22-kleddamag-n11-mathematics.md), [native review](docs/project/reviews/review-2026-09-22-native-n11-parent-core.md) |
 | Rung-0 cell tree and independent reader | The instrument worked; the relaxation did not, at about a thousand times the estimated tree | [exp-231](packing/campaign/series/series-000-smoke-and-calibration/experiments/exp-231-h236-rung-zero-cell-tree.md), [rung-0 review](docs/project/reviews/review-2026-09-23-rung0-certificate-contract.md) |
 | [`capture_radius.py`](packing/cases/trump11/capture_radius.py) | Worked as a tool, reproducing BC-199’s modulus to 32 digits, and proved a negative | [exp-227](packing/campaign/series/series-000-smoke-and-calibration/experiments/exp-227-h237-trump-growth-cone-capture-radius.md) |
 | Descent filter | Worked: it made the quench census readable and found two new minima | [exp-228](packing/campaign/series/series-000-smoke-and-calibration/experiments/exp-228-h238-descent-filtered-census.md) |
