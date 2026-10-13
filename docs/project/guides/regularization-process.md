@@ -166,6 +166,13 @@ as the entry’s `run.rungs_from`, and adds its receipt’s block to the index�
 python -m devtools.regularize_evand rungs --run-dir $RUNS/evand --repo-root ..
 ```
 
+The new run is named by its directory, `evand-regularize-<run directory>`, so give it a
+directory no earlier run used.
+Where a supplying run’s id already names another run,
+`rename-run --from ID --to ID --note TEXT --repo-root ..` gives it a distinct one and
+records why on its block (`id_note`), as the fresh run of the #518 counts was renamed
+`evand-regularize-adopt518-v2-rerun-2026-10-13`.
+
 ### 6. Commit, Then Re-pin
 
 Commit the data first, under a `data:` subject whose body names the counts, the runs and

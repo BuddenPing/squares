@@ -11,6 +11,7 @@ Usage, from `packing/`, each after
     layer --run-dir DIR [DIR ...] --repo-root TREE [--select admitted|preview]
         [--exclude N ...] [--grid-run DIR --grid-counts N ...]
     rungs --run-dir DIR [DIR ...] --repo-root TREE
+    rename-run --from ID --to ID --note TEXT --repo-root TREE
     report --run-dir DIR [--json]
 
 This is the automated pass of the regularization policy
@@ -2896,6 +2897,54 @@ def record_rungs(run_dirs: Sequence[Path], root: Path) -> dict[str, Any]:
     return {key: sorted(set(counts)) for key, counts in summary.items()}
 
 
+def rename_run(root: Path, old: str, new: str, note: str) -> dict[str, Any]:
+    """Give a run the layer's index records only as a supplier of rungs another id, and
+    say why on its block (`id_note`).
+
+    A run's receipt records no id: `layer` and `rungs` name it by the driver's convention,
+    `evand-regularize-<run directory>`, so two runs in directories of the same name get
+    the same id. The fresh run of 13 October 2026 that supplied the rungs of the fifteen
+    views drawn from the run on jlevy/squares#518's witnesses was named
+    `evand-regularize-adopt518-v2` that way, the id the convention also gives the 12
+    October run of 37 counts in `runs/adopt518-v2`. This renames the block and every
+    entry's `run.rungs_from` that names it, and records `note` on the block, so the id
+    says it was assigned afterwards. A run an entry draws from (`run.id`) is refused: its
+    id is in the drawn view's text, which the layer's check holds to the index. So is a
+    new id the index already records, an old one it does not, and an empty note."""
+    root = root.resolve()
+    index_path = root / LAYER_INDEX_PATH
+    index = read_json(index_path)
+    blocks = [block for block in index.get("runs") or [] if str(block["id"]) == old]
+    if len(blocks) != 1:
+        raise EvandRunError(f"the index records {len(blocks)} runs named {old!r}")
+    if any(str(block["id"]) == new for block in index.get("runs") or []):
+        raise EvandRunError(f"the index already records a run named {new!r}")
+    if not note.strip():
+        raise EvandRunError("a renamed run says why its id was assigned (--note)")
+    drawing = sorted(
+        int(entry["n"])
+        for entry in index["entries"]
+        if str((entry.get("run") or {}).get("id")) == old
+    )
+    if drawing:
+        raise EvandRunError(
+            f"entries {drawing} draw from {old!r}, whose id their views record; not renamed"
+        )
+    renamed: list[int] = []
+    for entry in index["entries"]:
+        run = entry.get("run") or {}
+        if str(run.get("rungs_from")) == old:
+            run["rungs_from"] = new
+            renamed.append(int(entry["n"]))
+    block = blocks[0]
+    rest = {key: value for key, value in block.items() if key not in {"id", "id_note"}}
+    block.clear()
+    block.update({"id": new, "id_note": note.strip(), **rest})
+    with atomic_output_file(index_path) as temporary:
+        temporary.write_text(axis.index_text(index), encoding="utf-8")
+    return {"renamed": old, "to": new, "rungs_from": sorted(renamed)}
+
+
 def write_receipt(
     run_dir: Path,
     reports: Mapping[int, Mapping[str, Any]],
@@ -3106,6 +3155,13 @@ def parser() -> argparse.ArgumentParser:
     )
     rungs_command.add_argument("--run-dir", type=Path, nargs="+", required=True)
     rungs_command.add_argument("--repo-root", type=Path, required=True)
+    rename_command = sub.add_parser(
+        "rename-run", help="give a run that only supplied rungs another id, saying why"
+    )
+    rename_command.add_argument("--from", dest="old", required=True)
+    rename_command.add_argument("--to", dest="new", required=True)
+    rename_command.add_argument("--note", required=True, help="why the id was assigned")
+    rename_command.add_argument("--repo-root", type=Path, required=True)
     report_command = sub.add_parser("report", help="print a run's receipt as a table")
     report_command.add_argument("--run-dir", type=Path, required=True)
     report_command.add_argument("--json", action="store_true")
@@ -3142,8 +3198,13 @@ def main(argv: list[str] | None = None) -> int:
         for problem in problems:
             print(problem)
         return 1 if problems else 0
-    if arguments.command == "rungs":
-        print(json.dumps(record_rungs(arguments.run_dir, arguments.repo_root)))
+    if arguments.command in {"rungs", "rename-run"}:
+        summary = (
+            record_rungs(arguments.run_dir, arguments.repo_root)
+            if arguments.command == "rungs"
+            else rename_run(arguments.repo_root, arguments.old, arguments.new, arguments.note)
+        )
+        print(json.dumps(summary))
         problems = axis.check_atlas(layer_layout(arguments.repo_root))
         for problem in problems:
             print(problem)

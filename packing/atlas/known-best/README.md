@@ -250,10 +250,17 @@ the one retry’s arguments (`run.retried_with`). The 23 vendored views admitted
 ladder had no rungs recorded; on 13 October 2026
 `python -m devtools.regularize_evand rungs` recorded them from their runs’ retained
 reports at eight counts and, at the fifteen drawn from the run on jlevy/squares#518’s
-witnesses, from a fresh run of those counts, `evand-regularize-adopt518-v2` (917 s of
-wall, 2,097 CPU seconds at three workers), whose views came out byte for byte the drawn
-ones. Each entry names the run that supplied its rungs as `run.rungs_from`, and the
-index’s `runs` records the fresh run beside the runs whose views it draws.
+witnesses, from a fresh run of those counts,
+`evand-regularize-adopt518-v2-rerun-2026-10-13` (917 s of wall, 2,097 CPU seconds at
+three workers), whose views came out byte for byte the drawn ones.
+Each entry names the run that supplied its rungs as `run.rungs_from`, and the index’s
+`runs` records the fresh run beside the runs whose views it draws.
+A run’s receipt records no id, and the driver names a run by its directory,
+`evand-regularize-<run directory>`; the fresh run’s directory was also `adopt518-v2`, so
+that convention gives it the id of the 12 October run of 37 counts in
+`runs/adopt518-v2`, whose reports `evand-regularize-refreshed-adopt518-v2` decided
+again. Its id was therefore assigned afterwards, on 13 October 2026, by
+`python -m devtools.regularize_evand rename-run`, and its block’s `id_note` says so.
 The tool never writes over rungs or a retry an entry already records.
 Only 152 climbed a rung (`force-kkt`); with 18’s earlier `dps-100`, those are the two
 vendored views drawn with a retry, and none used a replica patch.
