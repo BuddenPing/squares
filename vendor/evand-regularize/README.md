@@ -14,8 +14,10 @@ was produced by Claude (Anthropic) under his direction.
 The code is under the MIT licence, whose notice is kept with this copy in
 [LICENSE](LICENSE).
 
-[vendored.yaml](vendored.yaml) is the machine-readable manifest: the pin, the licence
-and every file’s size, SHA-256 and executable bit.
+This README and [vendored.yaml](vendored.yaml) are this project’s own files; everything
+else here is upstream’s.
+`vendored.yaml` is the machine-readable manifest: the pin, the licence and every file’s
+size, SHA-256 and executable bit.
 `devtools.check_vendored_evand` holds the directory to the manifest in the edit tier and
 on every pull request, and its `--upstream` mode holds the manifest to upstream
 ([Checking the Copy](#checking-the-copy)).
@@ -39,8 +41,9 @@ Every file keeps its upstream path relative to the repository root, so the code�
 Upstream’s
 [root README](https://github.com/evand/square-packing/blob/675a5eaa8712542daac8b4515b0f69ad7044df44/README.md)
 is not vendored; its “Data, licence, credits” section is where upstream states the MIT
-grant and carves David Ellsworth’s drawings under `site/www/data/` out of it, and
-nothing from `site/` is vendored either.
+grant and carves David Ellsworth’s drawings under `site/www/data/` out of it.
+Nothing from `site/` is vendored either, but the alternates lists quote the same
+catalogue (see [Credit](#credit)).
 
 The
 [regularization assessment](../../docs/project/research/research-2026-10-11-evand-regularization-assessment.md)
@@ -65,6 +68,13 @@ out of reader prose:
 Upstream’s lists and batch inputs are derived from this project’s known-best witnesses
 (CC BY 4.0, Joshua Levy, the squares project) and from Evan Daniel’s packing store;
 `search/exact/batch/README.md` and `search/regularize/REGULARIZE.md` say which.
+The alternates lists also draw on David Ellsworth’s
+[catalogue of squares in squares](https://kingbird.myphotos.cc/packing/squares_in_squares.html):
+70 of the 74 rows of `search/regularize/lists/alternates.json`, `.csv` and `.md` name a
+catalogue drawing as their source, and 64 of them quote its attribution text.
+Upstream’s README says of the same material in its `site/www/data/`, derived from his
+drawings and quoting his attribution text, that it is his and not covered by the MIT
+licence. The root [LICENSE](../../LICENSE) treats these rows the same way.
 
 ## What Each File Is For
 
