@@ -902,6 +902,72 @@ def source_side(n: int) -> Fraction:
 # --------------------------------------------------------------------------------------
 
 
+def test_a_run_that_only_supplied_rungs_is_renamed_with_why(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A run's receipt records no id, and the driver names a run by its directory, so a
+    fresh run in a directory an earlier run also used takes that run's id. `rename-run`
+    gives a run that only supplied rungs a distinct id, moves every `rungs_from` that
+    names it, and says on its block why the id was assigned (`id_note`); a run an entry
+    draws from, a taken id, an unknown one and an empty note are refused (PR #585,
+    review B3)."""
+    monkeypatch.setenv("PACK_JOBS", "1")
+    root, layout = scratch_tree(tmp_path)
+    run_dir = a_run(root, layout, tmp_path / "full")
+    path = run_dir / "n-004" / "report.json"
+    report = json.loads(path.read_text(encoding="utf-8"))
+    report["solve"] = {"status": "KKT local min", "rungs": []}
+    path.write_text(json.dumps(report), encoding="utf-8")
+    drive.write_layer([run_dir], root, "admitted")
+    index = json.loads(layout.index.read_text())
+    index["entries"][0]["run"].pop("rungs")
+    layout.index.write_text(axis.index_text(index), encoding="utf-8")
+    again = tmp_path / "rerun" / "full"
+    again.mkdir(parents=True)
+    (again / "receipt.json").write_bytes((run_dir / "receipt.json").read_bytes())
+    for source in run_dir.glob("n-*/*"):
+        target = again / source.parent.name / source.name
+        target.parent.mkdir(exist_ok=True)
+        target.write_bytes(source.read_bytes())
+    # Recorded under the convention, the fresh run would take the drawing run's own id;
+    # here that run is recorded first under a scratch name, as `adopt518-v2` was.
+    scratch = tmp_path / "rerun" / "adopt"
+    again.rename(scratch)
+    assert drive.record_rungs([scratch], root)["recorded"] == [4]
+    with pytest.raises(drive.EvandRunError, match="draw from"):
+        drive.rename_run(root, "evand-regularize-full", "evand-regularize-x", "why")
+    with pytest.raises(drive.EvandRunError, match="already records"):
+        drive.rename_run(root, "evand-regularize-adopt", "evand-regularize-full", "why")
+    with pytest.raises(drive.EvandRunError, match="0 runs"):
+        drive.rename_run(root, "evand-regularize-none", "evand-regularize-x", "why")
+    with pytest.raises(drive.EvandRunError, match="--note"):
+        drive.rename_run(root, "evand-regularize-adopt", "evand-regularize-x", " ")
+    assert (
+        drive.main(
+            [
+                "rename-run",
+                "--from",
+                "evand-regularize-adopt",
+                "--to",
+                "evand-regularize-adopt-rerun-2026-10-13",
+                "--note",
+                "Assigned afterwards: the run recorded no id.",
+                "--repo-root",
+                str(root),
+            ]
+        )
+        == 0
+    )
+    index = json.loads(layout.index.read_text())
+    assert index["entries"][0]["run"]["rungs_from"] == "evand-regularize-adopt-rerun-2026-10-13"
+    renamed = index["runs"][-1]
+    assert list(renamed)[:2] == ["id", "id_note"]
+    assert renamed["id"] == "evand-regularize-adopt-rerun-2026-10-13"
+    assert renamed["id_note"] == "Assigned afterwards: the run recorded no id."
+    assert "evand-regularize-adopt" not in {run["id"] for run in index["runs"]}
+    assert axis.check_atlas(layout) == []
+
+
 def test_n26_runs_end_to_end(tmp_path: Path) -> None:
     run_dir = tmp_path / "run"
     receipt = drive.run([26], Options(run_dir=run_dir), workers=1)

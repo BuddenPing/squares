@@ -95,6 +95,13 @@ $defs:
     required: [id, generator, finished, parameters, counts, cost]
     properties:
       id: {type: string, pattern: '^[a-z0-9-]+$'}
+      id_note:
+        type: string
+        minLength: 1
+        description: >-
+          Why a run's id was assigned after the run, where the run recorded none of its
+          own and the driver's convention (`evand-regularize-<run directory>`) gives
+          another run the same id (`regularize_evand rename-run`).
       generator: {$ref: '#/$defs/generator_id'}
       finished: {type: string, pattern: '^\d{4}-\d{2}-\d{2}$'}
       interpreter: {type: string, minLength: 1}

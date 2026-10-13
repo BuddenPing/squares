@@ -106,8 +106,9 @@ def regularization_sentence(
     """One item of a result's `regularizations` as a reader is told it: the count, whose
     packing it regularizes and who regularized it, then the method, this project's
     modifications to Evan Daniel's regularizer where the item names them and what of them
-    it does not record, the side, what the regularization changed, and what the identity
-    rests on with what was measured here.
+    it does not record, the side and the earlier result whose certificate first stated it
+    where the item names one (`first_certified_in`), what the regularization changed, and
+    what the identity rests on with what was measured here.
     `n = 70: a regularization of T-125's packing by Daniel (fewest; solved to its side;
     rotation groups merged by up to 0.93°; identity: the source's claim; ...).`"""
     parts = [str(item["method"])]
@@ -122,7 +123,10 @@ def regularization_sentence(
             parts.append("unmodified")
         if unrecorded:
             parts.append(f"{' and '.join(unrecorded)} not recorded")
-    parts.append(_SIDES[str(item["side"])])
+    side = _SIDES[str(item["side"])]
+    if item.get("first_certified_in"):
+        side += f", first certified in {item['first_certified_in']}"
+    parts.append(side)
     changes = item.get("changes")
     if changes:
         changed = []

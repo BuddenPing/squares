@@ -294,7 +294,15 @@ same-side re-solve.
 An item records no solve, and `T-154`’s selection kept none while its
 runs’ reports are not retained, so its items say in `modifications_unrecorded` that
 whether the solve climbed a retry rung is not recorded, rather than reading as
-*unmodified*.
+*unmodified*. Where the layer draws that very solve, the item reads the rungs from the
+drawn entry instead and records nothing as unrecorded, so the register and the drawing
+read one solve one way: the result registers the drawing itself, and its registration
+receipt (`T-154`’s `selection.json`) names, at that count, a run whose receipt the
+entry’s run block records, with the entry’s output and exact side.
+At fourteen counts `T-154`’s certificate is the full run’s view the layer draws, which
+ran no retry, so its item reads *unmodified* or names the same-side re-solve alone.
+At 87 the layer draws a later run’s view at the same side, which says nothing of the
+solve `T-154` registered, so its item still says the rungs are not recorded.
 
 ## 8. Gates
 
@@ -446,10 +454,16 @@ policy applies until there is one.
     (`by: project`, with the generator, its credit line and this project’s
     modifications, section 7), at which side relation (`same` or `bound`), which
     registered result holds the packing (`of`, or that none does), and the view’s path.
-    Where the drawn regularization is itself registered, because its exact side proved a
-    new upper bound, as `T-154`’s are at fifteen drawn counts, the field names that
-    result (`registered_in`) and the note says the exact side is registered as it; the
-    drawing adds no further result.
+    Where the drawn regularization is itself registered, as `T-154`’s are at fifteen
+    drawn counts, the field names that result (`registered_in`) and the note says the
+    exact side is registered in it; the drawing adds no further result.
+    `T-154` registers 59 exact sides: 26 are new and prove new upper bounds, and 33
+    equal the sides of Evan Daniel’s earlier certificates (`T-101`), which the record
+    had carried rounded up and which `T-101`’s replay already proves.
+    At those 33, eight of them drawn, the item names `T-101` as `first_certified_in`,
+    and the note says that the regularization is the Squares Project’s, that its exact
+    side is registered in `T-154`, and that the same side was first certified by Evan
+    Daniel’s certificate (`T-101`), so it proves no new bound.
     Where a result registers this project’s own regularization of a count that the atlas
     does not draw, as `T-154` does at 43 counts, or draws by another method, as at 227,
     the field carries it too, after any drawing: in the register’s terms (`method`,
@@ -462,11 +476,13 @@ policy applies until there is one.
     `registered_in` the result that registered it).
     `devtools.regularized_drawings` writes it from the layer’s index, its check in the
     records tier holds every case record to the index, and the site’s case page prints
-    its note. A new upper bound, an exactly verified side below $U$, is always registered
-    as a result however it was made (row 3, question 3), as `T-154` registered the exact
-    views below the bound and `T-155` the grid-slack view of $n = 290$ on 13 October
-    2026, at the witness’s own side `2.4e-15` below $U$; that view draws no change, so
-    the atlas draws nothing new there.
+    its note. An exactly verified side below $U$ is always registered as a result however
+    it was made (row 3, question 3), as `T-154` registered the exact views below the
+    bound and `T-155` the grid-slack view of $n = 290$ on 13 October 2026, at the
+    witness’s own side `2.4e-15` below $U$; that view draws no change, so the atlas
+    draws nothing new there.
+    It is a new upper bound unless an earlier certificate already stated that side
+    exactly, as Evan Daniel’s did at 33 of `T-154`’s counts.
     `T-155`’s bound was not new: `T-154`’s certificate at $n = 291$ is at the same side,
     and $s(290) \le s(291)$. The owner decided on 13 October 2026 to keep `T-155`, to
     say that its bound follows from `T-154` by monotonicity, and to keep the grid-slack

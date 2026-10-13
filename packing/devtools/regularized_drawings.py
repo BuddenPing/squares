@@ -41,10 +41,16 @@ name, and inventing one is not this tool's to do.
 a result. A drawing changes no side, frontier value, evidence tier or credit (the policy,
 section 1), so these items are not a register result and carry no rung: they are this
 project's regularizations of results the register already holds. A view whose side lies
-below the verified upper bound proves a new bound, so it is a result first (row 3) and is
-registered by its own entry's `regularizations`, as T-154 registered 59; where such a
-view is also drawn, at fifteen counts, its case note says that its exact side is
-registered as that result (`registering_result`).
+below the verified upper bound is a result first (row 3) and is registered by its own
+entry's `regularizations`, as T-154 registered 59 exact sides; where such a view is also
+drawn, at fifteen counts, its case note says that its exact side is registered as that
+result (`registering_result`). It proves a new bound unless an earlier certificate
+already stated that side, which the item then names (`first_certified_in`): T-154's side
+is new at 26 counts, and at the other 33 it is the side of Evan Daniel's certificate
+(T-101), which the record had carried rounded up, so there the note says that the side
+is registered in T-154, that his certificate first certified it, naming T-101, and that
+it proves no new bound. `first_certified_problems` holds the field to the case records,
+whose verified upper bound rests on both results exactly where an item names one.
 
 **Whose regularization, and whether it was modified.** The owner asked on 13 October 2026
 that the frontier records say which counts have been regularized and whether the
@@ -62,7 +68,13 @@ own regularization (`by: project`, as T-154's 59 are) names them in its item too
 from its `method` and `side` the same way (`registered_modifications`) and written in
 place after its `method`; an item records no solve, so where his regularizer made the view
 it also says that whether the solve climbed a retry rung is not recorded
-(`modifications_unrecorded`), rather than reading as unmodified.
+(`modifications_unrecorded`), rather than reading as unmodified. Where the layer draws
+that very solve, the item reads its rungs from the drawn entry instead, as the drawing
+does (`recorded_solves`): the result registers the drawing itself, and its registration
+receipt names, at the count, a run whose receipt the entry's run block records, the
+entry's output and its exact side. T-154's certificates are the full run's views at
+fourteen drawn counts, which the index records; at 87 the layer draws a later run's
+view at the same side, which records nothing of T-154's solve.
 
 **The case records.** Each case record whose count the layer draws, whose count a
 registered result holds this project's own regularization of (as T-154's 59 are), or
@@ -74,13 +86,14 @@ source's regularization first in the register's own terms and this project's aft
 with the generator, the credit
 line, the modifications, the side relation (`same` or `bound`), the registered result
 that holds the packing (`of`, or null where none does), the result that registers the
-drawn regularization itself where one does (`registered_in`) and the view's path. Last
-comes this project's regularization a result registers where the layer does not draw it
-(`registered_case_items`), in the register's terms like a source's, with its generator,
-credit line and modifications: T-154's at 43 undrawn counts, and at 227, where the
-grid-slack view is drawn instead. A record the layer does not draw, whose count no
-result holds a regularization of by this project, and whose house no source regularized
-carries no such field.
+drawn regularization itself where one does (`registered_in`), the earlier result whose
+certificate first stated that side where its item names one (`first_certified_in`) and
+the view's path. Last comes this project's regularization a result registers where the
+layer does not draw it (`registered_case_items`), in the register's terms like a
+source's, with its generator, credit line and modifications: T-154's at 43 undrawn
+counts, and at 227, where the grid-slack view is drawn instead. A record the layer does
+not draw, whose count no result holds a regularization of by this project, and whose
+house no source regularized carries no such field.
 
 The register's list is a block at the end of `results.yaml`, from `MARKER` on, which this
 tool writes whole, and each case record's field is written in place, at the end of its
@@ -105,6 +118,7 @@ import yaml
 from strif import atomic_output_file
 
 from devtools.build_bound_citations import (
+    Register,
     in_scope,
     load_case,
     load_register,
@@ -164,12 +178,25 @@ RUNG_WORDS = {
 }
 SILENT_RUNGS = frozenset({"stall-stop"})
 #: What a registered result's item cannot establish of the modifications: it records no
-#: solve, so whether the solve that made the view climbed a retry rung.
+#: solve, so whether the solve that made the view climbed a retry rung, unless the layer
+#: draws that very solve (`recorded_solves`).
 UNRECORDED_RUNGS = "retry rungs"
 #: What the grid-slack tool appends to its generator block's method when it writes a
 #: view's or a registered item's `method`: the module that ran it. Written only by
 #: `grid_written_method`, which both writers and `method_forms` use.
 GRID_THROUGH = ", through devtools.regularize_grid_slack"
+#: A registered regularization's field naming the earlier registered result whose
+#: certificate first stated its exact side (`results.schema.yaml`): there the item
+#: registers that side exactly and proves no new bound, as T-154's do at the 33 counts
+#: where its side is that of Evan Daniel's certificate (T-101).
+FIRST_CERTIFIED = "first_certified_in"
+#: The format of the receipt a registration of regularized views keeps among its
+#: result's artifacts, naming the run and output each certificate came from
+#: (`devtools.register_regularized_bounds`, `FORMAT`).
+REGISTRATION_RECEIPT = "regularized-bounds-receipt-v1"
+#: The cost fields a run's index block keeps as its receipt recorded them, which
+#: `regularize_evand reclassify` leaves as they were.
+RECEIPT_COST = ("cpu_seconds", "wall_seconds", "workers")
 #: The patches a vendored view's `method` names after the pin, `@675a5ea+name`.
 _METHOD_PATCHES = re.compile(r"evand/square-packing@[0-9a-f]+((?:\+[^,+\s]+)*)")
 #: What a drawing is when no result registers it (the owner, 13 October 2026: "Pure
@@ -463,6 +490,7 @@ def registered_modifications(
     record: Mapping[str, Any],
     generators: Mapping[str, Any],
     kinds: Mapping[str, str] | None = None,
+    solve: Mapping[str, Any] | None = None,
 ) -> tuple[list[str] | None, list[str]]:
     """This project's modifications to Evan Daniel's regularizer that made a registered
     result's own regularization (`by: project`), as far as its item establishes them, read
@@ -470,7 +498,11 @@ def registered_modifications(
     same-side re-solve of a view at the witness's side; for a grid-slack view the port and
     its re-solve. Then what the item cannot establish: it records no solve, so where his
     regularizer made the view, whether the solve climbed a retry rung (`UNRECORDED_RUNGS`).
-    None, with nothing unrecorded: the axis tool's, which is not his regularizer."""
+    None, with nothing unrecorded: the axis tool's, which is not his regularizer.
+
+    `solve` is the layer's index entry that draws the very solve the item registered,
+    where one does (`recorded_solves`): the entry records that solve's rungs, so the item
+    reads them from it, as the drawing does, and nothing is left unrecorded."""
     method = str(record["method"])
     generator = method_generator(method, generators)
     kind = generator_kind(generator)
@@ -479,10 +511,95 @@ def registered_modifications(
         return None, []
     if kind == "grid":
         return grid_modifications(generator, same=same), []
+    if solve is not None:
+        return project_modifications(solve, kinds), []
     found = patch_words(method, kinds)
     if same:
         found.append(SAME_SIDE_RESOLVE)
     return found, [UNRECORDED_RUNGS]
+
+
+def registration_receipt(
+    result: Mapping[str, Any], repo: Path = REPO
+) -> tuple[dict[int, Mapping[str, Any]], dict[str, Mapping[str, Any]]]:
+    """The receipt among a result's `artifacts` that names the run and output each of its
+    registered certificates came from (`REGISTRATION_RECEIPT`, T-154's `selection.json`):
+    its rows by count and its runs by name; both empty where the result keeps none."""
+    for artifact in result.get("artifacts") or []:
+        path = repo / str(artifact)
+        if path.suffix != ".json" or not path.is_file():
+            continue
+        document = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(document, dict) or document.get("format") != REGISTRATION_RECEIPT:
+            continue
+        rows = {int(row["n"]): row for row in document.get("rows") or []}
+        runs = {str(run["run"]): run for run in document.get("runs") or []}
+        return rows, runs
+    return {}, {}
+
+
+def same_receipt(block: Mapping[str, Any], run: Mapping[str, Any]) -> bool:
+    """Whether a run block of the layer's index records the receipt of a registration
+    receipt's run: the same generator, the same parameters and the same cost, each as the
+    run's own receipt recorded it. `regularize_evand reclassify` leaves a run's
+    parameters and cost as they were, so a copy of the run decided again answers too: its
+    views are that run's solves."""
+    parameters = block.get("parameters") or {}
+    theirs = run.get("parameters") or {}
+    cost = block.get("cost") or {}
+    spent = run.get("cost") or {}
+    return (
+        str(block.get("generator")) == str((run.get("generator") or {}).get("name"))
+        and bool(parameters)
+        and all(key in theirs and theirs[key] == value for key, value in parameters.items())
+        and all(key in cost and cost[key] == spent.get(key) for key in RECEIPT_COST)
+    )
+
+
+def recorded_solves(
+    drawn: Sequence[Drawn],
+    results: Sequence[Mapping[str, Any]],
+    runs: Sequence[Mapping[str, Any]],
+    repo: Path = REPO,
+) -> dict[tuple[str, int], Mapping[str, Any]]:
+    """The registered regularizations whose very solve the layer draws, by (result, count),
+    each with the index entry that draws it. A drawn entry draws the solve a result
+    registered where the result registers the drawing itself (`registered_record`), and
+    the result's registration receipt names, at that count, a run whose receipt the
+    entry's run block records (`same_receipt`), the entry's output and the entry's exact
+    side. T-154's certificates are the full run's views at fourteen drawn counts, and the
+    index records those solves; at 87 the layer draws a later run's view at the same side,
+    which says nothing of the solve T-154 registered."""
+    blocks = {str(block["id"]): block for block in runs}
+    receipts: dict[str, tuple[dict[int, Mapping[str, Any]], dict[str, Mapping[str, Any]]]] = {}
+    found: dict[tuple[str, int], Mapping[str, Any]] = {}
+    by_id = {str(result["id"]): result for result in results}
+    for count in drawn:
+        registered = registered_record(count, results)
+        if registered is None:
+            continue
+        rid = registered[0]
+        if rid not in receipts:
+            receipts[rid] = registration_receipt(by_id[rid], repo)
+        rows, receipt_runs = receipts[rid]
+        entry = count.entry
+        n = int(entry["n"])
+        row = rows.get(n)
+        run = entry.get("run") or {}
+        view = (entry.get("side") or {}).get("view")
+        if row is None or view is None:
+            continue
+        block = blocks.get(str(run.get("id")))
+        receipt_run = receipt_runs.get(str(row.get("run")))
+        if (
+            block is not None
+            and receipt_run is not None
+            and same_receipt(block, receipt_run)
+            and str(run.get("output")) == str(row.get("output"))
+            and Fraction(str(view)) == Fraction(str(row.get("side")))
+        ):
+            found[(rid, n)] = entry
+    return found
 
 
 def registered_lines(found: list[str] | None, unrecorded: Sequence[str]) -> list[str]:
@@ -503,14 +620,23 @@ _MODIFICATION_LINE = re.compile(r"^        modifications(?:_unrecorded)?: ")
 
 
 def with_registered_modifications(
-    text: str, results: Sequence[Mapping[str, Any]], generators: Mapping[str, Any]
+    text: str,
+    results: Sequence[Mapping[str, Any]],
+    generators: Mapping[str, Any],
+    solves: Mapping[tuple[str, int], Mapping[str, Any]] | None = None,
 ) -> str:
     """`results.yaml`'s hand-written register with each result's `by: project`
-    regularization carrying the `modifications` its `method` and `side` give, written
+    regularization carrying the `modifications` its `method` and `side` give, or the
+    drawn entry of its very solve where the layer draws it (`recorded_solves`), written
     after its `method`; every other line left as it was."""
+    solves = solves or {}
     wanted = {
         (str(result["id"]), int(record["n"])): registered_lines(
-            *registered_modifications(record, generators)
+            *registered_modifications(
+                record,
+                generators,
+                solve=solves.get((str(result["id"]), int(record["n"]))),
+            )
         )
         for result in results
         for record in result.get("regularizations") or []
@@ -653,12 +779,15 @@ def source_regularizations(
 REGISTER_SIDES = {"same": "same", "bound": "solved"}
 
 
-def registering_result(count: Drawn, results: Sequence[Mapping[str, Any]]) -> str | None:
-    """The result that registers the drawn regularization itself as an upper bound: the
-    drawn packing's own result (`of`), where its `regularizations` hold a `by: project`
-    item at the count by the drawn view's method and at its side relation. T-154 does so
-    at fifteen drawn counts, whose exact sides it registered; elsewhere a drawing is a
-    pure regularization, proving no new bound."""
+def registered_record(
+    count: Drawn, results: Sequence[Mapping[str, Any]]
+) -> tuple[str, Mapping[str, Any]] | None:
+    """The result that registers the drawn regularization itself as an upper bound, with
+    its item: the drawn packing's own result (`of`), where its `regularizations` hold a
+    `by: project` item at the count by the drawn view's method and at its side relation.
+    T-154 does so at fifteen drawn counts, whose exact sides it registered (at eight of
+    them the side Evan Daniel's certificate, T-101, first stated); elsewhere a drawing is
+    a pure regularization, proving no new bound."""
     of = count.resolved.of
     if of is None:
         return None
@@ -676,15 +805,27 @@ def registering_result(count: Drawn, results: Sequence[Mapping[str, Any]]) -> st
                 and str(record["method"]) == method
                 and record["side"] == side
             ):
-                return upper_bound_result(result)
+                return upper_bound_result(result), record
     return None
 
 
+def registering_result(count: Drawn, results: Sequence[Mapping[str, Any]]) -> str | None:
+    """The id of the result that registers the drawn regularization itself
+    (`registered_record`), or None where none does."""
+    found = registered_record(count, results)
+    return None if found is None else found[0]
+
+
 def project_case_item(
-    count: Drawn, generators: Mapping[str, Any], registered_in: str | None = None
+    count: Drawn,
+    generators: Mapping[str, Any],
+    registered_in: str | None = None,
+    first_certified_in: str | None = None,
 ) -> dict[str, Any]:
     """This project's regularization of a drawn count, as its case record keeps it, with
-    the result that registers it where one does (`registering_result`)."""
+    the result that registers it where one does (`registering_result`), and where that
+    result's item names one, the earlier result whose certificate first stated its exact
+    side (`FIRST_CERTIFIED`)."""
     entry = count.entry
     generator = str(entry["generator"])
     found: dict[str, Any] = {
@@ -698,6 +839,8 @@ def project_case_item(
     found["of"] = count.resolved.of
     if registered_in is not None:
         found["registered_in"] = registered_in
+        if first_certified_in is not None:
+            found[FIRST_CERTIFIED] = first_certified_in
     found["view"] = str(entry["view"]["path"])
     return found
 
@@ -710,9 +853,11 @@ def registered_case_items(
     """The counts at which a registered result holds this project's own regularization
     (`by: project`) that the layer does not draw, each as its case record keeps it: in
     the register's terms, like a source's (`method`, `side`, `of`, `registered_in`),
-    with the generator its method names, its credit line and its modifications. T-154
-    holds 59; at the fifteen in `drawn`, (result, count) pairs whose drawing is that
-    regularization itself, the drawn item names the result instead."""
+    with the generator its method names, its credit line and its modifications, and the
+    earlier result whose certificate first stated its exact side where the item names one
+    (`FIRST_CERTIFIED`). T-154 holds 59; at the fifteen in `drawn`, (result, count) pairs
+    whose drawing is that regularization itself, the drawn item names the result
+    instead."""
     found: dict[int, dict[str, Any]] = {}
     for result in results:
         for record in result.get("regularizations") or []:
@@ -735,6 +880,8 @@ def registered_case_items(
             item["side"] = str(record["side"])
             item["of"] = str(record["of"])
             item["registered_in"] = upper_bound_result(result)
+            if record.get(FIRST_CERTIFIED):
+                item[FIRST_CERTIFIED] = str(record[FIRST_CERTIFIED])
             if n in found:
                 raise RegularizedDrawingsError(
                     f"n={n}: two registered results hold this project's regularization"
@@ -770,12 +917,55 @@ def credit_sentence(found: Mapping[str, Any], *, also: bool = False) -> str:
     return head + "."
 
 
-def case_note(items: Sequence[Mapping[str, Any]]) -> str:
+def registered_words(found: Mapping[str, Any], certificates: Mapping[str, str]) -> str:
+    """What a note says of a registered regularization's exact side: that its result
+    registers it as the upper bound it proves, or, where an earlier result's certificate
+    first stated that side (`FIRST_CERTIFIED`), that its result registers it and that
+    certificate first certified it, naming that result, so it proves no new bound.
+    `certificates` gives whose certificate each result is (`certificate_words`)."""
+    registered_in = found["registered_in"]
+    first = found.get(FIRST_CERTIFIED)
+    if not first:
+        return f"its exact side is registered as {registered_in}, the upper bound it proves"
+    whose = certificates.get(str(first)) or f"{first}'s certificate"
+    return (
+        f"its exact side is registered in {registered_in}, and the same side was first "
+        f"certified by {whose} ({first}), so it proves no new bound"
+    )
+
+
+def certificate_words(rid: str, register: Register) -> str:
+    """Whose certificate a registered result is, as a note names it: its sources' authors
+    by their full credited names (`Evan Daniel's certificate`), or this project's for a
+    result of its own."""
+    result = next((found for found in register.results if str(found["id"]) == rid), None)
+    keys = ((result or {}).get("attribution") or {}).get("source_keys") or []
+    if result is None:
+        return f"{rid}'s certificate"
+    if not keys:
+        return "this project's certificate"
+    full = {surname: name for name, surname in register.names.items()}
+    authors: list[str] = [
+        full.get(str(author), str(author))
+        for key in keys
+        for author in getattr(register.sources.get(str(key)), "authors", ()) or ()
+    ]
+    names: list[str] = list(dict.fromkeys(authors)) or [rid]
+    who = names[0] if len(names) == 1 else ", ".join(names[:-1]) + " and " + names[-1]
+    return f"{who}'s certificate"
+
+
+def case_note(
+    items: Sequence[Mapping[str, Any]], certificates: Mapping[str, str] | None = None
+) -> str:
     """The record's one paragraph: who regularized the drawing, with which modifications,
     and either that it is a pure regularization, proving no new bound, so no result, or
-    that its exact side is registered as the result that proves it; then this project's
-    registered regularization of the count where the layer does not draw it, naming the
-    result; then who regularized the house, where its source did."""
+    that its exact side is registered as the result that proves it, or where an earlier
+    certificate first stated that side, that it is registered there and whose certificate
+    first certified it (`registered_words`); then this project's registered
+    regularization of the count where the layer does not draw it, naming the result; then
+    who regularized the house, where its source did."""
+    certificates = certificates or {}
     sentences: list[str] = []
     for found in items:
         if found["by"] != PROJECT_REGULARIZER or "view" not in found:
@@ -783,10 +973,10 @@ def case_note(items: Sequence[Mapping[str, Any]]) -> str:
         sentences.append(credit_sentence(found))
         where = SIDE_WORDS[str(found["side"])]
         if found.get("registered_in"):
+            words = registered_words(found, certificates)
             sentences.append(
-                f"A drawing of {found['of']}'s packing {where}. Its exact side is registered "
-                f"as {found['registered_in']}, the upper bound it proves; the drawing itself "
-                "is no further result."
+                f"A drawing of {found['of']}'s packing {where}. {words[:1].upper()}"
+                f"{words[1:]}; the drawing itself is no further result."
             )
         elif found.get("of"):
             sentences.append(
@@ -803,8 +993,7 @@ def case_note(items: Sequence[Mapping[str, Any]]) -> str:
         sentences.append(credit_sentence(found, also=bool(sentences)))
         sentences.append(
             f"A regularization of {found['of']}'s packing {SIDE_WORDS[str(found['side'])]}, "
-            f"not drawn here; its exact side is registered as {found['registered_in']}, the "
-            "upper bound it proves."
+            f"not drawn here; {registered_words(found, certificates)}."
         )
     for found in items:
         if found["by"] == PROJECT_REGULARIZER:
@@ -827,12 +1016,17 @@ def case_fields(
     register = load_register()
     by_source = source_regularizations(register.results, register.sources, repo)
     generators = index.get("generators") or {}
-    projects = {
-        int(count.entry["n"]): project_case_item(
-            count, generators, registering_result(count, register.results)
+    projects: dict[int, dict[str, Any]] = {}
+    for count in drawn_counts(index, repo) if drawn is None else drawn:
+        registered_by = registered_record(count, register.results)
+        projects[int(count.entry["n"])] = project_case_item(
+            count,
+            generators,
+            None if registered_by is None else registered_by[0],
+            None
+            if registered_by is None or not registered_by[1].get(FIRST_CERTIFIED)
+            else str(registered_by[1][FIRST_CERTIFIED]),
         )
-        for count in (drawn_counts(index, repo) if drawn is None else drawn)
-    }
     registered = registered_case_items(
         register.results,
         generators,
@@ -842,12 +1036,20 @@ def case_fields(
             if found.get("registered_in")
         },
     )
+    certificates = {
+        first: certificate_words(first, register)
+        for first in {
+            str(found[FIRST_CERTIFIED])
+            for found in [*projects.values(), *registered.values()]
+            if found.get(FIRST_CERTIFIED)
+        }
+    }
     fields: dict[int, dict[str, Any]] = {}
     for n in sorted(set(by_source) | set(projects) | set(registered)):
         items = [
             found for found in (by_source.get(n), projects.get(n), registered.get(n)) if found
         ]
-        fields[n] = {"note": case_note(items), "items": items}
+        fields[n] = {"note": case_note(items, certificates), "items": items}
     return fields
 
 
@@ -989,15 +1191,18 @@ def problems(
     register_text: str | None = None, index: Mapping[str, Any] | None = None
 ) -> list[str]:
     """Where `results.yaml`'s generated block, a registered result's own regularization's
-    `modifications`, or a case record's `regularization` field differs from what the
-    layer's index and the register give."""
+    `modifications` or `first_certified_in`, or a case record's `regularization` field
+    differs from what the layer's index and the register give."""
     text = RESULTS.read_text(encoding="utf-8") if register_text is None else register_text
     head, block = split(text)
     document = index_document() if index is None else index
     drawn = drawn_counts(document)
     items, unregistered = expected(document, drawn=drawn)
     wanted = block_text(items, unregistered)
-    found_problems = registered_problems(head, document.get("generators") or {})
+    results = (safe_load(head) or {}).get("results") or []
+    solves = recorded_solves(drawn, results, document.get("runs") or [])
+    found_problems = registered_problems(head, document.get("generators") or {}, solves)
+    found_problems += first_certified_problems(load_register())
     found_problems += case_problems(document, case_fields(document, drawn=drawn))
     if block == wanted:
         return found_problems
@@ -1015,11 +1220,17 @@ def problems(
     ]
 
 
-def registered_problems(head: str, generators: Mapping[str, Any]) -> list[str]:
+def registered_problems(
+    head: str,
+    generators: Mapping[str, Any],
+    solves: Mapping[tuple[str, int], Mapping[str, Any]] | None = None,
+) -> list[str]:
     """Whether each registered result's own regularization (`by: project`) carries the
-    `modifications` its `method` and `side` give (`registered_modifications`)."""
+    `modifications` its `method` and `side` give, or the drawn entry of its very solve
+    where the layer draws it (`registered_modifications`, `recorded_solves`)."""
     results = (safe_load(head) or {}).get("results") or []
-    if with_registered_modifications(head, results, generators) == head:
+    solves = solves or {}
+    if with_registered_modifications(head, results, generators, solves) == head:
         return []
     owed = sorted(
         {
@@ -1028,7 +1239,11 @@ def registered_problems(head: str, generators: Mapping[str, Any]) -> list[str]:
             for record in result.get("regularizations") or []
             if record["by"] == PROJECT_REGULARIZER
             and (record.get("modifications"), record.get("modifications_unrecorded") or [])
-            != registered_modifications(record, generators)
+            != registered_modifications(
+                record,
+                generators,
+                solve=solves.get((str(result["id"]), int(record["n"]))),
+            )
         }
     )
     return [
@@ -1039,16 +1254,71 @@ def registered_problems(head: str, generators: Mapping[str, Any]) -> list[str]:
     ]
 
 
+def bound_holders(n: int, register: Register) -> list[str]:
+    """The registered results a case's verified upper bound rests on, by the results that
+    carry its own evidence (`build_bound_citations.results_carrying`)."""
+    bound = load_case(n).get("verified_upper_bound") or {}
+    own = own_evidence(bound.get("evidence") or [], register)
+    return results_carrying(n, own, register.results)
+
+
+def first_certified_problems(register: Register) -> list[str]:
+    """Whether each registered result's own regularization (`by: project`) names the
+    earlier result whose certificate first stated its exact side exactly where the case
+    record shows one (`FIRST_CERTIFIED`). Where the item is the case's verified upper
+    bound, the bound rests on the registering result; where an earlier registered result
+    proves the same bound beside it, its certificate stated that side first, and the item
+    must name it, as T-154's do at the 33 counts whose bound T-101's replay of Evan
+    Daniel's certificates also proves. An item that names a result the case's bound does
+    not rest on beside the registering one, or names one where the bound rests on the
+    registering result alone, is listed."""
+    from devtools.check_results import result_date  # noqa: PLC0415
+
+    dated = {str(result["id"]): result_date(result) for result in register.results}
+
+    def no_later(other: str, than: str) -> bool:
+        # At the precision both dates give, as `check_results` compares them.
+        shared = min(len(dated[other]), len(dated[than]))
+        return dated[other][:shared] <= dated[than][:shared]
+
+    found: list[str] = []
+    for result in register.results:
+        rid = str(result["id"])
+        for record in result.get("regularizations") or []:
+            if record["by"] != PROJECT_REGULARIZER:
+                continue
+            n = int(record["n"])
+            holders = bound_holders(n, register)
+            named = record.get(FIRST_CERTIFIED)
+            earlier = [other for other in holders if other != rid and no_later(other, rid)]
+            name = f"{rid}'s regularization at n = {n}"
+            if named is not None and (rid not in holders or str(named) not in earlier):
+                found.append(
+                    f"{name} names {named} as {FIRST_CERTIFIED}, but the case's verified "
+                    f"upper bound rests on {holders}"
+                )
+            elif named is None and rid in holders and earlier:
+                found.append(
+                    f"{name}: the case's verified upper bound rests on {earlier} as well, "
+                    f"whose certificate stated the side first; name it as {FIRST_CERTIFIED}"
+                )
+    return found
+
+
 def update() -> tuple[int, int, int]:
     """Write the generated block and the case records' fields; return the items, the
     unregistered counts and the case records changed."""
     text = RESULTS.read_text(encoding="utf-8")
     head, _block = split(text)
     document = index_document()
-    head = with_registered_modifications(
-        head, (safe_load(head) or {}).get("results") or [], document.get("generators") or {}
-    )
     drawn = drawn_counts(document)
+    results = (safe_load(head) or {}).get("results") or []
+    head = with_registered_modifications(
+        head,
+        results,
+        document.get("generators") or {},
+        recorded_solves(drawn, results, document.get("runs") or []),
+    )
     items, unregistered = expected(document, drawn=drawn)
     with atomic_output_file(RESULTS) as temporary:
         temporary.write_text(

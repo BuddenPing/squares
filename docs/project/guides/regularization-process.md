@@ -166,6 +166,13 @@ as the entry’s `run.rungs_from`, and adds its receipt’s block to the index�
 python -m devtools.regularize_evand rungs --run-dir $RUNS/evand --repo-root ..
 ```
 
+The new run is named by its directory, `evand-regularize-<run directory>`, so give it a
+directory no earlier run used.
+Where a supplying run’s id already names another run,
+`rename-run --from ID --to ID --note TEXT --repo-root ..` gives it a distinct one and
+records why on its block (`id_note`), as the fresh run of the #518 counts was renamed
+`evand-regularize-adopt518-v2-rerun-2026-10-13`.
+
 ### 6. Commit, Then Re-pin
 
 Commit the data first, under a `data:` subject whose body names the counts, the runs and
@@ -225,17 +232,21 @@ section 5 describes and which does not exist yet.
 
 ## Register Candidates
 
-A view whose side is below $U$ proves a new upper bound (row 3). The selection lists it
-under register candidates and never admits it.
+A view whose side is below $U$ proves a new upper bound (row 3), unless an earlier
+certificate already stated that side exactly and the record carried it rounded up.
+The selection lists it under register candidates and never admits it.
 Register such views as one batch result through the
 [import runbook’s](../../../packing/campaign/result-import.md#stage-3-record) record and
 validate stages, with a `regularizations` item for each count, as `T-154` registered 59
-counts through `devtools.register_regularized_bounds`. A grid-slack view is registered
-the same way as a batch of its own, as `T-155` registered $n = 290$ with
-`select --batch grid-slack --run-dir RUN ... --n N ...`, then `decide` and `controls`
-with the same `--batch`. Read the next count’s ceiling as well as the view’s own:
-$s(n) \le s(n + 1)$, so where the next count’s verified upper bound is at or below the
-view’s side, the bound is not new.
+counts through `devtools.register_regularized_bounds`. Where an earlier result’s
+certificate states the same side, the item names it as `first_certified_in`, as 33 of
+`T-154`’s name `T-101`, and the case note then says the side proves no new bound;
+`python -m devtools.regularized_drawings --check` fails an item that should name one and
+does not. A grid-slack view is registered the same way as a batch of its own, as `T-155`
+registered $n = 290$ with `select --batch grid-slack --run-dir RUN ... --n N ...`, then
+`decide` and `controls` with the same `--batch`. Read the next count’s ceiling as well
+as the view’s own: $s(n) \le s(n + 1)$, so where the next count’s verified upper bound
+is at or below the view’s side, the bound is not new.
 `T-155`’s was not, since `T-154`’s certificate at $n = 291$ is at the same side; the
 selection records such a ceiling (`implied_by`), and the result says its bound follows
 by monotonicity, as `T-002` says of a lower bound, and is kept as the certificate of the

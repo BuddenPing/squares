@@ -17612,6 +17612,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         identity:
           basis: measured
           measured_in: packing/cases/regularized_bounds/selection.json
@@ -17624,7 +17625,6 @@ results:
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
         modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
-        modifications_unrecorded: ["retry rungs"]
         side: same
         identity:
           basis: measured
@@ -17638,7 +17638,6 @@ results:
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
         modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
-        modifications_unrecorded: ["retry rungs"]
         side: same
         changes: {re_angled: 3}
         identity:
@@ -17655,6 +17654,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         changes: {straightened: 5, re_angled: 2}
         identity:
           basis: measured
@@ -17668,7 +17668,6 @@ results:
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
         modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
-        modifications_unrecorded: ["retry rungs"]
         side: same
         changes: {straightened: 2}
         identity:
@@ -17683,7 +17682,6 @@ results:
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
         modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
-        modifications_unrecorded: ["retry rungs"]
         side: same
         changes: {straightened: 2, re_angled: 4}
         identity:
@@ -17712,7 +17710,6 @@ results:
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
         modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
-        modifications_unrecorded: ["retry rungs"]
         side: same
         identity:
           basis: measured
@@ -17728,6 +17725,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         changes: {re_angled: 3}
         identity:
           basis: measured
@@ -17743,6 +17741,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         changes: {straightened: 1}
         identity:
           basis: measured
@@ -17756,7 +17755,6 @@ results:
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
         modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
-        modifications_unrecorded: ["retry rungs"]
         side: same
         changes: {straightened: 2}
         identity:
@@ -17771,8 +17769,8 @@ results:
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
         modifications: []
-        modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         identity:
           basis: measured
           measured_in: packing/cases/regularized_bounds/selection.json
@@ -17787,6 +17785,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         changes: {straightened: 11, re_angled: 4}
         identity:
           basis: measured
@@ -17816,6 +17815,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         identity:
           basis: measured
           measured_in: packing/cases/regularized_bounds/selection.json
@@ -17828,8 +17828,8 @@ results:
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
         modifications: []
-        modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         identity:
           basis: measured
           measured_in: packing/cases/regularized_bounds/selection.json
@@ -17844,6 +17844,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         identity:
           basis: measured
           measured_in: packing/cases/regularized_bounds/selection.json
@@ -17887,6 +17888,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         identity:
           basis: measured
           measured_in: packing/cases/regularized_bounds/selection.json
@@ -17958,6 +17960,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         identity:
           basis: measured
           measured_in: packing/cases/regularized_bounds/selection.json
@@ -17972,6 +17975,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         identity:
           basis: measured
           measured_in: packing/cases/regularized_bounds/selection.json
@@ -17986,6 +17990,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         identity:
           basis: measured
           measured_in: packing/cases/regularized_bounds/selection.json
@@ -17998,8 +18003,8 @@ results:
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
         modifications: []
-        modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         changes: {re_angled: 8}
         identity:
           basis: measured
@@ -18029,6 +18034,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         identity:
           basis: measured
           measured_in: packing/cases/regularized_bounds/selection.json
@@ -18041,7 +18047,6 @@ results:
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
         modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
-        modifications_unrecorded: ["retry rungs"]
         side: same
         identity:
           basis: measured
@@ -18069,8 +18074,8 @@ results:
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
         modifications: []
-        modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         changes: {straightened: 2, re_angled: 8}
         identity:
           basis: measured
@@ -18100,6 +18105,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         identity:
           basis: measured
           measured_in: packing/cases/regularized_bounds/selection.json
@@ -18114,6 +18120,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         identity:
           basis: measured
           measured_in: packing/cases/regularized_bounds/selection.json
@@ -18128,6 +18135,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         changes: {straightened: 8}
         identity:
           basis: measured
@@ -18143,6 +18151,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         identity:
           basis: measured
           measured_in: packing/cases/regularized_bounds/selection.json
@@ -18154,6 +18163,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         changes: {straightened: 1}
         identity:
           basis: measured
@@ -18209,8 +18219,8 @@ results:
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
         modifications: []
-        modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         identity:
           basis: measured
           measured_in: packing/cases/regularized_bounds/selection.json
@@ -18225,6 +18235,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         identity:
           basis: measured
           measured_in: packing/cases/regularized_bounds/selection.json
@@ -18239,6 +18250,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         identity:
           basis: measured
           measured_in: packing/cases/regularized_bounds/selection.json
@@ -18251,8 +18263,8 @@ results:
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
         modifications: []
-        modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         identity:
           basis: measured
           measured_in: packing/cases/regularized_bounds/selection.json
@@ -18281,6 +18293,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         changes: {straightened: 12, re_angled: 3}
         identity:
           basis: measured
@@ -18310,6 +18323,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         identity:
           basis: measured
           measured_in: packing/cases/regularized_bounds/selection.json
@@ -18324,6 +18338,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         identity:
           basis: measured
           measured_in: packing/cases/regularized_bounds/selection.json
@@ -18338,6 +18353,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         identity:
           basis: measured
           measured_in: packing/cases/regularized_bounds/selection.json
@@ -18364,8 +18380,8 @@ results:
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
         modifications: []
-        modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         identity:
           basis: measured
           measured_in: packing/cases/regularized_bounds/selection.json
@@ -18394,6 +18410,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         identity:
           basis: measured
           measured_in: packing/cases/regularized_bounds/selection.json
@@ -18408,6 +18425,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         identity:
           basis: measured
           measured_in: packing/cases/regularized_bounds/selection.json
@@ -18422,6 +18440,7 @@ results:
         modifications: []
         modifications_unrecorded: ["retry rungs"]
         side: solved
+        first_certified_in: T-101
         identity:
           basis: measured
           measured_in: packing/cases/regularized_bounds/selection.json
