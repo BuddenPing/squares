@@ -3675,6 +3675,19 @@ def _regularized_atlas_drawings(context: Context) -> str:
     return output
 
 
+def _default_drawings(context: Context) -> str:
+    # About 20 cpu-seconds, 5 to 18 s of wall at four workers depending on the host's
+    # load (2026-10-13, 90 views): every view the regularized layer draws, and its house
+    # drawing, measured again on the improvement rule's goals and decided under the
+    # policy's sections 11 and 12, then compared with the retained record the site and
+    # the posters draw from. A regularized default that the rule refuses, a stale record,
+    # or a policy statement that stops naming a goal the code judges fails it; the counts
+    # that keep the house picture are listed and fail nothing.
+    output = _module(context, "devtools.default_drawings", "--check")
+    _require_text(output, "default drawings check passed")
+    return output
+
+
 def _vendored_evand(context: Context) -> str:
     # About 0.2s: `vendor/evand-regularize`, Evan Daniel's regularizer copied at a pin, is
     # held to its manifest -- each file's size and SHA-256 at the upstream commit, each
@@ -5479,6 +5492,23 @@ STEPS: tuple[Step, ...] = (
         ),
     ),
     Step(
+        "default pictures improve on their house drawings",
+        _default_drawings,
+        fast=True,
+        records=True,
+        touches=(
+            *_CORE,
+            "packing/src/sqpack/render/*",
+            "packing/atlas/known-best/default-drawings.json",
+            "packing/atlas/known-best/default-drawings.schema.yaml",
+            "packing/atlas/known-best/regularized/*",
+            "packing/witnesses/known-best/*",
+            "packing/frontier/n-*.md",
+            "docs/project/policies/regularization-policy.md",
+            *_RENDERER_HUB,
+        ),
+    ),
+    Step(
         "the Lean replay receipt for s(k^2-2) = k holds",
         _chelokot_lean_replay,
         fast=True,
@@ -6180,6 +6210,9 @@ TREE_REUSABLE_FAST_STEPS = frozenset(
         "the register's reliance on T-007 is inventoried",
         "regularized atlas views match their index",
         "regularized atlas drawings match their index",
+        # The layer's views, their house witnesses, the case records' bounds and the
+        # policy's statement, measured and compared: no clock, no network, no history.
+        "default pictures improve on their house drawings",
         "the Lean replay receipt for s(k^2-2) = k holds",
         # The vendored files and their manifest, compared byte for byte; git is asked only
         # which files the tree holds. No clock, no network, no history.

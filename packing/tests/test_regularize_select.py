@@ -17,7 +17,6 @@ measured from the layer a tree holds, and every view the committed layer draws i
 
 from __future__ import annotations
 
-import gzip
 import json
 import shutil
 from pathlib import Path
@@ -26,9 +25,9 @@ from typing import Any
 import pytest
 
 from devtools import census_drawing_regularity as census
+from devtools import default_drawings as defaults
 from devtools import regularize_evand as drive
 from devtools import regularize_select as select
-from sqpack.yamlio import load_yaml
 from tests.test_regularize_evand import both_outputs
 
 TODAY = {
@@ -391,37 +390,16 @@ def test_today_is_the_view_a_tree_draws_measured_like_a_candidate() -> None:
     assert drawn["classes"] >= drawn["hues"]
 
 
-#: Every view the layer draws above `U`, and why it stays: the exceptions policy section 9,
-#: question 13 names (#580 review B2). The list can only shrink on purpose: a view drawn
-#: above `U` at another count fails the test below, and so does a count listed here once
-#: its drawing is at `U`.
-ABOVE_U = {
-    18: "Evan Daniel's view about 1e-30 above a closed-form optimum (question 4)",
-    26: "Evan Daniel's view about 1e-30 above a closed-form optimum (question 4)",
-    66: "Evan Daniel's view about 1e-30 above a closed-form optimum (question 4)",
-    85: "Evan Daniel's view about 1e-30 above a closed-form optimum (question 4)",
-    110: "at Couzo's decimal side, 3e-12 above U; the view at U draws fewer sides (think-jnso)",
-    241: "at Couzo's decimal side, 1e-11 above U; the view at U draws fewer sides (think-jnso)",
-    297: "at Couzo's decimal side, 5e-12 above U; the view at U is row 7, for the owner",
-}
-
-
 def test_every_drawn_view_is_at_most_the_bound_but_the_named_exceptions() -> None:
     """Owner, 13 October 2026: a drawn view is exactly verified at a side no larger than
     `U` (question 13). Each drawn view's side is read from its view file, exactly as both
-    routes decide it, and held to `U` as the selection reads it."""
-    index = drive.read_json(drive.LAYER_INDEX)
-    above: dict[int, float] = {}
-    for entry in index["entries"]:
-        if entry["status"] != "regularized":
-            continue
-        n = int(entry["n"])
-        text = gzip.decompress((select.REPO / entry["view"]["path"]).read_bytes())
-        side, _placements, _corners = drive.view_geometry(load_yaml(text.decode())["witness"])
-        upper = drive.upper_bound(drive.case_facts(n))
-        assert upper is not None, f"n={n}: U is unknown"
-        if side > upper:
-            above[n] = float(side - upper)
-    assert sorted(above) == sorted(ABOVE_U), above
+    routes decide it, and held to `U` as the selection reads it
+    (`default_drawings.drawn_above_bound`). The exceptions are `default_drawings.ABOVE_U`,
+    the views policy section 9, question 13 names (#580 review B2), which the default
+    pictures' check reads too. The list can only shrink on purpose: a view drawn above `U`
+    at another count fails here, and so does a count listed there once its drawing is at
+    `U`."""
+    above = defaults.drawn_above_bound()
+    assert sorted(above) == sorted(defaults.ABOVE_U), above
     # A rounding sliver above the best known side at each, never another packing's side.
     assert max(above.values()) < 1e-10
