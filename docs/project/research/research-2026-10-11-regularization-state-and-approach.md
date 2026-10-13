@@ -26,10 +26,11 @@ hues.
 **Regularization** redraws a packing the record already holds so that it reads cleanly,
 without changing its side, its evidence tier or its credit.
 This document collects what the project has done about it so far, what each approach
-fixed and could not fix, what the spikes of 11 October 2026 showed on fifteen counts,
-and the standard approach recommended for regularizing every result: an automated pass
-under the [regularization policy](../policies/regularization-policy.md), with judgment
-reserved for the cases the automation cannot decide.
+fixed and could not fix, what the spikes of 11 October 2026 showed on 25 pilot counts
+and the full run of 12 October on all 324, and the standard approach recommended for
+regularizing every result: an automated pass under the
+[regularization policy](../policies/regularization-policy.md), with judgment reserved
+for the cases the automation cannot decide.
 
 The owner’s request (11 October 2026): regularize all current results “using something
 similar to what Evan Daniel has done”, with a standard policy and automation wherever
@@ -527,9 +528,9 @@ and as the non-regression reference.
 **Pros:** reaches tilted structure and hue classes at the record’s exact side; every
 view is exact and verified here; identity and shading are measured, not asserted.
 
-**Cons:** about 7 CPU-hours for a full run; same side is impossible at Göbel-family
-decimals; at counts where the witness is not at its optimum the re-solve moves the
-packing and the view lands below the bound instead.
+**Cons:** 13.7 CPU-hours for a full run, measured; same side is impossible at
+Göbel-family decimals; at counts where the witness is not at its optimum the re-solve
+moves the packing and the view lands below the bound instead.
 
 ### Option C: Draw Evan Daniel’s Certificates As They Are
 
@@ -613,18 +614,18 @@ $n = 260$), so 2 to 3 hours of wall time at three or four workers, mostly in the
 batch. Review: if a tenth to a fifth of counts reach the queue, 30 to 60 gallery entries
 for the owner, a few minutes each.
 *Measured* in the full run: 13.7 CPU-hours and 3.8 hours of wall time at four workers,
-and 13 counts in the review queue.
+and 13 counts in the review queue, 14 after the tolerance re-run.
 
 ## Next Steps
 
 - [x] Owner: answer the amendments and the two record changes above (think-pn0e;
   answered 12 October 2026).
-- [ ] Adopt the register’s lower exact certificates as the atlas witnesses, T-146 at its
-  15 counts first, and run the full pass only after the imports in flight at the same
-  counts (#470, #476, #481, #483, #488, #489) land, since a changed witness lapses every
-  review (think-cb34).
+- [ ] Adopt the register’s lower exact certificates as the atlas witnesses (think-cb34).
+  #518 adopted them at 42 counts, T-146’s among them, and merged on 12 October 2026,
+  after the full pass had run on the witnesses before it; since a changed witness lapses
+  every review, those counts are run again (below).
 - [x] Register the exact packings at printed sides in one batch (think-omqv): T-154 on
-  #549, which merges after #516’s T-147 to T-150.
+  #549.
 - [x] Amend the policy’s decision table, then teach `devtools.regularize_evand.classify`
   the amendments (think-up3h): the policy on #497, the driver on #511.
 - [x] The index contract for every generator (think-k35c), then the admission batches
@@ -639,10 +640,11 @@ and 13 counts in the review queue.
   (302, 303 and others; owner, 12 October 2026): `devtools.regularize_grid_slack`
   (#530). The owner confirms it as the third generator and chooses its threshold (0.5 or
   5 degrees; think-0mq7).
-- [ ] Re-run the 42 counts whose witnesses #518 changes, before any admission there
+- [ ] Re-run the 42 counts whose witnesses #518 changed, before any admission there
   (think-cb34, think-ux1v).
-- [x] Settle #515, a parallel implementation of this layer, with the owner: closed as
-  superseded, its rotation tolerance ported to #511.
+- [x] Settle #515, a parallel implementation of this layer, with the owner: closed
+  unmerged on 12 October 2026, its rotation tolerance and fixes ported to #511 in
+  f0371b68d.
 - [ ] After the full run: an explainer paper in the project’s own format, rendered by
   kpress like the $n = 11$ lower-bounds explainer, citing Evan Daniel’s work and
   summarizing this project’s changes with before/after figures (think-scua).

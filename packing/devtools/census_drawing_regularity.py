@@ -72,6 +72,7 @@ from strif import atomic_output_file
 
 from devtools import census_atlas_contact_shades as shades
 from devtools.build_known_best_atlas import frame_from_witness
+from devtools.regularize_axis_components import EVAND_GENERATOR
 from sqpack.render.color import assign_square_colors
 from sqpack.render.model import RenderSpec
 from sqpack.yamlio import load_yaml
@@ -345,11 +346,13 @@ def compare(before: Mapping[str, Any], after: Mapping[str, Any]) -> list[dict[st
 
 
 def source_label(drawing: Mapping[str, Any]) -> str:
-    """Which generator a drawing's view came from, by its index entry's generator."""
+    """Which generator a drawing's view came from, by its index entry's generator: the
+    layer's own name for it, or the driver's command line, which an older tree's index
+    and a census written from one record instead."""
     if drawing["kind"] == "witness":
         return "witness"
     generator = str(drawing.get("generator") or "")
-    if "regularize_evand" in generator:
+    if generator == EVAND_GENERATOR or "regularize_evand" in generator:
         return "Evan view"
     return "grid view" if "regularize_grid_slack" in generator else "axis view"
 

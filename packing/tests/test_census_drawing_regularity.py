@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any
 
 from devtools import census_drawing_regularity as census
+from devtools import regularize_axis_components as axis
 from sqpack.witness import witness_document
 
 UNIT = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
@@ -140,7 +141,7 @@ def scratch_tree(tmp_path: Path) -> Path:
             {
                 "n": 4,
                 "status": "regularized",
-                "generator": "python -m devtools.regularize_evand run",
+                "generator": axis.EVAND_GENERATOR,
                 "view": {
                     "path": "packing/atlas/known-best/regularized/n-004-regularized.yaml.gz"
                 },
@@ -181,11 +182,16 @@ def test_a_view_is_labelled_by_its_generator() -> None:
         return {"kind": "regularized-view", "generator": generator}
 
     assert census.source_label({"kind": "witness"}) == "witness"
-    assert census.source_label(drawn("python -m devtools.regularize_evand")) == "Evan view"
+    assert census.source_label(drawn(axis.EVAND_GENERATOR)) == "Evan view"
+    for grid in axis.GRID_GENERATORS:
+        assert census.source_label(drawn(grid)) == "grid view"
+    assert census.source_label(drawn(axis.ALGORITHM)) == "axis view"
+    assert census.source_label(drawn(None)) == "axis view"
+    # An older tree's index, and a census written from one, name the driver's command.
+    assert census.source_label(drawn("python -m devtools.regularize_evand run")) == "Evan view"
     assert (
         census.source_label(drawn("devtools.regularize_grid_slack (prototype)")) == "grid view"
     )
-    assert census.source_label(drawn(None)) == "axis view"
 
 
 def test_the_cli_writes_its_census(tmp_path: Path) -> None:
