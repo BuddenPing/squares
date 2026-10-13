@@ -339,8 +339,8 @@ is recorded, the default the policy applies until there is one.
     and after the imports in flight at the same counts land.
     A view derived from a witness that later changes is re-reviewed (section 5). The
     intake’s #518, merged on 12 October 2026, adopted these houses on the case records
-    directly, citing an owner decision of 11 October 2026 not to wait for #403; #559
-    regularizes its 42 counts again on the new witnesses.
+    directly, citing an owner decision of 11 October 2026 not to wait for #403; #559 is
+    to regularize its 42 counts again on the new witnesses.
 
 An answer, like any other change to this policy, is an owner decision recorded here with
 its date. It replaces the default, and the counts it bears on are re-reviewed.
@@ -383,10 +383,10 @@ recorded where it is implemented, and reversing one is a change to that layer.
    resolved to the registered result that holds the packing; a count whose packing no
    registered result holds is listed as unregistered (#548). A drawing proves no bound,
    so no register result is made for one.
-7. **Registering exact views below the bound** (question 3’s answer, carried out): the
-   row 3 views outside #518’s counts are registered as one batch result, `T-154`, with
-   the case records’ exact forms moved to the registered sides and their printed values
-   kept, so no citation weakens (#549).
+7. **Registering exact views below the bound** (question 3’s answer, to be carried out
+   in #549): the row 3 views outside the counts #518 and #553 re-housed are to be
+   registered as one batch result, `T-154`, with the case records’ exact forms moved to
+   the registered sides and their printed values kept, so no citation weakens.
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
