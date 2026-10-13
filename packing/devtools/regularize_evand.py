@@ -1392,10 +1392,20 @@ def same_view(
     if outcome.status != "same" or outcome.witness is None:
         return None, None, f"same-side-refused: {outcome.reason or 'no reason given'}"
     document = dict(outcome.witness)
-    # The resolver's own certificate fields stay; the driver's provenance fills the rest.
-    stated = dict(document.get("certificate") or {})
-    for key, value in certificate_block(source, "same", options, pin).items():
-        stated.setdefault(key, value)
+    # The driver's provenance wins where the resolver's certificate names the same field:
+    # the source by path and digest rather than by id alone, and this generator's kind
+    # (review B of #511, B8). The resolver's own words for those fields are kept under
+    # `resolver`, and its other fields stay as it wrote them.
+    resolver = dict(document.get("certificate") or {})
+    provenance = certificate_block(source, "same", options, pin)
+    stated = {**resolver, **provenance}
+    replaced = {
+        key: resolver[key]
+        for key in provenance
+        if key in resolver and resolver[key] != provenance[key]
+    }
+    if replaced:
+        stated["resolver"] = replaced
     document["certificate"] = stated
     path = directory / "view-same.yaml"
     write_view(path, document)

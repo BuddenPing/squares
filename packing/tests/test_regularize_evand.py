@@ -988,6 +988,14 @@ def test_every_closed_form_bound_is_read_exactly_or_refused() -> None:
     assert "could not be read exactly" in decided.reason
 
 
+@pytest.fixture(scope="module")
+def n26_run(tmp_path_factory: pytest.TempPathFactory) -> Path:
+    """One real run of n = 26, copied by each test that changes it."""
+    run_dir = tmp_path_factory.mktemp("n26") / "run"
+    drive.run([26], Options(run_dir=run_dir), workers=1)
+    return run_dir
+
+
 def test_a_patched_solver_is_rebuilt_when_its_patch_changes(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -1007,3 +1015,22 @@ def test_a_patched_solver_is_rebuilt_when_its_patch_changes(
     second = drive.solver_tree(replica, ["probe-flat-stall-stop"])
     assert second != first
     assert (second / "exactsolve.py").read_text() == (first / "exactsolve.py").read_text()
+
+
+def test_the_same_side_view_names_its_source_by_digest(n26_run: Path) -> None:
+    """B8: the driver's provenance wins over the resolver's where both name a field."""
+    directory = drive.count_dir(n26_run, 26)
+    report = json.loads((directory / "report.json").read_text())
+    view = load_yaml((directory / "view-same.yaml").read_text())["witness"]
+    certificate = view["certificate"]
+    assert certificate["kind"] == "evand-regularized-view"
+    assert certificate["relation"] == "same"
+    assert certificate["derived_from"] == {
+        "path": report["source"]["path"],
+        "sha256": report["source"]["sha256"],
+    }
+    assert certificate["resolver"] == {
+        "kind": "same-side-view",
+        "derived_from": "W-known-best-n026",
+    }
+    assert certificate["resolve"]["tool"] == "devtools.regularize_same_side"
