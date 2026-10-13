@@ -140,9 +140,25 @@ python -m devtools.regularized_drawings
 python -m devtools.render_results --update
 ```
 
-These redraw the views, regenerate `results.yaml`’s `regularized_drawings`, and
-regenerate `frontier/RESULTS.md`. Update the layer’s counts in the atlas README’s
-regularized-views section by hand.
+These redraw the views, regenerate `results.yaml`’s `regularized_drawings` and each case
+record’s `regularization` note, and regenerate `frontier/RESULTS.md`. Update the layer’s
+counts in the atlas README’s regularized-views section by hand.
+
+The note says who regularized the drawing and that it is not a result (the policy’s
+section 9, question 16): by the Squares Project, with the generator’s credit line, the
+side relation, the registered result that holds the packing and the view; where the
+house is itself a regularization its source published, the source is credited first.
+Where Evan Daniel’s regularizer or the grid-slack port of his placement made the view,
+the note and the register’s item also name this project’s modifications to it, or say it
+ran unmodified (the policy’s section 7): the owner asked on 13 October 2026 that they be
+noted. They are read from the view’s index entry, so the retry rungs must be there.
+`layer` records them from a run’s reports; for a view admitted without them, run the
+counts again and record them from the new run, which writes only where its view is the
+drawn view byte for byte:
+
+```bash
+python -m devtools.regularize_evand rungs --run-dir $RUNS/evand --repo-root ..
+```
 
 ### 6. Commit, Then Re-pin
 

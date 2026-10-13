@@ -272,10 +272,21 @@ every defect found here.
 | The regularization | `by: project`, with `method` naming the generator and variant, for this project’s runs; another regularizer’s bibliography key for theirs, as `T-146` credits Evan Daniel’s lists |
 | Evan Daniel’s method | Whenever his generator or a derivative made the view: `method` names it (“Evan Daniel’s regularizer, `conservative`, `coincide`”); the index and every drawing made from the view carry the line *Regularized by the Squares Project with Evan Daniel’s regularizer (evand/square-packing, MIT)*; and a register result is credited `Levy after Daniel` through `builds_on`, which cites a bibliography key for the vendored code |
 | This project’s tool | `by: project`, `method: regularize_axis_components/2`, credited as the Squares Project |
+| This project’s modifications to his regularizer | Named beside his credit wherever his regularizer or the grid-slack port of his placement made the view, as `modifications`: the retry rungs its solve climbed (`dps-100`, `force-kkt`, the `first-pass` shim), the vendored copy’s patches its `method` names (the replica patch `probe-flat-stall-stop`), and the exact re-solve that brought it to the witness’s side (`devtools.regularize_same_side`); a grid-slack view is this project’s port of his coincidence placement (`regularize_grid_slack`), not his code. Where none applied the record says *unmodified* |
 
 The record states a regularization as the same packing in its own voice only where the
 identity basis is `measured`. A regularization taken in from elsewhere states its
 identity as its source’s claim until a measurement here decides it.
+
+The owner asked on 13 October 2026: “If we’re using our own modifications to Evan
+Daniel’s regularizer, we should note that as well.”
+Each drawn view’s item in `results.yaml`’s `regularized_drawings` and its case record’s
+`regularization` note (question 16) name them, read by `devtools.regularized_drawings`
+from the view’s index entry alone: the rungs from `run.rungs`, or before the retry
+ladder from `run.retried_with`, and the patches from `method`. A view admitted after the
+ladder and before `run.rungs` existed has its rungs recorded from its run’s reports by
+`python -m devtools.regularize_evand rungs`, which writes them only where a report
+reproduces the drawn view byte for byte.
 
 ## 8. Gates
 
@@ -289,7 +300,7 @@ So it runs on request with a receipt, and the gates hold the decisions it produc
 | --- | --- | --- |
 | `regularized atlas views match their index` | The index against the manifest, the witnesses and the views, by digest; with the layer’s contract, also the generator, method, side relation, identity and review-record fields | Records tier, every pull request |
 | `regularized atlas drawings match their index` | Every drawing re-rendered from its retained view | Records tier, every pull request |
-| `results rungs are earned and the view agrees` | `devtools.check_results` on each register result’s `regularizations` items | Records tier, every pull request |
+| `results rungs are earned and the view agrees` | `devtools.check_results` on each register result’s `regularizations` items, and on `regularized_drawings` and every case record’s `regularization` note against the layer’s index | Records tier, every pull request |
 | `regularized atlas views re-derive exactly` | Every `regularize_axis_components/2` view re-derived byte for byte | Deferred: the `regularized-views` job, under its 450 s ceiling |
 | Re-decision of vendored-generator views | Every retained view decided again over $\mathbb{Q}$ on the maintained routes, its identity and shades re-measured and its digests held | Deferred, once its cost is measured inside a ceiling; selected per invocation while it is above one |
 | The generator run | The views reproduced from the pinned code and inputs | On request only, with a receipt |
@@ -298,9 +309,10 @@ So it runs on request with a receipt, and the gates hold the decisions it produc
 
 The assessment’s eight
 [open questions](../research/research-2026-10-11-evand-regularization-assessment.md#open-owner-questions),
-the four the pilots of 11 October 2026 raised, and the three the owner settled on 13
-October 2026 after the stack’s re-posed views were audited, each with its answer or,
-where none is recorded, the default the policy applies until there is one.
+the four the pilots of 11 October 2026 raised, the three the owner settled on 13 October
+2026 after the stack’s re-posed views were audited, and the owner’s rule of the same day
+on credit and results, each with its answer or, where none is recorded, the default the
+policy applies until there is one.
 
 1. **Variant:** `conservative` only; `fewest` is not run.
    *Answered by the owner on 12 October 2026:* yes.
@@ -410,6 +422,31 @@ where none is recorded, the default the policy applies until there is one.
     the case pages draw, are not; the verification gaps review of 13 October 2026
     records them as a serious gap to be filled, as the owner asked.
 
+16. **Credit and results:** *answered by the owner on 13 October 2026:* “can we review
+    how we’re doing credits?
+    It seems like we should put a note on our frontier records about which ones have
+    done regularization and if the regularization is due to us (squares project)”, and
+    “Any new upper bounds should also be recorded as results.
+    Pure regularization should not be considered a new result, but it is a credited part
+    of the frontier record.”
+    A regularization redraws a registered packing and is never a result: it changes no
+    side, frontier value, evidence tier or credit, and no register result is made for
+    one. It is credited in `results.yaml`’s `regularized_drawings` and on the case record
+    of every count the atlas draws regularized.
+    The record’s generated `regularization` field says who regularized the drawing
+    (`by: project`, with the generator, its credit line and this project’s
+    modifications, section 7), at which side relation (`same` or `bound`), which
+    registered result holds the packing (`of`, or that none does), and the view’s path.
+    Where the house is itself a regularization its source published, as `T-146`’s
+    certificates are, the field credits the source first, in the register’s terms (`by`
+    its bibliography key, `of` the result whose packing it regularizes, `registered_in`
+    the result that registered it).
+    `devtools.regularized_drawings` writes it from the layer’s index, its check in the
+    records tier holds every case record to the index, and the site’s case page prints
+    its note. A new upper bound, an exactly verified side below $U$, is always registered
+    as a result however it was made (row 3, question 3), as `T-154` registered the exact
+    views below the bound.
+
 An answer, like any other change to this policy, is an owner decision recorded here with
 its date. It replaces the default, and the counts it bears on are re-reviewed.
 
@@ -453,6 +490,9 @@ recorded where it is implemented, and reversing one is a change to that layer.
    resolved to the registered result that holds the packing; a count whose packing no
    registered result holds is listed as unregistered (#548). A drawing proves no bound,
    so no register result is made for one.
+   The owner confirmed this on 13 October 2026 (section 9, question 16), and each drawn
+   count’s case record now carries the same credit in its generated `regularization`
+   note.
 7. **Registering exact views below the bound** (question 3’s answer, carried out in
    #549): the row 3 views outside the counts #518 and #553 re-housed are registered as
    one batch result, `T-154`, with the case records’ exact forms moved to the registered
