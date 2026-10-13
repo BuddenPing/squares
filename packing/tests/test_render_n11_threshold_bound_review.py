@@ -393,7 +393,7 @@ def test_relative_link_must_resolve_to_a_repo_file() -> None:
 
 
 def test_the_archived_sources_resolve_and_are_declared() -> None:
-    """Every archived Kleddamag file the article links exists in the retained copy, is
+    """Every archived Overbeck file the article links exists in the retained copy, is
     declared as a citation source, and so is one of the page's inputs."""
     article = ARTICLE.read_text(encoding="utf-8")
     archive = "../../resources/web/external-square-certificates-2026-09-22/kleddamag-11/"

@@ -3,7 +3,7 @@
 The coverage decisions themselves are retained receipts under
 ``resources/web/wang-li-n11-2026-09-29/receipts/``; these tests check the exact
 description of the change, the mutations every checker must refuse, and that the native
-wrapper decides a Kleddamag row exactly as the frozen tool does.
+wrapper decides a row of Overbeck's certificate exactly as the frozen tool does.
 """
 
 from __future__ import annotations
