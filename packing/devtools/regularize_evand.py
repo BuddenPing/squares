@@ -106,10 +106,12 @@ generator preserves in the source orientation. The witness's frame for a decimal
 is its 36-digit rational promotion at centre dilation 1, whose exact side is `s_W`; the
 algebraic witness has no rational frame, so its identity is measured against a 55-digit
 rational approximation and no view of it can be `same`. `U` is the case record's
-`verified_upper_bound`, read by `apply_exact_ceilings.bound_value`: its exact form where
-that is rational, a closed form evaluated to 60 digits, else its printed decimal. The
-printed decimal alone would not do: at n = 51 it is the exact side rounded up at sixteen
-digits, below which every dilated certificate of the optimum falls.
+`verified_upper_bound`, held exactly (`verified_bound`): its exact form where that is a
+fraction, its printed decimal where it has no exact form, and a closed form as the one
+root of its minimal polynomial in a rational interval. A view is `bound` only at a
+rational `U`; row 3 compares a side with a closed form exactly; and a form the driver
+cannot read (n = 11's `root(P_trump11, ...)`) decides nothing, so a view there goes to
+review rather than being compared with a printed decimal.
 
 **The retry ladder** (the no-view study of 12 October 2026; rungs 3 and 5a under the
 owner's overnight instruction of the same day). These are policy-visible behaviours: each
@@ -164,6 +166,7 @@ from __future__ import annotations
 
 import argparse
 import fcntl
+import functools
 import gzip
 import hashlib
 import importlib
@@ -193,7 +196,6 @@ from devtools import census_atlas_contact_shades as shades
 from devtools import check_half_angle_area as area
 from devtools import check_rational_witness_independent as independent
 from devtools import evand_exact_certificates as evand
-from devtools.apply_exact_ceilings import bound_value
 from devtools.check_vendored_evand import apply_patch
 from devtools.upper_bound_packets import RATIONAL_DIGITS
 from sqpack.witness import (
@@ -508,20 +510,146 @@ def case_facts(n: int) -> dict[str, Any]:
     }
 
 
-def upper_bound(facts: Mapping[str, Any]) -> Fraction | None:
-    """`U` as a rational for comparison: the exact form where it is rational, a closed form
-    evaluated to 60 digits, else the printed decimal (`apply_exact_ceilings.bound_value`).
+@dataclass(frozen=True)
+class VerifiedBound:
+    """The case record's verified upper bound `U`, held exactly.
 
-    The printed decimal alone would not do: at n = 51 it is the exact side rounded up at
-    sixteen digits, below which every dilated certificate of the optimum falls.
+    `rational` is `U` where it is a rational number: its exact form a fraction, or no
+    exact form beside the printed decimal, which is then the bound. A closed form is an
+    algebraic number, held as the one root of its minimal polynomial (`polynomial`,
+    integer coefficients, highest degree first) in the rational interval `interval`; a
+    rational side is compared with it exactly and is never equal to it. A form this
+    driver cannot read is `unread`, with the reason, and nothing is decided against it:
+    a printed decimal or a 60-digit evaluation stands above or below `U` by its rounding,
+    and would decide `bound` and row 3 by that rounding (review B of #511, B3).
     """
-    if facts["verified_upper_bound"] is None:
-        return None
-    if facts["exact_form"] is None:
-        return Fraction(str(facts["verified_upper_bound"]))
-    return bound_value(
-        {"value": facts["verified_upper_bound"], "exact_form": facts["exact_form"]}
+
+    form: str | None
+    rational: Fraction | None = None
+    polynomial: tuple[int, ...] = ()
+    interval: tuple[Fraction, Fraction] | None = None
+    unread: str | None = None
+
+    def compare(self, side: Fraction) -> int | None:
+        """-1, 0 or 1 as `side` is below, at or above `U`, decided exactly; None unread."""
+        if self.rational is not None:
+            return (side > self.rational) - (side < self.rational)
+        if self.interval is None:
+            return None
+        low, high = self.interval
+        if side <= low:
+            return -1
+        if side >= high:
+            return 1
+        # `U` is the polynomial's only root in (low, high), and a rational side is no
+        # root of an irreducible polynomial of degree two or more: the polynomial keeps
+        # its sign at `low` up to `U` and changes it there.
+        same_sign = (_evaluate(self.polynomial, side) > 0) == (
+            _evaluate(self.polynomial, low) > 0
+        )
+        return -1 if same_sign else 1
+
+    def difference(self, side: Fraction) -> float:
+        """`side - U` in binary64, for reports only; it decides nothing."""
+        if self.rational is not None:
+            return float(side - self.rational)
+        if self.interval is None:
+            return math.nan
+        low, high = self.interval
+        return float(side - (low + high) / 2)
+
+    def record(self) -> dict[str, Any]:
+        """How `U` was read, for the report."""
+        if self.rational is not None:
+            return {"kind": "rational", "value": literal(self.rational)}
+        if self.interval is not None:
+            return {
+                "kind": "algebraic",
+                "minimal_polynomial": list(self.polynomial),
+                "interval": [literal(end) for end in self.interval],
+            }
+        return {"kind": "unread", "form": self.form, "reason": self.unread}
+
+
+#: How narrow a closed form's isolating interval is made, so that a report's `minus_U`
+#: is accurate far below any side a generator writes; the comparison never needs it.
+BOUND_INTERVAL_WIDTH = Fraction(1, 10**60)
+
+
+def _evaluate(coefficients: Sequence[int], value: Fraction) -> Fraction:
+    total = Fraction(0)
+    for coefficient in coefficients:
+        total = total * value + coefficient
+    return total
+
+
+@functools.cache
+def _closed_form_bound(form: str) -> VerifiedBound:
+    """A closed form as the root of its minimal polynomial, isolated exactly."""
+    import sympy as sp  # noqa: PLC0415 -- the optional dependency, where it is used
+    from sympy.parsing.sympy_parser import (  # noqa: PLC0415
+        implicit_multiplication_application,
+        parse_expr,
+        standard_transformations,
     )
+
+    transformations = (*standard_transformations, implicit_multiplication_application)
+    try:
+        value = parse_expr(form, transformations=transformations)
+    except (SyntaxError, TypeError, ValueError, sp.SympifyError) as error:
+        return VerifiedBound(form, unread=f"the form does not parse: {error}")
+    if value.free_symbols or value.atoms(sp.Float):
+        return VerifiedBound(
+            form,
+            unread="the form names a symbol or a decimal, not an exact number this driver "
+            "reads; its printed decimal is not used in its place",
+        )
+    x = sp.Symbol("x")
+    polynomial = sp.minimal_polynomial(value, x, polys=True)
+    coefficients = tuple(int(c) for c in polynomial.all_coeffs())
+    if polynomial.degree() == 1:
+        return VerifiedBound(form, rational=Fraction(-coefficients[1], coefficients[0]))
+    approximate = sp.N(value, 80)
+    width = sp.Rational(BOUND_INTERVAL_WIDTH.numerator, BOUND_INTERVAL_WIDTH.denominator)
+    # Real root isolation over Q: each interval holds exactly one root; the 80-digit value
+    # only picks which.
+    isolated: Any = polynomial.intervals(eps=width)
+    found = [
+        (Fraction(str(low)), Fraction(str(high)))
+        for (low, high), _multiplicity in isolated
+        if low <= approximate <= high
+    ]
+    if len(found) != 1:
+        return VerifiedBound(form, unread="no single root of its minimal polynomial is it")
+    return VerifiedBound(form, polynomial=coefficients, interval=found[0])
+
+
+def verified_bound(facts: Mapping[str, Any]) -> VerifiedBound | None:
+    """The record's verified upper bound held exactly (`VerifiedBound`), None without one."""
+    value, form = facts["verified_upper_bound"], facts["exact_form"]
+    if value is None:
+        return None
+    if form is None:
+        return VerifiedBound(None, rational=Fraction(str(value)))
+    try:
+        return VerifiedBound(str(form), rational=Fraction(str(form).replace(" ", "")))
+    except ValueError:
+        return _closed_form_bound(str(form))
+
+
+def upper_bound(facts: Mapping[str, Any]) -> Fraction | None:
+    """`U` where it is a rational number exactly, else None.
+
+    Its exact form where that is a fraction, or its printed decimal where the record has
+    no exact form, which is then the bound. A closed form is not rational, so no side
+    equals it and no frame is built at it; `verified_bound` holds it exactly, for
+    comparison. A 60-digit evaluation of it (`apply_exact_ceilings.bound_value`) lies
+    above or below it by its rounding, so it is never read as `U` here. Neither is the
+    printed decimal of a form: at n = 51 it is the exact side rounded up at sixteen
+    digits, below which every dilated certificate of the optimum falls.
+    """
+    bound = verified_bound(facts)
+    return None if bound is None else bound.rational
 
 
 # --------------------------------------------------------------------------------------
@@ -1492,7 +1620,10 @@ class Measured:
     routes: Mapping[str, bool] = field(default_factory=dict)
     relation: Literal["same", "bound", "solved"] | None = None
     side: Fraction | None = None
+    #: `U` where it is rational (`upper_bound`); `bound` holds it exactly in every case,
+    #: and decides where it is given (`below_bound`).
     upper: Fraction | None = None
+    bound: VerifiedBound | None = None
     pose_equals_witness: bool = False
     one_to_one: bool = True
     unnamed_turns: tuple[int, ...] = ()
@@ -1554,6 +1685,21 @@ def visible_change(ident: Mapping[str, Any], shaded: Mapping[str, Any]) -> bool:
     )
 
 
+def below_bound(m: Measured) -> bool | None:
+    """Whether the view's side is below `U`, decided exactly (row 3).
+
+    Against `m.bound` where it is given, a closed form included (`VerifiedBound`), else
+    against `m.upper`; None where the record's bound could not be read, so that nothing
+    is decided against it.
+    """
+    if m.side is None:
+        return False
+    if m.bound is not None:
+        order = m.bound.compare(m.side)
+        return None if order is None else order < 0
+    return m.upper is not None and m.side < m.upper
+
+
 def table_row(measured: Measured) -> Decision:  # noqa: PLR0911 -- one return per table row
     """Rows 1 to 10 of the policy's decision table; the first that matches decides."""
     m = measured
@@ -1565,19 +1711,37 @@ def table_row(measured: Measured) -> Decision:  # noqa: PLR0911 -- one return pe
         return Decision(
             2, "refuse", "refused", "invalid", f"refused by {names}; open a defect bead"
         )
-    if m.upper is not None and m.side is not None and m.side < m.upper:
+    below = below_bound(m)
+    if below is None:
+        unread = m.bound.unread if m.bound is not None else None
+        return Decision(
+            None,
+            "review",
+            None,
+            None,
+            f"the verified upper bound could not be read exactly ({unread}), so row 3 "
+            "was not decided and nothing is compared with its printed decimal",
+        )
+    if below and m.side is not None:
+        gap = (
+            -m.bound.difference(m.side)
+            if m.bound is not None
+            else float(m.upper - m.side)
+            if m.upper is not None
+            else math.nan
+        )
         return Decision(
             3,
             "held",
             None,
             None,
             f"register first: the {m.relation} side is below the verified upper bound by "
-            f"{float(m.upper - m.side):.3e}, a register-result candidate",
+            f"{gap:.3e}, a register-result candidate",
         )
     # A view at exactly the verified bound (`bound`) is a drawing frame, as a same-side
     # view is (owner, 12 October 2026); only another side stops here.
     if m.relation == "solved":
-        if m.upper is None:
+        if m.upper is None and m.bound is None:
             where = "not the witness's; U unknown, so row 3 was not decided"
         else:
             where = "not the witness's and above the verified upper bound"
@@ -1709,7 +1873,8 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
     witness = load_witness(path, fallback_schema=WITNESS_SCHEMA)
     frame = source_frame(witness)
     facts = case_facts(n)
-    upper = upper_bound(facts)
+    bound = verified_bound(facts)
+    upper = bound.rational if bound is not None else None
     source = {
         "id": witness.get("id"),
         "path": relative(path),
@@ -1727,6 +1892,7 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
     report["source"] = source
     report["verified_upper_bound"] = facts["verified_upper_bound"]
     report["verified_upper_bound_exact_form"] = facts["exact_form"]
+    report["verified_upper_bound_as_read"] = bound.record() if bound is not None else None
     report["generator"] = {
         "name": pin["name"],
         "pin": pin["pin"],
@@ -1816,6 +1982,7 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
     )
     common = {
         "upper": upper,
+        "bound": bound,
         "variant": options.variant,
         "determined_merge": determined,
         "level": regularized.get("level"),
@@ -1834,7 +2001,7 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
         block["minus_s_W"] = (
             f"{float(side - frame.side):.3e}" if frame.side is not None else None
         )
-        block["minus_U"] = f"{float(side - upper):.3e}" if upper is not None else None
+        block["minus_U"] = f"{bound.difference(side):.3e}" if bound is not None else None
         fields: dict[str, Any] = {}
         if name == chosen or relation != "solved":
             ident, shaded, move, equal = _measure_view(
@@ -1880,7 +2047,7 @@ def decide(
         # Registering the view makes its side the verified bound, so the row it reaches
         # then is what deciding "register first" leads to (owner, 12 October 2026).
         relation = "bound" if chosen.relation == "solved" else chosen.relation
-        after = replace(chosen, upper=chosen.side, relation=relation)
+        after = replace(chosen, upper=chosen.side, bound=None, relation=relation)
         governing["after_registration"] = asdict(classify(after))
     report["decision"] = governing
     report["decisions"] = decisions
@@ -2132,12 +2299,13 @@ def measured_from_report(report: Mapping[str, Any], name: Output) -> Measured:
             return Measured(name, produced=False, status=failure)
         return Measured(name, produced=False, status=f"solve {status}")
     regularized = report.get("regularize") or {}
-    upper = upper_bound(
+    bound = verified_bound(
         {
             "verified_upper_bound": report.get("verified_upper_bound"),
             "exact_form": report.get("verified_upper_bound_exact_form"),
         }
     )
+    upper = bound.rational if bound is not None else None
     side = Fraction(block["side_exact"])
     printed = (report.get("source") or {}).get("s_W_exact")
     # Derived again rather than read, so reports written before `bound` existed decide
@@ -2172,6 +2340,7 @@ def measured_from_report(report: Mapping[str, Any], name: Output) -> Measured:
         relation=relation,
         side=side,
         upper=upper,
+        bound=bound,
         variant=(report.get("generator") or {}).get("variant", "conservative"),
         determined_merge=any(
             isinstance(change, list) and change and change[0] == "determined-merge"

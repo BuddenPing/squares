@@ -913,6 +913,81 @@ def test_a_regularizer_refusal_keeps_its_reason_when_decided_again() -> None:
 # --------------------------------------------------------------------------------------
 
 
+def _below_root_of_two_half(side: Fraction) -> bool:
+    """Exactly whether `side` < 2 + sqrt(2)/2, n = 5's verified upper bound."""
+    gap = side - 2
+    return gap < 0 or 4 * gap * gap < 2
+
+
+def test_a_closed_form_bound_is_held_exactly_and_is_never_a_frame() -> None:
+    """B3: a closed form's 60-digit value lies above `U` (by 1.3e-61 at n = 5), so a side
+    there was labelled `bound` and row 3 decided against the rounding."""
+    from devtools.apply_exact_ceilings import bound_value  # noqa: PLC0415
+
+    facts = drive.case_facts(5)
+    bound = drive.verified_bound(facts)
+    assert bound is not None
+    assert (bound.rational, bound.unread) == (None, None)
+    assert drive.upper_bound(facts) is None
+    sixty = bound_value(
+        {"value": facts["verified_upper_bound"], "exact_form": facts["exact_form"]}
+    )
+    assert not _below_root_of_two_half(sixty)
+    assert bound.compare(sixty) == 1
+    assert drive.side_relation(sixty, None, drive.upper_bound(facts)) == "solved"
+    for offset in (Fraction(1, 10**59), Fraction(1, 10**62), Fraction(1, 10**90)):
+        for side in (sixty - offset, sixty + offset):
+            expected = -1 if _below_root_of_two_half(side) else 1
+            assert bound.compare(side) == expected
+    # Row 3 is decided against the closed form itself.
+    below = replace(SAME, side=sixty - Fraction(1, 10**59), upper=None, bound=bound)
+    assert classify(below).row == 3
+    above = replace(below, side=sixty)
+    assert classify(above).decision == "admit"
+    # A view at the 60-digit value, decided from a report, is `solved` and held.
+    report = {
+        **DECIDED,
+        "verified_upper_bound": facts["verified_upper_bound"],
+        "verified_upper_bound_exact_form": facts["exact_form"],
+        "shades": {**DECIDED["shades"], "regressions": []},
+        "source": {"s_W_exact": "27/10"},
+        "outputs": {
+            "same": None,
+            "solved": {"side_exact": drive.literal(sixty), "routes": ROUTES_OK},
+        },
+        "regularize": {"level": 2},
+    }
+    measured = drive.measured_from_report(report, "solved")
+    assert measured.relation == "solved"
+    assert classify(measured).row == 4
+
+
+def test_every_closed_form_bound_is_read_exactly_or_refused() -> None:
+    """B3: each frontier bound is a rational, an isolated root, or unread (n = 11's
+    `root(P_trump11, ...)`), and an unread bound decides nothing: no admission."""
+    unread = []
+    for n in range(1, 325):
+        facts = drive.case_facts(n)
+        bound = drive.verified_bound(facts)
+        if bound is None:
+            continue
+        if bound.unread is not None:
+            unread.append(n)
+            continue
+        if bound.rational is None:
+            assert bound.interval is not None
+            low, high = bound.interval
+            assert high - low <= drive.BOUND_INTERVAL_WIDTH
+            assert len(bound.polynomial) >= 3
+    assert unread == [11]
+    eleven = drive.verified_bound(drive.case_facts(11))
+    assert eleven is not None
+    assert eleven.compare(Fraction(4)) is None
+    decided = classify(replace(SAME, upper=None, bound=eleven))
+    assert (decided.row, decided.decision) == (None, "review")
+    assert "could not be read exactly" in decided.reason
+
+
 def test_a_patched_solver_is_rebuilt_when_its_patch_changes(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
