@@ -148,12 +148,14 @@ def test_a_bound_two_results_prove_is_held_by_the_one_that_registered_the_view()
             side_at_bound=at,
         )
 
-    assert resolve(6, "bound").of == "T-154"
+    # A `bound` view resolves only while its side is the bound (#548 review B1).
+    assert resolve(6, "bound", at=True).of == "T-154"
+    assert resolve(6, "bound").of is None
     assert resolve(7, "same", at=True).of == "T-154"
     # A `bound` drawing where the registering result's item is on the other side, or a
     # count no item names, keeps both holders and so no answer.
-    assert resolve(7, "bound").of is None
-    assert "T-101" in resolve(7, "bound").reason
+    assert resolve(7, "bound", at=True).of is None
+    assert "T-101" in resolve(7, "bound", at=True).reason
     assert drawings.registering_holders(8, ["T-101", "T-154"], registering, side="solved") == [
         "T-101",
         "T-154",
