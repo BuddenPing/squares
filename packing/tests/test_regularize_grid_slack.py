@@ -354,3 +354,29 @@ def test_the_own_pairing_names_turns_square_for_square() -> None:
     assert view is not None
     measured = slack.measure(2, tilted(), view, [2])
     assert measured["identity"]["own_pairing"]["unnamed_turns"] == []
+
+
+def test_feasibility_holds_the_move_bound_and_a_zero_trust_is_refused() -> None:
+    """Review B of #530, B5: `feasible` holds the rows `place` holds, the L1 move bound
+    among them, so a straightening it accepts can be placed; `--trust 0` would divide the
+    tie-break's weight by zero and is refused."""
+    one, zero = Fraction(1), Fraction(0)
+    witness = _basis_witness([(Fraction(6, 10), Fraction(6, 10), one, zero)])
+    frame = slack.frame_for(witness, "same")
+    assert frame is not None
+    g = slack.geometry(frame, [])
+
+    def pushed(step: float) -> slack.Rows:
+        """Rows asking the square to move `step` right and `step` up: within the trust
+        region per coordinate, and `2 * step` in L1."""
+        rows = slack.Rows()
+        rows.add({0: 1.0}, float(g.x0[0]) + step, float("inf"), "test")
+        rows.add({1: 1.0}, float(g.y0[0]) + step, float("inf"), "test")
+        return rows
+
+    assert slack.feasible(g, pushed(0.2), slack.TRUST)
+    assert not slack.feasible(g, pushed(0.3), slack.TRUST)
+    with pytest.raises(slack.GridSlackError, match="positive"):
+        slack.Settings(trust=0.0)
+    with pytest.raises(SystemExit):
+        slack.parser().parse_args(["--n", "5", "--run-dir", "scratch", "--trust", "0"])

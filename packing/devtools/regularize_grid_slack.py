@@ -33,7 +33,9 @@ closes them, in five steps:
    meeting those inequalities is a packing (upstream's `reg.place`, evand/square-packing,
    uses the same fact). Each centre may move by at most `--trust` per coordinate from the
    witness's and by at most `MOVE_BOUND` in L1, so by at most `1/2`, the policy's bound
-   on a move for automatic admission. A binary per *coincidence* -- two squares of
+   on a move for automatic admission. The bound holds in binary64, on the placement: the
+   exact re-solve may move a centre up to `BLOWUP` (`1e-6`) further, so a view's largest
+   move is at most `1/2 + 1e-6`. A binary per *coincidence* -- two squares of
    exactly one rotation class flush across a face with no offset along it, or an axis
    square flush on a wall: exactly a full shared side under the house rule -- is
    switched on by big-M constraints, and the objective maximizes full shared sides
@@ -126,10 +128,11 @@ METHOD = (
 """The credit a view carries: the policy's section 7 credits a port of his method."""
 NEAR_AXIS_DEGREES = 0.5
 TRUST = 0.45
-"""Per coordinate; with `MOVE_BOUND` a centre moves less than `1/2` from the witness."""
+"""Per coordinate; with `MOVE_BOUND` a centre moves less than `1/2` from the witness in
+the placement. Positive: `--trust 0` is refused."""
 MOVE_BOUND = 0.5
-"""A centre's L1 move from the witness, so its distance stays within the policy's `1/2`
-for automatic admission."""
+"""A centre's L1 move from the witness in the binary64 placement, so its distance stays
+within the policy's `1/2` there; the exact re-solve may add up to `BLOWUP`."""
 TIME_LIMIT = 120.0
 STAGE_MARGIN = 0.0099
 """A kept stage contact stays this close; the stage's frame rounds centres to `1e-6`."""
@@ -178,6 +181,20 @@ class Settings:
     near_axis_degrees: float = NEAR_AXIS_DEGREES
     trust: float = TRUST
     time_limit: float = TIME_LIMIT
+
+    def __post_init__(self) -> None:
+        # The tie-break's weight divides by the trust region (`place`), and a region of
+        # no width moves nothing (review B of #530, B5).
+        if not self.trust > 0:
+            raise GridSlackError(f"the trust region must be positive, not {self.trust}")
+
+
+def positive(text: str) -> float:
+    """A command-line value that must be a positive number."""
+    value = float(text)
+    if not value > 0:
+        raise argparse.ArgumentTypeError(f"{text} is not positive")
+    return value
 
 
 @dataclass
@@ -510,17 +527,23 @@ def _l1_rows(rows: Rows, g: Geometry) -> None:
 
 
 def feasible(g: Geometry, kept: Rows, trust: float) -> bool:
-    """Whether any placement exists with these rotations: an LP with no objective."""
+    """Whether any placement exists with these rotations: an LP with no objective.
+
+    It holds the rows `place` holds, the move bound included (`_l1_rows`, with their
+    auxiliary columns), so a straightening it accepts never leaves the placement
+    infeasible (review B of #530, B5).
+    """
     n = len(g.rotation)
     rows = separation_rows(g, trust)
     _extend(rows, kept)
+    _l1_rows(rows, g)
     lo, hi = coordinate_bounds(g, trust)
     result = linprog(
-        np.zeros(2 * n),
-        bounds=list(zip(lo, hi, strict=True)),
+        np.zeros(4 * n),
+        bounds=[*zip(lo, hi, strict=True), *[(0.0, None)] * (2 * n)],
         method="highs",
         options={"primal_feasibility_tolerance": LP_TOLERANCE},
-        **_two_sided(rows, 2 * n),
+        **_two_sided(rows, 4 * n),
     )
     return bool(result.status == 0)
 
@@ -1502,7 +1525,7 @@ def parser() -> argparse.ArgumentParser:
     command.add_argument("--n", type=int, nargs="+", required=True)
     command.add_argument("--run-dir", type=Path, required=True)
     command.add_argument("--near-axis-degrees", type=float, default=NEAR_AXIS_DEGREES)
-    command.add_argument("--trust", type=float, default=TRUST)
+    command.add_argument("--trust", type=positive, default=TRUST)
     command.add_argument("--time-limit", type=float, default=TIME_LIMIT)
     return command
 
