@@ -3629,13 +3629,16 @@ def _t007_consumer_audit(context: Context) -> str:
 
 
 def _regularized_atlas(context: Context) -> str:
-    # Under a second: the derived regularized views (X-049, think-bgkz) are compared with
-    # their index and their source witnesses by digest, re-verifying nothing; a view
+    # About two seconds: the derived regularized views (X-049, think-bgkz) are compared
+    # with their index and their source witnesses by digest, re-verifying nothing; a view
     # another generator made (Evan Daniel's regularizer through `regularize_evand`, or the
     # grid-slack generator, think-k35c) is also read and held to its entry: its label,
     # generator, credit line, side and regularization record, and the decision table's
-    # admission. Re-deriving and re-deciding them exactly is `--verify-atlas`, which
-    # belongs to a deferred checkpoint rather than here.
+    # admission. Every drawn view's exact side is held to the witness's `s_W` and to its
+    # case record's verified upper bound `U`, decided exactly for closed forms too, so no
+    # view lies below `U`, a `bound` view lies at it, and a view above it lies at a count
+    # that `ABOVE_U` names (#548 review B1, think-du42). Re-deriving and re-deciding the
+    # views exactly is `--verify-atlas`, which belongs to a deferred checkpoint instead.
     output = _module(context, "devtools.regularize_axis_components", "--check-atlas")
     _require_text(output, "regularized atlas check passed")
     return output
@@ -5440,6 +5443,8 @@ STEPS: tuple[Step, ...] = (
             "packing/atlas/known-best/regularized/*",
             "packing/atlas/known-best/manifest.json",
             "packing/witnesses/*",
+            # Each drawn view's side is held to its case record's verified upper bound.
+            "packing/frontier/n-*.md",
             *_RENDERER_HUB,
         ),
     ),

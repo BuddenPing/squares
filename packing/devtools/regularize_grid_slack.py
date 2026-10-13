@@ -1515,11 +1515,9 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
     record: dict[str, Any] = {
         "n": n,
         "of_witness": witness["id"],
-        "provenance": {
-            "source_key": facts.get("source_key"),
-            "found_by": facts.get("found_by") or [],
-            "improved_by": facts.get("improved_by") or [],
-        },
+        "provenance": driver.packing_credit(
+            facts, (witness.get("source") or {}).get("key"), relation
+        ),
         "by": "project",
         "method": f"{METHOD}, through devtools.regularize_grid_slack",
         "side": "same" if relation == "same" else "solved",

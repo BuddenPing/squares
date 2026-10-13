@@ -68,8 +68,11 @@ after (the census's `witness_shades` on both files), the residual regressions, t
 verification and the side difference. A record whose view would change no square is
 `unchanged` and keeps no file; a record the tool cannot regularize is `refused`, with its
 reason. `--check-atlas` is cheap: it compares the index with the manifest, the witnesses
-and the retained views by digest and re-verifies nothing. `--verify-atlas` re-derives every
-record and requires the index and the views to come out identical.
+and the retained views by digest and re-verifies nothing; it also holds every drawn view's
+exact side to the witness's own side `s_W` and to its case record's verified upper bound
+`U`, decided exactly (`side_against_bound`), with the views above `U` named in `ABOVE_U`.
+`--verify-atlas` re-derives every record and requires the index and the views to come out
+identical.
 
 The index's SHA-256 values are cache keys, not integrity claims (development.md, "Hashes
 and Repository-Owned Artifacts"). The source's says whether a view was derived from the
@@ -100,10 +103,11 @@ import json
 import math
 import tempfile
 import time
-from collections.abc import Collection, Sequence
+from collections.abc import Collection, Mapping, Sequence
 from concurrent.futures import Future, ProcessPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from fractions import Fraction
+from functools import cache
 from pathlib import Path
 from typing import Any
 
@@ -141,6 +145,7 @@ WITNESS_SCHEMA = WITNESSES / "witness.schema.yaml"
 FORBIDDEN_OUTPUT_ROOTS = (WITNESSES, ROOT / "atlas")
 MANIFEST = ROOT / "atlas/known-best/manifest.json"
 ATLAS_DIR = ROOT / "atlas/known-best/regularized"
+FRONTIER = ROOT / "frontier"
 
 ATLAS_CONTRACT = "packing.squares:RegularizedAtlasIndex/v2"
 """The layer's index contract. v2 (12 October 2026, think-k35c) names each entry's
@@ -1557,6 +1562,9 @@ class AtlasLayout:
     directory: Path
     certificates: Path
     """Searched for `*/n-NNN-rational.yaml.gz`, the retained rational certificates."""
+    frontier: Path | None = None
+    """The case records, whose verified upper bounds `U` every drawn view's side is held to;
+    None in a scratch tree that keeps none, where the check holds no side to `U`."""
 
     @property
     def index(self) -> Path:
@@ -1573,7 +1581,7 @@ class AtlasLayout:
         return WITNESS_SCHEMA.relative_to(self.directory.resolve(), walk_up=True).as_posix()
 
 
-ATLAS = AtlasLayout(ROOT, REPO, MANIFEST, ATLAS_DIR, WITNESSES)
+ATLAS = AtlasLayout(ROOT, REPO, MANIFEST, ATLAS_DIR, WITNESSES, FRONTIER)
 
 
 def digest(data: bytes) -> str:
@@ -2076,8 +2084,9 @@ def _totals_line(totals: dict[str, Any]) -> str:
 
 def check_atlas(layout: AtlasLayout, *, smallest_dilation: bool = False) -> list[str]:
     """The cheap check: the index against the manifest, the witnesses and the retained
-    views, by digest, and each other generator's view against its entry by reading it.
-    It re-derives and re-verifies nothing."""
+    views, by digest, and each other generator's view against its entry by reading it;
+    every drawn view's side against `s_W` and against its case record's `U`
+    (`_bound_problems`). It re-derives and re-verifies nothing."""
     index = _committed_index(layout)
     if index is None:
         return [f"{layout.relative(layout.index)} is missing; run --update-atlas"]
@@ -2102,11 +2111,13 @@ def check_atlas(layout: AtlasLayout, *, smallest_dilation: bool = False) -> list
     if sorted(by_n) != sorted(entry["n"] for entry in entries) or len(by_n) != len(records):
         problems.append("index entries are not exactly the manifest's n, once each")
     kept: set[str] = set()
+    sides: dict[int, Fraction] = {}
     for entry in entries:
         record = by_n.get(entry["n"])
         if record is None:
             continue
-        problems.extend(_check_record(layout, entry, record, kept))
+        problems.extend(_check_record(layout, entry, record, kept, sides))
+    problems.extend(_bound_problems(layout, by_n, sides))
     problems.extend(
         f"unexpected file {layout.relative(path)}"
         for path in sorted(layout.directory.iterdir())
@@ -2143,7 +2154,11 @@ def _generator_problems(index: dict[str, Any], records: Sequence[dict[str, Any]]
 
 
 def _check_record(
-    layout: AtlasLayout, entry: dict[str, Any], record: dict[str, Any], kept: set[str]
+    layout: AtlasLayout,
+    entry: dict[str, Any],
+    record: dict[str, Any],
+    kept: set[str],
+    sides: dict[int, Fraction],
 ) -> list[str]:
     n = entry["n"]
     source = layout.packing / entry["witness"]["path"]
@@ -2176,6 +2191,7 @@ def _check_record(
             problems.append(f"n={n}: recorded exact verification did not pass")
         decoded = text.decode("utf-8")
         side = view_side(decoded)
+        sides[n] = side
         own = witness_side(load_yaml(source.read_text(encoding="utf-8"))["witness"])
         problems.extend(_regularization_problems(n, record, side=side, own=own))
         if drawn_elsewhere(record):
@@ -2299,6 +2315,204 @@ def view_side(text: str) -> Fraction:
     if found is None:
         found = load_yaml(text)["witness"]["side"]
     return Fraction(str(found))
+
+
+def case_bound(frontier: Path, n: int) -> dict[str, Any] | None:
+    """The case record's verified upper bound `U` (its `value` and `exact_form`), or None
+    where the record states none or there is no record."""
+    path = frontier / f"n-{n:03d}.md"
+    if not path.is_file():
+        return None
+    front = load_yaml(path.read_text(encoding="utf-8").split("---\n", 2)[1])
+    return (front.get("packing") or {}).get("verified_upper_bound") or None
+
+
+BRACKET_WIDTH = Fraction(1, 10**40)
+"""The first width `bound_bracket` narrows a closed-form `U` to; each refinement after it is
+another forty digits narrower."""
+
+
+def bound_bracket(
+    bound: Mapping[str, Any], width: Fraction = BRACKET_WIDTH
+) -> tuple[Fraction, Fraction]:
+    """Rationals `lo <= U <= hi` with `hi - lo < width`, held exactly; `lo == hi` where `U`
+    is rational.
+
+    A rational `U` is its own bracket: its exact form where that is a rational, else its
+    printed decimal, which a bound stating no exact form is exactly. A closed form is an
+    algebraic number, so its bracket is an isolating interval of a real root of its
+    minimal polynomial over `Q`, narrowed by SymPy's exact real-root refinement; a
+    50-digit evaluation only picks out which root, among intervals at least `10^-40`
+    apart. Nothing is compared against a rounded value of `U`: a rational side either lies
+    outside the bracket or is `U` (#548 review B1).
+    """
+    exact = bound.get("exact_form")
+    text = str(exact if exact is not None else bound.get("value"))
+    try:
+        value = Fraction(text)
+    except ValueError:
+        return _closed_form_bracket(text, width)
+    return value, value
+
+
+@cache
+def _closed_form_bracket(exact_form: str, width: Fraction) -> tuple[Fraction, Fraction]:
+    import sympy as sp  # noqa: PLC0415 - imported only where a bound is a closed form
+    from sympy.parsing.sympy_parser import (  # noqa: PLC0415
+        implicit_multiplication_application,
+        parse_expr,
+        standard_transformations,
+    )
+
+    value = parse_expr(
+        exact_form,
+        transformations=(*standard_transformations, implicit_multiplication_application),
+    )
+    if value.free_symbols:
+        message = f"the exact form {exact_form!r} is not a number"
+        raise ValueError(message)
+    x = sp.Symbol("x")
+    poly = sp.Poly(sp.minimal_polynomial(value, x), x)
+
+    def rational(number: Any) -> Fraction:
+        number = sp.Rational(number)
+        return Fraction(int(number.p), int(number.q))
+
+    if poly.degree() == 1:
+        lead, constant = poly.all_coeffs()
+        root = rational(-sp.Rational(constant) / sp.Rational(lead))
+        return root, root
+    near = rational(sp.Rational(str(sp.N(value, 50))))
+    reach = Fraction(1, 10**40)
+    # SymPy's isolating intervals for the real roots, as ((low, high), multiplicity).
+    isolated: list[Any] = list(poly.intervals())
+    holding = [
+        interval
+        for interval, _multiplicity in isolated
+        if rational(interval[0]) - reach <= near <= rational(interval[1]) + reach
+    ]
+    if len(holding) != 1:
+        message = (
+            f"{len(holding)} real roots of {exact_form!r}'s minimal polynomial lie near it"
+        )
+        raise ValueError(message)
+    ((low, high),) = holding
+    low, high = poly.refine_root(low, high, eps=sp.Rational(width.numerator, width.denominator))
+    return rational(low), rational(high)
+
+
+def side_against_bound(side: Fraction, bound: Mapping[str, Any]) -> int:
+    """The sign of `side - U`, decided exactly (`bound_bracket`): -1 below, 0 at, 1 above."""
+    width = BRACKET_WIDTH
+    for _ in range(8):
+        low, high = bound_bracket(bound, width)
+        if side < low:
+            return -1
+        if side > high:
+            return 1
+        if low == high:
+            return 0
+        width /= 10**40
+    message = f"side {side} is within {float(width)} of U {bound!r} and not decided"
+    raise ValueError(message)
+
+
+def side_minus_bound_text(side: Fraction, bound: Mapping[str, Any]) -> str:
+    """`side - U` as the index writes it (`.3e`), decided exactly: the bracket is narrowed
+    until both of its ends print the same."""
+    width = BRACKET_WIDTH
+    for _ in range(8):
+        low, high = bound_bracket(bound, width)
+        text = f"{float(side - high):.3e}"
+        if text == f"{float(side - low):.3e}":
+            return text
+        width /= 10**40
+    message = f"side {side} minus U {bound!r} does not settle at four digits"
+    raise ValueError(message)
+
+
+ABOVE_U: dict[int, str] = {
+    18: "Evan Daniel's view, 3.7e-31 above a closed-form optimum no rational side reaches "
+    "(question 4's status quo); the owner keeps it (13 October 2026)",
+    26: "Evan Daniel's view, 5.5e-30 above a closed-form optimum no rational side reaches "
+    "(question 4's status quo); the owner keeps it (13 October 2026)",
+    66: "Evan Daniel's view, 1.2e-30 above a closed-form optimum no rational side reaches "
+    "(question 4's status quo); the owner keeps it (13 October 2026)",
+    85: "Evan Daniel's view, 9.1e-31 above a closed-form optimum no rational side reaches "
+    "(question 4's status quo); the owner keeps it (13 October 2026)",
+    106: "the axis tool's view at Couzo's decimal side s_W, 9.1e-12 above Evan Daniel's "
+    "exact optimum; the selection layer (#580) redraws it at U",
+    110: "the axis tool's view at Couzo's decimal side s_W, 2.8e-12 above Evan Daniel's "
+    "exact optimum; the view at U draws fewer shared sides, and the owner keeps it "
+    "(13 October 2026, think-jnso)",
+    152: "the axis tool's view at Couzo's decimal side s_W, 5.6e-12 above Evan Daniel's "
+    "exact optimum; the selection layer (#580) redraws it at U",
+    172: "the axis tool's view at Couzo's decimal side s_W, 3.6e-11 above Evan Daniel's "
+    "exact optimum; the selection layer (#580) redraws it at U",
+    182: "Evan Daniel's view at Couzo's decimal side s_W, 3.4e-12 above his exact optimum; "
+    "the selection layer (#580) redraws it at U",
+    206: "Evan Daniel's view at Couzo's decimal side s_W, 4.0e-12 above his exact optimum; "
+    "the selection layer (#580) redraws it at U",
+    241: "the grid-slack view at Couzo's decimal side s_W, 1.3e-11 above Evan Daniel's "
+    "exact optimum; the view at U draws fewer shared sides, and the owner keeps it "
+    "(13 October 2026, think-jnso)",
+    268: "Evan Daniel's view at Couzo's decimal side s_W, 1.2e-11 above his exact optimum; "
+    "the selection layer (#580) redraws it at U",
+    297: "the grid-slack view at Couzo's decimal side s_W, 4.5e-12 above Evan Daniel's "
+    "exact optimum; the view at U goes to the owner at row 7, who keeps this one "
+    "(13 October 2026)",
+    301: "the axis tool's view at Couzo's decimal side s_W, 4.6e-12 above Evan Daniel's "
+    "exact optimum; the selection layer (#580) redraws it at U",
+}
+"""Every count the layer draws above its case's verified upper bound `U`, and why it stays
+(think-du42; the owner, 13 October 2026: a valid view is exactly verified "with equal or
+smaller side"). The list is measured, not chosen: `--check-atlas` fails on a view above `U`
+at a count not named here, and on a count named here once its view is no longer above
+`U`, so it can only shrink on purpose."""
+
+
+def _bound_problems(
+    layout: AtlasLayout, records: Mapping[int, dict[str, Any]], sides: Mapping[int, Fraction]
+) -> list[str]:
+    """Every drawn view's exact side `s_V` against its case record's `U`, decided exactly
+    (#548 review B1): a view below `U` is a new result, registered before it is drawn
+    (policy section 4, row 3); a `bound` view is exactly at `U`; another generator's entry
+    records `s_V - U` as it is; and a view above `U` is one `ABOVE_U` names."""
+    if layout.frontier is None:
+        return []
+    problems: list[str] = []
+    above: set[int] = set()
+    for n, side in sorted(sides.items()):
+        record = records[n]
+        bound = case_bound(layout.frontier, n)
+        if bound is None:
+            problems.append(f"n={n}: its case record states no verified upper bound U")
+            continue
+        sign = side_against_bound(side, bound)
+        gap = side_minus_bound_text(side, bound)
+        if sign < 0:
+            problems.append(
+                f"n={n}: the view is {gap} from U, below it: a new result, registered "
+                "before it is drawn (row 3)"
+            )
+        if sign > 0:
+            above.add(n)
+            if n not in ABOVE_U:
+                problems.append(
+                    f"n={n}: the view is {gap} above U, at a count ABOVE_U does not name"
+                )
+        if not drawn_elsewhere(record):
+            continue
+        if record["side"]["relation"] == "bound" and sign != 0:
+            problems.append(f"n={n}: the relation is 'bound', but the view is {gap} from U")
+        found = record["side"].get("view_minus_verified_upper_bound")
+        if found != gap:
+            problems.append(f"n={n}: view_minus_verified_upper_bound is {found!r}, not {gap!r}")
+    problems.extend(
+        f"n={n}: ABOVE_U names it, but no view is drawn above U there; take it off the list"
+        for n in sorted(set(ABOVE_U) - above)
+    )
+    return problems
 
 
 ADMITTING_ROW = 10

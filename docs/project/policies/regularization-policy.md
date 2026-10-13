@@ -279,7 +279,7 @@ So it runs on request with a receipt, and the gates hold the decisions it produc
 
 | Check | What it holds | Where it runs |
 | --- | --- | --- |
-| `regularized atlas views match their index` | The index against the manifest, the witnesses and the views, by digest; with the layer’s contract, also the generator, method, side relation, identity and review-record fields | Records tier, every pull request |
+| `regularized atlas views match their index` | The index against the manifest, the witnesses and the views, by digest; with the layer’s contract, also the generator, method, side relation, identity and review-record fields; every drawn view’s exact side against $s_W$ and against the case record’s $U$, decided exactly, with the views above $U$ named in `ABOVE_U` | Records tier, every pull request |
 | `regularized atlas drawings match their index` | Every drawing re-rendered from its retained view | Records tier, every pull request |
 | `results rungs are earned and the view agrees` | `devtools.check_results` on each register result’s `regularizations` items | Records tier, every pull request |
 | `regularized atlas views re-derive exactly` | Every `regularize_axis_components/2` view re-derived byte for byte | Deferred: the `regularized-views` job, under its 450 s ceiling |

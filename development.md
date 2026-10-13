@@ -627,8 +627,9 @@ record to equal the `reference` kept beside it, and decides the drawn view again
 the rationals on both maintained routes, with its shades measured again.
 Its stand-in on every pull request is the records-tier step `regularized atlas views
 match their index`, which compares the same index with the manifest, the witnesses and
-the views by digest, and reads each other generator’s view against its entry, in about
-two seconds. The tool’s pool follows `PACK_JOBS`.
+the views by digest, reads each other generator’s view against its entry, and holds
+every drawn view’s exact side to the witness’s $s_W$ and to the case record’s $U$, in
+about two seconds. The tool’s pool follows `PACK_JOBS`.
 
 It was measured on 2026-10-02 on a four-cpu host that other sessions were also using, so
 read these as upper bounds:

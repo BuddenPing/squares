@@ -10,6 +10,7 @@ Usage, from `packing/`, each after
     reclassify --run-dir DIR [--n N ...]
     layer --run-dir DIR [DIR ...] --repo-root TREE [--select admitted|preview]
         [--exclude N ...] [--grid-run DIR --grid-counts N ...]
+    provenance --repo-root TREE [--check]
     report --run-dir DIR [--json]
 
 This is the automated pass of the regularization policy
@@ -111,6 +112,14 @@ rational approximation and no view of it can be `same`. `U` is the case record's
 that is rational, a closed form evaluated to 60 digits, else its printed decimal. The
 printed decimal alone would not do: at n = 51 it is the exact side rounded up at sixteen
 digits, below which every dilated certificate of the optimum falls.
+
+**Credit.** A view's `regularization.provenance` is the credit of the packing it
+redraws (`packing_credit`): the case record's credit for its reported bound at the
+bound, and at the witness's own side the witness's packing, which is the one before the
+improvement the record credits where the two differ. `provenance --repo-root TREE`
+restates the drawn views' credit by that rule, in each index entry and its view
+together, without the run directories; `--check` writes nothing and fails where it
+would.
 
 **The retry ladder** (the no-view study of 12 October 2026; rungs 3 and 5a under the
 owner's overnight instruction of the same day). These are policy-visible behaviours: each
@@ -1716,6 +1725,7 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
         "found_by": facts.get("found_by") or [],
         "improved_by": facts.get("improved_by") or [],
     }
+    source["witness_source_key"] = (witness.get("source") or {}).get("key")
     report["source"] = source
     report["verified_upper_bound"] = facts["verified_upper_bound"]
     report["verified_upper_bound_exact_form"] = facts["exact_form"]
@@ -2014,6 +2024,38 @@ METHOD = (
 MEASURED_IN = "devtools.check_half_angle_area.arrangement_gap, in devtools.regularize_evand"
 
 
+def packing_credit(
+    credit: Mapping[str, Any] | None, witness_key: str | None, relation: str | None
+) -> dict[str, Any] | None:
+    """The credit of the packing a view redraws, from the case record's credit for its
+    reported upper bound (`credit`), the source witness's own source key, and the view's
+    side relation.
+
+    A view at the verified upper bound (`bound`) redraws the packing solved to it, which
+    the record's reported bound credits. A view at the witness's own side redraws the
+    witness's packing: the reported one where the witness names the record's source or
+    the record credits no improvement, and otherwise the packing before the improvement
+    the record credits. At 182, 206, 241, 268 and 297 the record credits Evan Daniel's
+    exact optimum (T-098) and the witness is Francisco Couzo's packing at his printed
+    side (T-056), so a view at that side is credited to the witness's source, by the
+    record's finders, improved by no one (#548 review B1).
+    """
+    if credit is None:
+        return None
+    reported = {
+        "source_key": credit.get("source_key"),
+        "found_by": list(credit.get("found_by") or []),
+        "improved_by": list(credit.get("improved_by") or []),
+    }
+    if (
+        relation == "bound"
+        or not reported["improved_by"]
+        or witness_key in (None, reported["source_key"])
+    ):
+        return reported
+    return {"source_key": witness_key, "found_by": reported["found_by"], "improved_by": []}
+
+
 def regularization_record(report: Mapping[str, Any]) -> dict[str, Any] | None:
     """The count's regularization in the register's own terms, or None without a view.
 
@@ -2022,8 +2064,9 @@ def regularization_record(report: Mapping[str, Any]) -> dict[str, Any] | None:
     packings they redraw), so admitting a view copies the record into its index entry,
     or into a register result's `regularizations`, unchanged. Two fields stand in for
     the register's `of` until admission resolves it to a result: `of_witness`, the source
-    witness the view redraws, and `provenance`, the case record's credit for that packing
-    (its `source_key`, finders and improvers), which a regularization never changes.
+    witness the view redraws, and `provenance`, the credit of the packing it redraws
+    (`packing_credit`: its `source_key`, finders and improvers), which a regularization
+    never changes.
     `changes` counts the free squares the regularizer turned onto the axis
     (`straightened`) or to another angle (`re_angled`), and the largest determined-group
     merge in degrees; `identity` is measured here, on the view the decision is about.
@@ -2062,7 +2105,9 @@ def regularization_record(report: Mapping[str, Any]) -> dict[str, Any] | None:
     record: dict[str, Any] = {
         "n": report["n"],
         "of_witness": source.get("id") or f"W-known-best-n{int(report['n']):03d}",
-        "provenance": source.get("provenance"),
+        "provenance": packing_credit(
+            source.get("provenance"), source.get("witness_source_key"), chosen.get("relation")
+        ),
         "by": "project",
         "method": METHOD.format(
             pin=generator.get("pin"),
@@ -2632,15 +2677,60 @@ def write_preview(run_dirs: Sequence[Path], root: Path, select: str) -> dict[str
 
 
 def layer_layout(root: Path) -> Any:
-    """The layer under `root` as the axis tool's check reads it."""
+    """The layer under `root` as the axis tool's check reads it, with the tree's case
+    records where it keeps them, so the drawn views' sides are held to `U`."""
     root = root.resolve()
+    frontier = root / "packing/frontier"
     return axis.AtlasLayout(
         root / "packing",
         root,
         root / "packing/atlas/known-best/manifest.json",
         root / LAYER_DIR,
         root / "packing/witnesses",
+        frontier if frontier.is_dir() else None,
     )
+
+
+def restate_provenance(root: Path, *, write: bool = True) -> list[int]:
+    """Restate each drawn view's `regularization.provenance` by `packing_credit`, in its
+    index entry and in its view's certificate together, and return the counts it changed.
+
+    The recorded provenance is the case record's credit when the view was made, so the
+    rule is applied to it and to the source witness's key, not to the record as it stands
+    now. The view's squares are unchanged and only its certificate is rewritten, so its
+    digest is recomputed; `--verify-atlas` decides it again. The run directories are not
+    needed, which is why this exists: the views drawn before the rule credited the
+    packing at `U` where the view is at the witness's side (#548 review B1).
+    """
+    root = root.resolve()
+    layout = layer_layout(root)
+    index = read_json(layout.index)
+    changed: list[int] = []
+    for entry in index["entries"]:
+        record = entry.get("regularization") or {}
+        if entry.get("status") != "regularized" or "provenance" not in record:
+            continue
+        witness = load_yaml((root / entry["source"]["witness"]).read_text(encoding="utf-8"))
+        key = (witness["witness"].get("source") or {}).get("key")
+        credit = packing_credit(record["provenance"], key, entry["side"]["relation"])
+        if credit == record["provenance"]:
+            continue
+        changed.append(int(entry["n"]))
+        if not write:
+            continue
+        path = root / entry["view"]["path"]
+        document = load_yaml(gzip.decompress(path.read_bytes()).decode("utf-8"))
+        view = document["witness"]
+        view["certificate"]["regularization"]["provenance"] = credit
+        text = witness_document(view, schema=document["softschema"]["schema"])
+        with atomic_output_file(path) as temporary:
+            temporary.write_bytes(gzip.compress(text.encode("utf-8"), compresslevel=9, mtime=0))
+        record["provenance"] = credit
+        entry["view"]["sha256"] = sha256_of(text.encode("utf-8"))
+    if write and changed:
+        with atomic_output_file(layout.index) as temporary:
+            temporary.write_text(axis.index_text(index), encoding="utf-8")
+    return changed
 
 
 def write_layer_with_grid(
@@ -2892,6 +2982,11 @@ def parser() -> argparse.ArgumentParser:
         default=[],
         help="the counts at which to draw the grid-slack run's view rather than this one's",
     )
+    provenance_command = sub.add_parser(
+        "provenance", help="restate the drawn views' credit by packing_credit"
+    )
+    provenance_command.add_argument("--repo-root", type=Path, required=True)
+    provenance_command.add_argument("--check", action="store_true", help="write nothing")
     report_command = sub.add_parser("report", help="print a run's receipt as a table")
     report_command.add_argument("--run-dir", type=Path, required=True)
     report_command.add_argument("--json", action="store_true")
@@ -2928,6 +3023,11 @@ def main(argv: list[str] | None = None) -> int:
         for problem in problems:
             print(problem)
         return 1 if problems else 0
+    if arguments.command == "provenance":
+        changed = restate_provenance(arguments.repo_root, write=not arguments.check)
+        verb = "would restate" if arguments.check else "restated"
+        print(f"{verb} the provenance of {len(changed)} drawn view(s): {changed}")
+        return 1 if arguments.check and changed else 0
     if arguments.command == "report":
         receipt = read_json(arguments.run_dir / "receipt.json")
         print(json.dumps(receipt, indent=1) if arguments.json else report_table(receipt))

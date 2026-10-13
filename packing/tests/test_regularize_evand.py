@@ -1075,3 +1075,64 @@ def test_a_regularizer_refusal_keeps_its_reason_when_decided_again() -> None:
     }
     measured = drive.measured_from_report(relaxed, "solved")
     assert measured.status == "regularize: upstream's checker refused the certificate"
+
+
+def test_a_view_is_credited_to_the_packing_it_redraws() -> None:
+    """#548 review B1: at 182, 206, 241, 268 and 297 the case record credits Evan Daniel's
+    exact optimum, and the view at the witness's side redraws Francisco Couzo's packing."""
+    record = {
+        "source_key": "[evand exact optima 2026-10-05]",
+        "found_by": ["Francisco Couzo"],
+        "improved_by": ["Evan Daniel"],
+    }
+    couzo = "[franciscouzo square-packing 2026-09-27]"
+    assert drive.packing_credit(record, couzo, "bound") == record
+    assert drive.packing_credit(record, couzo, "same") == {
+        "source_key": couzo,
+        "found_by": ["Francisco Couzo"],
+        "improved_by": [],
+    }
+    assert drive.packing_credit(record, record["source_key"], "same") == record
+    # A witness that names its source in other words, where the record credits no
+    # improvement, is the reported packing.
+    kingbird = {"source_key": "[Kingbird]", "found_by": ["Erich Friedman"], "improved_by": []}
+    assert (
+        drive.packing_credit(kingbird, "Kingbird derived numerical facts", "same") == kingbird
+    )
+    assert drive.packing_credit(None, couzo, "same") is None
+
+
+def test_a_drawn_views_credit_is_restated_in_its_entry_and_its_view_together(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("PACK_JOBS", "1")
+    root, layout = scratch_tree(tmp_path)
+    path = root / "packing/witnesses/known-best/n-004.yaml"
+    row = load_witness(path, fallback_schema=drive.WITNESS_SCHEMA)
+    row["source"]["key"] = "[row finder 2026]"
+    write_witness(path, row)
+    assert axis.main(["--update-atlas"], layout=layout) == 0
+    run_dir = a_run(root, layout, tmp_path / "full")
+    report_path = run_dir / "n-004/report.json"
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+    report["regularization"]["provenance"] = {
+        "source_key": "[exact optima]",
+        "found_by": ["Finder"],
+        "improved_by": ["Improver"],
+    }
+    report_path.write_text(json.dumps(report), encoding="utf-8")
+    assert drive.write_layer([run_dir], root, "admitted")["written"] == [4]
+
+    assert drive.restate_provenance(root, write=False) == [4]
+    assert drive.main(["provenance", "--repo-root", str(root), "--check"]) == 1
+    assert drive.restate_provenance(root) == [4]
+    (entry,) = json.loads(layout.index.read_text(encoding="utf-8"))["entries"]
+    assert entry["regularization"]["provenance"] == {
+        "source_key": "[row finder 2026]",
+        "found_by": ["Finder"],
+        "improved_by": [],
+    }
+    view = load_yaml(gzip.decompress(layout.view(4).read_bytes()).decode())["witness"]
+    assert view["certificate"]["regularization"] == entry["regularization"]
+    assert axis.check_atlas(layout) == []
+    assert drive.restate_provenance(root) == []
