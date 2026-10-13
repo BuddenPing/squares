@@ -94,8 +94,18 @@ by the policy's decision table. Per count, in order:
 
 Every count writes `RUN/n-NNN/report.json`, and the run writes `RUN/receipt.json`: the
 generator (name, pin, local patches, interpreter), the parameters, one row per count with
-its sides, decision and seconds per stage, the register-result candidates of row 3, the
-review queue, and the run's CPU and wall seconds, children included.
+its sides, decision, own parameters and seconds per stage, the register-result candidates
+of row 3, the review queue, the solve's input and outputs by digest (kept for rows an
+earlier run into the same directory decided), and the run's CPU and wall seconds,
+children included. A count's report is removed when its run starts and written once it is
+decided, and each view's block names the view's bytes by their Git blob id, which `layer`
+holds the file to, so a verdict is never read beside bytes it was not reached on.
+
+**Stage reuse.** `--from-stage` reuses what the earlier stages left in the count's
+directory, and their settings and source with it. Reuse is refused, naming the stage to
+run from, where the witness's input today is not the stored `input.txt` (`input.json`
+records the witness it was written from), or where `--from-stage import` is asked for a
+variant, orientation or frame other than the stored regularization ran with.
 
 **What the measurements are.** Upstream's level, symmetry and moves are its own report,
 recorded as upstream's. The exact routes decide validity over Q and nothing else. The
@@ -106,10 +116,12 @@ generator preserves in the source orientation. The witness's frame for a decimal
 is its 36-digit rational promotion at centre dilation 1, whose exact side is `s_W`; the
 algebraic witness has no rational frame, so its identity is measured against a 55-digit
 rational approximation and no view of it can be `same`. `U` is the case record's
-`verified_upper_bound`, read by `apply_exact_ceilings.bound_value`: its exact form where
-that is rational, a closed form evaluated to 60 digits, else its printed decimal. The
-printed decimal alone would not do: at n = 51 it is the exact side rounded up at sixteen
-digits, below which every dilated certificate of the optimum falls.
+`verified_upper_bound`, held exactly (`verified_bound`): its exact form where that is a
+fraction, its printed decimal where it has no exact form, and a closed form as the one
+root of its minimal polynomial in a rational interval. A view is `bound` only at a
+rational `U`; row 3 compares a side with a closed form exactly; and a form the driver
+cannot read (n = 11's `root(P_trump11, ...)`) decides nothing, so a view there goes to
+review rather than being compared with a printed decimal.
 
 **The retry ladder** (the no-view study of 12 October 2026; rungs 3 and 5a under the
 owner's overnight instruction of the same day). These are policy-visible behaviours: each
@@ -164,6 +176,7 @@ from __future__ import annotations
 
 import argparse
 import fcntl
+import functools
 import gzip
 import hashlib
 import importlib
@@ -193,8 +206,8 @@ from devtools import census_atlas_contact_shades as shades
 from devtools import check_half_angle_area as area
 from devtools import check_rational_witness_independent as independent
 from devtools import evand_exact_certificates as evand
-from devtools.apply_exact_ceilings import bound_value
 from devtools.check_vendored_evand import apply_patch
+from devtools.retained_data import git_blob
 from devtools.upper_bound_packets import RATIONAL_DIGITS
 from sqpack.witness import (
     # The 36-digit rational pose at dilation 1 is the decimal witness's exact frame, as
@@ -422,6 +435,60 @@ def read_input(text: str) -> tuple[int, str, list[tuple[str, str, str]]]:
     return n, side, squares
 
 
+#: Beside `input.txt`: the witness it was written from, by path and digest, as recorded.
+INPUT_RECORD = "input.json"
+
+
+def reused_input(
+    directory: Path, witness: Mapping[str, Any], reused_frame: SourceFrame | None = None
+) -> None:
+    """Refuse to reuse a stage whose input is not what the witness gives today.
+
+    `--from-stage solve`, `regularize` and `import` reuse outputs made from `input.txt`.
+    Where the witness has changed since (#518 re-housed 42 counts), they describe another
+    input, and the report would name a witness the generator never read (review B of
+    #511, B2). The stored input is compared with the witness's input as text, so a change
+    that leaves the input as it was (a note, a credit) reuses the stage. Where the stored
+    regularization is reused (`reused_frame`, the witness's frame today) and started from
+    the witness's own pose, that pose is compared with today's too.
+    """
+    stored = directory / "input.txt"
+    if not stored.is_file():
+        raise EvandRunError(
+            f"{stored} is missing: run this count again from --from-stage input"
+        )
+    if stored.read_text(encoding="utf-8") != input_text(witness):
+        raise EvandRunError(
+            "the witness has changed since this count's input was written, so its later "
+            "stages describe another input: run this count again from --from-stage input"
+        )
+    regularized = directory / "regularize.json"
+    if reused_frame is None or not regularized.is_file():
+        return
+    if read_json(regularized).get("frame") != "witness":
+        return
+    framed = directory / "frame-witness/witness.exact.txt"
+    if not framed.is_file() or framed.read_text(encoding="utf-8") != frame_text(
+        witness, reused_frame
+    ):
+        raise EvandRunError(
+            "the witness's pose the regularizer started from is not the witness's today: "
+            "run this count again from --from-stage regularize"
+        )
+
+
+def input_record(directory: Path) -> dict[str, Any]:
+    """The exact solve's input by digest, and the witness it was written from as recorded
+    when it was written (obligation 6: inputs by digest)."""
+    stored = directory / "input.txt"
+    written = directory / INPUT_RECORD
+    return {
+        "path": stored.name,
+        "sha256": sha256_of(stored.read_bytes()),
+        "written_from": read_json(written).get("witness") if written.is_file() else None,
+    }
+
+
 def _placed(corners: Sequence[tuple[Any, Any]]) -> Placed:
     """Centre and `(cos, sin)` of a square from its corners, the first edge's direction."""
     xs = [Fraction(x) for x, _ in corners]
@@ -508,20 +575,146 @@ def case_facts(n: int) -> dict[str, Any]:
     }
 
 
-def upper_bound(facts: Mapping[str, Any]) -> Fraction | None:
-    """`U` as a rational for comparison: the exact form where it is rational, a closed form
-    evaluated to 60 digits, else the printed decimal (`apply_exact_ceilings.bound_value`).
+@dataclass(frozen=True)
+class VerifiedBound:
+    """The case record's verified upper bound `U`, held exactly.
 
-    The printed decimal alone would not do: at n = 51 it is the exact side rounded up at
-    sixteen digits, below which every dilated certificate of the optimum falls.
+    `rational` is `U` where it is a rational number: its exact form a fraction, or no
+    exact form beside the printed decimal, which is then the bound. A closed form is an
+    algebraic number, held as the one root of its minimal polynomial (`polynomial`,
+    integer coefficients, highest degree first) in the rational interval `interval`; a
+    rational side is compared with it exactly and is never equal to it. A form this
+    driver cannot read is `unread`, with the reason, and nothing is decided against it:
+    a printed decimal or a 60-digit evaluation stands above or below `U` by its rounding,
+    and would decide `bound` and row 3 by that rounding (review B of #511, B3).
     """
-    if facts["verified_upper_bound"] is None:
-        return None
-    if facts["exact_form"] is None:
-        return Fraction(str(facts["verified_upper_bound"]))
-    return bound_value(
-        {"value": facts["verified_upper_bound"], "exact_form": facts["exact_form"]}
+
+    form: str | None
+    rational: Fraction | None = None
+    polynomial: tuple[int, ...] = ()
+    interval: tuple[Fraction, Fraction] | None = None
+    unread: str | None = None
+
+    def compare(self, side: Fraction) -> int | None:
+        """-1, 0 or 1 as `side` is below, at or above `U`, decided exactly; None unread."""
+        if self.rational is not None:
+            return (side > self.rational) - (side < self.rational)
+        if self.interval is None:
+            return None
+        low, high = self.interval
+        if side <= low:
+            return -1
+        if side >= high:
+            return 1
+        # `U` is the polynomial's only root in (low, high), and a rational side is no
+        # root of an irreducible polynomial of degree two or more: the polynomial keeps
+        # its sign at `low` up to `U` and changes it there.
+        same_sign = (_evaluate(self.polynomial, side) > 0) == (
+            _evaluate(self.polynomial, low) > 0
+        )
+        return -1 if same_sign else 1
+
+    def difference(self, side: Fraction) -> float:
+        """`side - U` in binary64, for reports only; it decides nothing."""
+        if self.rational is not None:
+            return float(side - self.rational)
+        if self.interval is None:
+            return math.nan
+        low, high = self.interval
+        return float(side - (low + high) / 2)
+
+    def record(self) -> dict[str, Any]:
+        """How `U` was read, for the report."""
+        if self.rational is not None:
+            return {"kind": "rational", "value": literal(self.rational)}
+        if self.interval is not None:
+            return {
+                "kind": "algebraic",
+                "minimal_polynomial": list(self.polynomial),
+                "interval": [literal(end) for end in self.interval],
+            }
+        return {"kind": "unread", "form": self.form, "reason": self.unread}
+
+
+#: How narrow a closed form's isolating interval is made, so that a report's `minus_U`
+#: is accurate far below any side a generator writes; the comparison never needs it.
+BOUND_INTERVAL_WIDTH = Fraction(1, 10**60)
+
+
+def _evaluate(coefficients: Sequence[int], value: Fraction) -> Fraction:
+    total = Fraction(0)
+    for coefficient in coefficients:
+        total = total * value + coefficient
+    return total
+
+
+@functools.cache
+def _closed_form_bound(form: str) -> VerifiedBound:
+    """A closed form as the root of its minimal polynomial, isolated exactly."""
+    import sympy as sp  # noqa: PLC0415 -- the optional dependency, where it is used
+    from sympy.parsing.sympy_parser import (  # noqa: PLC0415
+        implicit_multiplication_application,
+        parse_expr,
+        standard_transformations,
     )
+
+    transformations = (*standard_transformations, implicit_multiplication_application)
+    try:
+        value = parse_expr(form, transformations=transformations)
+    except (SyntaxError, TypeError, ValueError, sp.SympifyError) as error:
+        return VerifiedBound(form, unread=f"the form does not parse: {error}")
+    if value.free_symbols or value.atoms(sp.Float):
+        return VerifiedBound(
+            form,
+            unread="the form names a symbol or a decimal, not an exact number this driver "
+            "reads; its printed decimal is not used in its place",
+        )
+    x = sp.Symbol("x")
+    polynomial = sp.minimal_polynomial(value, x, polys=True)
+    coefficients = tuple(int(c) for c in polynomial.all_coeffs())
+    if polynomial.degree() == 1:
+        return VerifiedBound(form, rational=Fraction(-coefficients[1], coefficients[0]))
+    approximate = sp.N(value, 80)
+    width = sp.Rational(BOUND_INTERVAL_WIDTH.numerator, BOUND_INTERVAL_WIDTH.denominator)
+    # Real root isolation over Q: each interval holds exactly one root; the 80-digit value
+    # only picks which.
+    isolated: Any = polynomial.intervals(eps=width)
+    found = [
+        (Fraction(str(low)), Fraction(str(high)))
+        for (low, high), _multiplicity in isolated
+        if low <= approximate <= high
+    ]
+    if len(found) != 1:
+        return VerifiedBound(form, unread="no single root of its minimal polynomial is it")
+    return VerifiedBound(form, polynomial=coefficients, interval=found[0])
+
+
+def verified_bound(facts: Mapping[str, Any]) -> VerifiedBound | None:
+    """The record's verified upper bound held exactly (`VerifiedBound`), None without one."""
+    value, form = facts["verified_upper_bound"], facts["exact_form"]
+    if value is None:
+        return None
+    if form is None:
+        return VerifiedBound(None, rational=Fraction(str(value)))
+    try:
+        return VerifiedBound(str(form), rational=Fraction(str(form).replace(" ", "")))
+    except ValueError:
+        return _closed_form_bound(str(form))
+
+
+def upper_bound(facts: Mapping[str, Any]) -> Fraction | None:
+    """`U` where it is a rational number exactly, else None.
+
+    Its exact form where that is a fraction, or its printed decimal where the record has
+    no exact form, which is then the bound. A closed form is not rational, so no side
+    equals it and no frame is built at it; `verified_bound` holds it exactly, for
+    comparison. A 60-digit evaluation of it (`apply_exact_ceilings.bound_value`) lies
+    above or below it by its rounding, so it is never read as `U` here. Neither is the
+    printed decimal of a form: at n = 51 it is the exact side rounded up at sixteen
+    digits, below which every dilated certificate of the optimum falls.
+    """
+    bound = verified_bound(facts)
+    return None if bound is None else bound.rational
 
 
 # --------------------------------------------------------------------------------------
@@ -604,30 +797,40 @@ def solver_tree(replica: Path, patches: Sequence[str]) -> Path:
 
     With replica patches, a copy of the replica's `search/exact` modules with each patch
     applied (`check_vendored_evand.apply_patch`, exact context, refused rather than fuzzed)
-    under `replica/patched/NAME/`, built once: in a staging directory renamed into place,
-    so the pool's workers never run a half-written copy.
+    under `replica/patched/NAME-KEY/`, built once: in a staging directory renamed into
+    place, so the pool's workers never run a half-written copy. `KEY` names what the copy
+    is built from, the pinned modules' bytes and each patch's, so a re-pin or an edited
+    patch builds a new copy rather than running the old one under the new name (review B
+    of #511, B7). It is a cache key: nothing compares it.
     """
     exact = Path("search/exact")
     if not patches:
         return replica / exact
-    target = replica / "patched" / "+".join(patches)
+    recorded = replica_patches()
+    diffs: dict[str, str] = {}
+    for name in patches:
+        record = recorded.get(name)
+        if record is None:
+            raise EvandRunError(f"replica patch {name!r} is not recorded in vendored.yaml")
+        if Path(str(record["path"])).parent != exact:
+            raise EvandRunError(f"replica patch {name!r} patches outside {exact}")
+        diffs[name] = (REPO / str(record["patch"])).read_text(encoding="utf-8")
+    key = hashlib.sha256()
+    for name in REPLICA_FILES[str(exact)]:
+        key.update((VENDOR / exact / name).read_bytes())
+    for diff in diffs.values():
+        key.update(diff.encode("utf-8"))
+    target = replica / "patched" / f"{'+'.join(patches)}-{key.hexdigest()[:12]}"
     if (target / exact).is_dir():
         return target / exact
-    recorded = replica_patches()
     (replica / "patched").mkdir(parents=True, exist_ok=True)
     staging = Path(tempfile.mkdtemp(prefix=".staging-", dir=replica / "patched"))
     try:
         (staging / exact).mkdir(parents=True)
         for name in REPLICA_FILES[str(exact)]:
             shutil.copyfile(VENDOR / exact / name, staging / exact / name)
-        for name in patches:
-            record = recorded.get(name)
-            if record is None:
-                raise EvandRunError(f"replica patch {name!r} is not recorded in vendored.yaml")
-            if Path(str(record["path"])).parent != exact:
-                raise EvandRunError(f"replica patch {name!r} patches outside {exact}")
-            patched = staging / str(record["path"])
-            diff = (REPO / str(record["patch"])).read_text(encoding="utf-8")
+        for name, diff in diffs.items():
+            patched = staging / str(recorded[name]["path"])
             write_text(patched, apply_patch(patched.read_text(encoding="utf-8"), diff))
         try:
             staging.rename(target)
@@ -1106,6 +1309,38 @@ def regularize_failure(document: Mapping[str, Any]) -> str | None:
     return None
 
 
+def stored_settings(regularized: Mapping[str, Any], options: Options) -> Options:
+    """The settings a reused regularization ran with, refused where they are not asked for.
+
+    `--from-stage import` reuses `regularize.json`, which records the variant, style and
+    orientation the shim ran and the frame it started from. A stored output is decided
+    and labelled by those, never by the command line's, which may differ: a `fewest`
+    regularization re-imported under the default would otherwise be admitted at row 10
+    as `conservative` (review B of #511, B1). An output written before the frame was
+    recorded started from the KKT point, the only frame there was.
+    """
+    stored = {
+        "variant": regularized.get("variant"),
+        "orient": regularized.get("orient"),
+        "frame": regularized.get("frame", "kkt"),
+    }
+    asked = {"variant": options.variant, "orient": options.orient, "frame": options.frame}
+    differ = [
+        f"--{name} {value} (asked: {asked[name]})"
+        for name, value in stored.items()
+        if value is not None and str(value) != asked[name]
+    ]
+    style = regularized.get("style")
+    if style is not None and style != STYLE:
+        differ.append(f"style {style} (this driver runs {STYLE})")
+    if differ:
+        raise EvandRunError(
+            f"the stored regularization ran with {', '.join(differ)}: run this count again "
+            "from --from-stage regularize, or ask for the settings it ran with"
+        )
+    return replace(options, **{name: str(value) for name, value in stored.items() if value})
+
+
 # --------------------------------------------------------------------------------------
 # Stages 5 and 6: the solved view and the same-side view, decided here
 # --------------------------------------------------------------------------------------
@@ -1186,9 +1421,10 @@ def solved_view(
     if decided["exact_verify"]["passed"] and decided["independent"]["passed"]:
         document["claim"]["coordinate_provenance"] = "verified"
     path = directory / "view-solved.yaml"
-    write_view(path, document)
+    blob = write_view(path, document)
     block = {
         "path": path.name,
+        "git_blob": blob,
         "id": document["id"],
         "side": decimal_text(certificate.side, 40),
         "side_exact": literal(certificate.side),
@@ -1207,11 +1443,18 @@ def write_text(path: Path, text: str) -> None:
         temporary.write_text(text, encoding="utf-8")
 
 
-def write_view(path: Path, document: Mapping[str, Any]) -> None:
-    """A view as a Witness/v2 file, held to the witness schema before it is written."""
+def write_view(path: Path, document: Mapping[str, Any]) -> str:
+    """A view as a Witness/v2 file, held to the witness schema before it is written.
+
+    Returns the Git blob id of the bytes written, which the report keeps beside the
+    view's verdict, so that the verdict names the bytes it was reached on and `layer`
+    takes no other (review B of #511, B5). The run directory is outside Git; Git's own
+    name for the bytes is what binds them.
+    """
     text = witness_document(document)
     validate_witness_document(load_yaml(text), path=path, fallback_schema=WITNESS_SCHEMA)
     write_text(path, text)
+    return git_blob(text.encode("utf-8"))
 
 
 def same_side_module() -> tuple[Any | None, str | None]:
@@ -1254,18 +1497,29 @@ def same_view(
     if outcome.status != "same" or outcome.witness is None:
         return None, None, f"same-side-refused: {outcome.reason or 'no reason given'}"
     document = dict(outcome.witness)
-    # The resolver's own certificate fields stay; the driver's provenance fills the rest.
-    stated = dict(document.get("certificate") or {})
-    for key, value in certificate_block(source, "same", options, pin).items():
-        stated.setdefault(key, value)
+    # The driver's provenance wins where the resolver's certificate names the same field:
+    # the source by path and digest rather than by id alone, and this generator's kind
+    # (review B of #511, B8). The resolver's own words for those fields are kept under
+    # `resolver`, and its other fields stay as it wrote them.
+    resolver = dict(document.get("certificate") or {})
+    provenance = certificate_block(source, "same", options, pin)
+    stated = {**resolver, **provenance}
+    replaced = {
+        key: resolver[key]
+        for key in provenance
+        if key in resolver and resolver[key] != provenance[key]
+    }
+    if replaced:
+        stated["resolver"] = replaced
     document["certificate"] = stated
     path = directory / "view-same.yaml"
-    write_view(path, document)
+    blob = write_view(path, document)
     side, _placements, corners = view_geometry(document)
     result, _report = exact_verify(document)
     second = independent.check_squares(corners, side)
     block = {
         "path": path.name,
+        "git_blob": blob,
         "id": document.get("id"),
         "side": decimal_text(side, 40),
         "side_exact": literal(side),
@@ -1482,7 +1736,10 @@ class Measured:
     routes: Mapping[str, bool] = field(default_factory=dict)
     relation: Literal["same", "bound", "solved"] | None = None
     side: Fraction | None = None
+    #: `U` where it is rational (`upper_bound`); `bound` holds it exactly in every case,
+    #: and decides where it is given (`below_bound`).
     upper: Fraction | None = None
+    bound: VerifiedBound | None = None
     pose_equals_witness: bool = False
     one_to_one: bool = True
     unnamed_turns: tuple[int, ...] = ()
@@ -1544,6 +1801,21 @@ def visible_change(ident: Mapping[str, Any], shaded: Mapping[str, Any]) -> bool:
     )
 
 
+def below_bound(m: Measured) -> bool | None:
+    """Whether the view's side is below `U`, decided exactly (row 3).
+
+    Against `m.bound` where it is given, a closed form included (`VerifiedBound`), else
+    against `m.upper`; None where the record's bound could not be read, so that nothing
+    is decided against it.
+    """
+    if m.side is None:
+        return False
+    if m.bound is not None:
+        order = m.bound.compare(m.side)
+        return None if order is None else order < 0
+    return m.upper is not None and m.side < m.upper
+
+
 def table_row(measured: Measured) -> Decision:  # noqa: PLR0911 -- one return per table row
     """Rows 1 to 10 of the policy's decision table; the first that matches decides."""
     m = measured
@@ -1555,19 +1827,37 @@ def table_row(measured: Measured) -> Decision:  # noqa: PLR0911 -- one return pe
         return Decision(
             2, "refuse", "refused", "invalid", f"refused by {names}; open a defect bead"
         )
-    if m.upper is not None and m.side is not None and m.side < m.upper:
+    below = below_bound(m)
+    if below is None:
+        unread = m.bound.unread if m.bound is not None else None
+        return Decision(
+            None,
+            "review",
+            None,
+            None,
+            f"the verified upper bound could not be read exactly ({unread}), so row 3 "
+            "was not decided and nothing is compared with its printed decimal",
+        )
+    if below and m.side is not None:
+        gap = (
+            -m.bound.difference(m.side)
+            if m.bound is not None
+            else float(m.upper - m.side)
+            if m.upper is not None
+            else math.nan
+        )
         return Decision(
             3,
             "held",
             None,
             None,
             f"register first: the {m.relation} side is below the verified upper bound by "
-            f"{float(m.upper - m.side):.3e}, a register-result candidate",
+            f"{gap:.3e}, a register-result candidate",
         )
     # A view at exactly the verified bound (`bound`) is a drawing frame, as a same-side
     # view is (owner, 12 October 2026); only another side stops here.
     if m.relation == "solved":
-        if m.upper is None:
+        if m.upper is None and m.bound is None:
             where = "not the witness's; U unknown, so row 3 was not decided"
         else:
             where = "not the witness's and above the verified upper bound"
@@ -1653,14 +1943,30 @@ def _regression_count(shaded: Mapping[str, Any]) -> int:
     return len(shaded["regressions"]) + len(current.get("regressions") or [])
 
 
+def _previous_report(path: Path) -> dict[str, Any] | None:
+    """The count's report from the run before, if there is one that reads."""
+    try:
+        previous = read_json(path)
+    except FileNotFoundError, json.JSONDecodeError:
+        return None
+    return previous if isinstance(previous, dict) else None
+
+
 def run_count(n: int, options: Options) -> dict[str, Any]:
-    """Every stage for one count; the report is written and returned, never raised."""
+    """Every stage for one count; the report is written and returned, never raised.
+
+    The earlier run's report is removed first and written again only once the count is
+    decided, so a re-run that is interrupted leaves no verdict beside the views it was
+    remaking (review B of #511, B5); its solve record is kept in memory for `kept_solve`.
+    """
     directory = count_dir(options.run_dir, n)
     directory.mkdir(parents=True, exist_ok=True)
+    previous = _previous_report(directory / "report.json")
+    (directory / "report.json").unlink(missing_ok=True)
     report: dict[str, Any] = {"format": REPORT_FORMAT, "n": n, "status": "ok", "error": None}
     wall, cpu = time.perf_counter(), _self_cpu() + _children_cpu()
     try:
-        _run_stages(n, options, directory, report)
+        _run_stages(n, options, directory, report, previous)
     except Exception as error:  # noqa: BLE001 -- one count's failure must not stop the run
         report["status"] = "error"
         report["error"] = f"{type(error).__name__}: {error}"
@@ -1674,7 +1980,7 @@ def run_count(n: int, options: Options) -> dict[str, Any]:
     return report
 
 
-def kept_solve(directory: Path) -> dict[str, Any]:
+def kept_solve(directory: Path, previous: Mapping[str, Any] | None) -> dict[str, Any]:
     """The kept solve, read back for `--from-stage regularize` or `import`.
 
     A solve that wrote no `witness.json` (a timeout) stands as the count's previous report
@@ -1686,20 +1992,26 @@ def kept_solve(directory: Path) -> dict[str, Any]:
         solved["seconds"] = solved.get("solver_seconds")
         solved.update(attempt_of(directory / "solve"))
         return solved
-    previous = directory / "report.json"
-    stored = read_json(previous).get("solve") if previous.is_file() else None
+    stored = (previous or {}).get("solve")
     if not isinstance(stored, dict) or stored.get("gate") is not None:
         raise EvandRunError(f"{meta} is missing: run this count again from --from-stage solve")
     return dict(stored)
 
 
-def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any]) -> None:
+def _run_stages(
+    n: int,
+    options: Options,
+    directory: Path,
+    report: dict[str, Any],
+    previous: Mapping[str, Any] | None = None,
+) -> None:
     pin = vendored_pin()
     path = witness_path(n)
     witness = load_witness(path, fallback_schema=WITNESS_SCHEMA)
     frame = source_frame(witness)
     facts = case_facts(n)
-    upper = upper_bound(facts)
+    bound = verified_bound(facts)
+    upper = bound.rational if bound is not None else None
     source = {
         "id": witness.get("id"),
         "path": relative(path),
@@ -1717,6 +2029,7 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
     report["source"] = source
     report["verified_upper_bound"] = facts["verified_upper_bound"]
     report["verified_upper_bound_exact_form"] = facts["exact_form"]
+    report["verified_upper_bound_as_read"] = bound.record() if bound is not None else None
     report["generator"] = {
         "name": pin["name"],
         "pin": pin["pin"],
@@ -1726,6 +2039,7 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
         "orient": options.orient,
         "frame": options.frame,
     }
+    report["parameters"] = run_parameters(options)
     seconds: dict[str, float | None] = {}
     report["seconds"] = seconds
     first = STAGES.index(options.from_stage)
@@ -1742,12 +2056,20 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
     started = time.perf_counter()
     if first <= STAGES.index("input"):
         write_text(directory / "input.txt", input_text(witness))
+        write_json(
+            directory / INPUT_RECORD,
+            {"witness": {"path": source["path"], "sha256": source["sha256"]}},
+        )
+    else:
+        reused = frame if first > STAGES.index("regularize") else None
+        reused_input(directory, witness, reused)
+    report["input"] = input_record(directory)
     seconds["input"] = round(time.perf_counter() - started, 3)
 
     if first <= STAGES.index("solve"):
         solved = solve_with_retries(directory, replica, options.timeout, frame.side)
     else:
-        solved = kept_solve(directory)
+        solved = kept_solve(directory, previous)
     # The replica patches the kept solve ran with are this count's, and its views' too.
     pin = {**pin, "patches": [*pin["patches"], *applied_patches(solved.get("patches") or [])]}
     report["generator"]["patches"] = pin["patches"]
@@ -1768,9 +2090,14 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
         regularized = regularize(directory, replica, n, options)
     else:
         regularized = read_json(directory / "regularize.json")
+        # The stored regularization is decided and labelled by what it ran with (B1).
+        options = stored_settings(regularized, options)
     seconds["regularize"] = regularized.get("wall_seconds", regularized.get("seconds"))
-    report["generator"]["frame"] = regularized.get("frame", options.frame)
+    report["generator"].update(
+        variant=options.variant, orient=options.orient, frame=options.frame
+    )
     report["regularize"] = regularize_block(regularized)
+    report["parameters"] = run_parameters(options)
     failure = regularize_failure(regularized)
     if failure is not None:
         report["status"] = "timeout" if "timeout" in failure else "generator-failed"
@@ -1806,6 +2133,7 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
     )
     common = {
         "upper": upper,
+        "bound": bound,
         "variant": options.variant,
         "determined_merge": determined,
         "level": regularized.get("level"),
@@ -1824,7 +2152,7 @@ def _run_stages(n: int, options: Options, directory: Path, report: dict[str, Any
         block["minus_s_W"] = (
             f"{float(side - frame.side):.3e}" if frame.side is not None else None
         )
-        block["minus_U"] = f"{float(side - upper):.3e}" if upper is not None else None
+        block["minus_U"] = f"{bound.difference(side):.3e}" if bound is not None else None
         fields: dict[str, Any] = {}
         if name == chosen or relation != "solved":
             ident, shaded, move, equal = _measure_view(
@@ -1870,7 +2198,7 @@ def decide(
         # Registering the view makes its side the verified bound, so the row it reaches
         # then is what deciding "register first" leads to (owner, 12 October 2026).
         relation = "bound" if chosen.relation == "solved" else chosen.relation
-        after = replace(chosen, upper=chosen.side, relation=relation)
+        after = replace(chosen, upper=chosen.side, bound=None, relation=relation)
         governing["after_registration"] = asdict(classify(after))
     report["decision"] = governing
     report["decisions"] = decisions
@@ -1879,6 +2207,21 @@ def decide(
 # --------------------------------------------------------------------------------------
 # The run and its receipt
 # --------------------------------------------------------------------------------------
+
+
+def run_parameters(options: Options) -> dict[str, Any]:
+    """The settings one count ran with, for its report and its receipt row: a receipt
+    gathers rows from runs made with other settings (review B of #511, B6)."""
+    return {
+        "variant": options.variant,
+        "style": STYLE,
+        "orient": options.orient,
+        "frame": options.frame,
+        "same_mode": options.same_mode,
+        "timeout": options.timeout,
+        "regularize_timeout": options.regularize_timeout,
+        "from_stage": options.from_stage,
+    }
 
 
 def receipt_row(report: Mapping[str, Any]) -> dict[str, Any]:
@@ -1922,6 +2265,7 @@ def receipt_row(report: Mapping[str, Any]) -> dict[str, Any]:
         "solved_row": solved_decision.get("row"),
         "seconds": report.get("seconds"),
         "cost": report.get("cost"),
+        "parameters": report.get("parameters"),
     }
 
 
@@ -2122,12 +2466,13 @@ def measured_from_report(report: Mapping[str, Any], name: Output) -> Measured:
             return Measured(name, produced=False, status=failure)
         return Measured(name, produced=False, status=f"solve {status}")
     regularized = report.get("regularize") or {}
-    upper = upper_bound(
+    bound = verified_bound(
         {
             "verified_upper_bound": report.get("verified_upper_bound"),
             "exact_form": report.get("verified_upper_bound_exact_form"),
         }
     )
+    upper = bound.rational if bound is not None else None
     side = Fraction(block["side_exact"])
     printed = (report.get("source") or {}).get("s_W_exact")
     # Derived again rather than read, so reports written before `bound` existed decide
@@ -2162,6 +2507,7 @@ def measured_from_report(report: Mapping[str, Any], name: Output) -> Measured:
         relation=relation,
         side=side,
         upper=upper,
+        bound=bound,
         variant=(report.get("generator") or {}).get("variant", "conservative"),
         determined_merge=any(
             isinstance(change, list) and change and change[0] == "determined-merge"
@@ -2200,14 +2546,27 @@ def reclassify(run_dir: Path, counts: Sequence[int] | None = None) -> dict[str, 
     For a change to the decision table or to how decisions are reported: every count's
     `decision` and `decisions` are rewritten from its stored measurements, and the
     receipt's rows and lists follow; its cost and parameters are left as they were.
+
+    It decides on the `U` each report stored when its count ran, not on the case record
+    as it stands. A count whose record has moved `U` since (T-151 moved 60 ceilings) is
+    listed in the receipt's `reclassified.stale_bounds` and printed by the command, so a
+    stale row 3 or 4 is never decided again silently (review B of #511, B10).
     """
     path = run_dir / "receipt.json"
     receipt = read_json(path)
     rows = {int(row["n"]): row for row in receipt.get("counts", [])}
     chosen = sorted(rows) if counts is None else list(counts)
+    stale: list[int] = []
     for n in chosen:
         report_path = count_dir(run_dir, n) / "report.json"
         report = read_json(report_path)
+        facts = case_facts(n)
+        stored = (
+            report.get("verified_upper_bound"),
+            report.get("verified_upper_bound_exact_form"),
+        )
+        if stored != (facts["verified_upper_bound"], facts["exact_form"]):
+            stale.append(n)
         _current_histograms(n, report)
         outputs = report.get("outputs") or {}
         solved = measured_from_report(report, "solved")
@@ -2218,7 +2577,6 @@ def reclassify(run_dir: Path, counts: Sequence[int] | None = None) -> dict[str, 
         decide(report, solved, same, outputs.get("same_refusal"))
         source = report.setdefault("source", {})
         if not source.get("provenance"):
-            facts = case_facts(n)
             source["provenance"] = {
                 "source_key": facts.get("source_key"),
                 "found_by": facts.get("found_by") or [],
@@ -2229,7 +2587,7 @@ def reclassify(run_dir: Path, counts: Sequence[int] | None = None) -> dict[str, 
         rows[n] = receipt_row(report)
     ordered = [rows[n] for n in sorted(rows)]
     receipt.update({"counts": ordered, **receipt_lists(ordered)})
-    receipt["reclassified"] = {"policy": POLICY, "counts": chosen}
+    receipt["reclassified"] = {"policy": POLICY, "counts": chosen, "stale_bounds": stale}
     write_json(path, receipt)
     return receipt
 
@@ -2349,7 +2707,8 @@ def write_layer(run_dirs: Sequence[Path], root: Path, select: str) -> dict[str, 
     """Write the selected views of finished runs into the layer under `root`, a scratch
     tree and never this checkout (`SELECTIONS`), merged with the index already there, a
     later run winning at a count two runs decided. Returns what was written, what kept
-    the current view, and what was left out."""
+    the current view, what was left out, and the views whose bytes are not the ones their
+    report decided (or whose report predates binding them), which are never written."""
     if select not in SELECTIONS:
         raise EvandRunError(f"unknown selection {select!r}")
     root = root.resolve()
@@ -2369,16 +2728,25 @@ def write_layer(run_dirs: Sequence[Path], root: Path, select: str) -> dict[str, 
     written: list[int] = []
     kept: list[int] = []
     left_out: list[int] = []
+    unbound: list[int] = []
     for n in sorted(found):
         directory, report = found[n]
         chosen = layer_candidate(report, select)
         if chosen is None:
             left_out.append(n)
             continue
+        # The verdict is the one reached on these bytes, or the view is not taken: a
+        # re-run interrupted after writing its views, or an edited file, would otherwise
+        # be written under a verdict no route reached on it (review B of #511, B5).
+        data = (directory / f"view-{chosen}.yaml").read_bytes()
+        decided_on = (report.get("outputs") or {})[chosen].get("git_blob")
+        if decided_on is None or git_blob(data) != decided_on:
+            unbound.append(n)
+            continue
         if not replaces_current(entries.get(n), root, report):
             kept.append(n)
             continue
-        document = load_yaml((directory / f"view-{chosen}.yaml").read_text(encoding="utf-8"))
+        document = load_yaml(data.decode("utf-8"))
         text = witness_document(layer_view(report, document["witness"]))
         view_path = f"{LAYER_DIR}/n-{n:03d}-regularized.yaml.gz"
         target = root / view_path
@@ -2401,7 +2769,13 @@ def write_layer(run_dirs: Sequence[Path], root: Path, select: str) -> dict[str, 
             "views the policy holds or refuses, for the owner to see before deciding"
         )
     write_json(index_path, index)
-    return {"select": select, "written": written, "kept_current": kept, "left_out": left_out}
+    return {
+        "select": select,
+        "written": written,
+        "kept_current": kept,
+        "left_out": left_out,
+        "not_the_decided_bytes": unbound,
+    }
 
 
 def write_receipt(
@@ -2427,6 +2801,15 @@ def write_receipt(
     history = list((previous or {}).get("previous_runs", []))
     if previous is not None:
         history.append({"parameters": previous.get("parameters"), "cost": previous.get("cost")})
+    # A row kept from an earlier run keeps the outputs that run named by digest; this
+    # run's counts are named afresh (review B of #511, B6). Each row carries its own
+    # `parameters`; the receipt's are this run's.
+    kept = {
+        key: value
+        for key, value in ((previous or {}).get("solve_outputs") or {}).items()
+        if int(key) in rows and int(key) not in reports
+    }
+    named = {**kept, **solve_digests(run_dir, sorted(reports))}
     receipt = {
         "format": RECEIPT_FORMAT,
         "generated_by": GENERATED_BY,
@@ -2435,7 +2818,7 @@ def write_receipt(
         "parameters": parameters,
         "counts": ordered,
         **receipt_lists(ordered),
-        "solve_outputs": solve_digests(run_dir, sorted(reports)),
+        "solve_outputs": {key: named[key] for key in sorted(named, key=int)},
         "cost": dict(cost),
         "previous_runs": history,
     }
@@ -2444,8 +2827,14 @@ def write_receipt(
 
 
 def solve_digests(run_dir: Path, counts: Sequence[int]) -> dict[str, dict[str, str]]:
-    """The retained solve outputs by digest, as policy section 9's question 8 asks."""
-    names = ("solve/witness.exact.txt", "solve/witness.contacts.json", "regularize.cert")
+    """The retained solve outputs by digest, as policy section 9's question 8 asks, and
+    the exact solve's input (obligation 6)."""
+    names = (
+        "input.txt",
+        "solve/witness.exact.txt",
+        "solve/witness.contacts.json",
+        "regularize.cert",
+    )
     found: dict[str, dict[str, str]] = {}
     for n in counts:
         directory = count_dir(run_dir, n)
@@ -2563,7 +2952,7 @@ def parser() -> argparse.ArgumentParser:
         "--from-stage",
         choices=STAGES,
         default="input",
-        help="reuse the outputs of the stages before this one",
+        help="reuse the outputs, settings and source of the stages before this one",
     )
     run_command.add_argument("--same-mode", choices=("relax", "refuse"), default="relax")
     run_command.add_argument(
@@ -2602,6 +2991,13 @@ def main(argv: list[str] | None = None) -> int:
         counts = None if arguments.n is None else parse_counts(arguments.n)
         receipt = reclassify(arguments.run_dir, counts)
         print(report_table(receipt))
+        stale = receipt["reclassified"]["stale_bounds"]
+        if stale:
+            print(
+                f"decided on the U each report stored; the case record has moved U since "
+                f"at {stale}: run those counts again (--from-stage import) to decide them "
+                "on today's U"
+            )
         return 0
     if arguments.command == "layer":
         summary = write_layer(arguments.run_dir, arguments.repo_root, arguments.select)

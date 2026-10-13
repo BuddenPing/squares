@@ -307,6 +307,18 @@ def test_a_patch_applies_by_its_exact_context_or_not_at_all() -> None:
         vendored.apply_patch(original, PATCH.rsplit("\n", 3)[0] + "\n")
 
 
+def test_a_hunk_that_could_land_in_two_places_or_mid_line_is_refused() -> None:
+    """Review B of #511, B9: occurrences are whole lines, and overlapping ones count."""
+    hunk = "--- a/f\n+++ b/f\n@@ -1,3 +1,3 @@\n x\n-y\n+Z\n x\n"
+    with pytest.raises(vendored.PatchError, match="occurs 2 times"):
+        vendored.apply_patch("x\ny\nx\ny\nx\n", hunk)
+    assert vendored.apply_patch("w\nx\ny\nx\n", hunk) == "w\nx\nZ\nx\n"
+    tail = "--- a/f\n+++ b/f\n@@ -1,1 +1,1 @@\n-y = 1\n+y = 2\n"
+    with pytest.raises(vendored.PatchError, match="is not in the text"):
+        vendored.apply_patch("xy = 1\n", tail)
+    assert vendored.apply_patch("x = 0\ny = 1\n", tail) == "x = 0\ny = 2\n"
+
+
 def test_the_real_replica_patch_applies_to_the_pinned_solver() -> None:
     manifest = vendored.load_manifest(vendored.VENDORED / vendored.MANIFEST_NAME)
     change = manifest.changes["search/exact/exactsolve.py"]

@@ -787,13 +787,15 @@ def test_a_rerun_that_stops_at_the_solve_leaves_no_earlier_output_behind(
     _timed_out_solve(monkeypatch)
     directory = drive.count_dir(tmp_path, 26)
     directory.mkdir(parents=True)
+    (directory / "input.txt").write_text(drive.input_text(witness(26)), encoding="utf-8")
     for name in STALE_OUTPUTS:
         (directory / name).write_text("an earlier run's output", encoding="utf-8")
     report = drive.run_count(26, Options(run_dir=tmp_path, from_stage=stage))
     assert report["status"] == "timeout"
     assert report["outputs"] == {"solved": None, "same": None, "same_refusal": None}
     assert [name for name in STALE_OUTPUTS if (directory / name).exists()] == []
-    assert drive.solve_digests(tmp_path, [26]) == {}
+    # Only the exact solve's input is left to name by digest.
+    assert list(drive.solve_digests(tmp_path, [26])["26"]) == ["input.txt"]
 
 
 def test_a_later_stage_rerun_of_a_timed_out_solve_keeps_its_solve_and_decision(
@@ -810,7 +812,14 @@ def test_a_later_stage_rerun_of_a_timed_out_solve_keeps_its_solve_and_decision(
         assert (again["status"], again["error"]) == ("timeout", None)
         assert again["solve"]["attempts"] == attempts
         assert again["decision"] == first["decision"]
-    # With no solve and no report to keep it, the count says to run from the solve.
+    # With no input, the count says to run from the input; with no solve and no report
+    # to keep it, from the solve.
+    unsolved = drive.run_count(27, Options(run_dir=tmp_path, from_stage="regularize"))
+    assert unsolved["status"] == "error"
+    assert "--from-stage input" in unsolved["error"]
+    (drive.count_dir(tmp_path, 27) / "input.txt").write_text(
+        drive.input_text(witness(27)), encoding="utf-8"
+    )
     unsolved = drive.run_count(27, Options(run_dir=tmp_path, from_stage="regularize"))
     assert unsolved["status"] == "error"
     assert "--from-stage solve" in unsolved["error"]
@@ -822,7 +831,8 @@ def test_a_replica_patch_is_applied_to_a_copy_and_never_under_vendor(tmp_path: P
     replica = drive.build_replica(tmp_path / "run", rows)
     assert drive.solver_tree(replica, []) == replica / "search/exact"
     patched = drive.solver_tree(replica, ["probe-flat-stall-stop"])
-    assert patched == replica / "patched/probe-flat-stall-stop/search/exact"
+    assert patched.parent.parent.parent == replica / "patched"
+    assert patched.parent.parent.name.startswith("probe-flat-stall-stop-")
     assert drive.solver_tree(replica, ["probe-flat-stall-stop"]) == patched
     assert vendor_listing() == before
     pristine = (drive.VENDOR / "search/exact/exactsolve.py").read_text()
@@ -905,3 +915,317 @@ def test_a_regularizer_refusal_keeps_its_reason_when_decided_again() -> None:
     }
     measured = drive.measured_from_report(relaxed, "solved")
     assert measured.status == "regularize: upstream's checker refused the certificate"
+
+
+# --------------------------------------------------------------------------------------
+# Review B of #511: the bound held exactly, stage reuse, the verdict bound to its bytes
+# --------------------------------------------------------------------------------------
+
+
+def _below_root_of_two_half(side: Fraction) -> bool:
+    """Exactly whether `side` < 2 + sqrt(2)/2, n = 5's verified upper bound."""
+    gap = side - 2
+    return gap < 0 or 4 * gap * gap < 2
+
+
+def test_a_closed_form_bound_is_held_exactly_and_is_never_a_frame() -> None:
+    """B3: a closed form's 60-digit value lies above `U` (by 1.3e-61 at n = 5), so a side
+    there was labelled `bound` and row 3 decided against the rounding."""
+    from devtools.apply_exact_ceilings import bound_value  # noqa: PLC0415
+
+    facts = drive.case_facts(5)
+    bound = drive.verified_bound(facts)
+    assert bound is not None
+    assert (bound.rational, bound.unread) == (None, None)
+    assert drive.upper_bound(facts) is None
+    sixty = bound_value(
+        {"value": facts["verified_upper_bound"], "exact_form": facts["exact_form"]}
+    )
+    assert not _below_root_of_two_half(sixty)
+    assert bound.compare(sixty) == 1
+    assert drive.side_relation(sixty, None, drive.upper_bound(facts)) == "solved"
+    for offset in (Fraction(1, 10**59), Fraction(1, 10**62), Fraction(1, 10**90)):
+        for side in (sixty - offset, sixty + offset):
+            expected = -1 if _below_root_of_two_half(side) else 1
+            assert bound.compare(side) == expected
+    # Row 3 is decided against the closed form itself.
+    below = replace(SAME, side=sixty - Fraction(1, 10**59), upper=None, bound=bound)
+    assert classify(below).row == 3
+    above = replace(below, side=sixty)
+    assert classify(above).decision == "admit"
+    # A view at the 60-digit value, decided from a report, is `solved` and held.
+    report = {
+        **DECIDED,
+        "verified_upper_bound": facts["verified_upper_bound"],
+        "verified_upper_bound_exact_form": facts["exact_form"],
+        "shades": {**DECIDED["shades"], "regressions": []},
+        "source": {"s_W_exact": "27/10"},
+        "outputs": {
+            "same": None,
+            "solved": {"side_exact": drive.literal(sixty), "routes": ROUTES_OK},
+        },
+        "regularize": {"level": 2},
+    }
+    measured = drive.measured_from_report(report, "solved")
+    assert measured.relation == "solved"
+    assert classify(measured).row == 4
+
+
+def test_every_closed_form_bound_is_read_exactly_or_refused() -> None:
+    """B3: each frontier bound is a rational, an isolated root, or unread (n = 11's
+    `root(P_trump11, ...)`), and an unread bound decides nothing: no admission."""
+    unread = []
+    for n in range(1, 325):
+        facts = drive.case_facts(n)
+        bound = drive.verified_bound(facts)
+        if bound is None:
+            continue
+        if bound.unread is not None:
+            unread.append(n)
+            continue
+        if bound.rational is None:
+            assert bound.interval is not None
+            low, high = bound.interval
+            assert high - low <= drive.BOUND_INTERVAL_WIDTH
+            assert len(bound.polynomial) >= 3
+    assert unread == [11]
+    eleven = drive.verified_bound(drive.case_facts(11))
+    assert eleven is not None
+    assert eleven.compare(Fraction(4)) is None
+    decided = classify(replace(SAME, upper=None, bound=eleven))
+    assert (decided.row, decided.decision) == (None, "review")
+    assert "could not be read exactly" in decided.reason
+
+
+@pytest.fixture(scope="module")
+def n26_run(tmp_path_factory: pytest.TempPathFactory) -> Path:
+    """One real run of n = 26, copied by each test that changes it."""
+    run_dir = tmp_path_factory.mktemp("n26") / "run"
+    drive.run([26], Options(run_dir=run_dir), workers=1)
+    return run_dir
+
+
+def _copy_run(n26_run: Path, tmp_path: Path) -> Path:
+    import shutil  # noqa: PLC0415
+
+    return Path(shutil.copytree(n26_run, tmp_path / "run", symlinks=True))
+
+
+def test_a_stored_fewest_regularization_is_not_reimported_as_conservative(
+    n26_run: Path, tmp_path: Path
+) -> None:
+    """B1: `--from-stage import` decides and labels a stored output by the settings it
+    ran with; asked for others, it refuses rather than admit a `fewest` view at row 10."""
+    run_dir = _copy_run(n26_run, tmp_path)
+    stored = drive.count_dir(run_dir, 26) / "regularize.json"
+    document = json.loads(stored.read_text())
+    document["variant"] = "fewest"
+    stored.write_text(json.dumps(document))
+    refused = drive.run_count(26, Options(run_dir=run_dir, from_stage="import"))
+    assert refused["status"] == "error"
+    assert "--variant fewest" in refused["error"]
+    assert "--from-stage regularize" in refused["error"]
+    assert "decision" not in refused
+    assert drive.layer_candidate(refused, "admitted") is None
+    asked = drive.run_count(26, Options(run_dir=run_dir, from_stage="import", variant="fewest"))
+    assert asked["status"] == "ok"
+    assert asked["generator"]["variant"] == "fewest"
+    assert asked["parameters"]["variant"] == "fewest"
+    assert asked["decision"]["decision"] != "admit"
+    for name in ("view-solved.yaml", "view-same.yaml"):
+        view = load_yaml((drive.count_dir(run_dir, 26) / name).read_text())["witness"]
+        assert view["certificate"]["variant"] == "fewest"
+    # An output written before the frame was recorded started from the KKT point.
+    del document["frame"]
+    settings = drive.stored_settings(document, Options(run_dir=run_dir, variant="fewest"))
+    assert settings.frame == "kkt"
+    with pytest.raises(drive.EvandRunError, match="--frame kkt"):
+        drive.stored_settings(document, Options(run_dir=run_dir, frame="witness"))
+
+
+def _moved_witness(tmp_path: Path) -> Path:
+    """n = 26's witness with square 1 moved left by 1e-7: another input, same id."""
+    text = drive.witness_path(26).read_text()
+    old = "    center:\n    - '0.5'\n    - '5.12132034355964257320253308632'"
+    assert old in text
+    moved = tmp_path / "n-026.yaml"
+    moved.write_text(text.replace(old, old.replace("'0.5'", "'0.4999999'"), 1))
+    return moved
+
+
+def test_a_stage_is_not_reused_from_another_witness(
+    n26_run: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """B2: the report names the exact solve's input by digest and the witness it was
+    written from; a later stage over a changed witness's input is refused."""
+    import hashlib  # noqa: PLC0415
+
+    report = json.loads((drive.count_dir(n26_run, 26) / "report.json").read_text())
+    directory = drive.count_dir(n26_run, 26)
+    assert (
+        report["input"]["sha256"]
+        == hashlib.sha256((directory / "input.txt").read_bytes()).hexdigest()
+    )
+    assert report["input"]["written_from"] == {
+        "path": report["source"]["path"],
+        "sha256": report["source"]["sha256"],
+    }
+    receipt = json.loads((n26_run / "receipt.json").read_text())
+    assert "input.txt" in receipt["solve_outputs"]["26"]
+    run_dir = _copy_run(n26_run, tmp_path)
+    original = drive.witness_path(26)
+    moved = _moved_witness(tmp_path)
+    monkeypatch.setattr(drive, "witness_path", lambda n: moved if n == 26 else original)
+    for stage in ("solve", "regularize", "import"):
+        refused = drive.run_count(26, Options(run_dir=run_dir, from_stage=stage))
+        assert refused["status"] == "error"
+        assert "--from-stage input" in refused["error"]
+        assert "decision" not in refused
+        assert not list(drive.count_dir(run_dir, 26).glob("view-*.yaml"))
+    # A change that leaves the input as it was reuses the stage, and the report says
+    # which witness the input was written from.
+    noted = tmp_path / "noted" / "n-026.yaml"
+    noted.parent.mkdir()
+    noted.write_text(original.read_text() + "# a note that changes no square\n")
+    monkeypatch.setattr(drive, "witness_path", lambda n: noted if n == 26 else original)
+    again = drive.run_count(26, Options(run_dir=run_dir, from_stage="regularize"))
+    assert again["status"] == "ok"
+    assert again["input"]["written_from"]["sha256"] == report["source"]["sha256"]
+    assert again["source"]["sha256"] != report["source"]["sha256"]
+    # A regularization that started from the witness's own pose is reused only from
+    # today's pose.
+    directory = drive.count_dir(run_dir, 26)
+    stored = json.loads((directory / "regularize.json").read_text())
+    (directory / "regularize.json").write_text(json.dumps({**stored, "frame": "witness"}))
+    framed = directory / "frame-witness/witness.exact.txt"
+    framed.parent.mkdir(exist_ok=True)
+    today = drive.source_frame(witness(26))
+    framed.write_text(drive.frame_text(witness(26), today))
+    drive.reused_input(directory, witness(26), today)
+    framed.write_text(framed.read_text().replace("26 ", "26  ", 1))
+    with pytest.raises(drive.EvandRunError, match="--from-stage regularize"):
+        drive.reused_input(directory, witness(26), today)
+
+
+def test_the_verdict_is_bound_to_the_view_bytes_it_was_reached_on(
+    n26_run: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """B5: an interrupted re-run leaves no earlier verdict beside its views, and `layer`
+    takes a view only with the bytes its report decided."""
+    from devtools.retained_data import git_blob  # noqa: PLC0415
+
+    run_dir = _copy_run(n26_run, tmp_path)
+    directory = drive.count_dir(run_dir, 26)
+    report = json.loads((directory / "report.json").read_text())
+    for name in ("solved", "same"):
+        block = report["outputs"][name]
+        assert block["git_blob"] == git_blob((directory / block["path"]).read_bytes())
+
+    def killed(**_kwargs: object) -> None:
+        raise KeyboardInterrupt
+
+    with monkeypatch.context() as patch:
+        patch.setattr(drive, "_measure_view", killed)
+        with pytest.raises(KeyboardInterrupt):
+            drive.run_count(26, Options(run_dir=run_dir, from_stage="import"))
+    assert not (directory / "report.json").exists()
+
+    tree = tmp_path / "tree"
+    index = tree / drive.LAYER_DIR / "index.json"
+    index.parent.mkdir(parents=True)
+    index.write_text(json.dumps({"entries": []}))
+    assert drive.write_layer([run_dir], tree, "admitted")["written"] == []
+    decided = drive.run_count(26, Options(run_dir=run_dir, from_stage="import"))
+    decided["decision"] = {"row": 10, "decision": "admit"}
+    (directory / "report.json").write_text(json.dumps(decided))
+    chosen = drive.layer_candidate(decided, "admitted")
+    assert chosen == "same"
+    view = directory / f"view-{chosen}.yaml"
+    pristine = view.read_text()
+    view.write_text(pristine.replace("-regularized", "-edited", 1))
+    summary = drive.write_layer([run_dir], tree, "admitted")
+    assert (summary["written"], summary["not_the_decided_bytes"]) == ([], [26])
+    view.write_text(pristine)
+    assert drive.write_layer([run_dir], tree, "admitted")["written"] == [26]
+
+
+def test_a_receipt_keeps_each_runs_solve_outputs_and_parameters(tmp_path: Path) -> None:
+    """B6: a run into a directory that holds an earlier run's rows keeps their digests
+    and the settings each row ran with."""
+    reports = {}
+    for n, variant in ((26, "conservative"), (10, "fewest")):
+        directory = drive.count_dir(tmp_path, n)
+        directory.mkdir(parents=True)
+        (directory / "input.txt").write_text(f"{n} input\n")
+        (directory / "regularize.cert").write_text(f"{n} certificate\n")
+        options = Options(run_dir=tmp_path, variant=variant)
+        reports[n] = {
+            "n": n,
+            "status": "ok",
+            "parameters": drive.run_parameters(options),
+            "decision": {"row": 4, "decision": "held"},
+        }
+    cost = {"cpu_seconds": 1.0, "wall_seconds": 1.0}
+    first = drive.write_receipt(tmp_path, {26: reports[26]}, Options(run_dir=tmp_path), 1, cost)
+    assert sorted(first["solve_outputs"]) == ["26"]
+    # The earlier run's file changes on disk after its receipt named it.
+    (drive.count_dir(tmp_path, 26) / "regularize.cert").write_text("changed\n")
+    second = drive.write_receipt(
+        tmp_path, {10: reports[10]}, Options(run_dir=tmp_path, variant="fewest"), 1, cost
+    )
+    assert sorted(second["solve_outputs"], key=int) == ["10", "26"]
+    assert second["solve_outputs"]["26"] == first["solve_outputs"]["26"]
+    variants = {row["n"]: row["parameters"]["variant"] for row in second["counts"]}
+    assert variants == {10: "fewest", 26: "conservative"}
+
+
+def test_a_patched_solver_is_rebuilt_when_its_patch_changes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """B7: the patched tree is named by what it is built from, so an edited patch never
+    runs as the old one."""
+    rows = [drive.batch_row(26, drive.case_facts(26), witness(26))]
+    replica = drive.build_replica(tmp_path / "run", rows)
+    first = drive.solver_tree(replica, ["probe-flat-stall-stop"])
+    record = drive.replica_patches()["probe-flat-stall-stop"]
+    edited = tmp_path / "edited.patch"
+    edited.write_text("an edited patch's prose\n" + (drive.REPO / record["patch"]).read_text())
+    monkeypatch.setattr(
+        drive,
+        "replica_patches",
+        lambda: {"probe-flat-stall-stop": {**record, "patch": str(edited)}},
+    )
+    second = drive.solver_tree(replica, ["probe-flat-stall-stop"])
+    assert second != first
+    assert (second / "exactsolve.py").read_text() == (first / "exactsolve.py").read_text()
+
+
+def test_the_same_side_view_names_its_source_by_digest(n26_run: Path) -> None:
+    """B8: the driver's provenance wins over the resolver's where both name a field."""
+    directory = drive.count_dir(n26_run, 26)
+    report = json.loads((directory / "report.json").read_text())
+    view = load_yaml((directory / "view-same.yaml").read_text())["witness"]
+    certificate = view["certificate"]
+    assert certificate["kind"] == "evand-regularized-view"
+    assert certificate["relation"] == "same"
+    assert certificate["derived_from"] == {
+        "path": report["source"]["path"],
+        "sha256": report["source"]["sha256"],
+    }
+    assert certificate["resolver"] == {
+        "kind": "same-side-view",
+        "derived_from": "W-known-best-n026",
+    }
+    assert certificate["resolve"]["tool"] == "devtools.regularize_same_side"
+
+
+def test_reclassify_says_when_a_stored_bound_is_stale(n26_run: Path, tmp_path: Path) -> None:
+    """B10: `reclassify` decides on the stored `U` and lists the counts whose case record
+    has moved it since."""
+    run_dir = _copy_run(n26_run, tmp_path)
+    assert drive.reclassify(run_dir)["reclassified"]["stale_bounds"] == []
+    path = drive.count_dir(run_dir, 26) / "report.json"
+    report = json.loads(path.read_text())
+    report["verified_upper_bound"], report["verified_upper_bound_exact_form"] = "5.7", None
+    path.write_text(json.dumps(report))
+    assert drive.reclassify(run_dir)["reclassified"]["stale_bounds"] == [26]
