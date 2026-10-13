@@ -304,10 +304,11 @@ $defs:
           regressions: {type: integer, minimum: 0}
           level: {type: [integer, 'null']}
           groups: {type: array, items: {type: integer}}
-          source_digest_by:
+          source_note:
             description: >-
-              Where `source.sha256` came from when the run's report recorded no digest of
-              the witness it measured: the admitting checkout's witness.
+              Said where a grid-slack run's report records no exact side of the witness it
+              read: the view is held to the admitting checkout's witness by the
+              measurements made again at admission.
             type: string
             minLength: 1
       regularization: {$ref: '#/$defs/regularization'}

@@ -3015,47 +3015,30 @@ def dated_runs(
     return found
 
 
-def decided_bytes(report: Mapping[str, Any], directory: Path, chosen: str) -> bool:
-    """Whether the view file a report chose holds the bytes its verdict was reached on, by
-    the Git blob id the run recorded for it (`outputs.<name>.git_blob`). A view an
-    interrupted re-run or an edit left, or one whose report predates the binding, is not
-    taken, so no view enters under a verdict no route reached on it (review B of #511,
-    B5)."""
-    decided_on = (report.get("outputs") or {})[chosen].get("git_blob")
-    if decided_on is None:
-        return False
-    return git_blob((directory / f"view-{chosen}.yaml").read_bytes()) == decided_on
-
-
-def evand_candidates(
-    run_dirs: Sequence[Path],
-) -> tuple[list[Admitted], list[dict[str, Any]], list[int]]:
+def evand_candidates(run_dirs: Sequence[Path]) -> tuple[list[Admitted], list[dict[str, Any]]]:
     """Every count finished runs admitted (row 10), a later run winning at a count two
-    decided, with the runs they came from, and the admitted counts whose view file is not
-    the bytes its report decided (`decided_bytes`), which are left out."""
+    decided, with the runs they came from. A report's blob ids for its views
+    (`outputs.<name>.git_blob`) are its provenance and are compared with nothing (OR-16,
+    OR-18): a drawn view is decided again on both routes, its identity and shades measured
+    again, by `--verify-atlas`."""
     found: dict[int, tuple[Path, str, dict[str, Any]]] = {}
     for run_dir in run_dirs:
         run_id = f"{axis.EVAND_GENERATOR}-{Path(run_dir).name}"
         for path in sorted(Path(run_dir).glob("n-*/report.json")):
             report = read_json(path)
             found[int(report["n"])] = (path.parent, run_id, report)
-    admitted: list[Admitted] = []
-    unbound: list[int] = []
-    for directory, run_id, report in found.values():
-        chosen = layer_candidate(report, "admitted")
-        if chosen is None:
-            continue
-        if not decided_bytes(report, directory, chosen):
-            unbound.append(int(report["n"]))
-            continue
-        admitted.append(evand_admitted(report, directory, run_id))
+    admitted = [
+        evand_admitted(report, directory, run_id)
+        for directory, run_id, report in found.values()
+        if layer_candidate(report, "admitted") is not None
+    ]
     used = {item.run["id"] for item in admitted}
     runs = [
         run_block(Path(run_dir), run_id)
         for run_dir in run_dirs
         if (run_id := f"{axis.EVAND_GENERATOR}-{Path(run_dir).name}") in used
     ]
-    return admitted, runs, sorted(unbound)
+    return admitted, runs
 
 
 def write_preview(run_dirs: Sequence[Path], root: Path, select: str) -> dict[str, Any]:
@@ -3064,16 +3047,12 @@ def write_preview(run_dirs: Sequence[Path], root: Path, select: str) -> dict[str
     if root.resolve() == REPO.resolve():
         raise EvandRunError("only the admitted selection may write into this checkout")
     found: dict[int, tuple[Path, str, dict[str, Any]]] = {}
-    unbound: list[int] = []
     for run_dir in run_dirs:
         run_id = f"{axis.EVAND_GENERATOR}-{Path(run_dir).name}"
         for path in sorted(Path(run_dir).glob("n-*/report.json")):
             report = read_json(path)
             chosen = layer_candidate(report, select)
             if chosen is None:
-                continue
-            if not decided_bytes(report, path.parent, chosen):
-                unbound.append(int(report["n"]))
                 continue
             # A preview draws what row 10 would have drawn: the record is the run's.
             report = {**report, "decision": {**report["decision"], "decision": "admit"}}
@@ -3089,7 +3068,7 @@ def write_preview(run_dirs: Sequence[Path], root: Path, select: str) -> dict[str
     summary = admit_views(
         admitted, root, generators={axis.EVAND_GENERATOR: evand_generator_block()}, runs=runs
     )
-    return {"select": select, **summary, "not_the_decided_bytes": sorted(unbound)}
+    return {"select": select, **summary}
 
 
 def layer_layout(root: Path) -> Any:
@@ -3160,7 +3139,7 @@ def write_layer_with_grid(
     """Admit finished runs' views and, at `grid_counts`, the grid-slack run's view instead
     (`devtools.regularize_grid_slack.admitted_views`), in one write of the layer."""
     grid = importlib.import_module("devtools.regularize_grid_slack")
-    admitted, runs, unbound = evand_candidates(run_dirs)
+    admitted, runs = evand_candidates(run_dirs)
     chosen = set(grid_counts)
     views, grid_run_block, grid_generator = grid.admitted_views(grid_run, sorted(chosen))
     candidates = [item for item in admitted if item.n not in chosen] + list(views)
@@ -3175,12 +3154,7 @@ def write_layer_with_grid(
         runs=[run for run in [*runs, grid_run_block] if run["id"] in used],
         exclude=exclude,
     )
-    return {
-        "select": "admitted",
-        "grid_counts": sorted(chosen),
-        **summary,
-        "not_the_decided_bytes": unbound,
-    }
+    return {"select": "admitted", "grid_counts": sorted(chosen), **summary}
 
 
 def write_layer(
@@ -3192,7 +3166,7 @@ def write_layer(
         raise EvandRunError(f"unknown selection {select!r}")
     if select != "admitted":
         return write_preview(run_dirs, root, select)
-    admitted, runs, unbound = evand_candidates(run_dirs)
+    admitted, runs = evand_candidates(run_dirs)
     summary = admit_views(
         admitted,
         root,
@@ -3200,7 +3174,7 @@ def write_layer(
         runs=runs,
         exclude=exclude,
     )
-    return {"select": select, **summary, "not_the_decided_bytes": unbound}
+    return {"select": select, **summary}
 
 
 def write_receipt(

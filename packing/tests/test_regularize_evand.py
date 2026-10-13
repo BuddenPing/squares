@@ -1396,22 +1396,17 @@ def test_the_verdict_is_bound_to_the_view_bytes_it_was_reached_on(
             drive.run_count(26, Options(run_dir=run_dir, from_stage="import"))
     assert not (directory / "report.json").exists()
 
-    # Admission (#548's `evand_candidates`, which `layer` writes from) takes a view only
-    # with the bytes its report decided.
+    # Admission (#548's `evand_candidates`, which `layer` writes from) finds no report to
+    # admit after the interrupted run, and admits the decided one. The blob ids a report
+    # records are its provenance and decide nothing (OR-18); the drawn view is decided
+    # again by `--verify-atlas`.
     assert drive.evand_candidates([run_dir])[0] == []
     decided = drive.run_count(26, Options(run_dir=run_dir, from_stage="import"))
     decided["decision"] = {"row": 10, "decision": "admit", "reason": "a fixture"}
     (directory / "report.json").write_text(json.dumps(decided))
-    chosen = drive.layer_candidate(decided, "admitted")
-    assert chosen == "same"
-    view = directory / f"view-{chosen}.yaml"
-    pristine = view.read_text()
-    view.write_text(pristine.replace("-regularized", "-edited", 1))
-    admitted, _runs, unbound = drive.evand_candidates([run_dir])
-    assert ([item.n for item in admitted], unbound) == ([], [26])
-    view.write_text(pristine)
-    admitted, _runs, unbound = drive.evand_candidates([run_dir])
-    assert ([item.n for item in admitted], unbound) == ([26], [])
+    assert drive.layer_candidate(decided, "admitted") == "same"
+    admitted, _runs = drive.evand_candidates([run_dir])
+    assert [item.n for item in admitted] == [26]
 
 
 def test_a_receipt_keeps_each_runs_solve_outputs_and_parameters(tmp_path: Path) -> None:

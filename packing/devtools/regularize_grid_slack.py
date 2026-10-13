@@ -1556,15 +1556,16 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
     """One count's grid-slack view, admitted by the decision table's row 10, in the
     layer's terms (`devtools.regularize_evand.admit_views` writes it).
 
-    The run read the known-best witness of the checkout it ran in. A report that records
-    that witness's digest (`source.witness_sha256`) gives the entry that digest, as the
-    driver's admission takes its run's (`evand_admitted`), so the identity, shades and
-    contacts the report carries stay bound to the witness they were measured on, and
-    `--check-atlas`, which `layer` runs on what it wrote, refuses a checkout whose witness
-    differs as stale (#548 review B4). Nothing compares the two here (OR-16). A report
-    from before the digest was recorded is admitted against this checkout's witness, as
-    before, and the entry says so (`measured.source_digest_by`), so run and admit such a
-    run from one revision.
+    The run read the known-best witness of the checkout it ran in; the entry is about the
+    witness this checkout holds. So admission holds the view to it, not to the run's
+    digests (#548 review B4): the run's exact side `s_W` (`source.s_W_exact`) must be this
+    witness's, and the view's identity, shades and contacts are measured again against
+    this witness (`measure`) and decided by the table on those measurements, so the entry
+    never records what was measured on another witness. A view that no longer pairs one
+    to one with it is refused. The run's witness digest and its view's blob id are its
+    provenance, kept in its report and compared with nothing (OR-16, OR-18). A report from
+    before the run recorded `s_W` is admitted on the measurement made here alone, and the
+    entry says so (`measured.source_note`).
     """
     report = json.loads((directory / "report.json").read_text(encoding="utf-8"))
     n = int(report["n"])
@@ -1572,19 +1573,29 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
         raise GridSlackError(f"n={n}: a view of {report.get('generator')}, not {GENERATOR}")
     path = KNOWN_BEST / f"n-{n:03d}.yaml"
     data = path.read_bytes()
-    ran_on = report.get("source")
-    measured_digest = ran_on.get("witness_sha256") if isinstance(ran_on, Mapping) else None
     witness = load_yaml(data.decode("utf-8"))["witness"]
+    ran_on = report.get("source")
+    ran_side = ran_on.get("s_W_exact") if isinstance(ran_on, Mapping) else None
+    view_path = directory / "view.yaml.gz"
+    view: dict[str, Any] = {}
+    if "measured" in report and view_path.is_file():
+        view = load_yaml(gzip.decompress(view_path.read_bytes()).decode())["witness"]
+        if ran_side is not None:
+            own = same.exact_frame(witness).side
+            if Fraction(str(ran_side)) != own:
+                raise GridSlackError(
+                    f"n={n}: the run read a witness at s_W = {ran_side}, and this checkout's "
+                    f"is at {same.literal(own)}: run the count again on this witness"
+                )
+        straightened = [row["square"] for row in report.get("straightened") or []]
+        report = {**report, "measured": measure(n, witness, view, straightened)}
+        if not report["measured"]["identity"].get("one_to_one"):
+            raise GridSlackError(
+                f"n={n}: the view does not pair one to one with this checkout's witness"
+            )
     decision = decided(report, witness)
     if decision.decision != "admit":
         raise GridSlackError(f"n={n}: not admitted: row {decision.row}, {decision.reason}")
-    stored = (directory / "view.yaml.gz").read_bytes()
-    # The verdicts are the ones reached on these bytes (`report.view.git_blob`, review B
-    # of #530, B4); a report from before the run recorded them is admitted as before.
-    decided_on = (report.get("view") or {}).get("git_blob")
-    if decided_on is not None and git_blob(stored) != decided_on:
-        raise GridSlackError(f"n={n}: the view's bytes are not the ones its report decided")
-    view = load_yaml(gzip.decompress(stored).decode())["witness"]
     measured = report["measured"]
     ident = measured["identity"]
     shaded = measured["shades"]
@@ -1624,7 +1635,7 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
             "witness": relative_source(n),
             "id": str(witness["id"]),
             "scalar_kind": str(witness["scalar"]["kind"]),
-            "sha256": measured_digest or hashlib.sha256(data).hexdigest(),
+            "sha256": hashlib.sha256(data).hexdigest(),
         },
         side={
             "reported": str(witness["side"]),
@@ -1647,8 +1658,10 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
             "reason": decision.reason,
         },
         measured={
-            "identity_by": f"{driver.IDENTITY_BY}, in devtools.regularize_grid_slack",
-            "shades_by": f"{driver.SHADES_BY}, in devtools.regularize_grid_slack",
+            "identity_by": f"{driver.IDENTITY_BY}, in devtools.regularize_grid_slack, again "
+            "at admission against this checkout's witness",
+            "shades_by": f"{driver.SHADES_BY}, in devtools.regularize_grid_slack, again at "
+            "admission against this checkout's witness",
             "contacts": {
                 rule: {
                     "before": list(shaded[rule]["before"]),
@@ -1661,18 +1674,18 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
             + len(current.get("regressions") or []),
             "level": None,
             "groups": [],
-            **({} if measured_digest is not None else {"source_digest_by": UNRECORDED_DIGEST}),
+            **({} if ran_side is not None else {"source_note": UNRECORDED_SIDE}),
         },
         regularization=record,
         house_after=list(shaded["house"]["after"]),
     )
 
 
-UNRECORDED_DIGEST = (
-    "this checkout's witness at admission: the run's report records no digest of the "
-    "witness it measured"
+UNRECORDED_SIDE = (
+    "the run's report records no exact side of the witness it read: the view is held to "
+    "this checkout's witness by the measurements made again at admission"
 )
-"""Where an entry's `source.sha256` came from when the grid run predates recording it."""
+"""An entry's note where the grid run predates recording the witness's exact side."""
 
 
 def relative_source(n: int) -> str:

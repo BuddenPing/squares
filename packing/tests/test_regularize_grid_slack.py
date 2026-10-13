@@ -26,7 +26,6 @@ from devtools import regularize_axis_components as axis
 from devtools import regularize_grid_slack as slack
 from devtools import render_regularized_atlas as render
 from devtools.regularize_evand import Decision, view_geometry
-from devtools.retained_data import git_blob
 from sqpack.yamlio import load_yaml
 
 HALF = Fraction(1, 2)
@@ -377,70 +376,77 @@ def test_the_layer_contract_names_this_version() -> None:
     assert slack.GENERATOR in schema["properties"]["generators"]["properties"]
 
 
-def test_admission_binds_the_view_to_the_witness_the_run_measured(
+def test_admission_holds_the_view_to_this_checkouts_witness(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """#548 review B4: a report that records the digest of the witness it measured is
-    admitted only on that witness; one from before the digest was recorded is admitted on
-    this checkout's witness, and its entry says so."""
+    """#548 review B4: admission holds a grid view to the witness this checkout holds, by
+    the run's exact side and by measuring the view again against it; the run's witness
+    digest and view blob are provenance, compared with nothing (OR-18)."""
     n = 241
     index = json.loads(axis.ATLAS.index.read_text(encoding="utf-8"))
     (entry,) = (record for record in index["entries"] if record["n"] == n)
     assert entry["generator"] in axis.GRID_GENERATORS
     directory = tmp_path / f"n-{n:03d}"
     directory.mkdir()
-    (directory / "view.yaml.gz").write_bytes((axis.REPO / entry["view"]["path"]).read_bytes())
+    stored = (axis.REPO / entry["view"]["path"]).read_bytes()
+    (directory / "view.yaml.gz").write_bytes(stored)
     contacts = entry["measured"]["contacts"]
-    report: dict[str, Any] = {
-        "n": n,
-        "generator": slack.GENERATOR,
-        "source": f"packing/witnesses/known-best/n-{n:03d}.yaml",
-        "attempts": [
-            {
-                "exact": {
-                    "verdicts": {
-                        "exact_verify": {"passed": True},
-                        "independent": {"passed": True},
-                    }
-                }
-            }
-        ],
-        "measured": {
-            "identity": {**entry["regularization"]["identity"], "symmetry": 0},
-            "shades": {
-                **{rule: dict(contacts[rule]) for rule in ("house", "stage")},
-                "regressions": [],
-                "against_current": {"regressions": []},
-            },
+    recorded = {
+        "identity": {**entry["regularization"]["identity"], "symmetry": 0},
+        "shades": {
+            **{rule: dict(contacts[rule]) for rule in ("house", "stage")},
+            "regressions": [],
+            "against_current": {"regressions": []},
         },
     }
-    admit = Decision(10, "admit", None, None, "every admission condition holds")
-    monkeypatch.setattr(slack, "decided", lambda _report, _witness: admit)
+    measured_on: list[str] = []
 
-    def admitted(source: Any) -> Any:
-        (directory / "report.json").write_text(json.dumps({**report, "source": source}))
+    def measure(_n: int, witness: Any, _view: Any, _straightened: Any) -> dict[str, Any]:
+        measured_on.append(str(witness["id"]))
+        return json.loads(json.dumps(recorded))
+
+    admit = Decision(10, "admit", None, None, "every admission condition holds")
+    monkeypatch.setattr(slack, "measure", measure)
+    monkeypatch.setattr(slack, "decided", lambda _report, _witness: admit)
+    witness = slack.load_source(n)
+    own = slack.same.literal(slack.same.exact_frame(witness).side)
+    held = hashlib.sha256((axis.REPO / entry["source"]["witness"]).read_bytes()).hexdigest()
+
+    def admitted(source: Any, **extra: Any) -> Any:
+        report = {
+            "n": n,
+            "generator": slack.GENERATOR,
+            "source": source,
+            "attempts": [
+                {"exact": {"verdicts": {name: {"passed": True} for name in VERDICTS}}}
+            ],
+            "measured": {"identity": {"one_to_one": True}},
+            **extra,
+        }
+        (directory / "report.json").write_text(json.dumps(report))
         return slack.admitted(directory, "grid-slack-fixture")
 
-    held = hashlib.sha256((axis.REPO / entry["source"]["witness"]).read_bytes()).hexdigest()
-    older = admitted(report["source"])
+    # A report from before the run recorded the witness's side: measured here, and said.
+    older = admitted(f"packing/witnesses/known-best/n-{n:03d}.yaml")
+    assert measured_on == [witness["id"]]
     assert older.source["sha256"] == held
-    assert older.measured["source_digest_by"] == slack.UNRECORDED_DIGEST
-    bound = admitted({"witness": report["source"], "witness_sha256": held})
-    assert bound.source["sha256"] == held
-    assert "source_digest_by" not in bound.measured
-    # A run on another witness keeps that witness's digest, which the layer's check then
-    # names stale, as it does a driver run's (`evand_admitted`).
-    elsewhere = admitted({"witness": report["source"], "witness_sha256": "0" * 64})
-    assert elsewhere.source["sha256"] == "0" * 64
+    assert older.measured["source_note"] == slack.UNRECORDED_SIDE
+    # The run's digests are provenance: a different digest or blob decides nothing.
+    source = {"witness": "x", "witness_sha256": "0" * 64, "s_W_exact": own}
+    later = admitted(source, view={"path": "view.yaml.gz", "git_blob": "0" * 40})
+    assert later.source["sha256"] == held
+    assert "source_note" not in later.measured
+    assert later.regularization["identity"]["moved"] == recorded["identity"]["moved"]
+    # A run on a witness at another side is refused, and so is a view that no longer
+    # pairs one to one with this checkout's witness.
+    with pytest.raises(slack.GridSlackError, match="run the count again on this witness"):
+        admitted({**source, "s_W_exact": "1"})
+    recorded["identity"]["one_to_one"] = False
+    with pytest.raises(slack.GridSlackError, match="does not pair one to one"):
+        admitted(source)
 
-    # A report that names its view's bytes is admitted only with those bytes (review B of
-    # #530, B4).
-    stored = (directory / "view.yaml.gz").read_bytes()
-    report["view"] = {"path": "view.yaml.gz", "git_blob": git_blob(stored)}
-    assert admitted(report["source"]).n == n
-    report["view"]["git_blob"] = git_blob(stored + b"\n")
-    with pytest.raises(slack.GridSlackError, match="not the ones its report decided"):
-        admitted(report["source"])
+
+VERDICTS = ("exact_verify", "independent")
 
 
 def test_feasibility_holds_the_move_bound_and_a_zero_trust_is_refused() -> None:
