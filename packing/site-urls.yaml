@@ -6075,7 +6075,7 @@ urls:
   generator: devtools.render_n11_lower_bounds_explainer:main
   producer: paper:n11-lower-bounds-explainer
   first_published: '2026-09-05'
-  lastmod: '2026-10-10'
+  lastmod: '2026-10-13'
   status: live
 - path: papers/n11-lower-bounds-explainer.md
   canonical: papers/n11-lower-bounds-explainer.md
@@ -6083,7 +6083,7 @@ urls:
   generator: devtools.render_n11_lower_bounds_explainer:main
   producer: paper:n11-lower-bounds-explainer
   first_published: '2026-09-05'
-  lastmod: '2026-10-10'
+  lastmod: '2026-10-13'
   status: live
 - path: papers/n11-lower-bounds-explainer.pdf
   canonical: papers/n11-lower-bounds-explainer.pdf
@@ -6091,7 +6091,7 @@ urls:
   generator: devtools.render_n11_lower_bounds_explainer:main
   producer: paper:n11-lower-bounds-explainer
   first_published: '2026-09-05'
-  lastmod: '2026-10-10'
+  lastmod: '2026-10-13'
   status: live
 - path: papers/n11-optimality-review.html
   canonical: papers/n11-optimality-review.html
@@ -6123,7 +6123,7 @@ urls:
   generator: devtools.render_n11_threshold_bound_review:main
   producer: paper:n11-threshold-bound-review
   first_published: '2026-10-05'
-  lastmod: '2026-10-09'
+  lastmod: '2026-10-13'
   status: live
 - path: papers/n11-threshold-bound-review.md
   canonical: papers/n11-threshold-bound-review.md
@@ -6131,7 +6131,7 @@ urls:
   generator: devtools.render_n11_threshold_bound_review:main
   producer: paper:n11-threshold-bound-review
   first_published: '2026-10-05'
-  lastmod: '2026-10-09'
+  lastmod: '2026-10-13'
   status: live
 - path: papers/n11-threshold-bound-review.pdf
   canonical: papers/n11-threshold-bound-review.pdf
@@ -6139,7 +6139,7 @@ urls:
   generator: devtools.render_n11_threshold_bound_review:main
   producer: paper:n11-threshold-bound-review
   first_published: '2026-10-05'
-  lastmod: '2026-10-09'
+  lastmod: '2026-10-13'
   status: live
 - path: papers/square-packing-methods-survey.html
   canonical: papers/square-packing-methods-survey.html
