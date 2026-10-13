@@ -860,7 +860,8 @@ A read-only question or lookup needs no new bead.
   such as `claude-reconcile-lane-1-0vpobe`, or the id `tbd whoami --ensure-id` keeps.
   Inspect `claimed` and `skipped`: an exit code of zero can mean the claim was refused.
   Proceed only after a successful claim, or a verified continuation of that same agent’s
-  claim. Sync the accepted claim and re-read the bead before editing.
+  claim. The tracker owner syncs the accepted claim (the coordinator, for delegated work;
+  see the next item), and the agent re-reads the bead before editing.
   An accountable `assignee` does not replace the acting `delegate`.
 - **Dispatch disjoint work.** Every brief names the bead, acting agent, write scope,
   completion evidence, and tracker owner.

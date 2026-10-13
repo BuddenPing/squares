@@ -53,8 +53,8 @@ In this repository, confirm a claim before editing: run
 `tbd start <id> --as <unique-agent-name> --json` and read `claimed` and `skipped`, since
 a skipped claim also exits zero.
 A delegated worker follows its brief instead: by default the coordinator claims the
-assigned beads under the worker’s name and runs `tbd sync`, the reverse of tbd’s
-default.
+assigned beads under the worker’s name and runs `tbd sync`, which reverses tbd’s default
+for sync.
 [OR-19](operating-rules.md#or-19-confirm-one-bead-owner-before-work-sync-at-session-start-after-commits-and-at-handoff-or-end)
 covers delegated work, handoffs and tracker audits.
 
