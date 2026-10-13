@@ -45,6 +45,13 @@ Re-measured against `main` at `074ac28d4`, 161 commits after the survey below.
   project-written README the link checker skips with the rest of the archive, were fixed
   by hand. `packing/frontier/covering-values.yaml` cites a moved handoff by path, so the
   branch is a data commit and re-pins `DATA_REVISION`.
+- The rest of slice 6: `paper-design.md` is mapped as a `component-guide` (its footer
+  and links already passed), and the templates exclusion narrows to the renderers’
+  manuscripts, `report-results.md` and the three claim templates.
+- Slice 0’s two guards that do not depend on a move: `test_step_touches` fails a literal
+  `touches` path in `validate.py` that names nothing tracked (none does today), and
+  `check_documentation` holds every absolute `github.com/jlevy/squares/…/main/` link in
+  a mapped document or a `.github` template to the tree (all 10 resolve today).
 - No open pull request edits a moved file, so none meets a rename conflict.
   Two index files take one-line conflicts: `packing/devtools/math-markup.yaml` with
   [jlevy/squares#497](https://github.com/jlevy/squares/pull/497) and the six pull
@@ -69,10 +76,9 @@ Re-measured against `main` at `074ac28d4`, 161 commits after the survey below.
   generated claim documents it renders (`t-018-proof-card.md` and four more), so a
   rename rewrites published claim documents for no reader-facing gain, and the map
   excludes templates, so the naming check does not see them.
-- **Mapping `paper-design.md`** by narrowing the templates exclusion, the last item of
-  slice 6. It renames nothing and can land at any time.
-- **The mover tool.** Slices 2 to 5 rewrite ten to thirty times as many links as this
-  branch did; they should start with slice 0’s `devtools.move_documents`.
+- **The mover tool**, the last of slice 0. Slices 2 to 5 rewrite ten to thirty times as
+  many links as this branch did; they should start with slice 0’s
+  `devtools.move_documents`.
 
 Open pull request [jlevy/squares#435](https://github.com/jlevy/squares/pull/435) adds
 `docs/project/handoff-2026-10-10-polynomial-pr-stack.md`; once it merges `main`, the
