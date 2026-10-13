@@ -613,6 +613,7 @@ case or experiment separately.
 
 | Document or collection | Role | Authority | Lifecycle | Current replacement |
 | --- | --- | --- | --- | --- |
+| [Review: Verification Gaps in the Drawn Packings and the Upper-Bound Register](docs/project/reviews/review-2026-10-13-verification-gaps.md) | dated review record | record | retained | — |
 | [Review: Robert Barnett’s and Daniil Ostashev’s Rational Upper-Bound Imports of 11 October (#505, #501)](docs/project/reviews/review-2026-10-11-upper-bound-imports-505-501.md) | dated review record | record | retained | — |
 | [Review: Francisco Couzo’s Eleven Rational Upper-Bound Imports of 11 October (#506)](docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md) | dated review record | record | retained | — |
 | [Review: SQUISH’s Fourth Request, Nine Rational Upper-Bound Imports of 11 October (#500)](docs/project/reviews/review-2026-10-11-upper-bound-imports-500.md) | dated review record | record | retained | — |
