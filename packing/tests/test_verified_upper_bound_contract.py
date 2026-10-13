@@ -130,6 +130,12 @@ DECLARED_CONSUMERS = {
         "below it is listed as a register candidate (policy row 3) and never drawn; U is "
         "the ceiling a view's side is held to, never s(n) or the witness's side"
     ),
+    "packing/tests/test_regularize_select.py": (
+        "a stand-in case record for the selection's tests carries U as the driver reads it, "
+        "so a synthetic run is decided against a ceiling its view at the bound meets; the "
+        "test also holds every drawn view's exact side to the case records' U. A ceiling "
+        "throughout, never s(n)"
+    ),
     "packing/devtools/regularized_drawings.py": (
         "the regularized-drawings record reads a count's verified bound to test whether a "
         "drawn view's exact side is at it and, only where it is, to find the registered result "
