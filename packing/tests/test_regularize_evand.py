@@ -1107,11 +1107,14 @@ def test_a_stage_is_not_reused_from_another_witness(
         drive.reused_input(directory, witness(26), today)
 
 
-def test_the_verdict_is_bound_to_the_view_bytes_it_was_reached_on(
+def test_layer_decides_the_view_it_writes_rather_than_identifying_its_bytes(
     n26_run: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """B5: an interrupted re-run leaves no earlier verdict beside its views, and `layer`
-    takes a view only with the bytes its report decided."""
+    """B5 of review B and C1 of review C: an interrupted re-run leaves no earlier verdict
+    beside its views, and `layer` decides the file it writes as it is now. A comment-only
+    edit leaves the same valid view and is taken; a view that no longer verifies, another
+    view's id, or a report whose settings are not its stored regularization's is refused.
+    The Git blob id stays in the report as provenance, and nothing compares it (OR-18)."""
     from devtools.retained_data import git_blob  # noqa: PLC0415
 
     run_dir = _copy_run(n26_run, tmp_path)
@@ -1133,7 +1136,8 @@ def test_the_verdict_is_bound_to_the_view_bytes_it_was_reached_on(
     tree = tmp_path / "tree"
     index = tree / drive.LAYER_DIR / "index.json"
     index.parent.mkdir(parents=True)
-    index.write_text(json.dumps({"entries": []}))
+    empty = json.dumps({"entries": []})
+    index.write_text(empty)
     assert drive.write_layer([run_dir], tree, "admitted")["written"] == []
     decided = drive.run_count(26, Options(run_dir=run_dir, from_stage="import"))
     decided["decision"] = {"row": 10, "decision": "admit"}
@@ -1142,11 +1146,38 @@ def test_the_verdict_is_bound_to_the_view_bytes_it_was_reached_on(
     assert chosen == "same"
     view = directory / f"view-{chosen}.yaml"
     pristine = view.read_text()
+
+    def layer() -> dict[str, Any]:
+        index.write_text(empty)
+        return drive.write_layer([run_dir], tree, "admitted")
+
+    # A comment changes the bytes, and with them the Git blob id, but not the view.
+    view.write_text(pristine + "# reviewed by hand\n")
+    assert git_blob(view.read_bytes()) != decided["outputs"][chosen]["git_blob"]
+    assert layer()["written"] == [26]
+    # Another view's id is not the view the report decided.
     view.write_text(pristine.replace("-regularized", "-edited", 1))
-    summary = drive.write_layer([run_dir], tree, "admitted")
-    assert (summary["written"], summary["not_the_decided_bytes"]) == ([], [26])
+    summary = layer()
+    assert summary["written"] == []
+    assert "view-same.yaml's id is W-known-best-n026-edited" in summary["refused"]["26"]
+    # A square moved onto its neighbour fails both exact routes.
+    document = load_yaml(pristine)
+    squares = document["witness"]["squares"]
+    squares[0] = {**squares[0], **{key: squares[1][key] for key in ("center", "corners")
+                                   if key in squares[1]}}  # fmt: skip
+    view.write_text(drive.witness_document(document["witness"]))
+    summary = layer()
+    assert summary["written"] == []
+    assert "fails exact_verify and independent" in summary["refused"]["26"]
+    # A report labelled with other settings than its stored regularization ran with.
     view.write_text(pristine)
-    assert drive.write_layer([run_dir], tree, "admitted")["written"] == [26]
+    labelled = {**decided, "generator": {**decided["generator"], "variant": "fewest"}}
+    (directory / "report.json").write_text(json.dumps(labelled))
+    summary = layer()
+    assert summary["written"] == []
+    assert "--variant conservative (its report says: fewest)" in summary["refused"]["26"]
+    (directory / "report.json").write_text(json.dumps(decided))
+    assert layer()["written"] == [26]
 
 
 def test_a_receipt_keeps_each_runs_solve_outputs_and_parameters(tmp_path: Path) -> None:
