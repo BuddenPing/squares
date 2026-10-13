@@ -54,9 +54,11 @@ the prose account and the manifest cannot drift apart; the section alone counts,
 README's role table names every file. The licence file is never a local change: the MIT
 grant requires its notice with every copy. Nothing else is in the directory besides its
 `README.md` and `vendored.yaml`, the project's own two files. No path in it is a symbolic
-link, and no module file in it takes the name of a standard-library module or of a
-dependency the vendored scripts import (`DEPENDENCIES`): five of them put
-`search/regularize/` first on `sys.path`, so a `numpy.py` there would run in numpy's place.
+link, and no module file in it takes the name of a standard-library module, of a
+dependency the vendored scripts import (`DEPENDENCIES`), or of a module a dependency
+looks up as it loads (`LOADED_BY_DEPENDENCIES`): five of them put `search/regularize/`
+first on `sys.path`, so a `numpy.py` there would run in numpy's place, and mpmath tries
+`gmpy2` at load, so a `gmpy2.py` beside `exactsolve.py` would run silently.
 Whether a file is in upstream's tree at all is knowable only from upstream, so a file
 declared in the manifest under any other name is `--upstream`'s to refuse. What the
 directory holds is asked of git -- tracked files and untracked files git would commit, so
@@ -125,9 +127,45 @@ LOCAL_CHANGES = "### Local Changes"
 #: whole. With the standard library and the two startup hooks, no vendored module file
 #: may take one of these names.
 DEPENDENCIES = frozenset({"matplotlib", "mpmath", "numpy", "scipy", "sympy", "yaml"})
-RESERVED_MODULES = (
-    frozenset(sys.stdlib_module_names) | DEPENDENCIES | {"sitecustomize", "usercustomize"}
+#: The top-level modules the dependencies themselves look up while the vendored scripts
+#: import them. Most are optional and a failed import falls back quietly, so a file of one
+#: of these names on `sys.path` would run unseen: mpmath tries `gmpy2`, then `gmpy`, at
+#: load. A test measures the set, once with every optional module the environment has and
+#: once with all of them hidden, so each fallback is tried; it must stay inside this one.
+#: Three groups are not measured and are named by hand: `sage`, which mpmath tries only
+#: when `SAGE_ROOT` or `MPMATH_SAGE` is set; matplotlib's required packages by import
+#: name, since matplotlib is not installed here; and CPython's own `_sysconfigdata_*`
+#: modules, whose names carry the platform (`RESERVED_PREFIXES`).
+LOADED_BY_DEPENDENCIES = frozenset(
+    {
+        "charset_normalizer",
+        "cython",
+        "flint",
+        "gmpy",
+        "gmpy2",
+        "sage",
+        "scikits",
+        "sksparse",
+        "uarray",
+        # matplotlib's requirements, read from its metadata rather than measured.
+        "PIL",
+        "contourpy",
+        "cycler",
+        "dateutil",
+        "fontTools",
+        "kiwisolver",
+        "packaging",
+        "pyparsing",
+    }
 )
+RESERVED_MODULES = (
+    frozenset(sys.stdlib_module_names)
+    | DEPENDENCIES
+    | LOADED_BY_DEPENDENCIES
+    | {"sitecustomize", "usercustomize"}
+)
+#: Reserved by prefix: CPython's build-configuration modules, named for the platform.
+RESERVED_PREFIXES = ("_sysconfigdata_",)
 #: Git's modes for a regular file and an executable one; the copy holds nothing else.
 REGULAR = "100644"
 EXECUTABLE = "100755"
@@ -489,7 +527,8 @@ def shadowed_module(path: str) -> str | None:
     name = parts[-1].split(".", 1)[0]
     if name == "__init__":
         name = parts[-2] if len(parts) > 1 else ""
-    return name if name in RESERVED_MODULES else None
+    reserved = name in RESERVED_MODULES or name.startswith(RESERVED_PREFIXES)
+    return name if reserved else None
 
 
 def _pinned_problems(
@@ -597,7 +636,7 @@ def check(directory: Path, manifest: Manifest, present: Iterable[str]) -> list[s
             )
     problems += [
         f"{path}: would be imported in place of the `{module}` module the vendored scripts "
-        "load, since they put its directory on sys.path"
+        "or their dependencies load, since the scripts put its directory on sys.path"
         for path, module in sorted((path, shadowed_module(path)) for path in held - OWN_FILES)
         if module is not None
     ]

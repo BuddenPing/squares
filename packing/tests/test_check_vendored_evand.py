@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import ast
 import hashlib
+import json
 import os
 import re
 import stat
@@ -499,6 +500,12 @@ def test_the_executable_field_is_a_boolean(tmp_path: Path) -> None:
         ("search/json.py", "json"),
         ("search/sitecustomize.py", "sitecustomize"),
         ("search/scipy.cpython-314-x86_64-linux-gnu.so", "scipy"),
+        ("search/gmpy2.py", "gmpy2"),
+        ("search/sage/__init__.py", "sage"),
+        (
+            "search/_sysconfigdata__linux_x86_64-linux-gnu.py",
+            "_sysconfigdata__linux_x86_64-linux-gnu",
+        ),
     ],
 )
 def test_a_module_that_would_shadow_an_import_is_refused_even_when_pinned(
@@ -512,7 +519,8 @@ def test_a_module_that_would_shadow_an_import_is_refused_even_when_pinned(
     assert _problems(directory) == [
         (
             f"{path}: would be imported in place of the `{module}` module the vendored "
-            "scripts load, since they put its directory on sys.path"
+            "scripts or their dependencies load, since the scripts put its directory on "
+            "sys.path"
         )
     ]
 
@@ -530,6 +538,85 @@ def test_the_declared_dependencies_are_what_the_vendored_code_imports() -> None:
                 imported.add(node.module.partition(".")[0])
     assert imported - own - set(sys.stdlib_module_names) == vendored.DEPENDENCIES
     assert not {name for name in own if name in vendored.RESERVED_MODULES}
+
+
+#: Run in a fresh interpreter: import each named module with a finder first on
+#: `sys.meta_path` that records every top-level lookup, found or not, and print the names
+#: outside the standard library. With "hide", every such name that is not a declared
+#: dependency is refused, as if not installed, so each fallback import is tried too.
+#: CPython's `_sysconfigdata_*` modules are never hidden: `sysconfig` cannot load without.
+_LOOKUPS = """
+import importlib, json, sys
+modules, dependencies, hide = json.loads(sys.argv[1]), set(json.loads(sys.argv[2])), sys.argv[3]
+seen = set()
+
+def outside(name):
+    top = name.partition(".")[0]
+    return top not in sys.stdlib_module_names and not top.startswith("_sysconfigdata_")
+
+class Recorder:
+    @staticmethod
+    def find_spec(name, path=None, target=None):
+        if path is None and outside(name):
+            seen.add(name)
+            if hide == "hide" and name not in dependencies:
+                raise ModuleNotFoundError(f"hidden: {name}", name=name)
+        return None
+
+sys.meta_path.insert(0, Recorder)
+for module in modules:
+    try:
+        importlib.import_module(module)
+    except ImportError:
+        pass
+print(json.dumps(sorted(seen)))
+"""
+
+
+def test_the_reserved_names_hold_every_module_the_dependencies_look_up_at_load() -> None:
+    """C2 of Review C: mpmath imports `gmpy2` as it loads, so a `gmpy2.py` beside
+    `exactsolve.py` ran in its place. Every top-level module the dependencies look up
+    while the vendored imports load is measured here, with the optional ones present and
+    with them hidden, and each must be reserved."""
+    imported: set[str] = set()
+    for source in sorted(vendored.VENDORED.rglob("*.py")):
+        for node in ast.walk(ast.parse(source.read_bytes(), str(source))):
+            if isinstance(node, ast.Import):
+                imported |= {alias.name for alias in node.names}
+            elif isinstance(node, ast.ImportFrom) and node.level == 0 and node.module:
+                imported.add(node.module)
+    modules = sorted(
+        name for name in imported if name.partition(".")[0] in vendored.DEPENDENCIES
+    )
+    environment = {
+        key: value
+        for key, value in os.environ.items()
+        if not key.startswith(("MPMATH_", "SYMPY_", "SAGE_"))
+    }
+    runs = [
+        subprocess.Popen(
+            (
+                sys.executable,
+                "-I",
+                "-c",
+                _LOOKUPS,
+                json.dumps(modules),
+                json.dumps(sorted(vendored.DEPENDENCIES)),
+                hide,
+            ),
+            stdout=subprocess.PIPE,
+            text=True,
+            env=environment,
+        )
+        for hide in ("keep", "hide")
+    ]
+    seen: set[str] = set()
+    for run in runs:
+        output, _ = run.communicate(timeout=120)
+        assert run.returncode == 0
+        seen |= {name.partition(".")[0] for name in json.loads(output)}
+    assert {"gmpy", "gmpy2", "mpmath", "numpy"} <= seen
+    assert seen - vendored.RESERVED_MODULES == set()
 
 
 def test_the_manifest_must_name_the_upstream_this_tool_fetches_from(

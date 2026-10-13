@@ -142,10 +142,15 @@ There are two checks, because the offline one cannot see upstream.
   It holds the copy to `vendored.yaml`: every pinned file’s size, SHA-256 and executable
   bit, each recorded local change, and no other file in the directory.
   It refuses a symbolic link anywhere in the copy.
-  It also refuses a module file named after a standard-library module or a dependency
-  the scripts import, such as a `numpy.py`: five of the scripts put
-  `search/regularize/` first on `sys.path` and two put `search/exact/` there, so such a
-  file would be imported in that module’s place.
+  It also refuses a module file named after a standard-library module, a dependency the
+  scripts import, such as a `numpy.py`, or a module a dependency looks up as it loads,
+  such as a `gmpy2.py`, which mpmath tries at import and falls back from silently: five
+  of the scripts put `search/regularize/` first on `sys.path` and two put
+  `search/exact/` there, so such a file would be imported in that module’s place.
+  The last group is measured by a test, with the optional modules installed and with
+  them hidden; what it cannot measure is named by hand, and anything a dependency
+  imports only later, at call time, is left to `--upstream`, which refuses any file
+  upstream’s tree does not hold.
   **It catches accidental edits only.** Its expected values come from the manifest, so
   a change that edits a vendored file and that file’s manifest line together passes it.
 - **Upstream**: the same command with `--upstream`.
