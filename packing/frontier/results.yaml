@@ -17418,6 +17418,6 @@ results:
       T-093 (R071) keeps the case's verified lower bound, 18641771/4000000; this entry holds
       the reported one. The edition carries this repository's exp-237 and exp-238
       certificates and its endpoint checker (THIRD_PARTY.md). Overbeck publishes on GitHub as
-      Kleddamag, the handle credited for T-037, T-038, T-040 and T-041. CREDITS.md lists
+      Kleddamag, the handle credited for T-037, T-038, T-040, T-041 and T-065. CREDITS.md lists
       wand125's certificates, kernel and verifier as context, not as a premise. Issue #557's
       title says n=18; the source is n = 17.
