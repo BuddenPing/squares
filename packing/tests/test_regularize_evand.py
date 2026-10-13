@@ -1117,6 +1117,36 @@ def test_the_verdict_is_bound_to_the_view_bytes_it_was_reached_on(
     assert drive.write_layer([run_dir], tree, "admitted")["written"] == [26]
 
 
+def test_a_receipt_keeps_each_runs_solve_outputs_and_parameters(tmp_path: Path) -> None:
+    """B6: a run into a directory that holds an earlier run's rows keeps their digests
+    and the settings each row ran with."""
+    reports = {}
+    for n, variant in ((26, "conservative"), (10, "fewest")):
+        directory = drive.count_dir(tmp_path, n)
+        directory.mkdir(parents=True)
+        (directory / "input.txt").write_text(f"{n} input\n")
+        (directory / "regularize.cert").write_text(f"{n} certificate\n")
+        options = Options(run_dir=tmp_path, variant=variant)
+        reports[n] = {
+            "n": n,
+            "status": "ok",
+            "parameters": drive.run_parameters(options),
+            "decision": {"row": 4, "decision": "held"},
+        }
+    cost = {"cpu_seconds": 1.0, "wall_seconds": 1.0}
+    first = drive.write_receipt(tmp_path, {26: reports[26]}, Options(run_dir=tmp_path), 1, cost)
+    assert sorted(first["solve_outputs"]) == ["26"]
+    # The earlier run's file changes on disk after its receipt named it.
+    (drive.count_dir(tmp_path, 26) / "regularize.cert").write_text("changed\n")
+    second = drive.write_receipt(
+        tmp_path, {10: reports[10]}, Options(run_dir=tmp_path, variant="fewest"), 1, cost
+    )
+    assert sorted(second["solve_outputs"], key=int) == ["10", "26"]
+    assert second["solve_outputs"]["26"] == first["solve_outputs"]["26"]
+    variants = {row["n"]: row["parameters"]["variant"] for row in second["counts"]}
+    assert variants == {10: "fewest", 26: "conservative"}
+
+
 def test_a_patched_solver_is_rebuilt_when_its_patch_changes(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

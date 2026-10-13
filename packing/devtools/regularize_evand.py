@@ -1997,6 +1997,7 @@ def _run_stages(
         "orient": options.orient,
         "frame": options.frame,
     }
+    report["parameters"] = run_parameters(options)
     seconds: dict[str, float | None] = {}
     report["seconds"] = seconds
     first = STAGES.index(options.from_stage)
@@ -2050,6 +2051,7 @@ def _run_stages(
     seconds["regularize"] = regularized.get("wall_seconds", regularized.get("seconds"))
     report["generator"]["frame"] = regularized.get("frame", options.frame)
     report["regularize"] = regularize_block(regularized)
+    report["parameters"] = run_parameters(options)
     failure = regularize_failure(regularized)
     if failure is not None:
         report["status"] = "timeout" if "timeout" in failure else "generator-failed"
@@ -2161,6 +2163,21 @@ def decide(
 # --------------------------------------------------------------------------------------
 
 
+def run_parameters(options: Options) -> dict[str, Any]:
+    """The settings one count ran with, for its report and its receipt row: a receipt
+    gathers rows from runs made with other settings (review B of #511, B6)."""
+    return {
+        "variant": options.variant,
+        "style": STYLE,
+        "orient": options.orient,
+        "frame": options.frame,
+        "same_mode": options.same_mode,
+        "timeout": options.timeout,
+        "regularize_timeout": options.regularize_timeout,
+        "from_stage": options.from_stage,
+    }
+
+
 def receipt_row(report: Mapping[str, Any]) -> dict[str, Any]:
     outputs = report.get("outputs") or {}
     chosen = outputs.get("same") or outputs.get("solved") or {}
@@ -2202,6 +2219,7 @@ def receipt_row(report: Mapping[str, Any]) -> dict[str, Any]:
         "solved_row": solved_decision.get("row"),
         "seconds": report.get("seconds"),
         "cost": report.get("cost"),
+        "parameters": report.get("parameters"),
     }
 
 
@@ -2725,6 +2743,15 @@ def write_receipt(
     history = list((previous or {}).get("previous_runs", []))
     if previous is not None:
         history.append({"parameters": previous.get("parameters"), "cost": previous.get("cost")})
+    # A row kept from an earlier run keeps the outputs that run named by digest; this
+    # run's counts are named afresh (review B of #511, B6). Each row carries its own
+    # `parameters`; the receipt's are this run's.
+    kept = {
+        key: value
+        for key, value in ((previous or {}).get("solve_outputs") or {}).items()
+        if int(key) in rows and int(key) not in reports
+    }
+    named = {**kept, **solve_digests(run_dir, sorted(reports))}
     receipt = {
         "format": RECEIPT_FORMAT,
         "generated_by": GENERATED_BY,
@@ -2733,7 +2760,7 @@ def write_receipt(
         "parameters": parameters,
         "counts": ordered,
         **receipt_lists(ordered),
-        "solve_outputs": solve_digests(run_dir, sorted(reports)),
+        "solve_outputs": {key: named[key] for key in sorted(named, key=int)},
         "cost": dict(cost),
         "previous_runs": history,
     }
