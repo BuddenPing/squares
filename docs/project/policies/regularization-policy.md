@@ -448,6 +448,9 @@ recorded where it is implemented, and reversing one is a change to that layer.
    #549): the row 3 views outside the counts #518 and #553 re-housed are registered as
    one batch result, `T-154`, with the case records’ exact forms moved to the registered
    sides and their printed values kept, so no citation weakens.
+   Where a registered side is exactly the side of an earlier exact certificate, as it is
+   of Evan Daniel’s (T-101) at 33 counts, that bound was already published, and the
+   records cite the earlier certificate’s independent replay beside the batch’s.
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.

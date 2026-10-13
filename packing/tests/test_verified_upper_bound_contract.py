@@ -231,7 +231,14 @@ DECLARED_CONSUMERS = {
     "packing/devtools/source_supersession.py": (
         "rebuilds an explicitly selected source report from exact facts while retaining "
         "the historical independently certified ceiling until the reviewed SQUISH lane "
-        "is present; the two fields remain upper bounds, never exact optima"
+        "is present; and tells an earlier ceiling layer when a later layer holds the lane "
+        "below the ceiling it would write; the two fields remain upper bounds, never exact "
+        "optima"
+    ),
+    "packing/tests/test_source_supersession.py": (
+        "replaces a record's ceiling with a later layer's, below and above an earlier "
+        "layer's own, to test that the earlier layer leaves only the lower one alone; a "
+        "ceiling throughout, never s(n)"
     ),
     "packing/devtools/render_n11_lower_bounds_explainer.py": (
         "admits the solved n11 caption only when the case is proved, its exact lower "

@@ -431,8 +431,8 @@ results, it is a statement about what this repository has itself examined.
 | `E-evand-exact-optima-2026-10-05-exact-replay` | 14 | upper-bound | verified | equalities and inequalities, no tolerance | here | - | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-exact-certificates` |
 | `E-evand-exact-optima-2026-10-05-source-replay` | 14 | upper-bound | verified | equalities and inequalities, no tolerance | here | - | previously-published | producer’s code | `V-evand-verify-cert-py`, `V-evand-verify-cert2-py`, `V-evand-exact-certificates` |
 | `E-evand-exact-ceilings-2026-10-05-report` | 0 | upper-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | `V-evand-verify-cert-py`, `V-evand-verify-cert2-py` |
-| `E-evand-exact-ceilings-2026-10-05-exact-replay` | 2 | upper-bound | verified | equalities and inequalities, no tolerance | here | - | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-exact-certificates` |
-| `E-evand-exact-ceilings-2026-10-05-source-replay` | 2 | upper-bound | verified | equalities and inequalities, no tolerance | here | - | previously-published | producer’s code | `V-evand-verify-cert-py`, `V-evand-verify-cert2-py`, `V-evand-exact-certificates` |
+| `E-evand-exact-ceilings-2026-10-05-exact-replay` | 35 | upper-bound | verified | equalities and inequalities, no tolerance | here | - | previously-published | independent | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-evand-exact-certificates` |
+| `E-evand-exact-ceilings-2026-10-05-source-replay` | 35 | upper-bound | verified | equalities and inequalities, no tolerance | here | - | previously-published | producer’s code | `V-evand-verify-cert-py`, `V-evand-verify-cert2-py`, `V-evand-exact-certificates` |
 | `E-n018-wand125-mixed-4704-report` | 0 | lower-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` |
 | `E-n019-wand125-mixed-48229-report` | 0 | lower-bound | reported | - | elsewhere | informally-verified | previously-published | producer’s code | `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` |
 | `E-n018-wand125-mixed-4704-sqverify-fast-replay` | 0 | lower-bound | verified | strict inequalities only | here | - | previously-published | independent | `V-sqverify-fast` |
@@ -556,7 +556,7 @@ Claims marked `apparently-novel`: first established here as far as the archived 
 | result | n | what is new | cases | assurance |
 | --- | --- | --- | ---: | --- |
 | `E-translation-escape-not-rigid` | 303 sizes | A systematic screen over 318 configurations with replayable certificates; the idea of checking a slide is not new | 303 | numerically-checked |
-| `E-regularized-bounds-2026-10-12-exact-decision` | 59 sizes | Exact rational certificates of the catalogue's packings at sides below the record's ceilings: at 33 counts the exact side of Evan Daniel's own certificate of the packing, which the record carried rounded up, and at 26 the witness's own side. The packings are their finders'; the solver and the regularizer are Evan Daniel's. | 59 | verified |
+| `E-regularized-bounds-2026-10-12-exact-decision` | 59 sizes | Exact rational certificates of the catalogue's packings at the witnesses' own sides at 26 counts, below the record's ceilings, and at 25 of them below the sides of Evan Daniel's certificates of the same packings (T-101). At the other 33 the side is exactly that of Evan Daniel's certificate, previously published on 5 October 2026 and proved here by T-101's replays, so there only a second certificate at that side is new, not the bound. The packings are their finders'; the solver and the regularizer are Evan Daniel's. | 59 | verified |
 | `E-n005-fixed-side-local-rigidity` | 5 | The first exact PROOF that Goebel's n = 5 optimum is locally rigid at fixed side -- a property ASSERTED WITHOUT PROOF by Kingbird (archived main page, line 44, "Rigid." with a link and no argument), not stated by Goebel 1979 (zero occurrences of "rigid" or "uniqu" in the extraction) and not annotated by Friedman DS7, whose Theorem 2 is a lower bound only and analyses no equality case | 1 | verified |
 | `E-n005-second-order-rigidity` | 5 | That n = 5 is not infinitesimally rigid but is second-order rigid, proved exactly; the catalogue asserts 'Rigid.' without defining or arguing it | 1 | verified |
 | `E-n011-trump-local-rigidity` | 11 | Local rigidity proved by exhausting all 128 branchwise cones; sources assert rigidity, and zero algebraic freedom does not exclude a branching motion | 1 | verified |
@@ -606,7 +606,7 @@ The `n` column is what each covers and `cases` is how many frontier records cite
 | `E-karakus-strip-measure-interval` | 203 | here | - |
 | `E-basic-grid-upper` | 175 | here | - |
 | `E-regularized-bounds-2026-10-12-exact-decision` | 59 | here | - |
-| `E-basic-area-lower` | 18 | here | - |
+| `E-evand-exact-ceilings-2026-10-05-exact-replay` | 35 | here | - |
 
 The most-cited argument this repository did not produce is `E-karakus-strip-lower`, carrying 203 frontier cases. It is an external proof, and it has been read here: its record carries the review, what was re-derived, and the four things that were not. The arithmetic is what picked it out for reading -- being cited this heavily is the reason to open an argument, not a reason to trust it.
 

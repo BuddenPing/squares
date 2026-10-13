@@ -31676,14 +31676,17 @@ evidence:
         lists (T-146) and site as retained here.
       searched: '2026-10-12, by devtools.register_regularized_bounds select against the case records'
       novel_object: >-
-        Exact rational certificates of the catalogue's packings at sides below the record's
-        ceilings: at 33 counts the exact side of Evan Daniel's own certificate of the
-        packing, which the record carried rounded up, and at 26 the witness's own side. The
-        packings are their finders'; the solver and the regularizer are Evan Daniel's.
+        Exact rational certificates of the catalogue's packings at the witnesses' own sides
+        at 26 counts, below the record's ceilings, and at 25 of them below the sides of Evan
+        Daniel's certificates of the same packings (T-101). At the other 33 the side is
+        exactly that of Evan Daniel's certificate, previously published on 5 October 2026
+        and proved here by T-101's replays, so there only a second certificate at that side
+        is new, not the bound. The packings are their finders'; the solver and the
+        regularizer are Evan Daniel's.
       gaps: >-
         No search beyond this record and its retained sources. Evan Daniel's certificates
-        (T-101) already state the 33 sides exactly; his solved points, from which the views
-        were made, are not retained here.
+        (T-101) state the 33 sides exactly, which is why the novel object leaves them out;
+        his solved points, from which the views were made, are not retained here.
     source_key: '[Daniel regularizer 2026-10-11]'
     certificate: cases/regularized_bounds/views/
     replay: >-
@@ -31723,14 +31726,18 @@ evidence:
       refused by both at all 59 (177 controls in 1307.2 CPU seconds); the box shrunk by the
       unit alone is accepted by both at the 33 regularizer certificates, which clear the top
       and right walls by more than that unit, and refused by both at the 26 same-side views,
-      which touch one of them. The overlap mutant is chosen by the independent checker's own
+      which touch one of them. At those 26 the least clearance is 0, so the shrink past it
+      is the one-unit shrink: the 177 decisions are of 151 distinct mutants. The overlap
+      mutant is chosen by the independent checker's own
       pair gap, so that checker's refusal of it is circular; it is invalid regardless, by
       the separating-axis theorem. Identity is measured against the witness's exact frame
       (check_half_angle_area.arrangement_gap under the box's eight symmetries); at n = 204
       and 299 nearest centres do not pair the view's squares one to one with the witness's,
       so there the view's identity with the credited packing is not decided here. The case
       records carry each exact side as the verified upper bound's exact_form and keep the
-      decimal they printed before, which lies above it, as its value. No optimality, local
+      decimal they printed before, which lies above it, as its value; at the 33 counts whose
+      side is T-101's they cite T-101's two replays beside this entry, the independent one
+      first. No optimality, local
       minimum, rigidity or same-packing claim, and no certificate of a closed-form side:
       where the catalogue prints one, each side lies above it.
     source_reviewed: '2026-10-12'
