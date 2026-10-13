@@ -346,8 +346,9 @@ where none is recorded, the default the policy applies until there is one.
 
 10. **Cases the rules cannot settle:** *answered by the owner on 12 October 2026:* they
     go to review, not to refusal.
-    Rows 6 and 7 send a view to review unless a total of shared sides falls; only an
-    exact route’s refusal or a falling total refuses.
+    Row 7 sends a view to review unless a total of shared sides falls, as row 6 did
+    until question 14 retired it; only an exact route’s refusal or a falling total
+    refuses.
 
 11. **A view that changes nothing visible:** *answered by the owner on 12 October 2026:*
     as now. It is reported as no change and no file is written for it.

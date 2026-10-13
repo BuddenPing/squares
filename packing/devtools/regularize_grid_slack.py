@@ -34,8 +34,10 @@ closes them, in five steps:
    neighbour along a chosen face normal is linear in the two centres, and every point
    meeting those inequalities is a packing (upstream's `reg.place`, evand/square-packing,
    uses the same fact). Each centre may move by at most `--trust` per coordinate from the
-   witness's and by at most `MOVE_BOUND` in L1, so by at most `1/2`, the policy's bound
-   on a move for automatic admission. A binary per *coincidence* -- two squares of
+   witness's and by at most `MOVE_BOUND` in L1, so by at most `1/2`: the generator's
+   trust region, which keeps the placement near the witness's pose and its big-M
+   constants tight. The policy measures a move and gates nothing on it (section 3, since
+   13 October 2026). A binary per *coincidence* -- two squares of
    exactly one rotation class flush across a face with no offset along it, or an axis
    square flush on a wall: exactly a full shared side under the house rule -- is
    switched on by big-M constraints, and the objective maximizes full shared sides
@@ -135,8 +137,9 @@ NEAR_AXIS_DEGREES = 0.5
 TRUST = 0.45
 """Per coordinate; with `MOVE_BOUND` a centre moves less than `1/2` from the witness."""
 MOVE_BOUND = 0.5
-"""A centre's L1 move from the witness, so its distance stays within the policy's `1/2`
-for automatic admission."""
+"""A centre's L1 move from the witness: the trust region that keeps its distance under
+`1/2` and the placement's big-M constants tight. The policy measures the move and no longer
+gates on it (section 3)."""
 TIME_LIMIT = 120.0
 STAGE_MARGIN = 0.0099
 """A kept stage contact stays this close; the stage's frame rounds centres to `1e-6`."""
@@ -1486,8 +1489,10 @@ def run_one(n: int, run_dir: Path, settings: Settings) -> dict[str, Any]:
 
 def decided(report: Mapping[str, Any], witness: Mapping[str, Any]) -> driver.Decision:
     """The policy's decision table (section 4) applied to one count's view, as the driver
-    applies it to its own: the exact routes, the side against `s_W` and `U`, the pairing
-    and named turns, the per-square and total contact counts, and the move bound."""
+    applies it to its own: the exact routes, the side against `s_W` and `U`, and the
+    per-square and total contact counts decide; the pairing, unnamed turns and largest
+    move are measured and named in the reason, and decide nothing (rows 6 and 9, retired
+    13 October 2026)."""
     if "measured" not in report:
         return driver.classify(
             driver.Measured("same", produced=False, status=str(report.get("refusal")))

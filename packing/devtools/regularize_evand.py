@@ -260,7 +260,9 @@ DEFAULT_TIMEOUT = 600.0
 DEFAULT_WORKER_CAP = 2
 #: The stages a run can start from; the later stages always run after the first chosen.
 STAGES = ("input", "solve", "regularize", "import")
-#: The provisional move bound of policy section 3 and the turn named in obligation 3.
+#: A move over this is named in the reason a view is admitted with (`pose_changes`): a
+#: measurement since the owner's answers of 13 October 2026, not a gate (policy section 3).
+#: The turn is obligation 3's: a square turned by more than it, as a sine, is turned.
 MOVE_BOUND = Fraction(1, 2)
 TURN_BOUND = Fraction(1, 10**6)
 SOLVE_CERTIFIED = ("KKT local min", "bound only")
