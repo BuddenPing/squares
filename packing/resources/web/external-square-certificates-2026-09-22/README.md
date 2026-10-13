@@ -26,7 +26,8 @@ keeps its announcements in:
 Their text and times are those of [`social-transcripts.md`](social-transcripts.md) and
 the September capture, with the “1/2” and “2/2” markers the transcript keeps, and the
 second post’s link expands to `https://github.com/Kleddamag/11-squares-certified-bound`.
-`acquisition/sources.json` still lists only the September captures.
+`acquisition/sources.json` lists both under `social_sources`, after the September
+captures, with each one’s size, SHA-256 and retrieval time.
 
 ## Retained Repositories
 

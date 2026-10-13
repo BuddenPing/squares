@@ -2091,10 +2091,12 @@ sources:
       32 patterns of its certified sub-pattern ledger, eleven of them wand125's, none of
       which the README or CITATION.cff credits beyond collecting "the wider research
       record"; and Overbeck's 60-place seed of 21 September 2026 fixes the centre of the
-      endpoint box. F-2: the README credits Ahmed's formalization only as a reference for
-      its trust boundary, where the issue names his s(11) proof for the proof's shape, and
-      spells his name "Mannaseh". The lineage stays credits-project, as the source's own
-      files state it.
+      endpoint box. The packet's first-party comparison programs retain the cover, pattern
+      and endpoint identities this rests on, with their outputs
+      (receipts/cover-comparison.json, receipts/endpoint-comparison.json). F-2: the README
+      credits Ahmed's formalization only as a reference for its trust boundary, where the
+      issue names his s(11) proof for the proof's shape. The lineage stays
+      credits-project, as the source's own files state it.
 credited_names:
   Oscar Fitzharding: Fitzharding
   Marc Leonard Overbeck: Overbeck

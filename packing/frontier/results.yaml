@@ -17436,13 +17436,14 @@ results:
       claim, at the rungs its evidence earns, and that its verified status stays open until
       the complete replay passes.
 
-      A newer route to the same equality: Oscar Fitzharding's Lean 4 proof (T-154), whose
-      repository was public later on 12 October 2026, about six hours after this edition's
-      release large-files-v1, with its own release v1.0.0 the same day; n-017's priority
-      notes give the times. It is a separate proof that leaves no premise open within its
-      stated trust boundary, not a formalization of this argument, and its source names
-      this candidate as earlier and independent. This entry stays the first report of the
-      value and keeps the case's reported lower bound.
+      A newer route to the same equality: Oscar Fitzharding's Lean 4 proof (T-154). By
+      GitHub's server-side times its repository was public later on 12 October 2026, about
+      six hours after this edition's release large-files-v1, and its release v1.0.0 about
+      seven and three-quarter hours after it; n-017's priority notes give the times. It is
+      a separate proof that leaves no premise open within its stated trust boundary, not a
+      formalization of this argument, and its source names this candidate as independent
+      and published on 12 October 2026. This entry stays the first report of the value and
+      keeps the case's reported lower bound.
 
       The first review lists ten non-blocking defects, among them the ROOT_ADMISSION
       geometry, written only in the proof text and a script comment (KNOWN_ISSUES.md item
@@ -17478,7 +17479,7 @@ results:
       T-153's L by identity of definition: `(6+4t)/(1+2t-t^2)` at the unique common zero of
       the same two polynomials, H-255's F and G, in the same box of radius 10^-12 about
       exp-237's 60-place centre, which is the chart of the certified endpoint that holds the
-      case's verified upper bound.
+      case's verified upper bound (the packet's receipts/endpoint-comparison.json).
 
       The route: a cover of the centre box by 24 cells, each holding at most one centre; a
       census, checked by Lean's kernel, that reduces every occupancy of 17 cells to 35 small
@@ -17503,8 +17504,8 @@ results:
       soundness proofs or the certificates.
 
       Fitzharding,
-      [sq17-lean](https://github.com/ofitzharding/sq17-lean/tree/e6ee548090dc1dbf938ecf8590481de837a6a454),
-      12 October 2026, release v1.0.0. Its README credits Bidwell, Pertti Hämäläinen's 1980
+      [sq17-lean](https://github.com/ofitzharding/sq17-lean/tree/0a7167efa8dcae7fa73855890630fb7e2de550ed),
+      release v1.0.0 of 12 October 2026. Its README credits Bidwell, Pertti Hämäläinen's 1980
       arrangement, Friedman's survey, the Squares Project, Ahmed and collaborators'
       eleven-square formalization as a reference for its trust boundary, and David MacIver's
       earlier Lean work on a seventeen-square lower bound; issue #565 also names Ahmed's
@@ -17521,19 +17522,17 @@ results:
     significance:
       score: 5
       rationale: >-
-        The first reported proof of s(17) = L that leaves no premise open, within the trust
-        boundary it states: T-153, public about six hours earlier the same day, is a
-        candidate resting on 15 mathematical premises by its own statement. n = 17 is, with
-        n = 12, one of the two open cases below n = 18. Its kind is a simplification because
-        the record already holds the value; what it adds is a route whose whole lower half
-        is one proof-assistant build, so a single complete build, here or by a third party
-        and retained here, would carry it to V3 and C3, where T-153 needs its capture
-        recomputation and ten trees replayed. Significance is separate from whether the
-        proof is correct. Proposed for the owner's confirmation.
+        Of the reports this record holds, the first proof of s(17) = L that leaves no
+        premise open, within the trust boundary it states: T-153, public earlier the same
+        day by GitHub's times, is a candidate resting on 15 mathematical premises by its own
+        statement. n = 17 is, with n = 12, one of the two open cases below n = 18. Its kind
+        is a simplification because the record already holds the value; what it adds is a
+        route whose whole lower half is one proof-assistant build, so a single complete
+        build, here or by a third party and retained here, would carry it to V3 and C3,
+        where T-153 needs its capture recomputation and ten trees replayed. Significance is
+        separate from whether the proof is correct. Proposed for the owner's confirmation.
       scored: '2026-10-13'
-      by: >-
-        Intake of 13 October (think-hcqr), draft for the owner, and
-        docs/project/reviews/review-2026-10-13-fitzharding-n17-lean.md
+      by: Intake of 13 October (think-hcqr), draft for the owner
     novelty: previously-published
     attribution:
       source_keys: ['[Fitzharding n17 Lean 2026]']
@@ -17543,9 +17542,11 @@ results:
       One cited entry, the source's report (E-n017-fitzharding-lean-report), which claims
       the exact value and carries the review of 13 October as its external_review; it sets
       both rungs. The upper half, a packing at side L, is proved in the Lean without native
-      evaluation (endpoint_plainPacking, whose 18-module closure holds no native_decide),
-      and it is the certified endpoint T-065 holds (E-n017-certified-endpoint), V3/C3 here
-      and independent of the source. That entry is not cited, since citing it would make
+      evaluation: endpoint_plainPacking, in PackingStatement, whose 241-module import
+      closure holds no native_decide, wraps EndpointPacking's endpoint_packing, whose
+      18-module closure holds none either (the packet's receipts/closures.json). It is the
+      certified endpoint T-065 holds (E-n017-certified-endpoint), V3/C3 here and
+      independent of the source. That entry is not cited, since citing it would make
       this result hold the case's verified upper bound in T-065's place.
 
       The lower half rests on the Lean build: the cover's capacities, the census, the case
@@ -17565,8 +17566,11 @@ results:
         kind: adversarial
         reviewer: >-
           an AI agent, the adversarial review lane of the sq17-lean intake (bead
-          think-xjb2), model claude-opus-5-5 at the tbd-strong tier, not told its reasoning
-          setting, prompted separately from the packet lane and sharing no context with it
+          think-xjb2), model claude-opus-5-5 at the tbd-strong tier, reasoning setting xhigh
+          on all 282 of its turns by its rollup
+          (packing/campaign/resource-usage/agent-a45ab9e0e00fe9076.yaml), though its brief
+          did not state one, prompted separately from the packet lane and sharing no context
+          with it
         reviewer_kind: ai
         relation: project
         date: '2026-10-13'
@@ -17591,6 +17595,9 @@ results:
       - packing/resources/web/fitzharding-n17-lean-2026-10-13/sq17-lean/verification/clean-build-receipt.json
       - packing/resources/web/fitzharding-n17-lean-2026-10-13/sq17-lean/verification/Square17Optimality.log.gz
       - packing/resources/web/fitzharding-n17-lean-2026-10-13/receipts/source-consistency.json
+      - packing/resources/web/fitzharding-n17-lean-2026-10-13/receipts/endpoint-comparison.json
+      - packing/resources/web/fitzharding-n17-lean-2026-10-13/receipts/cover-comparison.json
+      - packing/resources/web/fitzharding-n17-lean-2026-10-13/receipts/closures.json
       - docs/project/reviews/review-2026-10-13-fitzharding-n17-lean.md
     next_rung: >-
       V3 and C3 need a complete build of the theorem's 4,951-module import closure that the
@@ -17602,6 +17609,12 @@ results:
       building the statement and endpoint closures here and printing their axioms
       (think-s7s4), and scanning the two release archives not yet scanned (think-c1kz). The
       impossibility half is decided only by the full build.
+
+      If that build lands before T-153's complete replay, this entry would state a lower
+      bound above n = 17's verified one, and a simplification moves no bound: its standing
+      reads pending adoption until the case record adopts it, and its kind is then
+      revisited, with its result page's registered identity amended by a dated reason in
+      packing/site-urls.yaml (epistemics.md, Result Kinds).
 
       V4 and C4 need, on top of V3 and C3, a second adversarial AI review by a distinct
       reviewer whose verdict accepts, and the owner's oversight record naming
@@ -17633,14 +17646,21 @@ results:
       simplification. V0 is declared, with this note as the ladder asks: the only entry is
       the source's report of its own build, and no build of the proof is retained here.
 
-      Priority, stated and not defended: Overbeck's candidate was public first. Both were
-      published on 12 October 2026: Kleddamag/the-seventeenth-square-candidate and its
-      release large-files-v1 about six hours before this proof's repository was public, and
-      this proof's release v1.0.0 and issue #565 later that day, with the author's post on
-      13 October; n-017's priority notes and the review's section 5 give the times. The
-      source names Overbeck's as earlier and independent. T-153 is the first report of the
-      value and keeps the case's reported lower bound; this entry is the first report of a
-      proof of it that leaves no premise open.
+      Priority, stated and not defended: by GitHub's server-side times Overbeck's candidate
+      was public first. Both were published on 12 October 2026:
+      Kleddamag/the-seventeenth-square-candidate at 13:46:05Z and its release
+      large-files-v1 at 14:24:20Z; this proof's repository at 20:42:08Z, about six hours
+      after that release, and its release v1.0.0 at 22:06:23Z, about seven and
+      three-quarter hours after it; issue #565 at 22:23:37Z, and the author's post on 13
+      October. n-017's priority notes and the review's section 5 give the sources of the
+      times.
+
+      The source names Overbeck's candidate as independent and published on 12
+      October 2026, and does not say which came first. T-153 is the first report of the
+      value and keeps the case's reported lower bound. Of the reports this record holds,
+      this entry is the first of a proof of the value that leaves no premise open; the
+      source's own search of 12 October, as its README reports it, "found no earlier
+      complete Lean proof of this optimality result".
 
       The README and the issue say the proof was developed independently of Overbeck's
       candidate. The code shares none of that candidate's objects, but its public history
@@ -17649,19 +17669,22 @@ results:
 
       Lineage, the review's findings F-1 and F-2, to put to the author: the proof runs on
       this project's n = 17 plan and data, which the README and CITATION.cff credit only as
-      "The Squares Project collects the wider research record". The 24 cells are the exp-247
+      "The Squares Project collects the wider research record".
+
+      The 24 cells are the exp-247
       cover (H-266) vertex for vertex and under its cell names, with H-259's wall lemma and
       parameters; the cap 1169/250 is H-266's and the 43,593-orbit census exp-246's; 32 of
       the 35 excluded patterns are entries of this project's certified sub-pattern ledger,
       eleven of them closed by wand125 through issue #472; the endpoint chart and layout are
       H-255's, exp-237's and H-256's, whose 60-place centre is Overbeck's seed of 21
       September 2026; and the local half follows the 52-row recipe of the review of 2
-      October.
+      October. The packet's first-party comparisons retain the cover, pattern and endpoint
+      identities (receipts/cover-comparison.json and receipts/endpoint-comparison.json).
 
       Issue #565 names Ahmed's s(11) proof and its formalization as methodological
       references for finite exclusion, capture and the local endpoint argument, while the
-      README credits the formalization only for its trust boundary and spells his name
-      "Mannaseh". The bibliography's lineage stays credits-project, as the source's own
+      README credits the formalization only for its trust boundary. The bibliography's
+      lineage stays credits-project, as the source's own
       files state it. What the proof adds to this record is the exclusion of every residual
       case (3,636 orbits were open under this project's 72 certified entries), the capture,
       and a formal proof of every bridge from a certificate to geometry.

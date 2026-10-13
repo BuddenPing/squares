@@ -3851,7 +3851,8 @@ sources:
     proof, Sq17.square17_optimality, that seventeen unit squares fit in a square of side L
     exactly when L is at least EndpointGeometry.side, which is this repository's L by
     identity of definition (exp-237's chart). MIT licence. The packet keeps the statement's
-    files, the build pins, manifest.json, the two scripts and verification/; the other 1,203
+    files, the build pins, manifest.json, the two scripts, verification/ and the two data
+    files its comparisons read (the cell cover and the excluded patterns); the other 1,201
     tree modules are pinned by the commit and manifest.json, and the three release archives
     (1,962,867,415 bytes) by size and SHA-256. The source reports a clean rebuild of the
     theorem's 4,951-module import closure on two of the author's machines, with the three

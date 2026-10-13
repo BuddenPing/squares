@@ -5831,10 +5831,11 @@ issues:
       13,343 native_decide facts. Retained on 13 October 2026 at e6ee548, whose proof files
       are v1.0.0's, and read by an adversarial review that found no mathematical defect,
       found EndpointGeometry.side to be this record's L by identity of definition, and found
-      that the proof runs on this project's n = 17 plan and data without crediting it (F-1).
-      Registered as T-154, a simplification of T-153 (Overbeck's candidate, public about six
-      hours earlier), at V0/C1 with S5 proposed; the source's clean build was not repeated
-      here, and the verified bounds are unchanged.
+      that the proof runs on this project's n = 17 plan and data without crediting its
+      components specifically (F-1). Registered as T-154, a simplification of T-153
+      (Overbeck's candidate, whose release was public about six hours before this proof's
+      repository by GitHub's times), at V0/C1 with S5 proposed; the source's clean build was
+      not repeated here, and the verified bounds are unchanged.
     read_through: '2026-10-12T22:23:37Z'
     results:
     - key: n17-optimality-lean

@@ -31924,7 +31924,10 @@ evidence:
     source_key: '[Fitzharding n17 Lean 2026]'
     certificate: packing/resources/web/fitzharding-n17-lean-2026-10-13/sq17-lean/Sq17Lean/Square17Optimality.lean
     replay_status: not-attempted
-    verifiers: [V-fitzharding-n17-lean, V-fitzharding-n17-source-manifest]
+    verifiers:
+      - V-fitzharding-n17-lean
+      - V-fitzharding-n17-source-manifest
+      - V-fitzharding-n17-premise-comparisons
     axioms_receipt: packing/resources/web/fitzharding-n17-lean-2026-10-13/sq17-lean/verification/Square17Optimality.log.gz
     proof:
       source: packing/resources/web/fitzharding-n17-lean-2026-10-13/sq17-lean/Sq17Lean/Square17Optimality.lean
@@ -31962,9 +31965,11 @@ evidence:
       state: informally-verified
       date: '2026-10-13'
       reviewed_by: >-
-        an AI agent (claude-opus-5-5, tbd-strong tier, not told its reasoning setting), the
-        adversarial review lane of the sq17-lean intake (bead think-xjb2), prompted
-        separately from the packet lane and sharing no context with it
+        an AI agent (claude-opus-5-5, tbd-strong tier, reasoning setting xhigh on all 282 of
+        its turns by its rollup,
+        packing/campaign/resource-usage/agent-a45ab9e0e00fe9076.yaml, though its brief did
+        not state one), the adversarial review lane of the sq17-lean intake (bead
+        think-xjb2), prompted separately from the packet lane and sharing no context with it
       note: >-
         docs/project/reviews/review-2026-10-13-fitzharding-n17-lean.md read the source at
         e6ee548, whose proof files are release v1.0.0's. The statement and the definitions it
@@ -31972,7 +31977,8 @@ evidence:
         restriction, open-closed slip or vacuous hypothesis. The endpoint's two polynomials,
         midpoint, radius and side map are exp-237's chart and H-255's formulas term for term,
         so EndpointGeometry.side is the record's L by identity of definition, recomputed
-        exactly to 60 places; the endpoint is proved without native evaluation. The axiom
+        exactly to 60 places (the packet's receipts/endpoint-comparison.json); the endpoint
+        is proved without native evaluation. The axiom
         report lists 13,346 axioms: the three standard ones and 13,343 native_decide facts,
         all in Sq17.Propagation.HalfPlaneState, and no sorryAx. The chain from the
         conditional skeleton to the final theorem leaves no premise. A keyword scan of the
@@ -31985,7 +31991,8 @@ evidence:
         run from the source.
     limitations: >-
       The source reports this build, and nothing here observed or repeated it, so the entry
-      is reported and counts toward neither V nor C. The source's command, in README.md at
+      is reported and counts toward no rung above C1, which its external_review sets. The
+      source's command, in README.md at
       e6ee548 with elan: download the three v1.0.0 archives into certificates/
       (1,962,867,415 bytes, 6,986,311,712 bytes of Lean source unpacked), lake exe cache get
       for Mathlib v4.34.1, python3 scripts/unpack.py, which checks every archive and member
@@ -32002,13 +32009,23 @@ evidence:
 
       What was checked here: by the packet's check_source_manifest.py
       (receipts/source-consistency.json), that the 1,215 tree modules and 12 root files have
-      the SHA-256 manifest.json gives, that each archive's member count equals the modules
-      assigned to it, and that the axiom report lists for Sq17.square17_optimality propext,
+      the size and SHA-256 manifest.json gives, that the member count manifest.json records
+      for each archive equals the modules it assigns to that archive (no archive is opened
+      there), and that the axiom report lists for Sq17.square17_optimality propext,
       Classical.choice, Quot.sound and 13,343 distinct native_decide facts and nothing else,
-      with the log's SHA-256 equal to the receipt's; by the review, the statement, the
-      endpoint's identity with exp-237's chart, that the 241-module closure of
-      PackingStatement and the 18-module closure of EndpointPacking use no native_decide, and
-      that generated-sources.tar.gz has the SHA-256 manifest.json and GitHub give. The full
+      with the log's SHA-256 equal to the receipt's; by the packet's comparison programs
+      (V-fitzharding-n17-premise-comparisons), which retain the review's checks, that the
+      endpoint's polynomials, midpoint, radius and side map are exp-237's chart and H-255's
+      formulas (receipts/endpoint-comparison.json), that the 24 cells are UNIQUE_24 vertex
+      for vertex and 32 of the 35 patterns equal admitted entries of the certified
+      sub-pattern ledger up to the cover's symmetry, the other three lying strictly inside
+      admitted entries (receipts/cover-comparison.json), and that every module of the
+      241-module closure of PackingStatement and the 18-module closure of EndpointPacking
+      has the size and SHA-256 manifest.json gives and uses no native_decide, the one
+      textual match a comment, with generated-sources.tar.gz at the size and SHA-256
+      manifest.json gives (receipts/closures.json); by the review, the statement, the
+      trust boundary and that GitHub's asset digest for generated-sources.tar.gz is
+      manifest.json's. The full
       build was not attempted: this host has 4 cores, 15 GB of memory and 18 GB of free disk,
       which do not hold the archives, the expanded sources, the Mathlib cache and the build
       outputs together (think-r109). No module was elaborated here (think-s7s4), and two of
