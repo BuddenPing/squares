@@ -266,24 +266,30 @@ def apply_case(n: int, text: str) -> str:
     agrees with it. The body is the case record's own, and is left as it is.
     ``devtools.generate_frontier_case`` applies this to its drafts of these counts, as it
     applies ``devtools.apply_upper_bound_packets`` to the counts T-056 and T-057 certified.
-    A record whose verified upper lane the regularized layer holds (T-154) is returned
-    unchanged, as ``devtools.apply_exact_ceilings`` returns it: that layer writes over
-    this one and keeps this certificate's sentences as history.
+    A record whose verified upper lane a later layer holds below this certificate's side,
+    as Evan Daniel's exact certificates (T-101) and the regularized layer (T-154) do at
+    these counts, is returned unchanged, as ``devtools.apply_exact_ceilings`` returns one:
+    those layers write over this one and keep this certificate's sentences as history
+    (``source_supersession.verified_lane_held_by_later_layer``).
     """
     if n not in RESULTS:
         return text
-    from devtools import register_regularized_bounds as later  # noqa: PLC0415
+    from devtools.source_supersession import (  # noqa: PLC0415
+        verified_lane_held_by_later_layer,
+    )
 
     row = certification()[n]
     _, front, body = text.split("---\n", 2)
     payload = safe_load(front)["packing"]
-    if later.EVIDENCE in (payload["verified_upper_bound"].get("evidence") or []):
-        return text
     verified = {
         "value": str(row["verified_value"]),
         "exact_form": str(row["exact_form"]),
         "evidence": [REPLAY_EVIDENCE[n]],
     }
+    if verified_lane_held_by_later_layer(
+        payload["verified_upper_bound"], verified["evidence"], verified
+    ):
+        return text
     front = intake.set_block(front, "verified_upper_bound", verified)
     reported = payload["reported_upper_bound"]
     trails = not bounds_agree_at_declared_precision(reported, verified)

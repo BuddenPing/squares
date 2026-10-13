@@ -37,7 +37,14 @@ jlevy/squares#518 re-houses, and the nine jlevy/squares#553 re-housed after the 
 whose witnesses those pull requests replace.
 At each count it registered the view with the least exact side, so that no view of the
 count lies below the new bound.
-It refused any report whose witness or bound was not the checkout’s.
+A later `select` records every row-3 view’s side in its row (`row_three_sides`), so the
+choice can be checked without the run’s report.
+This selection predates that field.
+Its rows show the choice at 34 counts: at 33 one view alone was at row 3, and at one a
+`solved` view was taken over the same-side view, whose side is the witness’s own and
+which `--check` compares with it.
+At the other 25 a `same` view was taken over a `solved` one, whose side is in the run
+reports alone. It refused any report whose witness or bound was not the checkout’s.
 
 Of 71 counts with a view at row 3, 59 are registered here and 12 are left out: $n = 17$;
 70, 102, 103, 123, 126, 129, 146, 232, 267 and 295, which jlevy/squares#518 re-houses;
@@ -46,6 +53,11 @@ the side of the run’s view.
 At 33 counts the registered view is the regularizer’s certificate, and its side is
 exactly the side of Evan Daniel’s earlier certificate of the same packing (T-101), which
 the record had carried rounded up at the fourteen decimals the catalogue prints.
+Those 33 bounds are previously published, in Evan Daniel’s certificates of 5 October
+2026, and T-101’s replay by two checkers that share no code with each other or with the
+source already proves each; there the case records cite that replay and the source’s own
+beside this package’s decision, and what is new is a second certificate at the same side
+and the record carrying the side exactly.
 At the other 26 it is a same-side view at the witness’s side: at 25 of them
 $6.6 \times 10^{-20}$ to $1.8 \times 10^{-19}$ below that certificate’s side, and at
 $n = 29$ $5.4 \times 10^{-20}$ below the endpoint of the interval certificate (T-009).
@@ -90,7 +102,9 @@ both routes accept contact, which is sound for $s(n)$. All 177 controls reached 
 required outcomes on both routes (1,307.2 CPU seconds): the overlap and the shrink past
 the clearance were refused at every view, and the one-unit shrink was accepted at the 33
 regularizer certificates and refused at the 26 same-side views, which touch the top or
-right wall.
+right wall. At those 26 views the least top or right clearance is 0, so the shrink past
+the clearance and the one-unit shrink are the same mutant, refused under both names: the
+177 decisions are of 151 distinct mutants.
 
 ## Reproduce
 

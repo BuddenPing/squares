@@ -27,7 +27,10 @@ bound: `of` is the result the case's verified upper bound rests on
 side is also exactly the verified upper bound, where no registered result attributes the
 witness's source, redraws the packing at that bound in the same way: the result the bound
 rests on holds it (T-154 certified 26 witnesses' own sides exactly from views that are
-drawn here). Exactly one result must answer; where none does, or more than one, the count
+drawn here). Where the bound rests on several results, the one whose `regularizations`
+registered a view of the count at that bound answers: at 33 counts T-154's view lies
+exactly at the side of Evan Daniel's earlier certificate, and the case cites both (T-101,
+T-154). Exactly one result must answer; where none does, or more than one, the count
 is listed under `unregistered`
 with the reason, and its record stays in the layer's index alone. The register holds a
 result by others only when the record acts on it (`epistemics.md`, Results by Others), so a
@@ -121,6 +124,29 @@ def witness_source_key(entry: Mapping[str, Any], repo: Path = REPO) -> str | Non
     return (document["witness"].get("source") or {}).get("key")
 
 
+def registering_holders(
+    n: int, holders: Sequence[str], results: Sequence[Mapping[str, Any]], *, side: str
+) -> list[str]:
+    """The results a verified upper bound rests on, narrowed, where several prove it, to
+    those that registered a regularized view of `n` at that bound (a `regularizations` item
+    for `n` on `side`). At 33 counts the side of Evan Daniel's certificate (T-101) is also
+    the side of a registered regularized view (T-154), and the case cites both: the view
+    drawn there is the registering result's. Where none or several register one, the
+    holders stand as they were, and the count is listed unregistered."""
+    if len(holders) < 2:
+        return list(holders)
+    registering = [
+        str(result["id"])
+        for result in results
+        if str(result["id"]) in holders
+        and any(
+            int(item["n"]) == n and item.get("side") == side
+            for item in result.get("regularizations") or []
+        )
+    ]
+    return registering if len(registering) == 1 else list(holders)
+
+
 def packing_result(
     entry: Mapping[str, Any],
     results: Sequence[Mapping[str, Any]],
@@ -133,9 +159,12 @@ def packing_result(
     `side_at_bound` says a `same` view's side is also exactly the verified upper bound."""
     n = int(entry["n"])
     if relation(entry) == "bound":
+        bound_holders = registering_holders(n, bound_holders, results, side="solved")
         if len(bound_holders) == 1:
             return Resolved(bound_holders[0], "holds the verified upper bound the view is at")
         return Resolved(None, f"the verified upper bound rests on {list(bound_holders)}")
+    if side_at_bound:
+        bound_holders = registering_holders(n, bound_holders, results, side="same")
     holders = [
         str(result["id"])
         for result in results

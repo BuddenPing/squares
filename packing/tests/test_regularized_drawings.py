@@ -95,6 +95,42 @@ def test_a_witness_side_exactly_at_the_bound_falls_back_to_the_bound_holder() ->
     assert not drawings.at_bound(entry(7, "same"), {"value": "6.6"})
 
 
+def test_a_bound_two_results_prove_is_held_by_the_one_that_registered_the_view() -> None:
+    """At 33 counts T-154's view lies exactly at the side of Evan Daniel's earlier
+    certificate (T-101), and the case cites both: the view drawn at that bound is the one
+    whose result registered it, by a `regularizations` item on the drawn side; with no
+    such item, or two, the count stays unregistered (PR #549, review B2)."""
+    registering = [
+        {"id": "T-101", "scope": {"n_values": [6, 7]}, "attribution": {"source_keys": ["[A]"]}},
+        {
+            "id": "T-154",
+            "scope": {"n_values": [6, 7]},
+            "regularizations": [{"n": 6, "side": "solved"}, {"n": 7, "side": "same"}],
+        },
+    ]
+
+    def resolve(n: int, relation: str, *, at: bool = False) -> Any:
+        found = entry(n, relation)
+        return drawings.packing_result(
+            found,
+            registering,
+            source_key="[B]",
+            bound_holders=["T-101", "T-154"],
+            side_at_bound=at,
+        )
+
+    assert resolve(6, "bound").of == "T-154"
+    assert resolve(7, "same", at=True).of == "T-154"
+    # A `bound` drawing where the registering result's item is on the other side, or a
+    # count no item names, keeps both holders and so no answer.
+    assert resolve(7, "bound").of is None
+    assert "T-101" in resolve(7, "bound").reason
+    assert drawings.registering_holders(8, ["T-101", "T-154"], registering, side="solved") == [
+        "T-101",
+        "T-154",
+    ]
+
+
 def test_the_block_reads_back_as_the_items_it_was_written_from() -> None:
     item = drawings.item(entry(5), "T-001")
     assert "of_witness" not in item

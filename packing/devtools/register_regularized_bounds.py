@@ -184,6 +184,13 @@ def ceiling_decimal(value: Fraction, places: int) -> Decimal:
     return result
 
 
+def rounded_up(side: Fraction) -> bool:
+    """Whether `side_text` writes the side rounded up rather than exactly: its decimal
+    never ends, or ends past `DISPLAY_PLACES` places."""
+    places = terminating_places(side)
+    return places is None or places > DISPLAY_PLACES
+
+
 def side_text(side: Fraction) -> str:
     """A side as prose writes it: its exact decimal where that ends within
     `DISPLAY_PLACES` places, else the side rounded up there, so it stays a ceiling."""
@@ -191,6 +198,11 @@ def side_text(side: Fraction) -> str:
     if places is not None and places <= DISPLAY_PLACES:
         return format(ceiling_decimal(side, max(places, 1)), "f")
     return format(ceiling_decimal(side, DISPLAY_PLACES), "f")
+
+
+#: What prose adds after a side it writes rounded up, so a decimal that is not the side is
+#: never called the side exactly.
+ROUNDED_WORDS = f"rounded up at {DISPLAY_PLACES} places"
 
 
 def printed_value(earlier: str, side: Fraction) -> tuple[str, bool]:
@@ -296,6 +308,16 @@ def row_three(report: Mapping[str, Any]) -> list[str]:
     ]
 
 
+def least_output(report: Mapping[str, Any]) -> tuple[str, dict[str, str]]:
+    """The report's row-3 output with the least exact side, and every row-3 output's side,
+    which the row records so the choice can be checked without the run's report."""
+    outputs = report["outputs"]
+    sides = {name: literal(Fraction(outputs[name]["side_exact"])) for name in row_three(report)}
+    if not sides:
+        raise RegistrationError("no output of the report is decided at row 3")
+    return min(sides, key=lambda name: Fraction(sides[name])), sides
+
+
 def earlier_bound(n: int, case: Mapping[str, Any]) -> dict[str, Any]:
     """The verified upper bound the case held before this registration: the record's own,
     or, once the record carries this registration, the one the committed selection read
@@ -380,7 +402,7 @@ def selection_row(
     upper = bound_value(earlier)
     outputs = report["outputs"]
     names = row_three(report)
-    chosen = min(names, key=lambda name: Fraction(outputs[name]["side_exact"]))
+    chosen, sides = least_output(report)
     block = outputs[chosen]
     side = Fraction(block["side_exact"])
     compared = bound_value(
@@ -419,6 +441,7 @@ def selection_row(
         "run": run,
         "output": chosen,
         "outputs_at_row_3": names,
+        "row_three_sides": sides,
         "side": literal(side),
         "side_decimal": decimal_text(side),
         "side_text": side_text(side),
@@ -807,7 +830,31 @@ def problems() -> list[str]:
         case = case_front(n)
         if case["verified_upper_bound"] != verified_block(row):
             found.append(f"n={n}: the case record's verified upper bound is not the view's")
+        if at_t101_side(row) and row["earlier_verified"]["evidence"] != list(t101_replays()):
+            found.append(f"n={n}: the side is T-101's, but the record held another ceiling")
+        found.extend(least_view_problems(n, row))
     return found
+
+
+def least_view_problems(n: int, row: Mapping[str, Any]) -> list[str]:
+    """Whether the row's view is the least of its count's row-3 outputs, as far as the
+    row shows it: every output's side where `select` recorded them (`row_three_sides`),
+    else the `same` output's side, which is the witness's own (`witness_side`). A row of
+    the first selection whose `solved` view was not taken records no side for it."""
+    side = Fraction(row["side"])
+    recorded = row.get("row_three_sides")
+    if recorded is not None:
+        if sorted(recorded) != sorted(row["outputs_at_row_3"]):
+            return [f"n={n}: the recorded sides are not the row-3 outputs'"]
+        if side != min(Fraction(value) for value in recorded.values()):
+            return [f"n={n}: the registered view is not the least row-3 output"]
+        return []
+    witness = Fraction(row["witness_side"])
+    if row["output"] == "same" and side != witness:
+        return [f"n={n}: the same-side view is not at the witness's side"]
+    if "same" in row["outputs_at_row_3"] and side > witness:
+        return [f"n={n}: the registered view lies above the same-side view"]
+    return []
 
 
 # --------------------------------------------------------------------------------------
@@ -815,8 +862,25 @@ def problems() -> list[str]:
 # --------------------------------------------------------------------------------------
 
 
+def t101_replays() -> tuple[str, str]:
+    """T-101's two replays here of Evan Daniel's certificates, which prove each
+    certificate's side exactly: the independent implementation and the source's own."""
+    from devtools import apply_exact_ceilings as t101  # noqa: PLC0415
+
+    return t101.EXACT_REPLAY, t101.SOURCE_REPLAY
+
+
+def at_t101_side(row: Mapping[str, Any]) -> bool:
+    """Whether the registered side is exactly the side of Evan Daniel's earlier certificate
+    of the same packing (T-101), which T-101's replays already prove."""
+    return row["t101_side"] is not None and Fraction(row["t101_side"]) == Fraction(row["side"])
+
+
 def verified_block(row: Mapping[str, Any]) -> dict[str, Any]:
-    return {"value": row["value"], "exact_form": row["side"], "evidence": [EVIDENCE]}
+    """The verified upper lane on the registered side. Where that side is T-101's, T-101's
+    replays prove the same bound, the independent one among them, and stay cited first."""
+    evidence = [*t101_replays(), EVIDENCE] if at_t101_side(row) else [EVIDENCE]
+    return {"value": row["value"], "exact_form": row["side"], "evidence": evidence}
 
 
 def _set_block(front: str, name: str, value: object) -> str:
@@ -835,7 +899,17 @@ def _set_block(front: str, name: str, value: object) -> str:
 def trailing_blocker(row: Mapping[str, Any], evidence: Sequence[str]) -> dict[str, Any]:
     """The `mathematics` blocker where the bound and the report disagree."""
     gap = difference(row["value"], row["printed_side"])
-    exact = f"{EVIDENCE}'s exact side, {row['side_text']}, printed as {row['value']},"
+    whose = (
+        f"the exact side {t101_replays()[0]} and {EVIDENCE} both prove"
+        if at_t101_side(row)
+        else f"{EVIDENCE}'s exact side"
+    )
+    shown = (
+        f"the rational in exact_form ({row['side_text']} {ROUNDED_WORDS})"
+        if rounded_up(Fraction(row["side"]))
+        else row["side_text"]
+    )
+    exact = f"{whose}, {shown}, printed as {row['value']},"
     form = row["printed_exact_form"]
     if form:
         rational = row["printed_exact_form_degree"] == 1
@@ -940,14 +1014,36 @@ def earlier_words(n: int, row: Mapping[str, Any]) -> str:
     )
 
 
+def _rounded(row: Mapping[str, Any], words: str) -> str:
+    """`words` where prose writes the side rounded up, else nothing."""
+    return words if rounded_up(Fraction(row["side"])) else ""
+
+
 def dated_paragraph(n: int, row: Mapping[str, Any]) -> str:
+    # Where nearest centres do not pair the view with the witness, its identity with the
+    # credited packing is undecided, so the view is only made from the witness.
+    made = "of this arrangement" if row["identity"]["one_to_one"] else "from that witness"
+    proves = f"it proves `s({n}) ≤ {row['side_text']}`"
+    if at_t101_side(row):
+        bound = (
+            f"{proves}, a bound Evan Daniel’s exact certificate of this packing already "
+            f"proves at the same side ({DEFAULT_PACKING_RESULT}). The verified upper bound "
+            "is now that side exactly, resting on both certificates "
+            f"({DEFAULT_PACKING_RESULT}, {RESULT}), and the record still prints it as "
+            f"`{row['value']}`. Until then the verified upper bound was "
+            f"{earlier_words(n, row)}."
+        )
+    else:
+        bound = (
+            f"{proves}, the verified upper bound ({RESULT})"
+            f"{_rounded(row, ' ' + ROUNDED_WORDS)}, which the record still prints as "
+            f"`{row['value']}`. Until then the verified upper bound was "
+            f"{earlier_words(n, row)}."
+        )
     return (
         f"{DATED} This project’s regularization pass, Evan Daniel’s exact solver and "
         "regularizer run here on this register’s witness, produced an exact rational "
-        f"packing of this arrangement, decided here over `ℚ` by two exact checkers: it "
-        f"proves `s({n}) ≤ {row['side_text']}`, the verified upper bound ({RESULT}), "
-        f"which the record still prints as `{row['value']}`. Until then the verified upper "
-        f"bound was {earlier_words(n, row)}.\n\n"
+        f"packing {made}, decided here over `ℚ` by two exact checkers: {bound}\n\n"
     )
 
 
@@ -1028,20 +1124,43 @@ def section(n: int, row: Mapping[str, Any]) -> str:
         "(https://github.com/evand/square-packing), MIT, vendored here) on this register’s "
         "witness for this count, with the `conservative` angle policy and `coincide` "
         f"placement, {_how_made(row)}. The result is an exact rational packing of the same "
-        f"{n} squares in a square of side `{row['side_text']}`, {_side_words(n, row)}. "
+        f"{n} squares in a square of side `{row['side_text']}`"
+        f"{_rounded(row, ' (' + ROUNDED_WORDS + ')')}, {_side_words(n, row)}. "
         f"{_identity_words(row)} {_drawing_words(row)}"
     )
+    proves = f"That proves `s({n}) ≤ {row['side_text']}`"
+    printed = (
+        f"prints it as `{row['value']}`, the decimal it printed before and an upper display "
+        "of it"
+    )
+    if at_t101_side(row):
+        bound = (
+            f"{proves}. Evan Daniel’s certificate of this packing already proves the same "
+            f"bound at the same side ({DEFAULT_PACKING_RESULT}), and its replay here, by two "
+            "checkers that share no code with each other or with the source, is independent "
+            "of the code that made this view. That side is the exact form of the case’s "
+            f"`verified_upper_bound`, which cites both certificates ({DEFAULT_PACKING_RESULT}, "
+            f"{RESULT}) and {printed}."
+        )
+    elif rounded_up(Fraction(row["side"])):
+        bound = (
+            f"{proves}, the verified upper bound ({RESULT}) {ROUNDED_WORDS}. The exact side, "
+            "a rational, is the exact form of the case’s `verified_upper_bound`, which "
+            f"{printed}."
+        )
+    else:
+        bound = (
+            f"{proves}, the verified upper bound ({RESULT}), the exact form of the case’s "
+            f"`verified_upper_bound`, which {printed}."
+        )
     second = (
         "Each pair and each wall is decided over `ℚ` twice, by `sqpack`’s exact "
         "separating-axis test and by an independent checker that shares no code with it, "
         "and both accept it; both refuse it with its tightest pair pushed into overlap and "
         f"with its box shrunk past its least clearance ([certificate]({PACKAGE_LINK})). The "
         "same two checkers accepted it in the run that made it, so this is a reproduction "
-        f"with the producer’s code. That proves `s({n}) ≤ {row['side_text']}`, the "
-        f"verified upper bound ({RESULT}), the exact form of the case’s "
-        f"`verified_upper_bound`, which prints it as `{row['value']}`, the decimal it "
-        "printed before and an upper display of it. It says nothing about optimality, and "
-        "the packing stays its finders’."
+        f"with the producer’s code. {bound} It says nothing about optimality, and the "
+        "packing stays its finders’."
     )
     return f"{SECTION}\n\n{first}\n\n{second}\n\n"
 
@@ -1049,11 +1168,22 @@ def section(n: int, row: Mapping[str, Any]) -> str:
 def ceiling_section(n: int, row: Mapping[str, Any]) -> str:
     """The ceiling section of a count whose bound and report disagree."""
     value, printed = row["value"], row["printed_side"]
+    side = (
+        f"the rational in its `exact_form`, `{row['side_text']}` {ROUNDED_WORDS},"
+        if rounded_up(Fraction(row["side"]))
+        else f"`{row['side_text']}`, exactly,"
+    )
+    proved = (
+        f"Evan Daniel’s exact certificate of this packing (`{t101_replays()[0]}`, "
+        f"{DEFAULT_PACKING_RESULT}) and by the exact regularized certificate of it "
+        f"(`{EVIDENCE}`, {RESULT})"
+        if at_t101_side(row)
+        else f"the exact regularized certificate of this packing (`{EVIDENCE}`, {RESULT})"
+    )
     first = (
-        f"`verified_upper_bound` for this case is `{row['side_text']}`, exactly, proved by "
-        f"the exact regularized certificate of this packing (`{EVIDENCE}`, {RESULT}), and "
-        f"the record prints it as `{value}`. As printed it is **larger** than the best "
-        f"known `{printed}` two fields above it, by `{difference(value, printed)}`."
+        f"`verified_upper_bound` for this case is {side} proved by {proved}, and the record "
+        f"prints it as `{value}`. As printed it is **larger** than the best known "
+        f"`{printed}` two fields above it, by `{difference(value, printed)}`."
     )
     form = row["printed_exact_form"]
     if form:
@@ -1114,26 +1244,89 @@ _N029_ABOVE = re.compile(
 )
 
 
+def _words(text: str) -> str:
+    """`text` as a pattern that matches it across the formatter's line breaks."""
+    return r"\s+".join(re.escape(word) for word in text.split())
+
+
+#: What each rewrite above leaves behind, so a record already in the past is recognized.
+_T101_DATED_PAST = re.compile(
+    _words(f"the verified upper bound from 6 to {DATE_WORDS} ({DEFAULT_PACKING_RESULT})")
+)
+_T101_SECTION_PAST = re.compile(_words(f"the verified upper bound until {DATE_WORDS}:"))
+_T101_AGREES_PAST = re.compile(_words("Its rounded-up side and the printed side agree to one"))
+_N029_VERIFIES_PAST = re.compile(_words("own interval certificate verified") + r"\s+\$s\(29\)")
+
+
+def _rewrite(
+    n: int, body: str, pattern: re.Pattern[str], replacement: Any, past: re.Pattern[str]
+) -> str:
+    """`body` with `pattern` rewritten into the past, refusing a record where the sentence
+    is in neither tense: the earlier layer reworded it, and a sentence this layer no longer
+    finds would go on calling a superseded ceiling the verified upper bound."""
+    rewritten, count = pattern.subn(replacement, body)
+    if not count and not past.search(rewritten):
+        raise RegistrationError(
+            f"n={n}: neither the earlier ceiling's sentence /{pattern.pattern}/ nor its past "
+            "tense is in the record; reword the pattern to the earlier layer's prose"
+        )
+    return rewritten
+
+
 def past_tense(n: int, body: str, row: Mapping[str, Any]) -> str:
-    """The earlier ceiling's sentences put in the past."""
-    body = _T101_DATED.sub(
-        rf"\1, the verified upper bound from 6 to {DATE_WORDS} ({DEFAULT_PACKING_RESULT})", body
-    )
-    body = _T101_SECTION.sub(rf"\1, the verified upper bound until {DATE_WORDS}:", body)
-    body = _T101_AGREES.sub("Its rounded-up side and the printed side agree to one", body)
-    if f"{T101_SECTION}\n" in body:
-        body = body.replace(f"{T101_SECTION}\n", f"{T101_EARLIER}\n", 1)
+    """The earlier ceiling's sentences put in the past. Each sentence the earlier layer
+    wrote must be found, in the present tense or already in the past, or the record is
+    refused (`_rewrite`)."""
+    if n not in PACKING_RESULT:
+        body = _rewrite(
+            n,
+            body,
+            _T101_DATED,
+            rf"\1, the verified upper bound from 6 to {DATE_WORDS} ({DEFAULT_PACKING_RESULT})",
+            _T101_DATED_PAST,
+        )
+        body = _rewrite(
+            n,
+            body,
+            _T101_SECTION,
+            rf"\1, the verified upper bound until {DATE_WORDS}:",
+            _T101_SECTION_PAST,
+        )
+        if row["agrees_with_report"]:
+            # T-101 wrote this sentence only where its rounded-up side agreed with the report,
+            # and the value it printed, which this layer keeps, agrees exactly where it did.
+            body = _rewrite(
+                n,
+                body,
+                _T101_AGREES,
+                "Its rounded-up side and the printed side agree to one",
+                _T101_AGREES_PAST,
+            )
+        if f"{T101_SECTION}\n" in body:
+            body = body.replace(f"{T101_SECTION}\n", f"{T101_EARLIER}\n", 1)
+        elif f"{T101_EARLIER}\n" not in body:
+            raise RegistrationError(f"n={n}: no section on the earlier exact certificate")
     if n == 29:
         now = markdown_math(f"`s(29) ≤ {row['side_text']}`")
-        body = _N029_VERIFIES.sub(
+        body = _rewrite(
+            n,
+            body,
+            _N029_VERIFIES,
             lambda match: (
                 f"{match.group(1)} verified {match.group(2)} until {DATE_WORDS}, and its "
                 f"exact regularized certificate now verifies {now}"
             ),
-            body,
+            _N029_VERIFIES_PAST,
         )
         gap = difference(row["value"], row["printed_side"]).replace("e", "E")
-        body = _N029_ABOVE.sub(lambda match: f"{match.group(1)}`{gap}`", body)
+        # The gap is restated on every application, so the sentence is always present.
+        body = _rewrite(
+            n,
+            body,
+            _N029_ABOVE,
+            lambda match: f"{match.group(1)}`{gap}`",
+            re.compile(r"(?!)"),
+        )
     return body
 
 
