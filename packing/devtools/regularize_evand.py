@@ -425,6 +425,60 @@ def read_input(text: str) -> tuple[int, str, list[tuple[str, str, str]]]:
     return n, side, squares
 
 
+#: Beside `input.txt`: the witness it was written from, by path and digest, as recorded.
+INPUT_RECORD = "input.json"
+
+
+def reused_input(
+    directory: Path, witness: Mapping[str, Any], reused_frame: SourceFrame | None = None
+) -> None:
+    """Refuse to reuse a stage whose input is not what the witness gives today.
+
+    `--from-stage solve`, `regularize` and `import` reuse outputs made from `input.txt`.
+    Where the witness has changed since (#518 re-housed 42 counts), they describe another
+    input, and the report would name a witness the generator never read (review B of
+    #511, B2). The stored input is compared with the witness's input as text, so a change
+    that leaves the input as it was (a note, a credit) reuses the stage. Where the stored
+    regularization is reused (`reused_frame`, the witness's frame today) and started from
+    the witness's own pose, that pose is compared with today's too.
+    """
+    stored = directory / "input.txt"
+    if not stored.is_file():
+        raise EvandRunError(
+            f"{stored} is missing: run this count again from --from-stage input"
+        )
+    if stored.read_text(encoding="utf-8") != input_text(witness):
+        raise EvandRunError(
+            "the witness has changed since this count's input was written, so its later "
+            "stages describe another input: run this count again from --from-stage input"
+        )
+    regularized = directory / "regularize.json"
+    if reused_frame is None or not regularized.is_file():
+        return
+    if read_json(regularized).get("frame") != "witness":
+        return
+    framed = directory / "frame-witness/witness.exact.txt"
+    if not framed.is_file() or framed.read_text(encoding="utf-8") != frame_text(
+        witness, reused_frame
+    ):
+        raise EvandRunError(
+            "the witness's pose the regularizer started from is not the witness's today: "
+            "run this count again from --from-stage regularize"
+        )
+
+
+def input_record(directory: Path) -> dict[str, Any]:
+    """The exact solve's input by digest, and the witness it was written from as recorded
+    when it was written (obligation 6: inputs by digest)."""
+    stored = directory / "input.txt"
+    written = directory / INPUT_RECORD
+    return {
+        "path": stored.name,
+        "sha256": sha256_of(stored.read_bytes()),
+        "written_from": read_json(written).get("witness") if written.is_file() else None,
+    }
+
+
 def _placed(corners: Sequence[tuple[Any, Any]]) -> Placed:
     """Centre and `(cos, sin)` of a square from its corners, the first edge's direction."""
     xs = [Fraction(x) for x, _ in corners]
@@ -1959,6 +2013,14 @@ def _run_stages(
     started = time.perf_counter()
     if first <= STAGES.index("input"):
         write_text(directory / "input.txt", input_text(witness))
+        write_json(
+            directory / INPUT_RECORD,
+            {"witness": {"path": source["path"], "sha256": source["sha256"]}},
+        )
+    else:
+        reused = frame if first > STAGES.index("regularize") else None
+        reused_input(directory, witness, reused)
+    report["input"] = input_record(directory)
     seconds["input"] = round(time.perf_counter() - started, 3)
 
     if first <= STAGES.index("solve"):
@@ -2680,8 +2742,14 @@ def write_receipt(
 
 
 def solve_digests(run_dir: Path, counts: Sequence[int]) -> dict[str, dict[str, str]]:
-    """The retained solve outputs by digest, as policy section 9's question 8 asks."""
-    names = ("solve/witness.exact.txt", "solve/witness.contacts.json", "regularize.cert")
+    """The retained solve outputs by digest, as policy section 9's question 8 asks, and
+    the exact solve's input (obligation 6)."""
+    names = (
+        "input.txt",
+        "solve/witness.exact.txt",
+        "solve/witness.contacts.json",
+        "regularize.cert",
+    )
     found: dict[str, dict[str, str]] = {}
     for n in counts:
         directory = count_dir(run_dir, n)

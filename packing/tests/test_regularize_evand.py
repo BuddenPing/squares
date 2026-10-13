@@ -787,13 +787,15 @@ def test_a_rerun_that_stops_at_the_solve_leaves_no_earlier_output_behind(
     _timed_out_solve(monkeypatch)
     directory = drive.count_dir(tmp_path, 26)
     directory.mkdir(parents=True)
+    (directory / "input.txt").write_text(drive.input_text(witness(26)), encoding="utf-8")
     for name in STALE_OUTPUTS:
         (directory / name).write_text("an earlier run's output", encoding="utf-8")
     report = drive.run_count(26, Options(run_dir=tmp_path, from_stage=stage))
     assert report["status"] == "timeout"
     assert report["outputs"] == {"solved": None, "same": None, "same_refusal": None}
     assert [name for name in STALE_OUTPUTS if (directory / name).exists()] == []
-    assert drive.solve_digests(tmp_path, [26]) == {}
+    # Only the exact solve's input is left to name by digest.
+    assert list(drive.solve_digests(tmp_path, [26])["26"]) == ["input.txt"]
 
 
 def test_a_later_stage_rerun_of_a_timed_out_solve_keeps_its_solve_and_decision(
@@ -810,7 +812,14 @@ def test_a_later_stage_rerun_of_a_timed_out_solve_keeps_its_solve_and_decision(
         assert (again["status"], again["error"]) == ("timeout", None)
         assert again["solve"]["attempts"] == attempts
         assert again["decision"] == first["decision"]
-    # With no solve and no report to keep it, the count says to run from the solve.
+    # With no input, the count says to run from the input; with no solve and no report
+    # to keep it, from the solve.
+    unsolved = drive.run_count(27, Options(run_dir=tmp_path, from_stage="regularize"))
+    assert unsolved["status"] == "error"
+    assert "--from-stage input" in unsolved["error"]
+    (drive.count_dir(tmp_path, 27) / "input.txt").write_text(
+        drive.input_text(witness(27)), encoding="utf-8"
+    )
     unsolved = drive.run_count(27, Options(run_dir=tmp_path, from_stage="regularize"))
     assert unsolved["status"] == "error"
     assert "--from-stage solve" in unsolved["error"]
@@ -1000,6 +1009,70 @@ def _copy_run(n26_run: Path, tmp_path: Path) -> Path:
     import shutil  # noqa: PLC0415
 
     return Path(shutil.copytree(n26_run, tmp_path / "run", symlinks=True))
+
+
+def _moved_witness(tmp_path: Path) -> Path:
+    """n = 26's witness with square 1 moved left by 1e-7: another input, same id."""
+    text = drive.witness_path(26).read_text()
+    old = "    center:\n    - '0.5'\n    - '5.12132034355964257320253308632'"
+    assert old in text
+    moved = tmp_path / "n-026.yaml"
+    moved.write_text(text.replace(old, old.replace("'0.5'", "'0.4999999'"), 1))
+    return moved
+
+
+def test_a_stage_is_not_reused_from_another_witness(
+    n26_run: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """B2: the report names the exact solve's input by digest and the witness it was
+    written from; a later stage over a changed witness's input is refused."""
+    import hashlib  # noqa: PLC0415
+
+    report = json.loads((drive.count_dir(n26_run, 26) / "report.json").read_text())
+    directory = drive.count_dir(n26_run, 26)
+    assert (
+        report["input"]["sha256"]
+        == hashlib.sha256((directory / "input.txt").read_bytes()).hexdigest()
+    )
+    assert report["input"]["written_from"] == {
+        "path": report["source"]["path"],
+        "sha256": report["source"]["sha256"],
+    }
+    receipt = json.loads((n26_run / "receipt.json").read_text())
+    assert "input.txt" in receipt["solve_outputs"]["26"]
+    run_dir = _copy_run(n26_run, tmp_path)
+    original = drive.witness_path(26)
+    moved = _moved_witness(tmp_path)
+    monkeypatch.setattr(drive, "witness_path", lambda n: moved if n == 26 else original)
+    for stage in ("solve", "regularize", "import"):
+        refused = drive.run_count(26, Options(run_dir=run_dir, from_stage=stage))
+        assert refused["status"] == "error"
+        assert "--from-stage input" in refused["error"]
+        assert "decision" not in refused
+        assert not list(drive.count_dir(run_dir, 26).glob("view-*.yaml"))
+    # A change that leaves the input as it was reuses the stage, and the report says
+    # which witness the input was written from.
+    noted = tmp_path / "noted" / "n-026.yaml"
+    noted.parent.mkdir()
+    noted.write_text(original.read_text() + "# a note that changes no square\n")
+    monkeypatch.setattr(drive, "witness_path", lambda n: noted if n == 26 else original)
+    again = drive.run_count(26, Options(run_dir=run_dir, from_stage="regularize"))
+    assert again["status"] == "ok"
+    assert again["input"]["written_from"]["sha256"] == report["source"]["sha256"]
+    assert again["source"]["sha256"] != report["source"]["sha256"]
+    # A regularization that started from the witness's own pose is reused only from
+    # today's pose.
+    directory = drive.count_dir(run_dir, 26)
+    stored = json.loads((directory / "regularize.json").read_text())
+    (directory / "regularize.json").write_text(json.dumps({**stored, "frame": "witness"}))
+    framed = directory / "frame-witness/witness.exact.txt"
+    framed.parent.mkdir(exist_ok=True)
+    today = drive.source_frame(witness(26))
+    framed.write_text(drive.frame_text(witness(26), today))
+    drive.reused_input(directory, witness(26), today)
+    framed.write_text(framed.read_text().replace("26 ", "26  ", 1))
+    with pytest.raises(drive.EvandRunError, match="--from-stage regularize"):
+        drive.reused_input(directory, witness(26), today)
 
 
 def test_the_verdict_is_bound_to_the_view_bytes_it_was_reached_on(
