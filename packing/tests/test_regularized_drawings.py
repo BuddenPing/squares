@@ -137,3 +137,27 @@ def test_the_checker_holds_each_item_to_the_register() -> None:
         "regularized drawing at n = 9: identity.moved, 10, is more squares than n = 9",
         "regularized drawing at n = 5 is both an item and unregistered",
     ]
+
+
+def test_the_generated_block_check_fails_on_an_edited_block() -> None:
+    """`problems` holds the committed block to what the layer's index generates, so an
+    edit to it fails the records tier rather than passing until the next regeneration
+    (#548 review B6)."""
+    text = drawings.RESULTS.read_text(encoding="utf-8")
+    index = drawings.index_document()
+    assert drawings.problems(text, index) == []
+    head, block = drawings.split(text)
+    named = safe_load(block)[drawings.KEY]["items"]
+    first, second = named[0], named[1]
+
+    edited = block.replace(f"      of: {first['of']}\n", "      of: T-999\n", 1)
+    assert edited != block
+    (problem,) = drawings.problems(head + edited, index)
+    assert problem.startswith(f"results.yaml's {drawings.KEY} differs")
+
+    renumbered = block.replace(f"    - n: {second['n']}\n", "    - n: 999\n", 1)
+    (problem,) = drawings.problems(head + renumbered, index)
+    assert f"items for [{second['n']}] missing, [999] extra" in problem
+
+    (problem,) = drawings.problems(head, index)
+    assert "missing" in problem
