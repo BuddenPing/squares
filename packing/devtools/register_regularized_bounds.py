@@ -42,10 +42,20 @@ by the policy's table against the case record's bound (`regularize_grid_slack.de
 and takes at each count the row-3 view with the least exact side, the first run named
 among equals. A view is refused unless it was derived from the checkout's witness and its
 side is that witness's own `s_W`, which every row-3 grid-slack view's is: the generator's
-other side is the bound itself. Its receipts and view lie under
+other side is the bound itself. The row records `s_W` as read from the witness, and
+`--check` reads the witness again. Its receipts and view lie under
 `cases/regularized_bounds/grid-slack-2026-10-13/`, laid out as the first batch's are,
-and the case-record layer below writes each count in the words of the batch that holds
-it. The batches are disjoint.
+and the case-record layer below writes each count in the words of its batch's generator
+kind (`Batch.kind`), so a later grid-slack batch is written as this one is. The batches
+are disjoint.
+
+**A bound already implied.** `s(n) ≤ s(n + 1)`, since deleting a square from a packing
+leaves a packing in the same square, so a ceiling at the next count at or below a view's
+side already proves the view's bound. A grid-slack row records that ceiling, its evidence
+and the results that hold it (`implied_by`), and the case record says the bound was not
+new: T-154's certificate at `n = 291`, at exactly the side T-155 registers, proved
+`s(290)`'s bound from 12 October 2026, and T-155 is kept as the certificate of 290's own
+packing at that side (the owner's decision of 13 October 2026, on jlevy/squares#587).
 
 **What is retained.** Each registered view as the run wrote it, gzip-compressed, under
 `cases/regularized_bounds/views/`, and `selection.json`, a row per count: the view's side
@@ -93,6 +103,9 @@ devtools.register_regularized_bounds`:
 
 `decide`, `controls` and `table` act on the first batch unless `--batch` names another;
 with no command, the case records of every batch are written, or checked with `--check`.
+`--run-dir` and `--n` are refused on any other command, and `--n` on a batch of Evan
+Daniel's regularizer, whose `select` takes every row-3 count of its runs. `select` writes
+the views and the selection only once every refusal has run.
 """
 
 from __future__ import annotations
@@ -123,10 +136,6 @@ ROOT = Path(__file__).resolve().parent.parent
 REPO = ROOT.parent
 FRONTIER = ROOT / "frontier"
 PACKAGE = ROOT / "cases/regularized_bounds"
-VIEWS = PACKAGE / "views"
-SELECTION = PACKAGE / "selection.json"
-DECISION = PACKAGE / "exact-decision.json"
-CONTROLS = PACKAGE / "negative-controls.json"
 PACKAGE_LINK = "../cases/regularized_bounds/README.md"
 
 FORMAT = "regularized-bounds-receipt-v1"
@@ -158,28 +167,46 @@ DISPLAY_PLACES = 36
 #: views were made from.
 PACKING_RESULT = {29: "T-009"}
 DEFAULT_PACKING_RESULT = "T-101"
-#: Headings and markers this layer writes.
-DATED = "**Exact regularized certificate, 2026-10-12.**"
+#: Headings this layer writes; each batch's dated marker is `Batch.dated`.
 SECTION = "## The regularized exact certificate"
 CEILING_HEADING = "## The verified upper bound is a ceiling"
 T101_SECTION = "## The exact certificate"
 T101_EARLIER = "## The earlier exact certificate"
 
 
+#: The generator kinds a batch's views come from: Evan Daniel's regularizer through the
+#: vendored driver (`devtools.regularize_evand`), whose runs keep a receipt and report two
+#: outputs a count, and this project's grid-slack port of his coincidence placement
+#: (`devtools.regularize_grid_slack`), whose runs report one view a count. What a batch
+#: selects, and how its records are worded, follow its kind, never its identity.
+EVAND_KIND = "evand"
+GRID_KIND = "grid-slack"
+
+
 @dataclass(frozen=True)
 class Batch:
-    """One registration: a register result over the views of one generator's runs, with
-    its receipts and views under `package`. The batches are disjoint, and each count's
-    record is written in the words of the batch that holds it."""
+    """One registration: a register result over the views of one generator kind's runs,
+    with its receipts and views under `package`. The batches are disjoint, and each count's
+    record is written in the words of the kind of the batch that holds it."""
 
     name: str
+    kind: str
     result: str
     evidence: str
     registered: str
     date_words: str
     package: Path
+    #: The counts the batch never registers.
+    excluded: frozenset[int] = HELD
+    #: The days its runs ran, in words, where they are not the day it was registered.
+    run_dates: str = ""
     #: The package README's section on this batch, where the batch is not its subject.
     anchor: str = ""
+
+    @property
+    def ran(self) -> str:
+        """The days the batch's runs ran, in words."""
+        return self.run_dates or self.date_words
 
     @property
     def views(self) -> Path:
@@ -215,11 +242,22 @@ class Batch:
 FIRST_NAME = "evand"
 #: The views of Evan Daniel's regularizer from the full run of 11 and 12 October 2026 and
 #: its re-runs (T-154).
-FIRST = Batch(FIRST_NAME, RESULT, EVIDENCE, REGISTERED, DATE_WORDS, PACKAGE)
+FIRST = Batch(
+    FIRST_NAME,
+    EVAND_KIND,
+    RESULT,
+    EVIDENCE,
+    REGISTERED,
+    DATE_WORDS,
+    PACKAGE,
+    excluded=EXCLUDED,
+    run_dates="11 and 12 October 2026",
+)
 #: The views of this project's grid-slack regularizer, its port of Evan Daniel's
 #: coincidence placement, from the runs of 13 October 2026 (T-155).
 GRID = Batch(
     "grid-slack",
+    GRID_KIND,
     "T-155",
     "E-regularized-bounds-2026-10-13-grid-slack-exact-decision",
     "2026-10-13",
@@ -453,10 +491,16 @@ def measure_identity(
     frame = driver.source_frame(witness)
     if frame.side is None:
         raise RegistrationError(f"n={n}: the witness has no rational frame")
-    if witness.get("id") != source.get("id") or frame.side != Fraction(
-        str(source.get("s_W_exact"))
-    ):
-        raise RegistrationError(f"n={n}: the run read another witness than the checkout's")
+    if witness.get("id") != source.get("id"):
+        raise RegistrationError(
+            f"n={n}: the run read witness {source.get('id')}, not the checkout's "
+            f"{witness.get('id')}"
+        )
+    if frame.side != Fraction(str(source.get("s_W_exact"))):
+        raise RegistrationError(
+            f"n={n}: the run read its witness at another side than the checkout witness's "
+            "own s_W"
+        )
     side, placements, _corners = driver.view_geometry(view)
     measured = driver.identity(
         (side, placements), (frame.side, frame.placements), named, "view"
@@ -475,14 +519,27 @@ def measure_identity(
     }
 
 
+#: A view's bytes as its run wrote them, by count: what `retain` writes under a batch's
+#: `views/` once every row of its selection has passed.
+Views = dict[int, bytes]
+
+
+def retain(batch: Batch, views: Mapping[int, bytes]) -> None:
+    """Write a selection's views, gzip-compressed, after every refusal has run."""
+    for n, data in sorted(views.items()):
+        with atomic_output_file(view_path(n, batch), make_parents=True) as temporary:
+            temporary.write_bytes(gzip.compress(data, compresslevel=9, mtime=0))
+
+
 def selection_row(
-    n: int, run: str, directory: Path, report: Mapping[str, Any]
-) -> dict[str, Any]:
-    """One count's registered view, retained, with what the record needs about it."""
+    n: int, run: str, directory: Path, report: Mapping[str, Any], batch: Batch = FIRST
+) -> tuple[dict[str, Any], bytes]:
+    """One count's registered view, with what the record needs about it, and the view's
+    bytes, which `retain` writes once the whole selection has passed."""
     from devtools.apply_exact_ceilings import bound_value  # noqa: PLC0415
 
     case = case_front(n)
-    earlier = earlier_bound(n, case)
+    earlier = earlier_bound(n, case, batch)
     upper = bound_value(earlier)
     outputs = report["outputs"]
     names = row_three(report)
@@ -505,8 +562,6 @@ def selection_row(
     view = dict(load_yaml(data.decode("utf-8"))["witness"])
     if Fraction(str(view["side"])) != side:
         raise RegistrationError(f"n={n}: the view's side is not the report's")
-    with atomic_output_file(view_path(n), make_parents=True) as temporary:
-        temporary.write_bytes(gzip.compress(data, compresslevel=9, mtime=0))
     reported = case["reported_upper_bound"]
     value, raised = printed_value(earlier["value"], side)
     verified = {"value": value, "exact_form": literal(side)}
@@ -520,7 +575,7 @@ def selection_row(
 
     t101_row = t101.committed().get(n)
     t101_side = Fraction(t101_row["certified_side"]) if t101_row else None
-    return {
+    row = {
         "n": n,
         "run": run,
         "output": chosen,
@@ -562,15 +617,21 @@ def selection_row(
         },
         "generator": report.get("generator"),
     }
+    return row, data
 
 
-def select(run_dirs: Sequence[Path]) -> dict[str, Any]:
-    """Every row-3 count outside `EXCLUDED`, its least view retained and measured."""
+def select(run_dirs: Sequence[Path], batch: Batch = FIRST) -> tuple[dict[str, Any], Views]:
+    """Every row-3 count outside the batch's `excluded`, its least view measured: the
+    receipt, and the views `retain` writes. Nothing is written here, so a refused
+    selection leaves the package as it was."""
     reports = latest_reports(run_dirs)
     candidates = sorted(
         n for n, (_run, _directory, report) in reports.items() if row_three(report)
     )
-    rows = [selection_row(n, *reports[n]) for n in candidates if n not in EXCLUDED]
+    built = [
+        selection_row(n, *reports[n], batch) for n in candidates if n not in batch.excluded
+    ]
+    rows = [row for row, _data in built]
     receipts = []
     for run_dir in run_dirs:
         receipt = read_json(run_dir / "receipt.json")
@@ -587,9 +648,9 @@ def select(run_dirs: Sequence[Path]) -> dict[str, Any]:
                 "cost": receipt.get("cost"),
             }
         )
-    return {
+    receipt = {
         "format": FORMAT,
-        "tool": f"{TOOL} select",
+        "tool": batch.command("select"),
         "policy": POLICY,
         "what": (
             "Every count where a view of the regularization runs is decided at row 3 of the "
@@ -601,10 +662,11 @@ def select(run_dirs: Sequence[Path]) -> dict[str, Any]:
         ),
         "runs": receipts,
         "candidates": candidates,
-        "excluded": sorted(set(candidates) & EXCLUDED),
+        "excluded": sorted(set(candidates) & batch.excluded),
         "registered": [row["n"] for row in rows],
         "rows": rows,
     }
+    return receipt, {row["n"]: data for row, data in built}
 
 
 # --------------------------------------------------------------------------------------
@@ -630,23 +692,78 @@ def grid_reports(
     return reports
 
 
+def next_count_ceiling(n: int) -> dict[str, Any] | None:
+    """The next count's verified upper bound, as a rational, and its evidence: the exact
+    form where that is a rational, else the decimal, an upper display of the bound, so a
+    comparison with it never overstates what the bound proves."""
+    path = FRONTIER / f"n-{n + 1:03d}.md"
+    if not path.is_file():
+        return None
+    upper = case_front(n + 1)["verified_upper_bound"]
+    try:
+        bound = Fraction(str(upper.get("exact_form")))
+    except ValueError:
+        bound = Fraction(Decimal(str(upper["value"])))
+    return {"bound": bound, "evidence": list(upper.get("evidence") or [])}
+
+
+def results_holding(n: int, evidence: Sequence[str]) -> list[str]:
+    """The register's upper-bound results at `n` that cite any of `evidence`."""
+    register = load_yaml((FRONTIER / "results.yaml").read_text(encoding="utf-8"))
+    return [
+        str(result["id"])
+        for result in register["results"]
+        if result["kind"] in {"upper-bound", "optimality"}
+        and n in (result.get("scope") or {}).get("n_values", [])
+        and set(evidence) & set(result.get("evidence") or [])
+    ]
+
+
+def implied_by(n: int, side: Fraction) -> dict[str, Any] | None:
+    """The next count's verified upper bound where it is at or below `side`, which already
+    proves `s(n) ≤ side`: `s(n) ≤ s(n + 1)`, since deleting a square from a packing leaves
+    a packing in the same square. Its exact bound, its evidence and the results that hold
+    it, as the record stood when the view was selected; `None` where it lies above `side`.
+    A larger count's lower ceiling would be the next count's own gap first, which
+    `test_verified_upper_bound_contract` holds the register against."""
+    found = next_count_ceiling(n)
+    if found is None or found["bound"] > side:
+        return None
+    results = results_holding(n + 1, found["evidence"])
+    if not results:
+        raise RegistrationError(f"n={n + 1}: no registered result holds the verified bound")
+    return {
+        "n": n + 1,
+        "side": literal(found["bound"]),
+        "evidence": found["evidence"],
+        "results": results,
+    }
+
+
 def grid_selection_row(
-    n: int, found: Sequence[tuple[str, Path, Mapping[str, Any]]]
-) -> dict[str, Any]:
-    """One count's least row-3 grid-slack view among the runs, retained, with what the
-    record needs about it, in the terms `selection_row` gives a view of the first batch."""
+    n: int, found: Sequence[tuple[str, Path, Mapping[str, Any]]], batch: Batch = GRID
+) -> tuple[dict[str, Any], bytes]:
+    """One count's least row-3 grid-slack view among the runs, with what the record needs
+    about it, in the terms `selection_row` gives a view of the first batch, and the view's
+    bytes, which `retain` writes once the whole selection has passed. The view's sides are
+    keyed by run (`run_sides`), as the first batch's are by output."""
     from devtools import apply_exact_ceilings as t101  # noqa: PLC0415
     from devtools import regularize_evand as driver  # noqa: PLC0415
     from devtools import regularize_grid_slack as grid  # noqa: PLC0415
+    from devtools.regularized_drawings import grid_written_method  # noqa: PLC0415
 
     case = case_front(n)
-    earlier = earlier_bound(n, case, GRID)
+    earlier = earlier_bound(n, case, batch)
     upper = t101.bound_value(earlier)
     witness = grid.load_source(n)
+    frame = driver.source_frame(witness)
     held: list[tuple[str, Path, Mapping[str, Any], driver.Decision]] = []
     for run, directory, report in found:
         if report.get("generator") != grid.GENERATOR:
-            raise RegistrationError(f"n={n}: {run} holds a view of {report.get('generator')}")
+            raise RegistrationError(
+                f"n={n}: {run} holds a view of {report.get('generator')}, not of "
+                f"{grid.GENERATOR}"
+            )
         decision = grid.decided(report, witness, upper=upper)
         if decision.row == 3:
             held.append((run, directory, report, decision))
@@ -668,36 +785,43 @@ def grid_selection_row(
     view = dict(load_yaml(data.decode("utf-8"))["witness"])
     if Fraction(str(view["side"])) != side:
         raise RegistrationError(f"n={n}: the view's side is not the report's")
+    derived = (view.get("certificate") or {}).get("derived_from")
+    if derived != witness.get("id"):
+        raise RegistrationError(
+            f"n={n}: the view was derived from {derived}, not the checkout's witness "
+            f"{witness.get('id')}"
+        )
     # The generator's other side is the bound itself, never below it, so a row-3 view is
-    # the same-side view: `measure_identity` refuses it unless the checkout's witness is
-    # the one it was derived from and that witness's exact side is the view's.
+    # the same-side view, at the witness's own exact side `s_W`.
     if exact.get("relation") != "same":
-        raise RegistrationError(f"n={n}: a row-3 view that is not at the witness's side")
-    certificate = view.get("certificate") or {}
+        raise RegistrationError(
+            f"n={n}: the run labels its row-3 view {exact.get('relation')!r}, not the "
+            "same-side view"
+        )
+    if frame.side is None or side != frame.side:
+        raise RegistrationError(f"n={n}: the view's side is not the checkout witness's own s_W")
     straightened = [int(row["square"]) for row in report.get("straightened") or []]
     identity = measure_identity(
         n,
         view,
         [square - 1 for square in straightened],
-        {"id": certificate.get("derived_from"), "s_W_exact": literal(side)},
+        {"id": witness.get("id"), "s_W_exact": literal(frame.side)},
     )
     t101_row = t101.committed().get(n)
     if t101_row is None and n not in PACKING_RESULT:
         raise RegistrationError(f"n={n}: no registered result named for the packing")
     t101_side = Fraction(t101_row["certified_side"]) if t101_row else None
-    with atomic_output_file(view_path(n, GRID), make_parents=True) as temporary:
-        temporary.write_bytes(gzip.compress(data, compresslevel=9, mtime=0))
     reported = case["reported_upper_bound"]
     value, raised = printed_value(earlier["value"], side)
     verified = {"value": value, "exact_form": literal(side)}
     above_form, degree = _closed_form_facts(reported, side)
     after = grid.decided(report, witness, upper=side)
-    return {
+    row = {
         "n": n,
         "run": run,
         "output": "same",
-        "outputs_at_row_3": [item[0] for item in held],
-        "row_three_sides": sides,
+        "runs_at_row_3": [item[0] for item in held],
+        "run_sides": sides,
         "side": literal(side),
         "side_decimal": decimal_text(side),
         "side_text": side_text(side),
@@ -705,12 +829,13 @@ def grid_selection_row(
         "value_raised": raised,
         "earlier_verified": earlier,
         "below_earlier_by": float(f"{float(upper - side):.4e}"),
+        "implied_by": implied_by(n, side),
         "t101_side": literal(t101_side) if t101_side is not None else None,
         "below_t101_side_by": (
             float(f"{float(t101_side - side):.4e}") if t101_side is not None else None
         ),
-        "witness_side": literal(side),
-        "witness_frame": driver.source_frame(witness).derivation,
+        "witness_side": literal(frame.side),
+        "witness_frame": frame.derivation,
         "printed_side": str(reported["value"]),
         "printed_exact_form": reported.get("exact_form"),
         "printed_exact_form_degree": degree,
@@ -729,27 +854,36 @@ def grid_selection_row(
         "identity": identity,
         "regularization": {
             "of": PACKING_RESULT.get(n, DEFAULT_PACKING_RESULT),
-            "method": f"{grid.METHOD}, through devtools.regularize_grid_slack",
+            "method": grid_written_method(grid.METHOD),
             "side": "same",
             "changes": {},
         },
         "straightened": straightened,
         "generator": {"name": report.get("generator"), "settings": report.get("settings")},
     }
+    return row, data
 
 
-def select_grid(run_dirs: Sequence[Path], numbers: Sequence[int]) -> dict[str, Any]:
-    """The named counts' least row-3 grid-slack views among the named runs, retained and
-    measured: the second batch (T-155)."""
+def select_grid(
+    run_dirs: Sequence[Path], numbers: Sequence[int], batch: Batch = GRID
+) -> tuple[dict[str, Any], Views]:
+    """The named counts' least row-3 grid-slack views among the named runs, measured: a
+    grid-slack batch's receipt (T-155's the first), and the views `retain` writes. Nothing
+    is written here, so a refused selection leaves the package as it was."""
     wanted = sorted(set(numbers))
-    taken = sorted(set(wanted) & (HELD | set(committed(FIRST))))
-    if taken:
-        raise RegistrationError(f"counts {taken} are held, or registered by {FIRST.result}")
+    excluded = sorted(set(wanted) & batch.excluded)
+    if excluded:
+        raise RegistrationError(f"counts {excluded} are held, and {batch.result} excludes them")
+    for other in BATCHES:
+        taken = sorted(set(wanted) & set(committed(other))) if other.name != batch.name else []
+        if taken:
+            raise RegistrationError(f"counts {taken} are registered by {other.result}")
     reports = grid_reports(run_dirs, wanted)
     missing = sorted(set(wanted) - set(reports))
     if missing:
         raise RegistrationError(f"no named run reports counts {missing}")
-    rows = [grid_selection_row(n, reports[n]) for n in wanted]
+    built = [grid_selection_row(n, reports[n], batch) for n in wanted]
+    rows = [row for row, _data in built]
     runs = []
     for run_dir in run_dirs:
         these = [
@@ -775,19 +909,22 @@ def select_grid(run_dirs: Sequence[Path], numbers: Sequence[int]) -> dict[str, A
                 },
             }
         )
-    return {
+    receipt = {
         "format": FORMAT,
-        "tool": GRID.command("select"),
+        "tool": batch.command("select"),
         "policy": POLICY,
         "what": (
             "Each named count's view of this project's grid-slack regularizer "
             "(devtools.regularize_grid_slack, its port of Evan Daniel's coincidence "
             "placement) decided at row 3 of the policy's table, its side below the case's "
             "verified upper bound: the view with the least exact side among the named runs, "
-            "the first run named among equals, retained under views/, with the bound the "
-            "record held before, the printed side and closed form, the drawing decision "
-            "before and after registration, and the identity measured on the retained view "
-            "against the witness's exact frame."
+            "the first run named among equals, retained under views/, with every run's side "
+            "at row 3 keyed by run (run_sides, runs_at_row_3, where the first batch keys its "
+            "outputs), the bound the record held before, the next count's ceiling where it "
+            "already implies the bound (implied_by), the witness's own side as read from it, "
+            "the printed side and closed form, the drawing decision before and after "
+            "registration, and the identity measured on the retained view against the "
+            "witness's exact frame."
         ),
         "runs": runs,
         "candidates": wanted,
@@ -795,6 +932,7 @@ def select_grid(run_dirs: Sequence[Path], numbers: Sequence[int]) -> dict[str, A
         "registered": [row["n"] for row in rows],
         "rows": rows,
     }
+    return receipt, {row["n"]: data for row, data in built}
 
 
 # --------------------------------------------------------------------------------------
@@ -1089,12 +1227,13 @@ def problems(batch: Batch = FIRST) -> list[str]:
     rows = committed(batch)
     if not rows:
         return [f"no selection of {batch.result} is committed"]
-    excluded = EXCLUDED if batch == FIRST else HELD
-    if set(rows) & excluded:
-        found.append(f"selection holds excluded counts {sorted(set(rows) & excluded)}")
+    if set(rows) & batch.excluded:
+        found.append(f"selection holds excluded counts {sorted(set(rows) & batch.excluded)}")
+    # Each pair of batches once: a batch is held against the batches before it.
+    earlier = BATCHES[: BATCHES.index(batch)] if batch in BATCHES else BATCHES
     found.extend(
         f"{batch.result} and {other.result} both register {shared}"
-        for other in BATCHES[: BATCHES.index(batch)]
+        for other in earlier
         if (shared := sorted(set(rows) & set(committed(other))))
     )
     decision = {int(row["n"]): row for row in read_json(batch.decision)["rows"]}
@@ -1126,19 +1265,60 @@ def problems(batch: Batch = FIRST) -> list[str]:
         if at_t101_side(row) and row["earlier_verified"]["evidence"] != list(t101_replays()):
             found.append(f"n={n}: the side is T-101's, but the record held another ceiling")
         found.extend(least_view_problems(n, row))
+        if batch.kind == GRID_KIND:
+            found.extend(witness_problems(n, row, batch))
+        implied = row.get("implied_by")
+        if implied is not None and not (
+            int(implied["n"]) > n and Fraction(implied["side"]) <= side
+        ):
+            found.append(f"n={n}: the ceiling the row says implies the bound does not")
+    return found
+
+
+def checkout_witness(n: int) -> tuple[str, Fraction | None]:
+    """The checkout witness's id and exact side `s_W`, as the driver reads its frame."""
+    from devtools import regularize_evand as driver  # noqa: PLC0415
+    from sqpack.witness import load_witness  # noqa: PLC0415
+
+    witness = load_witness(driver.witness_path(n), fallback_schema=driver.WITNESS_SCHEMA)
+    return str(witness.get("id")), driver.source_frame(witness).side
+
+
+def witness_problems(n: int, row: Mapping[str, Any], batch: Batch) -> list[str]:
+    """A grid-slack row against the checkout witness, read again: the retained view was
+    derived from it, the side the row records as its own `s_W` is its exact side, and the
+    same-side view is at that side. A re-housed or corrected witness fails here rather
+    than leaving the record calling the view the witness's packing."""
+    identity, side = checkout_witness(n)
+    found: list[str] = []
+    derived = (read_view(n, batch).get("certificate") or {}).get("derived_from")
+    if derived != identity:
+        found.append(
+            f"n={n}: the view was derived from {derived}, not the checkout's {identity}"
+        )
+    if side is None or Fraction(row["witness_side"]) != side:
+        found.append(f"n={n}: the side the row records is not the checkout witness's own s_W")
+    if row["output"] == "same" and Fraction(row["side"]) != Fraction(row["witness_side"]):
+        found.append(f"n={n}: the same-side view is not at the witness's side")
     return found
 
 
 def least_view_problems(n: int, row: Mapping[str, Any]) -> list[str]:
-    """Whether the row's view is the least of its count's row-3 outputs, as far as the
-    row shows it: every output's side where `select` recorded them (`row_three_sides`),
-    else the `same` output's side, which is the witness's own (`witness_side`). A row of
-    the first selection whose `solved` view was not taken records no side for it."""
+    """Whether the row's view is the least of its count's row-3 views, as far as the row
+    shows it: every row-3 side where `select` recorded them, by output in a first-batch row
+    (`row_three_sides`, `outputs_at_row_3`) and by run in a grid-slack row (`run_sides`,
+    `runs_at_row_3`), else the `same` output's side, which is the witness's own
+    (`witness_side`). A row of the first selection whose `solved` view was not taken
+    records no side for it."""
     side = Fraction(row["side"])
-    recorded = row.get("row_three_sides")
+    recorded, among = (
+        (row["run_sides"], row["runs_at_row_3"])
+        if "run_sides" in row
+        else (row.get("row_three_sides"), row["outputs_at_row_3"])
+    )
     if recorded is not None:
-        if sorted(recorded) != sorted(row["outputs_at_row_3"]):
-            return [f"n={n}: the recorded sides are not the row-3 outputs'"]
+        if sorted(recorded) != sorted(among):
+            return [f"n={n}: the recorded sides are not the row-3 views'"]
         if side != min(Fraction(value) for value in recorded.values()):
             return [f"n={n}: the registered view is not the least row-3 output"]
         return []
@@ -1317,17 +1497,49 @@ def _rounded(row: Mapping[str, Any], words: str) -> str:
     return words if rounded_up(Fraction(row["side"])) else ""
 
 
-#: How each batch's dated paragraph names the pass that made its views.
+#: How a batch's dated paragraph names the pass that made its views, by generator kind.
 PASS_WORDS = {
-    FIRST_NAME: (
+    EVAND_KIND: (
         "This project’s regularization pass, Evan Daniel’s exact solver and regularizer run "
         "here on this register’s witness,"
     ),
-    GRID.name: (
+    GRID_KIND: (
         "This project’s grid-slack regularizer, its port of Evan Daniel’s coincidence "
         "placement, run here on this register’s witness,"
     ),
 }
+
+
+def _implied(n: int, row: Mapping[str, Any]) -> tuple[str, str]:
+    """Where the next count's ceiling already proved the bound when the view was selected
+    (`implied_by`), what the dated paragraph and the section add to say so; else nothing.
+    `s(n) ≤ s(n + 1)`: deleting a square from a packing leaves a packing in the same
+    square."""
+    implied = row.get("implied_by")
+    if not implied:
+        return "", ""
+    later, results = int(implied["n"]), ", ".join(implied["results"])
+    there = (
+        "at the same side"
+        if Fraction(implied["side"]) == Fraction(row["side"])
+        else f"at `{side_text(Fraction(implied['side']))}`, below this side"
+    )
+    step = (
+        f"`s({n}) ≤ s({later})`, since deleting a square from a packing of {later} leaves a "
+        f"packing of {n} in the same square"
+    )
+    dated = (
+        f" The bound was not new: the certificate registered at `n = {later}` ({results}), "
+        f"{there}, already proved it by monotonicity; this one certifies this count’s own "
+        "packing."
+    )
+    section = (
+        f" The bound was not new when it was registered. The exact certificate registered at "
+        f"`n = {later}` ({results}) is {there}, and {step}, so that certificate already "
+        "proved the bound. This one is a certificate of this count’s own packing, the one the "
+        "record credits."
+    )
+    return dated, section
 
 
 def dated_paragraph(n: int, row: Mapping[str, Any], batch: Batch = FIRST) -> str:
@@ -1341,24 +1553,24 @@ def dated_paragraph(n: int, row: Mapping[str, Any], batch: Batch = FIRST) -> str
             f"proves at the same side ({DEFAULT_PACKING_RESULT}). The verified upper bound "
             "is now that side exactly, resting on both certificates "
             f"({DEFAULT_PACKING_RESULT}, {batch.result}), and the record still prints it as "
-            f"`{row['value']}`. Until then the verified upper bound was "
+            f"`{row['value']}`.{_implied(n, row)[0]} Until then the verified upper bound was "
             f"{earlier_words(n, row)}."
         )
     else:
         bound = (
             f"{proves}, the verified upper bound ({batch.result})"
             f"{_rounded(row, ' ' + ROUNDED_WORDS)}, which the record still prints as "
-            f"`{row['value']}`. Until then the verified upper bound was "
+            f"`{row['value']}`.{_implied(n, row)[0]} Until then the verified upper bound was "
             f"{earlier_words(n, row)}."
         )
     return (
-        f"{batch.dated} {PASS_WORDS[batch.name]} produced an exact rational packing "
+        f"{batch.dated} {PASS_WORDS[batch.kind]} produced an exact rational packing "
         f"{made}, decided here over `ℚ` by two exact checkers: {bound}\n\n"
     )
 
 
 def _how_made(row: Mapping[str, Any], batch: Batch = FIRST) -> str:
-    if batch == GRID:
+    if batch.kind == GRID_KIND:
         return "and then fixed the result’s tight contacts over `ℚ` at the witness’s own side"
     if row["output"] == "same":
         return (
@@ -1395,7 +1607,7 @@ def _identity_words(row: Mapping[str, Any], batch: Batch = FIRST) -> str:
         claim = (
             "Evan Daniel’s regularizer reports it as the same packing by its sampled path "
             "test, and "
-            if batch == FIRST
+            if batch.kind == EVAND_KIND
             else ""
         )
         return (
@@ -1450,17 +1662,17 @@ def _straightened_words(row: Mapping[str, Any]) -> str:
 
 def _pass_sentence(row: Mapping[str, Any], batch: Batch) -> str:
     """The section's first sentence: which pass made the view, and how."""
-    if batch == GRID:
+    if batch.kind == GRID_KIND:
         return (
             f"This project’s grid-slack regularizer (`devtools.regularize_grid_slack`), its "
             "port of Evan Daniel’s coincidence placement ([`evand/square-packing`]"
             "(https://github.com/evand/square-packing), MIT), ran on this register’s witness "
-            f"for this count on {batch.date_words}. Starting from the witness’s exact frame, "
+            f"for this count on {batch.ran}. Starting from the witness’s exact frame, "
             f"it {_straightened_words(row)}, closed what free slack it could while keeping "
             f"every contact the witness has, {_how_made(row, batch)}."
         )
     return (
-        "This project’s regularization pass of 11 and 12 October 2026 ran Evan Daniel’s "
+        f"This project’s regularization pass of {batch.ran} ran Evan Daniel’s "
         "exact solver and regularizer ([`evand/square-packing`]"
         "(https://github.com/evand/square-packing), MIT, vendored here) on this register’s "
         "witness for this count, with the `conservative` angle policy and `coincide` "
@@ -1507,8 +1719,8 @@ def section(n: int, row: Mapping[str, Any], batch: Batch = FIRST) -> str:
         "and both accept it; both refuse it with its tightest pair pushed into overlap and "
         f"with its box shrunk past its least clearance ([certificate]({batch.link})). The "
         "same two checkers accepted it in the run that made it, so this is a reproduction "
-        f"with the producer’s code. {bound} It says nothing about optimality, and the "
-        "packing stays its finders’."
+        f"with the producer’s code. {bound}{_implied(n, row)[1]} It says nothing about "
+        "optimality, and the packing stays its finders’."
     )
     return f"{SECTION}\n\n{first}\n\n{second}\n\n"
 
@@ -1796,20 +2008,34 @@ def main(argv: Sequence[str] | None = None) -> int:
         default=FIRST_NAME,
         help="the batch a command acts on (default: the first, T-154)",
     )
-    parser.add_argument("--n", type=int, nargs="+", default=[], help="the counts to select")
+    parser.add_argument(
+        "--n",
+        type=int,
+        nargs="+",
+        default=[],
+        help="the counts a grid-slack batch's select takes (select --batch grid-slack only)",
+    )
     parser.add_argument("--check", action="store_true", help="report drift without writing")
     args = parser.parse_args(argv)
     batch = BATCH_NAMES[args.batch]
+    if args.command != "select" and (args.run_dir or args.n):
+        parser.error("--run-dir and --n are select's alone")
     if args.command == "select":
         if not args.run_dir:
             parser.error("select needs --run-dir")
         run_dirs = [path.resolve() for path in args.run_dir]
-        if batch == FIRST:
-            receipt = select(run_dirs)
+        if batch.kind == EVAND_KIND:
+            if args.n:
+                parser.error(
+                    f"select --batch {batch.name} takes every row-3 count of its runs and no "
+                    "--n; --n names the counts of a grid-slack batch (--batch grid-slack)"
+                )
+            receipt, views = select(run_dirs, batch)
         elif not args.n:
             parser.error(f"select --batch {batch.name} needs --n")
         else:
-            receipt = select_grid(run_dirs, args.n)
+            receipt, views = select_grid(run_dirs, args.n, batch)
+        retain(batch, views)
         write_json(batch.selection, receipt)
         print(f"{len(receipt['registered'])} counts selected: {receipt['registered']}")
         return 0
