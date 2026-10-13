@@ -17237,12 +17237,12 @@ results:
 
       Marc Leonard Overbeck,
       [the-seventeenth-square-candidate](https://github.com/Kleddamag/the-seventeenth-square-candidate/tree/653b9589d0f8a152f01adc56b1d48ba53d49abc3),
-      building on Squares Project (Joshua Levy), Ahmed's 11SquaresOptimal, Mira and
-      Guzhou0806's N17 project, as its CREDITS.md states. Its README says: "The mathematics,
-      the engines, the certificates, the checkers, the reviews and the text were produced by
-      AI systems under his direction and to his instructions: Codex (OpenAI) and Claude
-      (Anthropic). They are named and are not authors", and "Within the project no human has
-      read the mathematics."
+      12 October 2026, building on Squares Project (Joshua Levy), Ahmed's 11SquaresOptimal,
+      Mira, Guzhou0806's N17 project and Muhammad Maaz, as its CREDITS.md states. Its README
+      says: "The mathematics, the engines, the certificates, the checkers, the reviews and the
+      text were produced by AI systems under his direction and to his instructions: Codex
+      (OpenAI) and Claude (Anthropic). They are named and are not authors", and "Within the
+      project no human has read the mathematics."
     scope: {n_values: [17]}
     verification: V0
     confirmation: C1
