@@ -18504,15 +18504,22 @@ results:
   - id: T-155
     kind: upper-bound
     registered: '2026-10-13'
-    headline: Exact regularized side at `n = 290`, `2.4e-15` below the ceiling it replaces
+    headline: "`s(290) ≤ 17.5355339059327376…`, by monotonicity from T-154, with its own exact certificate"
     established: '2026-10-13'
     claim: >-
       s(290) <= 17.53553390593273762200422181052425, which is
-      70142135623730950488016887242097/4000000000000000000000000000000 exactly: the exact
-      side of a rational packing that this project made from the register's known-best
-      witness at n = 290 with its grid-slack regularizer, its port of Evan Daniel's
-      coincidence placement, and decided here over Q. Measured here, it is the witness's
-      packing.
+      70142135623730950488016887242097/4000000000000000000000000000000 exactly, by
+      monotonicity from T-154 (a packing of 291 unit squares contains a packing of 290):
+      T-154 certifies n = 291 at exactly this side. It is also the exact side of a rational
+      packing that this project made from the register's known-best witness at n = 290
+      with its grid-slack regularizer, its port of Evan Daniel's coincidence placement, and
+      decided here over Q, a certificate of the catalogue's own packing of 290 squares at
+      that side. Measured here, it is the witness's packing.
+
+      The bound is not new. It has followed from T-154's certificate at n = 291 since 12
+      October 2026, when T-154 registered that count at this side; what this result adds
+      is n = 290's verified upper bound moved onto the side, and the second certificate,
+      which is of n = 290's own packing.
 
       The side is the witness's own, the 36-digit rational promotion of the decimal witness
       at centre dilation 1. It lies 2.4e-15 below the verified upper bound the record held,
@@ -18522,10 +18529,9 @@ results:
       upper bound, which the case record still prints as 17.53553390593274.
 
       This is not a new packing: it is the same construction certified at a tighter
-      rational side, as T-154 certified n = 291 at the same side. The catalogue gives the
-      packing's side as 14 + (5/2)sqrt(2), an irrational number 4.8e-33 below the
-      certificate's side, which no rational certificate reaches, so the ceiling still
-      trails the report there.
+      rational side. The catalogue gives the packing's side as 14 + (5/2)sqrt(2), an
+      irrational number 4.8e-33 below the certificate's side, which no rational
+      certificate reaches, so the ceiling still trails the report there.
 
       The certificate was decided here on 13 October 2026, every pair and every wall over
       Q, by sqpack.witness.exact_verify and devtools.check_rational_witness_independent,
@@ -18539,9 +18545,9 @@ results:
       clearance, and the three controls are two distinct mutants.
 
       Measured against the witness's exact frame under the box's eight symmetries, the
-      certificate pairs one to one with the witness by nearest centres, no square moves by
-      more than 1e-3 and none turns by more than 1e-6 as a sine. It draws the same picture
-      as the witness, so the atlas drawing does not change.
+      certificate pairs one to one with the witness by nearest centres, the largest move is
+      6.0e-31 and none turns by more than 1e-6 as a sine. It draws the same picture as the
+      witness, so the atlas drawing does not change.
 
       The packing is the one the Kingbird catalogue lists, as T-101 records it, and the
       regularization below names that result. The regularizer is this project's port of
@@ -18555,11 +18561,11 @@ results:
     significance:
       score: 1
       rationale: >-
-        One verified ceiling moved from a fourteen-place round-up to the exact side of a
-        certificate of a packing the record already holds, by 2.4e-15: a routine
-        consequence of registering a view the regularization policy holds back, S1. No new
-        packing, no reported side moved and no theorem; the method is Evan Daniel's,
-        ported here.
+        The bound already followed from T-154's certificate at n = 291 by monotonicity; what
+        this adds is n = 290's verified ceiling moved from a fourteen-place round-up onto
+        that side, 2.4e-15 lower, and a certificate of n = 290's own packing there:
+        bookkeeping and a routine consequence, S1. No new packing, no new bound, no reported
+        side moved and no theorem; the method is Evan Daniel's, ported here.
       scored: '2026-10-13'
       by: the registering lane's draft (repository)
     novelty: apparently-novel
@@ -18567,12 +18573,20 @@ results:
       credit: [Daniel]
       source_keys: ['[Daniel regularizer 2026-10-11]']
     composition: >-
-      One machine entry decides the bound at the case's verified value: the exact decision
-      here by two checkers that share no code with each other (exact-algebraic), the
-      checkers the producing run used, so reproduced with the producer's code. That is C3
-      with one machine method. The identity measurement, the drawing decision and the
-      comparisons with the earlier ceiling, the printed side and the closed form are
-      recorded values and set no rung.
+      Two certificates prove the bound at the same side. Derived: the minimum over T-154
+      and the monotonicity step, which is one recorded line (any packing of 291 unit
+      squares contains a packing of 290) carried in the evidence limitations and the n-290
+      case body. T-154's certificate at n = 291 was made by a different generator, Evan
+      Daniel's regularizer through devtools.regularize_evand, and decided by the same two
+      checkers; T-154 sits at V3/C3.
+
+      Direct: one machine entry decides n = 290's own certificate at the case's verified
+      value, the exact decision here by two checkers that share no code with each other
+      (exact-algebraic), the checkers the producing run used, so reproduced with the
+      producer's code. That is C3 with one machine method, and either route alone keeps
+      the rungs. The identity measurement, the drawing decision and the comparisons with
+      the earlier ceiling, the next count's ceiling, the printed side and the closed
+      form are recorded values and set no rung.
     regularizations:
       - n: 290
         of: T-101
@@ -18613,7 +18627,18 @@ results:
       it is a credited part of the frontier record." The rule restates the owner's answer
       to question 3 of 12 October 2026, "regularize and correct always", under which T-154
       registered the first batch; this is the second, from the grid-slack runs of 13
-      October 2026, and its count is not among T-154's.
+      October 2026.
+
+      Its count is not among T-154's, but its bound was: T-154's certificate at n = 291
+      is at exactly this side, and deleting square 139 from it, the square the n = 290
+      witness lacks, leaves a packing of 290 that both exact routes accept, 41905 pair
+      decisions each (review B of jlevy/squares#587, reproduced by the registering
+      lane). The registration as first drafted compared the side with n = 290's own
+      ceiling only and missed this. The owner decided on 13 October 2026 to keep this
+      result, say that its bound follows from T-154 by monotonicity, and keep the
+      grid-slack view as its own certificate of n = 290's packing at that side; the
+      selection row records the next count's ceiling (implied_by), and the case record
+      says both.
 
       The grid-slack regularizer's run at 5 degrees on 13 October 2026, recorded in the
       regularized layer's index as grid-slack-deg5-1013-a, held the view at row 3 of the

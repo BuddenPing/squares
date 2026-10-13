@@ -233,10 +233,16 @@ validate stages, with a `regularizations` item for each count, as `T-154` regist
 counts through `devtools.register_regularized_bounds`. A grid-slack view is registered
 the same way as a batch of its own, as `T-155` registered $n = 290$ with
 `select --batch grid-slack --run-dir RUN ... --n N ...`, then `decide` and `controls`
-with the same `--batch`. Once the register moves $U$ to the view’s side, the view is at
-the bound: `reclassify --refresh-bounds` decides a driver run’s view again, the
-selection decides a grid-slack view against the new $U$, and the next selection can draw
-either.
+with the same `--batch`. Read the next count’s ceiling as well as the view’s own:
+$s(n) \le s(n + 1)$, so where the next count’s verified upper bound is at or below the
+view’s side, the bound is not new.
+`T-155`’s was not, since `T-154`’s certificate at $n = 291$ is at the same side; the
+selection records such a ceiling (`implied_by`), and the result says its bound follows
+by monotonicity, as `T-002` says of a lower bound, and is kept as the certificate of the
+count’s own packing.
+Once the register moves $U$ to the view’s side, the view is at the bound:
+`reclassify --refresh-bounds` decides a driver run’s view again, the selection decides a
+grid-slack view against the new $U$, and the next selection can draw either.
 
 ## When a Witness Changes
 

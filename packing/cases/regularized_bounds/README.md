@@ -9,6 +9,9 @@ registered as results under the
 batch, T-155, the grid-slack view of $n = 290$ ([below](#the-grid-slack-batch)),
 registered under the owner’s rule of 13 October 2026 that any new upper bound is
 recorded as a result.
+Its bound was not new: T-154’s certificate at $n = 291$ is at the same side and already
+implied it by monotonicity, and T-155 is kept as the certificate of $n = 290$’s own
+packing at that side.
 [`devtools.register_regularized_bounds`](../../devtools/register_regularized_bounds.py)
 wrote everything here and holds it to the case records.
 
@@ -17,7 +20,7 @@ wrote everything here and holds it to the case records.
 | Path | What it is |
 | --- | --- |
 | `views/n-NNN.yaml.gz` | Each registered view, a rational centre-basis Witness/v2, byte for byte as the run wrote it, gzip-compressed |
-| `selection.json` | One row per count: the view, its exact side and display, the bound the record held before and the margin, the printed side and closed form, the drawing decision, the identity measured on the retained view against the witness, and the regularization in the register’s terms |
+| `selection.json` | One row per count: the view, its exact side and display, the bound the record held before and the margin, the printed side and closed form, the drawing decision, the identity measured on the retained view against the witness, and the regularization in the register’s terms; a grid-slack row also records the next count’s ceiling where it already implies the bound |
 | `exact-decision.json` | Each retained view decided over $\mathbb{Q}$ by both maintained exact routes |
 | `negative-controls.json` | Three mutants of each view, decided by both routes |
 | `grid-slack-2026-10-13/` | The second batch (T-155), with the same four kinds of file |
@@ -216,18 +219,36 @@ rounded up at fourteen decimals (T-101), and `1.8e-19` below that certificate’
 side. The catalogue’s closed form, $14 + (5/2)\sqrt{2}$, lies `4.8e-33` below it, so the
 bound still trails the printed side.
 It is the same packing certified at a tighter rational side, not a new one: no square
-moves by more than `6e-31` and none turns, and T-154 registered $n = 291$ at the same
-side. Evan Daniel’s regularizer gave no view of $n = 290$ below $U$ in the full run,
-whose selection does not list it.
+moves by more than `6e-31` and none turns.
+Evan Daniel’s regularizer gave no view of $n = 290$ below $U$ in the full run, whose
+selection does not list it.
 Run again here at 0.5 degrees, the generator’s default, the generator made the same view
 byte for byte.
+
+**A bound already implied.** $s(290) \le s(291)$, since deleting a square from a packing
+of 291 leaves a packing of 290 in the same square.
+T-154 registered $n = 291$ on 12 October 2026 at exactly this side, so from that day its
+certificate proved the bound T-155 registers, while $n = 290$’s verified upper bound
+still lay above the next count’s. Review B of jlevy/squares#587 found this, deleting
+square 139 from T-154’s certificate, the square the $n = 290$ witness lacks, and
+deciding the rest valid on both exact routes.
+The owner decided on 13 October 2026 to keep T-155 and say so: its bound follows from
+T-154 by monotonicity, and the grid-slack view is a certificate of $n = 290$’s own
+packing, the catalogue’s, at that side.
+The selection row records the next count’s ceiling where it implies the bound
+(`implied_by`), and the case record says both.
 
 **Selection.** `select --batch grid-slack --run-dir RUN ... --n 290` decides each named
 run’s view by the policy’s table against the case record’s $U$
 (`regularize_grid_slack.decided`) and takes the row-3 view with the least exact side,
-the first run named among equals; both runs’ sides are recorded in the row
-(`row_three_sides`). It refuses a view not derived from the checkout’s witness or not at
-that witness’s own side, and a count the first batch registers.
+the first run named among equals.
+Its row keys every row-3 side by run (`run_sides`, `runs_at_row_3`), where a row of the
+first batch keys them by output (`row_three_sides`, `outputs_at_row_3`), and records the
+witness’s own side as read from the witness (`witness_side`), which `--check` reads
+again. It refuses a view of another generator, one not derived from the checkout’s
+witness, one not at that witness’s own side or labelled other than the same-side view,
+two runs of one name, and a count the owner holds or another batch registers, and it
+writes the view and the selection only once every refusal has run.
 
 **Decision.** Both maintained routes accepted the view on 13 October 2026, 41,905 pair
 decisions each, in 14.9 CPU seconds for the two; it touches a wall and a neighbour

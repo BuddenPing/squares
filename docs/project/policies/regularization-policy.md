@@ -464,7 +464,13 @@ policy applies until there is one.
     records tier holds every case record to the index, and the site’s case page prints
     its note. A new upper bound, an exactly verified side below $U$, is always registered
     as a result however it was made (row 3, question 3), as `T-154` registered the exact
-    views below the bound.
+    views below the bound and `T-155` the grid-slack view of $n = 290$ on 13 October
+    2026, at the witness’s own side `2.4e-15` below $U$; that view draws no change, so
+    the atlas draws nothing new there.
+    `T-155`’s bound was not new: `T-154`’s certificate at $n = 291$ is at the same side,
+    and $s(290) \le s(291)$. The owner decided on 13 October 2026 to keep `T-155`, to
+    say that its bound follows from `T-154` by monotonicity, and to keep the grid-slack
+    view as the certificate of $n = 290$’s own packing at that side (jlevy/squares#587).
 
 An answer, like any other change to this policy, is an owner decision recorded here with
 its date. It replaces the default, and the counts it bears on are re-reviewed.
@@ -518,10 +524,7 @@ recorded where it is implemented, and reversing one is a change to that layer.
    sides and their printed values kept, so no citation weakens.
    Where a registered side is exactly the side of an earlier exact certificate, as it is
    of Evan Daniel’s (T-101) at 33 counts, that bound was already published, and the
-   records cite the earlier certificate’s independent replay beside the batch’s. The
-   grid-slack view of $n = 290$, at the witness’s own side `2.4e-15` below $U$, is the
-   second batch, `T-155`, registered on 13 October 2026 under question 16’s rule; it
-   draws no change, so the atlas draws nothing new there.
+   records cite the earlier certificate’s independent replay beside the batch’s.
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.

@@ -32013,25 +32013,32 @@ evidence:
         (T-146) and site as retained here.
       searched: '2026-10-13, by devtools.register_regularized_bounds select --batch grid-slack against the case record'
       novel_object: >-
-        An exact rational certificate of the catalogue's packing at n = 290 at the witness's
-        own side, 2.4e-15 below the record's ceiling and 1.8e-19 below the side of Evan
-        Daniel's certificate of the same packing (T-101). The packing is the catalogue's; the
-        regularizer is this project's port of Evan Daniel's coincidence placement.
+        An exact rational certificate of the catalogue's own packing at n = 290 at the
+        witness's own side, 2.4e-15 below the record's ceiling and 1.8e-19 below the side of
+        Evan Daniel's certificate of the same packing (T-101). The packing is the
+        catalogue's; the regularizer is this project's port of Evan Daniel's coincidence
+        placement. The bound it proves is not new: T-154's certificate at n = 291, at
+        exactly this side, implies it by monotonicity (a packing of 291 unit squares
+        contains a packing of 290), so what is new is the certificate of n = 290's own
+        packing, not the bound.
       gaps: >-
-        No search beyond this record and its retained sources. The catalogue's closed form,
-        14 + (5/2)sqrt(2), lies 4.8e-33 below the side; it is reported, and not certified
-        here.
+        No search beyond this record and its retained sources. The search as first run
+        compared the side with n = 290's own record and not with the next count's: T-154 had
+        certified n = 291 at the same side on 12 October 2026, which implies this bound
+        (review B of jlevy/squares#587); the selection now records the next count's ceiling
+        (implied_by). The catalogue's closed form, 14 + (5/2)sqrt(2), lies 4.8e-33 below the
+        side; it is reported, and not certified here.
     source_key: '[Daniel regularizer 2026-10-11]'
-    certificate: cases/regularized_bounds/grid-slack-2026-10-13/views/
+    certificate: packing/cases/regularized_bounds/grid-slack-2026-10-13/views/
     replay: >-
       uv run --frozen --all-extras --group dev python -m
       devtools.register_regularized_bounds decide --batch grid-slack, which decompresses the
       retained view and decides it, every pair and every wall over Q, by
       sqpack.witness.exact_verify and by devtools.check_rational_witness_independent; it
       must report the view VALID under both
-      (cases/regularized_bounds/grid-slack-2026-10-13/exact-decision.json). The controls are
-      devtools.register_regularized_bounds controls --batch grid-slack
-      (cases/regularized_bounds/grid-slack-2026-10-13/negative-controls.json), and
+      (packing/cases/regularized_bounds/grid-slack-2026-10-13/exact-decision.json). The
+      controls are devtools.register_regularized_bounds controls --batch grid-slack
+      (packing/cases/regularized_bounds/grid-slack-2026-10-13/negative-controls.json), and
       devtools.register_regularized_bounds --check holds the receipts, the retained view and
       the case record to each other.
     replay_status: passed
@@ -32062,8 +32069,11 @@ evidence:
       invalid regardless, by the separating-axis theorem. Identity is measured against the
       witness's exact frame (check_half_angle_area.arrangement_gap under the box's eight
       symmetries): nearest centres pair the view's squares one to one with the witness's,
-      and the largest move is 6.0e-31. The case record carries the exact side as the
-      verified upper bound's exact_form and keeps the decimal it printed before,
+      and the largest move is 6.0e-31. The bound also follows from T-154's certificate at
+      n = 291, at the same side, by monotonicity, which is one line: deleting a square from
+      a packing of 291 unit squares leaves a packing of 290 in the same square; this entry
+      decides n = 290's own packing at that side. The case record carries the exact side
+      as the verified upper bound's exact_form and keeps the decimal it printed before,
       17.53553390593274, which lies above it, as its value. No optimality, local minimum,
       rigidity or same-packing claim, and no certificate of the catalogue's closed-form
       side, which lies 4.8e-33 below this one.
