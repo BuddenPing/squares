@@ -17,9 +17,10 @@ closure.
 
 The author, Oscar Fitzharding, announced it on X as
 [@ofitzharding](https://x.com/ofitzharding/status/2109798000008597616) at
-2026-10-13T00:06:56Z. No GitHub issue asked for it: the owner reported the repository
-and the post on 13 October 2026, asked for a full intake crediting everything, and set
-Oscar Fitzharding as the definitive name. Bead `think-hcqr` imports it, and this packet
+2026-10-13T00:06:56Z. He asked for its registration on this repository in
+[issue #565](https://github.com/jlevy/squares/issues/565), opened at 2026-10-12T22:23:37Z;
+the owner reported the repository and the post on 13 October 2026, asked for a full
+intake crediting everything, and set Oscar Fitzharding as the definitive name. Bead `think-hcqr` imports it, and this packet
 is its stage 2 retention (`think-acbk`). Nothing in the packet is a register entry, and
 nothing here built the proof or ran the source’s scripts.
 
@@ -36,7 +37,7 @@ nothing here built the proof or ran the source’s scripts.
 | Retrieved | 2026-10-13T17:37Z, a full clone; `main` pointed at this commit |
 | Licence | MIT: `LICENSE`, “Copyright (c) 2026 Oscar Fitzharding”; `README.md`, “Project sources are licensed under the MIT License. Dependencies, including Mathlib, retain their own licenses.” |
 | Announcement | Fitzharding as @ofitzharding (display name “Oscar”, account 2097726704118603776), 2026-10-13T00:06:56Z, retained as [`receipts/announcement/tweet-2109798000008597616.json`](receipts/announcement/tweet-2109798000008597616.json), the post as X’s syndication endpoint returned it at 2026-10-13T17:52:07Z |
-| Request | None: an owner report of 13 October 2026, with no GitHub issue |
+| Request | [Issue #565](https://github.com/jlevy/squares/issues/565), “Complete Lean proof of s(17) optimality: registration request”, opened by ofitzharding at 2026-10-12T22:23:37Z; and the owner’s report of 13 October 2026 |
 | Bibliography key | **[Fitzharding n17 Lean 2026]** |
 
 ## Credit and AI Assistance

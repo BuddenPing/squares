@@ -2073,7 +2073,22 @@ sources:
       of 17 squares. Built with @OpenAI Astra + @AnthropicAI Opus 5.5. Thanks to
       @ManassehA06 & @ojoshe for prior work."; the post is retained in the packet's
       receipts/announcement/. The source trusts Lean's compiler, native evaluator and C
-      toolchain for 13,343 native_decide facts. MIT licence.
+      toolchain for 13,343 native_decide facts. MIT licence. Issue #565 on this repository,
+      opened by the author on 12 October 2026 at 22:23:37Z to ask for the registration,
+      credits Bidwell, says Ahmed's s(11) proof and its Lean formalization "were useful
+      methodological references for finite exclusion, capture and the local endpoint
+      argument", thanks "the Squares Project's contributors and the Lean/Mathlib
+      communities", and says "Development used Claude and Codex assistance." The review of
+      13 October (docs/project/reviews/review-2026-10-13-fitzharding-n17-lean.md) records
+      two attribution findings to put to the author. F-1: the proof runs on this project's
+      24-cell cover, cap, census, endpoint chart and layout and 52-row local recipe, and on
+      32 patterns of its certified sub-pattern ledger, eleven of them wand125's, none of
+      which the README or CITATION.cff credits beyond collecting "the wider research
+      record"; and Overbeck's 60-place seed of 21 September 2026 fixes the centre of the
+      endpoint box. F-2: the README credits Ahmed's formalization only as a reference for
+      its trust boundary, where the issue names his s(11) proof for the proof's shape, and
+      spells his name "Mannaseh". The lineage stays credits-project, as the source's own
+      files state it.
 credited_names:
   Oscar Fitzharding: Fitzharding
   Marc Leonard Overbeck: Overbeck

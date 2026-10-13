@@ -615,6 +615,7 @@ case or experiment separately.
 
 | Document or collection | Role | Authority | Lifecycle | Current replacement |
 | --- | --- | --- | --- | --- |
+| [Adversarial Review: Fitzharding’s Lean Proof That `s(17) = L`](docs/project/reviews/review-2026-10-13-fitzharding-n17-lean.md) | dated review record | record | retained | — |
 | [Overbeck’s Candidate Proof of s(17) = L: Second Adversarial Review](docs/project/reviews/review-2026-10-13-overbeck-n17-candidate-second.md) | dated review record | record | retained | — |
 | [Mathematical Review: Kleddamag’s Candidate Proof That `s(17) = L`](docs/project/reviews/review-2026-10-12-kleddamag-n17-candidate.md) | dated review record | record | retained | — |
 | [Owner Decisions of 13 October: s(11) Retired, s(17) Suspended, Duplicates Closed](docs/project/reviews/review-2026-10-13-owner-decisions.md) | dated review record | record | retained | — |

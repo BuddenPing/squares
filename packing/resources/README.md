@@ -1259,7 +1259,8 @@ and collaborators’ eleven-square formalization and David MacIver’s earlier L
 and names Overbeck’s candidate proof of 12 October 2026 as independent; it says the
 project “was developed with substantial assistance from Claude and Codex”.
 The author’s announcement of 13 October says it was “Built with @OpenAI Astra +
-@AnthropicAI Opus 5.5”. No GitHub issue asked; the owner reported it on 13 October 2026.
+@AnthropicAI Opus 5.5”. The author asked for its registration in issue #565 on 12
+October 2026, and the owner reported it on 13 October 2026.
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
