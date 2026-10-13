@@ -167,7 +167,8 @@ SILENT_RUNGS = frozenset({"stall-stop"})
 #: solve, so whether the solve that made the view climbed a retry rung.
 UNRECORDED_RUNGS = "retry rungs"
 #: What the grid-slack tool appends to its generator block's method when it writes a
-#: view's or a registered item's `method`: the module that ran it.
+#: view's or a registered item's `method`: the module that ran it. Written only by
+#: `grid_written_method`, which both writers and `method_forms` use.
 GRID_THROUGH = ", through devtools.regularize_grid_slack"
 #: The patches a vendored view's `method` names after the pin, `@675a5ea+name`.
 _METHOD_PATCHES = re.compile(r"evand/square-packing@[0-9a-f]+((?:\+[^,+\s]+)*)")
@@ -420,14 +421,22 @@ def patch_words(method: str, kinds: Mapping[str, str] | None = None) -> list[str
 # ------------------------------------------------- the registered results' own items
 
 
+def grid_written_method(method: str) -> str:
+    """A grid-slack generator's `method` as its writers write it, into a view's layer
+    record (`devtools.regularize_grid_slack`) and into a registered item
+    (`devtools.register_regularized_bounds`): with the module that ran it. The one place
+    the form is made, so the writers and `method_forms` cannot drift apart."""
+    return method + GRID_THROUGH
+
+
 def method_forms(generator: str, generators: Mapping[str, Any]) -> tuple[str, ...]:
     """The `method` strings that name a generator: its index block's `method`, and for a
-    grid-slack generator that method as the tool writes it (`GRID_THROUGH`)."""
+    grid-slack generator that method as its writers write it (`grid_written_method`)."""
     block = str((generators.get(generator) or {}).get("method") or "")
     if not block:
         return ()
     if GENERATOR_KINDS[generator] == "grid":
-        return (block, block + GRID_THROUGH)
+        return (block, grid_written_method(block))
     return (block,)
 
 

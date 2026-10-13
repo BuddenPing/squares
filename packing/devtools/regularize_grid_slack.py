@@ -114,6 +114,7 @@ from devtools import regularize_axis_components as layer
 from devtools import regularize_evand as driver
 from devtools import regularize_same_side as same
 from devtools.build_known_best_atlas import frame_from_witness
+from devtools.regularized_drawings import grid_written_method
 from sqpack.render import render_packing_svg
 from sqpack.render.model import RenderSpec
 from sqpack.witness import validate_witness_document, witness_document
@@ -1574,7 +1575,7 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
             "improved_by": facts.get("improved_by") or [],
         },
         "by": "project",
-        "method": f"{METHOD}, through devtools.regularize_grid_slack",
+        "method": grid_written_method(METHOD),
         "side": "same" if relation == "same" else "solved",
     }
     # No `changes`: the register counts there the free squares a regularizer turns, and
