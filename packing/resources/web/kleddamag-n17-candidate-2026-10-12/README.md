@@ -206,15 +206,33 @@ receipts, each reading the edition as data and run with `-I` from outside it:
 
 [review-2/programs/](review-2/programs/) holds the seventeen programs the
 [second adversarial review](../../../../docs/project/reviews/review-2026-10-13-overbeck-n17-candidate-second.md)
-wrote and ran on 13 October 2026, each reading the edition’s files as data from a
-checkout of the pin. Among them are `geom.py` (the exact-root layout and its Krawczyk
-boxes), `identities.py` (the 52 base-gap identities in the ideal of `F` and `G`),
+wrote and ran on 13 October 2026, kept as run, each reading the edition’s files as data
+from a checkout of the pin. Among them are `geom.py` (the exact-root layout and its
+Krawczyk boxes), `cmp_file.py` (that layout against the edition’s rational packing
+file), `identities.py` (the 52 base-gap identities in the ideal of `F` and `G`),
 `audit.py` (the 152 separating options), `rows.py` with `check_rows.py` (the
 independent row builder against the five stored stopped models), `replay.py` (the
 duality bounds and the contraction ratio), `stops.py`, `budgets.py`, `admission.py` and
-`profiles.py`. [review-2/RESULTS.txt](review-2/RESULTS.txt) is their output, which the
-review’s “Checks Run Here” section summarizes. They decide nothing on the register’s
-behalf: no evidence entry cites them, and T-153’s rungs rest on neither review’s checks.
+`profiles.py`. [review-2/run.sh](review-2/run.sh) runs them all in the order of the
+review’s checks table and prints each command before its output;
+[review-2/RESULTS.txt](review-2/RESULTS.txt) is its complete output on a checkout of the
+pin, under Python 3.14.7, SymPy 1.14.0 and mpmath 1.3.0, with the checkout’s path
+written `CLONE` and the review’s `G/` folder written `G`. The review’s “Checks Run
+Here” section summarizes it. They decide nothing on the register’s behalf: no evidence
+entry cites them, and T-153’s rungs rest on neither review’s checks.
+
+`stops_eps.py`’s output at core radius $501/100000$ is not what the review’s check 8
+says of it. It compares $b$ and $b + z$ with the root-scale cuts $-17/50000$ and
+$3/125$, not with P096’s $-213/25000$ and $49/2000$, which is why it prints two `False`
+lines; and its `z <=` line adds $17/50000$ to the bound on $b + z$, which holds only
+where $b \ge -17/50000$, so the $0.024774$ it prints is not a bound at that radius.
+`stops_cuts.py`, added on 13 October after
+[review A of #577](https://github.com/jlevy/squares/pull/577#pullrequestreview-5499709484),
+bounds $z$ by the bound on $b + z$ minus the bound on $b$ at the same radius and
+compares each radius with its own cuts: all six hold, at $501/100000$ with margins of
+$7.6 \times 10^{-6}$ and more. The review’s
+[status addendum](../../../../docs/project/reviews/review-2026-10-13-overbeck-n17-candidate-second.md#status-addendum-2026-10-13)
+records the correction.
 
 ## Commands
 
@@ -224,11 +242,15 @@ From `packing/`:
 uv run --frozen --all-extras --group dev python -m devtools.acquire_source kleddamag-n17-candidate-2026-10-12 --check
 uv run --frozen --all-extras --group dev python -m devtools.acquire_source kleddamag-n17-candidate-2026-10-12 --checkout CLONE
 .venv/bin/python3 -I resources/web/kleddamag-n17-candidate-2026-10-12/receipts/programs/compare_statement.py .. CLONE OUT.json
+bash resources/web/kleddamag-n17-candidate-2026-10-12/review-2/run.sh CLONE > RESULTS.txt
 ```
 
 `--check` re-derives the record from this packet alone; `--checkout` needs a clone at
 the pin and refuses one that does not yield this record and manifest.
 The comparison needs the clone for `STATEMENT.md` and the seed, and nothing else.
+`run.sh` needs the clone without the release’s large files, writes `audit.json` to a
+temporary directory, and takes about 15 seconds; its output should equal
+[review-2/RESULTS.txt](review-2/RESULTS.txt).
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
