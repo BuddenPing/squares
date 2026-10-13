@@ -114,6 +114,10 @@ CASES_MIN = 120.4
 CASES_LINES = 9
 #: The result with the longest list of cases, and the five whose quotients are long.
 MOST_CASES = "T-154"
+#: The results whose lists take `CASES_LINES` lines in the measure. Equally tall rows
+#: report the first in the table, which is T-101's since T-154's list fell to 44 values
+#: (2026-10-12, n = 176 left it).
+CASES_LINES_HELD_BY = ("T-101", MOST_CASES)
 LONG_QUOTIENTS = ("T-022", "T-024", "T-026", "T-033", "T-114")
 #: How far a table of results may run past its frame, with every row showing: at its
 #: floors it is 1095.5 pixels, 151.5 more than the 944-pixel frame at 1024 and 407.5
@@ -287,7 +291,8 @@ def test_a_long_list_of_cases_wraps_in_its_measure(
         assert CASES_MIN < cases["width"] <= CASES_MEASURE + 0.5, width
         assert cases["lines"] == CASES_LINES, width
         longest = cases["tallest"]
-        assert (longest["row"], longest["lines"]) == (MOST_CASES.lower(), CASES_LINES)
+        assert longest["lines"] == CASES_LINES, width
+        assert longest["row"] in {result.lower() for result in CASES_LINES_HELD_BY}, width
         assert longest["height"] <= table["tallest_row"]["height"], width
     at_floor = _column(laid[name, SCROLLS[0]].table, "n")
     assert at_floor["width"] == pytest.approx(CASES_MIN, abs=1)
