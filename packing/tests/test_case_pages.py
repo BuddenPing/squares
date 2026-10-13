@@ -480,10 +480,12 @@ def test_case_291_typesets_the_general_bound_and_retains_the_exact_ceiling(
     assert "17.53553390593274" in record
     assert "Trevor Green" in record
     assert "Source-reported only; no verification promotion." in record
-    # n = 290 still holds the earlier ceiling, short enough to set as a fraction.
-    earlier = _record(records, 290)
-    assert "<mn>876776695296637</mn>" in earlier
-    assert "<mn>50000000000000</mn>" in earlier
+    # n = 290 took the same exact side on 13 October 2026 (T-155); n = 150 still holds
+    # Evan Daniel's certificate side rounded up (T-101), short enough to set as a fraction.
+    assert "<mn>17.53553390593273762200422181052425</mn>" in _record(records, 290)
+    earlier = _record(records, 150)
+    assert "<mn>1277817459305203</mn>" in earlier
+    assert "<mn>100000000000000</mn>" in earlier
 
 
 def test_case_11_carries_its_polynomial_results_verification_and_links(

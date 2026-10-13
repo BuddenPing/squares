@@ -224,10 +224,13 @@ under register candidates and never admits it.
 Register such views as one batch result through the
 [import runbook’s](../../../packing/campaign/result-import.md#stage-3-record) record and
 validate stages, with a `regularizations` item for each count, as `T-154` registered 59
-counts through `devtools.register_regularized_bounds`. Once the register moves $U$ to
-the view’s side, the view is at the bound: `reclassify --refresh-bounds` decides a
-driver run’s view again, the selection decides a grid-slack view against the new $U$,
-and the next selection can draw either.
+counts through `devtools.register_regularized_bounds`. A grid-slack view is registered
+the same way as a batch of its own, as `T-155` registered $n = 290$ with
+`select --batch grid-slack --run-dir RUN ... --n N ...`, then `decide` and `controls`
+with the same `--batch`. Once the register moves $U$ to the view’s side, the view is at
+the bound: `reclassify --refresh-bounds` decides a driver run’s view again, the
+selection decides a grid-slack view against the new $U$, and the next selection can draw
+either.
 
 ## When a Witness Changes
 

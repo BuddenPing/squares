@@ -1223,7 +1223,8 @@ records the pin and every file.
 It is the generator of this project’s regularized drawing layer and decides nothing
 here.
 The exact views of its runs whose sides lie below a case’s verified upper bound are
-this project’s certificates of T-154, which credits it through `builds_on`.
+this project’s certificates of T-154, which credits it through `builds_on`; T-155, whose
+view this project’s port of its coincidence placement made, credits it the same way.
 
 ## Overbeck’s candidate proof that s(17) = L, 12 October 2026
 

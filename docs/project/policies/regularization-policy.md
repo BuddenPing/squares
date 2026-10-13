@@ -499,7 +499,10 @@ recorded where it is implemented, and reversing one is a change to that layer.
    sides and their printed values kept, so no citation weakens.
    Where a registered side is exactly the side of an earlier exact certificate, as it is
    of Evan Daniel’s (T-101) at 33 counts, that bound was already published, and the
-   records cite the earlier certificate’s independent replay beside the batch’s.
+   records cite the earlier certificate’s independent replay beside the batch’s. The
+   grid-slack view of $n = 290$, at the witness’s own side `2.4e-15` below $U$, is the
+   second batch, `T-155`, registered on 13 October 2026 under question 16’s rule; it
+   draws no change, so the atlas draws nothing new there.
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.

@@ -1,10 +1,12 @@
-"""The regularized views registered as verified upper bounds (T-154).
+"""The regularized views registered as verified upper bounds (T-154, T-155).
 
 `devtools.register_regularized_bounds` retains each view whose exact side lies below its
 case's verified upper bound, decides it on both maintained exact routes, makes three
 controls of it, and writes the case records' verified upper lane. These tests hold the
 committed receipts, the retained views and the case records to each other, the layer to
-its own output, and the controls' construction to the outcomes it promises.
+its own output, and the controls' construction to the outcomes it promises. The first
+batch (T-154) is Evan Daniel's regularizer's views; the second (T-155) is the grid-slack
+view of n = 290, held to the same receipts in its own words.
 """
 
 from __future__ import annotations
@@ -13,6 +15,7 @@ import json
 import re
 from decimal import Decimal
 from fractions import Fraction
+from pathlib import Path
 
 import pytest
 
@@ -79,7 +82,7 @@ def test_each_record_prints_its_earlier_decimal_beside_the_exact_side() -> None:
         assert Fraction(upper["exact_form"]) == Fraction(row["side"]), n
 
 
-@pytest.mark.parametrize("n", [28, 29, 37, 50, 204, 300])
+@pytest.mark.parametrize("n", [28, 29, 37, 50, 204, 290, 300])
 def test_the_records_are_the_layer_applied_to_themselves(n: int) -> None:
     path = registered.FRONTIER / f"n-{n:03d}.md"
     text = path.read_text(encoding="utf-8")
@@ -342,3 +345,74 @@ def test_the_controls_are_151_distinct_mutants() -> None:
         n for n, row in registered.committed().items() if row["output"] == "same"
     }
     assert receipt["controls"] - len(touching) == 151
+
+
+# --------------------------------------------------------------------------------------
+# The second batch: the grid-slack view of n = 290 (T-155)
+# --------------------------------------------------------------------------------------
+
+
+def test_the_second_batch_receipts_view_and_record_agree() -> None:
+    assert registered.problems(registered.GRID) == []
+    assert registered.counts(registered.GRID) == (290,)
+    assert not set(registered.committed()) & set(registered.committed(registered.GRID))
+    assert registered.batch_of(290) == registered.GRID
+    assert registered.batch_of(291) == registered.FIRST
+
+
+def test_n290_is_registered_at_the_witnesss_side_below_t101s_and_draws_nothing_new() -> None:
+    """The owner's rule of 13 October 2026: a new upper bound is a result. The view at
+    n = 290 is the witness's own side, 2.4e-15 below the ceiling the record held and
+    below the side of Evan Daniel's certificate of the same packing (T-101), above the
+    catalogue's closed form, and it draws no change before registration or after."""
+    row = registered.committed(registered.GRID)[290]
+    side = Fraction(row["side"])
+    assert side == Fraction(row["witness_side"])
+    assert side == Fraction("70142135623730950488016887242097/4000000000000000000000000000000")
+    assert side < apply_exact_ceilings.bound_value(row["earlier_verified"])
+    assert side < Fraction(row["t101_side"])
+    assert row["above_exact_side_by"] > 0
+    assert row["decided"]["row"] == 3
+    assert row["drawing"] == row["after_registration"]["decision"] == "no-change"
+    assert row["identity"]["one_to_one"]
+    assert row["identity"]["moved"] == 0
+    assert row["regularization"]["of"] == "T-101"
+    assert set(row["row_three_sides"]) == set(row["outputs_at_row_3"])
+    upper = registered.case_front(290)["verified_upper_bound"]
+    assert upper == {
+        "value": "17.53553390593274",
+        "exact_form": row["side"],
+        "evidence": [registered.GRID.evidence],
+    }
+
+
+def test_the_second_batchs_record_names_its_result_and_its_generator() -> None:
+    text = _flat(290)
+    assert registered.GRID.dated in text
+    assert registered.FIRST.dated not in text
+    assert "the verified upper bound (T-155)" in text
+    assert "T-154" not in text
+    assert "grid-slack regularizer" in text
+    assert "the verified upper bound from 6 to 13 October 2026 (T-101)" in text
+    assert f"]({registered.GRID.link})" in text
+
+
+def test_the_second_batchs_controls_reached_their_outcomes() -> None:
+    receipt = json.loads(registered.GRID.controls.read_text(encoding="utf-8"))
+    assert receipt["all_as_expected"]
+    assert {row["control"] for row in receipt["rows"]} == {
+        "tightest-pair-overlapped",
+        "side-shrunk-past-clearance",
+        "side-shrunk-one-unit",
+    }
+    # The view touches the top or right wall, so the one-unit shrink is refused too.
+    assert all(not row["exact_verify"] and not row["independent"] for row in receipt["rows"])
+
+
+def test_the_grid_batch_refuses_a_count_the_first_batch_registers(tmp_path: Path) -> None:
+    with pytest.raises(registered.RegistrationError, match="registered by T-154"):
+        registered.select_grid([tmp_path], [291])
+    with pytest.raises(registered.RegistrationError, match="held"):
+        registered.select_grid([tmp_path], [17])
+    with pytest.raises(registered.RegistrationError, match="no named run reports"):
+        registered.select_grid([tmp_path], [290])
