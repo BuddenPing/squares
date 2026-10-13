@@ -544,12 +544,15 @@ def scratch_tree(tmp_path: Path) -> tuple[Path, AtlasLayout]:
 
 def a_run(root: Path, layout: AtlasLayout, run_dir: Path) -> Path:
     """A finished run that admitted a view of the row at its own side: the axis tool's
-    view, written as the driver writes its same-side view, with the report around it."""
+    view, written as the driver writes its same-side view, with the report around it and
+    the stored regularization's settings beside it, which `layer_refusal` holds it to."""
     view = load_yaml(gzip.decompress(layout.view(4).read_bytes()).decode())["witness"]
     view["certificate"] = {"kind": "same-side-view", "side_relation": "same"}
     directory = run_dir / "n-004"
     directory.mkdir(parents=True)
     (directory / "view-same.yaml").write_text(witness_document(view), encoding="utf-8")
+    stored = {"variant": "conservative", "orient": 0, "frame": "kkt", "style": drive.STYLE}
+    (directory / "regularize.json").write_text(json.dumps(stored), encoding="utf-8")
     source = root / "packing/witnesses/known-best/n-004.yaml"
     after = drive.histogram(drive.contact_partners(view)["house"])
     stage = drive.histogram(drive.contact_partners(view)["stage"])
@@ -589,6 +592,7 @@ def a_run(root: Path, layout: AtlasLayout, run_dir: Path) -> Path:
             "same": {
                 "side_exact": "4",
                 "relation": "same",
+                "id": view["id"],
                 "routes": {"exact_verify": True, "independent": True},
                 "minus_s_W": "0.000e+00",
                 "minus_U": None,
@@ -1446,11 +1450,14 @@ def test_a_stage_is_not_reused_from_another_witness(
         drive.reused_input(directory, witness(26), today)
 
 
-def test_the_verdict_is_bound_to_the_view_bytes_it_was_reached_on(
+def test_layer_decides_the_view_it_writes_rather_than_identifying_its_bytes(
     n26_run: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """B5: an interrupted re-run leaves no earlier verdict beside its views, and `layer`
-    takes a view only with the bytes its report decided."""
+    """B5 of review B and C1 of review C: an interrupted re-run leaves no earlier verdict
+    beside its views, and `layer` decides the file it writes as it is now. A comment-only
+    edit leaves the same valid view and is taken; a view that no longer verifies, another
+    view's id, or a report whose settings are not its stored regularization's is refused.
+    The Git blob id stays in the report as provenance, and nothing compares it (OR-18)."""
     from devtools.retained_data import git_blob  # noqa: PLC0415
 
     run_dir = _copy_run(n26_run, tmp_path)
@@ -1470,16 +1477,50 @@ def test_the_verdict_is_bound_to_the_view_bytes_it_was_reached_on(
     assert not (directory / "report.json").exists()
 
     # Admission (#548's `evand_candidates`, which `layer` writes from) finds no report to
-    # admit after the interrupted run, and admits the decided one. The blob ids a report
-    # records are its provenance and decide nothing (OR-18); the drawn view is decided
-    # again by `--verify-atlas`.
+    # admit after the interrupted run, and admits the decided one, deciding its view
+    # again as it is now. The blob ids a report records are its provenance and decide
+    # nothing (OR-18).
     assert drive.evand_candidates([run_dir])[0] == []
     decided = drive.run_count(26, Options(run_dir=run_dir, from_stage="import"))
     decided["decision"] = {"row": 10, "decision": "admit", "reason": "a fixture"}
     (directory / "report.json").write_text(json.dumps(decided))
-    assert drive.layer_candidate(decided, "admitted") == "same"
-    admitted, _runs = drive.evand_candidates([run_dir])
-    assert [item.n for item in admitted] == [26]
+    chosen = drive.layer_candidate(decided, "admitted")
+    assert chosen == "same"
+    view = directory / f"view-{chosen}.yaml"
+    pristine = view.read_text()
+
+    def admitted() -> tuple[list[int], dict[str, str]]:
+        found, _runs, refused = drive.evand_candidates([run_dir])
+        return [item.n for item in found], refused
+
+    assert admitted() == ([26], {})
+    # A comment changes the bytes, and with them the Git blob id, but not the view.
+    view.write_text(pristine + "# reviewed by hand\n")
+    assert git_blob(view.read_bytes()) != decided["outputs"][chosen]["git_blob"]
+    assert admitted() == ([26], {})
+    # Another view's id is not the view the report decided.
+    view.write_text(pristine.replace("-regularized", "-edited", 1))
+    found, refused = admitted()
+    assert found == []
+    assert "view-same.yaml's id is W-known-best-n026-edited" in refused["26"]
+    # A square moved onto its neighbour fails both exact routes.
+    document = load_yaml(pristine)
+    squares = document["witness"]["squares"]
+    squares[0] = {**squares[0], **{key: squares[1][key] for key in ("center", "corners")
+                                   if key in squares[1]}}  # fmt: skip
+    view.write_text(drive.witness_document(document["witness"]))
+    found, refused = admitted()
+    assert found == []
+    assert "fails exact_verify and independent" in refused["26"]
+    # A report labelled with other settings than its stored regularization ran with.
+    view.write_text(pristine)
+    labelled = {**decided, "generator": {**decided["generator"], "variant": "fewest"}}
+    (directory / "report.json").write_text(json.dumps(labelled))
+    found, refused = admitted()
+    assert found == []
+    assert "--variant conservative (its report says: fewest)" in refused["26"]
+    (directory / "report.json").write_text(json.dumps(decided))
+    assert admitted() == ([26], {})
 
 
 def test_a_receipt_keeps_each_runs_solve_outputs_and_parameters(tmp_path: Path) -> None:
@@ -1576,3 +1617,35 @@ def test_a_closed_form_bound_narrower_than_its_evaluation_is_still_read() -> Non
     assert bound.compare(Fraction(4)) == -1
     assert bound.compare(Fraction(4) + Fraction(1, 10**40)) == 1
     assert f"{bound.difference(Fraction(4)):.3e}" == "-1.250e-41"
+
+
+def test_reclassify_sends_a_report_mislabelled_before_b1_to_review(
+    n26_run: Path, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """C3 of review C: a report written before B1's fix could call a `fewest`
+    regularization `conservative` (n = 129 in review B's run). `reclassify` must not
+    decide it again from those labels, and so must not bring it back as row 10 `admit`."""
+    run_dir = _copy_run(n26_run, tmp_path)
+    receipt = drive.reclassify(run_dir)
+    assert receipt["reclassified"]["stale_settings"] == []
+    report_path = drive.count_dir(run_dir, 26) / "report.json"
+    admitted = json.loads(report_path.read_text())
+    assert (admitted["decision"]["row"], admitted["decision"]["decision"]) == (10, "admit")
+    stored = drive.count_dir(run_dir, 26) / "regularize.json"
+    pristine = stored.read_text()
+    stored.write_text(json.dumps({**json.loads(pristine), "variant": "fewest"}))
+    assert drive.main(["reclassify", "--run-dir", str(run_dir)]) == 0
+    assert "sent to review: at [26]" in capsys.readouterr().out
+    receipt = json.loads((run_dir / "receipt.json").read_text())
+    assert receipt["reclassified"]["stale_settings"] == [26]
+    report = json.loads(report_path.read_text())
+    assert (report["decision"]["row"], report["decision"]["decision"]) == (None, "review")
+    assert "--variant fewest (its report says: conservative)" in report["decision"]["reason"]
+    assert report["regularization"] is None
+    assert drive.layer_candidate(report, "admitted") is None
+    assert 26 in receipt["review_queue"]
+    stored.write_text(pristine)
+    receipt = drive.reclassify(run_dir)
+    assert receipt["reclassified"]["stale_settings"] == []
+    report = json.loads(report_path.read_text())
+    assert (report["decision"]["row"], report["decision"]["decision"]) == (10, "admit")
