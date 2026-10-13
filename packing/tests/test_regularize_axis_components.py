@@ -45,6 +45,7 @@ from devtools.regularize_axis_components import (
     axis_square,
     centre,
     check_atlas,
+    costed_once,
     decide_drawn_view,
     exact_frame,
     house_count_of,
@@ -945,3 +946,48 @@ def test_a_views_side_relation_is_decided_against_the_witnesss_own_side(
             "own side s_W"
         )
     ]
+
+
+def test_a_reclassified_copy_of_a_run_records_no_cost_of_its_own(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """#548 review B5: a run decided again on a copy of its directory keeps the source
+    run's cost in its receipt; the index records that cost once."""
+    runs = [
+        {
+            "id": "full",
+            "cost": {"cpu_seconds": 49301.63, "wall_seconds": 13812.25, "workers": 4},
+        },
+        {
+            "id": "same2",
+            "cost": {"cpu_seconds": 3062.97, "wall_seconds": 3355.87, "workers": 2},
+        },
+        {
+            "id": "refreshed-full",
+            "cost": {"cpu_seconds": 49301.63, "wall_seconds": 13812.25, "workers": 4},
+        },
+        {"id": "fixture", "cost": {"cpu_seconds": 0, "wall_seconds": 0, "workers": 1}},
+        {"id": "fixture-2", "cost": {"cpu_seconds": 0, "wall_seconds": 0, "workers": 1}},
+    ]
+    once = costed_once(runs)
+    assert [once[0], once[1], *once[3:]] == [runs[0], runs[1], *runs[3:]]
+    assert once[2]["reclassified_from"] == "full"
+    assert once[2]["cost"] == {
+        "cpu_seconds": 0.0,
+        "wall_seconds": 0.0,
+        "workers": 4,
+        "note": "reclassified from full without re-running a stage; that run's cost is "
+        "recorded there",
+    }
+    assert costed_once(once) == once
+
+    monkeypatch.setenv("PACK_JOBS", "1")
+    layout = scratch_atlas(tmp_path)
+    assert main(["--update-atlas"], layout=layout) == 0
+    drawn_by_another_generator(layout, 4)
+    index = json.loads(layout.index.read_text())
+    (run,) = index["runs"]
+    run["cost"] = {"cpu_seconds": 2.5, "wall_seconds": 9.0, "workers": 1}
+    index["runs"].append({**run, "id": "fixture-copy"})
+    layout.index.write_text(json.dumps(index), encoding="utf-8")
+    assert "index run fixture-copy repeats run fixture-run's cost" in check_atlas(layout)

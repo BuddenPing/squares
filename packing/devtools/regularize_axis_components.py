@@ -1924,7 +1924,7 @@ def carried_index(
             for key, value in (committed.get("generators") or {}).items()
             if key in used
         },
-        runs=[run for run in committed.get("runs") or [] if run["id"] in runs],
+        runs=costed_once([run for run in committed.get("runs") or [] if run["id"] in runs]),
     )
 
 
@@ -2107,6 +2107,7 @@ def check_atlas(layout: AtlasLayout, *, smallest_dilation: bool = False) -> list
     if index.get("totals") != _normalized(atlas_totals(records)):
         problems.append("index totals do not sum its entries")
     problems.extend(_generator_problems(index, records))
+    problems.extend(_cost_problems(index.get("runs") or []))
     by_n = {record["n"]: record for record in records}
     entries = manifest_entries(layout)
     if sorted(by_n) != sorted(entry["n"] for entry in entries) or len(by_n) != len(records):
@@ -2514,6 +2515,56 @@ def _bound_problems(
         for n in sorted(set(ABOVE_U) - above)
     )
     return problems
+
+
+def costed_once(runs: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
+    """The runs with each cost recorded once (#548 review B5).
+
+    `regularize_evand reclassify` decides a finished run again without re-running a stage,
+    on a copy of its directory, and leaves the receipt's cost as it was, so the copy's run
+    block repeats the source run's CPU and wall seconds. A run whose seconds are an
+    earlier-listed run's, both nonzero, is that copy: it keeps its parameters and
+    decisions, names the run it was copied from (`reclassified_from`), and records no cost
+    of its own, so the layer's runs sum each cost once (OR-9).
+    """
+    first: dict[tuple[Any, Any], str] = {}
+    kept: list[dict[str, Any]] = []
+    for run in runs:
+        cost = run.get("cost") or {}
+        key = (cost.get("cpu_seconds"), cost.get("wall_seconds"))
+        if run.get("reclassified_from") or not any(key):
+            kept.append(run)
+            continue
+        if key not in first:
+            first[key] = str(run["id"])
+            kept.append(run)
+            continue
+        kept.append(
+            {
+                **run,
+                "reclassified_from": first[key],
+                "cost": {
+                    "cpu_seconds": 0.0,
+                    "wall_seconds": 0.0,
+                    "workers": cost.get("workers", 1),
+                    "note": (
+                        f"reclassified from {first[key]} without re-running a stage; "
+                        "that run's cost is recorded there"
+                    ),
+                },
+            }
+        )
+    return kept
+
+
+def _cost_problems(runs: Sequence[dict[str, Any]]) -> list[str]:
+    """Each run's cost is recorded once (`costed_once`)."""
+    once = costed_once(runs)
+    return [
+        f"index run {run['id']} repeats run {once_run['reclassified_from']}'s cost"
+        for run, once_run in zip(runs, once, strict=True)
+        if run != once_run
+    ]
 
 
 ADMITTING_ROW = 10

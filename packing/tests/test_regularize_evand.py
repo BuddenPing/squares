@@ -609,6 +609,7 @@ def a_run(root: Path, layout: AtlasLayout, run_dir: Path) -> Path:
     }
     (directory / "report.json").write_text(json.dumps(report), encoding="utf-8")
     receipt = {
+        "finished": "2026-10-12T05:00:00Z",
         "generator": {"interpreter": "CPython 3.14.7"},
         "parameters": {"variant": "conservative", "workers": 1, "counts": [4]},
         "counts": [{"n": 4, "decision": "admit"}],
@@ -1075,6 +1076,38 @@ def test_a_regularizer_refusal_keeps_its_reason_when_decided_again() -> None:
     }
     measured = drive.measured_from_report(relaxed, "solved")
     assert measured.status == "regularize: upstream's checker refused the certificate"
+
+
+def test_a_run_is_dated_by_its_receipt_and_not_by_its_files_time(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """#548 review B5: Git keeps no modification times, so a copied or restored run
+    directory would otherwise be dated the day it was copied."""
+    monkeypatch.setenv("PACK_JOBS", "1")
+    root, layout = scratch_tree(tmp_path)
+    run_dir = a_run(root, layout, tmp_path / "full")
+    path = run_dir / "receipt.json"
+    os.utime(path, (0, 0))
+    assert drive.run_block(run_dir, "evand-regularize-full")["finished"] == "2026-10-12"
+
+    receipt = json.loads(path.read_text(encoding="utf-8"))
+    undated = {key: value for key, value in receipt.items() if key != "finished"}
+    path.write_text(json.dumps(undated), encoding="utf-8")
+    assert drive.run_block(run_dir, "evand-regularize-full")["finished"] is None
+    # A run from before the driver recorded the time, never admitted, is refused before
+    # the layer is touched...
+    before = (layout.index.read_text(encoding="utf-8"), layout.view(4).read_bytes())
+    with pytest.raises(drive.EvandRunError, match="records no finish time"):
+        drive.write_layer([run_dir], root, "admitted")
+    assert (layout.index.read_text(encoding="utf-8"), layout.view(4).read_bytes()) == before
+    # ...and one the index already dates keeps that date when it is admitted again.
+    path.write_text(json.dumps(receipt), encoding="utf-8")
+    assert drive.write_layer([run_dir], root, "admitted")["written"] == [4]
+    path.write_text(json.dumps(undated), encoding="utf-8")
+    assert drive.write_layer([run_dir], root, "admitted")["written"] == [4]
+    (run,) = json.loads(layout.index.read_text(encoding="utf-8"))["runs"]
+    assert run["finished"] == "2026-10-12"
+    assert axis.check_atlas(layout) == []
 
 
 def test_a_view_is_credited_to_the_packing_it_redraws() -> None:

@@ -113,13 +113,15 @@ that is rational, a closed form evaluated to 60 digits, else its printed decimal
 printed decimal alone would not do: at n = 51 it is the exact side rounded up at sixteen
 digits, below which every dilated certificate of the optimum falls.
 
-**Credit.** A view's `regularization.provenance` is the credit of the packing it
-redraws (`packing_credit`): the case record's credit for its reported bound at the
+**Credit and dates.** A view's `regularization.provenance` is the credit of the packing
+it redraws (`packing_credit`): the case record's credit for its reported bound at the
 bound, and at the witness's own side the witness's packing, which is the one before the
 improvement the record credits where the two differ. `provenance --repo-root TREE`
 restates the drawn views' credit by that rule, in each index entry and its view
 together, without the run directories; `--check` writes nothing and fails where it
-would.
+would. A receipt records the time it was written (`finished`), which dates the run in
+the layer's index, and a run reclassified on a copy of its directory records no cost of
+its own there (`regularize_axis_components.costed_once`).
 
 **The retry ladder** (the no-view study of 12 October 2026; rungs 3 and 5a under the
 owner's overnight instruction of the same day). These are policy-visible behaviours: each
@@ -2448,7 +2450,13 @@ def evand_admitted(report: Mapping[str, Any], directory: Path, run_id: str) -> A
 
 def run_block(run_dir: Path, run_id: str) -> dict[str, Any]:
     """A run as the layer's index records it, from its receipt: the generator version is
-    the index's `generators` block, so a run keeps its parameters, decisions and cost."""
+    the index's `generators` block, so a run keeps its parameters, decisions and cost.
+
+    The run is dated by the time its receipt records (`finished`, written when the run
+    wrote it), never by the file's modification time, which Git does not keep and a copy
+    or a restore resets (#548 review B5). A receipt from before the time was recorded
+    gives `None`, which `admit_views` fills from the index's own record of the run.
+    """
     receipt = read_json(run_dir / "receipt.json")
     parameters = receipt.get("parameters") or {}
     cost = receipt.get("cost") or {}
@@ -2456,9 +2464,8 @@ def run_block(run_dir: Path, run_id: str) -> dict[str, Any]:
     for row in receipt.get("counts") or []:
         word = str(row.get("decision"))
         decisions[word] = decisions.get(word, 0) + 1
-    finished = time.strftime(
-        "%Y-%m-%d", time.gmtime((run_dir / "receipt.json").stat().st_mtime)
-    )
+    recorded = receipt.get("finished")
+    finished = str(recorded)[:10] if recorded else None
     return {
         "id": run_id,
         "generator": axis.EVAND_GENERATOR,
@@ -2575,6 +2582,7 @@ def admit_views(
     if index.get("contract") != axis.ATLAS_CONTRACT:
         raise EvandRunError(f"{LAYER_INDEX_PATH} is not a {axis.ATLAS_CONTRACT} index")
     entries = {int(entry["n"]): entry for entry in index["entries"]}
+    dated = dated_runs(runs, index.get("runs") or [])
     layout = layer_layout(root)
     written: list[int] = []
     kept: list[int] = []
@@ -2609,7 +2617,7 @@ def admit_views(
         written.append(n)
     records = [entries[n] for n in sorted(entries)]
     known = {run["id"]: dict(run) for run in index.get("runs") or []}
-    known.update({run["id"]: dict(run) for run in runs})
+    known.update({run["id"]: run for run in dated})
     rebuilt = axis.carried_index(
         {
             **index,
@@ -2621,6 +2629,29 @@ def admit_views(
     with atomic_output_file(index_path) as temporary:
         temporary.write_text(axis.index_text(rebuilt), encoding="utf-8")
     return {"written": written, "kept_current": kept, "excluded": excluded}
+
+
+def dated_runs(
+    runs: Sequence[Mapping[str, Any]], committed: Sequence[Mapping[str, Any]]
+) -> list[dict[str, Any]]:
+    """Each run block with its finish date: its receipt's, or, for a receipt from before
+    the driver recorded one, the date the index already holds for the run. A run neither
+    dates is refused before anything is written."""
+    held = {str(run["id"]): run.get("finished") for run in committed}
+    found: list[dict[str, Any]] = []
+    for run in runs:
+        dated = dict(run)
+        if dated.get("finished") is None:
+            if not held.get(str(dated["id"])):
+                message = (
+                    f"{dated['id']}: its receipt records no finish time (a run from before "
+                    "the driver wrote one), and the index holds no date for it: add "
+                    "`finished`, the UTC time the run ended, to its receipt.json"
+                )
+                raise EvandRunError(message)
+            dated["finished"] = held[str(dated["id"])]
+        found.append(dated)
+    return found
 
 
 def evand_candidates(run_dirs: Sequence[Path]) -> tuple[list[Admitted], list[dict[str, Any]]]:
@@ -2809,6 +2840,7 @@ def write_receipt(
         "format": RECEIPT_FORMAT,
         "generated_by": GENERATED_BY,
         "policy": POLICY,
+        "finished": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "generator": run_generator(ordered),
         "parameters": parameters,
         "counts": ordered,
