@@ -1,5 +1,10 @@
 # Overbeck’s Candidate Proof of s(17) = L: Second Adversarial Review
 
+**Status:** amended by the
+[status addendum of 13 October 2026](#status-addendum-2026-10-13), which corrects check
+8, withdraws question 5 and the second half of SR-8’s resolution, and qualifies four
+statements; the verdict stands.
+
 **Verdict: accepted.** No blocking defect was found in what was read.
 The normalized 52-row gate of `G20S_PHYSICAL` (PROOF.md P110) is valid for every core
 radius $0 < R \le 1/5000$, and this review shows it with code of its own: an independent
@@ -483,6 +488,102 @@ the substance.
 The rest of SR-8, the missing written admission proof, stands, as does its
 status as non-blocking; check 12 here agrees with the capacities and separations that
 `selector` asserts.
+
+## Status Addendum: 2026-10-13
+
+This addendum was written on 13 October 2026, after
+[review A of #577](https://github.com/jlevy/squares/pull/577#pullrequestreview-5499709484),
+by the agent addressing that review, not by the review lane.
+Nothing above it was changed.
+It corrects check 8, withdraws question 5 and half of SR-8’s resolution, and qualifies
+four statements. The verdict, every defect’s blocking status and the conclusion on the
+gate stand.
+
+**Where the programs are.** The scripts that “Checks Run Here” says were kept in a
+scratch directory are retained, unchanged, in the packet’s
+[review-2/](../../../packing/resources/web/kleddamag-n17-candidate-2026-10-12/review-2/).
+Its `run.sh` runs all of them on a checkout of the pin, in the order of the checks
+table, and its `RESULTS.txt` is that runner’s complete output.
+Check 2’s program, `cmp_file.py`, is missing from the command block above; it reads
+`upper-packing-certificate.json` at the edition’s root.
+In that block `$C` is
+`research/finishing-threshold-goal-20261007/clean-rerun-20261011/current-build-0122/capture`
+and `$JQ` is
+`local-research/claude-20261002/cloud/analysis/part3_exact/certs/JQ_v1/jQTw.n0.JQ.cert.jsonl.gz`.
+
+**Check 8.** Run at core radius $501/100000$, `stops_eps.py` compared $b$ and $b + z$
+with the root-scale cuts $-17/50000$ and $3/125$ instead of P096’s $-213/25000$ and
+$49/2000$, and printed two `False` lines.
+It also bounded $z$ by adding $17/50000$ to the bound on $b + z$, which is valid only
+where $b \ge -17/50000$; that fails at this radius, so the $z \le 0.024774$ it printed
+is not a bound there.
+Check 8’s “all six stated cuts follow” did not describe that output.
+The conclusion in Step 5 holds, and `stops_cuts.py`, added to the packet with this
+addendum, shows it: it bounds $z$ by the bound on $b + z$ minus the bound on $b$ at the
+same radius and compares each radius with its own cuts.
+At $501/100000$ it gives $b \ge -0.0085124$, $b + z \le 0.0244342$ and
+$z \le 0.0329466$, against $-213/25000$, $49/2000$ and $33/1000$, with margins of
+$7.6 \times 10^{-6}$, $6.6 \times 10^{-5}$ and $5.3 \times 10^{-5}$. At $1/5000$ the
+three root-scale cuts hold too, with $z \le 0.0241011$; `stops.py`’s $z \le 0.024104$ is
+valid there, since $b \ge -17/50000$ holds at that radius.
+At both radii only the two $-v$ options survive.
+
+**SR-8 and question 5.** The correction to SR-8 above answers question 5:
+`scripts/entry_checks.py`, under the public check `selector`, imports `extra.py` and
+asserts all 136 separations of each root’s targets.
+Question 5 is withdrawn, and so is the second half of SR-8’s resolution, “add the
+separation check to the public checks”; the first half, carrying the written admission
+argument, stands, and the oversight record should take SR-8 as amended here.
+The two files were read for that correction, after the findings were committed, so the
+depth table, which predates the reading, does not list them.
+
+**The Krawczyk boxes.** `geom.py` centres the boxes of check 1 at its Newton point,
+which lies $3.8 \times 10^{-61}$ in $t$ and $4.9 \times 10^{-61}$ in $b$ from
+$(t_0, b_0)$. So the unique root “in the box of radius $10^{-12}$” of the statement
+section and check 1 is unique in that box about the Newton point, which misses a sliver
+at most $4.9 \times 10^{-61}$ wide of the statement’s rectangle about $(t_0, b_0)$. This
+changes nothing on the record: the packet’s statement comparison, through exp-237’s
+contraction on the stated box, and lane K3’s root isolation prove uniqueness in the
+stated rectangle.
+
+**Three statements narrowed.**
+
+- Check 5’s “product and stop rows exact”, and Step 5’s “the 192 product rows are the
+  McCormick rows of the box”: `check_rows.py` checks that each stored product row is
+  implied, in exact rationals, by the McCormick row of the box, and compares only the
+  stop row, row 244, for equality.
+  Implication is what soundness needs.
+- Check 11’s “exact minimum”, and the comparison section’s “exact minima”: `coarse.py`
+  counts the roots in $[0, 1]$ exactly and prints the minimum to 20 digits.
+- Step 4’s “$L = 6.945 \times 10^{-3}$”: the log’s quantity is `zero_step_L`
+  (`ACCEPT_JQ_v1_jQTwn0.log`, line 81), not the side $L$.
+
+**Independence.** The lane was briefed by the session that registered T-153, which had
+read the first review.
+The brief’s independence rule read:
+
+> You are the *second* adversarial review of this claim, and you must be independent of
+> the first. **Do not open, read, grep or quote
+> `docs/project/reviews/review-2026-10-12-kleddamag-n17-candidate.md`**, and do not read
+> the review summaries in `packing/frontier/results.yaml` (entry T-153’s `reviews`,
+> `composition`, `notes`), `packing/frontier/evidence.yaml` (the `external_review` of
+> `E-n017-overbeck-optimality-candidate-report`) or
+> `packing/resources/web/kleddamag-n17-candidate-2026-10-12/README.md` until your own
+> review’s findings and verdict are written and committed.
+> After that, you may read them only to fill the record fields below and to add a short
+> final section comparing your findings with the first review’s (agreements,
+> disagreements); do not change your findings because of it.
+
+The rest of the brief gave the claim and its pin, the custody rules for downloaded
+files, the document’s required sections and the record fields to fill.
+It named the normalized 52-row gate (P110 and the files it rests on) and the checkers’
+code as what to read hardest, calling them “the parts no reviewer of record has read”,
+so the lane knew which parts the first review had left unread, though not what it found.
+The findings and verdict were committed at 01:29:59Z and the comparison section at
+01:35:13Z. The lane’s session transcript, which the harness keeps outside this
+repository, shows its first read of the first review at 01:30:06Z; before the findings
+commit it opened none of the files the rule names, and in the reviews folder it listed
+the file names and read two other reviews for their structure.
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
