@@ -184,6 +184,9 @@ as many full sides as the view it replaces.
 The axis tool’s own record of that count stays beside it as `reference`. Such a view
 carries the credit line *Regularized by the Squares Project with Evan Daniel’s
 regularizer (evand/square-packing, MIT)*, in the index, in the view and in its drawing.
+The [regularization process](../../../docs/project/guides/regularization-process.md)
+gives the steps from a run to a merged view: generate, select with
+`python -m devtools.regularize_select`, admit, render, record and validate.
 
 On 13 October 2026 the index draws 90 views: 17 by the axis tool, 51 by Evan Daniel’s
 regularizer (32 at the witness’s side and 19 at the verified upper bound) and 22 by the

@@ -123,6 +123,8 @@ still measured and named, and decides nothing.
 The generator runs on request, never as a gate ([section 8](#8-gates)). Every run writes
 a receipt: the generator version, the interpreter, each count’s status, sides and
 seconds, and the run’s cost.
+The [regularization process](../guides/regularization-process.md) gives the commands
+that run the generators, choose one view per count and admit it.
 
 ### The Decision Table
 
