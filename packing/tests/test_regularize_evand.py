@@ -1260,3 +1260,35 @@ def test_reclassify_says_when_a_stored_bound_is_stale(n26_run: Path, tmp_path: P
     report["verified_upper_bound"], report["verified_upper_bound_exact_form"] = "5.7", None
     path.write_text(json.dumps(report))
     assert drive.reclassify(run_dir)["reclassified"]["stale_bounds"] == [26]
+
+
+def test_reclassify_sends_a_report_mislabelled_before_b1_to_review(
+    n26_run: Path, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """C3 of review C: a report written before B1's fix could call a `fewest`
+    regularization `conservative` (n = 129 in review B's run). `reclassify` must not
+    decide it again from those labels, and so must not bring it back as row 10 `admit`."""
+    run_dir = _copy_run(n26_run, tmp_path)
+    receipt = drive.reclassify(run_dir)
+    assert receipt["reclassified"]["stale_settings"] == []
+    report_path = drive.count_dir(run_dir, 26) / "report.json"
+    admitted = json.loads(report_path.read_text())
+    assert (admitted["decision"]["row"], admitted["decision"]["decision"]) == (10, "admit")
+    stored = drive.count_dir(run_dir, 26) / "regularize.json"
+    pristine = stored.read_text()
+    stored.write_text(json.dumps({**json.loads(pristine), "variant": "fewest"}))
+    assert drive.main(["reclassify", "--run-dir", str(run_dir)]) == 0
+    assert "sent to review: at [26]" in capsys.readouterr().out
+    receipt = json.loads((run_dir / "receipt.json").read_text())
+    assert receipt["reclassified"]["stale_settings"] == [26]
+    report = json.loads(report_path.read_text())
+    assert (report["decision"]["row"], report["decision"]["decision"]) == (None, "review")
+    assert "--variant fewest (its report says: conservative)" in report["decision"]["reason"]
+    assert report["regularization"] is None
+    assert drive.layer_candidate(report, "admitted") is None
+    assert 26 in receipt["review_queue"]
+    stored.write_text(pristine)
+    receipt = drive.reclassify(run_dir)
+    assert receipt["reclassified"]["stale_settings"] == []
+    report = json.loads(report_path.read_text())
+    assert (report["decision"]["row"], report["decision"]["decision"]) == (10, "admit")

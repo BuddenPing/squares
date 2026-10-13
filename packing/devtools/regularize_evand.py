@@ -2613,12 +2613,20 @@ def reclassify(run_dir: Path, counts: Sequence[int] | None = None) -> dict[str, 
     as it stands. A count whose record has moved `U` since (T-151 moved 60 ceilings) is
     listed in the receipt's `reclassified.stale_bounds` and printed by the command, so a
     stale row 3 or 4 is never decided again silently (review B of #511, B10).
+
+    It decides only a report labelled with the settings its stored regularization ran
+    with (`settings_disagreement`). A report written before review B's B1 fix could call
+    a `fewest` regularization `conservative`, and its row is then the wrong variant's: such
+    a count is not decided again but sent to review, with no regularization record,
+    listed in `reclassified.stale_settings` and printed, to be run again from
+    `--from-stage import` (review C of #511, C3).
     """
     path = run_dir / "receipt.json"
     receipt = read_json(path)
     rows = {int(row["n"]): row for row in receipt.get("counts", [])}
     chosen = sorted(rows) if counts is None else list(counts)
     stale: list[int] = []
+    unsettled: list[int] = []
     for n in chosen:
         report_path = count_dir(run_dir, n) / "report.json"
         report = read_json(report_path)
@@ -2629,6 +2637,17 @@ def reclassify(run_dir: Path, counts: Sequence[int] | None = None) -> dict[str, 
         )
         if stored != (facts["verified_upper_bound"], facts["exact_form"]):
             stale.append(n)
+        mislabelled = settings_disagreement(count_dir(run_dir, n), report)
+        if mislabelled is not None:
+            unsettled.append(n)
+            report["decision"] = asdict(
+                Decision(None, "review", None, None, f"not decided again: {mislabelled}")
+            )
+            report["decisions"] = {"solved": None, "same": None}
+            report["regularization"] = None
+            write_json(report_path, report)
+            rows[n] = receipt_row(report)
+            continue
         _current_histograms(n, report)
         outputs = report.get("outputs") or {}
         solved = measured_from_report(report, "solved")
@@ -2649,7 +2668,12 @@ def reclassify(run_dir: Path, counts: Sequence[int] | None = None) -> dict[str, 
         rows[n] = receipt_row(report)
     ordered = [rows[n] for n in sorted(rows)]
     receipt.update({"counts": ordered, **receipt_lists(ordered)})
-    receipt["reclassified"] = {"policy": POLICY, "counts": chosen, "stale_bounds": stale}
+    receipt["reclassified"] = {
+        "policy": POLICY,
+        "counts": chosen,
+        "stale_bounds": stale,
+        "stale_settings": unsettled,
+    }
     write_json(path, receipt)
     return receipt
 
@@ -3129,6 +3153,13 @@ def main(argv: list[str] | None = None) -> int:
                 f"decided on the U each report stored; the case record has moved U since "
                 f"at {stale}: run those counts again (--from-stage import) to decide them "
                 "on today's U"
+            )
+        unsettled = receipt["reclassified"]["stale_settings"]
+        if unsettled:
+            print(
+                f"not decided again, sent to review: at {unsettled} the report's settings "
+                "are not the ones its stored regularization ran with; run those counts "
+                "again (--from-stage import), asking for the settings they ran with"
             )
         return 0
     if arguments.command == "layer":
