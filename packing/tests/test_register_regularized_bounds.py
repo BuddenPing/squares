@@ -639,12 +639,27 @@ def test_the_grid_batch_refuses_two_runs_of_one_name(tmp_path: Path) -> None:
         registered.select_grid([first, second], [290])
 
 
-def test_the_grid_batch_reproduces_its_row_and_writes_nothing(tmp_path: Path) -> None:
+def _no_writes(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Fail the test on any write through the registrar's two writers, which `retain`, the
+    receipts and the case records all go through: rewriting a view with the same bytes
+    leaves the files as they were, so comparing bytes cannot see it (review C3, B6)."""
+
+    def refused(*args: object, **_kwargs: object) -> None:
+        raise AssertionError(f"select wrote {args[0] if args else 'a file'}")
+
+    monkeypatch.setattr(registered, "atomic_output_file", refused)
+    monkeypatch.setattr(registered, "write_json", refused)
+
+
+def test_the_grid_batch_reproduces_its_row_and_writes_nothing(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     """From a run directory holding the retained view, `select_grid` rebuilds the
     committed row's facts and returns the view's bytes for `retain`, writing nothing."""
     selection = registered.GRID.selection.read_bytes()
     retained = registered.view_path(290, registered.GRID).read_bytes()
     run = _grid_run(tmp_path, "deg5-1013-a", _grid_report(), _retained())
+    _no_writes(monkeypatch)
     receipt, views = registered.select_grid([run], [290])
     assert views == {290: _retained()}
     row, committed = receipt["rows"][0], registered.committed(registered.GRID)[290]
@@ -766,3 +781,97 @@ def test_problems_names_a_row_whose_implied_ceiling_lies_below_its_side(
         "n=290: the ceiling at n = 291 lies below the side, so the record would carry a "
         "weaker ceiling than the register proves"
     ) in registered.problems(registered.GRID)
+
+
+def test_the_grid_batch_refuses_a_run_whose_reports_differ_in_settings(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """A run's reports must share their settings, and the refusal comes before anything is
+    written: with every row built, `select_grid` still writes nothing when it refuses
+    (PR #587, review C3, B6)."""
+    first, second = _grid_report(), _grid_report()
+    second["n"] = 1
+    second["settings"] = {"near_axis_degrees": 0.5}
+    run = tmp_path / "run"
+    monkeypatch.setattr(
+        registered,
+        "grid_reports",
+        lambda _runs, _numbers: {
+            1: [("run", run / "n-001", second)],
+            290: [("run", run / "n-290", first)],
+        },
+    )
+    monkeypatch.setattr(
+        registered, "grid_selection_row", lambda n, _found, _batch: ({"n": n}, b"view")
+    )
+    _no_writes(monkeypatch)
+    with pytest.raises(
+        registered.RegistrationError, match="run: its reports differ in their settings"
+    ):
+        registered.select_grid([run], [1, 290])
+
+
+@pytest.mark.parametrize(
+    ("source", "message"),
+    [
+        (
+            {"id": "W-known-best-n291"},
+            (
+                "n=290: the run read witness W-known-best-n291, not the checkout's "
+                "W-known-best-n290"
+            ),
+        ),
+        (
+            {"id": "W-known-best-n290", "s_W_exact": "1/2"},
+            (
+                "n=290: the run read its witness at another side than the checkout "
+                "witness's own s_W"
+            ),
+        ),
+    ],
+)
+def test_the_identity_measurement_refuses_a_run_of_another_witness(
+    source: dict[str, str], message: str
+) -> None:
+    """`measure_identity` measures a view against the checkout witness only where the run
+    read that witness, by its id and its exact side `s_W`; the first batch's `select`
+    reaches these refusals from a report's `source` (PR #587, review C3, B4)."""
+    row = registered.committed(registered.GRID)[290]
+    found = {"s_W_exact": row["witness_side"], **source}
+    with pytest.raises(registered.RegistrationError, match=re.escape(message)):
+        registered.measure_identity(290, registered.read_view(290, registered.GRID), [], found)
+
+
+@pytest.mark.parametrize(
+    "change",
+    [
+        pytest.param({"n": 290}, id="the same count"),
+        pytest.param({"n": 289}, id="a smaller count"),
+        pytest.param({"side": "18"}, id="above the side"),
+    ],
+)
+def test_problems_names_a_row_whose_implied_ceiling_does_not_imply_its_bound(
+    monkeypatch: pytest.MonkeyPatch, change: dict[str, object]
+) -> None:
+    """The ceiling a row says implies its bound must be a larger count's, at or below the
+    row's side; `--check` names one that is not (PR #587, review C3)."""
+    row = registered.committed(registered.GRID)[290]
+    _with_implied(monkeypatch, {**row["implied_by"], **change})
+    assert "n=290: the ceiling the row says implies the bound does not" in registered.problems(
+        registered.GRID
+    )
+
+
+def test_an_implied_ceiling_no_registered_result_holds_is_refused(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A next-count ceiling at or below the side is named by the results that hold it; one
+    that no registered result holds cannot be named, and `implied_by` refuses it rather
+    than recording an implication from nothing (PR #587, review C3)."""
+    row = registered.committed(registered.GRID)[290]
+    monkeypatch.setattr(registered, "results_holding", lambda _n, _evidence: [])
+    with pytest.raises(
+        registered.RegistrationError,
+        match="n=291: no registered result holds the verified bound",
+    ):
+        registered.implied_by(290, Fraction(row["side"]))
