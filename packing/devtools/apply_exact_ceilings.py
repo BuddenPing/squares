@@ -667,19 +667,23 @@ def apply_case(n: int, text: str) -> str:
     if preserve_selected_case(n, text, {COVERAGE_ID}):
         return text
     _, front, body = text.split("---\n", 2)
-    if later_ceiling(front):
+    if later_ceiling(n, front):
         return text
     return f"---\n{front_matter(n, front)}---\n{body_text(n, body)}"
 
 
-def later_ceiling(front: str) -> bool:
-    """Whether a later certificate holds the verified upper lane: an exact regularized
-    view below this import's rounded-up side (T-154), which writes over this layer at its
-    counts and keeps this certificate's sentences as history."""
-    from devtools import register_regularized_bounds as later  # noqa: PLC0415
+def later_ceiling(n: int, front: str) -> bool:
+    """Whether a later layer holds the verified upper lane below this import's rounded-up
+    side, as the regularized exact certificates do at their counts (T-154): that layer
+    writes over this one and keeps this certificate's sentences as history, so this one
+    leaves the record alone (`source_supersession.verified_lane_held_by_later_layer`)."""
+    from devtools.source_supersession import (  # noqa: PLC0415
+        verified_lane_held_by_later_layer,
+    )
 
     upper = safe_load(front)["packing"]["verified_upper_bound"]
-    return later.EVIDENCE in (upper.get("evidence") or [])
+    own = verified_block(committed()[n])
+    return verified_lane_held_by_later_layer(upper, own["evidence"], own)
 
 
 # --------------------------------------------------------------------------------------
