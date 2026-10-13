@@ -4,14 +4,14 @@ softschema:
   status: enforced
 
 repository: BuddenPing/square-packing-certificates
-tag: data/pingyou-numerical-refinements-2026-10-13-v1
+tag: data/pingyou-numerical-refinements-2026-10-13-v2
 description: Exact rational certificate refinements submitted by PingYou Ltd; contributor evidence, pending maintainer review.
 objects:
 - path: attic/pingyou-numerical-refinements-2026-10-13/pingyou-numerical-refinements-2026-10-13.zip
   asset: pingyou-numerical-refinements-2026-10-13.zip
-  size: 2611893
-  sha256: ab07d7586297939b48693276cb56f62ec2309efc8d2ca11d39a3ba8c95505743
+  size: 7754365
+  sha256: ced042973412d43217aab66b5c07fe6242e019a8280efc20bb99650c97892249
 - path: attic/pingyou-numerical-refinements-2026-10-13/pingyou-native-witnesses-2026-10-13.zip
   asset: pingyou-native-witnesses-2026-10-13.zip
-  size: 6901995
-  sha256: 838ecebb02903cc5bff892bdd305df87c2eb63b593c7a8092daf3839e921b715
+  size: 21737024
+  sha256: da66aa5f4db954765988c3f7cf3d405b71aa9112ac494b6e3b82b2ea1dbdcb85
