@@ -393,18 +393,31 @@ def apply_patch(text: str, diff: str) -> str:
     """`text` with each hunk of the unified `diff` applied by its exact text before.
 
     Line numbers are not trusted and nothing is fuzzed: each hunk's context and removed
-    lines must occur exactly once in the text as the hunks before it left it, so a patch
-    that no longer fits the bytes it was written against is refused, never half applied.
+    lines must occur exactly once in the text as the hunks before it left it, as whole
+    lines and counting occurrences that overlap, so a patch that no longer fits the bytes
+    it was written against, or could land in two places, is refused, never half applied.
     """
     for before, after in _hunks(diff):
-        found = text.count(before)
-        if found != 1:
-            where = "is not in the text" if found == 0 else f"occurs {found} times"
-            first = before.splitlines()[0] if before else ""
+        lines, block = _lines(text), _lines(before)
+        width = len(block)
+        found = [
+            start
+            for start in range(len(lines) - width + 1)
+            if width and lines[start : start + width] == block
+        ]
+        if len(found) != 1:
+            where = "is not in the text" if not found else f"occurs {len(found)} times"
+            first = block[0] if block else ""
             msg = f"the hunk beginning {first.strip()!r} {where}"
             raise PatchError(msg)
-        text = text.replace(before, after)
+        start = found[0]
+        text = "".join([*lines[:start], after, *lines[start + width :]])
     return text
+
+
+def _lines(text: str) -> list[str]:
+    """`text` as its lines, each with its newline: only a newline ends a line, as in a diff."""
+    return [line for line in re.split(r"(?<=\n)", text) if line]
 
 
 def project_root(directory: Path) -> Path:
