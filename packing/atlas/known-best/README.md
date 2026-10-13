@@ -185,8 +185,8 @@ The axis tool’s own record of that count stays beside it as `reference`. Such 
 carries the credit line *Regularized by the Squares Project with Evan Daniel’s
 regularizer (evand/square-packing, MIT)*, in the index, in the view and in its drawing.
 
-On 12 October 2026 the index draws 90 views: 25 by the axis tool, 48 by Evan Daniel’s
-regularizer (37 at the witness’s side and 11 at the verified upper bound) and 17 by the
+On 13 October 2026 the index draws 90 views: 26 by the axis tool, 47 by Evan Daniel’s
+regularizer (36 at the witness’s side and 11 at the verified upper bound) and 17 by the
 grid-slack generator (2 by its version 0 and 15 by its version 1), with 181 records
 unchanged and 53 refused.
 At sixteen counts Evan Daniel’s views lay below the earlier ceilings and were held; they
@@ -194,10 +194,13 @@ were admitted once T-154 registered their exact sides and the runs were decided 
 against the case records as they stand (`python -m devtools.regularize_evand reclassify
 --refresh-bounds`); at 227 the grid-slack view is drawn instead.
 At the 42 counts jlevy/squares#518 re-housed, both generators ran again on the new
-witnesses. 17 of Evan Daniel’s views are drawn, and 10 grid-slack views where his
-regularizer admitted none and the grid view draws better with nothing worse.
-13 keep the axis tool’s view: 232’s grid view awaits review, and at the rest neither
-generator draws better.
+witnesses. 16 of Evan Daniel’s views are drawn, each worse on no measure of the drawing
+(at 180 and 207 they tie, which the owner’s “equal or better” of 13 October 2026
+admits), and 10 grid-slack views where his regularizer admitted none and the grid view
+draws better with nothing worse.
+14 keep the axis tool’s view: 232’s grid view awaits review; at 236 his view turned two
+squares 0.000537 degrees off their group and drew one more angle class, so it was
+withdrawn on 13 October; and at the rest neither generator draws better.
 At 270 and 305, which jlevy/squares#553 re-housed again after those runs, the views
 lapsed with the witnesses they were made from, and the axis tool’s views of the new
 witnesses are drawn.

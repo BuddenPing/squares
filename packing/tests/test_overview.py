@@ -1064,13 +1064,14 @@ def test_one_tile_a_case_is_drawn_from_its_regularized_view_where_it_has_one() -
     # Since the house adoption of 11 October 2026 (think-fvz4), the houses that are
     # already display-regularized packings (T-146) and Robert Barnett's precision
     # refinement of Ryan Xu's packing at 261 (T-150) have unchanged tile-scale shades;
-    # 400-unit rounding hides moves visible in the full SVG. At 236 and 302, two of those
-    # houses, the layer draws Evan Daniel's admitted views since layer 7 (12 October
-    # 2026), and they group the tilted squares into other angle classes, so their tiles
-    # differ from the house drawing.
+    # 400-unit rounding hides moves visible in the full SVG. At 302, one of those houses,
+    # the layer draws Evan Daniel's admitted view since layer 7 (12 October 2026), which
+    # groups the tilted squares into other angle classes, so its tile differs from the
+    # house drawing. 236 keeps the axis tool's view: his view there added a hue.
     assert identical_thumbnails == {
         70,
         103,
+        236,
         258,
         261,
         263,

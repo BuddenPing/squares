@@ -450,20 +450,26 @@ The end state when T-154 was registered, before #518 and #553 re-housed 51 count
   - #518’s 42 counts wait for their new witnesses;
   - the remaining refusals are views whose house or stage totals would fall.
 
-**Addendum, 12 October 2026: #518’s 42 counts (layer 7).** #518 merged with its new
-houses, and the axis tool’s views of them entered the layer.
+**Addendum, 12 and 13 October 2026: #518’s 42 counts (layer 7).** #518 merged with its
+new houses, and the axis tool’s views of them entered the layer.
 Both generators were then run on the new witnesses, and each count was decided by the
-grid lane’s rule, as in the grid pass above:
+grid lane’s rule, as in the grid pass above.
+As the layer stands on 13 October:
 
-- 18 of Evan Daniel’s views are drawn.
-- 11 grid views are drawn, at 105, 131, 146, 156, 175, 211, 267, 292, 305, 307 and 308.
+- 16 of Evan Daniel’s views are drawn.
+  18 were admitted on 12 October; 270’s lapsed when #553 re-housed it (below), and 236’s
+  was withdrawn on 13 October because it turned two squares 0.000537 degrees off their
+  group and drew one more angle class.
+- 10 grid views are drawn, at 105, 131, 146, 156, 175, 211, 267, 292, 307 and 308; 305’s
+  lapsed with #553.
 - 232’s grid view goes to review: five per-square counts fall against #518’s view.
-- The other 12 counts keep #518’s drawing.
+- The other 14 counts keep the axis tool’s view of the new house.
   303 is among them: its new house draws 4 / 8 / 0, which neither generator changes.
 - At 302 the new house already draws 0 / 0 / 0, and Evan Daniel’s view adds four full
   sides.
 
-Over the 42 counts, against #518’s drawings:
+Over the 42 counts as admitted on 12 October, before #553 and the withdrawal at 236,
+against #518’s drawings:
 
 - light squares fall from 230 to 133;
 - uneven squares fall from 588 to 361;
@@ -473,8 +479,7 @@ Over the 42 counts, against #518’s drawings:
 #553 then re-housed 270 and 305 again (T-151, T-152), so the Evan Daniel view at 270 and
 the grid view at 305 lapsed with the witnesses they were made from, and the axis tool’s
 views of #553’s witnesses are drawn there.
-The census above was measured before that; 17 Evan Daniel views and 10 grid views remain
-drawn among the 42.
+The census above was measured before that and before 236’s view was withdrawn.
 
 The end state, with #553 merged:
 
