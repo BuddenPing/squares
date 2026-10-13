@@ -12973,6 +12973,9 @@ urls:
     - packing/resources/web/fitzharding-n17-lean-2026-10-13/sq17-lean/verification/clean-build-receipt.json
     - packing/resources/web/fitzharding-n17-lean-2026-10-13/sq17-lean/verification/Square17Optimality.log.gz
     - packing/resources/web/fitzharding-n17-lean-2026-10-13/receipts/source-consistency.json
+    - packing/resources/web/fitzharding-n17-lean-2026-10-13/receipts/endpoint-comparison.json
+    - packing/resources/web/fitzharding-n17-lean-2026-10-13/receipts/cover-comparison.json
+    - packing/resources/web/fitzharding-n17-lean-2026-10-13/receipts/closures.json
     - docs/project/reviews/review-2026-10-13-fitzharding-n17-lean.md
 - path: results.html
   canonical: results.html

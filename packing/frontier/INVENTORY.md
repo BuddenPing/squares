@@ -544,7 +544,7 @@ results, it is a statement about what this repository has itself examined.
 | `E-n017-overbeck-capture-independent-sample` | 0 | derived-structure | verified | equalities and inequalities, no tolerance | here | - | previously-published | independent | `V-k3-n17-capture-row-checker` |
 | `E-n017-overbeck-tree-sample-replay` | 0 | derived-structure | verified | equalities and inequalities, no tolerance | here | - | previously-published | producer’s code | `V-overbeck-n17-tree-checkers` |
 | `E-n017-overbeck-statement-root-independent` | 0 | derived-structure | verified | equalities and inequalities, no tolerance | here | - | previously-published | independent | `V-k3-n17-root-isolation` |
-| `E-n017-fitzharding-lean-report` | 0 | exact-value | reported | - | elsewhere | informally-verified | previously-published | producer’s code | `V-fitzharding-n17-lean`, `V-fitzharding-n17-source-manifest` |
+| `E-n017-fitzharding-lean-report` | 0 | exact-value | reported | - | elsewhere | informally-verified | previously-published | producer’s code | `V-fitzharding-n17-lean`, `V-fitzharding-n17-source-manifest`, `V-fitzharding-n17-premise-comparisons` |
 
 ## What the register rests on
 
