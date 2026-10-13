@@ -17322,6 +17322,33 @@ results:
           G20S_PHYSICAL, the tree and capture checkers' code, or any certificate.
         verdict: accepted
         covers: [T-153]
+      - path: docs/project/reviews/review-2026-10-13-overbeck-n17-candidate-second.md
+        kind: adversarial
+        reviewer: >-
+          an AI agent, the second adversarial review lane of the #557 intake (bead
+          think-4j3n), model claude-opus-5-5, tbd-strong-max tier, reasoning setting max,
+          prompted separately from the first review lane and blind to its document until its
+          own findings were written
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-13'
+        scope: >-
+          The normalized 52-row gate of G20S_PHYSICAL (PROOF.md P110) for every core
+          radius up to 1/5000, re-derived with this review's own code: the root by a
+          Krawczyk test, the 52 base-gap identities by a Groebner basis, the audit of all
+          152 options, and an independent row builder that implies every stored row and
+          carries the B6 prefix, the stop cuts and the five stopped rounds to a ratio of
+          0.79202. Also the tree checkers' specification in full and the Python tree
+          checker at every step that decides acceptance; the capture engine's core, with
+          all 98 budgets recomputed and the 9,000 rows of FRAME_0917 re-decided; the JQ
+          certificate as data; the root admission, target separation and capacity, coarse
+          quartics and stop cuts recomputed exactly; and the upper construction in
+          interval arithmetic, at 653b9589d. It ran no checker of the edition, replayed no
+          tree or capture sweep, did not re-derive the seventeen finite rounds, and did
+          not read the 84 selected clauses, the written frame, KEY_W, C7/C8 and
+          wall-partition premises, verify_classes_wb.js or exact_restricted.py.
+        verdict: accepted
+        covers: [T-153]
     artifacts:
       - packing/resources/web/kleddamag-n17-candidate-2026-10-12/README.md
       - packing/resources/web/kleddamag-n17-candidate-2026-10-12/facts/statement.json
@@ -17353,12 +17380,13 @@ results:
       the capture sweep, begun on 34 rows, and of the tree checker would be an attribute
       beside the rung.
 
-      V4 and C4 need, on top of V3 and C3, a second adversarial AI review by a distinct
-      reviewer whose verdict accepts, one that reads the normalized 52-row gate of
-      G20S_PHYSICAL (PROOF.md P110), which this review did not read and would not count as
-      accepted for rung 4, and the owner's oversight record naming trust-boundary,
-      certificate-meaning and ai-findings. Rung 5 needs the Lean formalization the source
-      plans and has not started.
+      V4 and C4 need, on top of V3 and C3, the owner's oversight record naming
+      trust-boundary, certificate-meaning and ai-findings. The second adversarial AI review
+      they also need, by a distinct reviewer whose verdict accepts and who reads the
+      normalized 52-row gate of G20S_PHYSICAL (PROOF.md P110), is on file: the review of 13
+      October read the gate, re-derived it with its own code and accepted, with nine
+      defects, none blocking, for the oversight record to disposition. Rung 5 needs the Lean
+      formalization the source plans and has not started.
 
       On 13 October the owner held the ten-tree replay and the capture recomputation. Each
       remaining option, with its price and where it could run, is a bead under think-lqtu.
