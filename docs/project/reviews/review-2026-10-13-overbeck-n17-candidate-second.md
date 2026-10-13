@@ -421,6 +421,69 @@ seventeen finite rounds with an independently derived row builder, together with
 reading of the 84 selected clauses, of the frame, KEY_W, C7/C8 and wall-partition
 premises, and of the coarse regions’ dimensions, which this review did not read.
 
+## Comparison with the First Review
+
+This section was written after the findings and verdict above were committed, from the
+first review,
+[review-2026-10-12-kleddamag-n17-candidate.md](review-2026-10-12-kleddamag-n17-candidate.md).
+Nothing above was changed because of it.
+
+**Agreements.** Both reviews accept, with no blocking defect.
+Both compute the same $L$ and $R - L = 4.8366 \times 10^{-17}$, and both re-derive the
+class-row lemma’s links, the frame counting, the wall lemma at $t = 31/1000$, the three
+tube hand-overs and the endpoint contradiction.
+On the coarse-capacity quartics, the exact minima found here, $0.005043$ and $0.005193$,
+lie above the first review’s Bernstein lower bounds, $0.0050389$ and $0.0051899$. Both
+find the least admission margin, $4.32 \times 10^{-17}$, at the flush walls.
+Both name the same trust boundary: authentic execution, and checkers written by one AI
+system.
+The two routes for the rigidity step (SR-4 here) and the missing written proof of
+`ROOT_ADMISSION` (half of SR-8) are found by both.
+The half-unit and one-unit capture surpluses of SR-6 head the first review’s list of
+replay priorities, and SR-5 matches its note that `independent_model.py` shares the
+producer’s remainder formulas.
+
+**The gate.** The first review did not read the three gate texts.
+It called the gate the one step whose written justification it had not seen, and said
+its own verdict should not count as the accepting one for rung 4 until someone of record
+had read it. This review read the gate texts and re-derived the gate with its own code.
+That answers the first review’s question 2: the derivation is §5 of
+`normalized_division_text.md`, with `analytic_envelope_text.md` and
+`full_gate_analytic_review.md`, written for an earlier slider box (SR-3).
+
+**Raised there and not here.** The `LABELS.tsv` bindings of `file:SELECTED_CLAUSES` into
+a sibling folder and of `file:C12_PROFILE_CAPACITY` into an earlier edition folder; this
+review read `LABELS.tsv` and missed them.
+Its admission and profile checks read the packet’s own copy of the selected map, and all
+six copies in the tree have the bound SHA-256. Also raised there and not here: the
+“high-first” sentence of `F1_PROOF.md`, which was not read here; `P090`’s “93 option
+splits” against a report’s 135, not checked here; and the n = 18 in the title of #557.
+
+**Raised here and not there.** SR-1 (no independent builder of the normalized model),
+SR-2 (the full-gate review’s missing scripts and its byte count), SR-3 (B6 and the
+root-scale stop theorem unlabelled, the division text written for an earlier box),
+SR-6’s point that the public check does not recompute the budgets, SR-7
+(`recompute_slice.py` and the Node checker hash) and SR-9 (the two rigidity trees
+bundled into `G20S_PHYSICAL`). The first review did not read the tree checker,
+`SPEC_v3.0.md` sections 9, 10 and 12, `h_report30.py`, `exact_general.py`, a tree
+certificate or a capture certificate, all of which were read or examined here; this
+review did not read the written premises `FRAME_L9.md`, `F1_PROOF.md`, the KEY_W and
+C7/C8 proofs, the endpoint normalization and `ENDPOINT_CASE_G_LEMMA.md`, which the first
+review did. Neither read `verify_classes_wb.js`, `exact_restricted.py` or the large
+files.
+
+**A correction to SR-8.** The first review lists the per-root separations and capacities
+as a public check (`extra.py`). In the edition, `scripts/entry_checks.py` imports
+`extra.py` under the public check `selector` (not `admission`, where the first review
+places it). For all eleven roots it asserts capacity one of every physical target, all
+136 pairwise separations and the label-12 union capacity; it also asserts the 84
+selected triggers. SR-8’s clause that the off-wall separation is imported “without a
+computation in the public checks” is therefore wrong, and the first review is right on
+the substance.
+The rest of SR-8, the missing written admission proof, stands, as does its
+status as non-blocking; check 12 here agrees with the capacities and separations that
+`selector` asserts.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->
