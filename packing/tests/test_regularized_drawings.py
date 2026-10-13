@@ -13,6 +13,7 @@ the layer draws.
 from __future__ import annotations
 
 import json
+from pathlib import Path
 from types import SimpleNamespace
 from typing import Any, cast
 
@@ -627,13 +628,117 @@ def test_the_earlier_certificate_is_named_exactly_where_the_case_bound_rests_on_
     ]
 
 
+def test_a_registered_item_reads_the_rungs_of_the_solve_the_layer_draws(
+    tmp_path: Path,
+) -> None:
+    """Where the layer draws the very solve a result registered (the result registers the
+    drawing, and its registration receipt names, at the count, a run whose receipt the
+    entry's run block records, with the entry's output and exact side), the item reads
+    its rungs from the drawn entry and leaves nothing unrecorded; a later run's view at
+    the same side, another output or side, or no receipt says nothing of that solve
+    (PR #585, review B2)."""
+    record = {
+        "n": 5,
+        "of": "T-101",
+        "by": "project",
+        "method": EVAND_METHOD,
+        "side": "solved",
+        "identity": {"basis": "measured"},
+    }
+    parameters = {"variant": "conservative", "workers": 4}
+    receipt = {
+        "format": drawings.REGISTRATION_RECEIPT,
+        "runs": [
+            {
+                "run": "full",
+                "generator": {"name": drawings.EVAND_GENERATOR},
+                "parameters": {**parameters, "timeout": 1800.0},
+                "cost": {"cpu_seconds": 10.0, "wall_seconds": 5.0, "workers": 4, "counts": 1},
+            }
+        ],
+        "rows": [{"n": 5, "run": "full", "output": "solved", "side": "33/5"}],
+    }
+    (tmp_path / "receipt.json").write_text(json.dumps(receipt), encoding="utf-8")
+    results = [
+        {
+            "id": "T-154",
+            "kind": "upper-bound",
+            "artifacts": ["receipt.json"],
+            "regularizations": [record],
+        }
+    ]
+    cost = {"cpu_seconds": 10.0, "wall_seconds": 5.0, "workers": 4}
+    runs = [
+        {
+            "id": "refreshed-full",
+            "generator": drawings.EVAND_GENERATOR,
+            "parameters": parameters,
+            "cost": cost,
+        },
+        {
+            "id": "later",
+            "generator": drawings.EVAND_GENERATOR,
+            "parameters": parameters,
+            "cost": {**cost, "cpu_seconds": 1.0},
+        },
+    ]
+
+    def drawn(run: str = "refreshed-full", output: str = "solved", side: str = "33/5") -> Any:
+        found = {**entry(5, "bound"), "generator": drawings.EVAND_GENERATOR}
+        found["regularization"] = {**found["regularization"], "method": EVAND_METHOD}
+        found["run"] = {"id": run, "output": output}
+        found["side"] = {"relation": "bound", "view": side}
+        return drawings.Drawn(found, drawings.Resolved("T-154", "x"), [])
+
+    count = drawn()
+    solves = drawings.recorded_solves([count], results, runs, repo=tmp_path)
+    assert solves == {("T-154", 5): count.entry}
+    assert drawings.registered_modifications(record, GENERATORS, {}, count.entry) == ([], [])
+    assert drawings.registered_modifications(record, GENERATORS, {}) == (
+        [],
+        [drawings.UNRECORDED_RUNGS],
+    )
+    climbed = {**count.entry, "run": {**count.entry["run"], "rungs": ["force-kkt"]}}
+    assert drawings.registered_modifications(record, GENERATORS, {}, climbed) == (
+        ["retry rung force-kkt"],
+        [],
+    )
+    for other in (drawn("later"), drawn(output="same"), drawn(side="34/5")):
+        assert drawings.recorded_solves([other], results, runs, repo=tmp_path) == {}
+    bare = [{**results[0], "artifacts": []}]
+    assert drawings.recorded_solves([count], bare, runs, repo=tmp_path) == {}
+    text = f"""results:
+  - id: T-154
+    kind: upper-bound
+    regularizations:
+      - n: 5
+        of: T-101
+        by: project
+        method: "{EVAND_METHOD}"
+        side: solved
+        identity:
+          basis: measured
+"""
+    written = drawings.with_registered_modifications(
+        text, safe_load(text)["results"], GENERATORS, solves
+    )
+    (five,) = safe_load(written)["results"][0]["regularizations"]
+    assert five["modifications"] == []
+    assert "modifications_unrecorded" not in five
+    assert drawings.registered_problems(written, GENERATORS, solves) == []
+    assert drawings.registered_problems(written, GENERATORS) != []
+
+
 def test_t154_names_daniels_earlier_certificate_where_its_side_is_his() -> None:
     """On the record: T-154's items that name `first_certified_in` are exactly the rows of
     its registration receipt whose side is that of Evan Daniel's earlier certificate
     (`register_regularized_bounds.at_t101_side`), 33 of its 59, each naming T-101; eight
     are drawn and 25 are not. Their case notes say the side is registered in T-154 and
     was first certified by Evan Daniel's certificate (T-101), so it proves no new bound;
-    the other 26 say it is the upper bound it proves (PR #585, review B1)."""
+    the other 26 say it is the upper bound it proves. The layer draws T-154's own solve
+    at fourteen counts, whose items read their rungs from the drawn entries; at 87 it
+    draws a later run's view, so T-154's item there keeps the rungs unrecorded (PR #585,
+    review B1, B2)."""
     register = drawings.load_register()
     (t154,) = (result for result in register.results if result["id"] == "T-154")
     items = {int(item["n"]): item for item in t154["regularizations"]}
@@ -665,3 +770,9 @@ def test_t154_names_daniels_earlier_certificate_where_its_side_is_his() -> None:
         else:
             assert "registered as T-154, the upper bound it proves" in note, n
             assert "first certified" not in note, n
+    solves = drawings.recorded_solves(drawn, register.results, index.get("runs") or [])
+    assert sorted(n for _rid, n in solves) == [
+        29, 37, 41, 50, 54, 71, 83, 107, 171, 178, 198, 230, 234, 293,
+    ]  # fmt: skip
+    for n, item in items.items():
+        assert ("modifications_unrecorded" in item) == (("T-154", n) not in solves), n

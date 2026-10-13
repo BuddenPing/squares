@@ -294,7 +294,15 @@ same-side re-solve.
 An item records no solve, and `T-154`’s selection kept none while its
 runs’ reports are not retained, so its items say in `modifications_unrecorded` that
 whether the solve climbed a retry rung is not recorded, rather than reading as
-*unmodified*.
+*unmodified*. Where the layer draws that very solve, the item reads the rungs from the
+drawn entry instead and records nothing as unrecorded, so the register and the drawing
+read one solve one way: the result registers the drawing itself, and its registration
+receipt (`T-154`’s `selection.json`) names, at that count, a run whose receipt the
+entry’s run block records, with the entry’s output and exact side.
+At fourteen counts `T-154`’s certificate is the full run’s view the layer draws, which
+ran no retry, so its item reads *unmodified* or names the same-side re-solve alone.
+At 87 the layer draws a later run’s view at the same side, which says nothing of the
+solve `T-154` registered, so its item still says the rungs are not recorded.
 
 ## 8. Gates
 

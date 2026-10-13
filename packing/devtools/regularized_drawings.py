@@ -68,7 +68,13 @@ own regularization (`by: project`, as T-154's 59 are) names them in its item too
 from its `method` and `side` the same way (`registered_modifications`) and written in
 place after its `method`; an item records no solve, so where his regularizer made the view
 it also says that whether the solve climbed a retry rung is not recorded
-(`modifications_unrecorded`), rather than reading as unmodified.
+(`modifications_unrecorded`), rather than reading as unmodified. Where the layer draws
+that very solve, the item reads its rungs from the drawn entry instead, as the drawing
+does (`recorded_solves`): the result registers the drawing itself, and its registration
+receipt names, at the count, a run whose receipt the entry's run block records, the
+entry's output and its exact side. T-154's certificates are the full run's views at
+fourteen drawn counts, which the index records; at 87 the layer draws a later run's
+view at the same side, which records nothing of T-154's solve.
 
 **The case records.** Each case record whose count the layer draws, whose count a
 registered result holds this project's own regularization of (as T-154's 59 are), or
@@ -172,13 +178,21 @@ RUNG_WORDS = {
 }
 SILENT_RUNGS = frozenset({"stall-stop"})
 #: What a registered result's item cannot establish of the modifications: it records no
-#: solve, so whether the solve that made the view climbed a retry rung.
+#: solve, so whether the solve that made the view climbed a retry rung, unless the layer
+#: draws that very solve (`recorded_solves`).
 UNRECORDED_RUNGS = "retry rungs"
 #: A registered regularization's field naming the earlier registered result whose
 #: certificate first stated its exact side (`results.schema.yaml`): there the item
 #: registers that side exactly and proves no new bound, as T-154's do at the 33 counts
 #: where its side is that of Evan Daniel's certificate (T-101).
 FIRST_CERTIFIED = "first_certified_in"
+#: The format of the receipt a registration of regularized views keeps among its
+#: result's artifacts, naming the run and output each certificate came from
+#: (`devtools.register_regularized_bounds`, `FORMAT`).
+REGISTRATION_RECEIPT = "regularized-bounds-receipt-v1"
+#: The cost fields a run's index block keeps as its receipt recorded them, which
+#: `regularize_evand reclassify` leaves as they were.
+RECEIPT_COST = ("cpu_seconds", "wall_seconds", "workers")
 #: The patches a vendored view's `method` names after the pin, `@675a5ea+name`.
 _METHOD_PATCHES = re.compile(r"evand/square-packing@[0-9a-f]+((?:\+[^,+\s]+)*)")
 #: What a drawing is when no result registers it (the owner, 13 October 2026: "Pure
@@ -453,6 +467,7 @@ def registered_modifications(
     record: Mapping[str, Any],
     generators: Mapping[str, Any],
     kinds: Mapping[str, str] | None = None,
+    solve: Mapping[str, Any] | None = None,
 ) -> tuple[list[str] | None, list[str]]:
     """This project's modifications to Evan Daniel's regularizer that made a registered
     result's own regularization (`by: project`), as far as its item establishes them, read
@@ -460,7 +475,11 @@ def registered_modifications(
     same-side re-solve of a view at the witness's side; for a grid-slack view the port and
     its re-solve. Then what the item cannot establish: it records no solve, so where his
     regularizer made the view, whether the solve climbed a retry rung (`UNRECORDED_RUNGS`).
-    None, with nothing unrecorded: the axis tool's, which is not his regularizer."""
+    None, with nothing unrecorded: the axis tool's, which is not his regularizer.
+
+    `solve` is the layer's index entry that draws the very solve the item registered,
+    where one does (`recorded_solves`): the entry records that solve's rungs, so the item
+    reads them from it, as the drawing does, and nothing is left unrecorded."""
     method = str(record["method"])
     generator = method_generator(method, generators)
     kind = generator_kind(generator)
@@ -469,10 +488,95 @@ def registered_modifications(
         return None, []
     if kind == "grid":
         return grid_modifications(generator, same=same), []
+    if solve is not None:
+        return project_modifications(solve, kinds), []
     found = patch_words(method, kinds)
     if same:
         found.append(SAME_SIDE_RESOLVE)
     return found, [UNRECORDED_RUNGS]
+
+
+def registration_receipt(
+    result: Mapping[str, Any], repo: Path = REPO
+) -> tuple[dict[int, Mapping[str, Any]], dict[str, Mapping[str, Any]]]:
+    """The receipt among a result's `artifacts` that names the run and output each of its
+    registered certificates came from (`REGISTRATION_RECEIPT`, T-154's `selection.json`):
+    its rows by count and its runs by name; both empty where the result keeps none."""
+    for artifact in result.get("artifacts") or []:
+        path = repo / str(artifact)
+        if path.suffix != ".json" or not path.is_file():
+            continue
+        document = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(document, dict) or document.get("format") != REGISTRATION_RECEIPT:
+            continue
+        rows = {int(row["n"]): row for row in document.get("rows") or []}
+        runs = {str(run["run"]): run for run in document.get("runs") or []}
+        return rows, runs
+    return {}, {}
+
+
+def same_receipt(block: Mapping[str, Any], run: Mapping[str, Any]) -> bool:
+    """Whether a run block of the layer's index records the receipt of a registration
+    receipt's run: the same generator, the same parameters and the same cost, each as the
+    run's own receipt recorded it. `regularize_evand reclassify` leaves a run's
+    parameters and cost as they were, so a copy of the run decided again answers too: its
+    views are that run's solves."""
+    parameters = block.get("parameters") or {}
+    theirs = run.get("parameters") or {}
+    cost = block.get("cost") or {}
+    spent = run.get("cost") or {}
+    return (
+        str(block.get("generator")) == str((run.get("generator") or {}).get("name"))
+        and bool(parameters)
+        and all(key in theirs and theirs[key] == value for key, value in parameters.items())
+        and all(key in cost and cost[key] == spent.get(key) for key in RECEIPT_COST)
+    )
+
+
+def recorded_solves(
+    drawn: Sequence[Drawn],
+    results: Sequence[Mapping[str, Any]],
+    runs: Sequence[Mapping[str, Any]],
+    repo: Path = REPO,
+) -> dict[tuple[str, int], Mapping[str, Any]]:
+    """The registered regularizations whose very solve the layer draws, by (result, count),
+    each with the index entry that draws it. A drawn entry draws the solve a result
+    registered where the result registers the drawing itself (`registered_record`), and
+    the result's registration receipt names, at that count, a run whose receipt the
+    entry's run block records (`same_receipt`), the entry's output and the entry's exact
+    side. T-154's certificates are the full run's views at fourteen drawn counts, and the
+    index records those solves; at 87 the layer draws a later run's view at the same side,
+    which says nothing of the solve T-154 registered."""
+    blocks = {str(block["id"]): block for block in runs}
+    receipts: dict[str, tuple[dict[int, Mapping[str, Any]], dict[str, Mapping[str, Any]]]] = {}
+    found: dict[tuple[str, int], Mapping[str, Any]] = {}
+    by_id = {str(result["id"]): result for result in results}
+    for count in drawn:
+        registered = registered_record(count, results)
+        if registered is None:
+            continue
+        rid = registered[0]
+        if rid not in receipts:
+            receipts[rid] = registration_receipt(by_id[rid], repo)
+        rows, receipt_runs = receipts[rid]
+        entry = count.entry
+        n = int(entry["n"])
+        row = rows.get(n)
+        run = entry.get("run") or {}
+        view = (entry.get("side") or {}).get("view")
+        if row is None or view is None:
+            continue
+        block = blocks.get(str(run.get("id")))
+        receipt_run = receipt_runs.get(str(row.get("run")))
+        if (
+            block is not None
+            and receipt_run is not None
+            and same_receipt(block, receipt_run)
+            and str(run.get("output")) == str(row.get("output"))
+            and Fraction(str(view)) == Fraction(str(row.get("side")))
+        ):
+            found[(rid, n)] = entry
+    return found
 
 
 def registered_lines(found: list[str] | None, unrecorded: Sequence[str]) -> list[str]:
@@ -493,14 +597,23 @@ _MODIFICATION_LINE = re.compile(r"^        modifications(?:_unrecorded)?: ")
 
 
 def with_registered_modifications(
-    text: str, results: Sequence[Mapping[str, Any]], generators: Mapping[str, Any]
+    text: str,
+    results: Sequence[Mapping[str, Any]],
+    generators: Mapping[str, Any],
+    solves: Mapping[tuple[str, int], Mapping[str, Any]] | None = None,
 ) -> str:
     """`results.yaml`'s hand-written register with each result's `by: project`
-    regularization carrying the `modifications` its `method` and `side` give, written
+    regularization carrying the `modifications` its `method` and `side` give, or the
+    drawn entry of its very solve where the layer draws it (`recorded_solves`), written
     after its `method`; every other line left as it was."""
+    solves = solves or {}
     wanted = {
         (str(result["id"]), int(record["n"])): registered_lines(
-            *registered_modifications(record, generators)
+            *registered_modifications(
+                record,
+                generators,
+                solve=solves.get((str(result["id"]), int(record["n"]))),
+            )
         )
         for result in results
         for record in result.get("regularizations") or []
@@ -1063,7 +1176,9 @@ def problems(
     drawn = drawn_counts(document)
     items, unregistered = expected(document, drawn=drawn)
     wanted = block_text(items, unregistered)
-    found_problems = registered_problems(head, document.get("generators") or {})
+    results = (safe_load(head) or {}).get("results") or []
+    solves = recorded_solves(drawn, results, document.get("runs") or [])
+    found_problems = registered_problems(head, document.get("generators") or {}, solves)
     found_problems += first_certified_problems(load_register())
     found_problems += case_problems(document, case_fields(document, drawn=drawn))
     if block == wanted:
@@ -1082,11 +1197,17 @@ def problems(
     ]
 
 
-def registered_problems(head: str, generators: Mapping[str, Any]) -> list[str]:
+def registered_problems(
+    head: str,
+    generators: Mapping[str, Any],
+    solves: Mapping[tuple[str, int], Mapping[str, Any]] | None = None,
+) -> list[str]:
     """Whether each registered result's own regularization (`by: project`) carries the
-    `modifications` its `method` and `side` give (`registered_modifications`)."""
+    `modifications` its `method` and `side` give, or the drawn entry of its very solve
+    where the layer draws it (`registered_modifications`, `recorded_solves`)."""
     results = (safe_load(head) or {}).get("results") or []
-    if with_registered_modifications(head, results, generators) == head:
+    solves = solves or {}
+    if with_registered_modifications(head, results, generators, solves) == head:
         return []
     owed = sorted(
         {
@@ -1095,7 +1216,11 @@ def registered_problems(head: str, generators: Mapping[str, Any]) -> list[str]:
             for record in result.get("regularizations") or []
             if record["by"] == PROJECT_REGULARIZER
             and (record.get("modifications"), record.get("modifications_unrecorded") or [])
-            != registered_modifications(record, generators)
+            != registered_modifications(
+                record,
+                generators,
+                solve=solves.get((str(result["id"]), int(record["n"]))),
+            )
         }
     )
     return [
@@ -1163,10 +1288,14 @@ def update() -> tuple[int, int, int]:
     text = RESULTS.read_text(encoding="utf-8")
     head, _block = split(text)
     document = index_document()
-    head = with_registered_modifications(
-        head, (safe_load(head) or {}).get("results") or [], document.get("generators") or {}
-    )
     drawn = drawn_counts(document)
+    results = (safe_load(head) or {}).get("results") or []
+    head = with_registered_modifications(
+        head,
+        results,
+        document.get("generators") or {},
+        recorded_solves(drawn, results, document.get("runs") or []),
+    )
     items, unregistered = expected(document, drawn=drawn)
     with atomic_output_file(RESULTS) as temporary:
         temporary.write_text(
