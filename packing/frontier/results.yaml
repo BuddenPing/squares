@@ -17346,7 +17346,8 @@ results:
           interval arithmetic, at 653b9589d. It ran no checker of the edition, replayed no
           tree or capture sweep, did not re-derive the seventeen finite rounds, and did
           not read the 84 selected clauses, the written frame, KEY_W, C7/C8 and
-          wall-partition premises, verify_classes_wb.js or exact_restricted.py.
+          wall-partition premises, the coarse regions' dimensions, verify_classes_wb.js
+          or exact_restricted.py.
         verdict: accepted
         covers: [T-153]
     artifacts:
@@ -17362,7 +17363,7 @@ results:
       - docs/project/reviews/review-2026-10-12-kleddamag-n17-candidate.md
     next_rung: >-
       V3 and C3 need every load-bearing part replayed in full, here or by a third party
-      whose replay is retained here, the review's section 5:
+      whose replay is retained here, the first review's section 5:
       the author's check.py to PASS, done on 12 October; all 98 capture statements, every
       row, with at least one of the producer's two capture checkers, compared row for row
       with the stored receipts; all 13 trees with at least one frozen checker and
@@ -17423,7 +17424,7 @@ results:
     notes: >-
       Registered on 12 October 2026 by the fast path the owner asked for, as T-060 was on 29
       September: at S5 before the complete replays, with the verified lanes unchanged. The
-      mathematical review was written before lane K3's receipts and proposed V0/C1; those
+      first review was written before lane K3's receipts and proposed V0/C1; those
       receipts move no rung, as the composition says, since each replays a part of the
       producer's computation and not all of it, and the case record and not this entry cites
       them. V0 is declared, with this note as the ladder
@@ -17434,11 +17435,14 @@ results:
       claim, at the rungs its evidence earns, and that its verified status stays open until
       the complete replay passes.
 
-      The review lists ten non-blocking defects, among them the ROOT_ADMISSION geometry,
-      written only in the proof text and a script comment (KNOWN_ISSUES.md item 1), two
-      routes with different constants for the same step of G20S_PHYSICAL, and file
+      The first review lists ten non-blocking defects, among them the ROOT_ADMISSION
+      geometry, written only in the proof text and a script comment (KNOWN_ISSUES.md item
+      1), two routes with different constants for the same step of G20S_PHYSICAL, and file
       bindings outside the proof packet; its eleven questions for the author are in its
-      section 8.
+      section 8. The second lists nine, none blocking, the largest that nothing in the
+      edition rebuilt the normalized model's rows independently of the producer's code,
+      and six questions, the fifth withdrawn by its status addendum of 13 October; its
+      programs and their output are in the packet's review-2/.
 
       T-093 (R071) keeps the case's verified lower bound, 18641771/4000000; this entry holds
       the reported one. The edition carries this repository's exp-237 and exp-238
