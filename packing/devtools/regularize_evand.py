@@ -2373,6 +2373,12 @@ METHOD = (
 MEASURED_IN = "devtools.check_half_angle_area.arrangement_gap, in devtools.regularize_evand"
 
 
+WITNESS_SOURCE_KEYS = {"Kingbird derived numerical facts": "[Kingbird]"}
+"""Witness source labels that name a bibliography key in other words: a witness derived
+from the Kingbird catalogue (`sqpack.known_best`) is labelled so, and is the packing the
+case record credits to `[Kingbird]`."""
+
+
 def packing_credit(
     credit: Mapping[str, Any] | None, witness_key: str | None, relation: str | None
 ) -> dict[str, Any] | None:
@@ -2387,10 +2393,13 @@ def packing_credit(
     the record credits. At 182, 206, 241, 268 and 297 the record credits Evan Daniel's
     exact optimum (T-098) and the witness is Francisco Couzo's packing at his printed
     side (T-056), so a view at that side is credited to the witness's source, by the
-    record's finders, improved by no one (#548 review B1).
+    record's finders, improved by no one (#548 review B1). A witness labelled from the
+    Kingbird catalogue names `[Kingbird]` (`WITNESS_SOURCE_KEYS`), and at 29, 54 and 87 is
+    the packing the record credits with its improvers.
     """
     if credit is None:
         return None
+    witness_key = WITNESS_SOURCE_KEYS.get(witness_key or "", witness_key)
     reported = {
         "source_key": credit.get("source_key"),
         "found_by": list(credit.get("found_by") or []),

@@ -1144,6 +1144,16 @@ def test_a_view_is_credited_to_the_packing_it_redraws() -> None:
     assert (
         drive.packing_credit(kingbird, "Kingbird derived numerical facts", "same") == kingbird
     )
+    # A Kingbird-derived witness is the packing the record credits, improvers and all (29,
+    # 54 and 87): its label names `[Kingbird]`.
+    improved = {
+        "source_key": "[Kingbird]",
+        "found_by": ["Thomas Schadt"],
+        "improved_by": ["David Ellsworth"],
+    }
+    assert (
+        drive.packing_credit(improved, "Kingbird derived numerical facts", "same") == improved
+    )
     assert drive.packing_credit(None, couzo, "same") is None
 
 
