@@ -617,6 +617,7 @@ case or experiment separately.
 | Document or collection | Role | Authority | Lifecycle | Current replacement |
 | --- | --- | --- | --- | --- |
 | [Adversarial Review: Fitzharding’s Lean Proof That `s(17) = L`](docs/project/reviews/review-2026-10-13-fitzharding-n17-lean.md) | dated review record | record | retained | — |
+| [Review: Verification Gaps in the Drawn Packings and the Upper-Bound Register](docs/project/reviews/review-2026-10-13-verification-gaps.md) | dated review record | record | retained | — |
 | [Overbeck’s Candidate Proof of s(17) = L: Second Adversarial Review](docs/project/reviews/review-2026-10-13-overbeck-n17-candidate-second.md) | dated review record | record | retained | — |
 | [Mathematical Review: Kleddamag’s Candidate Proof That `s(17) = L`](docs/project/reviews/review-2026-10-12-kleddamag-n17-candidate.md) | dated review record | record | retained | — |
 | [Owner Decisions of 13 October: s(11) Retired, s(17) Suspended, Duplicates Closed](docs/project/reviews/review-2026-10-13-owner-decisions.md) | dated review record | record | retained | — |
@@ -651,6 +652,7 @@ case or experiment separately.
 | [PR410 Integration Review for the n17 Continuation](docs/project/reviews/review-2026-10-07-n17-pr410-integration.md) | dated review record | record | retained | — |
 | [Session186 storage disposition](docs/project/reviews/review-2026-10-07-n17-session-186-storage.md) | dated review record | record | retained | — |
 | [n17 Shared-Centre LP Readiness](docs/project/research/research-2026-10-07-n17-shared-centre-lp-readiness.md) | research synthesis | supporting | retained | — |
+| [Assessment: Evan Daniel’s regularization process, and adapting it to every packing n = 1..324](docs/project/research/research-2026-10-11-evand-regularization-assessment.md) | research synthesis | supporting | retained | — |
 | [Saved-pose incircle discriminator](packing/campaign/series/series-000-smoke-and-calibration/results/exp-312-saved-pose-incircles/README.md) | typed session record | record | retained | — |
 | [n17 Owned-Core Guarded Clauses](docs/project/research/research-2026-10-07-n17-owned-core-guarded-clauses.md) | research synthesis | record | retained | — |
 | [n17 Case-Preserving Owned-Domain Propagation](docs/project/research/research-2026-10-07-n17-case-preserving-owned-propagation.md) | research synthesis | record | retained | — |
@@ -1200,6 +1202,7 @@ case or experiment separately.
 | [Deterministic SVG Gallery](packing/atlas/rendering/README.md) | component scope and use | supporting | maintained | — |
 | [Conventions for `packing/`](conventions.md) | artifact and naming conventions | definitive | maintained | — |
 | [Epistemics](epistemics.md) | whole-result evidence classifications | definitive | maintained | — |
+| [Regularization Policy](docs/project/policies/regularization-policy.md) | component scope and use | definitive | maintained | — |
 | [Operating Rules](operating-rules.md) | how a session is conducted | definitive | maintained | — |
 | [Packing Development Guide](development.md) | engineering and validation rules | definitive | maintained | — |
 | [The `s(n)` Research Campaign: W6 Runbook](packing/campaign/README.md) | W6 experiment mechanics | definitive | maintained | — |
@@ -7157,12 +7160,12 @@ table above.
 
 Kept with the same discipline as the experiment record, because the aggregate says
 things no individual bug report can.
-The log contains 520 defects, [one line each](defects.md), generated from `defects.yaml`
+The log contains 521 defects, [one line each](defects.md), generated from `defects.yaml`
 and checked in the gate.
 
 | Class | Count | The system … |
 | --- | ---: | --- |
-| soundness | 108 | asserted something false about the mathematics |
+| soundness | 109 | asserted something false about the mathematics |
 | validity | 128 | was correct, but the measurement did not bear on the question |
 | bookkeeping | 195 | recorded something its own evidence contradicts |
 | robustness | 70 | did not finish, or finished only by luck |
@@ -7184,13 +7187,21 @@ is an observed workaround rather than a controlled speedup or validation of the 
 cost-aware allocation.
 That allocation remains unimplemented and needs measurement.
 
+[D-521](defects.md) is open: a numerical witness receipt records, as its minimum
+clearance and pair gap, a value within the check’s tolerance of the minimum rather than
+the minimum, so the receipts understate the violations they report.
+At $n = 10$ the receipt records 0 where an exact reading of the printed pose finds four
+overlaps;
+[the verification-gaps review](docs/project/reviews/review-2026-10-13-verification-gaps.md)
+found it, and `think-jtot` owns the fix.
+
 Two observations the log exists to make.
 
-**84 of the 108 soundness defects pointed in the *flattering* direction**, where the
+**85 of the 109 soundness defects pointed in the *flattering* direction**, where the
 error looks like a success.
 That is the dangerous class, and it is the majority of it.
 
-**The automated gate has caught eighty-two defects in 520, and no soundness defect
+**The automated gate has caught eighty-two defects in 521, and no soundness defect
 ever.** Every soundness failure was found by a control cell whose answer was known in
 advance, a rule written down before the measurement, a generated view contradicting its
 source, or someone reading carefully.
