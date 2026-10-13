@@ -72,7 +72,7 @@ properties:
             date:
               type: string
               pattern: '^\d{4}-\d{2}-\d{2}$'
-              description: First-live UTC date only when evidenced; distinct from merge date.
+              description: Evidenced UTC date when the complete announced artifact set became public; distinct from merge date. Omit when unknown.
             evidence:
               type: string
               pattern: '^https://'

@@ -108,7 +108,9 @@ Labels identify a current view when an old edition has no retained public addres
 label a moving latest-download URL as an archived edition.
 
 Optional `publication` records a verification-evidence URL and, when evidenced, its
-first-live UTC `date`. Keep it separate from the entry’s merge date.
+first-live UTC `date`. For an entry announcing several artifacts, this is the evidenced
+UTC date when the complete announced set became public; omit it if that date is unknown.
+Keep it separate from the entry’s merge date.
 A merged or prepared change is not automatically a launched component.
 Authoring/backfill checks public destinations and retains deployment or
 publication-history evidence before presenting an artifact as launched.
