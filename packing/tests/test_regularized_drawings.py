@@ -336,6 +336,106 @@ def test_a_drawing_whose_exact_side_is_registered_says_so() -> None:
         drawings.registering_result(count, lower)
 
 
+GENERATORS = {
+    drawings.EVAND_GENERATOR: {
+        "method": "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, "
+        "conservative",
+        "credit": "Regularized by the Squares Project with Evan Daniel's regularizer",
+    },
+    "regularize_grid_slack/0": {"method": "regularize_grid_slack/0: a port", "credit": "G"},
+    drawings.AXIS_GENERATOR: {"method": "regularize_axis_components/2"},
+}
+EVAND_METHOD = GENERATORS[drawings.EVAND_GENERATOR]["method"]
+REGISTER = """results:
+  - id: T-153
+    kind: upper-bound
+    regularizations:
+      - n: 7
+        of: T-001
+        by: project
+        method: "{method}"
+        side: same
+        identity:
+          basis: measured
+      - n: 8
+        of: T-001
+        by: project
+        method: "{method}"
+        modifications: ["stale"]
+        side: solved
+        identity:
+          basis: measured
+  - id: T-154
+    kind: upper-bound
+    regularizations:
+      - n: 9
+        of: T-001
+        by: "[A]"
+        method: fewest
+        side: solved
+        identity:
+          basis: source-claim
+"""
+
+
+def test_a_registered_regularization_names_what_its_item_establishes() -> None:
+    """A registered result's own regularization names this project's modifications as a
+    drawing's are read, from its method and side, and says the retry rungs are not
+    recorded, since an item records no solve; an unknown method is refused."""
+    same = {"method": EVAND_METHOD, "side": "same"}
+    assert drawings.registered_modifications(same, GENERATORS, {}) == (
+        [drawings.SAME_SIDE_RESOLVE],
+        [drawings.UNRECORDED_RUNGS],
+    )
+    solved = {"method": EVAND_METHOD, "side": "solved"}
+    assert drawings.registered_modifications(solved, GENERATORS, {}) == (
+        [],
+        [drawings.UNRECORDED_RUNGS],
+    )
+    patched = {
+        "method": EVAND_METHOD.replace("@675a5ea", "@675a5ea+probe-flat-stall-stop"),
+        "side": "solved",
+    }
+    assert drawings.registered_modifications(
+        patched, GENERATORS, {"probe-flat-stall-stop": "replica"}
+    ) == (["replica patch probe-flat-stall-stop"], [drawings.UNRECORDED_RUNGS])
+    grid = {"method": "regularize_grid_slack/0: a port", "side": "same"}
+    assert drawings.registered_modifications(grid, GENERATORS, {}) == (
+        drawings.grid_modifications("regularize_grid_slack/0", same=True),
+        [],
+    )
+    axis = {"method": "regularize_axis_components/2", "side": "same"}
+    assert drawings.registered_modifications(axis, GENERATORS, {}) == (None, [])
+    with pytest.raises(drawings.RegularizedDrawingsError, match="no generator"):
+        drawings.registered_modifications({"method": "x", "side": "same"}, GENERATORS)
+
+
+def test_registered_modifications_are_written_in_place_and_held() -> None:
+    """The register's `by: project` items gain their modifications after `method`, a stale
+    value is replaced, a source's item is left alone, and the check names the result."""
+    text = REGISTER.format(method=EVAND_METHOD)
+    results = safe_load(text)["results"]
+    written = drawings.with_registered_modifications(text, results, GENERATORS)
+    found = safe_load(written)["results"]
+    seven, eight = found[0]["regularizations"]
+    assert seven["modifications"] == [drawings.SAME_SIDE_RESOLVE]
+    assert seven["modifications_unrecorded"] == ["retry rungs"]
+    assert eight["modifications"] == []
+    assert "modifications" not in found[1]["regularizations"][0]
+    assert list(seven)[:6] == [
+        "n",
+        "of",
+        "by",
+        "method",
+        "modifications",
+        "modifications_unrecorded",
+    ]
+    assert drawings.with_registered_modifications(written, found, GENERATORS) == written
+    assert drawings.registered_problems(written, GENERATORS) == []
+    (problem,) = drawings.registered_problems(text, GENERATORS)
+    assert "['T-153']" in problem
+
+
 def test_the_case_field_is_written_in_place_and_removed_whole() -> None:
     text = "---\npacking:\n  n: 5\n  resources: []\n---\n# s(5)\n"
     field = {"note": "A drawing, not a result.", "items": [{"by": "project", "of": None}]}

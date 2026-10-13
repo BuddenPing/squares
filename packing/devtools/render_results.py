@@ -196,7 +196,11 @@ def regularizations(results: list[dict], sources: Mapping[str, Mapping[str, Any]
             f"packing keeps its finder{APOSTROPHE}s credit through it, and the regularizer "
             "is credited with the arrangement. That a regularization is still the same "
             f"packing is the source{APOSTROPHE}s claim unless it was measured here "
-            "([`epistemics.md`](../../epistemics.md#results-by-others))."
+            "([`epistemics.md`](../../epistemics.md#results-by-others)). Where this "
+            f"project{APOSTROPHE}s own regularization was made with Evan Daniel{APOSTROPHE}s "
+            f"regularizer, its line names this project{APOSTROPHE}s modifications to it as "
+            f"far as the item establishes them; an item records no solve, so whether the "
+            "solve climbed a retry rung is said to be not recorded."
         ),
         "",
     ]

@@ -17602,6 +17602,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         identity:
           basis: measured
@@ -17614,6 +17616,8 @@ results:
         of: T-009
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         identity:
           basis: measured
@@ -17626,6 +17630,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         changes: {re_angled: 3}
         identity:
@@ -17639,6 +17645,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         changes: {straightened: 5, re_angled: 2}
         identity:
@@ -17652,6 +17660,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         changes: {straightened: 2}
         identity:
@@ -17665,6 +17675,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         changes: {straightened: 2, re_angled: 4}
         identity:
@@ -17678,6 +17690,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         identity:
           basis: measured
@@ -17690,6 +17704,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         identity:
           basis: measured
@@ -17702,6 +17718,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         changes: {re_angled: 3}
         identity:
@@ -17715,6 +17733,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         changes: {straightened: 1}
         identity:
@@ -17728,6 +17748,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         changes: {straightened: 2}
         identity:
@@ -17741,6 +17763,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         identity:
           basis: measured
@@ -17753,6 +17777,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         changes: {straightened: 11, re_angled: 4}
         identity:
@@ -17766,6 +17792,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         identity:
           basis: measured
@@ -17778,6 +17806,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         identity:
           basis: measured
@@ -17790,6 +17820,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         identity:
           basis: measured
@@ -17802,6 +17834,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         identity:
           basis: measured
@@ -17814,6 +17848,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         identity:
           basis: measured
@@ -17826,6 +17862,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         changes: {re_angled: 2}
         identity:
@@ -17839,6 +17877,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         identity:
           basis: measured
@@ -17851,6 +17891,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         changes: {straightened: 1}
         identity:
@@ -17864,6 +17906,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         identity:
           basis: measured
@@ -17876,6 +17920,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         identity:
           basis: measured
@@ -17888,6 +17934,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         identity:
           basis: measured
@@ -17900,6 +17948,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         identity:
           basis: measured
@@ -17912,6 +17962,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         identity:
           basis: measured
@@ -17924,6 +17976,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         identity:
           basis: measured
@@ -17936,6 +17990,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         changes: {re_angled: 8}
         identity:
@@ -17949,6 +18005,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         identity:
           basis: measured
@@ -17961,6 +18019,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         identity:
           basis: measured
@@ -17973,6 +18033,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         identity:
           basis: measured
@@ -17985,6 +18047,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         identity:
           basis: measured
@@ -17997,6 +18061,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         changes: {straightened: 2, re_angled: 8}
         identity:
@@ -18010,6 +18076,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         identity:
           basis: measured
@@ -18022,6 +18090,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         identity:
           basis: measured
@@ -18034,6 +18104,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         identity:
           basis: measured
@@ -18046,6 +18118,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         changes: {straightened: 8}
         identity:
@@ -18059,6 +18133,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         identity:
           basis: measured
@@ -18068,6 +18144,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         changes: {straightened: 1}
         identity:
@@ -18081,6 +18159,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         identity:
           basis: measured
@@ -18093,6 +18173,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         identity:
           basis: measured
@@ -18105,6 +18187,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         identity:
           basis: measured
@@ -18117,6 +18201,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         identity:
           basis: measured
@@ -18129,6 +18215,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         identity:
           basis: measured
@@ -18141,6 +18229,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         identity:
           basis: measured
@@ -18153,6 +18243,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         identity:
           basis: measured
@@ -18165,6 +18257,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         identity:
           basis: measured
@@ -18177,6 +18271,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         changes: {straightened: 12, re_angled: 3}
         identity:
@@ -18190,6 +18286,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         identity:
           basis: measured
@@ -18202,6 +18300,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         identity:
           basis: measured
@@ -18214,6 +18314,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         identity:
           basis: measured
@@ -18226,6 +18328,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         identity:
           basis: measured
@@ -18238,6 +18342,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         identity:
           basis: measured
@@ -18250,6 +18356,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         identity:
           basis: measured
@@ -18262,6 +18370,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         identity:
           basis: measured
@@ -18274,6 +18384,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         identity:
           basis: measured
@@ -18286,6 +18398,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         identity:
           basis: measured
@@ -18298,6 +18412,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: []
+        modifications_unrecorded: ["retry rungs"]
         side: solved
         identity:
           basis: measured
@@ -18307,6 +18423,8 @@ results:
         of: T-101
         by: project
         method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
+        modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+        modifications_unrecorded: ["retry rungs"]
         side: same
         changes: {straightened: 1}
         identity:

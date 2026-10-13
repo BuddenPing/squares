@@ -287,7 +287,14 @@ ladder from `run.retried_with`, and the patches from `method`. A view admitted a
 ladder and before `run.rungs` existed has its rungs recorded from its run’s reports by
 `python -m devtools.regularize_evand rungs`, which writes them only where a report
 reproduces the drawn view byte for byte, never over rungs or a retry already recorded,
-and names the run that supplied them as `run.rungs_from`.
+and names the run that supplied them as `run.rungs_from`. A registered result’s own
+regularization (`by: project` in its `regularizations`, as `T-154`’s 59 are) names them
+too, written by the same tool from the item’s `method` and `side`: the patches and the
+same-side re-solve.
+An item records no solve, and `T-154`’s selection kept none while its
+runs’ reports are not retained, so its items say in `modifications_unrecorded` that
+whether the solve climbed a retry rung is not recorded, rather than reading as
+*unmodified*.
 
 ## 8. Gates
 
