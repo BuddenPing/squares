@@ -633,6 +633,26 @@ def trailing_ceilings(loaded_cases: dict[int, dict]) -> dict[int, tuple[Decimal,
     return trailing
 
 
+def test_no_verified_ceiling_lies_above_the_next_counts() -> None:
+    """`s(n) <= s(n + 1)`, since deleting a square from a packing leaves a packing in the
+    same square, so a ceiling above the next count's is weaker than the record already
+    proves. From 12 October 2026, when T-154 certified n = 291 at the side T-155 later
+    registered, n = 290's ceiling lay 2.4e-15 above n = 291's until T-155 moved it (PR
+    #587, review B1). A count whose ceiling the next one implies is registered by
+    monotonicity, as T-002 and T-155 are, and this test finds the next such gap."""
+    loaded = cases()
+    ceilings = {
+        n: apply_exact_ceilings.bound_value(case["verified_upper_bound"])
+        for n, case in loaded.items()
+    }
+    above = [
+        (n, float(ceilings[n] - ceilings[n + 1]))
+        for n in sorted(ceilings)
+        if n + 1 in ceilings and ceilings[n] > ceilings[n + 1]
+    ]
+    assert above == []
+
+
 def test_a_third_of_the_corpus_certifies_a_weaker_bound_than_it_reports() -> None:
     loaded_cases = cases()
     trailing = trailing_ceilings(loaded_cases)
