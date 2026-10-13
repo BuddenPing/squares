@@ -3822,8 +3822,9 @@ sources:
     12 October 2026 the author's check.py passed here, 34 capture rows of 21 statements and
     three of the 13 trees were reproduced with the producer's code, 34 rows of six statements
     were decided again by a checker written here from the proof text, and the root was
-    isolated independently; the complete capture recomputation (about 2,347 CPU-hours) and ten
-    trees were not run. T-153 records the claim, read by the review of 12 October
+    isolated independently; the complete capture recomputation (about 1,273 CPU-hours with the
+    Python checker, the one C3 needs, and 2,347 with both checkers) and ten trees were not
+    run. T-153 records the claim, read by the review of 12 October
     (docs/project/reviews/review-2026-10-12-kleddamag-n17-candidate.md); it carries the case's
     reported lower bound, and the verified lanes and the case status are unchanged.
 selected_overrides:

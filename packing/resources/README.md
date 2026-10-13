@@ -1228,9 +1228,9 @@ the certified endpoint the case already holds.
 Here the author’s `check.py` passed, 34 capture rows and three of the 13 tree
 certificates were reproduced with the producer’s code, 34 rows were decided again by a
 checker written here from the proof text, and the root was isolated independently, all
-agreeing with the source; the complete capture recomputation, about 2,347 CPU-hours, and
-ten trees were not run.
-T-153 records the claim, with the
+agreeing with the source; the complete capture recomputation (about 1,273 CPU-hours with
+the Python checker, the one C3 needs, and 2,347 with both checkers) and ten trees were
+not run. T-153 records the claim, with the
 [review of 12 October](../../docs/project/reviews/review-2026-10-12-kleddamag-n17-candidate.md)
 on file; the case’s verified bounds are unchanged.
 The source says Codex (OpenAI) and Claude (Anthropic) produced the mathematics, engines,
