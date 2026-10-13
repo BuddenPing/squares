@@ -124,6 +124,12 @@ DECLARED_CONSUMERS = {
         "witness's own side is not a frame, and records the view's side minus U in its index "
         "entry; U is the ceiling the view's side is held to, never s(n)"
     ),
+    "packing/devtools/regularize_select.py": (
+        "the selection among finished regularization runs reads each case's verified bound "
+        "as U through the driver: a view whose exact side is above it is not drawn, one "
+        "below it is listed as a register candidate (policy row 3) and never drawn; U is "
+        "the ceiling a view's side is held to, never s(n) or the witness's side"
+    ),
     "packing/devtools/regularized_drawings.py": (
         "the regularized-drawings record reads a count's verified bound to test whether a "
         "drawn view's exact side is at it and, only where it is, to find the registered result "

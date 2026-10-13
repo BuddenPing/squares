@@ -934,6 +934,10 @@ PRUNE |= REGULARIZED_WITNESSES | HISTORICAL_SNAPSHOT_OUTPUTS | UNREAD_WORKER_OUT
 # where this checkout measured 17,453 bytes under it; the vendored regularizer's pin check
 # and its tests join the list (`--audit-snapshot`: no registered mention, no rescue,
 # 46,656 bytes), since the pin is checked by its validation step and no control runs it.
+# 2026-10-13: the selection tool that chooses among finished runs by the owner's rule of
+# that day, and its tests, join them on the same grounds (`--audit-snapshot` with the two
+# as candidates: no registered mention, no rescue; 42,891 bytes left out, the snapshot
+# 212,445,002 bytes, 14,047,414 under the cap).
 REGULARIZATION_TOOLS = frozenset(
     ROOT / relative
     for relative in (
@@ -958,6 +962,8 @@ REGULARIZATION_TOOLS = frozenset(
         "tests/test_regularized_drawings.py",
         "devtools/check_vendored_evand.py",
         "tests/test_check_vendored_evand.py",
+        "devtools/regularize_select.py",
+        "tests/test_regularize_select.py",
     )
 )
 PRUNE |= REGULARIZATION_TOOLS
