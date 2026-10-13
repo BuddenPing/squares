@@ -1,7 +1,7 @@
 ---
 title: n17 Three-Block Session Plan
 date: '2026-10-10'
-status: future
+status: suspended
 ---
 # n17 Three-Block Session Plan
 
