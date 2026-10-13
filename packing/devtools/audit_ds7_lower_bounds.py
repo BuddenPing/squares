@@ -460,11 +460,6 @@ def report_without_parser_identity(case: Mapping[str, Any], lane: str) -> bool:
     )
 
 
-def n11_report_without_parser_identity(case: Mapping[str, Any], lane: str) -> bool:
-    """The n = 11 claim of `report_without_parser_identity`, the first of them."""
-    return case["n"] == 11 and report_without_parser_identity(case, lane)
-
-
 def n11_verified_root_comparison(
     case: Mapping[str, Any], candidate: sp.Expr
 ) -> dict[str, Any] | None:

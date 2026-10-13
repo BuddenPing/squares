@@ -89,10 +89,10 @@ def test_table82_contradiction_is_excluded_without_rewriting_the_theorem() -> No
         (17, "18641771/4000000", "s(17) > 18641771/4000000", "4.66044275"),
     ],
 )
-def test_indexed_external17_report_never_exceeds_the_verified_lane(
+def test_indexed_external17_report_holds_the_verified_lane_at_the_selectors_fixed_point(
     n: int, verified_exact: str, note_fragment: str, verified_value: str
 ) -> None:
-    """The strongest indexed external n17 report, and what it may and may not move.
+    """The strongest indexed external n17 lower-bound report, and what it may and may not move.
 
     It was anabologyco-maker's 9141/2000, below the verified lane at both sizes.
     Since 2026-09-20 Guzhou0806's historical R012 has supplied the n = 18 report. At
@@ -103,43 +103,31 @@ def test_indexed_external17_report_never_exceeds_the_verified_lane(
     Kleddamag's charge, from 2026-09-29, and then R071 18641771/4000000 on R068's charge
     unchanged (T-093), reported from 2026-10-05 above the verified lane until its paired
     replay passed here the same day, when the two fields came to hold the same value.
-    Since 2026-10-12 the reported field holds Overbeck's candidate equality s(17) = L
-    (T-153), the root of the H-255 chart, outside this audit's exact grammar, and the
-    verified field keeps R071. At n = 18 R012 held the report below a stronger
-    first-party rung until wand125's rectangle report replaced it; see the next test.
-    Either way the audit's own selector must be at a fixed point: the reported lane is
-    raised only by a report that exceeds it, and never past what the verified lane
-    already carries.
+    The verified field keeps R071. Since 2026-10-12 the reported field holds Overbeck's
+    candidate equality instead (T-153), which
+    `test_n17_reported_candidate_equality_is_not_misparsed_or_ranked` covers. At n = 18
+    R012 held the report below a stronger first-party rung until wand125's rectangle
+    report replaced it; see the next test. Either way the audit's own selector must be
+    at a fixed point: with R071 in the reported lane, as it was until T-153, no DS7
+    candidate exceeds it, so the selector raises nothing.
     """
     case = ds7.read_case(REPO, None, n)
-    reported = case["reported_lower_bound"]
-    assert reported["exact_form"] is None
-    assert reported["source_key"] == "[Overbeck n17 candidate 2026]"
-    assert "candidate proof, not an established theorem" in reported["note"]
-    assert note_fragment in reported["note"]
-    assert ds7.report_without_parser_identity(case, "reported_lower_bound")
-    assert not ds7.n11_report_without_parser_identity(case, "reported_lower_bound")
-    assert case["verified_lower_bound"]["value"] == verified_value
-    assert case["verified_lower_bound"]["exact_form"] == verified_exact
-    verified, _ = ds7.field_expression(case, "verified_lower_bound")
-    assert ds7.compare(verified, sp.Rational(reported["value"]))["sign"] < 0
-    assert ds7.select_update(case) is None
+    verified = case["verified_lower_bound"]
+    assert verified["value"] == verified_value
+    assert verified["exact_form"] == verified_exact
+    assert "E-n017-guzhou-r071-source-replay" in verified["evidence"]
+    assert note_fragment in case["reported_lower_bound"]["note"]
+    verified_expression, _ = ds7.field_expression(case, "verified_lower_bound")
+    assert ds7.compare(verified_expression, ds7.exact_parse(verified_exact))["sign"] == 0
+    as_reported = deepcopy(case)
+    as_reported["reported_status"] = "open"
+    as_reported["reported_lower_bound"] = deepcopy(verified)
+    reported_expression, _ = ds7.field_expression(as_reported, "reported_lower_bound")
+    assert ds7.compare(reported_expression, verified_expression)["sign"] == 0
+    assert not ds7.report_without_parser_identity(as_reported, "reported_lower_bound")
+    assert ds7.select_update(as_reported) is None
     comparison = next(row for row in ds7.audit(REPO, None, None, n)["rows"] if row["n"] == n)
-    assert comparison["reported_lower_bound"]["comparison"]["sign"] is None
     assert comparison["verified_lower_bound"]["current_exact"] == verified_exact
-    for key, value in (
-        ("value", "4.67"),
-        ("source_key", "[another source]"),
-        ("evidence", []),
-    ):
-        near_miss = deepcopy(case)
-        near_miss["reported_lower_bound"][key] = value
-        assert not ds7.report_without_parser_identity(near_miss, "reported_lower_bound")
-        with pytest.raises(ValueError, match="lacks a usable exact identity"):
-            ds7.field_expression(near_miss, "reported_lower_bound")
-    unproved = deepcopy(case)
-    unproved["reported_status"] = "open"
-    assert not ds7.report_without_parser_identity(unproved, "reported_lower_bound")
 
 
 def test_a_stronger_non_ds7_report_at_n18_is_left_in_place() -> None:
@@ -162,7 +150,7 @@ def test_n11_reported_algebraic_identity_is_not_misparsed_or_ranked() -> None:
     reported = case["reported_lower_bound"]
     assert reported["exact_form"] is None
     assert "T=(6u+4)/(1+2u-u^2)" in reported["note"]
-    assert ds7.n11_report_without_parser_identity(case, "reported_lower_bound")
+    assert ds7.report_without_parser_identity(case, "reported_lower_bound")
     assert ds7.select_update(case) is None
     comparison = next(row for row in ds7.audit(REPO, None, None, 11)["rows"] if row["n"] == 11)
     assert comparison["reported_lower_bound"]["comparison"]["sign"] is None
@@ -173,7 +161,7 @@ def test_n11_reported_algebraic_identity_is_not_misparsed_or_ranked() -> None:
     )
     assert comparison["verified_lower_bound"]["comparison"]["sign"] == -1
     assert "unique root" in comparison["verified_lower_bound"]["exact_identity_basis"]
-    assert not ds7.n11_report_without_parser_identity(case, "verified_lower_bound")
+    assert not ds7.report_without_parser_identity(case, "verified_lower_bound")
     for key, value in (
         ("value", "3.8"),
         ("source_key", "[another source]"),
@@ -181,21 +169,61 @@ def test_n11_reported_algebraic_identity_is_not_misparsed_or_ranked() -> None:
     ):
         near_miss = deepcopy(case)
         near_miss["reported_lower_bound"][key] = value
-        assert not ds7.n11_report_without_parser_identity(near_miss, "reported_lower_bound")
+        assert not ds7.report_without_parser_identity(near_miss, "reported_lower_bound")
         with pytest.raises(ValueError, match="lacks a usable exact identity"):
             ds7.field_expression(near_miss, "reported_lower_bound")
     unproved = deepcopy(case)
     unproved["reported_status"] = "open"
-    assert not ds7.n11_report_without_parser_identity(unproved, "reported_lower_bound")
+    assert not ds7.report_without_parser_identity(unproved, "reported_lower_bound")
     without_verified_identity = deepcopy(case)
     without_verified_identity["verified_lower_bound"]["exact_form"] = None
     with pytest.raises(ValueError, match="lacks a usable exact identity"):
         ds7.field_expression(without_verified_identity, "verified_lower_bound")
     malformed = deepcopy(case)
     malformed["reported_lower_bound"]["exact_form"] = "unknown"
-    assert not ds7.n11_report_without_parser_identity(malformed, "reported_lower_bound")
+    assert not ds7.report_without_parser_identity(malformed, "reported_lower_bound")
     with pytest.raises(ValueError, match="expression"):
         ds7.field_expression(malformed, "reported_lower_bound")
+
+
+def test_n17_reported_candidate_equality_is_not_misparsed_or_ranked() -> None:
+    """Overbeck's candidate equality s(17) = L (T-153) holds n = 17's reported lane.
+
+    L is the root of the H-255 chart, outside this audit's exact grammar, so the audit
+    recognises the claim only under its full pin -- displayed value, source key,
+    evidence and reported status -- and then neither parses nor ranks it. The claim lies
+    above the verified lane, which keeps R071 until a complete replay passes.
+    """
+    case = ds7.read_case(REPO, None, 17)
+    reported = case["reported_lower_bound"]
+    assert reported["exact_form"] is None
+    assert reported["source_key"] == "[Overbeck n17 candidate 2026]"
+    assert "candidate proof, not an established theorem" in reported["note"]
+    assert ds7.report_without_parser_identity(case, "reported_lower_bound")
+    assert not ds7.report_without_parser_identity(case, "verified_lower_bound")
+    assert ds7.select_update(case) is None
+    verified, _ = ds7.field_expression(case, "verified_lower_bound")
+    assert ds7.compare(verified, sp.Rational(reported["value"]))["sign"] < 0
+    comparison = next(row for row in ds7.audit(REPO, None, None, 17)["rows"] if row["n"] == 17)
+    assert comparison["reported_lower_bound"]["comparison"]["sign"] is None
+    assert comparison["reported_lower_bound"]["current_exact"] is None
+    assert (
+        comparison["verified_lower_bound"]["current_exact"]
+        == case["verified_lower_bound"]["exact_form"]
+    )
+    for key, value in (
+        ("value", "4.67"),
+        ("source_key", "[another source]"),
+        ("evidence", []),
+    ):
+        near_miss = deepcopy(case)
+        near_miss["reported_lower_bound"][key] = value
+        assert not ds7.report_without_parser_identity(near_miss, "reported_lower_bound")
+        with pytest.raises(ValueError, match="lacks a usable exact identity"):
+            ds7.field_expression(near_miss, "reported_lower_bound")
+    unproved = deepcopy(case)
+    unproved["reported_status"] = "open"
+    assert not ds7.report_without_parser_identity(unproved, "reported_lower_bound")
 
 
 def test_verified_n11_root_comparison_uses_the_polynomial_not_display_digits() -> None:
