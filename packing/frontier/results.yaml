@@ -3278,7 +3278,7 @@ results:
       branch and bound (devtools.verify_kleddamag_n11_native), which accepted all 12,028 rows
       with no stalled box.
 
-      Marc Leonard Overbeck,
+      Overbeck,
       [11-squares-certified-bound](https://github.com/Kleddamag/11-squares-certified-bound/tree/6a733f339395c3514f2ab63d8c4aa64cf63c0b5a),
       building on Squares Project (Joshua Levy): the release's ATTRIBUTION.md says the work
       builds on this project and that global-certificate.json was developed from T-026's
@@ -3369,7 +3369,7 @@ results:
       a Python and a JavaScript event-cell sweep, which agreed on all 509 histogram bins; they
       are one method.
 
-      Marc Leonard Overbeck,
+      Overbeck,
       [17-squares-certified-bound](https://github.com/Kleddamag/17-squares-certified-bound/tree/a499e2c739ce7853fa04c8bcdc85caf1c2b01b37),
       in the lineage the release names itself: Mira, Guzhou0806 / N17 project, and this
       repository's threshold-atom work. Its AUTHORS.md names Overbeck as Kleddamag and
@@ -3513,7 +3513,7 @@ results:
       Python and JavaScript BigInt checkers over every interval; they agree with each other
       and with all three published ledger pairs, and they are one event-cell method.
 
-      Marc Leonard Overbeck,
+      Overbeck,
       [17-squares-certified-bound](https://github.com/Kleddamag/17-squares-certified-bound/tree/13821ddfa24133a8d796648383464574404d5fa0/bounds/4.640020),
       building on Squares Project (Joshua Levy), Mira and Guzhou0806, as its ATTRIBUTION.md
       states. Its AUTHORS.md names Overbeck as Kleddamag and says the work was produced
@@ -3586,7 +3586,7 @@ results:
       BigInt checkers, which agree on every interval and with both published ledger pairs;
       they are one event-cell method.
 
-      Marc Leonard Overbeck,
+      Overbeck,
       [17-squares-certified-bound](https://github.com/Kleddamag/17-squares-certified-bound/tree/57519bb74085157cb7047ae94c599bce4a006430/bounds/4.66001),
       building on Squares Project (Joshua Levy), Mira and Guzhou0806, as its ATTRIBUTION.md
       states. Its AUTHORS.md names Overbeck as Kleddamag and says the work was produced
@@ -5846,7 +5846,7 @@ results:
       printed precision. No identity with the catalogue's degree-18 polynomial is proved, no
       new packing is claimed, and optimality is not claimed.
 
-      Marc Leonard Overbeck,
+      Overbeck,
       [Kleddamag/17-squares-certified-bound](https://github.com/Kleddamag/17-squares-certified-bound),
       for the rational witness of Bidwell's packing; its AUTHORS.md names Overbeck as
       Kleddamag and says the work was produced with AI agents under his direction.
@@ -17237,7 +17237,7 @@ results:
       H-255 chart, so L is the side of the certified endpoint that holds the case's verified
       upper bound.
 
-      Marc Leonard Overbeck,
+      Overbeck,
       [the-seventeenth-square-candidate](https://github.com/Kleddamag/the-seventeenth-square-candidate/tree/653b9589d0f8a152f01adc56b1d48ba53d49abc3),
       12 October 2026, building on Squares Project (Joshua Levy), Ahmed's 11SquaresOptimal,
       Mira, Guzhou0806's N17 project and Muhammad Maaz, as its CREDITS.md states. Its README
