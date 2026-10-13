@@ -26,7 +26,7 @@ second implementation agrees.
 ## The Short Version
 
 - **115** programs: **43** external and **72** first-party; **85** decide claims and **30** check premises.
-- **452** of **521** evidence entries name the programs that verified them: 238 reproduced with the producer’s code, 187 independently re-implemented, 17 re-implemented, sharing the producer’s components, 10 no relation: a proof, a derivation or a report.
+- **453** of **521** evidence entries name the programs that verified them: 238 reproduced with the producer’s code, 187 independently re-implemented, 17 re-implemented, sharing the producer’s components, 11 no relation: a proof, a derivation or a report.
 
 ## Programs
 
@@ -70,9 +70,9 @@ second implementation agrees.
 | [`V-squarepacker-indep-check-cpp`](#v-squarepacker-indep-check-cpp) | indep_check.cpp | squarepacker | external | decides | 4 | 2 |
 | [`V-schadt-n29-check-py`](#v-schadt-n29-check-py) | check.py | Schadt | external | decides | 1 | 0 |
 | [`V-anabologyco-n17-checker`](#v-anabologyco-n17-checker) | scripts/check_certificate.py and its event pipeline | anabologyco-maker | external | decides | 1 | 0 |
-| [`V-overbeck-n17-check-py`](#v-overbeck-n17-check-py) | check.py | Overbeck | external | decides | 1 | 0 |
-| [`V-overbeck-n17-capture-checkers`](#v-overbeck-n17-capture-checkers) | recompute_slice.py | Overbeck | external | decides | 1 | 0 |
-| [`V-overbeck-n17-tree-checkers`](#v-overbeck-n17-tree-checkers) | wxcheck_v30.py and wxcheck2_v30.js | Overbeck | external | decides | 1 | 0 |
+| [`V-overbeck-n17-check-py`](#v-overbeck-n17-check-py) | check.py | Overbeck | external | decides | 2 | 1 |
+| [`V-overbeck-n17-capture-checkers`](#v-overbeck-n17-capture-checkers) | recompute_slice.py | Overbeck | external | decides | 2 | 1 |
+| [`V-overbeck-n17-tree-checkers`](#v-overbeck-n17-tree-checkers) | wxcheck_v30.py and wxcheck2_v30.js | Overbeck | external | decides | 2 | 1 |
 | [`V-check-basic-bounds`](#v-check-basic-bounds) | devtools.check_basic_bounds | Squares Project (Levy) | first-party | decides | 3 | 14 |
 | [`V-optimal-moduli`](#v-optimal-moduli) | cases.small_n.optimal_moduli | Squares Project (Levy) | first-party | decides | 1 | 0 |
 | [`V-sqpack-verify`](#v-sqpack-verify) | sqpack.verify | Squares Project (Levy) | first-party | decides | 41 | 31 |
@@ -943,6 +943,7 @@ Decides the structural claim of a candidate n = 17 optimality edition: every fil
 
 | evidence | run | code | results |
 | --- | --- | --- | --- |
+| `E-n017-overbeck-optimality-candidate-report` | the source’s own run | no code | T-153 |
 | `E-n017-overbeck-candidate-check-py-replay` | replayed here | producer’s code | - |
 
 ### `V-overbeck-n17-capture-checkers`
@@ -957,6 +958,7 @@ Decides, for the rows it is given of one of the 98 capture statements of the can
 
 | evidence | run | code | results |
 | --- | --- | --- | --- |
+| `E-n017-overbeck-optimality-candidate-report` | the source’s own run | no code | T-153 |
 | `E-n017-overbeck-capture-sample-replay` | replayed here | producer’s code | - |
 
 ### `V-overbeck-n17-tree-checkers`
@@ -971,6 +973,7 @@ Decides a tree certificate of the candidate n = 17 proof against SPEC_v3.0.md in
 
 | evidence | run | code | results |
 | --- | --- | --- | --- |
+| `E-n017-overbeck-optimality-candidate-report` | the source’s own run | no code | T-153 |
 | `E-n017-overbeck-tree-sample-replay` | replayed here | producer’s code | - |
 
 ### `V-check-basic-bounds`

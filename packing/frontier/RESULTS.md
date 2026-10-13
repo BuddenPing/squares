@@ -902,7 +902,7 @@ The programs behind each result, by its cited evidence: who ran each check, how 
   - `E-couzo-506-certificate-report`, the source’s own run: no program held
   - `E-couzo-506-exact-feasibility`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
 - **T-153** — reviewed
-  - `E-n017-overbeck-optimality-candidate-report`, the source’s own run: no program held
+  - `E-n017-overbeck-optimality-candidate-report`, the source’s own run: `V-overbeck-n17-check-py`, `V-overbeck-n17-capture-checkers`, `V-overbeck-n17-tree-checkers` (external)
 
 ## Next actions
 

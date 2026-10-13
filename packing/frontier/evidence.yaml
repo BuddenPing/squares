@@ -31670,7 +31670,7 @@ evidence:
     novelty: previously-published
     source_key: '[Overbeck n17 candidate 2026]'
     replay_status: not-attempted
-    verifiers: []
+    verifiers: [V-overbeck-n17-check-py, V-overbeck-n17-capture-checkers, V-overbeck-n17-tree-checkers]
     external_review:
       state: informally-verified
       date: '2026-10-12'
