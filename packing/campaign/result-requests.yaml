@@ -5774,15 +5774,21 @@ issues:
     - what: >-
         The owner's priority of 12 October: validate fully, tabulate in the record as soon as
         possible, and confirm as far as possible. Still to run: the ten trees not yet
-        replayed (about 7.1 CPU-hours by the author's records, about 21 here), the complete
-        capture recomputation (about 1,273 CPU-hours with the Python checker, 2,347 with
-        both), a mutated-input control of each kind, and a second adversarial review that
-        reads the normalized 52-row gate of the rigidity step.
+        replayed (about 7.1 CPU-hours by the author's records, about 21 here; think-fgmr),
+        the complete capture recomputation (about 1,273 CPU-hours with the Python checker,
+        2,347 with both; think-0at1), a mutated-input control of each kind, and a second
+        adversarial review that reads the normalized 52-row gate of the rigidity step
+        (think-4j3n). On 13 October the owner held the ten-tree replay and the capture
+        recomputation; every remaining option, with its price, is a bead under think-lqtu.
       state: queued
-      bead: think-00y8
+      bead: think-lqtu
     beads:
     - think-00y8
     - think-r7m8
+    - think-lqtu
+    - think-fgmr
+    - think-0at1
+    - think-4j3n
     answer_bead: think-00y8
     replies: []
     close_when: >-
