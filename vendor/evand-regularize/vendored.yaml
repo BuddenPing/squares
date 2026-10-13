@@ -3,16 +3,17 @@
 # is for, the credit, the licence, how a fork is recorded and how to re-pin.
 #
 # Checked by `python -m devtools.check_vendored_evand` from packing/ (edit tier), which
-# also writes this file on a re-pin (`--write --checkout DIR`); edit `local_changes` by
-# hand, never the pinned digests.
+# also writes this file on a re-pin (`--write --checkout DIR --commit ID`); edit
+# `local_changes` by hand, never the pinned digests or modes.
 #
 # Why SHA-256 here (OR-16): these bytes cross a real trust boundary -- they were
 # downloaded from another party's repository. The expected value of each digest is the
-# upstream blob at `source_commit`, which anyone can re-derive from the upstream
-# repository without trusting this one. The failure it detects is an unrecorded edit,
-# removal or addition in the vendored copy (a silent fork) or a manifest left stale by a
-# re-pin. Nothing but that check reads these digests: no tool refuses to run the
-# generator, and no result is invalidated, on a mismatch.
+# upstream blob at `source_commit`. The offline check holds the copy to this file, so it
+# catches accidental edits only: an edit made here together with this file passes it.
+# `--upstream` holds this file to upstream, comparing Git blob ids and modes at the pin;
+# it needs the network and is run at a re-pin and whenever this file changes. Nothing
+# but these checks reads the digests: no tool refuses to run the generator, and no
+# result is invalidated, on a mismatch.
 
 format: vendored-source-v1
 source_url: https://github.com/evand/square-packing
@@ -372,7 +373,7 @@ files:
   - {path: search/exact/batch/inputs/n-98.txt, bytes: 1182, sha256: 3197057c9f55ec4d42597e1dd2c0e1e23b81fe557addf78f1b95641d5d6e3a93}
   - {path: search/exact/batch/inputs/n-99.txt, bytes: 1194, sha256: 76a0a6536b6554514344ec371f2d289e1451bda2c7d3d4de6c53360ad6f98be4}
   - {path: search/exact/batch/register.py, bytes: 5482, sha256: 281803bfa84e4b72bed5d78076cae5630b6f76eb515d79ba5027cea2373d776a}
-  - {path: search/exact/batch/reproduce.sh, bytes: 759, sha256: d3585702e89863aca15ac511b00ea6829614d5ff94b4455fec1d716c499be001}
+  - {path: search/exact/batch/reproduce.sh, bytes: 759, sha256: d3585702e89863aca15ac511b00ea6829614d5ff94b4455fec1d716c499be001, executable: true}
   - {path: search/exact/batch/results.json, bytes: 197992, sha256: 2c023881fb2edd518ea72d1d7c59f1beb4bf38c3489ce6d49706c2da283d914e}
   - {path: search/exact/exactsolve.py, bytes: 58726, sha256: 5814ad6f2ff4ae77ac95dd99cdd5e654f0f6ca25980b7e1a096ff7ff32536cdf}
   - {path: search/exact/geom.py, bytes: 4027, sha256: e2cd11d9578a8008d21f3117b90fc2a648fa5a718f4a68e37dc24c9f79e8a696}

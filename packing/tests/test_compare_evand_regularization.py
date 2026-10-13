@@ -224,9 +224,9 @@ def test_the_crosstab_defaults_to_the_vendored_lists(
     """With no `--best`, the upstream side is the vendored copy at its pin.
 
     Only the upstream tallies are asserted: they are a function of the vendored bytes,
-    which `devtools.check_vendored_evand` holds to their upstream digests, and they are
-    the figures the regularization assessment's appendix states. The project side moves
-    with the regularized layer and is not pinned here.
+    which `devtools.check_vendored_evand` holds to the manifest's upstream digests, and
+    they are the figures the regularization assessment's appendix states. The project
+    side moves with the regularized layer and is not pinned here.
     """
     assert compare.VENDORED_BEST.is_file()
     assert compare.main(["crosstab", "--json"]) == 0
