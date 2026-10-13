@@ -71,8 +71,9 @@ def test_a_case_page_prints_its_regularization_note_and_nothing_without_one() ->
     (`devtools.regularized_drawings`) as one labelled line: for a drawn count who
     regularized the drawing, with its source's regularization of the house after it where
     one exists; for a count the layer does not draw whose regularization a result
-    registers, the credit to the Squares Project and the result; and nothing at all for a
-    record without the field."""
+    registers, the credit to the Squares Project and the result, and where an earlier
+    certificate first stated that side, that certificate; and nothing at all for a record
+    without the field."""
     cases = {case["n"]: case for case in render_frontier_page.frontier_cases()}
     regularization = render_case_pages._regularization  # noqa: SLF001  # pyright: ignore[reportPrivateUsage]
 
@@ -88,10 +89,22 @@ def test_a_case_page_prints_its_regularization_note_and_nothing_without_one() ->
     assert "Regularized drawing" in housed
     assert "The house is itself its source" in housed
 
-    registered = regularization(cases[28])
+    registered = regularization(cases[53])
     assert '<span class="site-card-label">Regularization</span>' in registered
     assert "Regularized by the Squares Project" in registered
-    assert "not drawn here; its exact side is registered as T-154" in registered
+    assert "not drawn here; its exact side is registered as T-154, the upper bound" in (
+        registered
+    )
+
+    # Where the side is that of Evan Daniel's earlier certificate, the page says so and
+    # claims no new bound (PR #585, review B1).
+    earlier = regularization(cases[28])
+    assert "Regularized by the Squares Project" in earlier
+    assert "registered in T-154, and the same side was first certified by Evan Daniel" in (
+        earlier
+    )
+    assert "(T-101), so it proves no new bound" in earlier
+    assert "the upper bound it proves" not in earlier
 
     assert "regularization" not in cases[1]
     assert regularization(cases[1]) == ""

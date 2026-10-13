@@ -28,8 +28,11 @@ properties:
       `of` the registered result that holds the packing and `view` the layer's view it is
       drawn from. A drawing changes no side, frontier value, evidence tier or credit: a
       pure regularization, one that proves no new bound, is no result, so these carry no
-      rung. A regularization whose side lies below the verified upper bound proves a new
-      bound, so it is a result first and is listed by that result's `regularizations`. Counts the layer draws whose packing no registered result holds
+      rung. A regularization whose side lies below the verified upper bound is a result
+      first and is listed by that result's `regularizations`; it proves a new bound
+      unless an earlier certificate already stated that side, which the item names as
+      `first_certified_in` (T-154's 33 counts at the side of Evan Daniel's certificates,
+      T-101). Counts the layer draws whose packing no registered result holds
       are `unregistered`, each with the reason, and their record stays in the layer's
       index alone. Where Evan Daniel's regularizer or the grid-slack port of his placement
       made the view, `modifications` names this project's modifications to it (the
@@ -402,9 +405,15 @@ $defs:
           solve, so where his regularizer made the view `modifications_unrecorded` names
           what the item cannot establish: whether the solve climbed `retry rungs`.
           `devtools.regularized_drawings` writes both from `method` and `side` and holds
-          them there. `devtools.check_results` holds `n` to this result's scope,
-          once each; `of` to a registered result other than this one whose scope holds
-          `n` and whose date is no later than this result's; `by` to this result's
+          them there. `first_certified_in` names the earlier registered result whose
+          certificate first stated this item's exact side, where one did: the item then
+          registers that side exactly and proves no new bound, as T-154's do at the 33
+          counts where its side is that of Evan Daniel's certificate (T-101); at its
+          other 26 the side is new. `devtools.regularized_drawings` holds it to the case
+          record, whose verified upper bound then rests on both results.
+          `devtools.check_results` holds `n` to this result's scope, once each; `of` and
+          `first_certified_in` to a registered result other than this one whose scope
+          holds `n` and whose date is no later than this result's; `by` to this result's
           sources; and a `measured` identity to at least one measurement.
         items:
           type: object
@@ -421,6 +430,7 @@ $defs:
               minItems: 1
               items: {enum: [retry rungs]}
             side: {enum: [same, solved]}
+            first_certified_in: {type: string, pattern: '^T-[0-9]{3}$'}
             changes:
               type: object
               additionalProperties: false

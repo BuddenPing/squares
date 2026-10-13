@@ -5,15 +5,20 @@ witness's source for a view at the witness's side, the one the verified upper bo
 on for a view at the bound or for a view at a witness's side that is exactly the bound
 where no result attributes the source, and none where no result answers or several do.
 The generated block reads back as the data it was written from, and the register's
-checker holds each item to the register.
+checker holds each item to the register. The last tests read the record itself: which of
+T-154's registered sides Evan Daniel's certificates first stated, and which of its solves
+the layer draws.
 """
 
 from __future__ import annotations
 
-from typing import Any
+import json
+from types import SimpleNamespace
+from typing import Any, cast
 
 import pytest
 
+from devtools import register_regularized_bounds as registration
 from devtools import regularized_drawings as drawings
 from devtools.check_results import regularized_drawings_problems
 from sqpack.yamlio import safe_load
@@ -493,3 +498,170 @@ def test_the_case_field_is_written_in_place_and_removed_whole() -> None:
         "Another."
     )
     assert drawings.with_case_field(written, None) == text
+
+
+def test_a_side_an_earlier_certificate_first_stated_proves_no_new_bound() -> None:
+    """Where the registering result's item names the earlier result whose certificate
+    first stated its exact side (`first_certified_in`), as T-154's 33 items at the side of
+    Evan Daniel's certificates name T-101, the drawn and the undrawn notes credit the
+    Squares Project, say the side is registered in the result and was first certified by
+    that certificate, naming it, and that it proves no new bound; without the field the
+    side is the upper bound it proves (PR #585, review B1)."""
+    record = {
+        "n": 5,
+        "of": "T-101",
+        "by": "project",
+        "method": EVAND_METHOD,
+        "side": "solved",
+        "first_certified_in": "T-101",
+        "identity": {"basis": "measured"},
+    }
+    results = [{"id": "T-154", "kind": "upper-bound", "regularizations": [record]}]
+    bound = {**entry(5, "bound"), "generator": drawings.EVAND_GENERATOR}
+    bound["regularization"] = {**bound["regularization"], "method": EVAND_METHOD}
+    count = drawings.Drawn(bound, drawings.Resolved("T-154", "x"), [])
+    registered = drawings.registered_record(count, results)
+    assert registered is not None
+    assert registered == ("T-154", record)
+    drawn = drawings.project_case_item(count, GENERATORS, "T-154", "T-101")
+    assert drawn["first_certified_in"] == "T-101"
+    assert "first_certified_in" not in drawings.project_case_item(
+        count, GENERATORS, None, "T-101"
+    )
+    certificates = {"T-101": "Evan Daniel's certificate"}
+    assert drawings.case_note([drawn], certificates) == (
+        "Regularized by the Squares Project with Evan Daniel's regularizer, unmodified. A "
+        "drawing of T-154's packing at the verified upper bound. Its exact side is "
+        "registered in T-154, and the same side was first certified by Evan Daniel's "
+        "certificate (T-101), so it proves no new bound; the drawing itself is no further "
+        "result."
+    )
+    undrawn = drawings.registered_case_items(results, GENERATORS)[5]
+    assert undrawn["first_certified_in"] == "T-101"
+    assert drawings.case_note([undrawn], certificates) == (
+        "Regularized by the Squares Project with Evan Daniel's regularizer, with none of "
+        "the project's modifications established; whether its solve climbed a retry rung "
+        "is not recorded. A regularization of T-101's packing solved to its side, not drawn "
+        "here; its exact side is registered in T-154, and the same side was first "
+        "certified by Evan Daniel's certificate (T-101), so it proves no new bound."
+    )
+    new = {key: value for key, value in undrawn.items() if key != "first_certified_in"}
+    assert drawings.case_note([new]).endswith(
+        "its exact side is registered as T-154, the upper bound it proves."
+    )
+    register = cast(
+        Any,
+        SimpleNamespace(
+            results=[
+                {"id": "T-101", "attribution": {"source_keys": ["[D]"]}},
+                {"id": "T-009"},
+            ],
+            sources={"[D]": SimpleNamespace(authors=("Daniel",))},
+            names={"Evan Daniel": "Daniel"},
+        ),
+    )
+    assert drawings.certificate_words("T-101", register) == "Evan Daniel's certificate"
+    assert drawings.certificate_words("T-009", register) == "this project's certificate"
+    assert drawings.certificate_words("T-999", register) == "T-999's certificate"
+
+
+def test_the_earlier_certificate_is_named_exactly_where_the_case_bound_rests_on_it(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """An item names `first_certified_in` exactly where the case's verified upper bound
+    rests on an earlier registered result beside the registering one: a missing name, a
+    name the bound does not rest on, and a name where the registering result alone proves
+    the bound are listed; a later result proving the same bound needs none (PR #585,
+    review B1)."""
+    holders = {
+        5: ["T-101", "T-154"],
+        6: ["T-101", "T-154"],
+        7: ["T-154"],
+        8: ["T-154"],
+        9: ["T-154", "T-160"],
+        10: ["T-101", "T-154"],
+    }
+    monkeypatch.setattr(drawings, "bound_holders", lambda n, _register: holders[n])
+
+    def item(n: int, first: str | None = None) -> dict[str, Any]:
+        found: dict[str, Any] = {"n": n, "of": "T-101", "by": "project", "side": "solved"}
+        if first:
+            found["first_certified_in"] = first
+        return found
+
+    register = cast(
+        Any,
+        SimpleNamespace(
+            results=[
+                {"id": "T-101", "attribution": {"published": "2026-10-05"}},
+                {
+                    "id": "T-154",
+                    "established": "2026-10-12",
+                    "regularizations": [
+                        item(5, "T-101"),
+                        item(6),
+                        item(7, "T-101"),
+                        item(8),
+                        item(9),
+                        item(10, "T-160"),
+                    ],
+                },
+                {"id": "T-160", "established": "2026-10-20"},
+            ]
+        ),
+    )
+    assert drawings.first_certified_problems(register) == [
+        (
+            "T-154's regularization at n = 6: the case's verified upper bound rests on "
+            "['T-101'] as well, whose certificate stated the side first; name it as "
+            "first_certified_in"
+        ),
+        (
+            "T-154's regularization at n = 7 names T-101 as first_certified_in, but the "
+            "case's verified upper bound rests on ['T-154']"
+        ),
+        (
+            "T-154's regularization at n = 10 names T-160 as first_certified_in, but the "
+            "case's verified upper bound rests on ['T-101', 'T-154']"
+        ),
+    ]
+
+
+def test_t154_names_daniels_earlier_certificate_where_its_side_is_his() -> None:
+    """On the record: T-154's items that name `first_certified_in` are exactly the rows of
+    its registration receipt whose side is that of Evan Daniel's earlier certificate
+    (`register_regularized_bounds.at_t101_side`), 33 of its 59, each naming T-101; eight
+    are drawn and 25 are not. Their case notes say the side is registered in T-154 and
+    was first certified by Evan Daniel's certificate (T-101), so it proves no new bound;
+    the other 26 say it is the upper bound it proves (PR #585, review B1)."""
+    register = drawings.load_register()
+    (t154,) = (result for result in register.results if result["id"] == "T-154")
+    items = {int(item["n"]): item for item in t154["regularizations"]}
+    receipt = json.loads(registration.SELECTION.read_text(encoding="utf-8"))
+    at_daniel = {int(row["n"]) for row in receipt["rows"] if registration.at_t101_side(row)}
+    named = {n for n, item in items.items() if item.get("first_certified_in")}
+    assert named == at_daniel
+    assert len(named) == 33
+    assert len(items) - len(named) == 26
+    assert {items[n]["first_certified_in"] for n in named} == {"T-101"}
+    index = drawings.index_document()
+    drawn = drawings.drawn_counts(index)
+    fields = drawings.case_fields(index, drawn=drawn)
+    drawn_named = sorted(
+        n
+        for n in named
+        if any("view" in found for found in fields[n]["items"] if found["by"] == "project")
+    )
+    assert drawn_named == [83, 87, 107, 171, 198, 230, 234, 293]
+    first = (
+        "registered in T-154, and the same side was first certified by Evan Daniel's "
+        "certificate (T-101), so it proves no new bound"
+    )
+    for n in items:
+        note = " ".join(fields[n]["note"].split())
+        if n in named:
+            assert first in note, n
+            assert "the upper bound it proves" not in note, n
+        else:
+            assert "registered as T-154, the upper bound it proves" in note, n
+            assert "first certified" not in note, n

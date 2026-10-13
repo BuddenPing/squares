@@ -225,15 +225,19 @@ section 5 describes and which does not exist yet.
 
 ## Register Candidates
 
-A view whose side is below $U$ proves a new upper bound (row 3). The selection lists it
-under register candidates and never admits it.
+A view whose side is below $U$ proves a new upper bound (row 3), unless an earlier
+certificate already stated that side exactly and the record carried it rounded up.
+The selection lists it under register candidates and never admits it.
 Register such views as one batch result through the
 [import runbook’s](../../../packing/campaign/result-import.md#stage-3-record) record and
 validate stages, with a `regularizations` item for each count, as `T-154` registered 59
-counts through `devtools.register_regularized_bounds`. Once the register moves $U$ to
-the view’s side, the view is at the bound: `reclassify --refresh-bounds` decides a
-driver run’s view again, the selection decides a grid-slack view against the new $U$,
-and the next selection can draw either.
+counts through `devtools.register_regularized_bounds`. Where an earlier result’s
+certificate states the same side, the item names it as `first_certified_in`, as 33 of
+`T-154`’s name `T-101`, and the case note then says the side proves no new bound;
+`python -m devtools.regularized_drawings --check` fails an item that should name one and
+does not. Once the register moves $U$ to the view’s side, the view is at the bound:
+`reclassify --refresh-bounds` decides a driver run’s view again, the selection decides a
+grid-slack view against the new $U$, and the next selection can draw either.
 
 ## When a Witness Changes
 

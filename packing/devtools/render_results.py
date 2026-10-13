@@ -199,8 +199,11 @@ def regularizations(results: list[dict], sources: Mapping[str, Mapping[str, Any]
             "([`epistemics.md`](../../epistemics.md#results-by-others)). Where this "
             f"project{APOSTROPHE}s own regularization was made with Evan Daniel{APOSTROPHE}s "
             f"regularizer, its line names this project{APOSTROPHE}s modifications to it as "
-            f"far as the item establishes them; an item records no solve, so whether the "
-            "solve climbed a retry rung is said to be not recorded."
+            "far as the item establishes them; an item records no solve, so whether the "
+            "solve climbed a retry rung is said to be not recorded. Where an earlier result"
+            f"{APOSTROPHE}s certificate first stated the item{APOSTROPHE}s exact side, its "
+            "line names that result: the item registers the side exactly and proves no new "
+            "bound."
         ),
         "",
     ]
