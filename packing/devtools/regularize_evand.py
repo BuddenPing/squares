@@ -1299,6 +1299,38 @@ def regularize_failure(document: Mapping[str, Any]) -> str | None:
     return None
 
 
+def stored_settings(regularized: Mapping[str, Any], options: Options) -> Options:
+    """The settings a reused regularization ran with, refused where they are not asked for.
+
+    `--from-stage import` reuses `regularize.json`, which records the variant, style and
+    orientation the shim ran and the frame it started from. A stored output is decided
+    and labelled by those, never by the command line's, which may differ: a `fewest`
+    regularization re-imported under the default would otherwise be admitted at row 10
+    as `conservative` (review B of #511, B1). An output written before the frame was
+    recorded started from the KKT point, the only frame there was.
+    """
+    stored = {
+        "variant": regularized.get("variant"),
+        "orient": regularized.get("orient"),
+        "frame": regularized.get("frame", "kkt"),
+    }
+    asked = {"variant": options.variant, "orient": options.orient, "frame": options.frame}
+    differ = [
+        f"--{name} {value} (asked: {asked[name]})"
+        for name, value in stored.items()
+        if value is not None and str(value) != asked[name]
+    ]
+    style = regularized.get("style")
+    if style is not None and style != STYLE:
+        differ.append(f"style {style} (this driver runs {STYLE})")
+    if differ:
+        raise EvandRunError(
+            f"the stored regularization ran with {', '.join(differ)}: run this count again "
+            "from --from-stage regularize, or ask for the settings it ran with"
+        )
+    return replace(options, **{name: str(value) for name, value in stored.items() if value})
+
+
 # --------------------------------------------------------------------------------------
 # Stages 5 and 6: the solved view and the same-side view, decided here
 # --------------------------------------------------------------------------------------
@@ -2048,8 +2080,12 @@ def _run_stages(
         regularized = regularize(directory, replica, n, options)
     else:
         regularized = read_json(directory / "regularize.json")
+        # The stored regularization is decided and labelled by what it ran with (B1).
+        options = stored_settings(regularized, options)
     seconds["regularize"] = regularized.get("wall_seconds", regularized.get("seconds"))
-    report["generator"]["frame"] = regularized.get("frame", options.frame)
+    report["generator"].update(
+        variant=options.variant, orient=options.orient, frame=options.frame
+    )
     report["regularize"] = regularize_block(regularized)
     report["parameters"] = run_parameters(options)
     failure = regularize_failure(regularized)

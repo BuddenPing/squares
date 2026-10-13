@@ -1011,6 +1011,38 @@ def _copy_run(n26_run: Path, tmp_path: Path) -> Path:
     return Path(shutil.copytree(n26_run, tmp_path / "run", symlinks=True))
 
 
+def test_a_stored_fewest_regularization_is_not_reimported_as_conservative(
+    n26_run: Path, tmp_path: Path
+) -> None:
+    """B1: `--from-stage import` decides and labels a stored output by the settings it
+    ran with; asked for others, it refuses rather than admit a `fewest` view at row 10."""
+    run_dir = _copy_run(n26_run, tmp_path)
+    stored = drive.count_dir(run_dir, 26) / "regularize.json"
+    document = json.loads(stored.read_text())
+    document["variant"] = "fewest"
+    stored.write_text(json.dumps(document))
+    refused = drive.run_count(26, Options(run_dir=run_dir, from_stage="import"))
+    assert refused["status"] == "error"
+    assert "--variant fewest" in refused["error"]
+    assert "--from-stage regularize" in refused["error"]
+    assert "decision" not in refused
+    assert drive.layer_candidate(refused, "admitted") is None
+    asked = drive.run_count(26, Options(run_dir=run_dir, from_stage="import", variant="fewest"))
+    assert asked["status"] == "ok"
+    assert asked["generator"]["variant"] == "fewest"
+    assert asked["parameters"]["variant"] == "fewest"
+    assert asked["decision"]["decision"] != "admit"
+    for name in ("view-solved.yaml", "view-same.yaml"):
+        view = load_yaml((drive.count_dir(run_dir, 26) / name).read_text())["witness"]
+        assert view["certificate"]["variant"] == "fewest"
+    # An output written before the frame was recorded started from the KKT point.
+    del document["frame"]
+    settings = drive.stored_settings(document, Options(run_dir=run_dir, variant="fewest"))
+    assert settings.frame == "kkt"
+    with pytest.raises(drive.EvandRunError, match="--frame kkt"):
+        drive.stored_settings(document, Options(run_dir=run_dir, frame="witness"))
+
+
 def _moved_witness(tmp_path: Path) -> Path:
     """n = 26's witness with square 1 moved left by 1e-7: another input, same id."""
     text = drive.witness_path(26).read_text()
