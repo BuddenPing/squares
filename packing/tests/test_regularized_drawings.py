@@ -404,8 +404,19 @@ def test_a_registered_regularization_names_what_its_item_establishes() -> None:
         drawings.grid_modifications("regularize_grid_slack/0", same=True),
         [],
     )
+    written = {
+        "method": "regularize_grid_slack/0: a port" + drawings.GRID_THROUGH,
+        "side": "same",
+    }
+    assert drawings.registered_modifications(written, GENERATORS, {}) == (
+        drawings.grid_modifications("regularize_grid_slack/0", same=True),
+        [],
+    )
     axis = {"method": "regularize_axis_components/2", "side": "same"}
     assert drawings.registered_modifications(axis, GENERATORS, {}) == (None, [])
+    through = {"method": "regularize_axis_components/2" + drawings.GRID_THROUGH, "side": "same"}
+    with pytest.raises(drawings.RegularizedDrawingsError, match="no generator"):
+        drawings.registered_modifications(through, GENERATORS)
     with pytest.raises(drawings.RegularizedDrawingsError, match="no generator"):
         drawings.registered_modifications({"method": "x", "side": "same"}, GENERATORS)
 

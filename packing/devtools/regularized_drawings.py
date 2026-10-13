@@ -166,6 +166,9 @@ SILENT_RUNGS = frozenset({"stall-stop"})
 #: What a registered result's item cannot establish of the modifications: it records no
 #: solve, so whether the solve that made the view climbed a retry rung.
 UNRECORDED_RUNGS = "retry rungs"
+#: What the grid-slack tool appends to its generator block's method when it writes a
+#: view's or a registered item's `method`: the module that ran it.
+GRID_THROUGH = ", through devtools.regularize_grid_slack"
 #: The patches a vendored view's `method` names after the pin, `@675a5ea+name`.
 _METHOD_PATCHES = re.compile(r"evand/square-packing@[0-9a-f]+((?:\+[^,+\s]+)*)")
 #: What a drawing is when no result registers it (the owner, 13 October 2026: "Pure
@@ -417,6 +420,17 @@ def patch_words(method: str, kinds: Mapping[str, str] | None = None) -> list[str
 # ------------------------------------------------- the registered results' own items
 
 
+def method_forms(generator: str, generators: Mapping[str, Any]) -> tuple[str, ...]:
+    """The `method` strings that name a generator: its index block's `method`, and for a
+    grid-slack generator that method as the tool writes it (`GRID_THROUGH`)."""
+    block = str((generators.get(generator) or {}).get("method") or "")
+    if not block:
+        return ()
+    if GENERATOR_KINDS[generator] == "grid":
+        return (block, block + GRID_THROUGH)
+    return (block,)
+
+
 def method_generator(method: str, generators: Mapping[str, Any]) -> str:
     """The layer generator a registered regularization's `method` names: the one whose
     index block's `method` it is, less any patches after the pin; refused where no
@@ -427,7 +441,7 @@ def method_generator(method: str, generators: Mapping[str, Any]) -> str:
     found = [
         generator
         for generator in GENERATOR_KINDS
-        if str((generators.get(generator) or {}).get("method") or "") == base
+        if base in method_forms(generator, generators)
     ]
     if len(found) != 1:
         raise RegularizedDrawingsError(
