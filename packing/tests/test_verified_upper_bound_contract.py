@@ -92,10 +92,12 @@ DECLARED_CONSUMER_TREES = {
 DECLARED_CONSUMERS = {
     "packing/devtools/regularize_evand.py": (
         "the regularization driver reads each case's verified bound as U, the ceiling a "
-        "regularized view's exact side is compared with (policy rows 3 and 4): a side below "
-        "it is a register-result candidate, a side exactly at it is a drawing frame (`bound`), "
-        "and a side above it is not. It never reads the field as s(n) or as the witness's "
-        "side, which it takes from the witness"
+        "regularized view's exact side is compared with (policy rows 3 and 4), held exactly: "
+        "a rational U as itself, a closed form as a root of its minimal polynomial, and a form "
+        "it cannot read as deciding nothing. A side below it is a register-result candidate, "
+        "a side exactly at a rational U is a drawing frame (`bound`), and a side above it is "
+        "not. It never reads the field as s(n) or as the witness's side, which it takes from "
+        "the witness"
     ),
     "packing/tests/test_regularize_evand.py": (
         "a synthetic report for the driver's tests carries U as the driver writes it, so the "
@@ -109,8 +111,9 @@ DECLARED_CONSUMERS = {
     ),
     "packing/devtools/regularize_grid_slack.py": (
         "the grid-slack generator re-solves a view at the case's verified bound U where the "
-        "witness's own side is not a frame, and records the view's side minus U in its index "
-        "entry; U is the ceiling the view's side is held to, never s(n)"
+        "witness's own side is not a frame, and only where U is rational exactly "
+        "(`rational_bound`): a closed form's evaluation is not U; U is the ceiling the "
+        "view's side is held to, never s(n)"
     ),
     "packing/devtools/regularized_drawings.py": (
         "the regularized-drawings record reads a count's verified bound only where a view "

@@ -124,13 +124,16 @@ allowlist:
     kind: download
     boundary: >-
       vendor/evand-regularize is Evan Daniel's code downloaded from
-      evand/square-packing and copied at a pinned commit. Each file is held against
-      the SHA-256 its manifest records for the upstream blob at that commit, a value
-      anyone can re-derive from the upstream repository, catching an unrecorded edit
-      (a silent fork the credit and pin would misdescribe) or a manifest a re-pin
-      left stale. Nothing else reads these digests: no tool refuses to run the
-      generator on a mismatch, and the exact checkers, not the generator, decide
-      every result.
+      evand/square-packing and copied at a pinned commit. Offline, each file is held
+      against the SHA-256 its manifest records for the upstream blob at that commit,
+      catching an accidental unrecorded edit, drop or addition; a change that edits
+      the manifest too passes it. `--upstream` re-derives the expected value from the
+      upstream repository, without trusting this one: it fetches the pin's trees and
+      compares Git blob ids, modes and the tree, catching a silent fork the credit
+      and pin would misdescribe, or a manifest a re-pin left stale. It needs the
+      network and is run at a re-pin and on any change to the manifest. Nothing else
+      reads these digests: no tool refuses to run the generator on a mismatch, and
+      the exact checkers, not the generator, decide every result.
   - path: packing/devtools/n17_shared_centre_lp.py
     kind: generated-artifact
     boundary: >-

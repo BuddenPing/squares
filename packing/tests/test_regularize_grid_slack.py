@@ -154,6 +154,44 @@ def test_a_run_writes_its_view_report_and_drawing(tmp_path: Path) -> None:
     assert (directory / "drawing.svg").read_text(encoding="utf-8").startswith("<?xml")
 
 
+def test_a_report_names_the_witness_it_read_and_the_view_it_wrote(tmp_path: Path) -> None:
+    """Review B of #530, B3: the source witness by digest and exact side, and the view's
+    bytes by their Git blob id, so an admitting layer can hold both to the report."""
+    import hashlib  # noqa: PLC0415
+
+    from devtools.retained_data import git_blob  # noqa: PLC0415
+
+    report = slack.run_one(1, tmp_path, slack.Settings())
+    path = slack.KNOWN_BEST / "n-001.yaml"
+    source = report["source"]
+    assert source["path"] == "packing/witnesses/known-best/n-001.yaml"
+    assert source["witness_sha256"] == hashlib.sha256(path.read_bytes()).hexdigest()
+    assert source["id"] == slack.load_source(1)["id"]
+    assert Fraction(source["s_W_exact"]) == 1
+    view = tmp_path / "n-001" / report["view"]["path"]
+    assert report["view"]["git_blob"] == git_blob(view.read_bytes())
+
+
+def test_a_rerun_without_a_view_leaves_no_earlier_view_or_drawing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Review B of #530, B4: a re-run that finds no view removes the run before's view,
+    drawing and report before it writes its own."""
+    slack.run_one(1, tmp_path, slack.Settings())
+    directory = tmp_path / "n-001"
+    assert (directory / "view.yaml.gz").is_file()
+
+    def no_view(*_arguments: object) -> tuple[None, dict[str, Any]]:
+        return None, {"attempts": [], "refusal": "no view this time", "seconds": 0}
+
+    monkeypatch.setattr(slack, "regularize", no_view)
+    report = slack.run_one(1, tmp_path, slack.Settings())
+    assert "measured" not in report
+    assert "view" not in report
+    assert not (directory / "view.yaml.gz").exists()
+    assert not (directory / "drawing.svg").exists()
+
+
 def _row(coefficients: dict[int, int], rhs: Fraction, priority: tuple[int, ...]) -> Any:
     return slack.same.Row(
         "pair" if len(coefficients) > 1 else "wall",
@@ -197,6 +235,24 @@ def test_no_bound_frame_below_the_witness_side() -> None:
     frame = slack.frame_for(scattered(), "same")
     assert frame is not None
     assert frame.side == Fraction(11, 5)
+
+
+def test_no_bound_attempt_at_a_closed_form_bound() -> None:
+    """Review B of #530, B1: n = 5's bound is 2 + (1/2)sqrt(2). Its 60-digit value is
+    1.3e-61 above it, and a view solved in a box of that side was exactly verified above
+    `U` and labelled `bound`; a closed form is no frame, so n = 5 tries `s_W` alone."""
+    witness = slack.load_source(5)
+    assert slack.rational_bound(5) is None
+    assert slack.frame_for(witness, "bound") is None
+    view, report = slack.regularize(witness, slack.Settings())
+    assert [row["relation"] for row in report["attempts"]] == ["same", "same"]
+    assert view is None
+    # A rational `U` above `s_W` is still a frame (n = 171's printed side truncates it).
+    upper = slack.rational_bound(171)
+    assert upper is not None
+    bound = slack.frame_for(slack.load_source(171), "bound")
+    assert bound is not None
+    assert bound.side == upper
 
 
 def beside_a_tilted_square() -> dict[str, Any]:
@@ -375,3 +431,29 @@ def test_admission_binds_the_view_to_the_witness_the_run_measured(
     # names stale, as it does a driver run's (`evand_admitted`).
     elsewhere = admitted({"witness": report["source"], "witness_sha256": "0" * 64})
     assert elsewhere.source["sha256"] == "0" * 64
+
+
+def test_feasibility_holds_the_move_bound_and_a_zero_trust_is_refused() -> None:
+    """Review B of #530, B5: `feasible` holds the rows `place` holds, the L1 move bound
+    among them, so a straightening it accepts can be placed; `--trust 0` would divide the
+    tie-break's weight by zero and is refused."""
+    one, zero = Fraction(1), Fraction(0)
+    witness = _basis_witness([(Fraction(6, 10), Fraction(6, 10), one, zero)])
+    frame = slack.frame_for(witness, "same")
+    assert frame is not None
+    g = slack.geometry(frame, [])
+
+    def pushed(step: float) -> slack.Rows:
+        """Rows asking the square to move `step` right and `step` up: within the trust
+        region per coordinate, and `2 * step` in L1."""
+        rows = slack.Rows()
+        rows.add({0: 1.0}, float(g.x0[0]) + step, float("inf"), "test")
+        rows.add({1: 1.0}, float(g.y0[0]) + step, float("inf"), "test")
+        return rows
+
+    assert slack.feasible(g, pushed(0.2), slack.TRUST)
+    assert not slack.feasible(g, pushed(0.3), slack.TRUST)
+    with pytest.raises(slack.GridSlackError, match="positive"):
+        slack.Settings(trust=0.0)
+    with pytest.raises(SystemExit):
+        slack.parser().parse_args(["--n", "5", "--run-dir", "scratch", "--trust", "0"])

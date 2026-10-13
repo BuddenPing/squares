@@ -3681,9 +3681,11 @@ def _regularized_atlas_drawings(context: Context) -> str:
 
 def _vendored_evand(context: Context) -> str:
     # About 0.2s: `vendor/evand-regularize`, Evan Daniel's regularizer copied at a pin, is
-    # held to its manifest -- each file's size and SHA-256 at the upstream commit, each
-    # recorded local change, and no file beside them. The digests cross a real boundary
-    # (downloaded third-party code, OR-16); nothing but this step reads them.
+    # held to its manifest -- each file's size, SHA-256 and mode at the upstream commit,
+    # each recorded local change, no link and no file beside them. That catches accidental
+    # edits only; `--upstream`, which holds the manifest to upstream, needs the network
+    # and is run by hand (think-vwlm). The digests cross a real boundary (downloaded
+    # third-party code, OR-16); nothing but this check reads them.
     output = _module(context, "devtools.check_vendored_evand")
     _require_text(output, "vendored copy check passed")
     return output
@@ -5496,7 +5498,7 @@ STEPS: tuple[Step, ...] = (
         ),
     ),
     Step(
-        "the vendored regularizer matches its pin",
+        "the vendored regularizer matches its manifest",
         _vendored_evand,
         fast=True,
         records=True,
@@ -6189,7 +6191,7 @@ TREE_REUSABLE_FAST_STEPS = frozenset(
         "the Lean replay receipt for s(k^2-2) = k holds",
         # The vendored files and their manifest, compared byte for byte; git is asked only
         # which files the tree holds. No clock, no network, no history.
-        "the vendored regularizer matches its pin",
+        "the vendored regularizer matches its manifest",
         "the inventory agrees with the register",
         "results rungs are earned and the view agrees",
         "the synopsis headline carries every result",
