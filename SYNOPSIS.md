@@ -1242,6 +1242,7 @@ case or experiment separately.
 | [Experiment ledger](packing/campaign/ledger.md) | generated status view | generated | generated | — |
 | [Agenda map](packing/campaign/agenda-map.md) | generated status view | generated | generated | — |
 | [Upper-Bound Reports, Count by Count, in Report Order](packing/campaign/issue-intake/upper-bounds-20261014/README.md) | generated status view | generated | generated | — |
+| [Lane Claim Records Retained for the Ledger](packing/campaign/issue-intake/upper-bounds-20261014/lane-claims/README.md) | source retention and archive policy | record | retained | — |
 | [Intake Ledger Review Programs](packing/campaign/issue-intake/upper-bounds-20261014/review/README.md) | dated review record | record | retained | — |
 | [series-000 (S0) — smoke and calibration](packing/campaign/series/series-000-smoke-and-calibration/README.md) | series scope and comparability | definitive | maintained | — |
 | [Agenda 024 T+0 Dispatch Record](packing/campaign/series/series-000-smoke-and-calibration/results/agenda-024/launch-t-plus-00.md) | research synthesis | record | retained | — |
