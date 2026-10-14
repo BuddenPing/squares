@@ -433,8 +433,10 @@ Three separate paragraphs begin “Best packings due to”, “Lower bounds due 
 Complete canonical names remain intact and appear once within each paragraph.
 All recorded construction finders and improvers appear; current lower-bound source
 authors receive the second paragraph.
-The third paragraph credits mathematical proof authors and explicitly distinguishes
-formalization and verification contributions.
+The third paragraph credits mathematical proof authors, then, in one clause,
+“formalization by”, everyone who contributed to a formalization or to its verification
+infrastructure and execution, each once (the owner, 14 October 2026); the curated input
+keeps the two roles apart, and the metadata carries them as recorded.
 Method, prerequisite and historical lower-bound credits remain in the structured
 metadata.
 
@@ -449,12 +451,19 @@ three credit paragraphs; complete names and role prefixes remain indivisible.
 
 A fourth paragraph credits the regularized cards, those drawn from a case’s regularized
 view because it is the case’s default picture (the regularization policy’s section 12,
-as `default-drawings.json` records it): a lead line counting them against the depicted
-range, “Regularized drawings (79 of 324) where they improve on the packings as
-published”, then each generator’s credit line as the policy’s section 7 gives it, once,
-in the order the cards first draw it.
-Each sentence takes the fewest lines the 2600-unit block holds, so a credit line reads
-whole; the paragraph’s group lists the regularized cases in `data-regularized-cases`,
+as `default-drawings.json` records it), in one sentence (the owner, 14 October 2026):
+“Regularized drawings (79 of 324), where they improve on the packings as published, by
+the Squares Project with Daniel’s regularizer (evand/square-packing, MIT) and its own
+axis tool (regularize_axis_components/2)”. It is built from the generators’ credit lines
+as the policy’s section 7 gives them: their shared opening, “Regularized by the Squares
+Project with”, once, then what each names, once, in the order the cards first draw it,
+joined with commas and “and”; a credit line that opens otherwise would print whole as a
+sentence of its own.
+A full personal name in a credit line prints as the surname the other credits use, read
+from the curated input’s aliases, so the only full name in the information block is the
+diagram credit’s; the case pages and the register keep the full credit lines.
+The sentence takes the fewest lines the 2600-unit block holds, never breaking inside a
+credit; the paragraph’s group lists the regularized cases in `data-regularized-cases`,
 and each such card’s `data-source-id` ends in `-regularized`. Its labels and badges are
 the record’s, as every card’s are.
 
@@ -497,10 +506,10 @@ The packing drawings and card captions retain their original scale.
 | --- | --- | --- |
 | Cases | `n = 1..100` | `n = 1..324` |
 | Arrangement | 10 by 10, row-major | 18 complete right-aligned rows |
-| Canvas | 2150 × 3926 units | 7497 × 5361 units |
+| Canvas | 2150 × 3898 units | 7497 × 5361 units |
 | Squares drawn | 5,050 | 52,650 |
 | Rasters | 1x, 2x, link-preview card | 1x |
-| PDF page | 22.40 × 40.90 in | 78.09 × 55.84 in |
+| PDF page | 22.40 × 40.60 in | 78.09 × 55.84 in |
 
 The remaining fields are the decisions a figure of another size has to make: which
 rasters it publishes, whether it publishes a link-preview crop, and what it may leave

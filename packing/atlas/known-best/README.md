@@ -45,19 +45,22 @@ The gap between information blocks is three body-text ems, measured between thei
 bounds; the lines within a block share 1.50 leading and weight 700. All three credit
 paragraphs use the width of the balanced three-line construction paragraph, with
 complete names and role clauses kept together.
-A fourth paragraph counts the tiles drawn from regularized views, such as “Regularized
-drawings (79 of 324) where they improve on the packings as published”, and gives the
-credit line of each generator that made one, as the regularization policy’s section 7
-words it, on as few lines of the information block’s full width as it fits.
+A fourth paragraph is one sentence that counts the tiles drawn from regularized views
+and credits them, built from the generators’ section 7 credit lines with their shared
+opening said once and people named by surname, such as “Regularized drawings (79 of
+324), where they improve on the packings as published, by the Squares Project with
+Daniel’s regularizer (evand/square-packing, MIT) and its own axis tool
+(regularize_axis_components/2)”, on as few lines of the information block’s full width
+as it fits.
 
 The composite ships in four forms, all drawn from that one SVG in one build:
 
 | File | Size | For |
 | --- | --- | --- |
-| [`known-best-1-100.svg`](known-best-1-100.svg) | 2150 × 3926 units | the source; scales to anything |
-| [`known-best-1-100.png`](known-best-1-100.png) | 2150 × 3926 px | the GitHub-facing raster preview |
-| [`known-best-1-100@2x.png`](known-best-1-100@2x.png) | 4300 × 7852 px | attaching, or downscaling for social media |
-| [`square-packings-100-20261008.pdf`](square-packings-100-20261008.pdf) | 22.40 × 40.90 in | printing; vector, so text stays selectable |
+| [`known-best-1-100.svg`](known-best-1-100.svg) | 2150 × 3898 units | the source; scales to anything |
+| [`known-best-1-100.png`](known-best-1-100.png) | 2150 × 3898 px | the GitHub-facing raster preview |
+| [`known-best-1-100@2x.png`](known-best-1-100@2x.png) | 4300 × 7796 px | attaching, or downscaling for social media |
+| [`square-packings-100-20261008.pdf`](square-packings-100-20261008.pdf) | 22.40 × 40.60 in | printing; vector, so text stays selectable |
 
 Each export carries the SHA-256 of its source SVG, so `--check` rejects any one of them
 that has fallen behind the drawing.
@@ -111,8 +114,8 @@ Acquisition and snapshot dates do not establish priority.
 The construction paragraph names all recorded finders and improvers.
 The lower-bound paragraph names current bound-source authors; its metadata also retains
 method, prerequisite and historical contributions.
-The proof paragraph separately identifies formalization and verification contributions
-alongside mathematical proof authors.
+The proof paragraph names mathematical proof authors, then everyone who worked on a
+formalization or its verification infrastructure in one “formalization by” clause.
 Both PDFs use the same acknowledgments for the full $n = 1..324$ corpus; their diagram
 counts and depicted ranges remain specific to each figure.
 Names wrap intact into balanced lines without bracketed citations or final periods.

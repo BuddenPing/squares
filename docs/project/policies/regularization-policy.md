@@ -353,9 +353,11 @@ policy applies until there is one.
    Until the owner says where else, the index, the drawings and a register result’s
    `builds_on` carry it as [section 7](#7-credit) states.
    Since the regularized view became the default picture
-   ([section 12](#12-the-default-picture)), the composites carry it too, in a credit
-   paragraph for their regularized tiles, and so does the case page that draws one; the
-   atlas README names it in its account of the layer.
+   ([section 12](#12-the-default-picture)), the composites carry it too, and so does the
+   case page that draws one; the atlas README names it in its account of the layer.
+   The composites print it in a compact form the owner asked for on 14 October 2026: one
+   sentence for all their regularized tiles, the generators’ shared opening said once
+   and Evan Daniel named “Daniel”, as the posters’ other credits name people by surname.
 
 8. **Retention of the solve:** kept.
    The solved points and contact structures go in a pinned packet or release asset
