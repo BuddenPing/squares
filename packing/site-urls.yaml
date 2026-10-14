@@ -12949,10 +12949,10 @@ urls:
   generator: devtools.render_overview:result_fragments
   producer: overview
   first_published: '2026-10-13'
-  lastmod: '2026-10-13'
+  lastmod: '2026-10-14'
   status: live
   identity:
-    kind: simplification
+    kind: formalization
     scope:
       n_values:
       - 17
@@ -12977,6 +12977,37 @@ urls:
     - packing/resources/web/fitzharding-n17-lean-2026-10-13/receipts/cover-comparison.json
     - packing/resources/web/fitzharding-n17-lean-2026-10-13/receipts/closures.json
     - docs/project/reviews/review-2026-10-13-fitzharding-n17-lean.md
+  amendments:
+  - date: '2026-10-14'
+    reason: Owner's decision of 13 October 2026 (think-8e0p) moves T-154, Fitzharding's Lean 4 proof
+      of T-153's value by a route of its own, from simplification to the new kind formalization; no
+      claim, scope, evidence, status or bound change.
+    previous:
+      kind: simplification
+      scope:
+        n_values:
+        - 17
+      established: null
+      attribution:
+        source_keys:
+        - '[Fitzharding n17 Lean 2026]'
+        published: '2026-10-12'
+      builds_on: null
+      evidence:
+      - E-n017-fitzharding-lean-report
+      artifacts:
+      - packing/resources/web/fitzharding-n17-lean-2026-10-13/README.md
+      - packing/resources/web/fitzharding-n17-lean-2026-10-13/sq17-lean/Sq17Lean/Square17Optimality.lean
+      - packing/resources/web/fitzharding-n17-lean-2026-10-13/sq17-lean/Sq17Lean/PackingStatement.lean
+      - packing/resources/web/fitzharding-n17-lean-2026-10-13/sq17-lean/Sq17Lean/EndpointGeometry.lean
+      - packing/resources/web/fitzharding-n17-lean-2026-10-13/sq17-lean/Sq17Lean/EndpointRootData.lean
+      - packing/resources/web/fitzharding-n17-lean-2026-10-13/sq17-lean/verification/clean-build-receipt.json
+      - packing/resources/web/fitzharding-n17-lean-2026-10-13/sq17-lean/verification/Square17Optimality.log.gz
+      - packing/resources/web/fitzharding-n17-lean-2026-10-13/receipts/source-consistency.json
+      - packing/resources/web/fitzharding-n17-lean-2026-10-13/receipts/endpoint-comparison.json
+      - packing/resources/web/fitzharding-n17-lean-2026-10-13/receipts/cover-comparison.json
+      - packing/resources/web/fitzharding-n17-lean-2026-10-13/receipts/closures.json
+      - docs/project/reviews/review-2026-10-13-fitzharding-n17-lean.md
 - path: results.html
   canonical: results.html
   kind: page

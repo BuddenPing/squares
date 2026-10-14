@@ -907,6 +907,11 @@ def test_not_a_bound_is_not_a_kind(
         ("T-003", "case-exclusion", "and no cited evidence claims `derived-structure`"),
         # A simplification names the result it proves again, on a case they share.
         ("T-001", "simplification", "a simplification's claim names the registered result"),
+        # So does a formalization, and it cites evidence a proof assistant checked.
+        ("T-001", "formalization", "a formalization's claim names the registered result"),
+        ("T-001", "formalization", "kind is formalization, and no cited evidence is"),
+        # A second proof a proof assistant checked is a formalization, not a simplification.
+        ("T-154", "simplification", "is a formalization"),
     ],
 )
 def test_a_kind_its_record_contradicts_is_refused(result: str, kind: str, refusal: str) -> None:
@@ -959,9 +964,8 @@ def test_the_kind_a_headline_opens_with_is_derived() -> None:
     register = safe_load(check_results.RESULTS.read_text(encoding="utf-8"))
     for record in register["results"]:
         opens = derive(record["headline"])
-        assert opens in {None, record["kind"]} or record["kind"] == "simplification", record[
-            "id"
-        ]
+        second = record["kind"] in check_results.SECOND_PROOF_KINDS
+        assert opens in {None, record["kind"]} or second, record["id"]
 
 
 def test_optimality_needs_both_halves_or_an_exact_value() -> None:
@@ -1001,6 +1005,93 @@ def test_a_simplification_names_a_result_on_a_case_it_shares() -> None:
     assert check_results.kind_problems(record, cited, {"T-999": {45}, "T-053": {21}}) == unnamed
     silent = {**record, "claim": "s(45) = 7, proved again."}
     assert check_results.kind_problems(silent, cited, {"T-999": {45}}) == unnamed
+
+
+def test_a_formalization_names_a_result_and_cites_a_proof_assistant() -> None:
+    """A formalization proves in a proof assistant a result the record already holds, by
+    formalizing an existing argument or by a route of its own (owner, 13 October 2026). Its
+    claim names that result on a case they share, and it cites evidence whose method,
+    performed or reported, is `proof-assistant-checked`. A simplification that cites such
+    evidence is refused, since where both kinds fit the kind is formalization."""
+    record = {
+        "id": "T-999",
+        "kind": "formalization",
+        "headline": "`s(17) = 4.67553009360455…` in Lean 4",
+        "claim": "s(17) = 4.67553009360455095163…, T-153's value, proved in Lean 4.",
+    }
+    scopes = {"T-999": {17}, "T-153": {17}}
+    formal = check_results.FORMAL_METHOD
+    reported = {"id": "E-report", "claim": "exact-value", "reported_method": formal}
+    built = {"id": "E-build", "claim": "exact-value", "method": formal}
+    paper = {"id": "E-paper", "claim": "exact-value", "method": "published-proof"}
+    assert check_results.kind_problems(record, [reported], scopes) == []
+    assert check_results.kind_problems(record, [built], scopes) == []
+    assert check_results.kind_problems(record, [paper], scopes) == [
+        (
+            "T-999: kind is formalization, and no cited evidence is `proof-assistant-checked`, "
+            "performed or reported"
+        )
+    ]
+    assert check_results.kind_problems(record, [reported], {"T-999": {17}, "T-153": {11}}) == [
+        (
+            "T-999: a formalization's claim names the registered result it formalizes or "
+            "proves again, on a case they share"
+        )
+    ]
+    simpler = {**record, "kind": "simplification"}
+    assert check_results.kind_problems(simpler, [paper], scopes) == []
+    assert check_results.kind_problems(simpler, [paper, built], scopes) == [
+        (
+            "T-999: kind is simplification, but it cites `proof-assistant-checked` evidence "
+            "(E-build): a proof-assistant proof of a result the record holds is a formalization"
+        )
+    ]
+    # Its headline may restate the relation of the result it proves again, as a
+    # simplification's may; a kind that is no bound may not.
+    assert check_results.headline_kind(record["headline"]) == "optimality"
+    rigid = {**record, "kind": "rigidity"}
+    assert any(
+        "its headline opens with an exact value" in problem
+        for problem in check_results.kind_problems(rigid, [reported], scopes)
+    )
+
+
+def test_the_second_proof_kinds_are_registered_kinds() -> None:
+    """Formalization stands after simplification in the rubric's order, which the views
+    and the site's Kind filter follow, and the schema's enum is the same tuple. T-154,
+    Fitzharding's Lean 4 proof of T-153's value, is the register's first formalization;
+    T-054 and T-055 stay simplifications."""
+    kinds = check_results.KINDS
+    assert {"simplification", "formalization"} == check_results.SECOND_PROOF_KINDS
+    assert kinds.index("formalization") == kinds.index("simplification") + 1
+    schema = safe_load(
+        (check_results.RESULTS.parent / "results.schema.yaml").read_text(encoding="utf-8")
+    )
+    enum = _find_kind_enum(schema)
+    assert tuple(enum) == kinds
+    register = safe_load(check_results.RESULTS.read_text(encoding="utf-8"))
+    by_kind: dict[str, list[str]] = {}
+    for record in register["results"]:
+        by_kind.setdefault(record["kind"], []).append(record["id"])
+    assert by_kind["formalization"] == ["T-154"]
+    assert {"T-054", "T-055"} <= set(by_kind["simplification"])
+
+
+def _find_kind_enum(node: object) -> list[str]:
+    """A result's `kind` enum, wherever the schema nests it: the one that holds the bound
+    kinds, not a review's."""
+    if isinstance(node, dict):
+        kind = node.get("kind")
+        if isinstance(kind, dict) and "lower-bound" in kind.get("enum", []):
+            return list(kind["enum"])
+        for value in node.values():
+            if found := _find_kind_enum(value):
+                return found
+    if isinstance(node, list):
+        for value in node:
+            if found := _find_kind_enum(value):
+                return found
+    return []
 
 
 def _superseded_by(*later: tuple[str, str], kind: str = "case-exclusion") -> dict:

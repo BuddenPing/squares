@@ -17440,10 +17440,11 @@ results:
       GitHub's server-side times its repository was public later on 12 October 2026, about
       six hours after this edition's release large-files-v1, and its release v1.0.0 about
       seven and three-quarter hours after it; n-017's priority notes give the times. It is
-      a separate proof that leaves no premise open within its stated trust boundary, not a
-      formalization of this argument, and its source names this candidate as independent
-      and published on 12 October 2026. This entry stays the first report of the value and
-      keeps the case's reported lower bound.
+      a separate proof that leaves no premise open within its stated trust boundary,
+      registered as a formalization: a Lean proof of this value by a route of its own,
+      which does not formalize this argument. Its source names this candidate as
+      independent and published on 12 October 2026. This entry stays the first report of
+      the value and keeps the case's reported lower bound.
 
       The first review lists ten non-blocking defects, among them the ROOT_ADMISSION
       geometry, written only in the proof text and a script comment (KNOWN_ISSUES.md item
@@ -17463,13 +17464,14 @@ results:
       title says n=18; the source is n = 17.
 
   - id: T-154
-    kind: simplification
+    kind: formalization
     registered: '2026-10-13'
-    headline: "`s(17) = 4.67553009360455…` by a second route, a Lean 4 proof with no premise left"
+    headline: "`s(17) = 4.67553009360455…` in Lean 4, by a route of its own, with no premise left"
     claim: >-
       `s(17) = 4.67553009360455095163…`, T-153's value L, the side of John Bidwell's 1998
-      packing of seventeen unit squares, proved by a second route: Oscar Fitzharding's Lean
-      4 proof, which does not formalize T-153's argument.
+      packing of seventeen unit squares, proved in a proof assistant: a formalization, Oscar
+      Fitzharding's Lean 4 proof of T-153's value by a route of its own, which does not
+      formalize T-153's argument.
 
       Its theorem, `Sq17.square17_optimality (L : ℝ) : Sq17.HalfPlaneAssembly.PlainPacking L
       ↔ Sq17.EndpointGeometry.side ≤ L`, says that seventeen closed unit squares, each
@@ -17526,11 +17528,12 @@ results:
         premise open, within the trust boundary it states: T-153, public earlier the same
         day by GitHub's times, is a candidate resting on 15 mathematical premises by its own
         statement. n = 17 is, with n = 12, one of the two open cases below n = 18. Its kind
-        is a simplification because the record already holds the value; what it adds is a
-        route whose whole lower half is one proof-assistant build, so a single complete
-        build, here or by a third party and retained here, would carry it to V3 and C3,
-        where T-153 needs its capture recomputation and ten trees replayed. Significance is
-        separate from whether the proof is correct. Proposed for the owner's confirmation.
+        is formalization, a proof-assistant proof of a value the record already holds; what
+        it adds is a route whose whole lower half is one proof-assistant build, so a single
+        complete build, here or by a third party and retained here, would carry it to V3
+        and C3, where T-153 needs its capture recomputation and ten trees replayed.
+        Significance is separate from whether the proof is correct. Proposed for the owner's
+        confirmation.
       scored: '2026-10-13'
       by: Intake of 13 October (think-hcqr), draft for the owner
     novelty: previously-published
@@ -17611,8 +17614,8 @@ results:
       impossibility half is decided only by the full build.
 
       If that build lands before T-153's complete replay, this entry would state a lower
-      bound above n = 17's verified one, and a simplification moves no bound: its standing
-      reads pending adoption until the case record adopts it, and its kind is then
+      bound above n = 17's verified one, and a formalization moves no bound by itself: its
+      standing reads pending adoption until the case record adopts it, and its kind is then
       revisited, with its result page's registered identity amended by a dated reason in
       packing/site-urls.yaml (epistemics.md, Result Kinds).
 
@@ -17640,11 +17643,25 @@ results:
       asking that the result be registered under his name and the proof linked from the n =
       17 case page and from #405, and from the owner's report of the repository and the
       author's post the same day (think-hcqr). It is a result of its own: the owner asked
-      that a formalization be reported as its own result where it is one, and this is a
-      separate proof by another route, not a formalization of T-153's argument; by
-      epistemics.md's kind rules a second proof of a value the record holds is a
-      simplification. V0 is declared, with this note as the ladder asks: the only entry is
-      the source's report of its own build, and no build of the proof is retained here.
+      that a formalization be reported as its own result where it is one, since a proof may
+      be formalized later or by someone else. V0 is declared, with this note as the ladder
+      asks: the only entry is the source's report of its own build, and no build of the
+      proof is retained here.
+
+      Kind, by the owner's decision of 13 October 2026: it was registered as a
+      simplification, a second proof of a value the record holds, and the owner moved it the
+      same day to a new kind, formalization ("simplification is one thing but formalization
+      is another"; "let's go with formalization then"), which epistemics.md's Result Kinds
+      holds since 14 October (think-8e0p): a proof in a proof assistant of a result the
+      record already holds, by formalizing an existing argument or by a route of its own.
+
+      Why formalization: this proof does not formalize T-153's argument, and T-153 has no
+      formalization: Overbeck's is a candidate proof with Python and JavaScript checkers,
+      and the Lean formalization it plans has not started. So, of the reports this record
+      holds, this is the first proof-assistant proof of the value, and its kind is
+      formalization; simplification stays the kind of a second proof that no proof
+      assistant has checked. The result page's registered identity records the change as a
+      dated amendment (packing/site-urls.yaml).
 
       Priority, stated and not defended: by GitHub's server-side times Overbeck's candidate
       was public first. Both were published on 12 October 2026:
