@@ -85,6 +85,16 @@ class PublicationHistoryEntry(NamedTuple):
 #: for each deployment's commit, what the page it built stated.
 PUBLICATION_HISTORY = (
     PublicationHistoryEntry(
+        version="v0.6.2",
+        first_published="October 14, 2026",
+        result_scope=(
+            "Register 24 results from the 14 October intake, none adopting a house: "
+            "smaller exact packings and certificates at 69 counts, lower bounds at 37, "
+            "39, 44 and 145 to 149, wand125's closed form, which raises 154 reported "
+            "lower bounds, Kevin Fang's n^2 - n + 1 theorem and s(76) = 9."
+        ),
+    ),
+    PublicationHistoryEntry(
         version="v0.6.1",
         first_published="October 14, 2026",
         result_scope=(
@@ -636,6 +646,18 @@ class ReleaseImpactDecision(NamedTuple):
 # No impact is invented retrospectively for the published baseline editions.
 RELEASE_IMPACTS: tuple[ReleaseImpactDecision, ...] = (
     ReleaseImpactDecision(
+        component="site",
+        previous_version="v0.6.1",
+        version="v0.6.2",
+        impact="patch",
+        reason=(
+            "Register 24 results from the 14 October intake, none adopting a house: "
+            "smaller exact packings and certificates at 69 counts, lower bounds at 37, "
+            "39, 44 and 145 to 149, wand125's closed form, which raises 154 reported "
+            "lower bounds, Kevin Fang's n^2 - n + 1 theorem and s(76) = 9."
+        ),
+    ),
+    ReleaseImpactDecision(
         component="paper:square-packing-methods-survey",
         previous_version="v0.2.1",
         version="v0.2.2",
@@ -699,6 +721,97 @@ class ReleaseNoPublicChange(NamedTuple):
 
 
 RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
+    ReleaseNoPublicChange(
+        components=("paper:n11-optimality-review", "paper:n11-threshold-bound-review"),
+        paths=(
+            "packing/devtools/evand_arrangement_reports.py",
+            "packing/devtools/run_negative_controls.py",
+            "packing/devtools/upper_bound_reports.py",
+            "packing/frontier/results.yaml",
+        ),
+        outputs=(
+            "papers/n11-optimality-review.html",
+            "papers/n11-optimality-review.md",
+            "papers/n11-threshold-bound-review.html",
+            "papers/n11-threshold-bound-review.md",
+        ),
+        reason=(
+            "Rendered from main at 37e6757e and from this branch at one link revision, "
+            "both papers' HTML before the browser's math pass and their Markdown are "
+            "byte-identical; the math pass and the PDF take that same HTML. The register "
+            "gains T-161 to T-184 and the importer reads longer literals, none of which "
+            "either review cites."
+        ),
+    ),
+    ReleaseNoPublicChange(
+        components=("paper:n11-lower-bounds-explainer",),
+        paths=(
+            "packing/cases/n11_fractional_certificate/t-018-proof-card.md",
+            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-19-5.md",
+            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-381-100.md",
+            "packing/cases/n11_threshold_certificate/t-025-verifiable-claim-191-50.md",
+            "packing/cases/n11_threshold_certificate/t-026-verifiable-claim-dilation-limit.md",
+            "packing/devtools/evand_arrangement_reports.py",
+            "packing/devtools/run_negative_controls.py",
+            "packing/devtools/upper_bound_reports.py",
+            "packing/frontier/results.yaml",
+        ),
+        outputs=(
+            "papers/n11-lower-bounds-explainer.html",
+            "papers/n11-lower-bounds-explainer.md",
+        ),
+        reason=(
+            "Rendered from main at 37e6757e and from this branch, the HTML before the "
+            "browser's math pass and the Markdown differ only in the live register count "
+            "beside T-018, 160 results registered so far and now 184. The claim documents "
+            "change only the revision their links pin. A register count follows the site's "
+            "data and is not a revision of the paper, so the explainer keeps v0.4.6."
+        ),
+    ),
+    ReleaseNoPublicChange(
+        components=("paper:square-packing-methods-survey",),
+        paths=(
+            "packing/campaign/result-requests.yaml",
+            "packing/devtools/evand_arrangement_reports.py",
+            "packing/devtools/run_negative_controls.py",
+            "packing/devtools/upper_bound_reports.py",
+            "packing/frontier/n-105.md",
+            "packing/frontier/n-108.md",
+            "packing/frontier/n-126.md",
+            "packing/frontier/n-127.md",
+            "packing/frontier/n-129.md",
+            "packing/frontier/n-130.md",
+            "packing/frontier/n-131.md",
+            "packing/frontier/n-153.md",
+            "packing/frontier/n-154.md",
+            "packing/frontier/n-175.md",
+            "packing/frontier/n-179.md",
+            "packing/frontier/n-180.md",
+            "packing/frontier/n-207.md",
+            "packing/frontier/n-208.md",
+            "packing/frontier/n-209.md",
+            "packing/frontier/n-236.md",
+            "packing/frontier/n-237.md",
+            "packing/frontier/n-238.md",
+            "packing/frontier/n-239.md",
+            "packing/frontier/n-261.md",
+            "packing/frontier/n-267.md",
+            "packing/frontier/n-295.md",
+            "packing/frontier/results.yaml",
+            "packing/frontier/source-coverage.yaml",
+        ),
+        outputs=(
+            "papers/square-packing-methods-survey.html",
+            "papers/square-packing-methods-survey.md",
+        ),
+        reason=(
+            "Rendered from main at 37e6757e and from this branch at one link revision, the "
+            "HTML before the browser's math pass and the Markdown are byte-identical; the "
+            "PDF prints from that HTML. The case records change only their reported lower "
+            "bounds and evidence lists, and no house moves, so the survey's account of the "
+            "adopted houses is unchanged and it keeps v0.2.2."
+        ),
+    ),
     ReleaseNoPublicChange(
         components=("paper:n11-optimality-review", "paper:n11-threshold-bound-review"),
         paths=(
@@ -945,7 +1058,7 @@ def validate_release_impacts(
 #: fresh render, so a link naming the build commit would fail their drift check forever. It is
 #: in no version string. It moves when the claim documents are regenerated for an edition. It
 #: must be a commit on `main`; the site's own links name `main` itself (`devtools.repo_links`).
-PUBLICATION_REVISION = "93822bfe"
+PUBLICATION_REVISION = "a666b957"
 
 
 def data_pathspec() -> tuple[str, ...]:
