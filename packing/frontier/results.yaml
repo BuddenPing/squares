@@ -20033,8 +20033,6 @@ results:
       - packing/resources/web/couzo-certificates-2026-10-12/source/certificates/n176.cert
       - packing/resources/web/couzo-certificates-2026-10-12/source/certificates/n237.cert
       - packing/resources/web/couzo-certificates-2026-10-12/source/certificates/n271.cert
-      - >-
-        packing/resources/web/couzo-certificates-2026-10-12/receipts/exact-certification.json.xz
       - packing/devtools/upper_bound_reports.py
     controls: [packing/tests/test_upper_bound_reports.py]
     notes: >-
@@ -20044,6 +20042,10 @@ results:
       over the 27 jobs, the receipt records 601.97 route CPU seconds and 939.01 job wall
       seconds, the longest job 97.82 seconds. Every positive clears every wall by at least
       5.00e-21 and every pair by at least 9.99e-21.
+
+      The replay's receipt is receipts/exact-certification.json.xz in
+      couzo-certificates-2026-10-12; it stays out of this entry's artifacts so that the
+      workers' snapshot stays under its cap.
 
       At n = 156 the certificate is below the case's ceiling (Daniil Ostashev, T-149) by
       6.76e-06; above PR #574 (PingYou Ltd (BuddenPing)) by 1.30e-19; equal #593 (Mykhailo
@@ -20177,8 +20179,6 @@ results:
       - packing/resources/web/dostashev-compositions-2026-10-12/source/records/n0129.sqcert
       - packing/resources/web/dostashev-compositions-2026-10-12/source/records/n0204.sqcert
       - packing/resources/web/dostashev-compositions-2026-10-12/source/records/n0303.sqcert
-      - >-
-        packing/resources/web/dostashev-compositions-2026-10-12/receipts/exact-certification.json.xz
       - packing/devtools/upper_bound_reports.py
     controls: [packing/tests/test_upper_bound_reports.py]
     notes: >-
@@ -20188,6 +20188,10 @@ results:
       records 363.99 route CPU seconds and 447.45 job wall seconds, the longest job 85.77
       seconds. Every positive clears every wall by at least 5.00e-21 and every pair by at
       least 4.99e-21.
+
+      The replay's receipt is receipts/exact-certification.json.xz in
+      dostashev-compositions-2026-10-12; it stays out of this entry's artifacts so that the
+      workers' snapshot stays under its cap.
 
       At n = 129 the certificate is below the case's ceiling (Ryan Xu, improved by Evan
       Daniel, T-146) by 2.02e-03; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 3.61e-31;
@@ -20408,8 +20412,6 @@ results:
       - packing/resources/web/pingyou-n302-certificate-2026-10-12/README.md
       - packing/resources/web/pingyou-n302-certificate-2026-10-12/acquisition/claims.json
       - packing/resources/web/pingyou-n302-certificate-2026-10-12/facts/n-302.yaml.gz
-      - >-
-        packing/resources/web/pingyou-n302-certificate-2026-10-12/receipts/exact-certification.json.xz
       - packing/devtools/upper_bound_reports.py
     controls: [packing/tests/test_upper_bound_reports.py]
     notes: >-
@@ -20418,6 +20420,10 @@ results:
       routes, 272706 pair decisions; summed over the 3 jobs, the receipt records 51.27 route
       CPU seconds and 64.61 job wall seconds, the longest job 21.66 seconds. Every positive
       clears every wall by at least 5.00e-12 and every pair by at least 9.99e-12.
+
+      The replay's receipt is receipts/exact-certification.json.xz in
+      pingyou-n302-certificate-2026-10-12; it stays out of this entry's artifacts so that
+      the workers' snapshot stays under its cap.
 
       At n = 302 the certificate is below the case's ceiling (Nate Chaoweeraprasit
       (itsnaka), improved by Evan Daniel, T-146) by 1.75e-03; below T-098 (#375) (Francisco
@@ -20487,8 +20493,6 @@ results:
       - packing/resources/web/couzo-certificates-2026-10-13/README.md
       - packing/resources/web/couzo-certificates-2026-10-13/acquisition/claims.json
       - packing/resources/web/couzo-certificates-2026-10-13/source/certificates/n176.cert
-      - >-
-        packing/resources/web/couzo-certificates-2026-10-13/receipts/exact-certification.json.xz
       - packing/devtools/upper_bound_reports.py
     controls: [packing/tests/test_upper_bound_reports.py]
     notes: >-
@@ -20498,6 +20502,10 @@ results:
       pair decisions; summed over the 42 jobs, the receipt records 1473.51 route CPU seconds
       and 2536.72 job wall seconds, the longest job 157.79 seconds. Every positive clears
       every wall by at least 5.00e-21 and every pair by at least 9.99e-21.
+
+      The replay's receipt is receipts/exact-certification.json.xz in
+      couzo-certificates-2026-10-13; it stays out of this entry's artifacts so that the
+      workers' snapshot stays under its cap.
 
       At n = 176 the certificate is below the case's ceiling (Nate Chaoweeraprasit
       (itsnaka), T-151) by 5.22e-03; below #561 (Francisco Couzo) by 2.54e-10; above PR #574
@@ -20568,8 +20576,6 @@ results:
       - packing/resources/web/pingyou-n153-refinement-2026-10-12/README.md
       - packing/resources/web/pingyou-n153-refinement-2026-10-12/acquisition/claims.json
       - packing/resources/web/pingyou-n153-refinement-2026-10-12/facts/n-153.yaml.gz
-      - >-
-        packing/resources/web/pingyou-n153-refinement-2026-10-12/receipts/exact-certification.json.xz
       - packing/devtools/upper_bound_reports.py
     controls: [packing/tests/test_upper_bound_reports.py]
     notes: >-
@@ -20578,6 +20584,10 @@ results:
       routes, 69768 pair decisions; summed over the 3 jobs, the receipt records 12.55 route
       CPU seconds and 36.81 job wall seconds, the longest job 12.43 seconds. Every positive
       clears every wall by at least 1.00e-13 and every pair by at least 1.87e-13.
+
+      The replay's receipt is receipts/exact-certification.json.xz in
+      pingyou-n153-refinement-2026-10-12; it stays out of this entry's artifacts so that the
+      workers' snapshot stays under its cap.
 
       At n = 153 the certificate is below the case's ceiling (PingYou Ltd, T-148) by
       1.00e-14; below T-101 (#375) (the Kingbird catalogue, verified by Evan Daniel's exact
@@ -20656,8 +20666,6 @@ results:
       - packing/resources/web/pingyou-n207-refinement-2026-10-12/README.md
       - packing/resources/web/pingyou-n207-refinement-2026-10-12/acquisition/claims.json
       - packing/resources/web/pingyou-n207-refinement-2026-10-12/facts/n-207.yaml.gz
-      - >-
-        packing/resources/web/pingyou-n207-refinement-2026-10-12/receipts/exact-certification.json.xz
       - packing/devtools/upper_bound_reports.py
     controls: [packing/tests/test_upper_bound_reports.py]
     notes: >-
@@ -20666,6 +20674,10 @@ results:
       routes, 127926 pair decisions; summed over the 3 jobs, the receipt records 21.96 route
       CPU seconds and 40.17 job wall seconds, the longest job 15.77 seconds. Every positive
       clears every wall by at least 1.00e-13 and every pair by at least 1.89e-13.
+
+      The replay's receipt is receipts/exact-certification.json.xz in
+      pingyou-n207-refinement-2026-10-12; it stays out of this entry's artifacts so that the
+      workers' snapshot stays under its cap.
 
       At n = 207 the certificate is below the case's ceiling (PingYou Ltd, T-147) by
       1.49e-09; below T-098 (#375) (Francisco Couzo, improved by Evan Daniel) by 1.30e-02;
@@ -20741,8 +20753,6 @@ results:
       - packing/resources/web/pingyou-n146-refinement-2026-10-12/README.md
       - packing/resources/web/pingyou-n146-refinement-2026-10-12/acquisition/claims.json
       - packing/resources/web/pingyou-n146-refinement-2026-10-12/facts/n-146.yaml.gz
-      - >-
-        packing/resources/web/pingyou-n146-refinement-2026-10-12/receipts/exact-certification.json.xz
       - packing/devtools/upper_bound_reports.py
     controls: [packing/tests/test_upper_bound_reports.py]
     notes: >-
@@ -20751,6 +20761,10 @@ results:
       routes, 63510 pair decisions; summed over the 3 jobs, the receipt records 32.7 route
       CPU seconds and 48.92 job wall seconds, the longest job 16.69 seconds. Every positive
       clears every wall by at least 5.00e-81 and every pair by at least 9.99e-81.
+
+      The replay's receipt is receipts/exact-certification.json.xz in
+      pingyou-n146-refinement-2026-10-12; it stays out of this entry's artifacts so that the
+      workers' snapshot stays under its cap.
 
       At n = 146 the certificate is below the case's ceiling (Ryan Xu, improved by Robert
       Barnett, T-150) by 2.12e-13; below T-101 (#375) (the Kingbird catalogue, verified by
@@ -20825,8 +20839,6 @@ results:
       - packing/resources/web/pingyou-n261-refinement-2026-10-12/README.md
       - packing/resources/web/pingyou-n261-refinement-2026-10-12/acquisition/claims.json
       - packing/resources/web/pingyou-n261-refinement-2026-10-12/facts/n-261.yaml.gz
-      - >-
-        packing/resources/web/pingyou-n261-refinement-2026-10-12/receipts/exact-certification.json.xz
       - packing/devtools/upper_bound_reports.py
     controls: [packing/tests/test_upper_bound_reports.py]
     notes: >-
@@ -20836,6 +20848,10 @@ results:
       route CPU seconds and 2068.46 job wall seconds, the longest job 930.66 seconds. In
       every positive squares touch the box, a least wall clearance of exactly 0, and every
       pair clears by at least 0.
+
+      The replay's receipt is receipts/exact-certification.json.xz in
+      pingyou-n261-refinement-2026-10-12; it stays out of this entry's artifacts so that the
+      workers' snapshot stays under its cap.
 
       At n = 261 the certificate is below the case's ceiling (Ryan Xu, improved by Robert
       Barnett, T-150) by 2.98e-13; below T-101 (#375) (the Kingbird catalogue, verified by
@@ -20912,8 +20928,6 @@ results:
       - packing/resources/web/pingyou-n105-refinement-2026-10-12/README.md
       - packing/resources/web/pingyou-n105-refinement-2026-10-12/acquisition/claims.json
       - packing/resources/web/pingyou-n105-refinement-2026-10-12/facts/n-105.yaml.gz
-      - >-
-        packing/resources/web/pingyou-n105-refinement-2026-10-12/receipts/exact-certification.json.xz
       - packing/devtools/upper_bound_reports.py
     controls: [packing/tests/test_upper_bound_reports.py]
     notes: >-
@@ -20922,6 +20936,10 @@ results:
       routes, 32760 pair decisions; summed over the 3 jobs, the receipt records 21.77 route
       CPU seconds and 29.39 job wall seconds, the longest job 11.04 seconds. Every positive
       clears every wall by at least 5.00e-81 and every pair by at least 9.99e-81.
+
+      The replay's receipt is receipts/exact-certification.json.xz in
+      pingyou-n105-refinement-2026-10-12; it stays out of this entry's artifacts so that the
+      workers' snapshot stays under its cap.
 
       At n = 105 the certificate is below the case's ceiling (Ryan Xu, improved by Francisco
       Couzo, T-130) by 1.08e-19; below T-117 (#425) (Francisco Couzo, improved by Seth
@@ -20996,8 +21014,6 @@ results:
       - packing/resources/web/pingyou-n272-refinement-2026-10-12/README.md
       - packing/resources/web/pingyou-n272-refinement-2026-10-12/acquisition/claims.json
       - packing/resources/web/pingyou-n272-refinement-2026-10-12/facts/n-272.yaml.gz
-      - >-
-        packing/resources/web/pingyou-n272-refinement-2026-10-12/receipts/exact-certification.json.xz
       - packing/devtools/upper_bound_reports.py
     controls: [packing/tests/test_upper_bound_reports.py]
     notes: >-
@@ -21006,6 +21022,10 @@ results:
       routes, 221136 pair decisions; summed over the 3 jobs, the receipt records 185.95
       route CPU seconds and 240.0 job wall seconds, the longest job 106.39 seconds. Every
       positive clears every wall by at least 5.00e-101 and every pair by at least 9.99e-101.
+
+      The replay's receipt is receipts/exact-certification.json.xz in
+      pingyou-n272-refinement-2026-10-12; it stays out of this entry's artifacts so that the
+      workers' snapshot stays under its cap.
 
       At n = 272 the certificate is below the case's ceiling (Nate Chaoweeraprasit
       (itsnaka), T-151) by 5.26e-16; below T-098 (#375) (Francisco Couzo, improved by Evan
@@ -21081,7 +21101,6 @@ results:
       - packing/resources/web/couzo-issue583-2026-10-13/README.md
       - packing/resources/web/couzo-issue583-2026-10-13/acquisition/claims.json
       - packing/resources/web/couzo-issue583-2026-10-13/source/certificates/n154.cert
-      - packing/resources/web/couzo-issue583-2026-10-13/receipts/exact-certification.json.xz
       - packing/devtools/upper_bound_reports.py
     controls: [packing/tests/test_upper_bound_reports.py]
     notes: >-
@@ -21091,6 +21110,10 @@ results:
       jobs, the receipt records 696.74 route CPU seconds and 709.36 job wall seconds, the
       longest job 54.35 seconds. Every positive clears every wall by at least 5.00e-21 and
       every pair by at least 9.99e-21.
+
+      The replay's receipt is receipts/exact-certification.json.xz in
+      couzo-issue583-2026-10-13; it stays out of this entry's artifacts so that the workers'
+      snapshot stays under its cap.
 
       At n = 154 the certificate is below the case's ceiling (Evan Daniel, T-160) by
       6.66e-05; above #586 (Francisco Couzo) by 1.29e-03; equal #593 (Mykhailo Polkovskyi
@@ -21158,8 +21181,6 @@ results:
         packing/resources/web/mishapolk-exact-certificates-2026-10-12/acquisition/claims.json
       - packing/resources/web/mishapolk-exact-certificates-2026-10-12/facts/n-153.yaml.gz
       - packing/resources/web/mishapolk-exact-certificates-2026-10-12/facts/n-207.yaml.gz
-      - >-
-        packing/resources/web/mishapolk-exact-certificates-2026-10-12/receipts/exact-certification.json.xz
       - packing/devtools/upper_bound_reports.py
     controls: [packing/tests/test_upper_bound_reports.py]
     notes: >-
@@ -21169,6 +21190,10 @@ results:
       records 93.79 route CPU seconds and 205.66 job wall seconds, the longest job 23.93
       seconds. Every positive clears every wall by at least 1.20e-15 and every pair by at
       least 6.38e-16.
+
+      The replay's receipt is receipts/exact-certification.json.xz in
+      mishapolk-exact-certificates-2026-10-12; it stays out of this entry's artifacts so
+      that the workers' snapshot stays under its cap.
 
       At n = 153 the certificate is below the case's ceiling (PingYou Ltd, T-148) by
       2.56e-12; below #504 refinement (PingYou Ltd (BuddenPing)) by 2.55e-12; above PR #574
@@ -22383,8 +22408,6 @@ results:
       - packing/resources/web/dostashev-merged-bands-2026-10-13/source/records/n0211.sqcert
       - packing/resources/web/dostashev-merged-bands-2026-10-13/source/records/n0241.sqcert
       - packing/resources/web/dostashev-merged-bands-2026-10-13/source/records/n0304.sqcert
-      - >-
-        packing/resources/web/dostashev-merged-bands-2026-10-13/receipts/exact-certification.json.xz
       - packing/devtools/upper_bound_reports.py
     controls: [packing/tests/test_upper_bound_reports.py]
     notes: >-
@@ -22394,6 +22417,10 @@ results:
       records 480.19 route CPU seconds and 656.86 job wall seconds, the longest job 89.14
       seconds. Every positive clears every wall by at least 5.00e-21 and every pair by at
       least 4.99e-21.
+
+      The replay's receipt is receipts/exact-certification.json.xz in
+      dostashev-merged-bands-2026-10-13; it stays out of this entry's artifacts so that the
+      workers' snapshot stays under its cap.
 
       At n = 211 the certificate is below the case's ceiling (Daniil Ostashev, T-149) by
       2.64e-03; above #583 (Francisco Couzo) by 1.35e-04; above #586 (Francisco Couzo) by
@@ -23224,10 +23251,7 @@ results:
       - packing/resources/web/couzo-issue583-2026-10-13/acquisition/claims.json
       - packing/resources/web/couzo-issue583-2026-10-13/source/certificates/n211.cert
       - packing/resources/web/couzo-issue583-2026-10-13/source/certificates/n241.cert
-      - packing/resources/web/couzo-issue583-2026-10-13/receipts/exact-certification.json.xz
       - packing/resources/web/couzo-certificates-2026-10-13/source/certificates/n302.cert
-      - >-
-        packing/resources/web/couzo-certificates-2026-10-13/receipts/exact-certification.json.xz
       - packing/devtools/upper_bound_reports.py
     controls: [packing/tests/test_upper_bound_reports.py]
     notes: >-
@@ -23237,6 +23261,10 @@ results:
       jobs, the receipt records 696.74 route CPU seconds and 709.36 job wall seconds, the
       longest job 54.35 seconds. Every positive clears every wall by at least 5.00e-21 and
       every pair by at least 9.99e-21.
+
+      The replays' receipts are receipts/exact-certification.json.xz in
+      couzo-issue583-2026-10-13 and couzo-certificates-2026-10-13; they stay out of this
+      entry's artifacts so that the workers' snapshot stays under its cap.
 
       At n = 211 the certificate is below the case's ceiling (Daniil Ostashev, T-149) by
       2.78e-03; below PR #574 (PingYou Ltd (BuddenPing)) by 2.78e-03; below #575 (Daniil
@@ -23362,8 +23390,6 @@ results:
       - packing/resources/web/couzo-certificates-2026-10-13/source/certificates/n154.cert
       - packing/resources/web/couzo-certificates-2026-10-13/source/certificates/n211.cert
       - packing/resources/web/couzo-certificates-2026-10-13/source/certificates/n241.cert
-      - >-
-        packing/resources/web/couzo-certificates-2026-10-13/receipts/exact-certification.json.xz
       - packing/devtools/upper_bound_reports.py
     controls: [packing/tests/test_upper_bound_reports.py]
     notes: >-
@@ -23373,6 +23399,10 @@ results:
       pair decisions; summed over the 42 jobs, the receipt records 1473.51 route CPU seconds
       and 2536.72 job wall seconds, the longest job 157.79 seconds. Every positive clears
       every wall by at least 5.00e-21 and every pair by at least 9.99e-21.
+
+      The replay's receipt is receipts/exact-certification.json.xz in
+      couzo-certificates-2026-10-13; it stays out of this entry's artifacts so that the
+      workers' snapshot stays under its cap.
 
       At n = 154 the certificate is below the case's ceiling (Evan Daniel, T-160) by
       1.36e-03; below #583 (Francisco Couzo (and #570, the same certificate)) by 1.29e-03;
@@ -23501,8 +23531,6 @@ results:
       - packing/resources/web/mishapolk-records-2026-10-14/README.md
       - packing/resources/web/mishapolk-records-2026-10-14/acquisition/claims.json
       - packing/resources/web/mishapolk-records-2026-10-14/facts/n-237.yaml.gz
-      - >-
-        packing/resources/web/mishapolk-records-2026-10-14/receipts/exact-certification.json.xz
       - packing/devtools/upper_bound_reports.py
     controls: [packing/tests/test_upper_bound_reports.py]
     notes: >-
@@ -23512,6 +23540,10 @@ results:
       records 176.28 route CPU seconds and 227.8 job wall seconds, the longest job 33.87
       seconds. Every positive clears every wall by at least 5.00e-21 and every pair by at
       least 9.99e-21.
+
+      The replay's receipt is receipts/exact-certification.json.xz in
+      mishapolk-records-2026-10-14; it stays out of this entry's artifacts so that the
+      workers' snapshot stays under its cap.
 
       At n = 237 the certificate is below the case's ceiling (Nate Chaoweeraprasit
       (itsnaka), improved by Francisco Couzo, T-140) by 2.45e-04; below #561 (Francisco

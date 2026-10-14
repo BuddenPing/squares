@@ -1413,9 +1413,15 @@ def root_files() -> tuple[Path, ...]:
 # evidence names the facts directory and its claims record and receipts stay artifacts,
 # so the facts left its list. When the #574 lane's last replays came in (review B6 of
 # #602), all 64 rational receipts, 2,383,524 bytes, left it as well, its notes naming
-# their directory. With this comment counted the snapshot measures 224,357,130 bytes,
-# 2,135,286 under the cap; the next intake of this size needs the owner's decision on
-# the cap or think-b6ir's narrower copy-back.
+# their directory. With this comment counted the snapshot measured 224,357,130 bytes,
+# 2,135,286 under the cap.
+#
+# Merged with main at 16ea3bd06 (#604, #605), it measured 226,885,384, 392,968 over, and
+# suites C and D of #602 failed on it. The other imports' replay receipts left their
+# entries' artifacts the way T-174's did, 610,704 bytes from T-161 to T-183, each entry's
+# notes naming its receipt. With this comment counted the snapshot measures 226,274,880
+# bytes, 217,536 under the cap; the next intake needs the owner's decision on the cap
+# or think-b6ir's narrower copy-back.
 SNAPSHOT_MAX_BYTES = 216 * 1024 * 1024
 DEFAULT_CONTROL_TIMEOUT_SECONDS = 120.0
 TERMINATION_GRACE_SECONDS = 1.0
