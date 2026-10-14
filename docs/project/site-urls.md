@@ -1039,7 +1039,8 @@ Patterns admit declared namespaces, file types and sixteen-digit asset names.
 | result/t-085.html | 800,000 | Complete broad scope history and prepared exact bounds measure 694,374 bytes. |
 | result/t-124.html | 400,000 | Complete broad scope history and prepared exact bounds measure 304,237 bytes. |
 | result/t-155.html | 400,000 | Fifty-nine counts' exact regularized sides, their regularizations and prepared math measure 303,829 bytes. |
-| results.html | 950,000 | The complete registered-result table with prepared math measures 843,037 bytes at 146 results. |
+| result/t-180.html | 400,000 | The closed form's result, its scope of 264 counts and prepared math measure 341,524 bytes. |
+| results.html | 1,100,000 | The complete registered-result table with prepared math measures 976,783 bytes at 184 results, about 3.5 kB a row; it measured 843,037 at 146. |
 | tutorial.html | 800,000 | The complete authored tutorial and prepared formulas measure 742,713 bytes. |
 
 <!-- This document follows common-doc-guidelines.md.

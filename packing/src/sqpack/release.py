@@ -725,7 +725,9 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
         components=("paper:n11-optimality-review", "paper:n11-threshold-bound-review"),
         paths=(
             "packing/devtools/evand_arrangement_reports.py",
+            "packing/devtools/overview_sections.py",
             "packing/devtools/run_negative_controls.py",
+            "packing/devtools/site_urls.py",
             "packing/devtools/upper_bound_reports.py",
             "packing/frontier/results.yaml",
         ),
@@ -739,8 +741,8 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "Rendered from main at 37e6757e and from this branch at one link revision, "
             "both papers' HTML before the browser's math pass and their Markdown are "
             "byte-identical; the math pass and the PDF take that same HTML. The register "
-            "gains T-161 to T-184 and the importer reads longer literals, none of which "
-            "either review cites."
+            "gains T-161 to T-184, the importer reads longer literals, and the site gains "
+            "two project cards and two page budgets, none of which either review cites."
         ),
     ),
     ReleaseNoPublicChange(
@@ -752,7 +754,9 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "packing/cases/n11_threshold_certificate/t-025-verifiable-claim-191-50.md",
             "packing/cases/n11_threshold_certificate/t-026-verifiable-claim-dilation-limit.md",
             "packing/devtools/evand_arrangement_reports.py",
+            "packing/devtools/overview_sections.py",
             "packing/devtools/run_negative_controls.py",
+            "packing/devtools/site_urls.py",
             "packing/devtools/upper_bound_reports.py",
             "packing/frontier/results.yaml",
         ),
@@ -773,7 +777,9 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
         paths=(
             "packing/campaign/result-requests.yaml",
             "packing/devtools/evand_arrangement_reports.py",
+            "packing/devtools/overview_sections.py",
             "packing/devtools/run_negative_controls.py",
+            "packing/devtools/site_urls.py",
             "packing/devtools/upper_bound_reports.py",
             "packing/frontier/n-105.md",
             "packing/frontier/n-108.md",

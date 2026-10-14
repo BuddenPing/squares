@@ -14,10 +14,9 @@ bound the case records held when it ran. This tool writes the comparison's conse
   (`STRONGER`): wand125's `563/50` at 122 to 126 (T-144) and `306/25` at 145 to 149
   (T-179), which by the per-count ledger's rule keep 125 and 148. The block takes `a(n)`
   rounded down at 12 places as its `value` and at 30 as its `exact_form`, both implied by
-  the theorem, and cites `E-wand125-closed-form-report`.
-- **The 33 counts `m^2 - j`** where `a(n)` meets the proved value: no bound moves; the
-  record cites the closed form's report and the source's second checker's evidence, which
-  bear on the interval those counts rest on.
+  the theorem, and cites `E-wand125-closed-form-report`. At the 33 counts `m^2 - j`,
+  where `a(n)` meets the proved value, no record changes: T-064, T-084 and T-086 name the
+  route, and the generator that drafts those records owns them.
 
 Each written case also takes the closed form's resource, `source_reviewed` no earlier
 than the intake, and one paragraph under its title, found again by its opening words, so
@@ -56,13 +55,6 @@ BOUNDS = PACKET / "evaluation" / "outputs" / "bounds.json"
 
 SOURCE_KEY = "[wand125 closed form 2026-10-14]"
 REPORT = "E-wand125-closed-form-report"
-#: What the 33 proved counts cite: the report, and the source's second checker on the
-#: interval those counts rest on (interval 34).
-EQUAL_EVIDENCE = (
-    REPORT,
-    "E-wand125-closed-form-cfcheck-report",
-    "E-wand125-closed-form-cfcheck-sample",
-)
 INTAKE = "2026-10-14"
 RESOURCE = {
     "key": SOURCE_KEY,
@@ -83,6 +75,9 @@ STRONGER: tuple[tuple[str, Fraction, range], ...] = (
 )
 #: How the paragraph opens; a second run finds its own paragraph by these words.
 OPENING = "**wand125’s closed form, 14 October 2026.**"
+#: The dated paragraphs another writer keeps directly under the title, which this one
+#: follows: `register_regularized_bounds` writes its own first on every application.
+LEADS = ("**Exact regularized certificate,",)
 #: The previous holder of the reported lane, as the paragraph names it.
 HOLDERS = {
     "nagamochi": "Nagamochi’s closed form",
@@ -94,15 +89,13 @@ HOLDERS = {
 
 @dataclass(frozen=True, slots=True)
 class Plan:
-    """One count's change: the lane it raises, if any, and the evidence it cites."""
+    """One count's raised reported lane: where `a(n)` comes from, and what it replaces."""
 
     n: int
     k: int
     interval: int
     a30: Decimal
-    raise_reported: bool
     held: Mapping[str, Any]
-    evidence: tuple[str, ...]
 
 
 def _a12(a30: Decimal) -> str:
@@ -130,21 +123,19 @@ def _ours(field: Mapping[str, Any] | None) -> bool:
 
 
 def plans(frontier: Path = FRONTIER) -> list[Plan]:
-    """Every count the evaluation decided, with what this tool writes there."""
+    """Every count whose reported lane the closed form raises."""
     rows = json.loads(BOUNDS.read_text(encoding="utf-8"))["rows"]
     found: list[Plan] = []
     for row in rows:
         n = int(row["n"])
         held = row.get("reported_lower_bound") or {}
         relation = held.get("relation")
-        if relation not in {">", "="} or not (frontier / f"n-{n:03d}.md").exists():
+        if relation != ">" or not (frontier / f"n-{n:03d}.md").exists():
             continue
         a30 = Decimal(row["a_floor_30"])
-        raising = relation == ">" and stronger(n, a30) is None
-        evidence = (REPORT,) if raising else EQUAL_EVIDENCE if relation == "=" else ()
-        if not evidence:
+        if stronger(n, a30) is not None:
             continue
-        found.append(Plan(n, int(row["k"]), int(row["interval"]), a30, raising, held, evidence))
+        found.append(Plan(n, int(row["k"]), int(row["interval"]), a30, held))
     return found
 
 
@@ -171,21 +162,14 @@ def reported_field(plan: Plan) -> dict[str, Any]:
 def paragraph(plan: Plan) -> str:
     held = plan.held
     holder = HOLDERS.get(str(held.get("kind")), "the earlier report")
-    if plan.raise_reported:
-        what = (
-            f"At $n = {plan.n}$, $k = {plan.k}$ and interval {plan.interval} give "
-            f"$a({plan.n}) = {plan.a30}\\ldots$, so the reported lower bound here is now "
-            f"$s({plan.n}) \\ge {_a12(plan.a30)}$, rounded down, above {holder}, "
-            f"${held.get('value')}$. The source replayed its certificate with its own "
-            "checker; no record of it has been replayed here, so the verified lower bound "
-            "is unchanged."
-        )
-    else:
-        what = (
-            f"At $n = {plan.n}$ it gives $a({plan.n}) = {plan.k + 1}$, the value this record "
-            "already holds, by another route; the interval it rests on is one the source’s "
-            "second checker, cfcheck, has checked. No bound moves."
-        )
+    what = (
+        f"At $n = {plan.n}$, $k = {plan.k}$ and interval {plan.interval} give "
+        f"$a({plan.n}) = {plan.a30}\\ldots$, so the reported lower bound here is now "
+        f"$s({plan.n}) \\ge {_a12(plan.a30)}$, rounded down, above {holder}, "
+        f"${held.get('value')}$. The source replayed its certificate with its own "
+        "checker; no record of it has been replayed here, so the verified lower bound "
+        "is unchanged."
+    )
     return (
         f"{OPENING} wand125’s closed form (13 October 2026, T-180) states "
         "$s(N) \\ge a(N)$ for every non-square $N \\ge 49$, from a measure of line segments "
@@ -240,19 +224,16 @@ def apply_text(plan: Plan, text: str) -> str:
     _, front, body = text.split("---\n", 2)
     payload: dict[str, Any] = safe_load(front)["packing"]
     current: Mapping[str, Any] = payload.get("reported_lower_bound") or {}
-    if plan.raise_reported:
-        if not _ours(current) and str(current.get("value")) != str(plan.held["value"]):
-            raise ValueError(
-                f"n = {plan.n}: the reported lower bound is {current.get('value')!r}, "
-                f"not the {plan.held['value']!r} the evaluation compared with"
-            )
-        front = _replace_block(
-            front, "reported_lower_bound", _block("reported_lower_bound", reported_field(plan))
+    if not _ours(current) and str(current.get("value")) != str(plan.held["value"]):
+        raise ValueError(
+            f"n = {plan.n}: the reported lower bound is {current.get('value')!r}, "
+            f"not the {plan.held['value']!r} the evaluation compared with"
         )
-    existing = payload.get("evidence") or []
-    front = _append_list(
-        front, "evidence", [f"  - {item}\n" for item in plan.evidence if item not in existing]
+    front = _replace_block(
+        front, "reported_lower_bound", _block("reported_lower_bound", reported_field(plan))
     )
+    if REPORT not in (payload.get("evidence") or []):
+        front = _append_list(front, "evidence", [f"  - {REPORT}\n"])
     keys = {resource.get("key") for resource in payload.get("resources") or []}
     if SOURCE_KEY not in keys:
         dumped = yaml.safe_dump(
@@ -278,12 +259,14 @@ def apply_text(plan: Plan, text: str) -> str:
     if len(mine) > 1:
         raise ValueError(f"n = {plan.n} holds {len(mine)} closed-form paragraphs")
     written = paragraph(plan)
-    if mine:
-        # The Markdown formatter rewraps the paragraph; the same words are the same paragraph.
-        if " ".join(parts[mine[0]].split()) != written:
-            parts[mine[0]] = written
-    else:
-        parts.insert(0, written)
+    # The Markdown formatter rewraps the paragraph; the same words are the same paragraph.
+    if mine and " ".join(parts[mine[0]].split()) == written:
+        written = parts[mine[0]]
+    parts = [part for index, part in enumerate(parts) if index not in mine]
+    place = 0
+    while place < len(parts) and parts[place].startswith(LEADS):
+        place += 1
+    parts.insert(place, written)
     return f"---\n{front}---\n{title}\n\n" + "\n\n".join(parts)
 
 
@@ -307,14 +290,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     found = plans(args.frontier)
     if args.plan:
         for plan in found:
-            lane = "reported" if plan.raise_reported else "cites"
-            print(
-                f"{plan.n}\t{lane}\t{_a12(plan.a30)}\t{plan.held.get('value')}\t{','.join(plan.evidence)}"
-            )
-        raised = [plan.n for plan in found if plan.raise_reported]
-        print(
-            f"{len(raised)} reported lanes raised, {len(found) - len(raised)} records cite only"
-        )
+            print(f"{plan.n}\t{_a12(plan.a30)}\t{plan.held.get('value')}")
+        print(f"{len(found)} reported lanes raised")
         return 0
     if args.check:
         problems = stale(args.frontier)

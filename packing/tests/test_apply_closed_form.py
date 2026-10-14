@@ -19,14 +19,12 @@ def test_every_record_is_written() -> None:
 
 
 def test_the_lanes_it_raises_and_the_ones_it_leaves() -> None:
-    plans = {plan.n: plan for plan in tool.plans()}
-    raised = sorted(n for n, plan in plans.items() if plan.raise_reported)
+    raised = {plan.n for plan in tool.plans()}
     assert len(raised) == 154
     # A registered report pending adoption is stronger at 125 (T-144) and 148 (T-179).
     assert 125 not in raised
     assert 148 not in raised
-    assert {126, 149} <= set(raised)
-    assert len([plan for plan in plans.values() if not plan.raise_reported]) == 33
+    assert {126, 149} <= raised
 
 
 def test_a_raised_lane_rounds_down_and_cites_the_report() -> None:
@@ -46,7 +44,9 @@ def test_a_stronger_pending_report_keeps_its_count() -> None:
     assert tool.stronger(149, Decimal("12.2804")) is None
 
 
-def test_a_proved_count_cites_without_moving_a_bound() -> None:
+def test_a_proved_count_is_left_to_its_generator() -> None:
+    """At the 33 counts m^2 - j the closed form meets the proved value; the records stay
+    as the generator drafts them, and T-064, T-084 and T-086 name the route."""
     packing = _case(63)
     assert packing["reported_lower_bound"]["source_key"] != tool.SOURCE_KEY
-    assert set(tool.EQUAL_EVIDENCE) <= set(packing["evidence"])
+    assert tool.REPORT not in packing["evidence"]
