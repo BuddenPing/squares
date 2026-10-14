@@ -26,7 +26,7 @@ second implementation agrees.
 ## The Short Version
 
 - **137** programs: **44** external and **93** first-party; **101** decide claims and **36** check premises.
-- **467** of **535** evidence entries name the programs that verified them: 240 reproduced with the producer’s code, 198 independently re-implemented, 18 re-implemented, sharing the producer’s components, 11 no relation: a proof, a derivation or a report.
+- **468** of **536** evidence entries name the programs that verified them: 241 reproduced with the producer’s code, 198 independently re-implemented, 18 re-implemented, sharing the producer’s components, 11 no relation: a proof, a derivation or a report.
 
 ## Programs
 
@@ -76,8 +76,8 @@ second implementation agrees.
 | [`V-fitzharding-n17-lean`](#v-fitzharding-n17-lean) | The sq17-lean Lean 4 development (Sq17Lean) | Fitzharding | external | decides | 1 | 1 |
 | [`V-check-basic-bounds`](#v-check-basic-bounds) | devtools.check_basic_bounds | Squares Project (Levy) | first-party | decides | 3 | 14 |
 | [`V-optimal-moduli`](#v-optimal-moduli) | cases.small_n.optimal_moduli | Squares Project (Levy) | first-party | decides | 1 | 0 |
-| [`V-sqpack-verify`](#v-sqpack-verify) | sqpack.verify | Squares Project (Levy) | first-party | decides | 42 | 32 |
-| [`V-check-rational-witness-independent`](#v-check-rational-witness-independent) | devtools.check_rational_witness_independent | Squares Project (Levy) | first-party | decides | 37 | 35 |
+| [`V-sqpack-verify`](#v-sqpack-verify) | sqpack.verify | Squares Project (Levy) | first-party | decides | 43 | 33 |
+| [`V-check-rational-witness-independent`](#v-check-rational-witness-independent) | devtools.check_rational_witness_independent | Squares Project (Levy) | first-party | decides | 38 | 36 |
 | [`V-check-nagamochi-lemma1-counterexample`](#v-check-nagamochi-lemma1-counterexample) | devtools.check_nagamochi_lemma1_counterexample | Squares Project (Levy) | first-party | decides | 1 | 1 |
 | [`V-check-karakus-strip-measure`](#v-check-karakus-strip-measure) | devtools.check_karakus_strip_measure | Squares Project (Levy) | first-party | decides | 1 | 2 |
 | [`V-upper-bound-promotion`](#v-upper-bound-promotion) | devtools.upper_bound_packets | Squares Project (Levy) | first-party | decides | 6 | 5 |
@@ -168,7 +168,7 @@ second implementation agrees.
 | [`V-ryxu-undilated-n51-independent`](#v-ryxu-undilated-n51-independent) | devtools.ryxu_radical_n51.independent | Squares Project (Levy) | first-party | decides | 1 | 1 |
 | [`V-ryxu-complete-custody`](#v-ryxu-complete-custody) | devtools.ryxu_house_links | Squares Project (Levy) | first-party | premises | 2 | 2 |
 | [`V-gupta-complete-custody`](#v-gupta-complete-custody) | devtools.gupta_house_links | Squares Project (Levy) | first-party | premises | 1 | 1 |
-| [`V-register-regularized-bounds`](#v-register-regularized-bounds) | devtools.register_regularized_bounds | Squares Project (Levy) | first-party | premises | 1 | 1 |
+| [`V-register-regularized-bounds`](#v-register-regularized-bounds) | devtools.register_regularized_bounds | Squares Project (Levy) | first-party | premises | 2 | 2 |
 
 ## By Program
 
@@ -1093,7 +1093,8 @@ Decides a packing pair by pair and wall by wall: by exact sign in a number field
 | `E-barnett-505-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-150 |
 | `E-squish-500-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-151 |
 | `E-couzo-506-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-152 |
-| `E-regularized-bounds-2026-10-12-exact-decision` | replayed here | reproduced with the producer’s code | full, 59 of 59: retained rational packing views, every wall and every pair decided by both maintained checkers: 1,051,241 pair decisions per checker, with the 177 negative-control decisions on the 59 views retained separately | T-155 |
+| `E-regularized-bounds-2026-10-12-exact-decision` | replayed here | reproduced with the producer’s code | full, 59 of 59: retained rational packing views, every wall and every pair decided by both maintained checkers: 1,051,241 pair decisions per checker, with the 177 negative-control decisions on the 59 views retained separately | T-155, T-156 |
+| `E-regularized-bounds-2026-10-13-grid-slack-exact-decision` | replayed here | reproduced with the producer’s code | full, 1 of 1: the retained rational packing view at n = 290, every wall and all 41,905 pairs decided by both maintained checkers; the three negative-control decisions on two distinct mutants are retained separately | T-156 |
 
 ### `V-check-rational-witness-independent`
 
@@ -1144,7 +1145,8 @@ Decides a rational-corner witness pair by pair and wall by wall in Fraction arit
 | `E-barnett-505-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-150 |
 | `E-squish-500-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-151 |
 | `E-couzo-506-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-152 |
-| `E-regularized-bounds-2026-10-12-exact-decision` | replayed here | reproduced with the producer’s code | full, 59 of 59: retained rational packing views, every wall and every pair decided by both maintained checkers: 1,051,241 pair decisions per checker, with the 177 negative-control decisions on the 59 views retained separately | T-155 |
+| `E-regularized-bounds-2026-10-12-exact-decision` | replayed here | reproduced with the producer’s code | full, 59 of 59: retained rational packing views, every wall and every pair decided by both maintained checkers: 1,051,241 pair decisions per checker, with the 177 negative-control decisions on the 59 views retained separately | T-155, T-156 |
+| `E-regularized-bounds-2026-10-13-grid-slack-exact-decision` | replayed here | reproduced with the producer’s code | full, 1 of 1: the retained rational packing view at n = 290, every wall and all 41,905 pairs decided by both maintained checkers; the three negative-control decisions on two distinct mutants are retained separately | T-156 |
 
 ### `V-check-nagamochi-lemma1-counterexample`
 
@@ -2704,7 +2706,8 @@ Selects the regularized views whose exact side lies below the case's verified up
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-regularized-bounds-2026-10-12-exact-decision` | replayed here | reproduced with the producer’s code | full, 59 of 59: retained rational packing views, every wall and every pair decided by both maintained checkers: 1,051,241 pair decisions per checker, with the 177 negative-control decisions on the 59 views retained separately | T-155 |
+| `E-regularized-bounds-2026-10-12-exact-decision` | replayed here | reproduced with the producer’s code | full, 59 of 59: retained rational packing views, every wall and every pair decided by both maintained checkers: 1,051,241 pair decisions per checker, with the 177 negative-control decisions on the 59 views retained separately | T-155, T-156 |
+| `E-regularized-bounds-2026-10-13-grid-slack-exact-decision` | replayed here | reproduced with the producer’s code | full, 1 of 1: the retained rational packing view at n = 290, every wall and all 41,905 pairs decided by both maintained checkers; the three negative-control decisions on two distinct mutants are retained separately | T-156 |
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
