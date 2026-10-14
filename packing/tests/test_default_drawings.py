@@ -102,6 +102,8 @@ def test_a_view_an_exact_route_refused_keeps_the_house(entries: dict) -> None:
     decided = defaults.decide((defaults.REPO, n, {**entries, n: refused}))
     assert decided["default"] == defaults.HOUSE
     assert decided["reason"] == defaults.ROUTE_REFUSED
+    # A refused view is not exactly verified, so it gains nothing on exactness either.
+    assert rule.EXACTNESS not in decided["better"]
 
 
 def test_a_stale_record_is_refused_rather_than_drawn_from(tmp_path: Path) -> None:

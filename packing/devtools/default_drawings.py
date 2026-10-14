@@ -165,7 +165,9 @@ def decide(unit: tuple[Path, int, Mapping[int, Mapping[str, Any]]]) -> dict[str,
         worse,
         smaller=against == "smaller",
         larger=against == "larger",
-        exact_gain=not house["verified"],
+        # Exactness is the gain of an exactly verified view over a numerically checked
+        # witness, so a view an exact route refused gains none (review B2 of #591).
+        exact_gain=not house["verified"] and _routes(entry),
     )
     if not _routes(entry):
         default, reason = HOUSE, ROUTE_REFUSED
