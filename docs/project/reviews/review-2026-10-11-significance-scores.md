@@ -1,20 +1,23 @@
 # Significance Scores Wrapped Up: The 48 Drafts Confirmed, Three Scores Changed, and the Working Rules Collected
 
-**Verdict: every draft significance score in the register is now confirmed or changed by
-a review, and the five pairs the process review of 1 October left unexplained are
-resolved by the three rules of `epistemics.md`.** Forty-eight entries carried a score
-set by the lane that registered them, from `T-037` to `T-055` (session 161), through the
-issue intakes `T-056`, `T-057` and `T-061`, the tools and source intakes `T-058`,
-`T-059` and `T-064`, the registering lanes of 1 to 3 October (`T-065`, `T-068`, `T-070`,
-`T-073` to `T-079`, `T-081`, `T-087`), and the import lanes of 7 and 8 October (`T-117`
-to `T-127`). Each was compared with the entries nearest it, by kind, count and
-technique; 46 keep their score and two change (`T-053`, `S4` to `S3`; `T-065`, `S3` to
-`S2`). The pair the 2 October review of $s(60)$ left to this pass is settled by moving
-`T-063` from `S1` to `S3` beside `T-002` and `T-016`. A consistency pass over all 146
-entries found no other pair whose difference the rationales do not explain, and lists
-the explanations. The working rules that scorers have been citing from inside rationale
-fields are collected below as one proposed paragraph for `epistemics.md`; this review
-does not edit that file.
+**Verdict: every draft significance score in the register as it stood on 11 October,
+`T-001` to `T-146`, is now confirmed or changed by a review, and the five pairs the
+process review of 1 October left unexplained are resolved by the three rules of
+`epistemics.md`.** Forty-eight entries carried a score set by the lane that registered
+them, from `T-037` to `T-055` (session 161), through the issue intakes `T-056`, `T-057`
+and `T-061`, the tools and source intakes `T-058`, `T-059` and `T-064`, the registering
+lanes of 1 to 3 October (`T-065`, `T-068`, `T-070`, `T-073` to `T-079`, `T-081`,
+`T-087`), and the import lanes of 7 and 8 October (`T-117` to `T-127`). Each was
+compared with the entries nearest it, by kind, count and technique; 46 keep their score
+and two change (`T-053`, `S4` to `S3`; `T-065`, `S3` to `S2`). The process review’s pair
+of `T-063` against `T-016` is settled by moving `T-063` from `S1` to `S3` beside `T-002`
+and `T-016`; the 2 October review of $s(60)$ had confirmed `T-063` at `S1` and left only
+`T-053` against `T-062` to this pass.
+A consistency pass over all 146 entries found no other pair whose difference the
+rationales do not explain, and lists the explanations.
+The working rules that scorers have been citing from inside rationale fields are
+collected below as one proposed paragraph for `epistemics.md`; this review does not edit
+that file.
 
 This is lane S of the 2026-10-11 intake pass (bead `think-qh3s`), written on 2026-10-11
 by an AI agent (Claude, at extra-high reasoning effort), prompted separately from the
@@ -118,7 +121,7 @@ Forty-six drafts keep their score, each with a rationale that now states the com
 | `T-059` | S2 | `T-004` (S3, a machine audit of a published proof that had none) |
 | `T-061` | S2 | `T-022` (S5); `T-078`, `T-093` (S2) |
 | `T-064`, `T-081` | S4 | each other; `T-084`, `T-086` (S3, families re-proving values held) |
-| `T-068`, `T-070`, `T-073` to `T-077` | S3 | `T-045`, `T-069`, `T-071`, `T-072`, `T-080` (S3, the same certificate kinds at other counts) |
+| `T-068`, `T-070`, `T-073` to `T-077` | S3 | `T-045`, `T-069`, `T-071`, `T-072` (S3, the same certificate kinds at other counts); `T-080` (S3, the replay of `T-073`’s own counts at $n = 101$ to $105$) |
 | `T-078` | S2 | `T-061`, `T-093` (S2); `T-079`, `T-095` (S3) |
 | `T-079` | S3 | `T-095` (S3); `T-078` (S2) |
 | `T-087` | S3 | `T-007`, `T-083` (S3, published general lower bounds registered as floors) |
@@ -188,8 +191,9 @@ this review does not add it.
 > record already credits is `S2` (`T-011`, `T-065`, `T-088`, `T-098`, `T-101`, `T-117`,
 > `T-137`, `T-146`), and custody alone is `S1` (`T-129`). A derived entry scores the
 > claim it states at its own counts, at most its premise’s score (`T-002`, `T-016`,
-> `T-063`); a second route to a value the record holds is `S2` (`T-054`, `T-055`). A
-> reported result is scored as its claim, as a replay would score it.
+> `T-063`); a second route to a value the record holds at `V3` or above is `S2`
+> (`T-054`, `T-055`). A reported result is scored as its claim, as a replay would score
+> it.
 
 ## Findings
 
@@ -230,6 +234,35 @@ this review mapped in `docs/project/document-map.yaml` as a retained review.
 No `epistemics.md`, case record, synopsis or evidence file was edited.
 `packing-validate --records` passes apart from the synopsis rows F-1 names.
 The score gates nothing: no rung, status or bound moves with this review.
+
+## Status, 14 October
+
+Two reviews of the pull request that carries this review (#563, reviews A and B of 14
+October) found the following, and this section records them rather than rewriting the
+findings above.
+
+- **Corrected in place.** The summary attributed the `T-063`/`T-016` pair to the 2
+  October review of $s(60)$; it is the 1 October process review’s (its table of five
+  pairs). The kept-score table listed `T-080` as the same kind at other counts; it is the
+  replay of `T-073`’s own counts.
+  The proposed paragraph’s second-route rule now reads “at `V3` or above”: as first
+  written it would have moved `T-154`, a second route to `T-153`’s value at `V0`, from
+  `S5` to `S2` without anyone deciding to.
+- **Corrected in the register.** Seven statements in the new rationales of `T-040`,
+  `T-052`, `T-063` (two), `T-073`, `T-081` and `T-117`, and the standing that `T-043`’s
+  and `T-046`’s rationales stated in the present tense.
+  No score changes.
+- **Not read by this pass.** `T-147` to `T-156` were registered after it.
+  `T-147` to `T-152` carry scores their import reviews confirmed.
+  Three remain drafts: `T-154` (`S5`, “draft for the owner”), and `T-155` and `T-156`
+  (`S1`, the registering lane’s). `T-155` gives exact regularized sides of credited
+  packings, so under the proposed paragraph it would read `S2`, beside `T-098`, `T-117`
+  and `T-146`, and `T-156`, derived from it, at most that; their reviewing lane decides
+  (`think-7j5d`).
+- **Found after the consistency pass.** `T-150` (`S2`) against `T-152` (`S3`): both
+  refine packings the record already credits, with no square moved beyond a tenth of a
+  unit. The 12 October `think-qh3s` note put the pair to the owner (#543); the
+  consistency table above stops at `T-146` and does not explain it.
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
