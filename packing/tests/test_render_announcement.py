@@ -155,7 +155,7 @@ def test_a_credit_line_splits_into_its_finders_and_its_lineage_in_register_order
         ["Couzo", "Daniel"],
         ["Couzo", "Levy"],
     )
-    assert ra.primary_names("Wang, Li after Kleddamag, Levy") == ["Wang", "Li"]
+    assert ra.primary_names("Wang, Li after Overbeck, Levy") == ["Wang", "Li"]
 
 
 def test_the_owner_is_never_among_the_people_a_line_credits() -> None:
