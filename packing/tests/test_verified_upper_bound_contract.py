@@ -374,9 +374,9 @@ DECLARED_CONSUMERS = {
     "packing/devtools/intake_ledger.py": (
         "the report-order ledger starts each count from both upper lanes of its case record: "
         "the verified lane as a ceiling the record proves (an exact rational, a closed form "
-        "evaluated as a rigorous interval, or a root enclosure), beside the reported lane; a "
-        "report is recorded only when it is decidably below every member. It never reads the "
-        "field as s(n)"
+        "evaluated as a rigorous interval, a root enclosure, or else its print within one "
+        "unit of its last place), beside the reported lane; a report is recorded only when "
+        "it is decidably below every member. It never reads the field as s(n)"
     ),
     "packing/campaign/issue-intake/upper-bounds-20261014/review/recompute.py": (
         "the ledger review's independent walk seeds each count with both upper lanes, the "
