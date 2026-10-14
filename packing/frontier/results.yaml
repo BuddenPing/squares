@@ -10353,8 +10353,8 @@ results:
       historical decisions are not proofs of the newly adopted arrangements.
 
       On 12 October 2026 the exact regularized certificates of T-155 took the exact form of
-      the verified upper bound at 59 of these counts to exact sides 2.2e-16 to 9.9e-15
-      below this entry's rounded-up ones, which the case records still print: at 34 exactly
+      the verified upper bound at 58 of these counts to exact sides 2.2e-16 to 9.9e-15
+      below this entry's rounded-up ones, which the case records still print: at 33 exactly
       the side of this entry's own certificate, which the record had carried rounded up at
       the printed precision, and at 25 the witness's own side, below it. The counts
       jlevy/squares#518 re-houses and n = 17 are not among them. This entry stays true as
@@ -18745,7 +18745,10 @@ results:
 
       The id is T-155 because T-151 and T-152 were registered on main by jlevy/squares#553,
       T-153 by jlevy/squares#560 and T-154, Fitzharding's Lean proof that s(17) = L, by
-      jlevy/squares#588; a renumbering at merge follows the register's rule.
+      jlevy/squares#588; a renumbering at merge follows the register's rule. Reviews,
+      dispositions and pull-request text written before 14 October 2026, among them the
+      dated verification-gaps review of 13 October, call this batch "T-154"; they are not
+      edited, and their "T-154" is this entry, T-155.
 
       Of the views as drawings, the run's reclassification after registration admits 16,
       sends 3 to review (39, 204 and 299) and refuses 3 (53, 151 and 298), where a house or
