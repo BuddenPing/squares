@@ -375,6 +375,14 @@ saved `github-issues.json`; `--refresh-starts` freezes the starts again), `rende
 with `--write` and then `--check`, and `check DIR`. Stage 3 registers what `ledger.json`
 records, and nothing it does not unless the owner names a key reason.
 
+A comparison the prints leave undecided, and an exact decision later settles, is
+transcribed into `sources.yaml` as the claim’s `record_relations`: the case lane’s value
+and exact form as `starts.yaml` froze them, or a pending register entry’s id and stated
+value; the relation and its margin; and a `read_from` naming the decision’s receipt and
+tool. The 14 October ledger’s PR #574 rows are the example
+(`upper-bounds-20261014/undecided-resolved.json`, from
+`devtools.decide_undecided_comparisons`).
+
 The ledger’s README lists what the rule leaves to the owner, without deciding it: how a
 publication in a watched repository is read, key-reason candidates, an identity measured
 against what the source says, refinement chains, exact ties between holders, a

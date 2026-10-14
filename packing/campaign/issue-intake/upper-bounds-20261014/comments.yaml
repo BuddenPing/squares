@@ -93,11 +93,11 @@ comments:
         Recorded, each a refinement credited to PingYou Ltd, after the finder of the
         packing it tightens
       equal: Not recorded, equal to the record on main
-      above: Not recorded, above the record on main
+      above: Not recorded, above the record on main or a register entry pending adoption
       undecided: Undecided at print precision
     undecided_note: >-
-      each is decided by the exact side of the record or the pending register entry it
-      is compared with, as the table below says
+      each is decided by the exact side of the record it is compared with, as the table
+      below says
   - issue: 575
     notes:
       - >-

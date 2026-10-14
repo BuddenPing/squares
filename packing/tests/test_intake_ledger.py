@@ -929,6 +929,37 @@ def test_render_check_passes_on_the_committed_ledger() -> None:
     assert ledger.render(ledger.DEFAULT_DIRECTORY, check=True) == []
 
 
+def test_the_committed_ledger_decides_pr574_as_its_receipt_does() -> None:
+    # The 17 comparisons decide_undecided_comparisons decided exactly are transcribed into
+    # sources.yaml; each relation is the receipt's, and the verdict follows from it.
+    directory = ledger.DEFAULT_DIRECTORY
+    receipt = json.loads((directory / "undecided-resolved.json").read_text("utf-8"))
+    (report,) = [
+        item for item in ledger.load_ledger(directory)["reports"] if item["report"] == "PR #574"
+    ]
+    claims = {claim["n"]: claim for claim in report["claims"]}
+    verdicts = json.loads((directory / ledger.VERDICTS).read_text("utf-8"))
+    steps = {
+        count["n"]: next(step for step in count["steps"] if step["report"] == "PR #574")
+        for count in verdicts["counts"]
+        if count["n"] in claims
+    }
+    for row in receipt["rows"]:
+        n = row["n"]
+        decided = [
+            (item["relation"], item.get("margin"))
+            for item in claims[n].get("record_relations", [])
+            if "undecided-resolved.json" in item["read_from"]
+        ]
+        assert decided == [(row["relation"], row["margin"])], n
+        assert (steps[n]["reason"], steps[n]["decided_against"]) == (
+            row["relation"],
+            [row["against"]],
+        )
+    undecided = [item["n"] for item in verdicts["owner_decisions"]["undecided"]]
+    assert undecided == [item["n"] for item in receipt["gated"]] == [29, 55, 71, 83]
+
+
 def test_refinements_render_with_their_packing_and_form_a_chain() -> None:
     data = _minimal()
     original: dict[str, Any] = {
