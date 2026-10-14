@@ -103,6 +103,8 @@ VIEW_FILES = {
     "solved": "view-solved.yaml",
     "same_above_bound": "view-same.yaml",
 }
+
+
 def rule() -> str:
     """The rule the selection reports: adoptability, with the policy's improvement rule
     read from the policy when it is asked for, never at import, so a broken marker is the
