@@ -439,9 +439,9 @@ different”.
 The owner stated no precedence between the two kinds, so where a second proof
 fits both, the owner chooses at registration.
 The decision was made on `T-154`, Fitzharding’s Lean 4 proof of $s(17) = L$, which was
-registered as a simplification that day and moved to the new kind on 2026-10-14
-([Result Kinds](#result-kinds)). `T-054` and `T-055`, which no proof assistant checked,
-stay simplifications.
+registered as a simplification that day and moved to the new kind, decided 13 October,
+recorded 14 October ([Result Kinds](#result-kinds)). `T-054` and `T-055`, which no proof
+assistant checked, stay simplifications.
 
 ## What Changed on 2026-09-30
 

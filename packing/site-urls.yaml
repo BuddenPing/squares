@@ -12981,7 +12981,7 @@ urls:
   - date: '2026-10-14'
     reason: Owner's decision of 13 October 2026 (think-8e0p) moves T-154, Fitzharding's Lean 4 proof
       of T-153's value by a route of its own, from simplification to the new kind formalization; no
-      claim, scope, evidence, status or bound change.
+      change to the claim's statement, scope, evidence, status or bound.
     previous:
       kind: simplification
       scope:

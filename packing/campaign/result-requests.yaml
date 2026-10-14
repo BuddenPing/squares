@@ -5866,7 +5866,7 @@ issues:
       this proof's repository by GitHub's times) by a route of its own, at V0/C1 with S5
       proposed; the source's clean build was not repeated here, and the verified bounds are
       unchanged. T-154 was registered as a simplification on 13 October, and the owner moved
-      it to the new kind formalization the same day (think-8e0p).
+      it to the new kind formalization, decided 13 October, recorded 14 October (think-8e0p).
     read_through: '2026-10-12T22:23:37Z'
     results:
     - key: n17-optimality-lean

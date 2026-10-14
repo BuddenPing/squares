@@ -17744,14 +17744,14 @@ results:
       proof is retained here.
 
       Kind, by the owner's decision of 13 October 2026: it was registered as a
-      simplification, a second proof of a value the record holds, and the owner moved it the
-      same day to a new kind, formalization ("simplification is one thing but formalization
-      is another"; "let's go with formalization then"), which epistemics.md's Result Kinds
-      holds since 14 October (think-8e0p): a proof in a proof assistant of a result the
-      record already holds, by formalizing an existing argument or by a route of its own. In
-      the same exchange the owner said "simplif[ic]ation should be allowed too but that is
-      different", and stated no precedence between the two kinds: where a second proof fits
-      both, the owner chooses at registration.
+      simplification, a second proof of a value the record holds, and the owner moved it to
+      a new kind, formalization, decided 13 October, recorded 14 October ("simplification is
+      one thing but formalization is another"; "let's go with formalization then"), which
+      epistemics.md's Result Kinds holds (think-8e0p): a proof in a proof assistant of a
+      result the record already holds, by formalizing an existing argument or by a route of
+      its own. In the same exchange the owner said "simplif[ic]ation should be allowed too
+      but that is different", and stated no precedence between the two kinds: where a second
+      proof fits both, the owner chooses at registration.
 
       Why formalization: this proof does not formalize T-153's argument, and T-153 has no
       formalization: Overbeck's is a candidate proof with Python and JavaScript checkers,
