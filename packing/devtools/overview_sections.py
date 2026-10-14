@@ -100,7 +100,7 @@ def significance_mark(level: int, meaning: str = "") -> str:
     return (
         f'<span class="site-significance" data-level="{level}" role="img" '
         f'aria-label="Significance S{level} of {SIGNIFICANCE_TOP}"{title}>'
-        f'<span class="site-significance-label" aria-hidden="true">S{level}</span>'
+        f'<span aria-hidden="true">S{level}</span>'
         f'<span class="site-significance-bars" aria-hidden="true">{bars}</span></span>'
     )
 

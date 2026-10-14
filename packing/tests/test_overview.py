@@ -30,6 +30,7 @@ from devtools import (
     result_overview,
     result_status,
     site_assets,
+    site_topics,
     site_urls,
 )
 from devtools.check_results import scope_values
@@ -1693,9 +1694,8 @@ def _card_sections(page: str, about: str, papers: str) -> dict[str, list[tuple[s
     assert len(about_frames) == 1
     assert len(paper_frames) == 3
     projects = page.split('id="other-square-packing-projects"', 1)[1]
-    # Tutorial and Papers are separate frames with the same reading-card contract.
-    frames = [paper_frames[0] + paper_frames[1], paper_frames[2], projects, about_frames[0]]
-    names = ("papers", "atlas", "projects", "documents")
+    frames = [*paper_frames, projects, about_frames[0]]
+    names = ("tutorial", "papers", "atlas", "projects", "documents")
     assert len(frames) == len(names)
     return {
         name: [(size, text) for _, size, text in _CARD_ELEMENT.findall(frame)]
@@ -1713,12 +1713,17 @@ def test_every_card_names_one_of_three_sizes(page: str, about: str, papers: str)
         re.findall(r'<(?:button|a|div)\b[^>]*class="site-card[ "]', about + papers + projects)
     ), "a card with no size"
     assert [len(cards) for cards in sections.values()] == [
-        len(overview_sections.PAPERS),
+        2,
+        len(overview_sections.PAPERS) - 2,
         len(overview_sections.PDF_CARD_SPECS),
         len(overview_sections.project_urls()),
         len(overview_sections.DOCUMENTS),
     ]
-    declared_sizes = {"papers": "large", **overview_sections.SECTION_CARD_SIZES}
+    declared_sizes = {
+        "tutorial": "large",
+        "papers": "large",
+        **overview_sections.SECTION_CARD_SIZES,
+    }
     for name, cards in sections.items():
         declared = declared_sizes[name]
         assert {size for size, _ in cards} == {declared}, name
@@ -1752,9 +1757,26 @@ def test_each_sections_size_is_what_its_typical_card_asks_for(
 ) -> None:
     """A section's declared size follows its median card's text length. For an even
     count the median is the mean of the two middle lengths; a changed description
-    crossing a size threshold requires the section's size to be declared again."""
-    declared_sizes = {"papers": "large", **overview_sections.SECTION_CARD_SIZES}
+    crossing a size threshold requires the section's size to be declared again.
+    The prominent Tutorial section deliberately retains the papers' large reading
+    cards even though both introductory descriptions are brief."""
+    declared_sizes = {
+        "tutorial": "large",
+        "papers": "large",
+        **overview_sections.SECTION_CARD_SIZES,
+    }
     for name, cards in _card_sections(page, about, papers).items():
+        if name == "tutorial":
+            assert len(cards) == 2
+            assert {size for size, _ in cards} == {"large"}
+            section = papers.split('<h2 id="tutorial"', 1)[1].split('<h2 id="papers"', 1)[0]
+            assert [
+                href for href, _, _ in _page_cards(papers) if f'href="{href}"' in section
+            ] == [
+                "tutorial.html",
+                "tutorial-advanced.html",
+            ]
+            continue
         lengths = sorted(len(overview_sections.reading_text(text)) for _, text in cards)
         middle = len(lengths) // 2
         typical = (
@@ -1821,7 +1843,7 @@ _LADDER_CELL_RE = re.compile(
     r'data-rung="(?P<scale>[VC])" data-level="(?P<level>\d)">(?P<label>[VC]\d)</span>'
     r'|<span class="site-significance" data-level="(?P<s_level>\d)" role="img" '
     r'aria-label="Significance S(?P=s_level) of 5" title="(?P<s_title>[^"]*)">'
-    r'<span class="site-significance-label" aria-hidden="true">(?P<s_label>S\d)</span>'
+    r'<span aria-hidden="true">(?P<s_label>S\d)</span>'
     r'<span class="site-significance-bars" aria-hidden="true">'
     r'(?P<bars>(?:<span class="site-significance-bar" '
     r'data-filled="(?:true|false)"></span>)*)</span></span>)'
@@ -3145,14 +3167,16 @@ def test_every_small_label_is_one_chip(name: str, rendered: Callable[[str], str]
 #: A rung as the site draws it, its label the one group: a V or C chip, or the
 #: significance mark, S1 to S5 with its bars (`overview_sections.significance_mark`).
 RUNG_CHIP = re.compile(
-    r'<span class="(?:site-chip site-rung-fill"(?: title="[^"]*")? data-rung="[VC]" '
-    r'data-level="\d'
-    r'|site-significance" data-level="\d" role="img" aria-label="[^"]*"(?: title="[^"]*")?>'
-    r'<span class="site-significance-label" aria-hidden="true)">([SVC]\d)</span>'
+    r'(?:<span class="site-chip site-rung-fill"(?: title="[^"]*")? data-rung="[VC]" '
+    r'data-level="\d">'
+    r'|<span class="site-significance" data-level="\d" role="img" '
+    r'aria-label="[^"]*"(?: title="[^"]*")?><span aria-hidden="true">)'
+    r"([SVC]\d)</span>"
     r'(?:<span class="site-significance-bars" aria-hidden="true">'
     r'(?:<span class="site-significance-bar" '
     r'data-filled="(?:true|false)"></span>)*</span></span>)?'
 )
+
 #: The order the site lists a result's rungs in: significance first (think-ucon).
 RUNG_ORDER = "SVC"
 
@@ -3587,8 +3611,9 @@ def test_every_result_shows_its_kind(
     assert html.unescape(re.sub(r"<[^>]+>", "", marks)) == in_part.words()
     from devtools import result_overview  # noqa: PLC0415
 
-    assert ">restricted optimality</span>" in result_overview.result_popover_html(
-        t036, overview
+    assert (
+        f">{site_topics.topic_label(t036.record['kind'])}</span>"
+        in result_overview.result_popover_html(t036, overview)
     )
 
 
@@ -4445,7 +4470,11 @@ def test_the_optimality_papers_card_says_what_t060s_rungs_allow(
     assert paper.href in render_overview.SITE_PAGES
     assert paper.title == renderer.TITLE
     assert paper.title == "A Review of the Optimality Proof of the Trump Packing of 11 Squares"
-    assert _page_cards(papers)[3][0] == paper.href
+    section = papers.split('<h2 id="papers"', 1)[1].split('<h2 id="pdfs"', 1)[0]
+    assert re.findall(r'<a class="site-card site-card-link" href="([^"]+)"', section) == [
+        item.href for item in overview_sections.PAPERS if item.href.startswith("papers/")
+    ]
+    assert paper.href in section
     value, note = _page_card_parts(papers, paper.href)
     assert card_text(value) == paper.title
     text = card_text(note)

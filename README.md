@@ -126,7 +126,8 @@ every claim is graded, and every defect is logged
 | Where | What |
 | --- | --- |
 | [**Changelog**](CHANGELOG.md) | Noteworthy merged contributions and launched papers, PDFs, results and site features; also on [News](https://jlevy.github.io/squares/news.html) |
-| [**Tutorial**](TUTORIAL.md) | First-principles introduction to the objects, bounds, cells, stationary branches, search, and proof obligations |
+| [**Basic tutorial**](TUTORIAL.md) | First-principles introduction to packings, bounds, rotation, overlap, and proof versus best-known results |
+| [**Advanced tutorial**](TUTORIAL-ADVANCED.md) | Linear programs, exact arithmetic, certificates, regularization, search, and global proofs |
 | [**Synopsis**](SYNOPSIS.md) | Current research status and roadmap, established results, terminology, workflow contracts, and handoff |
 | [**Results register**](packing/frontier/RESULTS.md) | Whole-result bounds, audits, structural theorems, and errata graded under [`epistemics.md`](epistemics.md) |
 | [**Frontier**](packing/frontier/STATUS.md) | One record per case for $n = 1\ldots324$, with reported and verified bounds kept separate |
@@ -525,6 +526,7 @@ Changing agents changes the driver, not the record or the evidence required for 
 .
 ├── CHANGELOG.md            Noteworthy contributions and public launches
 ├── TUTORIAL.md             First-principles orientation for a newcomer
+├── TUTORIAL-ADVANCED.md    Advanced companion on search, certificates, and proof
 ├── SYNOPSIS.md             Current research status, roadmap, results, and handoff
 ├── conventions.md          Artifact, identifier, evidence, and correction rules
 ├── epistemics.md           Whole-result verification and confirmation rubric

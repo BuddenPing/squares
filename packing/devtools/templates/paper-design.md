@@ -1154,6 +1154,10 @@ it.
   (`overview_sections.py`), so its lines are one grid; the size is the one its typical
   card’s text asks for, the median card’s, which for an even count is the mean of the
   two middle lengths, and `tests/test_overview.py` holds the two together.
+  Explanations’ Tutorial section is the one explicit exception: its two brief
+  introductory cards use the papers’ large reading-card layout to give readers a
+  prominent starting point.
+  Tutorial and Papers remain separate sections when checking typical text lengths.
   The page cards, the atlas cards and the other projects are medium; the documents,
   whose notes are a line, are small.
   A section can also be set in lines of its own, in `SECTION_CARD_LINES`, where one
@@ -1676,14 +1680,14 @@ it.
   Without scripting, the homepage shows its first 100 cases and Explore link; the
   dedicated Atlas exposes all 324 cases.
 
-- **About and Papers.** About separates the project narrative into paragraphs for its
-  origins, subsequent work, independent results, and current role.
+- **About and Explanations.** About separates the project narrative into paragraphs for
+  its origins, subsequent work, independent results, and current role.
   **Report Your Results!** is an H1 over the reporting invitation, which asks for the
   name to credit and ends in a **Report a Result** button opening the repository’s
   result form; the old `#contribute-your-results` anchor stays on the heading.
   The overview carries the same invitation (`report-results.md`) as an H2 after Recent
   Major Results. Project documentation remains on About.
-  Papers holds the paper, tutorial, and PDF cards.
+  Explanations holds the Tutorial, Papers and PDFs sections, followed by Visuals.
   About no longer carries Reading and Research; omit redundant Frontier Survey and
   Workbench cards from both pages (`think-h21i`).
 
@@ -2496,26 +2500,25 @@ pointer and by keyboard, and measures its label at 1280, 768 and 390 pixels.
   `preview_site.moved_links` hold the pages to that, and `check_published_site` asks the
   deployed site for each one.
 
-- **Papers page.** The site’s papers, the optimality paper, the explainer and the
-  tutorial, share one entry in the navigation bar, “Papers”, after Results.
-  It leads to `papers.html`: a hero title, “Papers”, a subtitle, a short introduction
-  and one large card for each paper (`data-card-size="large"`), saying what the paper
-  is. The cards come from one ordered list, `overview_sections.PAPERS`, each entry a
-  paper’s address, label, title, description and card size, so a new paper is one entry.
-  Each is a direct card: a paper is a full page the site serves, so its card is the link
-  itself and goes to the paper in the same tab, as the overview’s page cards do, with no
-  popover and no framed preview (`link_card`, `new_tab=False`; see Cards).
-  A link holds no other link, so what a description names is linked from the page’s
-  introduction (`templates/papers-article.md`), which links T-060’s row and the
-  optimality paper. The optimality paper is first: it explains the result that stands,
-  T-060, where the explainer proves the lower bounds T-060 superseded and the tutorial
-  is the background to both.
-  The explainer’s card names the newer optimality proofs, and reads the same on the
-  overview. The page has no popover, so it carries no popover script.
-  The two papers are served under `papers/`, each by its slug, with its Markdown and its
-  PDF beside it under the same slug: `papers/n11-optimality-review.html` and
-  `papers/n11-lower-bounds-explainer.html`. The tutorial stays at `tutorial.html`.
-  Papers is the current entry on the papers page and on each of them.
+- **Explanations page.** The shared navigation entry after Results leads to
+  `papers.html`, headed “Explanations”.
+  Its sections are Tutorial, Papers, PDFs and Visuals, in that order.
+  Tutorial presents the basic introduction and advanced companion as two large reading
+  cards. Papers presents the three parts of the $n = 11$ series in reading order,
+  followed by the methods survey.
+  PDFs offers the two infographic posters.
+  Visuals retains the Film | Workbench chooser and a paused inline film.
+  Reading cards come from `overview_sections.PAPERS`, each entry a document’s address,
+  label, title, description and card size.
+  Each card links directly to its document in the same tab, with no popover or framed
+  preview (`link_card`, `new_tab=False`; see Cards).
+  Links cited by descriptions belong in the section introduction rather than inside a
+  linked card. The standalone papers keep their existing `papers/` addresses and
+  independent publication editions.
+  The tutorials remain `tutorial.html` and `tutorial-advanced.html`, using the
+  reader-document pipeline.
+  Explanations is the current navigation entry on these pages.
+  The legacy `visualize.html` film remains available.
   The addresses the papers had before 2026-10-01, `explainer.html` and
   `n11-optimality/t-060-explainer.html` with its directory, each serve a forwarder: a
   page of a few lines that sends a reader on with the query string and the fragment they
