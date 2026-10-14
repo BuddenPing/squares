@@ -85,6 +85,14 @@ class PublicationHistoryEntry(NamedTuple):
 #: for each deployment's commit, what the page it built stated.
 PUBLICATION_HISTORY = (
     PublicationHistoryEntry(
+        version="v0.8.0",
+        first_published="October 14, 2026",
+        result_scope=(
+            "Add significance and topic filters for News and consistent boxed "
+            "significance meters across the site."
+        ),
+    ),
+    PublicationHistoryEntry(
         version="v0.7.0",
         first_published="October 14, 2026",
         result_scope=(
@@ -654,6 +662,16 @@ class ReleaseImpactDecision(NamedTuple):
 RELEASE_IMPACTS: tuple[ReleaseImpactDecision, ...] = (
     ReleaseImpactDecision(
         component="site",
+        previous_version="v0.7.0",
+        version="v0.8.0",
+        impact="minor",
+        reason=(
+            "Add significance and topic filters for News and consistent boxed "
+            "significance meters across the site."
+        ),
+    ),
+    ReleaseImpactDecision(
+        component="site",
         previous_version="v0.6.2",
         version="v0.7.0",
         impact="minor",
@@ -750,16 +768,10 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-381-100.md",
             "packing/cases/n11_threshold_certificate/t-025-verifiable-claim-191-50.md",
             "packing/cases/n11_threshold_certificate/t-026-verifiable-claim-dilation-limit.md",
-            "packing/devtools/probes/measure_atlas_views/layout.js",
-            "packing/devtools/probes/measure_atlas_views/widen.js",
             "packing/devtools/news_highlights.py",
             "packing/devtools/overview_sections.py",
             "packing/devtools/render_changelog.py",
             "packing/devtools/render_overview.py",
-            "packing/devtools/site_documents.py",
-            "packing/devtools/templates/site-nav.html",
-            "packing/devtools/upper_bound_reports.py",
-            "packing/pyproject.toml",
         ),
         outputs=(
             "papers/n11-lower-bounds-explainer.html",
@@ -776,25 +788,12 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "papers/square-packing-methods-survey.pdf",
         ),
         reason=(
-            "Reviewed the four paper renderers, manuscripts, paper styles and fronts "
-            "against main: no paper content or paper-owned typesetting rules change. "
-            "Shared navigation adds News and groups Explanations; CHANGELOG aliases move "
-            "to News, and the new "
-            "article-card and result-highlight renderers are used by site pages only. "
-            "The optional paper-card subset separates the existing tutorial card from "
-            "the other unchanged reading cards on Explanations; its default stays the same. "
-            "Navigation, shared arrow motion and publication-link provenance are site "
-            "chrome, not independent paper editions. "
-            "Atlas measurement probes add report fields and remove the obsolete "
-            "screenshot width override. Exact comparison proves the five regenerated "
-            "claim documents retain the upstream c6118ca5 link revision; mathematical claims, "
-            "embedded certificates and verifiers remain "
-            "identical. The owning paper HTML/Markdown sources and PDF derivation paths "
-            "were reviewed; no byte-identical artifact build is claimed for News. "
-            "Upstream intake changes add a beyond-horizon register plan and HOUSES "
-            "readers through the atlas import closure, plus a BasedPyright include. "
-            "Its independent paper renders were compared against main at 37e6757ed; "
-            "they were identical after normalizing repository-link provenance."
+            "The four independent paper producers do not call the significance meter "
+            "or the News rating/filter renderers. Their mathematical content, figures "
+            "and paper-owned styles are unchanged; shared site chrome owns the boxed "
+            "meter, centered disclosure controls and News filtering. The five regenerated "
+            "claim documents differ only in repository source-link provenance, from "
+            "c6118ca5 to 52b992d3. No byte-identical PDF rebuild is claimed."
         ),
     ),
     ReleaseNoPublicChange(
@@ -1043,7 +1042,7 @@ def validate_release_impacts(
 #: fresh render, so a link naming the build commit would fail their drift check forever. It is
 #: in no version string. It moves when the claim documents are regenerated for an edition. It
 #: must be a commit on `main`; the site's own links name `main` itself (`devtools.repo_links`).
-PUBLICATION_REVISION = "c6118ca5"
+PUBLICATION_REVISION = "52b992d3"
 
 
 def data_pathspec() -> tuple[str, ...]:
