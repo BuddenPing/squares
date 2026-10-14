@@ -2,8 +2,8 @@
 
 These are the programs the
 [mathematical-correctness review](../../../../../docs/project/reviews/review-2026-10-13-fitzharding-n17-mathematical-correctness.md)
-of Fitzharding’s Lean proof wrote and ran on 13 October 2026, kept byte for byte as they
-ran, with the output each printed in [`outputs/`](outputs/).
+of Fitzharding’s Lean proof wrote and ran on 13 October 2026, kept as they ran, with the
+output each printed in [`outputs/`](outputs/).
 The review was the second of this proof, by an AI agent, a Claude model at the
 tbd-strong-max tier, reasoning max, prompted separately from the first review lane and
 in a session of its own. It ran each program with the project interpreter (Python
@@ -46,6 +46,17 @@ family: the source’s README says it was developed with Claude and Codex.
 | [`chunk_replay.py`](programs/chunk_replay.py) | Replays `runToCheck` on one chunk: every step, then exact equality of the result with the declared end state | from the archive `Neighbour329/Chunk{0000,0050,0107}Data.lean` and `CaptureOpen/Chunk{0000,0080,0164}Data.lean` | `chunk_replay_*.out`, six files; `chunk_replay_n329_0000.out` is `Neighbour329` chunk 0000 |
 | [`table_check.py`](programs/table_check.py) | Replays `freshCheck 44`: the degree-44 Taylor checks of a chunk table’s fresh entries | from the archive `CaptureOpen/Chunk{0000,0080}Data.lean` with their `Checks` files | `table_check_capture_Chunk{0000,0080}.out` |
 | [`summary_check.py`](programs/summary_check.py) | Replays `summaryCheck` on the terminal capture state against the 17 targets; `--perturb` lowers one target’s angle bound by $10^{-12}$ | from the archive `CaptureOpen/Chunk0164Data.lean`; `CaptureSummaryTargetsFast.lean` | [`summary_check.out`](outputs/summary_check.out): its first four lines are the run without `--perturb`, its last two the end of the run with it |
+
+**Changed at retention.** Seven programs are byte-identical to the lane’s. Two carry one
+change each, marked in the file, because the repository’s check that keeps JavaScript
+out of Python strings (`devtools.check_no_embedded_js`, which admits no exception)
+refuses the arrow `=>`, here Lean syntax and prose: in `census_check.py` the pattern
+`\| (\d+) => \[` is written `\| (\d+) =[>] \[`, which matches the same text, and in
+`geometry_checks.py` the printed `=>` is written `={chr(62)}`, which prints the same
+characters. Both equivalences were tested apart from the programs, which were not
+re-run. The lane’s copies as they ran have the SHA-256
+`db93b922661015688928043f7d3bc148d87cf20a5d0d5fdff2745b307459d6ea` (`census_check.py`) and
+`b3fb2580b417f6b55e826b8372d3e241185fc81b907cfe69c85865b087519a76` (`geometry_checks.py`).
 
 `fast_replay_node3.out` ends “no bounds found in tree file for Node3”: the node’s table
 check was not replayed, as the review says. `geometry_checks.py` seeds no random

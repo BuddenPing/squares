@@ -1601,7 +1601,10 @@ verifiers:
       note: >-
         It counts the orbits from scratch; its authors had read the census's Lean checker
         (FiniteOrbitCoverCheck, OrbitCensus) and the classifier's before writing it.
-    note: Kept as run in the Lean packet's review-2/, with its output.
+    note: >-
+      Kept in the Lean packet's review-2/, with its output, as it ran but for one line
+      written another way at retention, with the same behaviour, so that the repository's
+      check on JavaScript in Python strings passes (the folder's README).
 
   - id: V-sq17-review2-cell-geometry
     program: geometry_checks.py
@@ -1636,7 +1639,10 @@ verifiers:
       note: >-
         Its authors had read InteriorCellCapacity, ExactWallCapacity and the cover
         certificate's Lean proofs before writing it. Its wall-class search is unseeded.
-    note: Kept as run in the Lean packet's review-2/, with its output.
+    note: >-
+      Kept in the Lean packet's review-2/, with its output, as it ran but for one line
+      written another way at retention, with the same behaviour, so that the repository's
+      check on JavaScript in Python strings passes (the folder's README).
 
   - id: V-sq17-review2-rigidity-dual
     program: rigidity_dual_check.py

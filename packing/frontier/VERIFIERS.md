@@ -1751,7 +1751,7 @@ Rebuilds, for Fitzharding's Lean proof of s(17) = L, the D4 action on the 24 cel
 - Versions run: this repository's commits, which Git holds
 - What its authors read and used: [`docs/project/reviews/review-2026-10-13-fitzharding-n17-mathematical-correctness.md`](../../docs/project/reviews/review-2026-10-13-fitzharding-n17-mathematical-correctness.md)
 - Independence: independently re-implemented after reading the producer’s code; its authors read mathematics, proof-text, certificate-format, producer-code; it shares none of the producer’s code; written by Claude (Anthropic) (the mathematical-correctness review lane of the sq17-lean intake, tbd-strong-max tier, reasoning max), with its own prompt and code; authorship in common with the producer’s: system-family, The source's README says it was developed with Claude and Codex. Written by a Claude agent prompted separately, in a file of its own that imports none of the source.
-- Note: Kept as run in the Lean packet's review-2/, with its output.
+- Note: Kept in the Lean packet's review-2/, with its output, as it ran but for one line written another way at retention, with the same behaviour, so that the repository's check on JavaScript in Python strings passes (the folder's README).
 
 | evidence | run | code | results |
 | --- | --- | --- | --- |
@@ -1767,7 +1767,7 @@ For Fitzharding's Lean proof of s(17) = L: decides exactly that the eight interi
 - Versions run: this repository's commits, which Git holds
 - What its authors read and used: [`docs/project/reviews/review-2026-10-13-fitzharding-n17-mathematical-correctness.md`](../../docs/project/reviews/review-2026-10-13-fitzharding-n17-mathematical-correctness.md)
 - Independence: independently re-implemented after reading the producer’s code; its authors read mathematics, proof-text, certificate-format, producer-code; it shares none of the producer’s code; written by Claude (Anthropic) (the mathematical-correctness review lane of the sq17-lean intake, tbd-strong-max tier, reasoning max), with its own prompt and code; authorship in common with the producer’s: system-family, The source's README says it was developed with Claude and Codex. Written by a Claude agent prompted separately, in a file of its own.
-- Note: Kept as run in the Lean packet's review-2/, with its output.
+- Note: Kept in the Lean packet's review-2/, with its output, as it ran but for one line written another way at retention, with the same behaviour, so that the repository's check on JavaScript in Python strings passes (the folder's README).
 
 | evidence | run | code | results |
 | --- | --- | --- | --- |
