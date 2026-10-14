@@ -39,6 +39,10 @@ FAMILIES = {
         "input-response",
         "Click or tap expands the existing News article; hover never changes its height.",
     ),
+    "news-filters": (
+        "input-response",
+        "Filter complete News articles by importance and subject, preserving address state.",
+    ),
     "news-forward": (
         "registered-forwarder",
         "Forward only retained About history anchors to their declared News destinations.",

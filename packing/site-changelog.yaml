@@ -9,6 +9,9 @@ entries:
   - id: october-twelve-intake-and-house-admissions
     date: '2026-10-14'
     title: "A Stronger 40-Square Bound and Four Smaller Packings"
+    significance:
+      score: 3
+      rationale: "New certified bounds and packing admissions inherit the highest S3 rating among the announced results."
     pull_requests:
       - 598
     categories:
@@ -71,6 +74,9 @@ entries:
   - id: project-changelog-and-independent-editions
     date: '2026-10-14'
     title: "Project Launches in One Place"
+    significance:
+      score: 4
+      rationale: "A major public launch index and independent edition policy make project releases discoverable across results and publications."
     pull_requests:
       - 590
     categories:
@@ -120,6 +126,9 @@ entries:
   - id: verification-significance-and-announcement-audit
     date: '2026-10-14'
     title: "Clearer Significance and Attribution in the Results"
+    significance:
+      score: 3
+      rationale: "Reader-facing rating and attribution corrections improve the interpretation of existing results without announcing a new result."
     pull_requests:
       - 563
     categories:
@@ -159,6 +168,9 @@ entries:
   - id: n17-proof-reports-and-verification-policy
     date: '2026-10-14'
     title: "What the 17-Square Proof Reports Establish"
+    significance:
+      score: 4
+      rationale: "Project-wide verification rules and the interpretation of major proof reports materially change how public evidence is presented."
     pull_requests:
       - 592
       - 595
@@ -207,6 +219,9 @@ entries:
   - id: regularized-drawings-and-exact-side-admissions
     date: '2026-10-14'
     title: "Regularized Packings, With Originals for Comparison"
+    significance:
+      score: 4
+      rationale: "A coordinated display and certification pipeline brings regularized packings and original comparisons to the public atlas and PDFs."
     pull_requests:
       - 511
       - 530
@@ -269,6 +284,9 @@ entries:
   - id: fitzharding-n17-reported-proof
     date: '2026-10-13'
     title: "Fitzharding Reports a Lean Proof for 17 Squares"
+    significance:
+      score: 5
+      rationale: "This announces the S5 formalization report T-154; significance does not imply independent verification of the complete claim."
     pull_requests: [588]
     categories: [records]
     result_ids: [T-154]
@@ -295,6 +313,9 @@ entries:
   - id: regularization-foundations
     date: '2026-10-13'
     title: "Exact Bounds Before Regularized Drawings"
+    significance:
+      score: 3
+      rationale: "The verification and regularization foundations support a substantial public capability but precede its combined launch."
     pull_requests: [497, 509]
     stack_id: 498
     categories: [regularization, pipeline]
@@ -323,6 +344,9 @@ entries:
   - id: drawn-packing-verification-gaps
     date: '2026-10-13'
     title: "A Clearer Boundary Between Drawings and Bounds"
+    significance:
+      score: 3
+      rationale: "A broad witness audit clarifies an important public boundary between drawn geometry and certified bounds."
     pull_requests: [581]
     categories: [records, regularization]
     topics: [verification, upper-bound]
@@ -345,6 +369,9 @@ entries:
   - id: overbeck-n17-candidate-proof
     date: '2026-10-13'
     title: "Overbeck Reports a Candidate Proof for 17 Squares"
+    significance:
+      score: 5
+      rationale: "This announces the S5 candidate optimality result T-153 while retaining its reported and unverified status."
     pull_requests: [560]
     categories: [records]
     result_ids: [T-153]
@@ -371,6 +398,9 @@ entries:
   - id: publication-audit-and-import-scoping-repairs
     date: '2026-10-12'
     title: "Publication Checks Follow Changed Dependencies"
+    significance:
+      score: 2
+      rationale: "Internal dependency and publication checks improve reliability without a new reader-facing result or capability."
     pull_requests: [507]
     categories: [pipeline, site]
     topics: [engineering, verification]
@@ -385,6 +415,9 @@ entries:
   - id: pingyou-ai-assistance-disclosure
     date: '2026-10-12'
     title: "PingYou Names PY as Its AI Assistant"
+    significance:
+      score: 3
+      rationale: "A focused public attribution and assistance disclosure changes how the existing S3 results are credited."
     pull_requests: [558]
     categories: [records]
     result_ids: [T-147, T-148]
@@ -406,6 +439,9 @@ entries:
   - id: replayed-upper-bound-admissions
     date: '2026-10-12'
     title: "Nine Smaller Packings From SQUISH and Couzo"
+    significance:
+      score: 3
+      rationale: "The announced independently replayed packing improvements T-151 and T-152 are both S3 results."
     pull_requests: [553]
     stack_id: 517
     categories: [records, pipeline]
@@ -441,6 +477,9 @@ entries:
   - id: october-eleven-intake-and-adoption
     date: '2026-10-12'
     title: "Smaller Certified Packings at 42 Counts"
+    significance:
+      score: 3
+      rationale: "This grouped announcement inherits the highest S3 significance of the newly admitted packing results."
     pull_requests: [512, 516, 518]
     stack_id: 517
     categories: [records, pipeline]
@@ -486,6 +525,9 @@ entries:
   - id: edited-intake-comment-detection
     date: '2026-10-12'
     title: "Corrections to Result Reports Stay Visible"
+    significance:
+      score: 2
+      rationale: "Routine intake automation preserves corrections to source reports and improves internal reliability."
     pull_requests: [531]
     categories: [pipeline]
     topics: [engineering]
@@ -499,6 +541,9 @@ entries:
   - id: public-site-prose-and-reading-width
     date: '2026-10-11'
     title: "A More Readable Project Website"
+    significance:
+      score: 3
+      rationale: "A focused public reading and layout improvement makes existing explanations easier to use."
     pull_requests: [513]
     categories: [site, documentation]
     topics: [documentation, engineering]
@@ -524,6 +569,9 @@ entries:
   - id: evan-daniel-attribution-corrections
     date: '2026-10-11'
     title: "Fuller Credit for Evan Daniel’s Results"
+    significance:
+      score: 3
+      rationale: "Substantive public credit corrections concern existing results rather than announce their original mathematical contributions."
     pull_requests: [508]
     categories: [records, documentation]
     result_ids: [T-062, T-064, T-081]
@@ -542,6 +590,9 @@ entries:
   - id: website-front-door-and-result-reports
     date: '2026-10-11'
     title: "Share a Result With the Squares Project"
+    significance:
+      score: 3
+      rationale: "A public reporting route and clearer site introduction improve participation without a new mathematical result."
     pull_requests: [502]
     categories: [site, documentation]
     topics: [documentation]
@@ -562,6 +613,9 @@ entries:
   - id: bounded-publication-audits
     date: '2026-10-11'
     title: "Publication Audits Show Progress and Failures"
+    significance:
+      score: 2
+      rationale: "Internal publication diagnostics expose progress and failures but do not change the published mathematical claims."
     pull_requests: [496]
     categories: [pipeline, site]
     topics: [engineering, verification]
@@ -576,6 +630,9 @@ entries:
   - id: october-ten-intake-replays
     date: '2026-10-11'
     title: "Exact Certificates and a Stronger 40-Square Bound"
+    significance:
+      score: 3
+      rationale: "This grouped intake announcement inherits the highest S3 significance among its newly replayed and admitted results."
     pull_requests: [487]
     categories: [records, pipeline]
     result_ids: [T-128, T-129, T-130, T-131, T-132, T-133, T-134, T-135, T-136, T-137, T-138, T-139, T-140, T-141, T-142, T-143, T-144, T-145, T-146]
@@ -616,6 +673,9 @@ entries:
   - id: unified-site-navigation
     date: '2026-10-11'
     title: "Explore the Atlas, Results and Papers Together"
+    significance:
+      score: 3
+      rationale: "A coherent public navigation structure improves discovery of existing atlas, results and explanation pages."
     pull_requests: [462]
     categories: [site]
     topics: [engineering, documentation]
@@ -645,6 +705,9 @@ entries:
   - id: paper-typography-and-title-case
     date: '2026-10-10'
     title: "Consistent Type Across the Papers"
+    significance:
+      score: 3
+      rationale: "Reader-facing typography and mathematical title corrections improve the published papers without changing their claims."
     pull_requests: [492]
     categories: [documentation, pipeline]
     topics: [documentation]
@@ -687,6 +750,9 @@ entries:
   - id: illustrated-packing-methods-tutorial
     date: '2026-10-10'
     title: "How Record Packings Are Found and Verified"
+    significance:
+      score: 4
+      rationale: "A substantial new illustrated explanation connects search, refinement and certification for readers across the full pipeline."
     pull_requests: [477]
     categories: [documentation]
     topics: [upper-bound, documentation]
@@ -710,6 +776,9 @@ entries:
   - id: readable-atlas-and-print-exports
     date: '2026-10-10'
     title: "Compare Packings on Screen and on Paper"
+    significance:
+      score: 4
+      rationale: "A coordinated public atlas and print-export launch materially improves how readers inspect and share packings."
     pull_requests: [474]
     categories: [site]
     topics: [engineering, documentation]
@@ -746,6 +815,9 @@ entries:
   - id: daniel-record-hunt-source-intake
     date: '2026-10-10'
     title: "Daniel’s Exact Certificates for 132 and 155 Squares"
+    significance:
+      score: 3
+      rationale: "The newly admitted exact certificates T-131 and T-128 each have S3 significance."
     pull_requests: [478]
     categories: [records, pipeline]
     result_ids: [T-131, T-128]
@@ -767,6 +839,9 @@ entries:
   - id: dated-beyond-horizon-reports
     date: '2026-10-10'
     title: "New 375- and 378-Square Reports With Source History"
+    significance:
+      score: 3
+      rationale: "New external packing reports and their source history are notable focused news without an optimality or complete verification claim."
     pull_requests: [479]
     categories: [records, pipeline]
     topics: [upper-bound, documentation]

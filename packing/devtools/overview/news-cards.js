@@ -3,6 +3,8 @@
 (() => {
   /** @type {Map<Element, (open: boolean) => void>} */
   const cards = new Map();
+  /** @type {Map<Element, () => void>} */
+  const refreshers = new Map();
   for (const card of document.querySelectorAll("[data-news-day]")) {
     const button = card.querySelector(".site-news-expand");
     const body = card.querySelector(".site-news-body");
@@ -42,12 +44,32 @@
         body.style.removeProperty("max-block-size");
       }
     });
-    setOpen(false, false);
-    if (body.scrollHeight <= body.clientHeight) {
-      setOpen(true, false);
-      continue;
-    }
-    const toggle = () => setOpen(button.getAttribute("aria-expanded") !== "true");
+    const refresh = () => {
+      if (!card.getClientRects().length) {
+        return;
+      }
+      const wasShort = button.hidden;
+      if (!card.dataset.newsEnhanced) {
+        setOpen(false, false);
+      }
+      const limit = 10 * Number.parseFloat(getComputedStyle(body).lineHeight);
+      const short = body.scrollHeight <= limit + 1;
+      button.hidden = short;
+      if (short) {
+        setOpen(true, false);
+        body.style.removeProperty("max-block-size");
+      } else if (wasShort) {
+        setOpen(false, false);
+      } else if (button.getAttribute("aria-expanded") === "true") {
+        body.style.removeProperty("max-block-size");
+      }
+      card.dataset.newsEnhanced = "true";
+    };
+    const toggle = () => {
+      if (!button.hidden) {
+        setOpen(button.getAttribute("aria-expanded") !== "true");
+      }
+    };
     button.addEventListener("click", toggle);
     card.querySelector(".site-news-body")?.addEventListener("focusin", () => setOpen(true));
     card.addEventListener("click", (event) => {
@@ -63,8 +85,16 @@
       toggle();
     });
     cards.set(card, setOpen);
-    card.dataset.newsEnhanced = "true";
-    button.hidden = false;
+    refreshers.set(card, refresh);
+    refresh();
+    let previousWidth = card.getBoundingClientRect().width;
+    new ResizeObserver(() => {
+      const width = card.getBoundingClientRect().width;
+      if (width > 0 && Math.abs(width - previousWidth) > 0.5) {
+        previousWidth = width;
+        refresh();
+      }
+    }).observe(card);
   }
   const reveal = () => {
     const card = document.getElementById(location.hash.slice(1))?.closest("[data-news-day]");
@@ -73,5 +103,11 @@
     }
   };
   reveal();
+  document.addEventListener("news:filter", () => {
+    for (const refresh of refreshers.values()) {
+      refresh();
+    }
+    reveal();
+  });
   window.addEventListener("hashchange", reveal);
 })();

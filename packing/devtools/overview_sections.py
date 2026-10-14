@@ -27,7 +27,7 @@ from urllib.parse import urlsplit
 from xml.etree import ElementTree as ET
 
 from devtools import repo_links
-from devtools.check_results import KINDS, kind_label
+from devtools.check_results import KINDS
 from devtools.overview_data import (
     APOSTROPHE,
     BIBLIOGRAPHY,
@@ -54,6 +54,7 @@ from devtools.render_overview import PAPERS as PAPER_RECORDS
 from devtools.render_recent_results import REPORTED_MARK, SUPERSEDED, listed, superseded
 from devtools.repo_links import branch_file
 from devtools.result_status import CONFIRMED, STATUSES, recent_contributions_by_case
+from devtools.site_topics import topic_chip, topic_label
 from sqpack.known_best import PackingSegment, grid_transitions
 from sqpack.yamlio import safe_load
 
@@ -83,14 +84,18 @@ SIGNIFICANCE_TOP = 5
 
 
 def significance_mark(level: int, meaning: str = "") -> str:
-    """A significance rung as the site draws it wherever it shows one: its letter and
-    level, `S4`, in the significance teal (`--site-significance`), and that many small
-    bars after it in the same ink, one to five. It is no chip: significance asks how
-    much a result matters, a different question from what the verification and
-    confirmation chips answer, so it looks different from them (the owner, 2026-10-03,
-    `think-m3m4`). It is one image to a screen reader, named by its level, and titled
-    with the rubric's `meaning` where one is given."""
-    bars = '<span class="site-significance-bar"></span>' * level
+    """One fixed-width significance meter everywhere: S plus five filled/empty bars.
+
+    Its ink and tooltip distinguish importance from verification and confirmation;
+    one accessible image names the score while its visual segments stay decorative.
+    """
+    if not 0 <= level <= SIGNIFICANCE_TOP:
+        raise ValueError("significance must be between zero and five")
+    bars = "".join(
+        '<span class="site-significance-bar" '
+        f'data-filled="{str(index < level).lower()}"></span>'
+        for index in range(SIGNIFICANCE_TOP)
+    )
     title = f' title="{_esc(meaning)}"' if meaning else ""
     return (
         f'<span class="site-significance" data-level="{level}" role="img" '
@@ -137,7 +142,7 @@ def kind_chip(result: Result) -> str:
     `case exclusion` (epistemics.md, Result Kinds). Every result has one; bound kinds
     use the same semantic hues as the corresponding bounds."""
     kind = str(result.record["kind"])
-    return f'<span class="site-chip" data-kind="{_esc(kind)}">{_esc(kind_label(kind))}</span>'
+    return topic_chip(kind, attribute="data-kind")
 
 
 def status_chip(status: str) -> str:
@@ -862,7 +867,7 @@ def result_filters(
         "</select></label>"
         for scale, label in RUNG_FILTERS
     )
-    kinds = [("", ALL), *((kind, kind_label(kind)) for kind in KINDS if kind in held)]
+    kinds = [("", ALL), *((kind, topic_label(kind)) for kind in KINDS if kind in held)]
     statuses = [("", ALL), *((status, status) for status in STATUSES if status in present)]
     sources = [("", ALL), ("ours", "This project"), ("others", "Others")]
     projects = [("", ALL), *((project_slug(url), project_name(url)) for url in project_urls())]

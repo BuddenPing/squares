@@ -88,8 +88,8 @@ PUBLICATION_HISTORY = (
         version="v0.7.0",
         first_published="October 14, 2026",
         result_scope=(
-            "Add a dedicated News page and homepage preview of the project history, "
-            "and let the Atlas use the full available page width."
+            "Add News with significance and topic filters, unify Explanations and split "
+            "the tutorial, and let the Atlas use the full available page width."
         ),
     ),
     PublicationHistoryEntry(
@@ -658,8 +658,8 @@ RELEASE_IMPACTS: tuple[ReleaseImpactDecision, ...] = (
         version="v0.7.0",
         impact="minor",
         reason=(
-            "Add a dedicated News page and homepage preview of the project history, "
-            "and let the Atlas use the full available page width."
+            "Add News with significance and topic filters, unify Explanations and split "
+            "the tutorial, and let the Atlas use the full available page width."
         ),
     ),
     ReleaseImpactDecision(
@@ -745,14 +745,15 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "paper:square-packing-methods-survey",
         ),
         paths=(
-            "packing/devtools/probes/measure_atlas_views/layout.js",
-            "packing/devtools/probes/measure_atlas_views/widen.js",
+            "packing/cases/n11_fractional_certificate/t-018-proof-card.md",
+            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-19-5.md",
+            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-381-100.md",
+            "packing/cases/n11_threshold_certificate/t-025-verifiable-claim-191-50.md",
+            "packing/cases/n11_threshold_certificate/t-026-verifiable-claim-dilation-limit.md",
             "packing/devtools/news_highlights.py",
             "packing/devtools/overview_sections.py",
             "packing/devtools/render_changelog.py",
             "packing/devtools/render_overview.py",
-            "packing/devtools/site_documents.py",
-            "packing/devtools/templates/site-nav.html",
         ),
         outputs=(
             "papers/n11-lower-bounds-explainer.html",
@@ -769,20 +770,12 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "papers/square-packing-methods-survey.pdf",
         ),
         reason=(
-            "Reviewed the four paper renderers, manuscripts, paper styles and fronts "
-            "against main: no paper content or paper-owned typesetting rules change. "
-            "Shared navigation adds News and groups Explanations; CHANGELOG aliases move "
-            "to News, and the new "
-            "article-card and result-highlight renderers are used by site pages only. "
-            "The optional paper-card subset separates the existing tutorial card from "
-            "the other unchanged reading cards on Explanations; its default stays the same. "
-            "Navigation, shared arrow motion and publication-link provenance are site "
-            "chrome, not independent paper editions. "
-            "Atlas measurement probes add report fields and remove the obsolete "
-            "screenshot width override. The owning paper HTML/Markdown sources and PDF "
-            "derivation paths were reviewed; mathematical claims, embedded certificates "
-            "and verifiers are unchanged. No byte-identical artifact build is claimed "
-            "for News."
+            "The four independent paper producers do not call the significance meter "
+            "or the News rating/filter renderers. Their mathematical content, figures "
+            "and paper-owned styles are unchanged; shared site chrome owns the boxed "
+            "meter, centered disclosure controls and News filtering. The five regenerated "
+            "claim documents differ only in repository source-link provenance, from "
+            "c6118ca5 to 52b992d3. No byte-identical PDF rebuild is claimed."
         ),
     ),
     ReleaseNoPublicChange(
@@ -1031,7 +1024,7 @@ def validate_release_impacts(
 #: fresh render, so a link naming the build commit would fail their drift check forever. It is
 #: in no version string. It moves when the claim documents are regenerated for an edition. It
 #: must be a commit on `main`; the site's own links name `main` itself (`devtools.repo_links`).
-PUBLICATION_REVISION = "c6118ca5"
+PUBLICATION_REVISION = "52b992d3"
 
 
 def data_pathspec() -> tuple[str, ...]:
