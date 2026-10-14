@@ -622,7 +622,11 @@ repositories:
       (v3, source_sha256 1266a8b9...), MIT code and CC BY 4.0 upstream documents. It decides a
       rectangle density's capture at every angle and centre, so s(n) > L/B without a net, and its
       n = 40 examples verify T-145's 1340000/199529 and #485's 3359/500 with refused controls:
-      the independent continuous-angle replay wand125 described in his review of #485. No packet
-      retains it; think-xzob owns evaluating it as a route for T-145 and the 6.718 claim. INDEX.json
-      and two lines each of tools/README.md and tools/THIRD_PARTY_NOTICES.md index it. Nothing
-      else to import.
+      the continuous-angle replay wand125 described in his review of #485. Its PROVENANCE.md
+      limits the independence: its author read Guzhou0806's continuous_pose.cpp, T-145's kernel,
+      while reviewing #485 before writing it, the two share an outline (a branch and bound over
+      (u, v, tan(theta/2)), concave-section lower bounds, translation derivatives and an
+      axis-aligned patch near t = 0), and "So this is independent code, but not an independent
+      method". That bears on any C-rung use. No packet retains it; think-xzob owns evaluating it
+      as a route for T-145 and the 6.718 claim. INDEX.json and two lines each of tools/README.md
+      and tools/THIRD_PARTY_NOTICES.md index it. Nothing else to import.
