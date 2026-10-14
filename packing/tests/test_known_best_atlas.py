@@ -171,10 +171,7 @@ def _assert_print_body_ink(nodes: Sequence[ET.Element]) -> None:
     assert len(recent[0]) == 1
     assert recent[0][0].text == " (since August, 2026)"
     assert recent[0][0].attrib["fill"] == "#000000"
-    assert all(
-        node.attrib["fill"] == "#000000"
-        for node in nodes
-    )
+    assert all(node.attrib["fill"] == "#000000" for node in nodes)
 
 
 @pytest.fixture
