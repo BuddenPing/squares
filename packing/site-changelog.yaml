@@ -21,8 +21,8 @@ entries:
       - documentation
     summary: |
       A report-order ledger now covers every open upper-bound report: 306 claims at
-      163 counts from 28 reports. Each claim is compared with all earlier reports,
-      and enters the 14 October register only when it is decisively smaller.
+      163 counts from 28 reports. Each claim is compared with all earlier reports;
+      the ledger recommends recording it only when its side is decisively smaller.
     details: |
       - Printed and exact sides are compared rigorously against a frozen record.
         Undecided comparisons remain visible for the owner to resolve.

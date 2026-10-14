@@ -47,8 +47,8 @@ PRs and supporting records: [\#592](https://github.com/jlevy/squares/pull/592) Â
 Significance S3: A project-wide audit improves result intake and verification; it announces no new high-significance theorem.
 
 A report-order ledger now covers every open upper-bound report: 306 claims at
-163 counts from 28 reports. Each claim is compared with all earlier reports,
-and enters the 14 October register only when it is decisively smaller.
+163 counts from 28 reports. Each claim is compared with all earlier reports;
+the ledger recommends recording it only when its side is decisively smaller.
 
 - Printed and exact sides are compared rigorously against a frozen record.
   Undecided comparisons remain visible for the owner to resolve.
