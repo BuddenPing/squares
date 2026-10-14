@@ -97,7 +97,7 @@ def test_an_exact_side_is_at_the_bound_only_where_the_bound_is_rational() -> Non
 
 
 def test_a_witness_side_exactly_at_the_bound_falls_back_to_the_bound_holder() -> None:
-    """T-154 certified witnesses' own sides exactly: a `same` view there that no result
+    """T-155 certified witnesses' own sides exactly: a `same` view there that no result
     attributes is held by the result the bound rests on, and only when the side is exact."""
     found = entry(7, "same")
     found["side"]["view"] = "33/5"
@@ -125,14 +125,14 @@ def test_a_witness_side_exactly_at_the_bound_falls_back_to_the_bound_holder() ->
 
 
 def test_a_bound_two_results_prove_is_held_by_the_one_that_registered_the_view() -> None:
-    """At 33 counts T-154's view lies exactly at the side of Evan Daniel's earlier
+    """At 33 counts T-155's view lies exactly at the side of Evan Daniel's earlier
     certificate (T-101), and the case cites both: the view drawn at that bound is the one
     whose result registered it, by a `regularizations` item on the drawn side; with no
     such item, or two, the count stays unregistered (PR #549, review B2)."""
     registering = [
         {"id": "T-101", "scope": {"n_values": [6, 7]}, "attribution": {"source_keys": ["[A]"]}},
         {
-            "id": "T-154",
+            "id": "T-155",
             "scope": {"n_values": [6, 7]},
             "regularizations": [{"n": 6, "side": "solved"}, {"n": 7, "side": "same"}],
         },
@@ -144,21 +144,21 @@ def test_a_bound_two_results_prove_is_held_by_the_one_that_registered_the_view()
             found,
             registering,
             source_key="[B]",
-            bound_holders=["T-101", "T-154"],
+            bound_holders=["T-101", "T-155"],
             side_at_bound=at,
         )
 
     # A `bound` view resolves only while its side is the bound (#548 review B1).
-    assert resolve(6, "bound", at=True).of == "T-154"
+    assert resolve(6, "bound", at=True).of == "T-155"
     assert resolve(6, "bound").of is None
-    assert resolve(7, "same", at=True).of == "T-154"
+    assert resolve(7, "same", at=True).of == "T-155"
     # A `bound` drawing where the registering result's item is on the other side, or a
     # count no item names, keeps both holders and so no answer.
     assert resolve(7, "bound", at=True).of is None
     assert "T-101" in resolve(7, "bound", at=True).reason
-    assert drawings.registering_holders(8, ["T-101", "T-154"], registering, side="solved") == [
+    assert drawings.registering_holders(8, ["T-101", "T-155"], registering, side="solved") == [
         "T-101",
-        "T-154",
+        "T-155",
     ]
 
 

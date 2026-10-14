@@ -267,7 +267,7 @@ def apply_case(n: int, text: str) -> str:
     ``devtools.generate_frontier_case`` applies this to its drafts of these counts, as it
     applies ``devtools.apply_upper_bound_packets`` to the counts T-056 and T-057 certified.
     A record whose verified upper lane a later layer holds below this certificate's side,
-    as Evan Daniel's exact certificates (T-101) and the regularized layer (T-154) do at
+    as Evan Daniel's exact certificates (T-101) and the regularized layer (T-155) do at
     these counts, is returned unchanged, as ``devtools.apply_exact_ceilings`` returns one:
     those layers write over this one and keep this certificate's sentences as history
     (``source_supersession.verified_lane_held_by_later_layer``).

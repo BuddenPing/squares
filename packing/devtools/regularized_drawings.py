@@ -28,11 +28,11 @@ view's side is exactly that bound: a later result that lowers `U` leaves the vie
 side no result holds, and the count is listed unregistered rather than credited to the
 new holder (#548 review B1). A `same` view whose side is also exactly the verified upper
 bound, where no registered result attributes the witness's source, redraws the packing
-at that bound in the same way: the result the bound rests on holds it (T-154 certified
+at that bound in the same way: the result the bound rests on holds it (T-155 certified
 26 witnesses' own sides exactly from views that are drawn here). Where the bound rests on
 several results, the one whose `regularizations` registered a view of the count at that
-bound answers: at 33 counts T-154's view lies exactly at the side of Evan Daniel's
-earlier certificate, and the case cites both (T-101, T-154). An axis view is `same` where
+bound answers: at 33 counts T-155's view lies exactly at the side of Evan Daniel's
+earlier certificate, and the case cites both (T-101, T-155). An axis view is `same` where
 its regularization is, and a view at neither side is not a drawing frame (row 4).
 Exactly one result must answer; where none does, or more than one, the count is listed
 under `unregistered` with the reason, and its record stays in the layer's index alone.
@@ -137,7 +137,7 @@ def registering_holders(
     """The results a verified upper bound rests on, narrowed, where several prove it, to
     those that registered a regularized view of `n` at that bound (a `regularizations` item
     for `n` on `side`). At 33 counts the side of Evan Daniel's certificate (T-101) is also
-    the side of a registered regularized view (T-154), and the case cites both: the view
+    the side of a registered regularized view (T-155), and the case cites both: the view
     drawn there is the registering result's. Where none or several register one, the
     holders stand as they were, and the count is listed unregistered."""
     if len(holders) < 2:

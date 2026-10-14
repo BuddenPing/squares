@@ -193,7 +193,7 @@ regularizer (29 at the witness’s side and 19 at the verified upper bound) and 
 grid-slack generator (2 by its version 0 and 20 by its version 1), with 181 records
 unchanged and 53 refused.
 At sixteen counts Evan Daniel’s views lay below the earlier ceilings and were held; they
-were admitted once T-154 registered their exact sides and the runs were decided again
+were admitted once T-155 registered their exact sides and the runs were decided again
 against the case records as they stand (`python -m devtools.regularize_evand reclassify
 --refresh-bounds`); at 227 the grid-slack view is drawn instead.
 At the 42 counts jlevy/squares#518 re-housed, both generators ran again on the new

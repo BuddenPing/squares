@@ -1732,18 +1732,44 @@ def test_reclassify_says_when_a_stored_bound_is_stale(n26_run: Path, tmp_path: P
     assert drive.reclassify(run_dir)["reclassified"]["stale_bounds"] == [26]
 
 
-def test_a_closed_form_bound_narrower_than_its_evaluation_is_still_read() -> None:
-    """SymPy refines sqrt(16 + 10^-40)'s isolating interval to 1.6e-82, below the 80-digit
-    value's error, which then fell outside it and left the bound unread; the root is
-    matched within that error instead, and a rational side is decided against it."""
-    bound = drive.verified_bound(
-        {"verified_upper_bound": "4.0", "exact_form": "sqrt(16 + 1/10**40)"}
-    )
-    assert bound is not None
-    assert bound.unread is None
-    assert bound.compare(Fraction(4)) == -1
-    assert bound.compare(Fraction(4) + Fraction(1, 10**40)) == 1
-    assert f"{bound.difference(Fraction(4)):.3e}" == "-1.250e-41"
+def test_a_copy_reclassified_under_another_name_is_marked_by_its_receipt(
+    n26_run: Path, tmp_path: Path
+) -> None:
+    """#548 review C, C3: the receipt says which run is a reclassified copy, so the layer
+    records its cost once without guessing from equal seconds. Decided again in place, a
+    run is its own; on a copy under another name, `reclassified.from` names the run it was
+    copied from, a copy of that copy keeps it, and the run block carries the mark."""
+    import shutil  # noqa: PLC0415
+
+    original = _copy_run(n26_run, tmp_path)
+    assert json.loads((original / "receipt.json").read_text())["run_directory"] == "run"
+    assert "from" not in drive.reclassify(original)["reclassified"]
+    assert "reclassified_from" not in drive.run_block(original, "evand-regularize-run")
+    copy = Path(shutil.copytree(original, tmp_path / "refreshed", symlinks=True))
+    assert drive.reclassify(copy)["reclassified"]["from"] == "evand-regularize-run"
+    block = drive.run_block(copy, "evand-regularize-refreshed")
+    assert block["reclassified_from"] == "evand-regularize-run"
+    assert block["cost"] == drive.run_block(original, "evand-regularize-run")["cost"]
+    again = Path(shutil.copytree(copy, tmp_path / "again", symlinks=True))
+    assert drive.reclassify(again)["reclassified"]["from"] == "evand-regularize-run"
+    # A receipt from before it recorded its directory says nothing, and the layer refuses
+    # the repeated cost unmarked rather than guess which run is the copy.
+    receipt = json.loads((copy / "receipt.json").read_text())
+    del receipt["run_directory"], receipt["reclassified"]["from"]
+    (copy / "receipt.json").write_text(json.dumps(receipt))
+    assert "from" not in drive.reclassify(copy)["reclassified"]
+    runs = [
+        {**drive.run_block(path, f"evand-regularize-{path.name}"), "finished": "2026-10-14"}
+        for path in (copy, original)
+    ]
+    (problem,) = axis.repeated_costs(runs)
+    assert "neither is marked as the other's reclassified copy" in problem
+    # A run the index already records as the copy keeps that mark, as an undated run
+    # keeps the index's date, so re-admitting it from such a receipt changes nothing.
+    held = [{**runs[0], "reclassified_from": "evand-regularize-run"}]
+    (kept,) = drive.dated_runs([runs[0]], held)
+    assert kept["reclassified_from"] == "evand-regularize-run"
+    assert axis.repeated_costs([kept, runs[1]]) == []
 
 
 def test_reclassify_sends_a_report_mislabelled_before_b1_to_review(
@@ -1776,3 +1802,17 @@ def test_reclassify_sends_a_report_mislabelled_before_b1_to_review(
     assert receipt["reclassified"]["stale_settings"] == []
     report = json.loads(report_path.read_text())
     assert (report["decision"]["row"], report["decision"]["decision"]) == (10, "admit")
+
+
+def test_a_closed_form_bound_narrower_than_its_evaluation_is_still_read() -> None:
+    """SymPy refines sqrt(16 + 10^-40)'s isolating interval to 1.6e-82, below the 80-digit
+    value's error, which then fell outside it and left the bound unread; the root is
+    matched within that error instead, and a rational side is decided against it."""
+    bound = drive.verified_bound(
+        {"verified_upper_bound": "4.0", "exact_form": "sqrt(16 + 1/10**40)"}
+    )
+    assert bound is not None
+    assert bound.unread is None
+    assert bound.compare(Fraction(4)) == -1
+    assert bound.compare(Fraction(4) + Fraction(1, 10**40)) == 1
+    assert f"{bound.difference(Fraction(4)):.3e}" == "-1.250e-41"
