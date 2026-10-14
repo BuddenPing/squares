@@ -896,9 +896,9 @@ SUMMARY_PROSE: dict[str, tuple[str, str]] = {
             "text and ordinary bound captions are black. Every counted legend item "
             "includes the depicted total. The same corpus-wide construction, lower-bound "
             "and optimality credit paragraphs name contributors oldest first, "
-            "with formalization and verification roles explicitly qualified, and a "
-            "regularization paragraph counts the regularized tiles and credits who "
-            "regularized them. "
+            "with formalization, verification infrastructure included, credited in one "
+            "clause, and a one-sentence regularization paragraph counts the regularized "
+            "tiles and credits who regularized them. "
             "Full source and per-case attribution is retained in the SVG metadata. "
             "The diagram credit and dated edition follow. "
             "A blank line precedes the plain project reference and address. "
@@ -2902,12 +2902,55 @@ def _print_attribution_lines() -> tuple[tuple[str, ...], ...]:
     )
 
 
-#: The lead line of a composite's regularization credits: how many of its tiles are drawn
-#: from regularized views, each because it improves on the packing as published, which
-#: the other tiles draw (regularization policy, sections 11 and 12).
+#: The lead of a composite's regularization credit: how many of its tiles are drawn from
+#: regularized views, each because it improves on the packing as published, which the
+#: other tiles draw (regularization policy, sections 11 and 12).
 POSTER_REGULARIZATION_LEAD = (
-    "Regularized drawings ({drawn} of {count}) where they improve on the packings as published"
+    "Regularized drawings ({drawn} of {count}), where they improve on the packings as published"
 )
+#: What the generators' credit lines share (policy section 7: "Regularized by the Squares
+#: Project with ..."), factored out of the composites' one sentence; its first word is
+#: the lead's own. The owner asked on 14 October 2026 that the credits be one sentence
+#: that "doesn't repeat itself too much". A credit line that does not begin this way is
+#: printed whole, as a sentence of its own, rather than cut.
+REGULARIZATION_CREDIT_STEM = "Regularized "
+REGULARIZATION_CREDIT_SHARED = "by the Squares Project with "
+
+
+def _series(items: Sequence[str]) -> tuple[str, ...]:
+    """Items as a written list's atoms: commas between, "and" before the last; each item
+    one atom, so no line breaks inside a credit."""
+    if len(items) == 1:
+        return (items[0],)
+    return (
+        *(f"{item}," for item in items[:-2]),
+        f"{items[-2]} and",
+        items[-1],
+    )
+
+
+def regularization_sentences(numbers: Sequence[int], count: int) -> tuple[tuple[str, ...], ...]:
+    """A composite's regularization credit as sentences of unbreakable atoms: one
+    sentence, the lead and then, after the shared "by the Squares Project with", what each
+    generator's credit line names, once, in the order the cases first draw it; then any
+    credit line that does not share that opening, whole and on its own."""
+    from devtools.default_drawings import credit_line  # noqa: PLC0415
+
+    if not numbers:
+        return ()
+    shared = REGULARIZATION_CREDIT_STEM + REGULARIZATION_CREDIT_SHARED
+    lines = tuple(dict.fromkeys(credit_line(n) for n in numbers))
+    named = [line.removeprefix(shared) for line in lines if line.startswith(shared)]
+    whole = [line for line in lines if not line.startswith(shared)]
+    lead = POSTER_REGULARIZATION_LEAD.format(drawn=len(numbers), count=count)
+    if named:
+        lead += ","
+    first = (
+        *lead.split(" "),
+        *(REGULARIZATION_CREDIT_SHARED.split() if named else ()),
+        *_series(named),
+    )
+    return (first, *((line,) for line in whole))
 
 
 def _regularized_numbers(canvas: CompositeCanvas) -> tuple[int, ...]:
@@ -2917,32 +2960,22 @@ def _regularized_numbers(canvas: CompositeCanvas) -> tuple[int, ...]:
 
 @cache
 def _regularization_lines_for(numbers: tuple[int, ...], count: int) -> tuple[str, ...]:
-    from devtools.default_drawings import credit_line  # noqa: PLC0415
-
-    if not numbers:
-        return ()
-    sentences = (
-        POSTER_REGULARIZATION_LEAD.format(drawn=len(numbers), count=count),
-        # Each generator's credit line as the policy's section 7 gives it, once, in the
-        # order the cases first draw it.
-        *dict.fromkeys(credit_line(n) for n in numbers),
-    )
     return tuple(
         line
-        for sentence in sentences
-        # Each sentence on the fewest lines the information block holds, so a credit line
-        # reads whole wherever it fits.
+        for atoms in regularization_sentences(numbers, count)
+        # Each sentence on the fewest lines the information block holds, never breaking
+        # inside a generator's credit.
         for line in _balanced_atoms(
-            sentence.split(" "),
+            atoms,
             failure="poster regularization credits exceed their information block",
         )
     )
 
 
 def _regularization_lines(canvas: CompositeCanvas) -> tuple[str, ...]:
-    """A composite's credit paragraph for the tiles it draws from regularized views: how
-    many, then the credit line of each generator that made one (policy, section 7 and
-    section 9, question 16); empty where it draws none."""
+    """A composite's credit paragraph for the tiles it draws from regularized views: one
+    sentence, how many and by whom, from each generator's credit line (policy, section 7
+    and section 9, question 16; `regularization_sentences`); empty where it draws none."""
     return _regularization_lines_for(_regularized_numbers(canvas), canvas.spec.count)
 
 
