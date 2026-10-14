@@ -1011,6 +1011,7 @@ HOUSES: dict[str, Callable[[int], Fraction]] = {
     "[Ostashev compositions 2026-10-12]": _import("dostashev-compositions-2026-10-12"),
     "[Ostashev merged bands 2026-10-13]": _import("dostashev-merged-bands-2026-10-13"),
     "[Daniel compositions 2026-10-13]": _import("evand-compositions-2026-10-13"),
+    "[Daniel fresh compositions 2026-10-14]": _import("evand-fresh-compositions-2026-10-14"),
 }
 
 

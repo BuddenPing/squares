@@ -48,11 +48,14 @@ OSTASHEV = "dostashev-records-2026-10-11"
 SQUISH_500 = "squish-500-fourth-request-2026-10-11"
 #: Issue #506: Couzo's next release, two counts in the corpus and nine beyond it.
 COUZO_506 = "couzo-certificates-2026-10-11"
-#: Issues #562 and #575, Daniil Ostashev's next two releases, and #584, Evan Daniel's
-#: compositions, every count of which lies beyond the corpus.
+#: Issues #562 and #575, Daniil Ostashev's next two releases, and #584 and #596, Evan
+#: Daniel's compositions, every count of which lies beyond the corpus.
 OSTASHEV_562 = "dostashev-compositions-2026-10-12"
 OSTASHEV_575 = "dostashev-merged-bands-2026-10-13"
 EVAND_584 = "evand-compositions-2026-10-13"
+EVAND_596 = "evand-fresh-compositions-2026-10-14"
+#: The packets that request nothing inside the corpus, so plan no register entry.
+BEYOND_ONLY = (EVAND_584, EVAND_596)
 #: How a declaration cites a beyond-horizon row of the source register.
 COVERAGE_URL = "packing/frontier/source-coverage.yaml"
 EVERY = (
@@ -69,6 +72,7 @@ EVERY = (
     OSTASHEV_562,
     OSTASHEV_575,
     EVAND_584,
+    EVAND_596,
 )
 
 
@@ -984,7 +988,7 @@ def test_the_driver_refuses_duplicate_keys_and_incomplete_rows(
 # --------------------------------------------------------------------------- register plan
 
 
-@pytest.mark.parametrize("name", [name for name in EVERY if name != EVAND_584])
+@pytest.mark.parametrize("name", [name for name in EVERY if name not in BEYOND_ONLY])
 def test_the_register_plan_states_each_bound_as_check_standing_reads_it(name: str) -> None:
     plan = reports.register_plan(_packet(name))
     result = plan["results.yaml"]

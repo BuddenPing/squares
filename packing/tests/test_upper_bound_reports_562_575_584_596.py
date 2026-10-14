@@ -1,11 +1,11 @@
-"""Issues #562, #575 and #584: two Ostashev releases and Evan Daniel's compositions.
+"""Issues #562, #575, #584 and #596: two Ostashev releases and Evan Daniel's compositions.
 
 Daniil Ostashev's #562 names fe43a64 and #575 names b909e1b of the same repository; each
 packet retains the certificates its issue names and pins the rest. Evan Daniel's #584
-requests three counts beyond the case corpus and nothing inside it, so its register plan
-holds beyond-horizon rows and no register entry. The general importer's checks run on all
-three through ``test_upper_bound_reports``; these hold what is particular to them. Every
-test reads retained packets only.
+and #596 each request three counts beyond the case corpus and nothing inside it, so their
+register plans hold beyond-horizon rows and no register entry. The general importer's
+checks run on all four through ``test_upper_bound_reports``; these hold what is
+particular to them. Every test reads retained packets only.
 """
 
 from __future__ import annotations
@@ -16,6 +16,8 @@ from fractions import Fraction
 from pathlib import PurePosixPath
 from typing import Any
 
+import pytest
+
 from devtools import check_source_coverage as coverage_check
 from devtools import upper_bound_reports as reports
 
@@ -23,6 +25,7 @@ OSTASHEV_501 = "dostashev-records-2026-10-11"
 OSTASHEV_562 = "dostashev-compositions-2026-10-12"
 OSTASHEV_575 = "dostashev-merged-bands-2026-10-13"
 EVAND_584 = "evand-compositions-2026-10-13"
+EVAND_596 = "evand-fresh-compositions-2026-10-14"
 
 #: The SHA-256 each issue prints for the files it names.
 ISSUE_DIGESTS = {
@@ -83,9 +86,22 @@ ISSUE_DIGESTS = {
             "06438617618f35e202eff4f9d295076e9838df05b76a38ee04d763d9052d097e"
         ),
     },
+    EVAND_596: {
+        "search/packer/candidates/fresh_n365.cert": (
+            "2d03e6bfd6993488adbf5d851d5b77feb0cd9a5dbe722f690932abe096d1e8ed"
+        ),
+        "search/packer/candidates/fresh_n370.cert": (
+            "7cfb9102add6ccce5575176e2012178733db6393f969091d2d5acdb20f31a69b"
+        ),
+        "search/packer/candidates/fresh_n460.cert": (
+            "3b2c3916e21079ba171cead7b7de2d65535e74b4560d48dc1e5c058c3a894d6d"
+        ),
+    },
 }
 #: The beyond-horizon sides #584 prints, each its certificate's side rounded up at 12 places.
 ISSUE_584 = {339: "18.926898900357", 364: "19.583782203951", 375: "19.882451030482"}
+#: The same for #596.
+ISSUE_596 = {365: "19.621320343560", 370: "19.767730746255", 460: "21.959969683021"}
 
 
 def _source(name: str) -> dict[str, Any]:
@@ -195,18 +211,21 @@ def test_the_575_sides_are_below_each_case_and_above_couzos_continuations() -> N
     assert _others(rows[176])["fe43a64 (#562, not requested)"] == "below"
 
 
-def test_the_584_plan_registers_no_entry_and_three_beyond_horizon_rows() -> None:
-    plan = reports.register_plan(reports.packet_path(EVAND_584))
+@pytest.mark.parametrize(("name", "printed"), [(EVAND_584, ISSUE_584), (EVAND_596, ISSUE_596)])
+def test_a_beyond_horizon_plan_registers_no_entry_and_one_row_a_count(
+    name: str, printed: dict[int, str]
+) -> None:
+    plan = reports.register_plan(reports.packet_path(name))
     assert "results.yaml" not in plan
-    assert plan["evidence.yaml"]["scope"]["n_values"] == list(ISSUE_584)
+    assert plan["evidence.yaml"]["scope"]["n_values"] == list(printed)
     coverage = plan["source-coverage.yaml"]
     (source,) = coverage["sources"]
-    assert source["represented_by"][0] == f"resources/web/{EVAND_584}/README.md"
+    assert source["represented_by"][0] == f"resources/web/{name}/README.md"
     assert "no register entry" in source["notes"]
     assert "T-NNN" not in source["notes"] + plan["resources/README.md"]
-    assert {row["n"]: row["value"] for row in coverage["beyond_horizon_claims"]} == ISSUE_584
+    assert {row["n"]: row["value"] for row in coverage["beyond_horizon_claims"]} == printed
     claims = coverage_check.load_claims(reports.ROOT / source["claims_record"])
-    assert claims == ISSUE_584
+    assert claims == printed
 
 
 def test_the_584_sides_are_smallest_at_364_and_375_and_couzos_586_at_339() -> None:
@@ -226,8 +245,24 @@ def test_the_584_sides_are_smallest_at_364_and_375_and_couzos_586_at_339() -> No
     # A later import reads these sides exactly, by the packet's source key.
     for key, name in (
         ("[Daniel compositions 2026-10-13]", EVAND_584),
+        ("[Daniel fresh compositions 2026-10-14]", EVAND_596),
         ("[Ostashev compositions 2026-10-12]", OSTASHEV_562),
         ("[Ostashev merged bands 2026-10-13]", OSTASHEV_575),
     ):
         for n, row in _rows(name).items():
             assert reports.house_side(key, n) == Fraction(row["exact_side"])
+
+
+def test_the_596_sides_meet_no_tracked_row_or_other_report() -> None:
+    """Nothing the record tracks names 365, 370 or 460; each side is below the grid."""
+    rows = _rows(EVAND_596)
+    assert list(rows) == list(ISSUE_596)
+    for row in rows.values():
+        assert (row["case"], row["pending"], row["smallest"]) == (None, [], reports.THIS)
+        assert Fraction(row["exact_side"]) < Fraction(row["grid_side"])
+    # 365 is s(26) + 14 = 14 + 7/2 + 3/sqrt(2), the issue says, and the certificate's
+    # rational side lies above that irrational sum by less than its 1 + 1e-20 scaling.
+    side = Fraction(rows[365]["exact_side"])
+    above = side - Fraction(35, 2)
+    assert above > 0
+    assert Fraction(9, 2) < above**2 < Fraction(9, 2) * (1 + Fraction(1, 10**18))
