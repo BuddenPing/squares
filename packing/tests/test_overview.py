@@ -572,8 +572,8 @@ def _page_card_parts(page: str, href: str) -> tuple[str, str]:
 
 
 def test_each_page_card_is_a_plain_link_to_its_page(about: str, papers: str) -> None:
-    """Papers holds the three papers and Tutorial once each as full-page links.
-    Their titles and richer descriptions are preserved. About holds the project story
+    """Explanations holds four standalone papers and both tutorials once each.
+    Their titles and descriptions are preserved. About holds the project story
     and documents; survey and workbench cards do not belong to these pages."""
     cards = _page_cards(papers)
     entries = overview_sections.PAPERS
@@ -583,6 +583,7 @@ def test_each_page_card_is_a_plain_link_to_its_page(about: str, papers: str) -> 
         "papers/n11-optimality-review.html",
         "papers/square-packing-methods-survey.html",
         "tutorial.html",
+        "tutorial-advanced.html",
     ]
     assert [paper.label for paper in entries] == [
         "Part I",
@@ -590,6 +591,7 @@ def test_each_page_card_is_a_plain_link_to_its_page(about: str, papers: str) -> 
         "Part III",
         "Methods tutorial",
         "Tutorial",
+        "Advanced tutorial",
     ]
     assert overview_sections.OPTIMALITY is entries[2]
     note = entries[2].description
@@ -609,7 +611,7 @@ def test_each_page_card_is_a_plain_link_to_its_page(about: str, papers: str) -> 
             )
             is None
         )
-    displayed_entries = (entries[-1], *entries[:-1])
+    displayed_entries = (*entries[-2:], *entries[:-2])
     for (href, tag, body), paper in zip(cards, displayed_entries, strict=True):
         assert href in render_overview.SITE_PAGES, href
         assert tag == f' data-go="page" data-card-size="{paper.size}"', href
@@ -1686,9 +1688,10 @@ def _card_sections(page: str, about: str, papers: str) -> dict[str, list[tuple[s
     about_frames = about.split('<div class="site-cards-frame')[1:]
     paper_frames = papers.split('<div class="site-cards-frame')[1:]
     assert len(about_frames) == 1
-    assert len(paper_frames) == 2
+    assert len(paper_frames) == 3
     projects = page.split('id="other-square-packing-projects"', 1)[1]
-    frames = [*paper_frames, projects, about_frames[0]]
+    # Tutorial and Papers are separate frames with the same reading-card contract.
+    frames = [paper_frames[0] + paper_frames[1], paper_frames[2], projects, about_frames[0]]
     names = ("papers", "atlas", "projects", "documents")
     assert len(frames) == len(names)
     return {
@@ -2552,7 +2555,7 @@ NAV_ENTRIES = [
 #: The pages the bar's Explanations entry is current on, of those this renderer owns; the
 #: explainer, the third, is rendered by its own module and held there
 #: (`test_n11_lower_bounds_explainer`).
-PAPERS_SECTION = {"papers.html", "tutorial.html", "visualize.html"}
+PAPERS_SECTION = {"papers.html", "tutorial.html", "tutorial-advanced.html", "visualize.html"}
 
 
 def test_the_nav_has_one_explanations_entry_for_the_papers_and_film() -> None:
@@ -4316,6 +4319,7 @@ def test_the_papers_page_holds_one_large_card_for_each_paper(
         "papers/n11-optimality-review.html",
         "papers/square-packing-methods-survey.html",
         "tutorial.html",
+        "tutorial-advanced.html",
     ]
     assert [paper.label for paper in paper_specs] == [
         "Part I",
@@ -4323,14 +4327,15 @@ def test_the_papers_page_holds_one_large_card_for_each_paper(
         "Part III",
         "Methods tutorial",
         "Tutorial",
+        "Advanced tutorial",
     ]
-    assert [paper.href for paper in paper_specs[:-1]] == [
+    assert [paper.href for paper in paper_specs[:-2]] == [
         render_overview.paper_path(record.slug) for record in render_overview.PAPERS
     ]
     assert {paper.size for paper in paper_specs} == {"large"}
     paper_hrefs = {paper.href for paper in paper_specs}
     cards = [card for card in _page_cards(page) if card[0] in paper_hrefs]
-    displayed_papers = (paper_specs[-1], *paper_specs[:-1])
+    displayed_papers = (*paper_specs[-2:], *paper_specs[:-2])
     assert [href for href, _, _ in cards] == [paper.href for paper in displayed_papers]
     assert len(re.findall(r'class="site-card[ "]', page)) == (
         len(overview_sections.PAPERS) + len(overview_sections.PDF_CARD_SPECS)
@@ -4388,8 +4393,8 @@ def test_a_papers_card_holds_no_link_so_the_introduction_links_what_it_names(
 
 
 def test_the_papers_page_says_what_each_paper_is(papers: str) -> None:
-    """The explainer keeps its series description; Tutorial keeps its fuller opening,
-    whom it is for and what it covers, rather than its former short reading note."""
+    """The two tutorial cards distinguish the beginner's introduction from the
+    technical companion, with both in the prominent Tutorial section."""
     explainer = overview_sections.LOWER_BOUNDS_PAPER
     value, note = _page_card_parts(papers, explainer)
     assert card_text(value) == EXPLAINER_TITLE
@@ -4397,20 +4402,25 @@ def test_the_papers_page_says_what_each_paper_is(papers: str) -> None:
 
     value, note = _page_card_parts(papers, "tutorial.html")
     assert card_text(value) == "Square Packing from First Principles"
-    opening = (overview_data.REPO / "TUTORIAL.md").read_text(encoding="utf-8")
-    opening = " ".join(opening.split("## Contents", 1)[0].split())
-    assert "Square Packing from First Principles" in opening
-    assert "anyone new to the problem" in card_text(note)
-    for phrase in (
-        "what the objects are",
-        "why the approach is shaped the way it is",
-        "what the research has and has not established",
-        "linear programming",
-        "algebraic number fields",
-    ):
-        assert phrase in card_text(note), phrase
-        assert phrase in opening, phrase
-    assert {explainer, "tutorial.html"} <= {href for href, _, _ in _page_cards(papers)}
+    assert card_text(note) == (
+        "The problem, bounds, small examples, and how to read a packing result."
+    )
+    value, note = _page_card_parts(papers, "tutorial-advanced.html")
+    assert card_text(value) == "Square Packing, Search, and Proof"
+    assert card_text(note) == (
+        "Linear programs, exact certificates, search, regularization, "
+        "and global optimality proofs."
+    )
+    tutorial_section = papers.split('<h2 id="tutorial"', 1)[1].split('<h2 id="papers"', 1)[0]
+    assert [href for href, _, _ in _page_cards(papers)][:2] == [
+        "tutorial.html",
+        "tutorial-advanced.html",
+    ]
+    for href in ("tutorial.html", "tutorial-advanced.html"):
+        assert f'href="{href}"' in tutorial_section
+    assert {explainer, "tutorial.html", "tutorial-advanced.html"} <= {
+        href for href, _, _ in _page_cards(papers)
+    }
 
 
 def test_the_optimality_papers_card_says_what_t060s_rungs_allow(
@@ -6496,8 +6506,12 @@ def test_reviewed_paper_titles_are_used_across_the_site(
         for slug, title in reviewed.items():
             value, _ = _page_card_parts(page, render_overview.paper_path(slug))
             assert card_text(value) == title, (name, slug)
-        value, _ = _page_card_parts(page, "tutorial.html")
-        assert card_text(value) == "Square Packing from First Principles"
+        for href, title in (
+            ("tutorial.html", "Square Packing from First Principles"),
+            ("tutorial-advanced.html", "Square Packing, Search, and Proof"),
+        ):
+            value, _ = _page_card_parts(page, href)
+            assert card_text(value) == title
 
 
 def test_paper_title_check_rejects_card_front_series_and_source_drift(
@@ -6579,6 +6593,7 @@ def test_reviewed_external_paper_titles_check_authored_references(tmp_path: Path
     sources = (
         render_overview.TEMPLATES / "n11-lower-bounds-explainer-article.md",
         render_overview.REPO / "TUTORIAL.md",
+        render_overview.REPO / "TUTORIAL-ADVANCED.md",
         render_overview.REPO / "SYNOPSIS.md",
     )
     assert render_overview.paper_title_problems(sources=sources) == []

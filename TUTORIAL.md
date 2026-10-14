@@ -9,10 +9,12 @@ Finding the arrangement and proving that it is best are different problems.
 ![Walter Trump’s exact packing of eleven unit squares.](packing/atlas/rendering/trump11-overview.svg)
 
 *Walter Trump’s 1979 construction: six squares are axis-aligned and five share an
-oblique tilt of about $40.18^{\circ}$. Ahmed’s 2026 proof establishes its optimality;
-the repository records the complete machine checks at `V3/C3` in
+oblique tilt of about 40.18°. Ahmed’s 2026 proof establishes its optimality; the
+repository records the complete machine checks at `V3/C3` in
 [T-060](packing/frontier/RESULTS.md).
-The drawing shows the construction; the proof excludes every smaller container.*
+The drawing shows the construction; the proof excludes every smaller container.
+Segments mark shared edge intervals; dots mark point contacts.
+They are computed in the exact number field and clipped to the participating squares.*
 
 This basic tutorial develops the geometry and the distinctions needed to read a packing
 result. The [advanced tutorial](TUTORIAL-ADVANCED.md) develops linear programming, exact
@@ -330,7 +332,7 @@ These landings keep earlier section links usable without JavaScript.
 | Earlier section | Current location |
 | --- | --- |
 | <a id="contents"></a>Contents | [Advanced tutorial](TUTORIAL-ADVANCED.md#1-configuration-space-and-linear-programs) |
-| <a id="the-state-of-n--11-in-one-table"></a>The state of `n = 11`, in one table | [Advanced tutorial](TUTORIAL-ADVANCED.md#the-state-of-n--11-in-one-table) |
+| <a id="the-state-of-n--11-in-one-table"></a>The state of $n = 11$, in one table | [Advanced tutorial](TUTORIAL-ADVANCED.md#the-state-of-n--11-in-one-table) |
 | <a id="how-a-weighted-atomic-lower-bound-proof-works"></a>How a weighted atomic lower-bound proof works | [Advanced tutorial](TUTORIAL-ADVANCED.md#how-a-weighted-atomic-lower-bound-proof-works) |
 | <a id="how-the-finite-covering-lp-searches-for-atoms"></a>How the finite covering LP searches for atoms | [Advanced tutorial](TUTORIAL-ADVANCED.md#how-the-finite-covering-lp-searches-for-atoms) |
 | <a id="why-condition-on-corner-squares"></a>Why condition on corner squares? | [Advanced tutorial](TUTORIAL-ADVANCED.md#why-condition-on-corner-squares) |

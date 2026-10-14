@@ -524,10 +524,12 @@ of the field data rather than an optimisation.
 no useful degree estimate for this computation; the chosen contact system and its
 elimination determine the field that a reconstruction needs.
 It is 8 for Trump’s $n = 11$ packing, and reaches 62 elsewhere in the record table.
-The square count alone does not specify a configuration’s field degree: at a Pythagorean
-tilt such as $\arctan(3/4)$ every coordinate is rational and the degree is 1. Which
-fields and degrees actually occur, and how they follow from the contact mechanism, is an
-open question in the registry rather than something known.
+The square count alone does not specify a configuration’s field degree.
+For a construction with rational centers and container side, a Pythagorean tilt such as
+$\arctan(3/4)$ also gives rational vertex coordinates, so its coordinate field has
+degree one. The tilt alone does not make the centers or the container side rational.
+Which fields and degrees actually occur, and how they follow from the contact mechanism,
+is an open question in the registry rather than something known.
 
 **And the guarantee is not pointwise.** The optimal *side* is algebraic, by a standard
 argument this directory does not otherwise use.

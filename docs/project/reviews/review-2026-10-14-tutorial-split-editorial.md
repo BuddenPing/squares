@@ -7,7 +7,8 @@ This is the author’s editorial and preservation record for
 [TUTORIAL-ADVANCED.md](../../../TUTORIAL-ADVANCED.md), written by Codex, Astra strong
 tier at xhigh, on 14 October 2026. It is not an independent mathematical review or a
 publication approval.
-The coordinator will arrange that review after the source is ready.
+The coordinator arranged a separate manuscript review; its findings and verified repairs
+are recorded below. Site integration remains a separate review scope.
 
 The owner asked for a much shorter beginner tutorial and an advanced companion, updated
 for the latest results while preserving the original definitions and relevant
@@ -158,21 +159,24 @@ content or weaken existing assertions to make tests pass.
 
 ## Validation and Limits
 
-The source audit compares the original manuscript with both new manuscripts.
+The initial source audit compared the original manuscript with both new manuscripts.
 It checks word counts, original heading landings, glossary/notation row keys, figure and
 source link preservation, local target existence, and manuscript-to-manuscript
 fragments. The final formatted-source audit has the following results.
-These are text checks; no test suite, mathematical replay, site build, PDF build or
-rendered visual inspection ran in this lane.
-The dedicated worktree’s vendor checkout is uninitialized, and no environment was
-installed.
+That initial receipt covers text checks before site integration.
+No mathematical replay, PDF build or environment installation ran.
+The subsequent integration checks use the existing Python environment and a locally
+initialized checkout of the pinned kpress submodule; their results are recorded
+separately below.
 
 ### Source Audit Receipt
 
-The comparison baseline is the original `TUTORIAL.md` at this worktree’s starting
-`HEAD`. `git show HEAD:TUTORIAL.md | wc -w` reports **20,269 words**;
-`wc -w TUTORIAL.md TUTORIAL-ADVANCED.md` reports **2,941** and **21,735**, respectively.
-The basic paper is about one seventh of the original’s length.
+The comparison baseline is the original `TUTORIAL.md` at
+`2319afaa581355a6e35a27f51698aa1c64d487f4`.
+`git show 2319afaa581355a6e35a27f51698aa1c64d487f4:TUTORIAL.md | wc -w` reports **20,269
+words**. On 14 October 2026, before the independent review corrections,
+`wc -w TUTORIAL.md TUTORIAL-ADVANCED.md` reported **2,941** and **21,735**,
+respectively. The basic paper is about one seventh of the original’s length.
 The advanced paper remains long because it retains the technical derivations and
 reference cards while adding the current verification and regularization explanations.
 Its short opening repeats the problem definition and elementary bounds so it can be read
@@ -205,6 +209,98 @@ shared rendering, registry, policy, release or test file changed in this lane.
 These checks establish source continuity, not rendered-anchor behavior or independent
 scientific verification.
 Those remain explicit integration and review checks above.
+
+## Independent Review Corrections
+
+A separate strong-tier reviewer compared the manuscripts with the original source and
+primary result records.
+The review found the ten original fenced derivations, 60 glossary keys, 50 notation
+keys, five figures and 50 heading destinations preserved.
+The reviewer confirmed these three repairs and reported no remaining manuscript finding:
+
+- **R1, Medium; `think-4emz`.** A Pythagorean tilt makes orientation data rational, not
+  arbitrary centers or the container side.
+  The advanced example now explicitly requires rational centers and side before
+  concluding its coordinate field has degree one.
+  Writing “one” also avoids a Markdown ordered-list ambiguity after reflow.
+- **R2, Low; `think-hieh`.** The basic figure caption again explains the shared-edge
+  segments and point-contact dots, their exact-field computation and clipping, while
+  retaining the distinction between a construction drawing and an optimality proof.
+- **R3, Low; `think-yc0n`.** The audit command names the original revision explicitly;
+  its initial manuscript counts are dated and identified as preceding these repairs.
+
+After these repairs and the GitHub-math pass on 14 October 2026, the manuscripts contain
+**2,964 words** (basic) and **21,759 words** (advanced).
+The math pass replaces math inside an italic caption with the equivalent “40.18°” and
+changes a legacy landing’s mathematical label from code to math; its fragment remains
+unchanged.
+
+## Site Integration Record
+
+Both manuscripts are reader documents in the existing HTML pipeline, with article
+metadata, shared mathematical rendering, contents rails and Explanations navigation.
+The Tutorial section holds both cards, basic first; Papers, PDFs and Visuals follow in
+their existing order.
+The two manuscript files remain the GitHub sources.
+No new PDF producer or tutorial-specific release component is introduced.
+
+The integration registers the new URL and source input, adds the maintained document and
+math-policy entries, preserves all legacy fragment landings after sanitization, and
+moves figure and version-reference checks to their actual manuscript owners.
+The advanced page is 771,603 bytes; it takes the original tutorial’s existing 800 kB
+allowance, while the basic page uses the normal page budget.
+The T-007 consumer audit and private negative-control checkout now include the advanced
+source so moving the discussion does not remove it from validation.
+
+The existing release-impact gate, run against the finalized Explanations merge input,
+requires an owning site successor and dispositions for the four standalone paper
+components because shared renderer/import paths changed.
+The methods paper also lists `TUTORIAL.md` as a citation input.
+This is release coordination under existing contracts; the tutorial pages do not require
+independent version or PDF machinery.
+The writer leaves `sqpack/release.py` unchanged for the coordinator’s release cut.
+
+### Focused Integration Validation
+
+The checks ran with the project’s Python 3.14 environment, explicit external scratch and
+pytest’s failed-only retention policy.
+No dependency installation or PDF build ran.
+
+- `pytest packing/tests/test_site_documents.py`: **70 passed in 53.88 s**. This includes
+  both pages’ mathematical rendering and contents rails, rewritten links, two-way
+  tutorial navigation and all 50 original fragment destinations after sanitization.
+- The broader affected source-contract selection stopped after **231 passed and three
+  failures in 152.15 s**. The failures were an overbroad expectation that an
+  advanced-only edit also rebuilt the methods paper, and two uses of a helper still
+  expecting two Explanations card frames after Tutorial became its own section.
+  The corrected helper combines Tutorial and Papers for the existing reading-card
+  contract, preserving all count, size and mathematical-rendering assertions.
+- The focused rerun passed **12 behavior cases in 37.34 s** and exposed the new advanced
+  page’s default-size limit in the thirteenth case.
+  Moving the original tutorial’s existing allowance to its technical companion resolved
+  that failure without raising the allowance.
+  The cases cover discovery order, shared navigation, old fragments, titles,
+  version-reference ownership and Pages source inputs, including all three prior
+  assertion failures.
+- The final size and browser group passed **7 cases in 42.27 s**, with no skips.
+  It checks both pages’ publication budgets, the basic and advanced pages’ typography,
+  resistance to a host-font override, and clipping on tablet and phone widths.
+  It uses installed Chrome through `SQPACK_CHROMIUM`; it is not a pinned-browser
+  publication receipt.
+- `devtools.check_documentation`: **2,051 durable documents**, mapped with valid footers
+  and links. `devtools.check_math_markup`: **1,530 migrated files checked**, no findings.
+  `devtools.check_prose_ceremony`: no unexcused findings.
+- `devtools.site_urls --check`: **979 rows, zero failures**.
+  `devtools.audit_t007_consumers --check`: **324 cases current**. The existing
+  `run_gallery_controls()` returned **20 controls, no failures**.
+- Ruff passed on the changed Python files; BasedPyright reported **zero errors, warnings
+  or notes**. Flowmark and `git diff --check` passed.
+
+The release-impact check reports the existing site and four standalone paper components
+as requiring coordinated dispositions; it does not pass before that release step.
+There is no claim of a full gate, complete browser glyph audit, PDF validation, or
+hosted CI in this lane.
+The combined final head still needs its normal review and CI.
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.

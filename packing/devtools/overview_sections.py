@@ -1576,6 +1576,7 @@ PAPER_DESCRIPTIONS: dict[str, str] = {
 
 #: The first-principles tutorial's title, as its own H1 writes it in TUTORIAL.md.
 TUTORIAL_TITLE = "Square Packing from First Principles"
+TUTORIAL_ADVANCED_TITLE = "Square Packing, Search, and Proof"
 
 #: Where each part of the series is served, under `papers/` by its slug
 #: (`render_overview.paper_path`); each renderer's `SITE_PATH` is the same path from the
@@ -1587,9 +1588,9 @@ OPTIMALITY_PAPER = paper_path(N11_OPTIMALITY_REVIEW)
 #: The site's papers, in the order the Papers page shows them, one large card each
 #: (`paper_cards`): the three parts of the n = 11 series in reading order, I, II, III,
 #: each labelled by its part (`render_overview.PAPERS`, the one registry a new paper is
-#: entered in), then the standalone methods tutorial and the first-principles tutorial,
-#: the background to the series, whose description is
-#: `TUTORIAL.md`'s own opening, its audience and what it owns.
+#: entered in), then the standalone methods paper and the two tutorials. Explanations
+#: places the basic and advanced tutorials first, in its own Tutorial section; the
+#: remaining papers retain the series' reading order.
 PAPERS: tuple[Paper, ...] = (
     *(
         Paper(
@@ -1604,11 +1605,15 @@ PAPERS: tuple[Paper, ...] = (
         href="tutorial.html",
         label="Tutorial",
         title=TUTORIAL_TITLE,
+        description=("The problem, bounds, small examples, and how to read a packing result."),
+    ),
+    Paper(
+        href="tutorial-advanced.html",
+        label="Advanced tutorial",
+        title=TUTORIAL_ADVANCED_TITLE,
         description=(
-            "An introduction for anyone new to the problem: what the objects are, why the "
-            "approach is shaped the way it is, and what the research has and has not "
-            "established. It introduces linear programming and algebraic number fields "
-            "and links further reading."
+            "Linear programs, exact certificates, search, regularization, "
+            "and global optimality proofs."
         ),
     ),
 )
@@ -1657,12 +1662,12 @@ PAGES: tuple[tuple[str, str, str, str], ...] = (
         "Every Case from n = 1 to 324",
         "Reported and verified bounds side by side, with their sources.",
     ),
-    *((paper.href, paper.label, paper.title, paper.description) for paper in PAPERS[:-1]),
+    *((paper.href, paper.label, paper.title, paper.description) for paper in PAPERS[:-2]),
     (
         "tutorial.html",
         "Tutorial",
         TUTORIAL_TITLE,
-        "The problem, its configuration space, exact algebra and the search.",
+        "The problem, bounds, small examples, and how to read a packing result.",
     ),
     (
         "workbench/",

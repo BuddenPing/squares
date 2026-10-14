@@ -199,7 +199,10 @@ def test_every_page_of_the_site_carries_the_set_once_at_its_own_address(
     assert read_head(pages["index.html"]).titles == ("The Squares Project",)
     assert read_head(pages["tutorial.html"]).meta("og:type") == ["article"]
     kinds = {name: read_head(page).meta("og:type") for name, page in pages.items()}
-    assert [name for name, kind in kinds.items() if kind != ["website"]] == ["tutorial.html"]
+    assert [name for name, kind in kinds.items() if kind != ["website"]] == [
+        "tutorial.html",
+        "tutorial-advanced.html",
+    ]
 
 
 def test_every_page_has_a_description_of_its_own(pages: dict[str, str]) -> None:

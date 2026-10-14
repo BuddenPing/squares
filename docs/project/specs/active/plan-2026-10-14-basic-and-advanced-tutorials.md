@@ -4,8 +4,10 @@
 
 **Author:** Codex, Astra strong tier at xhigh, on the owner’s revision brief
 
-**Status:** Manuscripts prepared; independent review, site integration and publication
-remain with the coordinator.
+**Status:** Manuscripts independently reviewed and corrected; tutorial-specific site
+integration implemented.
+Focused validation is in progress; the coordinator owns the release disposition, PR and
+publication.
 
 **Tracking:** `think-n8md`, under `think-jpto`; the coordinator owns bead changes.
 
@@ -24,17 +26,19 @@ and LPs, refinement and terminal families, exact reconstruction, certificates,
 regularization, search design, lower-bound mechanisms, global optimality, and the
 complete vocabulary and notation cards.
 
-This content lane owns only the two manuscripts and this plan and editorial record.
-It changes no scientific register, witness, policy, dependency, version or shared site
-code. The source claims are checked against the admitted record on 14 October 2026;
-intake packets and reported formalizations retain their recorded limits.
+The initial content lane owned the two manuscripts, this plan and the editorial record.
+The coordinator then delegated tutorial-specific page integration and its tests to the
+same writer.
+Scientific registers, witnesses, policies, dependencies and release versions
+remain unchanged. The source claims were checked against the admitted record on 14
+October 2026; intake packets and reported formalizations retain their recorded limits.
 
 ## Manuscripts and Reading Order
 
 | Manuscript | Proposed page | Role |
 | --- | --- | --- |
 | [TUTORIAL.md](../../../../TUTORIAL.md) | `tutorial.html`, unchanged | Short beginner paper, prominently featured at the top of Explanations |
-| [TUTORIAL-ADVANCED.md](../../../../TUTORIAL-ADVANCED.md) | `tutorial-advanced.html` | Advanced companion in the Papers section |
+| [TUTORIAL-ADVANCED.md](../../../../TUTORIAL-ADVANCED.md) | `tutorial-advanced.html` | Advanced companion after the basic paper in the prominent Tutorial section |
 
 The advanced paper teaches configuration space and linear programming before the
 weighted-cover proof that previously interrupted the first section.
@@ -138,7 +142,8 @@ handwritten Contents lists in favor of its contents rail.
 
 ## Integration Contract
 
-The coordinator owns these changes; this content lane leaves them untouched.
+The writer implemented the following tutorial-specific integration after the initial
+manuscript commit. The coordinator retains release and publication ownership.
 
 1. **Page registration and discovery.** Add `TUTORIAL-ADVANCED.md` through
    `packing/devtools/repo_links.py` and `site_documents.py`, with target
@@ -151,8 +156,8 @@ The coordinator owns these changes; this content lane leaves them untouched.
    The root-document convention and its test currently list `TUTORIAL.md` explicitly;
    add the advanced companion deliberately in `check_documentation.py` and
    `test_document_layout.py`. Do not bypass the documentation checker.
-3. **Reader placement.** Feature the basic paper in its own section at the top of
-   Explanations; place the advanced card later among Papers.
+3. **Reader placement.** Feature both papers in the Tutorial section at the top of
+   Explanations, with the basic paper first.
    Keep Papers/PDFs and Film/Workbench presentation under the coordinator’s latest UI
    brief. Suggested basic note: “The problem, bounds, small examples, and how to read a
    packing result.” Suggested advanced note: “Linear programs, exact certificates,
@@ -181,9 +186,17 @@ The coordinator owns these changes; this content lane leaves them untouched.
    Its old assertion that `tutorial.html` has no `contents` id needs to account for the
    intentional legacy landing; the test that strips a handwritten Contents block remains
    valid.
-7. **Publication surfaces.** Review article metadata, index/glyph/page measurement
-   lists, PDF/source links if exposed, and publication audit coverage for the added
-   page. The content lane makes no version or release claim.
+7. **Publication surfaces.** Both tutorials use the existing reader-document pipeline:
+   `tutorial.html`, `tutorial-advanced.html` and their GitHub manuscripts.
+   Article metadata, glyph/page measurement lists, URL budgets and publication checks
+   cover the new page. The advanced page inherits the original tutorial’s 800 kB
+   allowance after measuring 771,603 bytes; the basic page returns to the ordinary page
+   limit. The four standalone papers retain their independent editions and PDF producers.
+   No tutorial PDF or separate component-version architecture is introduced.
+8. **Moved audit coverage.** The negative-control checkout includes the advanced
+   manuscript. The T-007 consumer inventory scans both tutorials, its change-scoped
+   trigger names the advanced source, and its derived 324-case inventory is refreshed.
+   The gallery checks retain all three original tutorial figures at their new owners.
 
 ## Implementation and Validation
 
@@ -193,16 +206,22 @@ The coordinator owns these changes; this content lane leaves them untouched.
 - [x] Preserve and inventory definitions, notation, figures, citations and fragments.
 - [x] Apply the common-doc, copy-edit, de-slop and substantive editorial passes.
 - [x] Format the authored Markdown and perform lightweight source checks.
-- [ ] Independent mathematical and editorial review, arranged by the coordinator.
-- [ ] Integrate page, registry, card and test changes under the contract above.
-- [ ] Render and inspect both papers, including mobile and source/website links.
-- [ ] Run the affected publication/documentation checks and normal PR review workflow.
+- [x] Independent mathematical and editorial review; all three findings corrected and
+  the repairs verified by that reviewer.
+- [x] Integrate page, registry, card and test changes under the contract above.
+- [x] Render both papers and check browser typography and clipping at desktop and phone
+  widths; verify source/website links and all legacy landings.
+- [x] Run focused publication, documentation, source-scope and static checks.
+- [ ] Complete the coordinator’s combined release disposition, PR review and hosted CI.
 
-The content lane performs no environment installation, site/PDF build, or scientific
-replay. Its source checks do not replace rendered validation or independent review.
+Validation reuses the installed Python environment and the pinned local kpress checkout.
+There is no dependency installation, PDF build or scientific replay.
+The focused source and browser receipts are recorded in the editorial review; full CI
+and release approval remain with the coordinator.
 External scratch is the dedicated `tutorial-basic-advanced` directory; unique source and
 editorial evidence live in this worktree.
-No commit, push, registry mutation or bead synchronization belongs to this lane.
+The writer makes local source commits and tutorial registry updates.
+Pushes, PRs, release metadata and bead synchronization remain with the coordinator.
 
 ## References
 

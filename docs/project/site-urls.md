@@ -981,6 +981,7 @@ Patterns admit declared namespaces, file types and sixteen-digit asset names.
 | synopsis/workflow-entry-contracts.html | synopsis/workflow-entry-contracts.html | page | overview | 2026-10-07 | 2026-10-14 | live |
 | t-018-explainer.md | papers/n11-lower-bounds-explainer.md | copy | assembly | 2026-09-29 | 2026-10-14 | live → papers/n11-lower-bounds-explainer.md |
 | t-018-explainer.pdf | papers/n11-lower-bounds-explainer.pdf | copy | assembly | 2026-09-29 | 2026-10-14 | live → papers/n11-lower-bounds-explainer.pdf |
+| tutorial-advanced.html | tutorial-advanced.html | page | overview | 2026-10-14 | 2026-10-14 | live |
 | tutorial.html | tutorial.html | page | overview | 2026-09-29 | 2026-10-14 | live |
 | visualize.html | visualize.html | page | overview | 2026-09-29 | 2026-10-14 | live |
 | workbench/assets/{css,js,fonts}/*.{hash}.{ext} | — | asset-file | workbench | 2026-10-07 | 2026-10-14 | live |
@@ -1017,7 +1018,7 @@ Patterns admit declared namespaces, file types and sixteen-digit asset names.
 | result/t-124.html | 400,000 | Complete broad scope history and prepared exact bounds measure 304,237 bytes. |
 | result/t-155.html | 400,000 | Fifty-nine counts' exact regularized sides, their regularizations and prepared math measure 303,829 bytes. |
 | results.html | 950,000 | The complete registered-result table with prepared math measures 843,037 bytes at 146 results. |
-| tutorial.html | 800,000 | The complete authored tutorial and prepared formulas measure 742,713 bytes. |
+| tutorial-advanced.html | 800,000 | The advanced tutorial retains the original technical derivations and reference tables; the complete authored text and prepared formulas measure 771,603 bytes. |
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.

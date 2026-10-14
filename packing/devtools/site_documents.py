@@ -59,6 +59,7 @@ from devtools.render_overview import REPO, Page
 from devtools.repo_links import RepositoryTree, repo_url, repository_tree
 
 TUTORIAL = REPO / repo_links.TUTORIAL
+TUTORIAL_ADVANCED = REPO / repo_links.TUTORIAL_ADVANCED
 README = REPO / repo_links.README
 
 
@@ -137,6 +138,15 @@ DOCUMENTS: tuple[SiteDocument, ...] = (
         "Tutorial",
         "A guided walk through square packing: the problem, the bounds and how each "
         "result here is checked.",
+        "article",
+    ),
+    SiteDocument(
+        TUTORIAL_ADVANCED,
+        "tutorial-advanced.html",
+        "papers",
+        "Advanced Tutorial",
+        "Square packing methods: linear programs, exact certificates, search, "
+        "regularization, and global optimality proofs.",
         "article",
     ),
     # The overview's document cards, in their order (`render_overview.DOCUMENT_PAGES`).
