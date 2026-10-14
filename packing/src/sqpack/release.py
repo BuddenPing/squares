@@ -85,6 +85,16 @@ class PublicationHistoryEntry(NamedTuple):
 #: for each deployment's commit, what the page it built stated.
 PUBLICATION_HISTORY = (
     PublicationHistoryEntry(
+        version="v0.6.3",
+        first_published="October 14, 2026",
+        result_scope=(
+            "Register 24 results from the 14 October intake, none adopting a house: "
+            "smaller exact packings and certificates at 69 counts, lower bounds at 37, "
+            "39, 44 and 145 to 149, Hiroaki Hosono's closed form, which raises 154 "
+            "reported lower bounds, Kevin Fang's n^2 - n + 1 theorem and s(76) = 9."
+        ),
+    ),
+    PublicationHistoryEntry(
         version="v0.6.2",
         first_published="October 14, 2026",
         result_scope=(
@@ -646,6 +656,18 @@ class ReleaseImpactDecision(NamedTuple):
 RELEASE_IMPACTS: tuple[ReleaseImpactDecision, ...] = (
     ReleaseImpactDecision(
         component="site",
+        previous_version="v0.6.2",
+        version="v0.6.3",
+        impact="patch",
+        reason=(
+            "Register 24 results from the 14 October intake, none adopting a house: "
+            "smaller exact packings and certificates at 69 counts, lower bounds at 37, "
+            "39, 44 and 145 to 149, Hiroaki Hosono's closed form, which raises 154 "
+            "reported lower bounds, Kevin Fang's n^2 - n + 1 theorem and s(76) = 9."
+        ),
+    ),
+    ReleaseImpactDecision(
+        component="site",
         previous_version="v0.6.1",
         version="v0.6.2",
         impact="patch",
@@ -1105,7 +1127,7 @@ def validate_release_impacts(
 #: fresh render, so a link naming the build commit would fail their drift check forever. It is
 #: in no version string. It moves when the claim documents are regenerated for an edition. It
 #: must be a commit on `main`; the site's own links name `main` itself (`devtools.repo_links`).
-PUBLICATION_REVISION = "c6118ca5"
+PUBLICATION_REVISION = "11174f07"
 
 
 def data_pathspec() -> tuple[str, ...]:
