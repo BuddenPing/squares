@@ -17523,9 +17523,8 @@ results:
     headline: "`s(17) = 4.67553009360455…` in Lean 4, by a route of its own, with no premise left"
     claim: >-
       `s(17) = 4.67553009360455095163…`, T-153's value L, the side of John Bidwell's 1998
-      packing of seventeen unit squares, proved in a proof assistant: a formalization, Oscar
-      Fitzharding's Lean 4 proof of T-153's value by a route of its own, which does not
-      formalize T-153's argument.
+      packing of seventeen unit squares, proved in Lean 4 by Oscar Fitzharding, by a route of
+      its own rather than by formalizing T-153's argument.
 
       Its theorem, `Sq17.square17_optimality (L : ℝ) : Sq17.HalfPlaneAssembly.PlainPacking L
       ↔ Sq17.EndpointGeometry.side ≤ L`, says that seventeen closed unit squares, each
