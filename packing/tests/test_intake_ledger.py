@@ -68,6 +68,108 @@ def test_an_exact_tie_is_not_recorded_and_names_the_holder() -> None:
     assert walk.steps[1].reason == ledger.EQUAL
 
 
+def test_a_tie_with_the_record_itself_is_not_recorded_and_is_an_owner_decision() -> None:
+    tie = side("#1", "21/2")
+    walk = ledger.walk(100, record(), [tie])
+    assert verdicts(walk) == [("#1", "not recorded", "record T-001")]
+    assert walk.steps[0].reason == ledger.EQUAL
+    assert [item.label for item in walk.standing] == ["record T-001"]
+    data = _minimal()
+    data["reports"][0]["claims"] = [{"n": 100, "printed": "10.5", "rounding": "exact"}]
+    decisions = ledger.evaluate(cast("ledger.Ledger", data), {100: [record()]})
+    assert decisions["owner_decisions"]["exact_ties"] == [
+        {
+            "n": 100,
+            "report": "#1",
+            "holders": "A",
+            "tied_with": "record T-001",
+            "tied_holders": "A. Holder",
+        }
+    ]
+
+
+def test_a_frozen_equal_in_a_walk_is_a_tie_with_the_record() -> None:
+    form = "2 + (1/2)sqrt(2)"
+    start = ledger.record_side(5, {"value": "2.70710678118654", "exact_form": form}, ["T-005"])
+    equal: ledger.RecordRelation = {
+        "lane": "reported",
+        "relation": "equal",
+        "value": "2.70710678118654",
+        "exact_form": form,
+        "read_from": "lane",
+    }
+    claim = side("#1", "2.7071067811865475244008443621", "unstated", record_relations=[equal])
+    later = side("#2", "2.70710678118", "up", when="2026-10-12T05:00:00Z")
+    walk = ledger.walk(5, start, [claim, later])
+    assert verdicts(walk) == [
+        ("#1", "not recorded", "record T-005"),
+        ("#2", "recorded", "record T-005"),
+    ]
+    assert walk.steps[0].reason == ledger.EQUAL
+
+
+def test_a_claim_above_an_undecided_claim_is_not_recorded() -> None:
+    first = side("#1", "10.40", "up", when="2026-10-12T01:00:00Z")
+    second = side("#2", "10.395", "nearest", when="2026-10-12T02:00:00Z")
+    third = side("#3", "10.3956", when="2026-10-12T03:00:00Z")
+    walk = ledger.walk(100, record(), [first, second, third])
+    assert verdicts(walk) == [
+        ("#1", "recorded", "record T-001"),
+        ("#2", "undecided", "#1"),
+        ("#3", "not recorded", "#2"),
+    ]
+    assert walk.steps[2].reason == ledger.ABOVE
+    assert {item.label for item in walk.standing} == {"#1", "#2"}
+
+
+def test_up_cut_and_binary64_prints_decide_as_their_spans_say() -> None:
+    # An up print at the record's value may be the record: undecided. A cut print whose
+    # next unit is the record excludes it: recorded.
+    assert ledger.walk(100, record(), [side("#1", "10.50", "up")]).steps[0].verdict == (
+        ledger.UNDECIDED
+    )
+    assert ledger.walk(100, record(), [side("#1", "10.49", "up")]).steps[0].verdict == (
+        ledger.RECORDED
+    )
+    assert ledger.walk(100, record(), [side("#1", "10.49", "cut")]).steps[0].verdict == (
+        ledger.RECORDED
+    )
+    assert ledger.walk(100, record(), [side("#1", "10.50", "cut")]).steps[0].verdict == (
+        ledger.UNDECIDED
+    )
+    # A 16-place double read as binary64 reaches past the record that its nearest
+    # reading is below.
+    printed = "10.4999999999999982"
+    nearest = ledger.walk(100, record(), [side("#1", printed, "nearest")])
+    binary64 = ledger.walk(100, record(), [side("#1", printed, "binary64")])
+    assert (nearest.steps[0].verdict, binary64.steps[0].verdict) == (
+        ledger.RECORDED,
+        ledger.UNDECIDED,
+    )
+
+
+def test_a_claim_of_unknown_time_is_kept_out_of_the_walk_and_listed() -> None:
+    data = _minimal()
+    data["reports"].append(
+        {
+            "report": "#2",
+            "url": "https://github.com/jlevy/squares/issues/2",
+            "kind": "issue",
+            "holders": "B",
+            "reported_at": ledger.UNKNOWN,
+            "bead": "",
+            "claims": [{"n": 100, "printed": "10.1", "rounding": "exact"}],
+        }
+    )
+    assert ledger.problems(data) == []
+    verdict = ledger.evaluate(cast("ledger.Ledger", data), {100: [record()]})
+    assert [step["report"] for step in verdict["counts"][0]["steps"]] == ["#1"]
+    assert verdict["owner_decisions"]["unknown_times"] == [
+        {"n": 100, "report": "#2", "holders": "B"}
+    ]
+    assert [item["label"] for item in verdict["counts"][0]["best_now"]] == ["#1"]
+
+
 def test_overlapping_prints_are_undecided_and_say_what_decides_them() -> None:
     first = side("#1", "10.40", "up", when="2026-10-12T01:00:00Z")
     second = side("#2", "10.395", "nearest", when="2026-10-12T02:00:00Z")
