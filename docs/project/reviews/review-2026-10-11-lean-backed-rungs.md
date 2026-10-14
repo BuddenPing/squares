@@ -318,7 +318,6 @@ What `T-060` would need in the record:
   and is not recorded.** `T-060`’s `reviews` holds Astra’s review of 29 September;
   `T-112` already records GPT-6 Pro’s review of 3 October as `accepted`,
   `relation: project`, and that review is of `T-060`’s proof and paper.
-  GPT-6 Pro’s review of 3 October is recorded on `T-112` as accepted.
   It names Astra’s review of 29 September as a source (its R4, “Mathematical acceptance
   and dependency contract”, which it cites eleven times), so whether it counts as a
   distinct reviewer under epistemics.md (“a separately prompted independent lane with no
