@@ -1791,11 +1791,34 @@ def test_a_composite_trailing_the_pin_may_show_defaults_the_record_has_changed(
     fails it, as every claim on a current poster must agree with the record."""
     from devtools import default_drawings  # noqa: PLC0415
 
-    real = default_drawings.regularized_defaults()
-    withdrawn_n = next(n for n in sorted(real) if n > 100)
-    withdrawn = {n: row for n, row in real.items() if n != withdrawn_n}
+    canvas = known_best_builder.resolved_composites()[-1]
+    svg_text = canvas.svg_path.read_text(encoding="utf-8")
+    retained = known_best_builder.retained_identity(svg_text)
+    root = ET.fromstring(svg_text)
+    marked = {
+        int(card.attrib["data-n"]): {}
+        for card in root.iter(f"{{{SVG['svg']}}}g")
+        if card.attrib.get("data-feature") == "packing-card"
+        and card.attrib["data-source-id"].endswith("-regularized")
+    }
+    block = root.find("svg:g/svg:g[@data-feature='regularization-credits']", SVG)
+    assert block is not None
+    printed = " ".join(
+        "".join(node.itertext())
+        for node in block.findall("svg:text[@data-feature='regularization-credit-line']", SVG)
+    )
+    # Freeze unrelated credit changes so the only failing claim is the withdrawn card.
+    monkeypatch.setattr(known_best_builder, "resolved_composites", lambda: (canvas,))
+    monkeypatch.setattr(
+        known_best_builder, "regularization_sentences", lambda *_a: ((printed,),)
+    )
+    monkeypatch.setattr(known_best_builder, "DATA_REVISION", retained.data_revision)
+    monkeypatch.setattr(default_drawings, "regularized_defaults", lambda *_a, **_k: marked)
+    test_composite_tiles_draw_each_case_s_default_picture_and_credit_it()
+    withdrawn_n = next(n for n in sorted(marked) if n > 100)
+    withdrawn = {n: row for n, row in marked.items() if n != withdrawn_n}
     monkeypatch.setattr(default_drawings, "regularized_defaults", lambda *_a, **_k: withdrawn)
-    with pytest.raises(AssertionError):
+    with pytest.raises(AssertionError, match=re.escape(canvas.spec.stem)):
         test_composite_tiles_draw_each_case_s_default_picture_and_credit_it()
     monkeypatch.setattr(known_best_builder, "DATA_REVISION", "0" * 40)
     test_composite_tiles_draw_each_case_s_default_picture_and_credit_it()

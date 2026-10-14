@@ -17,6 +17,7 @@ measured from the layer a tree holds, and every view the committed layer draws i
 
 from __future__ import annotations
 
+import gzip
 import json
 import shutil
 from pathlib import Path
@@ -28,6 +29,7 @@ from devtools import census_drawing_regularity as census
 from devtools import regularize_axis_components as axis
 from devtools import regularize_evand as drive
 from devtools import regularize_select as select
+from sqpack.yamlio import load_yaml
 from tests.test_regularize_evand import both_outputs
 
 TODAY = {

@@ -135,3 +135,39 @@ def test_the_check_refuses_a_regularized_default_the_rule_does_not_give(tmp_path
     found, listed = defaults.problems(expected, record)
     assert any(f"n={kept['n']} is drawn regularized by default" in line for line in found)
     assert f"n={kept['n']} keeps the house picture: {kept['reason']}" in listed
+
+
+@pytest.mark.parametrize("n", [18, 26, 66, 85])
+def test_an_irrational_bound_is_read_exactly_for_a_named_exception(
+    entries: dict, n: int
+) -> None:
+    from devtools import regularize_axis_components as axis  # noqa: PLC0415
+    from devtools import regularize_evand as drive  # noqa: PLC0415
+
+    assert defaults.ABOVE_U is axis.ABOVE_U
+    decided = _decided(entries, n)
+    bound = drive.verified_bound(drive.case_facts(n))
+    assert bound is not None
+    assert bound.rational is None
+    side, *_ = drive.view_geometry(defaults._view_witness(entries[n]))  # noqa: SLF001  # pyright: ignore[reportPrivateUsage]
+    assert bound.compare(side) == 1
+    assert decided["reason"] != defaults.UNKNOWN_U
+    assert decided["side"]["view_minus_U"] == f"{bound.difference(side):.3e}"
+    assert 0 < defaults.drawn_above_bound()[n] < 1e-28
+
+
+def test_an_unread_bound_cannot_authorize_a_regularized_default(
+    entries: dict, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from devtools import regularize_evand as drive  # noqa: PLC0415
+
+    n = min(entries)
+    monkeypatch.setattr(
+        drive, "verified_bound", lambda _facts: drive.VerifiedBound("unknown", unread="unread")
+    )
+    decided = _decided(entries, n)
+    assert decided["default"] == defaults.HOUSE
+    assert decided["reason"] == defaults.UNKNOWN_U
+    assert decided["side"]["view_minus_U"] is None
+    with pytest.raises(ValueError, match="U is not read exactly"):
+        defaults.drawn_above_bound()

@@ -16,8 +16,8 @@ default picture is the view when all three hold:
 
 1. **Exact.** Both maintained exact routes accept it, as its entry records.
 2. **Side.** Its exact side is at most `U`, the case record's verified upper bound as
-   `regularize_evand.upper_bound` reads it, or the count is one of `ABOVE_U`, the views
-   the policy's section 9, question 13 names above it.
+   `regularize_evand.verified_bound` holds it exactly, or the count is one of
+   `ABOVE_U`, the views the policy's section 9, question 13 names above it.
 3. **Improvement.** It improves on the house drawing under the policy's improvement rule
    (section 11), which `devtools.improvement_rule` reads from the policy and decides. Both
    drawings are measured as `devtools.regularize_select.today` measures a tree's drawing
@@ -63,6 +63,7 @@ from strif import atomic_output_file
 
 from devtools import improvement_rule
 from devtools.improvement_rule import MEASURES
+from devtools.regularize_axis_components import ABOVE_U
 from sqpack import retained_json
 from sqpack.workers import worker_count
 from sqpack.yamlio import load_yaml
@@ -81,20 +82,6 @@ HOUSE = "house"
 ROUTE_REFUSED = "an exact route refused it"
 UNKNOWN_U = "U is unknown"
 ABOVE_BOUND = "above U, not in the exceptions"
-
-#: Every view the layer draws above `U`, and why it stays: the exceptions the policy's
-#: section 9, question 13 names (#580 review B2). The list can only shrink on purpose:
-#: `tests/test_regularize_select.py` fails on a view drawn above `U` at another count,
-#: and on a count listed here once its drawing is at `U`.
-ABOVE_U = {
-    18: "Evan Daniel's view about 1e-30 above a closed-form optimum (question 4)",
-    26: "Evan Daniel's view about 1e-30 above a closed-form optimum (question 4)",
-    66: "Evan Daniel's view about 1e-30 above a closed-form optimum (question 4)",
-    85: "Evan Daniel's view about 1e-30 above a closed-form optimum (question 4)",
-    110: "at Couzo's decimal side, 3e-12 above U; the view at U draws fewer sides (think-jnso)",
-    241: "at Couzo's decimal side, 1e-11 above U; the view at U draws fewer sides (think-jnso)",
-    297: "at Couzo's decimal side, 5e-12 above U; the view at U is row 7, for the owner",
-}
 
 
 def drawn_views(index: Path = INDEX) -> dict[int, dict[str, Any]]:
@@ -121,11 +108,14 @@ def drawn_above_bound(index: Path = INDEX) -> dict[int, float]:
     above: dict[int, float] = {}
     for n, entry in drawn_views(index).items():
         side, _placements, _corners = drive.view_geometry(_view_witness(entry))
-        upper = drive.upper_bound(drive.case_facts(n))
+        upper = drive.verified_bound(drive.case_facts(n))
         if upper is None:
             raise ValueError(f"n={n}: U is unknown")
-        if side > upper:
-            above[n] = float(side - upper)
+        order = upper.compare(side)
+        if order is None:
+            raise ValueError(f"n={n}: U is not read exactly: {upper.unread}")
+        if order > 0:
+            above[n] = upper.difference(side)
     return above
 
 
@@ -158,7 +148,8 @@ def decide(unit: tuple[Path, int, Mapping[int, Mapping[str, Any]]]) -> dict[str,
         raise ValueError(f"n={n}: the view and the house drawing were not both measured")
     side = Fraction(str(view["side"]))
     house_side = None if house["side"] is None else Fraction(str(house["side"]))
-    upper = drive.upper_bound(drive.case_facts(n))
+    upper = drive.verified_bound(drive.case_facts(n))
+    order = None if upper is None else upper.compare(side)
     gains, worse = improvement_rule.compare(view, house)
     against = _against(side, house_side)
     judgement = improvement_rule.judge(
@@ -172,9 +163,9 @@ def decide(unit: tuple[Path, int, Mapping[int, Mapping[str, Any]]]) -> dict[str,
     )
     if not _routes(entry):
         default, reason = HOUSE, ROUTE_REFUSED
-    elif upper is None:
+    elif order is None:
         default, reason = HOUSE, UNKNOWN_U
-    elif side > upper and n not in ABOVE_U:
+    elif order > 0 and n not in ABOVE_U:
         default, reason = HOUSE, ABOVE_BOUND
     elif not judgement.improves:
         default, reason = HOUSE, judgement.reason
@@ -188,7 +179,9 @@ def decide(unit: tuple[Path, int, Mapping[int, Mapping[str, Any]]]) -> dict[str,
         "view": entry["view"]["path"],
         "exact_routes": _routes(entry),
         "side": {
-            "view_minus_U": None if upper is None else f"{float(side - upper):.3e}",
+            "view_minus_U": None
+            if upper is None or order is None
+            else f"{upper.difference(side):.3e}",
             "named_above_U": n in ABOVE_U,
             "against_house": against,
         },
