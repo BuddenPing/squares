@@ -91,6 +91,10 @@ def test_a_case_page_prints_its_regularization_note_and_nothing_without_one() ->
     assert ("Regularized drawing" in housed) == drawn_here
     assert ('<span class="site-card-label">Regularization</span>' in housed) != drawn_here
     assert "The house is itself its source" in housed
+    # Where the view is held but not drawn, the note says why the page draws the house.
+    held = "does not improve on the packing as published"
+    assert (held in housed) != drawn_here
+    assert held not in drawn
 
     registered = regularization(cases[28])
     assert '<span class="site-card-label">Regularization</span>' in registered

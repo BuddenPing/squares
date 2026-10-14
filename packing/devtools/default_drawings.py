@@ -230,13 +230,10 @@ def text(record: Mapping[str, Any]) -> str:
 
 
 @cache
-def regularized_defaults(
-    record: Path = RECORD, index: Path = INDEX
-) -> dict[int, dict[str, Any]]:
-    """The counts whose default picture is their regularized view, from the retained
-    record, refused where the record's counts, views or generators are not the index's:
-    a stale record is refused rather than drawn from. Nothing is measured here; the
-    records tier's check measures."""
+def decisions(record: Path = RECORD, index: Path = INDEX) -> dict[int, dict[str, Any]]:
+    """Every drawn view's decision, by count, from the retained record, refused where the
+    record's counts, views or generators are not the index's: a stale record is refused
+    rather than drawn from. Nothing is measured here; the records tier's check measures."""
     stale = f"{RECORD_PATH} is stale; run `{GENERATOR} --update`"
     found = json.loads(record.read_text(encoding="utf-8"))
     if found.get("contract") != CONTRACT:
@@ -250,7 +247,36 @@ def regularized_defaults(
             "generator"
         ):
             raise SystemExit(f"{stale}: n={n} names another view than the index")
+    return rows
+
+
+@cache
+def regularized_defaults(
+    record: Path = RECORD, index: Path = INDEX
+) -> dict[int, dict[str, Any]]:
+    """The counts whose default picture is their regularized view (`decisions`)."""
+    rows = decisions(record, index)
     return {n: row for n, row in rows.items() if row["default"] == REGULARIZED}
+
+
+def held_note(n: int) -> str:
+    """For a count whose regularized view the layer holds but does not draw by default,
+    the sentence its case page adds to the regularization note: the view does not
+    improve on the packing as published, so the page draws the house drawing. Empty for
+    every other count. Written from the record's reason (review A4 of #591)."""
+    row = decisions().get(n)
+    if row is None or row["default"] != HOUSE:
+        return ""
+    why = (
+        "it ties the house drawing on every goal of the improvement rule"
+        if row["reason"] == "no gain"
+        else str(row["reason"])
+    )
+    return (
+        "The layer holds this regularized view, but it does not improve on the packing as "
+        f"published ({why}), so this page draws the house drawing (regularization policy, "
+        "section 12)."
+    )
 
 
 @cache
@@ -310,6 +336,7 @@ def update(*, workers: int = 1) -> int:
     if not RECORD.is_file() or RECORD.read_text(encoding="utf-8") != content:
         with atomic_output_file(RECORD) as temporary:
             temporary.write_text(content, encoding="utf-8")
+    decisions.cache_clear()
     regularized_defaults.cache_clear()
     print(f"default drawings updated: {_summary(expected)}")
     return 0
