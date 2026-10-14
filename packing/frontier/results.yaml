@@ -13119,7 +13119,7 @@ results:
     significance:
       score: 3
       rationale: >-
-        Rational certificates of ry-xu's packings that improved the pre-intake ceilings at
+        Rational certificates of Ryan Xu's packings that improved the pre-intake ceilings at
         18 counts, by about 1.3e-3 at n = 102 and between 1e-7 and 1e-2 at the others as the
         11 October grading review measured; 17 are selected, with the radical form at n = 51
         (T-126) beside them. New arrangements moving case ceilings are case results, S3, as
@@ -13140,17 +13140,17 @@ results:
     next_rung: C4 requires two distinct accepted confirming adversarial reviews and an actual human
       oversight record; neither drawing nor admission supplies them.
     notes: >-
-      Credit to ry-xu with disclosed LLM assistance. All 25 source inputs retained; no upstream
+      Credit to Ryan Xu with disclosed LLM assistance. All 25 source inputs retained; no upstream
       code executed. Exact finite feasibility only.
 
       Evan Daniel's later regularized certificates (T-146) are smaller at 70, 102, 103, 123,
       129, 146 and 295, by 7.90e-11 to 7.82e-10, and regularize the packings there, credited
-      to ry-xu, at 103 as refined by Mishapolk (T-138); at 70 Eric Deleeuw's refinement
+      to Ryan Xu, at 103 as refined by Mishapolk (T-138); at 70 Eric Deleeuw's refinement
       (T-137) is named only as the smallest side the record held. The 11 October review of
       T-146 accepted it, and on 11 October 2026 the case records adopted it as the house at
-      six of those counts, crediting each packing to ry-xu. At 146 and 261 Robert Barnett's
+      six of those counts, crediting each packing to Ryan Xu. At 146 and 261 Robert Barnett's
       refinements of the same packings (T-150, issue 505) are smaller still, and the same
-      adoption made them the houses there, crediting the packings to ry-xu.
+      adoption made them the houses there, crediting the packings to Ryan Xu.
 
       The same adoption moved the houses at 84, 86, 105, 108, 126, 127, 131, 175 and 267 to
       smaller confirmed certificates: Francisco Couzo's refinements of these packings (T-128,
@@ -13188,7 +13188,7 @@ results:
     significance:
       score: 3
       rationale: >-
-        ry-xu's new 51-square arrangement at its exact side (16 + 5 sqrt 2)/3, about 0.0104
+        Ryan Xu's new 51-square arrangement at its exact side (16 + 5 sqrt 2)/3, about 0.0104
         below the ceiling Evan Daniel's certificate of the catalogue packing held (T-101),
         and the side the case now holds. A new arrangement lowering a case ceiling is a case
         result, S3, as T-125's rational certificate of the same packing is; the exact closed
@@ -13209,7 +13209,7 @@ results:
     - packing/devtools/ryxu_radical_n51.py
     next_rung: C4 requires two distinct accepted confirming adversarial reviews and an actual human
       oversight record; neither drawing nor admission supplies them.
-    notes: Credit to ry-xu with disclosed LLM assistance. All 25 source inputs retained; no upstream
+    notes: Credit to Ryan Xu with disclosed LLM assistance. All 25 source inputs retained; no upstream
       code executed. Exact finite feasibility only.
     controls:
     - packing/resources/web/ry-xu-new-packings-2026-10-08/receipts/n051-radical-positive.json.xz
@@ -19507,13 +19507,13 @@ results:
       independently re-implemented. The 12 October review found no blocking defect.
 
       Each side was below the ceiling its case held, by 2.95e-03 at 175 (Francisco Couzo's
-      refinement of ry-xu's packing, T-140), 3.25e-03 at 232 (SQUISH's third request, T-136)
+      refinement of Ryan Xu's packing, T-140), 3.25e-03 at 232 (SQUISH's third request, T-136)
       and 3.44e-03 at 264 (the catalogue's 9 + 11 sqrt(2)/2, Goebel's pattern, verified by
       Evan Daniel's exact ceiling, T-101, and at its exact side by T-155's regularized
       certificate of the same packing); at 175 it is also 2.94e-03 below Francisco
       Couzo's certificate of 11 October, which the issue names as the previous best and
       which the record holds in the issue-506 packet and has not registered, and 4.72e-03
-      below ry-xu's T-125. At all three counts it is the smallest exact side the record
+      below Ryan Xu's T-125. At all three counts it is the smallest exact side the record
       holds.
 
       On 12 October 2026 the case records adopted this entry as the house at all three counts, each case's reported and verified upper bounds moving together and each
@@ -19689,13 +19689,13 @@ results:
 
       Credit Rio Calle (https://github.com/riocalle/my-repo, University of New Hampshire)
       with this arrangement and its layout, found by his own search engine from scratch,
-      and ry-xu (T-125) with finding the design and width first, as the issue asks: ry-xu
+      and Ryan Xu (T-125) with finding the design and width first, as the issue asks: Xu
       published on 8 October 2026 and the author's search finished its first packing of the
       design about ten hours later. Measured pose by pose, every square pairs with one of
-      ry-xu's under a half turn of the box, 40 within 1e-9 and none turned, and 62 moved, 19
+      Xu's under a half turn of the box, 40 within 1e-9 and none turned, and 62 moved, 19
       of them beyond a tenth of a unit and the largest by 0.494, 11 turned by up to about 43
       degrees: another arrangement of the design, not a refinement or a regularization of
-      ry-xu's packing.
+      Xu's packing.
 
       The issue and README state AI assistance: the author designed and directed the
       project and its experiments, and Claude wrote and ran the code, the GPU search, the
@@ -19708,7 +19708,7 @@ results:
       score: 2
       rationale: >-
         A certified side at n = 102, 2.43e-11 above the case's ceiling (T-146) and 5.48e-11
-        below Ryan Xu's certificate (T-125), of another arrangement of ry-xu's design: a
+        below Ryan Xu's certificate (T-125), of another arrangement of Xu's design: a
         citable detail of the case that moves no bound and no theorem, S2 as T-120, T-137
         and T-150 are; no lower bound or optimum.
       scored: '2026-10-12'
