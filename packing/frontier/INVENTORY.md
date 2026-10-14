@@ -8,7 +8,7 @@ ours, which rest on someone else's argument, and how far each has been checked.
 
 ## The short version
 
-- **522** evidence records. **319** are formal; **312** of those were established here.
+- **534** evidence records. **330** are formal; **323** of those were established here.
 - **195** rest on an argument made elsewhere, of which **7** have been read by nobody here.
 - **1** formal record proves a theorem only under a hypothesis nothing here has replayed, and is verified as that implication alone: `E-k2m4-evand-bentz4-lean-build` (ValidTilt9).
 - **41** claim to be first established here. **14** make no novelty statement at all - not assessed, which is not the same as not novel.
@@ -545,13 +545,25 @@ results, it is a statement about what this repository has itself examined.
 | `E-n017-overbeck-tree-sample-replay` | 0 | derived-structure | verified | equalities and inequalities, no tolerance | here | - | previously-published | producer’s code | `V-overbeck-n17-tree-checkers` |
 | `E-n017-overbeck-statement-root-independent` | 0 | derived-structure | verified | equalities and inequalities, no tolerance | here | - | previously-published | independent | `V-k3-n17-root-isolation` |
 | `E-n017-fitzharding-lean-report` | 0 | exact-value | reported | - | elsewhere | informally-verified | previously-published | producer’s code | `V-fitzharding-n17-lean`, `V-fitzharding-n17-source-manifest`, `V-fitzharding-n17-premise-comparisons` |
+| `E-n017-fitzharding-native-facts-review2` | 0 | derived-structure | verified | equalities and inequalities, no tolerance | here | - | previously-published | independent | `V-sq17-review2-trace-checker` |
+| `E-n017-fitzharding-census-review2` | 0 | derived-structure | verified | equalities and inequalities, no tolerance | here | - | previously-published | independent | `V-sq17-review2-census` |
+| `E-n017-fitzharding-cell-geometry-review2` | 0 | derived-structure | verified | equalities and inequalities, no tolerance | here | - | previously-published | independent | `V-sq17-review2-cell-geometry` |
+| `E-n017-fitzharding-rigidity-dual-review2` | 0 | derived-structure | verified | equalities and inequalities, no tolerance | here | - | previously-published | independent | `V-sq17-review2-rigidity-dual` |
+| `E-n017-fitzharding-endpoint-frames-review2` | 0 | derived-structure | numerically-checked | nothing formally; a measurement at a tolerance | here | - | previously-published | independent | `V-sq17-review2-endpoint-frames` |
+| `E-n017-overbeck-jq-tree-review3` | 0 | derived-structure | verified | equalities and inequalities, no tolerance | here | - | previously-published | independent | `V-overbeck-review3-jq-tree-checker`, `V-overbeck-review3-seed-packing`, `V-overbeck-review3-spec-lemmas` |
+| `E-n017-overbeck-endpoint-review3` | 0 | derived-structure | verified | equalities and inequalities, no tolerance | here | - | previously-published | independent | `V-overbeck-review3-root-isolation` |
+| `E-n017-overbeck-upper-construction-review3` | 0 | derived-structure | verified | equalities and inequalities, no tolerance | here | - | previously-published | independent | `V-overbeck-review3-upper-at-l` |
+| `E-n017-overbeck-admission-review3` | 0 | derived-structure | verified | equalities and inequalities, no tolerance | here | - | previously-published | independent | `V-overbeck-review3-admission` |
+| `E-n017-overbeck-literal-checks-review3` | 0 | derived-structure | verified | equalities and inequalities, no tolerance | here | - | previously-published | independent | `V-overbeck-review3-literal-checks` |
+| `E-n017-overbeck-handovers-review3` | 0 | derived-structure | verified | equalities and inequalities, no tolerance | here | - | previously-published | independent | `V-overbeck-review3-handovers` |
+| `E-n017-overbeck-gate-review2` | 0 | derived-structure | verified | equalities and inequalities, no tolerance | here | - | previously-published | independent | `V-overbeck-review2-row-builder`, `V-overbeck-review2-groebner-identities`, `V-overbeck-review2-duality-bounds`, `V-overbeck-review2-krawczyk-root` |
 
 ## What the register rests on
 
-- **assurance**: numerically-checked 4, reported 199, verified 319
-- **method**: exact-algebraic 138, interval-certified 165, numerical-multiprecision 4, proof-assistant-checked 5, proof-audited 4, published-proof 7, reported 199
-- **novelty**: apparently-novel 41, common-knowledge 4, not assessed 14, previously-published 463
-- **relationship to the producer's code**: generator 5, independent-implementation 187, not-applicable 23, same-implementation 284, shared-components 17, unknown-historical 6
+- **assurance**: numerically-checked 5, reported 199, verified 330
+- **method**: exact-algebraic 149, interval-certified 165, numerical-multiprecision 5, proof-assistant-checked 5, proof-audited 4, published-proof 7, reported 199
+- **novelty**: apparently-novel 41, common-knowledge 4, not assessed 14, previously-published 475
+- **relationship to the producer's code**: generator 5, independent-implementation 199, not-applicable 23, same-implementation 284, shared-components 17, unknown-historical 6
 
 The `cases` column is how many frontier records cite each piece of evidence, and it is the reason to read this table rather than count records. Ranked below are the *formal* records only: a `reported` record cited across the frontier may be a shared catalogue and is labelled as such, which is the register working rather than risk. The risk is a verified claim resting on an argument nobody has examined.
 
