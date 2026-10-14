@@ -6,6 +6,38 @@ softschema:
   status: enforced
 repository: https://github.com/jlevy/squares
 entries:
+  - id: october-fourteen-intake-ledger
+    date: '2026-10-14'
+    title: An Audit of Every Open Packing Report
+    significance:
+      score: 3
+      rationale: "A project-wide audit improves result intake and verification; it announces no new high-significance theorem."
+    topics: [engineering, verification]
+    pull_requests:
+      - 601
+    categories:
+      - records
+      - pipeline
+      - documentation
+    summary: |
+      A report-order ledger now covers every open upper-bound report: 306 claims at
+      163 counts from 28 reports. Each claim is compared with all earlier reports,
+      and enters the 14 October register only when it is decisively smaller.
+    details: |
+      - Printed and exact sides are compared rigorously against a frozen record.
+        Undecided comparisons remain visible for the owner to resolve.
+      - Kevin Fang’s direct certificates and excess theorem, and wand125’s fine-net,
+        linear and closed-form lower bounds, have retained mathematical reviews.
+      - Each open result issue has a per-count verdict.
+    references:
+      - label: The intake ledger
+        target: packing/campaign/issue-intake/upper-bounds-20261014/README.md
+      - label: Ledger review
+        target: docs/project/reviews/review-2026-10-14-intake-ledger.md
+      - label: Fang theorem and direct-certificate review
+        target: docs/project/reviews/review-2026-10-14-fang-excess-theorem-and-direct-certificates.md
+      - label: wand125 closed-form review
+        target: docs/project/reviews/review-2026-10-14-wand125-closed-form-lower-bound.md
   - id: october-twelve-intake-and-house-admissions
     date: '2026-10-14'
     title: "A Stronger 40-Square Bound and Four Smaller Packings"
@@ -1164,6 +1196,12 @@ deliveries:
   base_ref: main
   merge_commit: 287d9cba1d1777ec5531aa8eb73817e7faf82c2a
 
+- number: 601
+  title: 'research: the 2026-10-14 intake ledger, every open upper-bound report in report order, with
+    Fang''s and wand125''s imports and four mathematics reviews'
+  merged_at: '2026-10-14T18:51:22Z'
+  base_ref: main
+  merge_commit: 2319afaa581355a6e35a27f51698aa1c64d487f4
 stacks:
 - id: 498
   pull_requests:
@@ -1238,6 +1276,7 @@ coverage:
   - 479
   - 563
   - 590
+  - 601
   omissions:
   - pull_request: 579
     reason: Internal work reconciliation, tracker cleanup and agent-ownership procedures; no independent

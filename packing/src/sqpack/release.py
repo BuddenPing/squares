@@ -93,6 +93,14 @@ PUBLICATION_HISTORY = (
         ),
     ),
     PublicationHistoryEntry(
+        version="v0.6.3",
+        first_published="October 14, 2026",
+        result_scope=(
+            "Add the 14 October intake ledger to the project changelog and state on the "
+            "epistemics page that credits name people by name."
+        ),
+    ),
+    PublicationHistoryEntry(
         version="v0.6.2",
         first_published="October 14, 2026",
         result_scope=(
@@ -654,12 +662,22 @@ class ReleaseImpactDecision(NamedTuple):
 RELEASE_IMPACTS: tuple[ReleaseImpactDecision, ...] = (
     ReleaseImpactDecision(
         component="site",
-        previous_version="v0.6.2",
+        previous_version="v0.6.3",
         version="v0.7.0",
         impact="minor",
         reason=(
             "Add News with significance and topic filters, unify Explanations and split "
             "the tutorial, and let the Atlas use the full available page width."
+        ),
+    ),
+    ReleaseImpactDecision(
+        component="site",
+        previous_version="v0.6.2",
+        version="v0.6.3",
+        impact="patch",
+        reason=(
+            "Add the 14 October intake ledger to the project changelog and state on the "
+            "epistemics page that credits name people by name."
         ),
     ),
     ReleaseImpactDecision(
@@ -746,11 +764,6 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
         ),
         paths=(
             "TUTORIAL.md",
-            "packing/cases/n11_fractional_certificate/t-018-proof-card.md",
-            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-19-5.md",
-            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-381-100.md",
-            "packing/cases/n11_threshold_certificate/t-025-verifiable-claim-191-50.md",
-            "packing/cases/n11_threshold_certificate/t-026-verifiable-claim-dilation-limit.md",
             "packing/devtools/news_highlights.py",
             "packing/devtools/overview_sections.py",
             "packing/devtools/probes/measure_atlas_views/layout.js",
@@ -787,10 +800,9 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "and page inventories include those reader sources conservatively. News, "
             "topic labels, significance meters, article disclosures, reading-card discovery "
             "and navigation are site chrome. Shared chooser styles also serve the "
-            "print-hidden navigation; the paper-owned typography is unchanged. The five "
-            "regenerated claim documents differ "
-            "only in repository source-link provenance from c6118ca5 to 52b992d3. No "
-            "byte-identical PDF rebuild is claimed."
+            "print-hidden navigation; the paper-owned typography is unchanged. The retained "
+            "claim documents and their source-link pin match main. No byte-identical PDF "
+            "rebuild is claimed."
         ),
     ),
     ReleaseNoPublicChange(
@@ -901,6 +913,26 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "retains their own histories, statuses and dates while the site's "
             "history advances independently. Deployment citation "
             "provenance is independent of a paper revision."
+        ),
+    ),
+    ReleaseNoPublicChange(
+        components=("paper:n11-lower-bounds-explainer",),
+        paths=(
+            "packing/cases/n11_fractional_certificate/t-018-proof-card.md",
+            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-19-5.md",
+            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-381-100.md",
+            "packing/cases/n11_threshold_certificate/t-025-verifiable-claim-191-50.md",
+            "packing/cases/n11_threshold_certificate/t-026-verifiable-claim-dilation-limit.md",
+        ),
+        outputs=(
+            "papers/n11-lower-bounds-explainer.html",
+            "papers/n11-lower-bounds-explainer.md",
+        ),
+        reason=(
+            "The site v0.6.3 cut regenerates the five claim documents at its new link "
+            "revision and changes nothing else in them. The explainer rendered with "
+            "main's claim documents and release module and with this branch's is "
+            "byte-identical in all 54 files it writes, so the explainer keeps v0.4.6."
         ),
     ),
 )
@@ -1039,7 +1071,7 @@ def validate_release_impacts(
 #: fresh render, so a link naming the build commit would fail their drift check forever. It is
 #: in no version string. It moves when the claim documents are regenerated for an edition. It
 #: must be a commit on `main`; the site's own links name `main` itself (`devtools.repo_links`).
-PUBLICATION_REVISION = "52b992d3"
+PUBLICATION_REVISION = "e4d46b8d"
 
 
 def data_pathspec() -> tuple[str, ...]:

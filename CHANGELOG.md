@@ -40,6 +40,24 @@ First public: 2026-10-14 ([publication evidence](https://github.com/jlevy/square
 
 PRs and supporting records: [\#592](https://github.com/jlevy/squares/pull/592) · [\#595](https://github.com/jlevy/squares/pull/595) · [Fitzharding mathematical review](docs/project/reviews/review-2026-10-13-fitzharding-n17-mathematical-correctness.md) · [Overbeck mathematical review](docs/project/reviews/review-2026-10-13-overbeck-n17-mathematical-correctness.md) · [Evidence and independence rules](epistemics.md).
 
+<a id="changelog-entry-october-fourteen-intake-ledger"></a>
+
+#### An Audit of Every Open Packing Report
+
+Significance S3: A project-wide audit improves result intake and verification; it announces no new high-significance theorem.
+
+A report-order ledger now covers every open upper-bound report: 306 claims at
+163 counts from 28 reports. Each claim is compared with all earlier reports,
+and enters the 14 October register only when it is decisively smaller.
+
+- Printed and exact sides are compared rigorously against a frozen record.
+  Undecided comparisons remain visible for the owner to resolve.
+- Kevin Fang’s direct certificates and excess theorem, and wand125’s fine-net,
+  linear and closed-form lower bounds, have retained mathematical reviews.
+- Each open result issue has a per-count verdict.
+
+PRs and supporting records: [\#601](https://github.com/jlevy/squares/pull/601) · [The intake ledger](packing/campaign/issue-intake/upper-bounds-20261014/README.md) · [Ledger review](docs/project/reviews/review-2026-10-14-intake-ledger.md) · [Fang theorem and direct-certificate review](docs/project/reviews/review-2026-10-14-fang-excess-theorem-and-direct-certificates.md) · [wand125 closed-form review](docs/project/reviews/review-2026-10-14-wand125-closed-form-lower-bound.md).
+
 <a id="changelog-entry-october-twelve-intake-and-house-admissions"></a>
 
 #### A Stronger 40-Square Bound and Four Smaller Packings
