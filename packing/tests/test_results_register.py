@@ -1088,40 +1088,19 @@ def test_a_second_proof_is_held_to_its_own_proof_assistant_evidence() -> None:
 
 def test_the_second_proof_kinds_are_registered_kinds() -> None:
     """Formalization stands after simplification in the rubric's order, which the views
-    and the site's Kind filter follow, and the schema's enum is the same tuple. T-154,
-    Fitzharding's Lean 4 proof of T-153's value, is the register's first formalization;
-    T-054 and T-055 stay simplifications."""
+    and the site's Kind filter follow; the schema's enum is the same tuple
+    (`test_the_kind_vocabulary_is_one_list_in_three_places`). T-154, Fitzharding's Lean 4
+    proof of T-153's value, is a formalization; T-054 and T-055 are simplifications. Other
+    results may join either kind, so membership is what is held."""
     kinds = check_results.KINDS
     assert {"simplification", "formalization"} == check_results.SECOND_PROOF_KINDS
     assert kinds.index("formalization") == kinds.index("simplification") + 1
-    schema = safe_load(
-        (check_results.RESULTS.parent / "results.schema.yaml").read_text(encoding="utf-8")
-    )
-    enum = _find_kind_enum(schema)
-    assert tuple(enum) == kinds
     register = safe_load(check_results.RESULTS.read_text(encoding="utf-8"))
-    by_kind: dict[str, list[str]] = {}
+    by_kind: dict[str, set[str]] = {}
     for record in register["results"]:
-        by_kind.setdefault(record["kind"], []).append(record["id"])
-    assert by_kind["formalization"] == ["T-154"]
-    assert {"T-054", "T-055"} <= set(by_kind["simplification"])
-
-
-def _find_kind_enum(node: object) -> list[str]:
-    """A result's `kind` enum, wherever the schema nests it: the one that holds the bound
-    kinds, not a review's."""
-    if isinstance(node, dict):
-        kind = node.get("kind")
-        if isinstance(kind, dict) and "lower-bound" in kind.get("enum", []):
-            return list(kind["enum"])
-        for value in node.values():
-            if found := _find_kind_enum(value):
-                return found
-    if isinstance(node, list):
-        for value in node:
-            if found := _find_kind_enum(value):
-                return found
-    return []
+        by_kind.setdefault(record["kind"], set()).add(record["id"])
+    assert "T-154" in by_kind["formalization"]
+    assert {"T-054", "T-055"} <= by_kind["simplification"]
 
 
 def _superseded_by(*later: tuple[str, str], kind: str = "case-exclusion") -> dict:

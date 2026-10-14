@@ -303,7 +303,7 @@ def test_kind_shows_the_results_of_one_kind(
     for result in overview.results:
         by_kind.setdefault(str(result.record["kind"]), []).append(result.id.lower())
     assert {"lower-bound", "upper-bound", "optimality", "rigidity"} <= set(by_kind)
-    assert by_kind["formalization"] == ["t-154"]
+    assert "t-154" in by_kind["formalization"]
     assert {"t-054", "t-055"} <= set(by_kind["simplification"])
     page = opened(browser, pages["results.html"], overview)
     try:
