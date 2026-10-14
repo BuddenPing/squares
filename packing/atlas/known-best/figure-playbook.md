@@ -451,23 +451,25 @@ three credit paragraphs; complete names and role prefixes remain indivisible.
 
 A fourth paragraph credits the regularized cards, those drawn from a case’s regularized
 view because it is the case’s default picture (the regularization policy’s section 12,
-as `default-drawings.json` records it), in one sentence (the owner, 14 October 2026) of
-the form “Regularized drawings (*N* of 324), where they improve on the packings as
-published, by the Squares Project with …”, which the composite test holds to the cards
-the drawing marks. It is built from the generators’ credit lines as the policy’s section
-7 gives them: their shared opening, “Regularized by the Squares Project with”, once,
-then what each names, once, in the order the cards first draw it, joined with commas and
-“and”; a credit line that opens otherwise would print whole as a sentence of its own.
-A full personal name in a credit line prints as the surname the other credits use, read
-from the curated input’s aliases, so the only full name in the information block is the
-diagram credit’s; the case pages and the register keep the full credit lines.
-The sentence takes the fewest lines the 2600-unit block holds, never breaking inside a
-credit; the paragraph’s group lists the regularized cases in `data-regularized-cases`,
-and each such card’s `data-source-id` ends in `-regularized`. Its labels and badges are
-the record’s, as every card’s are.
+as `default-drawings.json` records it).
+Both diagrams print the owner’s approved two lines:
+
+```text
+Drawn packings are regularized for cleaner display using Squares Project rules,
+based on Daniel’s regularizer
+```
+
+The paragraph’s SVG group lists the depicted regularized cases in
+`data-regularized-cases` and keeps the complete generator credits from policy section 7
+in `data-generator-credits`. Each regularized card’s `data-source-id` ends in
+`-regularized`. The composite test checks the marked cases against this structured case
+list, the approved printed wording, gray case numbers, and the current default choices
+when the drawing’s data pin is current.
+Its labels and badges are the record’s, as every card’s are.
 
 Both diagrams use the same full-corpus $n = 1..324$ acknowledgments for the first three
-paragraphs; the regularization paragraph counts the depicted range’s cards.
+paragraphs and the same compact regularization credit.
+Their structured case lists and generator credits describe each depicted range.
 SVG metadata states that credit scope separately from the depicted range and retains the
 complete source citations, original statuses, contribution roles and case associations.
 The curated input is `credit-attributions.json`; `devtools.atlas_credit_attributions`

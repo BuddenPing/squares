@@ -1721,9 +1721,9 @@ def test_composite_tiles_draw_each_case_s_default_picture_and_credit_it() -> Non
 
     Each retained composite is held to itself always: the cards it marks as drawn from a
     regularized view (`data-source-id` ending in `-regularized`) are the cases its
-    regularization paragraph lists and counts, in one sentence that says the shared
-    opening once and names people by surname, the diagram's credit being the block's only
-    full name. It is held to the current record only while it shows the pinned data, or
+    regularization block lists in structured metadata. The printed text is the approved
+    two-line credit; full generator attribution remains in SVG metadata. It is held to
+    the current record only while it shows the pinned data, or
     when trailing is off: a composite that trails the pin may show defaults the record
     has since changed (`sqpack.release`, rule 5), as its sibling tests allow and
     `--check-composites` lists (review A1 of #591)."""

@@ -362,9 +362,16 @@ policy applies until there is one.
    Since the regularized view became the default picture
    ([section 12](#12-the-default-picture)), the composites carry it too, and so does the
    case page that draws one; the atlas README names it in its account of the layer.
-   The composites print it in a compact form the owner asked for on 14 October 2026: one
-   sentence for all their regularized tiles, the generators’ shared opening said once
-   and Evan Daniel named “Daniel”, as the posters’ other credits name people by surname.
+   Both composites print the owner’s approved two-line wording:
+
+   ```text
+   Drawn packings are regularized for cleaner display using Squares Project rules,
+   based on Daniel’s regularizer
+   ```
+
+   Their SVG metadata retains the full generator credits in `data-generator-credits` and
+   the depicted regularized cases in `data-regularized-cases`. The compact printed
+   credit does not replace that attribution.
 
 8. **Retention of the solve:** kept.
    The solved points and contact structures go in a pinned packet or release asset

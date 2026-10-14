@@ -39,18 +39,23 @@ construction credits.
 Each counted legend item names the count and number of cases in that composite, such as
 “proved optimal (45 of 100)” or “proved optimal (77 of 324)”. Titles, problem
 descriptions and all ordinary text use black; case numbers remain gray.
-Recent-result marks and the angle/contact swatches keep their semantic colors.
+Changed numerical values and the angle/contact swatches keep their semantic colors.
 A bundled bold sans-serif face supplies the print text and its layout measurements.
 The gap between information blocks is three body-text ems, measured between their ink
 bounds; the lines within a block share 1.50 leading and weight 700. All three credit
 paragraphs use the width of the balanced three-line construction paragraph, with
 complete names and role clauses kept together.
-A fourth paragraph is one sentence that counts the tiles drawn from regularized views
-and credits them, built from the generators’ section 7 credit lines with their shared
-opening said once and people named by surname, in the form “Regularized drawings (*N* of
-324), where they improve on the packings as published, by the Squares Project with …”,
-where *N* and the generators named are the drawing’s own, on as few lines of the
-information block’s full width as it fits.
+A fourth paragraph uses the owner’s approved two-line credit on both posters:
+
+```text
+Drawn packings are regularized for cleaner display using Squares Project rules,
+based on Daniel’s regularizer
+```
+
+The paragraph’s SVG group retains the depicted regularized cases in
+`data-regularized-cases` and the generators’ complete section 7 credits in
+`data-generator-credits`. These structured values preserve the counts and attribution;
+they are not printed in the compact credit.
 
 The composite ships in four forms, all drawn from that one SVG in one build:
 
