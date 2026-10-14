@@ -346,6 +346,34 @@ def test_a_second_proof_keeps_a_standing_through_its_later_rungs(
     assert check_standing.problems(replayed, view.HOLDS, adopted) == []
 
 
+@pytest.mark.parametrize("kind", sorted(SECOND_PROOF_KINDS))
+def test_a_second_proof_of_a_value_no_lane_holds_is_refused(
+    records: view.Records, kind: str
+) -> None:
+    """A simplification or a formalization proves again a value the record holds. Given
+    the words `s(17) = 4.68`, above n = 17's reported lower bound, T-154 states a value
+    no lane holds: it derives pending adoption at C1 and at C3, and the check refuses it
+    at both, since by the first rule of Result Kinds it takes that value's kind (review A3
+    on #592). T-154 as written, replayed, beats the verified lane alone and is refused
+    nothing (`test_a_second_proof_keeps_a_standing_through_its_later_rungs`)."""
+    probe = _entry(records, "T-154", kind=kind, headline="`s(17) = 4.68` in Lean 4")
+    for rung in ("C1", "C3"):
+        beyond = {**probe, "confirmation": rung}
+        (finding,) = [
+            f for f in check_standing.findings(beyond, records) if f.direction == LOWER
+        ]
+        assert finding.reported == EXCEEDS
+        assert view.standing(beyond, records) == view.PENDING_ADOPTION
+        (problem,) = check_standing.problems(beyond, view.PENDING_ADOPTION, records)
+        assert problem.startswith(
+            f"T-154 is a {kind}, yet at n = 17 it states a bound better than the reported one"
+        )
+    assert (
+        check_standing.problems({**probe, "kind": "optimality"}, view.PENDING_ADOPTION, records)
+        == []
+    )
+
+
 def test_a_reported_second_certificate_is_not_beaten_in_the_verified_lane(
     records: view.Records,
 ) -> None:

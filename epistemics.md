@@ -577,10 +577,12 @@ it can hold, it is a second certificate.
 Its own build can land before that of the result it proves again, as when a reported
 proof of a value the record holds only as reported is replayed first.
 It then states a bound better than the case’s verified one, and its standing is pending
-adoption.
-Neither kind moves a bound by itself, so when the case record adopts that bound
-the kind is revisited, and the result page’s registered identity is amended with a dated
-reason (`packing/site-urls.yaml`).
+adoption. A bound better than the case’s reported one is another matter: no lane holds
+that value, so the entry is no second proof and takes the value’s kind by the first
+rule, and `devtools.check_standing` refuses a simplification or a formalization that
+states one. Neither kind moves a bound by itself, so when the case record adopts that
+bound the kind is revisited, and the result page’s registered identity is amended with a
+dated reason (`packing/site-urls.yaml`).
 
 ## Results by Others
 

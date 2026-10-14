@@ -41,6 +41,10 @@ An entry that still holds one case of several is not superseded, and this report
 cases it no longer holds without refusing them: `T-047` holds `n = 26, 29, 30` and is
 beaten at `n = 11, 27, 28, 31`.
 
+A simplification or a formalization proves again a value the record holds, so one that
+states a bound strictly better than its case's reported one is refused whatever its
+standing: no lane holds that value (`second_proof_problems`).
+
 What a table of results draws of a standing is its place on the frontier, `superseded`
 or `second certificate`, beside the result's status (`devtools.result_status`); the
 "Hide superseded" filter reads the same word. So this check is what holds that mark,
@@ -326,13 +330,36 @@ def _at(found: Sequence[Finding]) -> str:
     return "n = " + compress(sorted({finding.n for finding in found}))
 
 
+def second_proof_problems(record: Mapping[str, Any], found: Sequence[Finding]) -> list[str]:
+    """What a simplification or a formalization may not state (epistemics.md, Result
+    Kinds). It proves again a value the record holds, so a bound it states strictly better
+    than its case's reported one, in a direction it claims (`directions`), is a value no
+    lane holds: by the first rule of Result Kinds it takes that value's kind. Replayed, a
+    second proof may still beat the verified lane alone, as one whose build lands before
+    that of the result it proves again does; that is pending adoption, not this."""
+    kind = str(record.get("kind"))
+    if kind not in SECOND_PROOF_KINDS:
+        return []
+    claimed = directions(record, found)
+    beyond = [f for f in found if f.direction in claimed and f.reported == EXCEEDS]
+    if not beyond:
+        return []
+    return [
+        (
+            f"{record['id']} is a {kind_label(kind)}, yet at {_at(beyond)} it states a bound "
+            "better than the reported one: no lane holds that value, so it is no second "
+            "proof and takes that value's kind"
+        )
+    ]
+
+
 def problems(record: Mapping[str, Any], standing: str, records: view.Records) -> list[str]:
     """What is wrong with `standing` for this entry, by the bounds its words state."""
     entry = str(record["id"])
     found = findings(record, records)
     stands = [f for f in found if f.verified in {EQUAL, EXCEEDS}]
     reported = [f for f in found if f.reported in {EQUAL, EXCEEDS}]
-    wrong: list[str] = []
+    wrong: list[str] = second_proof_problems(record, found)
     if standing == view.NO_STANDING:
         if found:
             wrong.append(f"{entry} has no standing, yet states a bound at {_at(found)}")
