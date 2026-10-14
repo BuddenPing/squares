@@ -221,6 +221,7 @@ two routes find the same least clearance and gap at every count.
 `check --replay` decided the jobs of these counts again, each run inside the same
 ceiling, and every row was equal to the retained one: N129, N156, N175, N176, N258, N261
 and N271 (21 minutes 43 seconds); N105, N172, N199, N297, N306 and N308 (69 minutes 29
+seconds); N146, N232, N238, N240, N241, N259, N267, N272, N295 and N307 (61 minutes 47
 seconds). The other counts’ rows are admitted and were not decided again.
 
 **Algebraic, on one route.** `devtools.algebraic_witness_reports` decided N70, N153, N207
