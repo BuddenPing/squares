@@ -1893,9 +1893,8 @@ website or anything else.
 
 ### Maintaining the project changelog
 
-[`CHANGELOG.md`](CHANGELOG.md) and the bottom of
-[About](https://jlevy.github.io/squares/about.html#changelog) are generated from
-[`packing/site-changelog.yaml`](packing/site-changelog.yaml).
+[`CHANGELOG.md`](CHANGELOG.md) and [News](https://jlevy.github.io/squares/news.html) are
+generated from [`packing/site-changelog.yaml`](packing/site-changelog.yaml).
 Edit the YAML, then run
 `uv run --frozen --all-extras --group dev python -m devtools.render_changelog` from
 `packing/`; its `--check` mode runs in the ordinary documentation gate.
@@ -1955,7 +1954,7 @@ The validator uses `HEAD^1` on a main checkout whose head already equals `origin
 so it checks the preceding delivery rather than comparing a commit with itself.
 
 Validate with the change-reachable push tier, review both reader views, and verify the
-published About section with the normal deployment audit after merging.
+published News page with the normal deployment audit after merging.
 The
 [initial backfill review](docs/project/reviews/review-2026-10-13-site-changelog-backfill.md)
 records the disposition of the first 36 PRs.

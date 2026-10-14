@@ -85,6 +85,14 @@ class PublicationHistoryEntry(NamedTuple):
 #: for each deployment's commit, what the page it built stated.
 PUBLICATION_HISTORY = (
     PublicationHistoryEntry(
+        version="v0.7.0",
+        first_published="October 14, 2026",
+        result_scope=(
+            "Add News with significance and topic filters, unify Explanations and split "
+            "the tutorial, and let the Atlas use the full available page width."
+        ),
+    ),
+    PublicationHistoryEntry(
         version="v0.6.3",
         first_published="October 14, 2026",
         result_scope=(
@@ -654,6 +662,16 @@ class ReleaseImpactDecision(NamedTuple):
 RELEASE_IMPACTS: tuple[ReleaseImpactDecision, ...] = (
     ReleaseImpactDecision(
         component="site",
+        previous_version="v0.6.3",
+        version="v0.7.0",
+        impact="minor",
+        reason=(
+            "Add News with significance and topic filters, unify Explanations and split "
+            "the tutorial, and let the Atlas use the full available page width."
+        ),
+    ),
+    ReleaseImpactDecision(
+        component="site",
         previous_version="v0.6.2",
         version="v0.6.3",
         impact="patch",
@@ -745,13 +763,21 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "paper:square-packing-methods-survey",
         ),
         paths=(
-            "packing/cases/n11_fractional_certificate/t-018-proof-card.md",
-            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-19-5.md",
-            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-381-100.md",
-            "packing/cases/n11_threshold_certificate/t-025-verifiable-claim-191-50.md",
-            "packing/cases/n11_threshold_certificate/t-026-verifiable-claim-dilation-limit.md",
-            "packing/devtools/upper_bound_reports.py",
-            "packing/pyproject.toml",
+            "TUTORIAL.md",
+            "packing/devtools/news_highlights.py",
+            "packing/devtools/overview_sections.py",
+            "packing/devtools/probes/measure_atlas_views/layout.js",
+            "packing/devtools/probes/measure_atlas_views/widen.js",
+            "packing/devtools/render_changelog.py",
+            "packing/devtools/render_overview.py",
+            "packing/devtools/repo_links.py",
+            "packing/devtools/run_negative_controls.py",
+            "packing/devtools/site_documents.py",
+            "packing/devtools/site_topics.py",
+            "packing/devtools/site_urls.py",
+            "packing/devtools/templates/site-nav.css",
+            "packing/devtools/templates/site-nav.html",
+            "packing/src/sqpack/cli/validate.py",
         ),
         outputs=(
             "papers/n11-lower-bounds-explainer.html",
@@ -768,15 +794,15 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "papers/square-packing-methods-survey.pdf",
         ),
         reason=(
-            "Each paper was rendered with its own command at main's 37e6757ed and at "
-            "c6118ca59. The explainer's 55 files are byte-identical; the optimality, "
-            "threshold-bound and methods papers' HTML, Markdown and PDF are byte-identical "
-            "once the build commit their repository links pin is normalized. The inputs add "
-            "a beyond-horizon-only register plan and four HOUSES readers, reached from the "
-            "papers only through the atlas builder's import closure, and a BasedPyright "
-            "include that no render reads. The site v0.6.2 cut regenerates the claim "
-            "documents at its new link revision; the explainer rendered after that cut is "
-            "byte-identical in all 55 files to its render before it."
+            "The four standalone paper manuscripts, mathematical figures and paper-owned "
+            "styles are unchanged. The split tutorials publish through the reader-document "
+            "pipeline; existing links retain their legacy section landings. Shared import "
+            "and page inventories include those reader sources conservatively. News, "
+            "topic labels, significance meters, article disclosures, reading-card discovery "
+            "and navigation are site chrome. Shared chooser styles also serve the "
+            "print-hidden navigation; the paper-owned typography is unchanged. The retained "
+            "claim documents and their source-link pin match main. No byte-identical PDF "
+            "rebuild is claimed."
         ),
     ),
     ReleaseNoPublicChange(
