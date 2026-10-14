@@ -451,14 +451,13 @@ three credit paragraphs; complete names and role prefixes remain indivisible.
 
 A fourth paragraph credits the regularized cards, those drawn from a case’s regularized
 view because it is the case’s default picture (the regularization policy’s section 12,
-as `default-drawings.json` records it), in one sentence (the owner, 14 October 2026):
-“Regularized drawings (79 of 324), where they improve on the packings as published, by
-the Squares Project with Daniel’s regularizer (evand/square-packing, MIT) and its own
-axis tool (regularize_axis_components/2)”. It is built from the generators’ credit lines
-as the policy’s section 7 gives them: their shared opening, “Regularized by the Squares
-Project with”, once, then what each names, once, in the order the cards first draw it,
-joined with commas and “and”; a credit line that opens otherwise would print whole as a
-sentence of its own.
+as `default-drawings.json` records it), in one sentence (the owner, 14 October 2026) of
+the form “Regularized drawings (*N* of 324), where they improve on the packings as
+published, by the Squares Project with …”, which the composite test holds to the cards
+the drawing marks. It is built from the generators’ credit lines as the policy’s section
+7 gives them: their shared opening, “Regularized by the Squares Project with”, once,
+then what each names, once, in the order the cards first draw it, joined with commas and
+“and”; a credit line that opens otherwise would print whole as a sentence of its own.
 A full personal name in a credit line prints as the surname the other credits use, read
 from the curated input’s aliases, so the only full name in the information block is the
 diagram credit’s; the case pages and the register keep the full credit lines.

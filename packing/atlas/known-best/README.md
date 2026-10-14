@@ -47,11 +47,10 @@ paragraphs use the width of the balanced three-line construction paragraph, with
 complete names and role clauses kept together.
 A fourth paragraph is one sentence that counts the tiles drawn from regularized views
 and credits them, built from the generators’ section 7 credit lines with their shared
-opening said once and people named by surname, such as “Regularized drawings (79 of
-324), where they improve on the packings as published, by the Squares Project with
-Daniel’s regularizer (evand/square-packing, MIT) and its own axis tool
-(regularize_axis_components/2)”, on as few lines of the information block’s full width
-as it fits.
+opening said once and people named by surname, in the form “Regularized drawings (*N* of
+324), where they improve on the packings as published, by the Squares Project with …”,
+where *N* and the generators named are the drawing’s own, on as few lines of the
+information block’s full width as it fits.
 
 The composite ships in four forms, all drawn from that one SVG in one build:
 
@@ -280,7 +279,8 @@ house drawing kept as published
 A count’s tile on both composites, its atlas tile and frontier-survey thumbnail on the
 site and the drawing that heads its case page are its regularized view where the view is
 exactly verified on both routes, at a side no larger than the verified upper bound or
-one of the seven named exceptions, and improves on the house drawing under the policy’s
+one of the exceptions question 13 names, and improves on the house drawing under the
+policy’s
 [improvement rule](../../../docs/project/policies/regularization-policy.md#11-the-improvement-rule):
 worse on none of its goals and better on at least one, exactness included.
 The case page keeps the house drawing one click away, under *As published*, with its
@@ -290,17 +290,17 @@ source’s credit; everywhere else the house drawing is the picture.
 ([schema](default-drawings.schema.yaml)), written by
 `python -m devtools.default_drawings --update`, records each drawn view’s default, its
 reason, and both drawings’ measures.
-On 13 October 2026, 79 of the 90 views are defaults: 12 replace a numerically checked
-witness with an exactly verified view whose drawing ties it on every measure, and the
-rest are better on at least one measure.
-The other 11, at 70, 102, 103, 207, 236, 258, 261, 263, 269, 295 and 303, tie an exactly
-verified house at its own side on every goal, so the house drawing stays their picture;
-nine of them are the house to within a pixel at tile size.
+Its `totals` say how many views are defaults; its entries say which, and why each of the
+others keeps the house: a view that replaces a numerically checked witness with an
+exactly verified one may tie it on every measure, and a view that ties an exactly
+verified house at its own side on every goal is no improvement, so the house stays its
+picture and its case page says so.
 The records-tier step `default pictures improve on their house drawings` measures every
 view and its house drawing again on each pull request, fails on a stale record or a
-regularized default the rule refuses, and lists the counts that keep the house.
-It reads the seven exceptions above the bound from `devtools.default_drawings.ABOVE_U`,
-which `packing/tests/test_regularize_select.py` holds to the layer.
+regularized default the rule refuses, and lists the counts that keep the house; this
+file states no count of its own, so it cannot fall behind the record.
+It reads the exceptions above the bound from `devtools.default_drawings.ABOVE_U`, which
+`packing/tests/test_regularize_select.py` holds to the layer.
 
 `--check-atlas` runs in the records tier on every pull request: it holds the index to
 the manifest, the witnesses and the views by digest, and reads each other generator’s

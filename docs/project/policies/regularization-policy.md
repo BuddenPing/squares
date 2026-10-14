@@ -601,7 +601,13 @@ views, admitted before this rule, and draws none of them by default.
 
 Where the default is the view, the homepage and atlas tiles, the frontier survey’s
 thumbnail, both posters and the case page draw it, and the case page keeps the house
-drawing one click away as *as published*, with its source credit.
+drawing one click away as *as published*, with the credit of the source whose packing it
+pictures. The House/Regularized toggle the approved plan names no longer exists: it was
+retired on 4 October 2026 (think-k8x9), when the atlas began to draw one tile a case, so
+the case page’s *As published* disclosure is the one place the house drawing of a
+regularized default is kept.
+Where the layer holds a view that is not the default, the case page’s regularization
+note says why it draws the house drawing.
 The house witness stays the record’s witness, and the view changes no side, value, tier
 or credit (section 1). `devtools.default_drawings` writes each count’s default and its
 reason to `packing/atlas/known-best/default-drawings.json`; its check, in the records
