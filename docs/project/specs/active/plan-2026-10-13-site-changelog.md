@@ -198,15 +198,15 @@ Generated Markdown formatting must agree with Flowmark so the commit hook cannot
 
 Keep version authority in `packing/src/sqpack/release.py`, with distinct release units:
 
-| Component | Shared artifacts | Proposed policy |
+| Component | Shared artifacts | Policy |
 | --- | --- | --- |
-| `site` | Website and workbench public edition | Retain `PUBLICATION_HISTORY` and the current `v0.5.0` lineage |
+| `site` | Website and workbench public edition | Retain `PUBLICATION_HISTORY`; prepare `v0.6.0` as a minor release for the new changelog capability |
 | `infographics` | Both 1–100 and 1–324 infographic SVGs, PDFs and PNG exports | Add one `INFOGRAPHIC_HISTORY` and version; either graphic changing advances the same version on the complete pair |
 | `paper:<slug>` | One paper’s HTML, Markdown and PDF | Retain each paper’s independent history; another component changing does not advance it |
 
-The infographic family currently inherits the site version, while the papers already
-have independent histories.
-Separate infographic versioning from future site cuts.
+Before this implementation, the infographic family inherited the site version, while the
+papers already had independent histories.
+The family now versions independently of site cuts.
 Import the already printed `v0.5.0` as its baseline using verified publication evidence;
 do not infer a first-live date from a PDF filename or redraw date.
 Keep existing public download addresses.
@@ -362,6 +362,15 @@ and independently freezes prior entries from the local main reference.
 main ancestry before writing candidates.
 Neither normal rendering nor validation fetches GitHub.
 The companion planning schema and examples remain the original design samples.
+
+`devtools.check_release_impact` selects candidates from producer declarations and their
+Python helper imports.
+Each candidate needs its owning patch/minor successor or a fresh review naming the exact
+changed paths, examined outputs and no-change reason.
+The site cut prepares `v0.6.0`; the retained infographic pair and all four papers keep
+their existing editions.
+Export-family staging and rollback make an interrupted infographic cut retryable without
+selecting another version.
 
 The additional legend-removal request is tracked as `think-8lsv`: remove the redundant
 bottom S/V/C strip while retaining the Results page’s complete ladder documentation.

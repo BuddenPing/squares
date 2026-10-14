@@ -192,11 +192,15 @@ def family(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[Family]:
 
 
 def current() -> atlas.CompositeIdentity:
-    return atlas.CompositeIdentity(release.DATA_REVISION, "2026-10-01")
+    return atlas.CompositeIdentity(
+        release.DATA_REVISION, "2026-10-01", release.component_version("infographics")
+    )
 
 
 def trailing() -> atlas.CompositeIdentity:
-    return atlas.CompositeIdentity(EARLIER, "2026-09-28")
+    return atlas.CompositeIdentity(
+        EARLIER, "2026-09-28", release.component_version("infographics")
+    )
 
 
 def test_a_composite_that_shows_the_pinned_data_and_agrees_with_it_passes(
@@ -693,8 +697,9 @@ def test_a_new_family_revision_uses_a_recorded_successor_on_both_graphics(
     family: Family,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    previous = release.component_version("infographics")
     before = family.write(current())
-    version = release.successor_version(release.INFOGRAPHIC_VERSION, "patch")
+    version = release.successor_version(previous, "patch")
     revised = atlas.CompositeIdentity(release.DATA_REVISION, "2026-10-01", version)
     after = family.write(revised)
     family.write(current())
@@ -703,9 +708,9 @@ def test_a_new_family_revision_uses_a_recorded_successor_on_both_graphics(
     with pytest.raises(ValueError, match="needs a release-impact decision"):
         atlas.validate_composite_redraws([(family.canvas, after)], revised)
     decision = release.ReleaseImpactDecision(
-        "infographics", "v0.5.0", version, "patch", "Refresh the pair."
+        "infographics", previous, version, "patch", "Refresh the pair."
     )
-    monkeypatch.setattr(release, "RELEASE_IMPACTS", (decision,))
+    monkeypatch.setattr(release, "RELEASE_IMPACTS", (decision, *release.RELEASE_IMPACTS))
     atlas.validate_composite_redraws([(family.canvas, after)], revised)
     assert family.canvas.svg_path.read_text() == before
     assert atlas.retained_identity(after).version == version

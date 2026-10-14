@@ -96,8 +96,8 @@ paper and its PDF. Three form a series on $n = 11$:
 is a tutorial on geometric construction, physics-inspired search, annealing, surgery,
 local refinement, and upper-bound certification.
 
-The website and the atlas posters are at edition `v0.5.0`; each paper carries its own
-version.
+The website is at edition `v0.6.0` and the atlas posters at `v0.5.0`; each paper carries
+its own version.
 
 ## Repository Guide
 
@@ -506,6 +506,7 @@ Changing agents changes the driver, not the record or the evidence required for 
 
 ```
 .
+├── CHANGELOG.md            Noteworthy contributions and public launches
 ├── TUTORIAL.md             First-principles orientation for a newcomer
 ├── SYNOPSIS.md             Current research status, roadmap, results, and handoff
 ├── conventions.md          Artifact, identifier, evidence, and correction rules
