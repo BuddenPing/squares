@@ -1178,6 +1178,29 @@ The gate step `the branch cost rollup renders` runs the renderer over every bran
 the records, including one no rollup mentions, because a division by a turn count fails
 on exactly that edge.
 
+## Merging a Pull Request
+
+**A pull request merges with a merge commit.** That is the repository’s policy (the
+owner, 2026-10-14: “Always merge with a merge commit.
+Squashes cause problems.”). Squash only for a significant reason, such as removing
+extraneous items from history, and say in the pull request why.
+Rebase-merging is not the default either.
+
+A squash or a rebase lands the branch as new commits, and leaves the branch’s own
+commits on no branch once it is deleted.
+The record names those commits:
+
+- A release cut sets `PUBLICATION_REVISION` to the branch’s head, its merge from `main`
+  ([Cutting an edition](#cutting-an-edition)), and the claim documents link to it, so it
+  has to stay reachable from `main`.
+- Recorded engine and provenance commits, which `check_provenance` resolves, and the
+  claim documents’ verifier pins name branch commits.
+- A stacked or dependent branch loses its ancestry: its base’s commits are no longer in
+  `main`, and merging it replays them as conflicts.
+- A link to the commit a page was built from 404s, which is why `check_published_site`
+  refuses repository links that name a commit
+  ([Publishing the Explainer](#publishing-the-explainer)).
+
 ## The Published Site
 
 Every content page is complete in its first HTML response: navigation, headings,
