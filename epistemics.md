@@ -432,8 +432,12 @@ second is the status, and the third is the result’s kind: a second certificate
 proposal and the status of every result are in
 [the result-status plan](docs/project/specs/done/plan-2026-10-01-result-status.md).
 On 2026-10-13 the owner added the kind *formalization*, a proof-assistant proof of a
-result the record already holds, apart from a simplification: “simplification is one
-thing but formalization is another.”
+result the record already holds, apart from a simplification, in three remarks:
+“simplification is one thing but formalization is another”, then “let’s go with
+formalization then”, then “simplif[ic]ation should be allowed too but that is
+different”.
+The owner stated no precedence between the two kinds, so where a second proof
+fits both, the owner chooses at registration.
 The decision was made on `T-154`, Fitzharding’s Lean 4 proof of $s(17) = L$, which was
 registered as a simplification that day and moved to the new kind on 2026-10-14
 ([Result Kinds](#result-kinds)). `T-054` and `T-055`, which no proof assistant checked,
@@ -542,10 +546,10 @@ A result has exactly one, chosen by five rules.
 - A proof in a proof assistant of a result the record already holds is a formalization,
   whether it formalizes an existing argument or takes a route of its own, and its claim
   names the result it formalizes or proves again.
-  Where a second proof fits both kinds, it is a formalization; one that no proof
-  assistant has checked, by a shorter, cleaner or more elementary route, stays a
-  simplification. A proof-assistant proof of a value the record does not yet hold is no
-  formalization: by the first rule it takes that value’s kind, optimality or a bound.
+  Where a second proof is both checked by a proof assistant and by a shorter, cleaner or
+  more elementary route, either kind fits, and the owner chooses at registration.
+  A proof-assistant proof of a value the record does not yet hold is no formalization:
+  by the first rule it takes that value’s kind, optimality or a bound.
 
 The kind is declared, and the checker holds it to what the record already says.
 A headline that opens with a relation on $s(n)$ states its kind: `≥` or `>` is a lower
@@ -556,9 +560,9 @@ both halves. A formalization cites evidence of its own whose method, performed o
 reported, is `proof-assistant-checked`. Evidence that the result it proves again cites
 is not its own, though a second proof may cite it for a half the two share: a proof
 assistant’s check of that result is no check of the second proof.
-A simplification cites none, since where both would fit the kind is formalization.
-Uniqueness, rigidity, case exclusion and restricted optimality cite `derived-structure`
-evidence and state no relation on $s(n)$ in their headline.
+A simplification may cite such evidence too, where the owner chose that kind for a proof
+that fits both. Uniqueness, rigidity, case exclusion and restricted optimality cite
+`derived-structure` evidence and state no relation on $s(n)$ in their headline.
 Method limit, correction and audit are told apart by review alone.
 
 A result’s standing, whether a case bound rests on it now, is about bounds.

@@ -154,8 +154,10 @@ SIMPLIFICATION = "simplification"
 FORMALIZATION = "formalization"
 #: The kinds of a second proof: each proves again a result the record already holds and
 #: moves no bound by itself, its claim names that result, and its headline may restate the
-#: result's relation on `s(n)`. A formalization is one a proof assistant checked; where
-#: both would fit, the kind is formalization (epistemics.md, Result Kinds).
+#: result's relation on `s(n)`. A formalization is one a proof assistant checked, by
+#: evidence of its own; a simplification is one by a shorter, cleaner or more elementary
+#: route, which a proof assistant may also have checked. Where a second proof is both,
+#: either kind fits and the owner chooses at registration (epistemics.md, Result Kinds).
 SECOND_PROOF_KINDS = frozenset({SIMPLIFICATION, FORMALIZATION})
 #: The relations on `s(n)` each bound kind states, as a headline (`≥`) and a claim (`>=`)
 #: write them. These three kinds are the bounds; every other kind is no bound on `s(n)`.
@@ -854,7 +856,8 @@ def kind_problems(
       it proves again do not cite: a second proof may cite their evidence for the half
       it shares with them, as `T-054` and `T-055` cite the grid's, and a proof assistant's
       check of the result it proves again is no check of the second proof.
-      `evidence_of` is every result's cited evidence ids.
+      `evidence_of` is every result's cited evidence ids. A simplification may cite such
+      evidence too: where a second proof is both, the owner chooses its kind.
     - **The results the claim names.** The claim of a simplification or a formalization
       names the registered result it proves again, on a case they share. `scopes` is
       every result's cases.
@@ -883,21 +886,14 @@ def kind_problems(
                 f"a {kind}'s claim names the registered result it {again}, on a case they share"
             )
         theirs = {str(ref) for other in again_of for ref in (evidence_of or {}).get(other, ())}
-        checked = sorted(
-            str(entry.get("id"))
+        checked = any(
+            proof_assistant_checked(entry) and str(entry.get("id")) not in theirs
             for entry in cited
-            if proof_assistant_checked(entry) and str(entry.get("id")) not in theirs
         )
         if kind == FORMALIZATION and not checked:
             problems.append(
                 "kind is formalization, and no cited evidence of its own is "
                 f"`{FORMAL_METHOD}`, performed or reported"
-            )
-        if kind == SIMPLIFICATION and checked:
-            problems.append(
-                f"kind is simplification, but it cites `{FORMAL_METHOD}` evidence "
-                f"({', '.join(checked)}): a proof-assistant proof of a result the record "
-                "holds is a formalization"
             )
     return [f"{rid}: {problem}" for problem in problems]
 

@@ -910,8 +910,6 @@ def test_not_a_bound_is_not_a_kind(
         # So does a formalization, and it cites evidence a proof assistant checked.
         ("T-001", "formalization", "a formalization's claim names the registered result"),
         ("T-001", "formalization", "kind is formalization, and no cited evidence of its own"),
-        # A second proof a proof assistant checked is a formalization, not a simplification.
-        ("T-154", "simplification", "is a formalization"),
     ],
 )
 def test_a_kind_its_record_contradicts_is_refused(result: str, kind: str, refusal: str) -> None:
@@ -1011,8 +1009,11 @@ def test_a_formalization_names_a_result_and_cites_a_proof_assistant() -> None:
     """A formalization proves in a proof assistant a result the record already holds, by
     formalizing an existing argument or by a route of its own (owner, 13 October 2026). Its
     claim names that result on a case they share, and it cites evidence whose method,
-    performed or reported, is `proof-assistant-checked`. A simplification that cites such
-    evidence is refused, since where both kinds fit the kind is formalization."""
+    performed or reported, is `proof-assistant-checked`. A simplification may cite such
+    evidence too: the owner stated no precedence ("simplif[ic]ation should be allowed too
+    but that is different"), so where a second proof is both, either kind fits and the
+    owner chooses at registration. Declared a simplification, T-154 is not refused
+    either."""
     record = {
         "id": "T-999",
         "kind": "formalization",
@@ -1040,12 +1041,11 @@ def test_a_formalization_names_a_result_and_cites_a_proof_assistant() -> None:
     ]
     simpler = {**record, "kind": "simplification"}
     assert check_results.kind_problems(simpler, [paper], scopes) == []
-    assert check_results.kind_problems(simpler, [paper, built], scopes) == [
-        (
-            "T-999: kind is simplification, but it cites `proof-assistant-checked` evidence "
-            "(E-build): a proof-assistant proof of a result the record holds is a formalization"
-        )
-    ]
+    assert check_results.kind_problems(simpler, [paper, built], scopes) == []
+    live, live_cited, live_scopes = _live_record("T-154")
+    assert live["kind"] == "formalization"
+    as_simpler = {**live, "kind": "simplification"}
+    assert check_results.kind_problems(as_simpler, live_cited, live_scopes) == []
     # Its headline may restate the relation of the result it proves again, as a
     # simplification's may; a kind that is no bound may not.
     assert check_results.headline_kind(record["headline"]) == "optimality"

@@ -17748,15 +17748,18 @@ results:
       same day to a new kind, formalization ("simplification is one thing but formalization
       is another"; "let's go with formalization then"), which epistemics.md's Result Kinds
       holds since 14 October (think-8e0p): a proof in a proof assistant of a result the
-      record already holds, by formalizing an existing argument or by a route of its own.
+      record already holds, by formalizing an existing argument or by a route of its own. In
+      the same exchange the owner said "simplif[ic]ation should be allowed too but that is
+      different", and stated no precedence between the two kinds: where a second proof fits
+      both, the owner chooses at registration.
 
       Why formalization: this proof does not formalize T-153's argument, and T-153 has no
       formalization: Overbeck's is a candidate proof with Python and JavaScript checkers,
       and the Lean formalization it plans has not started. So, of the reports this record
       holds, this is the first proof-assistant proof of the value, and its kind is
-      formalization; simplification stays the kind of a second proof that no proof
-      assistant has checked. The result page's registered identity records the change as a
-      dated amendment (packing/site-urls.yaml).
+      formalization; simplification stays the kind of a second proof by a shorter, cleaner
+      or more elementary route. The result page's registered identity records the change as
+      a dated amendment (packing/site-urls.yaml).
 
       Priority, stated and not defended: by GitHub's server-side times Overbeck's candidate
       was public first. Both were published on 12 October 2026:
