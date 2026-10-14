@@ -1101,6 +1101,35 @@ COPY_SEPARATELY = (
     ROOT / "resources/web/wand125-linear-n122-2026-10-10/receipts/linear-premises.json",
     ROOT
     / "resources/web/wand125-linear-n122-2026-10-10/receipts/linear-sample-diagnostic.json",
+    # The 14 October intake's wand125 lower bounds (T-175 to T-177 and T-179) cite these,
+    # as their register plans list them: 143,089 bytes in all.
+    *(
+        ROOT / "resources/web/wand125-fine-net-n37-n39-n44-2026-10-13" / name
+        for name in (
+            "README.md",
+            "acquisition/sources.json",
+            *(
+                f"square-packing/problems/square-lower-bounds/certificates/{cert}/bundle.json"
+                for cert in ("mixed_n37_L64975", "mixed_n39_L66625", "mixed_n44_L69975")
+            ),
+            *(
+                f"receipts/{kind}-n{n}.json"
+                for kind in ("premises", "sample-diagnostic", "control-sample")
+                for n in (37, 39, 44)
+            ),
+        )
+    ),
+    *(
+        ROOT / "resources/web/wand125-linear-n145-2026-10-13" / name
+        for name in (
+            "README.md",
+            "acquisition/sources.json",
+            "square-packing/problems/square-lower-bounds/certificates/mixed_n145_L1224/"
+            "completion-audit.json",
+            "receipts/linear-premises.json",
+            "receipts/linear-sample-diagnostic.json",
+        )
+    ),
     # SYNOPSIS.md maps the vendored regularizer's README, and the README links its licence,
     # credits and manifest; the vendored code itself is never read by a control.
     REPO / "vendor/evand-regularize/README.md",
