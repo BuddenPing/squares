@@ -346,7 +346,16 @@ def load_yaml(path: Path) -> Any:
 
 
 #: The top-level keys every ledger states (`Ledger`), and the fields every report does.
-LEDGER_KEYS = ("format", "read_at_main", "read_on", "rule", "lanes", "reports", "exceptions")
+LEDGER_KEYS = (
+    "format",
+    "read_at_main",
+    "read_on",
+    "rule",
+    "lanes",
+    "reports",
+    "exceptions",
+    "other_items",
+)
 REPORT_KEYS = ("report", "url", "kind", "holders", "reported_at", "bead")
 #: The parts of a claim that are themselves mappings, and the fields each must name.
 CLAIM_PARTS: Mapping[str, tuple[str, ...]] = {
@@ -514,7 +523,7 @@ def problems(ledger: Mapping[str, Any]) -> list[str]:
             found.append(f"key-reason candidate {key}: names no claim of the ledger")
         if not str(candidate.get("argument") or "").strip():
             found.append(f"key-reason candidate {key}: states no argument")
-    for item in _mappings(found, ledger.get("other_items"), "other_items"):
+    for item in _mappings(found, ledger["other_items"], "other_items"):
         absent = set(OtherItem.__annotations__) - set(item)
         if absent:
             found.append(f"other item {item.get('issue')}: missing {sorted(absent)}")
