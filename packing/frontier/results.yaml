@@ -4745,6 +4745,7 @@ results:
 
   - id: T-054
     kind: simplification
+    proves_kind: optimality
     registered: '2026-09-29'
     headline: "`s(45) = 7` by a second, point-only route"
     claim: >-
@@ -4817,6 +4818,7 @@ results:
 
   - id: T-055
     kind: simplification
+    proves_kind: optimality
     registered: '2026-09-29'
     headline: "`s(21) = 5` by a point-only route"
     claim: >-
@@ -17535,6 +17537,7 @@ results:
 
   - id: T-154
     kind: formalization
+    proves_kind: optimality
     registered: '2026-10-13'
     headline: "`s(17) = 4.67553009360455…` in Lean 4, by a route of its own, with no premise left"
     claim: >-

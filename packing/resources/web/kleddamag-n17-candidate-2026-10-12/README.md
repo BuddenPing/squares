@@ -248,7 +248,7 @@ records the correction.
 [third review](../../../../docs/project/reviews/review-2026-10-13-overbeck-n17-mathematical-correctness.md),
 the mathematical-correctness lane of 13 and 14 October 2026, with the two logs it kept:
 its own root isolation, the upper construction at side $L$ with every contact proved by
-ideal membership, 194 literal checks and the case partition, the admission of the eleven
+ideal membership, 192 literal checks plus one case-partition check, the admission of the eleven
 roots, the hand-overs, random tests of the specification’s lemmas and of the
 parallel-pair rows, and a checker of its own that decides the one-node tree `JQ`. Its
 README says what each program read and decides, the one line changed at retention, and

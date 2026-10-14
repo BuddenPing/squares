@@ -359,23 +359,36 @@ _LOWER_CLAIMS = frozenset({"lower-bound", "exact-value"})
 _UPPER_CLAIMS = frozenset({"upper-bound", "exact-value"})
 
 
-def _claim_pools(record: Mapping[str, Any], entries: list[dict]) -> list[list[dict]]:
-    """Evidence for every required bound side at every count, never a component proof.
-
-    Exact-value evidence covers both sides. A whole result takes its weakest side and
-    count; lower evidence at one count cannot complete an upper side at another.
-    Structure and method results retain their own evidence semantics.
-    """
+def proved_kind(record: Mapping[str, Any]) -> str | None:
+    """The conclusion of a result, including the kind a second proof proves again."""
     kind = record.get("kind")
-    if kind not in BOUND_KINDS | SECOND_PROOF_KINDS:
+    return record.get("proves_kind") if kind in SECOND_PROOF_KINDS else kind
+
+
+def _claim_pools(record: Mapping[str, Any], entries: list[dict]) -> list[list[dict]]:
+    """Evidence for each required conclusion at each count, never a component proof.
+
+    Exact-value evidence covers both bound sides. A whole result takes its weakest side
+    and count. A second proof requires the conclusion its `proves_kind` declares, which
+    kind validation checks against its target and the relations its own claim states.
+    """
+    kind = proved_kind(record)
+    if record.get("kind") in SECOND_PROOF_KINDS and (
+        kind not in KINDS or kind in SECOND_PROOF_KINDS
+    ):
+        return [[]]
+    if kind in BOUND_KINDS:
+        claims = (
+            (_LOWER_CLAIMS,)
+            if kind == "lower-bound"
+            else (_UPPER_CLAIMS,)
+            if kind == "upper-bound"
+            else (_LOWER_CLAIMS, _UPPER_CLAIMS)
+        )
+    elif record.get("kind") in SECOND_PROOF_KINDS:
+        claims = (frozenset({STRUCTURE_CLAIM}),)
+    else:
         return [entries]
-    claims = (
-        (_LOWER_CLAIMS,)
-        if kind == "lower-bound"
-        else (_UPPER_CLAIMS,)
-        if kind == "upper-bound"
-        else (_LOWER_CLAIMS, _UPPER_CLAIMS)
-    )
     counts = scope_values(dict(record["scope"]))
     return [
         [
@@ -403,7 +416,7 @@ def confirmation_code(
     to it: an optimality result is as independent as the less independent of its halves,
     so the grid replay of an upper half never makes a lower half re-run with the source's
     own checker read as re-implemented. A bound reads its own runs. Values and second
-    proofs require both sides at every count; other kinds read all of their runs.
+    proofs require their declared conclusion at every count; other kinds read all runs.
     """
     runs = confirming_runs(entries)
     machine = [entry for entry in runs if _machine_proof_shaped(dict(entry))]
@@ -888,6 +901,7 @@ def kind_problems(
     cited: Iterable[Mapping[str, Any]],
     scopes: Mapping[str, set[int]],
     evidence_of: Mapping[str, Iterable[str]] | None = None,
+    records: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> list[str]:
     """What is wrong with a result's `kind`, read against its own record.
 
@@ -902,7 +916,9 @@ def kind_problems(
     - **The cited evidence.** It claims what the kind needs: the bound for a bound, an
       exact value or both halves for optimality, and `derived-structure` for the kinds
       that say nothing about `s(n)`. A formalization cites evidence of its own that a
-      proof assistant checked (`proof_assistant_checked`). Its own is what the results
+      proof assistant checked (`proof_assistant_checked`), covering its conclusion on every
+      claimed case. `proves_kind` declares that conclusion and matches the target's kind.
+      Its own is what the results
       it proves again do not cite: a second proof may cite their evidence for the half
       it shares with them, as `T-054` and `T-055` cite the grid's, and a proof assistant's
       check of the result it proves again is no check of the second proof.
@@ -922,8 +938,18 @@ def kind_problems(
         return [f"{rid}: kind {kind} is not one of {', '.join(KINDS)}"]
     headline = str(record.get("headline", ""))
     claim = " ".join(str(record.get("claim", "")).split())
+    cited = list(cited)
+    conclusion = proved_kind(record)
     problems = _relation_problems(kind, headline, claim)
-    needed = _evidence_needed(kind, {str(entry.get("claim")) for entry in cited})
+    if kind in SECOND_PROOF_KINDS:
+        if conclusion not in KINDS or conclusion in SECOND_PROOF_KINDS:
+            problems.append(
+                "a second proof declares the non-second-proof kind it proves again "
+                "in proves_kind"
+            )
+        else:
+            problems.extend(_relation_problems(conclusion, headline, claim))
+    needed = _evidence_needed(conclusion or kind, {str(entry.get("claim")) for entry in cited})
     if needed is not None:
         problems.append(f"kind is {kind_label(kind)}, and no cited evidence claims {needed}")
     if kind in SECOND_PROOF_KINDS:
@@ -937,11 +963,27 @@ def kind_problems(
             problems.append(
                 f"a {kind}'s claim names the registered result it {again}, on a case they share"
             )
+        if records is not None and again_of:
+            matching = {
+                other
+                for other in again_of
+                if other in records and proved_kind(records[other]) == conclusion
+            }
+            if cases - set().union(*(scopes[other] for other in matching)):
+                problems.append(
+                    "proves_kind does not match a named target's conclusion "
+                    "on every claimed case"
+                )
         theirs = {str(ref) for other in again_of for ref in (evidence_of or {}).get(other, ())}
-        checked = any(
-            proof_assistant_checked(entry) and str(entry.get("id")) not in theirs
+        own = [
+            dict(entry)
             for entry in cited
-        )
+            if proof_assistant_checked(entry)
+            and str(entry.get("id")) not in theirs
+            and not sampled(entry)
+        ]
+        scoped = {**record, "scope": {"n_values": sorted(cases)}}
+        checked = bool(cases) and all(_claim_pools(scoped, own))
         if kind == FORMALIZATION_KIND and not checked:
             problems.append(
                 "kind is formalization, and no cited evidence of its own is "
@@ -1608,7 +1650,7 @@ def main() -> int:
         problems.extend(corrects_problems(record, sources, by_id))
         problems.extend(registered_problems(record, str(register["last_reviewed"])))
         problems.extend(headline_problems(record))
-        problems.extend(kind_problems(record, cited, scopes, evidence_of))
+        problems.extend(kind_problems(record, cited, scopes, evidence_of, by_id))
         problems.extend(superseded_by_problems(record, dated, scopes, holding))
         problems.extend(established_problems(record, register["last_reviewed"]))
         problems.extend(activity_problems(record, str(register["last_reviewed"])))

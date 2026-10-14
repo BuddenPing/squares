@@ -26,6 +26,7 @@ from devtools import (
     render_results,
     render_verifiers,
     result_status,
+    validate_schemas,
     verifier_registry,
 )
 from sqpack.yamlio import safe_load
@@ -1345,6 +1346,8 @@ def test_sample_coverage_is_visible_in_each_reader_view() -> None:
 @pytest.mark.parametrize("kind", ["optimality", "formalization", "simplification"])
 def test_full_component_runs_do_not_establish_a_whole_value(kind: str) -> None:
     record = {"kind": kind, "scope": {"n_values": [17]}}
+    if kind in check_results.SECOND_PROOF_KINDS:
+        record["proves_kind"] = "optimality"
     parts = [
         entry
         for eid, entry in EVIDENCE.items()
@@ -1381,3 +1384,80 @@ def test_premise_helpers_do_not_limit_or_strengthen_the_deciding_level() -> None
     assert verifier_registry.ladder_level(entry, VERIFIERS) == "clean-room"
     entry["verifiers"].append("V-overbeck-review3-upper-at-l")
     assert verifier_registry.ladder_level(entry, VERIFIERS) == "after-reading"
+
+
+@pytest.mark.parametrize("wrapper", ["formalization", "simplification"])
+@pytest.mark.parametrize(
+    ("conclusion", "claim"),
+    [
+        ("lower-bound", "lower-bound"),
+        ("upper-bound", "upper-bound"),
+        ("rigidity", "derived-structure"),
+        ("optimality", "exact-value"),
+    ],
+)
+def test_second_proof_rungs_follow_its_actual_conclusion(
+    wrapper: str, conclusion: str, claim: str
+) -> None:
+    record = {"kind": wrapper, "proves_kind": conclusion, "scope": {"n_values": [17, 18]}}
+    own = replay_entry(claim=claim, scope=record["scope"], method=check_results.FORMAL_METHOD)
+    assert check_results.derive_verification([own], record=record) == "V3"
+    assert check_results.derive_confirmation([own], record=record) == "C3"
+    assert check_results.confirmation_code(record, [own]) == "same-implementation"
+    own["scope"] = {"n_values": [17]}
+    assert check_results.derive_verification([own], record=record) == "V0"
+    assert check_results.derive_confirmation([own], record=record) == "C0"
+    assert check_results.confirmation_code(record, [own]) is None
+
+
+def test_legacy_independence_does_not_invent_what_authors_read() -> None:
+    entry = replay_entry(
+        relationship_to_generator="independent-implementation",
+        verifiers=["V-n12-independent-verifier"],
+    )
+    assert verifier_registry.ladder_level(entry, VERIFIERS) is None
+    assert verifier_registry.ladder_label(entry, VERIFIERS) == "independently re-implemented"
+    line = verifier_registry.entry_line(entry, VERIFIERS)
+    assert "independently re-implemented" in line
+    assert "after reading" not in line
+    entry["independence"] = authorship(clean_room=False, read=["mathematics"])
+    assert verifier_registry.ladder_level(entry, {}) is None
+    entry["independence"]["read"].append("producer-code")
+    assert verifier_registry.ladder_level(entry, {}) == "after-reading"
+
+
+@pytest.mark.parametrize("coverage", [["sample"], "sample", 1, None])
+def test_malformed_coverage_preserves_schema_diagnostics_without_a_rung(coverage: Any) -> None:
+    record = structured()
+    record["coverage"] = coverage
+    entry = independent(independence=record)
+    assert schema_errors(entry)
+    verifier_registry.evidence_problems([entry], VERIFIERS)
+    assert check_results.derive_verification([entry]) == "V0"
+    assert check_results.derive_confirmation([entry]) == "C0"
+    assert verifier_registry.confirming_runs([entry]) == []
+
+
+def test_malformed_coverage_does_not_interrupt_the_schema_gate(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    document = safe_load(EVIDENCE_TEXT)
+    entry = next(
+        row
+        for row in document["evidence"]
+        if row["id"] == "E-n017-overbeck-literal-checks-review3"
+    )
+    entry["independence"]["coverage"] = ["sample"]
+    malformed = yaml.safe_dump(document, sort_keys=False)
+    original = Path.read_text
+    target = FRONTIER / "evidence.yaml"
+
+    def read(path: Path, *args: Any, **kwargs: Any) -> str:
+        return malformed if path == target else original(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "read_text", read)
+    assert validate_schemas.main() == 1
+    diagnostic = capsys.readouterr().err
+    assert "FAIL evidence.yaml" in diagnostic
+    assert "coverage" in diagnostic

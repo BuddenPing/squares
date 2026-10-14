@@ -1809,7 +1809,7 @@ verifiers:
     role: decides
     summary: >-
       Decides exactly the literal geometric facts of sections 3 to 6 of the candidate's
-      proof text over its 98 capture class files, 194 checks at 83 sites (the frame
+      proof text over its 98 capture class files, 192 printed literal checks at 83 sites (the frame
       assignment, the KEY_W slot, the wall triggers, the loose and coarse capacities,
       the C7/C8 transfer and the C12 unions), and re-decides the case partition with a
       decision function of its own against the source's thirteen predicates.

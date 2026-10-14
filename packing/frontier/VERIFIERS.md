@@ -469,8 +469,8 @@ Decides Valid7 for Evan Daniel's k = 7 cover: every closed unit square in [0,7]^
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-k2m3-wand125-valid7-independent` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-064 |
-| `E-k2m4-wand125-validtilt9-report` | reported by a third party, not replayed here | independently re-implemented after reading the producer’s code | not recorded | T-081 |
+| `E-k2m3-wand125-valid7-independent` | replayed here | independently re-implemented | not recorded | T-064 |
+| `E-k2m4-wand125-validtilt9-report` | reported by a third party, not replayed here | independently re-implemented | not recorded | T-081 |
 
 ### `V-evand-zmx2`
 
@@ -485,7 +485,7 @@ Decides a zero-margin point-and-segment cover by branch and bound over centre an
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
 | `E-n060-evand-mixed-cover-report` | the source’s own run | reproduced with the producer’s code | not recorded | T-062, T-063 |
-| `E-n061-wand125-point-cover-evand-replay-report` | reported by a third party, not replayed here | independently re-implemented after reading the producer’s code | not recorded | T-063 |
+| `E-n061-wand125-point-cover-evand-replay-report` | reported by a third party, not replayed here | independently re-implemented | not recorded | T-063 |
 | `E-n061-wand125-point-cover-zmx2-replay` | replayed here | reproduced with the producer’s code | not recorded | T-063 |
 | `E-n060-evand-mixed-cover-zmx2-replay` | replayed here | reproduced with the producer’s code | not recorded | T-062, T-063 |
 | `E-n045-wand125-point-cover-report` | the source’s own run | reproduced with the producer’s code | not recorded | T-054 |
@@ -534,7 +534,7 @@ The source's exhaustive exact point-cover checker over the D4 region's root boxe
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-n061-wand125-point-cover-evand-replay-report` | reported by a third party, not replayed here | independently re-implemented after reading the producer’s code | not recorded | T-063 |
+| `E-n061-wand125-point-cover-evand-replay-report` | reported by a third party, not replayed here | independently re-implemented | not recorded | T-063 |
 | `E-n032-evand-closed-cover-report` | the source’s own run | reproduced with the producer’s code | not recorded | T-051 |
 | `E-n032-evand-closed-cover-source-run` | replayed here | reproduced with the producer’s code | not recorded | T-051 |
 | `E-n013-evand-casefree-cover-report` | the source’s own run | reproduced with the producer’s code | not recorded | - |
@@ -588,7 +588,7 @@ The source's separately written Rust point-cover checker, over the full domain o
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-n061-wand125-point-cover-evand-replay-report` | reported by a third party, not replayed here | independently re-implemented after reading the producer’s code | not recorded | T-063 |
+| `E-n061-wand125-point-cover-evand-replay-report` | reported by a third party, not replayed here | independently re-implemented | not recorded | T-063 |
 | `E-n032-evand-closed-cover-report` | the source’s own run | reproduced with the producer’s code | not recorded | T-051 |
 | `E-n013-evand-casefree-cover-report` | the source’s own run | reproduced with the producer’s code | not recorded | - |
 
@@ -908,7 +908,7 @@ The source's ceiling transfer for the fixed B = 9977/10000 and its general pose 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
 | `E-wand125-tools-ceiling-report` | a published proof | no code | not recorded | T-058 |
-| `E-wand125-tools-n11-row-report` | the source’s own run | independently re-implemented after reading the producer’s code | not recorded | T-059 |
+| `E-wand125-tools-n11-row-report` | the source’s own run | independently re-implemented | not recorded | T-059 |
 | `E-wand125-tools-n11-row-replay` | replayed here | reproduced with the producer’s code | not recorded | T-059 |
 
 ### `V-squarepacker-indep-check-cpp`
@@ -1023,9 +1023,9 @@ Derives and checks the elementary bounds exactly: the grid upper bound, the area
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-basic-grid-upper` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-008, T-051, T-052, T-053, T-054, T-055, T-062, T-063, T-064, T-066, T-067, T-081, T-084, T-086 |
-| `E-basic-area-lower` | replayed here | independently re-implemented after reading the producer’s code | not recorded | - |
-| `E-n012-monotonicity-lower` | replayed here | independently re-implemented after reading the producer’s code | not recorded | - |
+| `E-basic-grid-upper` | replayed here | independently re-implemented | not recorded | T-008, T-051, T-052, T-053, T-054, T-055, T-062, T-063, T-064, T-066, T-067, T-081, T-084, T-086 |
+| `E-basic-area-lower` | replayed here | independently re-implemented | not recorded | - |
+| `E-n012-monotonicity-lower` | replayed here | independently re-implemented | not recorded | - |
 
 ### `V-optimal-moduli`
 
@@ -1052,47 +1052,47 @@ Decides a packing pair by pair and wall by wall: by exact sign in a number field
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-n005-gobel-upper` | replayed here | independently re-implemented after reading the producer’s code | not recorded | - |
-| `E-n010-gobel-upper` | replayed here | independently re-implemented after reading the producer’s code | not recorded | - |
-| `E-n040-gobel-upper` | replayed here | independently re-implemented after reading the producer’s code | not recorded | - |
-| `E-gobel-family-upper` | replayed here | independently re-implemented after reading the producer’s code | not recorded | - |
-| `E-gobel-strip-upper` | replayed here | independently re-implemented after reading the producer’s code | not recorded | - |
-| `E-lifted-q2-upper` | replayed here | independently re-implemented after reading the producer’s code | not recorded | - |
-| `E-lifted-q7-upper` | replayed here | independently re-implemented after reading the producer’s code | not recorded | - |
-| `E-gobel-offcentre-upper` | replayed here | independently re-implemented after reading the producer’s code | not recorded | - |
-| `E-n082-gobel-l-upper` | replayed here | independently re-implemented after reading the producer’s code | not recorded | - |
-| `E-n011-trump-upper` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-011 |
-| `E-n029-schadt-numerical` | replayed here | independently re-implemented after reading the producer’s code | not recorded | - |
-| `E-n029-interval-certified-upper` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-009 |
-| `E-evand-exact-optima-2026-10-05-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-098 |
-| `E-evand-exact-ceilings-2026-10-05-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-101 |
-| `E-squish-ten-packings-2026-10-07-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-113 |
-| `E-squish-n153-2026-10-07-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-114 |
-| `E-squish-update-2026-10-07-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-115 |
-| `E-squish-second-update-2026-10-07-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-116 |
-| `E-evand-399-exact-feasibility` | audited here | independently re-implemented after reading the producer’s code | not recorded | T-119 |
-| `E-rehwaldt-couzo-refinements-2026-10-07-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-117 |
-| `E-ryxu-432-rational-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-125 |
-| `E-ryxu-432-radical-n51-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-126 |
-| `E-gupta-438-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-127 |
-| `E-couzo-451-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-128 |
-| `E-couzo-460-followup-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-130 |
-| `E-evand-465-record-hunt-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-128, T-131 |
-| `E-couzo-476-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-134 |
-| `E-fang-484-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-135 |
-| `E-squish-481-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-136 |
-| `E-deleeuw-483-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-137 |
-| `E-mishapolk-470-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-138 |
-| `E-evand-trio126-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-139 |
-| `E-couzo-488-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-140 |
-| `E-evand-489-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-141 |
-| `E-evand-regularized-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-146 |
-| `E-pingyou-503-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-147 |
-| `E-pingyou-504-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-148 |
-| `E-ostashev-501-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-149 |
-| `E-barnett-505-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-150 |
-| `E-squish-500-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-151 |
-| `E-couzo-506-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-152 |
+| `E-n005-gobel-upper` | replayed here | independently re-implemented | not recorded | - |
+| `E-n010-gobel-upper` | replayed here | independently re-implemented | not recorded | - |
+| `E-n040-gobel-upper` | replayed here | independently re-implemented | not recorded | - |
+| `E-gobel-family-upper` | replayed here | independently re-implemented | not recorded | - |
+| `E-gobel-strip-upper` | replayed here | independently re-implemented | not recorded | - |
+| `E-lifted-q2-upper` | replayed here | independently re-implemented | not recorded | - |
+| `E-lifted-q7-upper` | replayed here | independently re-implemented | not recorded | - |
+| `E-gobel-offcentre-upper` | replayed here | independently re-implemented | not recorded | - |
+| `E-n082-gobel-l-upper` | replayed here | independently re-implemented | not recorded | - |
+| `E-n011-trump-upper` | replayed here | independently re-implemented | not recorded | T-011 |
+| `E-n029-schadt-numerical` | replayed here | independently re-implemented | not recorded | - |
+| `E-n029-interval-certified-upper` | replayed here | independently re-implemented | not recorded | T-009 |
+| `E-evand-exact-optima-2026-10-05-exact-replay` | replayed here | independently re-implemented | not recorded | T-098 |
+| `E-evand-exact-ceilings-2026-10-05-exact-replay` | replayed here | independently re-implemented | not recorded | T-101 |
+| `E-squish-ten-packings-2026-10-07-exact-replay` | replayed here | independently re-implemented | not recorded | T-113 |
+| `E-squish-n153-2026-10-07-exact-replay` | replayed here | independently re-implemented | not recorded | T-114 |
+| `E-squish-update-2026-10-07-exact-replay` | replayed here | independently re-implemented | not recorded | T-115 |
+| `E-squish-second-update-2026-10-07-exact-replay` | replayed here | independently re-implemented | not recorded | T-116 |
+| `E-evand-399-exact-feasibility` | audited here | independently re-implemented | not recorded | T-119 |
+| `E-rehwaldt-couzo-refinements-2026-10-07-exact-replay` | replayed here | independently re-implemented | not recorded | T-117 |
+| `E-ryxu-432-rational-feasibility` | replayed here | independently re-implemented | not recorded | T-125 |
+| `E-ryxu-432-radical-n51-feasibility` | replayed here | independently re-implemented | not recorded | T-126 |
+| `E-gupta-438-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-127 |
+| `E-couzo-451-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-128 |
+| `E-couzo-460-followup-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-130 |
+| `E-evand-465-record-hunt-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-128, T-131 |
+| `E-couzo-476-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-134 |
+| `E-fang-484-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-135 |
+| `E-squish-481-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-136 |
+| `E-deleeuw-483-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-137 |
+| `E-mishapolk-470-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-138 |
+| `E-evand-trio126-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-139 |
+| `E-couzo-488-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-140 |
+| `E-evand-489-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-141 |
+| `E-evand-regularized-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-146 |
+| `E-pingyou-503-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-147 |
+| `E-pingyou-504-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-148 |
+| `E-ostashev-501-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-149 |
+| `E-barnett-505-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-150 |
+| `E-squish-500-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-151 |
+| `E-couzo-506-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-152 |
 | `E-regularized-bounds-2026-10-12-exact-decision` | replayed here | reproduced with the producer’s code | full, 59 of 59: retained rational packing views, every wall and every pair decided by both maintained checkers: 1,051,241 pair decisions per checker, with the 177 negative-control decisions on the 59 views retained separately | T-155 |
 
 ### `V-check-rational-witness-independent`
@@ -1108,42 +1108,42 @@ Decides a rational-corner witness pair by pair and wall by wall in Fraction arit
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-n017-kleddamag-rational-upper` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-065 |
-| `E-n029-schadt-rational-upper` | replayed here | independently re-implemented after reading the producer’s code | not recorded | - |
-| `E-franciscouzo-2026-09-27-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-056 |
-| `E-franciscouzo-2026-10-03-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-092 |
-| `E-n211-de-winter-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-057 |
-| `E-n069-ellsworth-2026-09-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-088 |
-| `E-n083-chang-2026-09-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-089 |
-| `E-n087-chang-2026-09-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-089 |
-| `E-evand-exact-optima-2026-10-05-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-098 |
-| `E-evand-exact-ceilings-2026-10-05-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-101 |
-| `E-squish-ten-packings-2026-10-07-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-113 |
-| `E-squish-n153-2026-10-07-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-114 |
-| `E-squish-update-2026-10-07-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-115 |
-| `E-squish-second-update-2026-10-07-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-116 |
-| `E-evand-399-exact-feasibility` | audited here | independently re-implemented after reading the producer’s code | not recorded | T-119 |
-| `E-rehwaldt-couzo-refinements-2026-10-07-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-117 |
-| `E-ryxu-432-rational-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-125 |
-| `E-gupta-438-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-127 |
-| `E-couzo-451-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-128 |
-| `E-couzo-460-followup-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-130 |
-| `E-evand-465-record-hunt-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-128, T-131 |
-| `E-couzo-476-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-134 |
-| `E-fang-484-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-135 |
-| `E-squish-481-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-136 |
-| `E-deleeuw-483-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-137 |
-| `E-mishapolk-470-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-138 |
-| `E-evand-trio126-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-139 |
-| `E-couzo-488-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-140 |
-| `E-evand-489-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-141 |
-| `E-evand-regularized-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-146 |
-| `E-pingyou-503-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-147 |
-| `E-pingyou-504-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-148 |
-| `E-ostashev-501-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-149 |
-| `E-barnett-505-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-150 |
-| `E-squish-500-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-151 |
-| `E-couzo-506-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-152 |
+| `E-n017-kleddamag-rational-upper` | replayed here | independently re-implemented | not recorded | T-065 |
+| `E-n029-schadt-rational-upper` | replayed here | independently re-implemented | not recorded | - |
+| `E-franciscouzo-2026-09-27-exact-replay` | replayed here | independently re-implemented | not recorded | T-056 |
+| `E-franciscouzo-2026-10-03-exact-replay` | replayed here | independently re-implemented | not recorded | T-092 |
+| `E-n211-de-winter-exact-replay` | replayed here | independently re-implemented | not recorded | T-057 |
+| `E-n069-ellsworth-2026-09-exact-replay` | replayed here | independently re-implemented | not recorded | T-088 |
+| `E-n083-chang-2026-09-exact-replay` | replayed here | independently re-implemented | not recorded | T-089 |
+| `E-n087-chang-2026-09-exact-replay` | replayed here | independently re-implemented | not recorded | T-089 |
+| `E-evand-exact-optima-2026-10-05-exact-replay` | replayed here | independently re-implemented | not recorded | T-098 |
+| `E-evand-exact-ceilings-2026-10-05-exact-replay` | replayed here | independently re-implemented | not recorded | T-101 |
+| `E-squish-ten-packings-2026-10-07-exact-replay` | replayed here | independently re-implemented | not recorded | T-113 |
+| `E-squish-n153-2026-10-07-exact-replay` | replayed here | independently re-implemented | not recorded | T-114 |
+| `E-squish-update-2026-10-07-exact-replay` | replayed here | independently re-implemented | not recorded | T-115 |
+| `E-squish-second-update-2026-10-07-exact-replay` | replayed here | independently re-implemented | not recorded | T-116 |
+| `E-evand-399-exact-feasibility` | audited here | independently re-implemented | not recorded | T-119 |
+| `E-rehwaldt-couzo-refinements-2026-10-07-exact-replay` | replayed here | independently re-implemented | not recorded | T-117 |
+| `E-ryxu-432-rational-feasibility` | replayed here | independently re-implemented | not recorded | T-125 |
+| `E-gupta-438-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-127 |
+| `E-couzo-451-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-128 |
+| `E-couzo-460-followup-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-130 |
+| `E-evand-465-record-hunt-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-128, T-131 |
+| `E-couzo-476-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-134 |
+| `E-fang-484-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-135 |
+| `E-squish-481-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-136 |
+| `E-deleeuw-483-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-137 |
+| `E-mishapolk-470-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-138 |
+| `E-evand-trio126-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-139 |
+| `E-couzo-488-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-140 |
+| `E-evand-489-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-141 |
+| `E-evand-regularized-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-146 |
+| `E-pingyou-503-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-147 |
+| `E-pingyou-504-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-148 |
+| `E-ostashev-501-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-149 |
+| `E-barnett-505-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-150 |
+| `E-squish-500-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-151 |
+| `E-couzo-506-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-152 |
 | `E-regularized-bounds-2026-10-12-exact-decision` | replayed here | reproduced with the producer’s code | full, 59 of 59: retained rational packing views, every wall and every pair decided by both maintained checkers: 1,051,241 pair decisions per checker, with the 177 negative-control decisions on the 59 views retained separately | T-155 |
 
 ### `V-check-nagamochi-lemma1-counterexample`
@@ -1159,7 +1159,7 @@ Scores Karakuş's squares K_t and chelokot's square against Nagamochi 2005's mea
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-nagamochi-lemma1-counterexample` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-085 |
+| `E-nagamochi-lemma1-counterexample` | replayed here | independently re-implemented | not recorded | T-085 |
 
 ### `V-check-karakus-strip-measure`
 
@@ -1174,7 +1174,7 @@ Decides Karakuş 2026's Proposition 5.1, that the strip measure gives the interi
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-karakus-strip-measure-interval` | audited here | independently re-implemented after reading the producer’s code | not recorded | T-083, T-084 |
+| `E-karakus-strip-measure-interval` | audited here | independently re-implemented | not recorded | T-083, T-084 |
 
 ### `V-upper-bound-promotion`
 
@@ -1187,12 +1187,12 @@ Rounds a source's decimal pose to rationals and decides every pair and wall exac
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-franciscouzo-2026-09-27-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-056 |
-| `E-franciscouzo-2026-10-03-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-092 |
-| `E-n211-de-winter-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-057 |
-| `E-n069-ellsworth-2026-09-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-088 |
-| `E-n083-chang-2026-09-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-089 |
-| `E-n087-chang-2026-09-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-089 |
+| `E-franciscouzo-2026-09-27-exact-replay` | replayed here | independently re-implemented | not recorded | T-056 |
+| `E-franciscouzo-2026-10-03-exact-replay` | replayed here | independently re-implemented | not recorded | T-092 |
+| `E-n211-de-winter-exact-replay` | replayed here | independently re-implemented | not recorded | T-057 |
+| `E-n069-ellsworth-2026-09-exact-replay` | replayed here | independently re-implemented | not recorded | T-088 |
+| `E-n083-chang-2026-09-exact-replay` | replayed here | independently re-implemented | not recorded | T-089 |
+| `E-n087-chang-2026-09-exact-replay` | replayed here | independently re-implemented | not recorded | T-089 |
 
 ### `V-upper-bound-intervals`
 
@@ -1207,9 +1207,9 @@ Decides a source's printed pose as printed, by outward-rounded decimal interval 
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-franciscouzo-2026-09-27-interval-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-056 |
-| `E-franciscouzo-2026-10-03-interval-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-092 |
-| `E-n211-de-winter-interval-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-057 |
+| `E-franciscouzo-2026-09-27-interval-replay` | replayed here | independently re-implemented | not recorded | T-056 |
+| `E-franciscouzo-2026-10-03-interval-replay` | replayed here | independently re-implemented | not recorded | T-092 |
+| `E-n211-de-winter-interval-replay` | replayed here | independently re-implemented | not recorded | T-057 |
 
 ### `V-sqpack-cover`
 
@@ -1224,8 +1224,8 @@ Certifies a point set unavoidable for unit squares in a container, cell by cell 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
 | `E-n011-repaired-lower` | replayed here | reproduced with the producer’s code | not recorded | T-010 |
-| `E-bentz46-theorem8-audit` | audited here | independently re-implemented after reading the producer’s code | not recorded | T-004, T-008 |
-| `E-bentz13-figure2-audit` | audited here | independently re-implemented after reading the producer’s code | not recorded | T-005, T-006 |
+| `E-bentz46-theorem8-audit` | audited here | independently re-implemented | not recorded | T-004, T-008 |
+| `E-bentz13-figure2-audit` | audited here | independently re-implemented | not recorded | T-005, T-006 |
 | `E-green17-sixteen-point-lower` | replayed here | reproduced with the producer’s code | not recorded | T-001, T-002, T-003 |
 
 ### `V-green17-interval-audit`
@@ -1241,7 +1241,7 @@ Decides the sixteen-point set's unavoidability by branch and bound over the full
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-green17-interval-audit` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-001, T-002, T-003 |
+| `E-green17-interval-audit` | replayed here | independently re-implemented | not recorded | T-001, T-002, T-003 |
 
 ### `V-kingbird29-verify-svg`
 
@@ -1254,8 +1254,8 @@ Reads Kingbird's n = 29 figure and checks its packing at a declared precision an
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-n029-kingbird-numerical` | replayed here | independently re-implemented after reading the producer’s code | not recorded | - |
-| `E-n029-orientation-classes` | replayed here | independently re-implemented after reading the producer’s code | not recorded | - |
+| `E-n029-kingbird-numerical` | replayed here | independently re-implemented | not recorded | - |
+| `E-n029-orientation-classes` | replayed here | independently re-implemented | not recorded | - |
 
 ### `V-screen-translation-escape`
 
@@ -1308,7 +1308,7 @@ Decides each rectangle-density ceiling certificate's containment and pairwise di
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-wand125-tools-ceiling-certificates` | audited here | independently re-implemented after reading the producer’s code | not recorded | T-058 |
+| `E-wand125-tools-ceiling-certificates` | audited here | independently re-implemented | not recorded | T-058 |
 
 ### `V-check-general-pose-tree-census`
 
@@ -1373,7 +1373,7 @@ Reads the closed rung-0 fixed-angle cell tree and decides every leaf's certifica
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-n011-h236-rung0-reduction` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-035, T-036 |
+| `E-n011-h236-rung0-reduction` | replayed here | independently re-implemented | not recorded | T-035, T-036 |
 
 ### `V-review-trump-local-theorem`
 
@@ -1388,7 +1388,7 @@ Re-decides the local theorem's branch rows and its isolation radius inputs, refu
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-n011-trump-local-theorem-first-clause` | audited here | independently re-implemented after reading the producer’s code | not recorded | T-036 |
+| `E-n011-trump-local-theorem-first-clause` | audited here | independently re-implemented | not recorded | T-036 |
 
 ### `V-sqpack-fractional-exact`
 
@@ -1406,8 +1406,8 @@ Decides a weighted point certificate's five conditions in exact rational arithme
 | `E-wand125-n052-derived-lower` | audited here | reproduced with the producer’s code | not recorded | T-044 |
 | `E-wand125-point-bounds-report` | the source’s own run | reproduced with the producer’s code | not recorded | T-044 |
 | `E-wand125-point-monotone-report` | audited here | no code | not recorded | T-044 |
-| `E-n017-burns-control-decision` | replayed here | independently re-implemented after reading the producer’s code | not recorded | - |
-| `E-n017-mira-4613-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-032 |
+| `E-n017-burns-control-decision` | replayed here | independently re-implemented | not recorded | - |
+| `E-n017-mira-4613-exact-replay` | replayed here | independently re-implemented | not recorded | T-032 |
 | `E-n012-fractional-certificate` | audited here | reproduced with the producer’s code | not recorded | T-017 |
 | `E-n011-fractional-certificate` | audited here | reproduced with the producer’s code | not recorded | T-018, T-022 |
 | `E-n011-fractional-net1440-certificate` | audited here | reproduced with the producer’s code | not recorded | T-024 |
@@ -1435,8 +1435,8 @@ Decides Condition 5 of a weighted certificate by outward-rounded interval branch
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-n017-mira-4613-interval-decision` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-032 |
-| `E-n017-guzhou-r012-interval-decision` | audited here | independently re-implemented after reading the producer’s code | not recorded | T-032 |
+| `E-n017-mira-4613-interval-decision` | replayed here | independently re-implemented | not recorded | T-032 |
+| `E-n017-guzhou-r012-interval-decision` | audited here | independently re-implemented | not recorded | T-032 |
 | `E-n011-fractional-net1440-interval-decision` | audited here | re-implemented, sharing named components | not recorded | T-024 |
 | `E-fractional-interval-decision` | audited here | re-implemented, sharing named components | not recorded | T-017, T-018, T-019, T-020, T-021, T-022, T-027, T-028, T-029, T-030, T-034 |
 | `E-n011-corner-class-96-25-interval-decision` | audited here | re-implemented, sharing named components | not recorded | T-031 |
@@ -1503,7 +1503,7 @@ A second exact decision of a weighted certificate's five conditions, in an integ
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-n012-independent-verifier` | audited here | independently re-implemented after reading the producer’s code | not recorded | - |
+| `E-n012-independent-verifier` | audited here | independently re-implemented | not recorded | - |
 
 ### `V-n17-weighted-instrument`
 
@@ -1518,7 +1518,7 @@ Evaluates a hash-pinned n = 17 certificate at every direction by two accumulatio
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-n017-massaccesi-h052-agreement` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-015, T-016 |
+| `E-n017-massaccesi-h052-agreement` | replayed here | independently re-implemented | not recorded | T-015, T-016 |
 
 ### `V-sqpack-parent-core-native`
 
@@ -1531,12 +1531,12 @@ Decides a threshold charge certificate's rows by direct closed-box interval cove
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-n011-kleddamag-3875-native-parent-core` | audited here | independently re-implemented after reading the producer’s code | not recorded | T-037 |
-| `E-n011-wang-li-native-parent-core` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-061 |
-| `E-n012-evand-15680-3951-native-parent-core` | audited here | independently re-implemented after reading the producer’s code | not recorded | T-049 |
-| `E-n012-squarepacker-31360-7901-native-parent-core` | audited here | independently re-implemented after reading the producer’s code | not recorded | T-078 |
-| `E-n012-levy-15680000-3949423-native-parent-core` | audited here | independently re-implemented after reading the producer’s code | not recorded | T-079 |
-| `E-n012-squarepacker-7943-2000-native-parent-core` | audited here | independently re-implemented after reading the producer’s code | not recorded | T-095 |
+| `E-n011-kleddamag-3875-native-parent-core` | audited here | independently re-implemented | not recorded | T-037 |
+| `E-n011-wang-li-native-parent-core` | replayed here | independently re-implemented | not recorded | T-061 |
+| `E-n012-evand-15680-3951-native-parent-core` | audited here | independently re-implemented | not recorded | T-049 |
+| `E-n012-squarepacker-31360-7901-native-parent-core` | audited here | independently re-implemented | not recorded | T-078 |
+| `E-n012-levy-15680000-3949423-native-parent-core` | audited here | independently re-implemented | not recorded | T-079 |
+| `E-n012-squarepacker-7943-2000-native-parent-core` | audited here | independently re-implemented | not recorded | T-095 |
 
 ### `V-replay-owner-footprint-cover`
 
@@ -1564,7 +1564,7 @@ Generates the net again and decides the five-dot coverage by exact convex inters
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-n011-five-dot-independent-union` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-023 |
+| `E-n011-five-dot-independent-union` | replayed here | independently re-implemented | not recorded | T-023 |
 
 ### `V-wall-owner-footprints`
 
@@ -1603,7 +1603,7 @@ Prove the n = 17 contact-chart root exists and is unique in its box, and certify
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-n017-certified-endpoint` | audited here | independently re-implemented after reading the producer’s code | not recorded | T-065 |
+| `E-n017-certified-endpoint` | audited here | independently re-implemented | not recorded | T-065 |
 
 ### `V-n17-catalogue-polynomial`
 
@@ -1647,7 +1647,7 @@ Decides in exact rationals the finite steps of Guzhou0806's clipped-corner trans
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
 | `E-n040-guzhou-clipped-corner-sqverify-fast-replay` | replayed here | reproduced with the producer’s code | not recorded | T-133 |
-| `E-n040-guzhou-clipped-corner-finite-audit` | audited here | independently re-implemented after reading the producer’s code | not recorded | T-133 |
+| `E-n040-guzhou-clipped-corner-finite-audit` | audited here | independently re-implemented | not recorded | T-133 |
 
 ### `V-audit-continuous-pose`
 
@@ -1663,8 +1663,8 @@ Decides in exact rationals the finite steps of Guzhou0806's continuous-pose boun
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
 | `E-n040-guzhou-continuous-pose-kernel-replay` | replayed here | reproduced with the producer’s code | not recorded | T-145 |
-| `E-n040-guzhou-continuous-pose-finite-audit` | audited here | independently re-implemented after reading the producer’s code | not recorded | T-145 |
-| `E-n040-guzhou-continuous-pose-crate-axis` | audited here | independently re-implemented after reading the producer’s code | not recorded | T-145 |
+| `E-n040-guzhou-continuous-pose-finite-audit` | audited here | independently re-implemented | not recorded | T-145 |
+| `E-n040-guzhou-continuous-pose-crate-axis` | audited here | independently re-implemented | not recorded | T-145 |
 
 ### `V-check-half-angle-area`
 
@@ -1679,24 +1679,24 @@ Decides a rational centre and half-angle certificate, or a rational centre-basis
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-couzo-451-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-128 |
-| `E-couzo-460-followup-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-130 |
-| `E-evand-465-record-hunt-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-128, T-131 |
-| `E-couzo-476-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-134 |
-| `E-fang-484-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-135 |
-| `E-squish-481-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-136 |
-| `E-deleeuw-483-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-137 |
-| `E-mishapolk-470-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-138 |
-| `E-evand-trio126-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-139 |
-| `E-couzo-488-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-140 |
-| `E-evand-489-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-141 |
-| `E-evand-regularized-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-146 |
-| `E-pingyou-503-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-147 |
-| `E-pingyou-504-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-148 |
-| `E-ostashev-501-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-149 |
-| `E-barnett-505-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-150 |
-| `E-squish-500-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-151 |
-| `E-couzo-506-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-152 |
+| `E-couzo-451-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-128 |
+| `E-couzo-460-followup-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-130 |
+| `E-evand-465-record-hunt-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-128, T-131 |
+| `E-couzo-476-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-134 |
+| `E-fang-484-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-135 |
+| `E-squish-481-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-136 |
+| `E-deleeuw-483-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-137 |
+| `E-mishapolk-470-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-138 |
+| `E-evand-trio126-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-139 |
+| `E-couzo-488-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-140 |
+| `E-evand-489-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-141 |
+| `E-evand-regularized-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-146 |
+| `E-pingyou-503-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-147 |
+| `E-pingyou-504-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-148 |
+| `E-ostashev-501-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-149 |
+| `E-barnett-505-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-150 |
+| `E-squish-500-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-151 |
+| `E-couzo-506-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-152 |
 
 ### `V-k3-n17-capture-row-checker`
 
@@ -1726,7 +1726,7 @@ Decides, from STATEMENT.md of the candidate n = 17 proof, that F and G have exac
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-n017-overbeck-statement-root-independent` | replayed here | independently re-implemented after reading the producer’s code | not recorded | - |
+| `E-n017-overbeck-statement-root-independent` | replayed here | independently re-implemented | not recorded | - |
 
 ### `V-sq17-review2-trace-checker`
 
@@ -1844,7 +1844,7 @@ Decides that the seventeen squares of the candidate's UPPER_FORMULAS.md, at the 
 
 **literal_checks.py, with geom_util.py** · Squares Project (Levy) · first-party · decides · Python · exact-algebraic
 
-Decides exactly the literal geometric facts of sections 3 to 6 of the candidate's proof text over its 98 capture class files, 194 checks at 83 sites (the frame assignment, the KEY_W slot, the wall triggers, the loose and coarse capacities, the C7/C8 transfer and the C12 unions), and re-decides the case partition with a decision function of its own against the source's thirteen predicates.
+Decides exactly the literal geometric facts of sections 3 to 6 of the candidate's proof text over its 98 capture class files, 192 printed literal checks at 83 sites (the frame assignment, the KEY_W slot, the wall triggers, the loose and coarse capacities, the C7/C8 transfer and the C12 unions), and re-decides the case partition with a decision function of its own against the source's thirteen predicates.
 
 - Source: [`packing/resources/web/kleddamag-n17-candidate-2026-10-12/review-3/programs/literal_checks.py`](../../packing/resources/web/kleddamag-n17-candidate-2026-10-12/review-3/programs/literal_checks.py), [`packing/resources/web/kleddamag-n17-candidate-2026-10-12/review-3/programs/geom_util.py`](../../packing/resources/web/kleddamag-n17-candidate-2026-10-12/review-3/programs/geom_util.py)
 - Versions run: this repository's commits, which Git holds
@@ -1886,7 +1886,7 @@ Decides the three hand-overs of the candidate's rigidity step (P092 to P095): th
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-n017-overbeck-handovers-review3` | replayed here | independently re-implemented after reading the producer’s code | full, 3 of 3: the three hand-overs of the rigidity step, P092 to P095, and the windows of the stored G20S and HW acceptance reports | - |
+| `E-n017-overbeck-handovers-review3` | replayed here | independently re-implemented after reading the producer’s code | full, 3 of 3: the three hand-overs of the rigidity step, P092 to P095, between the regions stated in EXPECT_G20S.json, EXPECT_HW.json and JG_exact_v2.json | - |
 
 ### `V-overbeck-review3-jq-tree-checker`
 
@@ -2027,28 +2027,28 @@ Reads Evan Daniel's rational certificates, refusing anything the format does not
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-evand-exact-optima-2026-10-05-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-098 |
+| `E-evand-exact-optima-2026-10-05-exact-replay` | replayed here | independently re-implemented | not recorded | T-098 |
 | `E-evand-exact-optima-2026-10-05-source-replay` | replayed here | reproduced with the producer’s code | not recorded | T-098 |
-| `E-evand-exact-ceilings-2026-10-05-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-101 |
+| `E-evand-exact-ceilings-2026-10-05-exact-replay` | replayed here | independently re-implemented | not recorded | T-101 |
 | `E-evand-exact-ceilings-2026-10-05-source-replay` | replayed here | reproduced with the producer’s code | not recorded | T-101 |
-| `E-couzo-451-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-128 |
-| `E-couzo-460-followup-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-130 |
-| `E-evand-465-record-hunt-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-128, T-131 |
-| `E-couzo-476-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-134 |
-| `E-fang-484-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-135 |
-| `E-squish-481-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-136 |
-| `E-deleeuw-483-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-137 |
-| `E-mishapolk-470-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-138 |
-| `E-evand-trio126-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-139 |
-| `E-couzo-488-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-140 |
-| `E-evand-489-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-141 |
-| `E-evand-regularized-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-146 |
-| `E-pingyou-503-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-147 |
-| `E-pingyou-504-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-148 |
-| `E-ostashev-501-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-149 |
-| `E-barnett-505-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-150 |
-| `E-squish-500-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-151 |
-| `E-couzo-506-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-152 |
+| `E-couzo-451-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-128 |
+| `E-couzo-460-followup-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-130 |
+| `E-evand-465-record-hunt-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-128, T-131 |
+| `E-couzo-476-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-134 |
+| `E-fang-484-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-135 |
+| `E-squish-481-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-136 |
+| `E-deleeuw-483-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-137 |
+| `E-mishapolk-470-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-138 |
+| `E-evand-trio126-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-139 |
+| `E-couzo-488-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-140 |
+| `E-evand-489-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-141 |
+| `E-evand-regularized-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-146 |
+| `E-pingyou-503-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-147 |
+| `E-pingyou-504-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-148 |
+| `E-ostashev-501-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-149 |
+| `E-barnett-505-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-150 |
+| `E-squish-500-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-151 |
+| `E-couzo-506-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-152 |
 
 ### `V-check-n11-final-composition`
 
@@ -2116,7 +2116,7 @@ Audits the n = 17 endpoint receipt and reconstructs every interval record, impor
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-n017-certified-endpoint` | audited here | independently re-implemented after reading the producer’s code | not recorded | T-065 |
+| `E-n017-certified-endpoint` | audited here | independently re-implemented | not recorded | T-065 |
 
 ### `V-audit-tokoharu-density`
 
@@ -2218,116 +2218,116 @@ Decides a measure-capture lower-bound certificate of format T, M or L on the 201
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-n019-wand125-rect-48175-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n020-wand125-rect-48975-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n026-wand125-rect-55325-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n027-wand125-rect-5635-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n028-wand125-rect-57225-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n029-wand125-rect-57975-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n030-wand125-rect-5875-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n031-wand125-rect-59525-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n038-wand125-rect-6545-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n039-wand125-rect-6635-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n040-wand125-rect-67-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n041-wand125-rect-676-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n042-wand125-rect-6815-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n043-wand125-rect-68875-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n044-wand125-rect-69425-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n053-wand125-rect-76075-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n054-wand125-rect-76725-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n055-wand125-rect-77125-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n056-wand125-rect-77825-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n066-wand125-rect-8385-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n068-wand125-rect-851-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n069-wand125-rect-8585-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n070-wand125-rect-8625-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n074-wand125-rect-88475-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n075-wand125-rect-89-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n076-wand125-rect-8925-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n086-wand125-rect-9365-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n087-wand125-rect-941-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n088-wand125-rect-94775-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n089-wand125-rect-9565-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n090-wand125-rect-95775-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n093-wand125-rect-97225-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n094-wand125-rect-9805-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n095-wand125-rect-98518-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-068 |
-| `E-n020-wand125-rect-49-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-077 |
-| `E-n042-wand125-rect-68275-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-077 |
-| `E-n070-wand125-rect-86275-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-077 |
-| `E-n067-wand125-mixed-848-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-094 |
-| `E-n084-wand125-mixed-9411-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-094 |
-| `E-n066-wand125-mixed-843-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-097 |
-| `E-n053-wand125-mixed-76275-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-091 |
-| `E-n054-wand125-mixed-7685-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-091 |
-| `E-n058-wand125-mixed-7935-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-091 |
-| `E-n070-wand125-mixed-86575-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-091 |
-| `E-n071-wand125-mixed-8721-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-091 |
-| `E-n073-wand125-mixed-8813-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-091 |
-| `E-n076-wand125-mixed-8965-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-091 |
-| `E-n087-wand125-mixed-958-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-091 |
-| `E-n088-wand125-mixed-962-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-091 |
-| `E-n090-wand125-mixed-973-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-091 |
-| `E-n091-wand125-mixed-97625-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-091 |
-| `E-n094-wand125-mixed-995-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-091 |
-| `E-n083-wand125-mixed-937-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-075 |
-| `E-n085-wand125-mixed-946-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-075 |
-| `E-n087-wand125-mixed-948-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-075 |
-| `E-n091-wand125-mixed-970-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-075 |
-| `E-n092-wand125-mixed-975-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-075 |
-| `E-n096-wand125-mixed-996-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-075 |
-| `E-n042-wand125-mixed-68475-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-090 |
-| `E-n043-wand125-mixed-69075-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-090 |
-| `E-n044-wand125-mixed-69725-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-090 |
-| `E-n051-wand125-mixed-747-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-090 |
-| `E-n056-wand125-mixed-78025-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-090 |
-| `E-n057-wand125-mixed-78725-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-090 |
-| `E-n067-wand125-mixed-8475-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-090 |
-| `E-n069-wand125-mixed-862-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-090 |
-| `E-n072-wand125-mixed-876-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-090 |
-| `E-n075-wand125-mixed-894-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-090 |
-| `E-n084-wand125-mixed-94075-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-090 |
-| `E-n086-wand125-mixed-9503-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-090 |
-| `E-n088-wand125-mixed-96125-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-090 |
-| `E-n093-wand125-mixed-988-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-090 |
-| `E-n094-wand125-mixed-994-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-090 |
-| `E-n095-wand125-mixed-9965-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-090 |
-| `E-n051-wand125-mixed-746-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-082 |
-| `E-n052-wand125-mixed-755-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-082 |
-| `E-n055-wand125-mixed-7728-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-082 |
-| `E-n058-wand125-mixed-7905-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-082 |
-| `E-n069-wand125-mixed-8612-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-082 |
-| `E-n070-wand125-mixed-86475-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-082 |
-| `E-n071-wand125-mixed-8705-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-082 |
-| `E-n073-wand125-mixed-8809-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-082 |
-| `E-n074-wand125-mixed-88675-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-082 |
-| `E-n075-wand125-mixed-892-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-082 |
-| `E-n076-wand125-mixed-896-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-082 |
-| `E-n086-wand125-mixed-950-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-082 |
-| `E-n087-wand125-mixed-955-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-082 |
-| `E-n088-wand125-mixed-960-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-082 |
-| `E-n089-wand125-mixed-965-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-082 |
-| `E-n090-wand125-mixed-9725-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-082 |
-| `E-n091-wand125-mixed-975-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-082 |
-| `E-n092-wand125-mixed-977-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-082 |
-| `E-n093-wand125-mixed-986-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-082 |
-| `E-n094-wand125-mixed-992-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-082 |
-| `E-n095-wand125-mixed-996-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-082 |
-| `E-n096-wand125-mixed-997-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-082 |
-| `E-n018-wand125-mixed-4704-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-099 |
-| `E-n019-wand125-mixed-48229-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-100 |
+| `E-n019-wand125-rect-48175-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n020-wand125-rect-48975-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n026-wand125-rect-55325-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n027-wand125-rect-5635-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n028-wand125-rect-57225-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n029-wand125-rect-57975-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n030-wand125-rect-5875-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n031-wand125-rect-59525-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n038-wand125-rect-6545-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n039-wand125-rect-6635-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n040-wand125-rect-67-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n041-wand125-rect-676-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n042-wand125-rect-6815-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n043-wand125-rect-68875-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n044-wand125-rect-69425-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n053-wand125-rect-76075-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n054-wand125-rect-76725-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n055-wand125-rect-77125-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n056-wand125-rect-77825-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n066-wand125-rect-8385-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n068-wand125-rect-851-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n069-wand125-rect-8585-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n070-wand125-rect-8625-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n074-wand125-rect-88475-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n075-wand125-rect-89-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n076-wand125-rect-8925-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n086-wand125-rect-9365-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n087-wand125-rect-941-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n088-wand125-rect-94775-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n089-wand125-rect-9565-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n090-wand125-rect-95775-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n093-wand125-rect-97225-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n094-wand125-rect-9805-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n095-wand125-rect-98518-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-068 |
+| `E-n020-wand125-rect-49-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-077 |
+| `E-n042-wand125-rect-68275-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-077 |
+| `E-n070-wand125-rect-86275-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-077 |
+| `E-n067-wand125-mixed-848-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-094 |
+| `E-n084-wand125-mixed-9411-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-094 |
+| `E-n066-wand125-mixed-843-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-097 |
+| `E-n053-wand125-mixed-76275-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-091 |
+| `E-n054-wand125-mixed-7685-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-091 |
+| `E-n058-wand125-mixed-7935-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-091 |
+| `E-n070-wand125-mixed-86575-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-091 |
+| `E-n071-wand125-mixed-8721-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-091 |
+| `E-n073-wand125-mixed-8813-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-091 |
+| `E-n076-wand125-mixed-8965-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-091 |
+| `E-n087-wand125-mixed-958-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-091 |
+| `E-n088-wand125-mixed-962-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-091 |
+| `E-n090-wand125-mixed-973-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-091 |
+| `E-n091-wand125-mixed-97625-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-091 |
+| `E-n094-wand125-mixed-995-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-091 |
+| `E-n083-wand125-mixed-937-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-075 |
+| `E-n085-wand125-mixed-946-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-075 |
+| `E-n087-wand125-mixed-948-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-075 |
+| `E-n091-wand125-mixed-970-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-075 |
+| `E-n092-wand125-mixed-975-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-075 |
+| `E-n096-wand125-mixed-996-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-075 |
+| `E-n042-wand125-mixed-68475-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-090 |
+| `E-n043-wand125-mixed-69075-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-090 |
+| `E-n044-wand125-mixed-69725-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-090 |
+| `E-n051-wand125-mixed-747-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-090 |
+| `E-n056-wand125-mixed-78025-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-090 |
+| `E-n057-wand125-mixed-78725-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-090 |
+| `E-n067-wand125-mixed-8475-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-090 |
+| `E-n069-wand125-mixed-862-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-090 |
+| `E-n072-wand125-mixed-876-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-090 |
+| `E-n075-wand125-mixed-894-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-090 |
+| `E-n084-wand125-mixed-94075-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-090 |
+| `E-n086-wand125-mixed-9503-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-090 |
+| `E-n088-wand125-mixed-96125-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-090 |
+| `E-n093-wand125-mixed-988-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-090 |
+| `E-n094-wand125-mixed-994-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-090 |
+| `E-n095-wand125-mixed-9965-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-090 |
+| `E-n051-wand125-mixed-746-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-082 |
+| `E-n052-wand125-mixed-755-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-082 |
+| `E-n055-wand125-mixed-7728-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-082 |
+| `E-n058-wand125-mixed-7905-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-082 |
+| `E-n069-wand125-mixed-8612-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-082 |
+| `E-n070-wand125-mixed-86475-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-082 |
+| `E-n071-wand125-mixed-8705-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-082 |
+| `E-n073-wand125-mixed-8809-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-082 |
+| `E-n074-wand125-mixed-88675-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-082 |
+| `E-n075-wand125-mixed-892-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-082 |
+| `E-n076-wand125-mixed-896-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-082 |
+| `E-n086-wand125-mixed-950-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-082 |
+| `E-n087-wand125-mixed-955-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-082 |
+| `E-n088-wand125-mixed-960-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-082 |
+| `E-n089-wand125-mixed-965-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-082 |
+| `E-n090-wand125-mixed-9725-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-082 |
+| `E-n091-wand125-mixed-975-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-082 |
+| `E-n092-wand125-mixed-977-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-082 |
+| `E-n093-wand125-mixed-986-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-082 |
+| `E-n094-wand125-mixed-992-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-082 |
+| `E-n095-wand125-mixed-996-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-082 |
+| `E-n096-wand125-mixed-997-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-082 |
+| `E-n018-wand125-mixed-4704-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-099 |
+| `E-n019-wand125-mixed-48229-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-100 |
 | `E-n018-wand125-mixed-4705-sqverify-fast-replay` | replayed here | re-implemented, sharing named components | not recorded | T-102 |
 | `E-n019-wand125-mixed-4825-sqverify-fast-replay` | replayed here | re-implemented, sharing named components | not recorded | T-103 |
 | `E-n020-wand125-mixed-4905-sqverify-fast-replay` | replayed here | re-implemented, sharing named components | not recorded | T-104 |
 | `E-n026-wand125-mixed-5545-sqverify-fast-replay` | replayed here | re-implemented, sharing named components | not recorded | T-105 |
 | `E-n027-wand125-mixed-56435-sqverify-fast-replay` | replayed here | re-implemented, sharing named components | not recorded | T-106 |
 | `E-n028-wand125-mixed-5735-sqverify-fast-replay` | replayed here | re-implemented, sharing named components | not recorded | T-107 |
-| `E-n029-wand125-mixed-581-sqverify-fast-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-108 |
+| `E-n029-wand125-mixed-581-sqverify-fast-replay` | replayed here | independently re-implemented | not recorded | T-108 |
 | `E-n030-wand125-mixed-58835-sqverify-fast-replay` | replayed here | re-implemented, sharing named components | not recorded | T-109 |
 | `E-n039-wand125-mixed-665-sqverify-fast-replay` | replayed here | re-implemented, sharing named components | not recorded | T-110 |
 | `E-n041-wand125-mixed-6775-sqverify-fast-replay` | replayed here | re-implemented, sharing named components | not recorded | T-111 |
 | `E-n040-guzhou-clipped-corner-sqverify-fast-replay` | replayed here | reproduced with the producer’s code | not recorded | T-133 |
-| `E-n040-guzhou-continuous-pose-crate-axis` | audited here | independently re-implemented after reading the producer’s code | not recorded | T-145 |
+| `E-n040-guzhou-continuous-pose-crate-axis` | audited here | independently re-implemented | not recorded | T-145 |
 
 ### `V-replay-chelokot-lean`
 
@@ -2473,7 +2473,7 @@ Checks what the Valid7 checker's verify.sh leaves out: the records are the relea
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-k2m3-wand125-valid7-independent` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-064 |
+| `E-k2m3-wand125-valid7-independent` | replayed here | independently re-implemented | not recorded | T-064 |
 
 ### `V-audit-validtilt9-independent`
 
@@ -2486,7 +2486,7 @@ Checks what wand125's verify_tilt9.sh leaves out of the ValidTilt9 run: the reco
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-k2m4-wand125-validtilt9-report` | reported by a third party, not replayed here | independently re-implemented after reading the producer’s code | not recorded | T-081 |
+| `E-k2m4-wand125-validtilt9-report` | reported by a third party, not replayed here | independently re-implemented | not recorded | T-081 |
 
 ### `V-probe-valid7-fixes`
 
@@ -2499,7 +2499,7 @@ Runs the 2 October review's demonstrations of D-1, D-2 and D-3 against each reta
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-k2m3-wand125-valid7-independent` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-064 |
+| `E-k2m3-wand125-valid7-independent` | replayed here | independently re-implemented | not recorded | T-064 |
 
 ### `V-squish-upper-bound-packets`
 
@@ -2514,8 +2514,8 @@ Admits the bounded complete SQUISH source roster, converts rational half-angle f
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-squish-ten-packings-2026-10-07-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-113 |
-| `E-squish-n153-2026-10-07-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-114 |
+| `E-squish-ten-packings-2026-10-07-exact-replay` | replayed here | independently re-implemented | not recorded | T-113 |
+| `E-squish-n153-2026-10-07-exact-replay` | replayed here | independently re-implemented | not recorded | T-114 |
 
 ### `V-squish-followup-packets`
 
@@ -2530,7 +2530,7 @@ Admits the pinned update source and complete reviewed replay, binds revision-spe
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-squish-update-2026-10-07-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-115 |
+| `E-squish-update-2026-10-07-exact-replay` | replayed here | independently re-implemented | not recorded | T-115 |
 
 ### `V-squish-second-update-confirmation`
 
@@ -2545,7 +2545,7 @@ Admits the complete immutable second-update roster, all historical full replay i
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-squish-second-update-2026-10-07-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-116 |
+| `E-squish-second-update-2026-10-07-exact-replay` | replayed here | independently re-implemented | not recorded | T-116 |
 
 ### `V-evand-arrangement-receipts`
 
@@ -2558,25 +2558,25 @@ Binds all three complete source certificates and all nine full deciding inputs/n
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-evand-399-exact-feasibility` | audited here | independently re-implemented after reading the producer’s code | not recorded | T-119 |
-| `E-couzo-451-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-128 |
-| `E-couzo-460-followup-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-130 |
-| `E-evand-465-record-hunt-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-128, T-131 |
-| `E-couzo-476-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-134 |
-| `E-fang-484-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-135 |
-| `E-squish-481-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-136 |
-| `E-deleeuw-483-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-137 |
-| `E-mishapolk-470-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-138 |
-| `E-evand-trio126-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-139 |
-| `E-couzo-488-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-140 |
-| `E-evand-489-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-141 |
-| `E-evand-regularized-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-146 |
-| `E-pingyou-503-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-147 |
-| `E-pingyou-504-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-148 |
-| `E-ostashev-501-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-149 |
-| `E-barnett-505-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-150 |
-| `E-squish-500-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-151 |
-| `E-couzo-506-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-152 |
+| `E-evand-399-exact-feasibility` | audited here | independently re-implemented | not recorded | T-119 |
+| `E-couzo-451-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-128 |
+| `E-couzo-460-followup-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-130 |
+| `E-evand-465-record-hunt-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-128, T-131 |
+| `E-couzo-476-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-134 |
+| `E-fang-484-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-135 |
+| `E-squish-481-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-136 |
+| `E-deleeuw-483-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-137 |
+| `E-mishapolk-470-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-138 |
+| `E-evand-trio126-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-139 |
+| `E-couzo-488-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-140 |
+| `E-evand-489-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-141 |
+| `E-evand-regularized-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-146 |
+| `E-pingyou-503-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-147 |
+| `E-pingyou-504-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-148 |
+| `E-ostashev-501-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-149 |
+| `E-barnett-505-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-150 |
+| `E-squish-500-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-151 |
+| `E-couzo-506-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-152 |
 
 ### `V-upper-bound-reports`
 
@@ -2590,21 +2590,21 @@ Imports a report of rational upper-bound certificates by another author from its
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-couzo-476-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-134 |
-| `E-fang-484-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-135 |
-| `E-squish-481-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-136 |
-| `E-deleeuw-483-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-137 |
-| `E-mishapolk-470-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-138 |
-| `E-evand-trio126-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-139 |
-| `E-couzo-488-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-140 |
-| `E-evand-489-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-141 |
-| `E-evand-regularized-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-146 |
-| `E-pingyou-503-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-147 |
-| `E-pingyou-504-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-148 |
-| `E-ostashev-501-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-149 |
-| `E-barnett-505-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-150 |
-| `E-squish-500-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-151 |
-| `E-couzo-506-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-152 |
+| `E-couzo-476-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-134 |
+| `E-fang-484-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-135 |
+| `E-squish-481-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-136 |
+| `E-deleeuw-483-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-137 |
+| `E-mishapolk-470-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-138 |
+| `E-evand-trio126-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-139 |
+| `E-couzo-488-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-140 |
+| `E-evand-489-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-141 |
+| `E-evand-regularized-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-146 |
+| `E-pingyou-503-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-147 |
+| `E-pingyou-504-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-148 |
+| `E-ostashev-501-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-149 |
+| `E-barnett-505-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-150 |
+| `E-squish-500-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-151 |
+| `E-couzo-506-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-152 |
 
 ### `V-rehwaldt-n68-verify`
 
@@ -2646,7 +2646,7 @@ Admits all 13 complete actual input/result jobs, immutable source conversion, pr
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-rehwaldt-couzo-refinements-2026-10-07-exact-replay` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-117 |
+| `E-rehwaldt-couzo-refinements-2026-10-07-exact-replay` | replayed here | independently re-implemented | not recorded | T-117 |
 | `E-rehwaldt-n68-refinement-2026-10-07-exact-replay` | replayed here | reproduced with the producer’s code | not recorded | T-118 |
 
 ### `V-ryxu-undilated-n51-independent`
@@ -2661,7 +2661,7 @@ Decides all 51 undilated coefficient poses in Q(sqrt2), unit-square identities, 
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-ryxu-432-radical-n51-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-126 |
+| `E-ryxu-432-radical-n51-feasibility` | replayed here | independently re-implemented | not recorded | T-126 |
 
 ### `V-ryxu-complete-custody`
 
@@ -2675,8 +2675,8 @@ Admits complete pinned source facts, all 75 rational and three radical actual in
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-ryxu-432-rational-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-125 |
-| `E-ryxu-432-radical-n51-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-126 |
+| `E-ryxu-432-rational-feasibility` | replayed here | independently re-implemented | not recorded | T-125 |
+| `E-ryxu-432-radical-n51-feasibility` | replayed here | independently re-implemented | not recorded | T-126 |
 
 ### `V-gupta-complete-custody`
 
@@ -2690,7 +2690,7 @@ Admits all seventeen pinned originals and comparators, all 51 complete actual in
 
 | evidence | run | code | coverage | results |
 | --- | --- | --- | --- | --- |
-| `E-gupta-438-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | not recorded | T-127 |
+| `E-gupta-438-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-127 |
 
 ### `V-register-regularized-bounds`
 

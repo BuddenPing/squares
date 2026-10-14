@@ -743,26 +743,35 @@ def _path_problem(path: str) -> str | None:
     return None
 
 
+def _mapping(value: Any) -> Mapping[str, Any]:
+    """A structured record's mapping, or no facts while schema diagnostics are emitted."""
+    return value if isinstance(value, Mapping) else {}
+
+
 def sampled(entry: Mapping[str, Any]) -> bool:
     """Whether an evidence entry's run is a sample: it decides the instances it ran and
-    nothing about the others, so it derives no rung (epistemics.md, The Independence
-    Ladder)."""
-    coverage = (entry.get("independence") or {}).get("coverage") or {}
-    return coverage.get("extent") == SAMPLE
+    nothing about the others, so it derives no rung. Invalid coverage is excluded too,
+    leaving shape diagnostics to the schema (epistemics.md, The Independence Ladder)."""
+    raw = entry.get("independence")
+    if "independence" in entry and not isinstance(raw, Mapping):
+        return True
+    record = _mapping(raw)
+    coverage = record.get("coverage")
+    if "coverage" in record and not isinstance(coverage, Mapping):
+        return True
+    return _mapping(coverage).get("extent") == SAMPLE
 
 
 def ladder_level(entry: Mapping[str, Any], verifiers: Mapping[str, Verifier]) -> str | None:
     """An evidence run's relation, using only its deciding programs' authorship."""
     relation = entry.get("relationship_to_generator")
-    if relation in {SAME, GENERATOR}:
-        return "reproduced"
-    if relation == SHARED:
-        return "shared"
+    if relation in {SAME, GENERATOR, SHARED}:
+        return "shared" if relation == SHARED else "reproduced"
     if relation != INDEPENDENT:
         return None
-    own = entry.get("independence") or {}
+    own = _mapping(entry.get("independence"))
     records = [
-        verifiers[v].record.get("independence") or own
+        _mapping(verifiers[v].record.get("independence")) or own
         for v in entry.get("verifiers") or []
         if v in verifiers and verifiers[v].decides
     ]
@@ -772,20 +781,24 @@ def ladder_level(entry: Mapping[str, Any], verifiers: Mapping[str, Verifier]) ->
         not records and own.get("clean_room") is True
     ):
         return "clean-room"
-    return "after-reading"
+    if any(PRODUCER_CODE in (record.get("read") or []) for record in records or [own]):
+        return "after-reading"
+    return None
 
 
 def ladder_label(entry: Mapping[str, Any], verifiers: Mapping[str, Verifier]) -> str:
     """The entry's ladder level, or its non-computational relation label."""
     return LADDER.get(
         ladder_level(entry, verifiers) or "",
-        SHORT_LABELS.get(str(entry.get("relationship_to_generator")), "-"),
+        LABELS[INDEPENDENT]
+        if entry.get("relationship_to_generator") == INDEPENDENT
+        else SHORT_LABELS.get(str(entry.get("relationship_to_generator")), "-"),
     )
 
 
 def coverage_line(entry: Mapping[str, Any]) -> str:
     """Coverage as a readable table cell, including sample counts and the named unit."""
-    coverage = (entry.get("independence") or {}).get("coverage") or {}
+    coverage = _mapping(_mapping(entry.get("independence")).get("coverage"))
     if not coverage:
         return "not recorded"
     extent = str(coverage.get("extent", "not recorded"))
@@ -798,6 +811,7 @@ def record_problems(owner: str, record: Mapping[str, Any]) -> list[str]:
     """What contradicts itself inside one structured independence record: a clean room
     whose authors read the producer's code or that shares its components, and a coverage
     whose count does not fit its extent."""
+    record = _mapping(record)
     problems: list[str] = []
     if record.get("clean_room") is True and PRODUCER_CODE in (record.get("read") or []):
         problems.append(
@@ -809,7 +823,7 @@ def record_problems(owner: str, record: Mapping[str, Any]) -> list[str]:
             f"{owner}: its independence record says clean_room, but it shares the "
             f"producer{APOSTROPHE}s components"
         )
-    overlap = record.get("overlaps_producer") or {}
+    overlap = _mapping(record.get("overlaps_producer"))
     if record.get("shares") and overlap.get("separate_code") is True:
         problems.append(
             f"{owner}: its independence record says separate_code, but it shares the "
@@ -819,7 +833,7 @@ def record_problems(owner: str, record: Mapping[str, Any]) -> list[str]:
         problems.append(
             f"{owner}: its independence record says clean_room, but not separate_code"
         )
-    coverage = record.get("coverage") or {}
+    coverage = _mapping(record.get("coverage"))
     checked, of = coverage.get("checked"), coverage.get("of")
     if isinstance(checked, int) and isinstance(of, int):
         if coverage.get("extent") == SAMPLE and checked < 1:
@@ -920,7 +934,7 @@ def evidence_problems(
                 "authors read: an independence_record, or a deciding program whose "
                 "registry entry carries one"
             )
-        structured = entry.get("independence") or {}
+        structured = _mapping(entry.get("independence"))
         if structured:
             problems.extend(record_problems(eid, structured))
         needs_coverage = (entry.get("replay") and eid not in UNCOVERED_REPLAYS) or (
@@ -931,7 +945,7 @@ def evidence_problems(
             owner = "a replay" if entry.get("replay") else "an independent implementation"
             problems.append(f"{eid}: {owner} states its coverage in its independence record")
         deciders = [verifiers[v] for v in named if verifiers[v].decides]
-        records = [verifier.record.get("independence") or {} for verifier in deciders]
+        records = [_mapping(verifier.record.get("independence")) for verifier in deciders]
         if structured.get("clean_room") is True and any(
             record and record.get("clean_room") is not True for record in records
         ):
@@ -958,7 +972,7 @@ def structured_independence_problems(
     coverage, always its own; who wrote the deciding code and what they read, its own or
     on every deciding program; and no component shared with the producer, which would
     make the relation shared-components (epistemics.md, The Independence Record)."""
-    structured = entry.get("independence") or {}
+    structured = _mapping(entry.get("independence"))
     problems: list[str] = []
     deciders = [verifiers[v] for v in named if verifiers[v].decides]
     carried = [verifier for verifier in deciders if "independence" in verifier.record]
@@ -971,7 +985,7 @@ def structured_independence_problems(
     sharing = [
         verifier.id
         for verifier in carried
-        if (verifier.record.get("independence") or {}).get("shares")
+        if (_mapping(verifier.record.get("independence"))).get("shares")
     ]
     if structured.get("shares"):
         sharing.append(eid)
@@ -1013,7 +1027,7 @@ def problems(evidence: Sequence[Mapping[str, Any]], path: Path = REGISTRY) -> li
     uncovered = {
         str(entry.get("id"))
         for entry in evidence
-        if entry.get("replay") and not (entry.get("independence") or {}).get("coverage")
+        if entry.get("replay") and not _mapping(entry.get("independence")).get("coverage")
     }
     return [
         *(
@@ -1074,7 +1088,7 @@ def independence_line(record: Mapping[str, Any]) -> str:
         + (f" ({author['setting']})" if author.get("setting") else "")
         for author in record.get("written_by") or []
     )
-    overlap = record.get("overlaps_producer") or {}
+    overlap = _mapping(record.get("overlaps_producer"))
     apart = [
         label
         for label, key in (("prompt", "separate_prompt"), ("code", "separate_code"))
@@ -1195,10 +1209,15 @@ def entry_line(entry: Mapping[str, Any], verifiers: Mapping[str, Verifier]) -> s
     its line names no relation, whose labels are the words a confirmation is read in
     (`THIRD_PARTY_REPORT`); `VERIFIERS.md` keeps its code relation in a column of its own."""
     beyond = entry.get("origin") in CONFIRMING_ORIGINS
-    level = ladder_level(entry, verifiers)
-    how = f", {LADDER[level]}" if beyond and level is not None else ""
+    how = (
+        f", {ladder_label(entry, verifiers)}"
+        if beyond and entry.get("relationship_to_generator") in RANK
+        else ""
+    )
     coverage = (
-        f"; {coverage_line(entry)}" if (entry.get("independence") or {}).get("coverage") else ""
+        f"; {coverage_line(entry)}"
+        if _mapping(entry.get("independence")).get("coverage")
+        else ""
     )
     return (
         f"`{entry['id']}`, {run_label(entry)}{how}{coverage}: {programs_text(entry, verifiers)}"

@@ -989,6 +989,7 @@ def test_a_simplification_names_a_result_on_a_case_it_shares() -> None:
     record = {
         "id": "T-999",
         "kind": "simplification",
+        "proves_kind": "optimality",
         "headline": "`s(45) = 7` by a shorter route",
         "claim": "s(45) = 7, proved again without segments; T-053 holds the value.",
     }
@@ -1010,20 +1011,29 @@ def test_a_formalization_names_a_result_and_cites_a_proof_assistant() -> None:
     formalizing an existing argument or by a route of its own (owner, 13 October 2026). Its
     claim names that result on a case they share, and it cites evidence whose method,
     performed or reported, is `proof-assistant-checked`. A simplification may cite such
-    evidence too: the owner stated no precedence ("simplif[ic]ation should be allowed too
-    but that is different"), so where a second proof is both, either kind fits and the
-    owner chooses at registration. Declared a simplification, T-154 is not refused
-    either."""
+    evidence too: where a second proof is both, either kind fits and the owner chooses
+    at registration. Declared a simplification, T-154 is not refused either."""
     record = {
         "id": "T-999",
         "kind": "formalization",
+        "proves_kind": "optimality",
         "headline": "`s(17) = 4.67553009360455…` in Lean 4",
         "claim": "s(17) = 4.67553009360455095163…, T-153's value, proved in Lean 4.",
     }
     scopes = {"T-999": {17}, "T-153": {17}}
     formal = check_results.FORMAL_METHOD
-    reported = {"id": "E-report", "claim": "exact-value", "reported_method": formal}
-    built = {"id": "E-build", "claim": "exact-value", "method": formal}
+    reported = {
+        "id": "E-report",
+        "claim": "exact-value",
+        "scope": {"n_values": [17]},
+        "reported_method": formal,
+    }
+    built = {
+        "id": "E-build",
+        "claim": "exact-value",
+        "scope": {"n_values": [17]},
+        "method": formal,
+    }
     paper = {"id": "E-paper", "claim": "exact-value", "method": "published-proof"}
     assert check_results.kind_problems(record, [reported], scopes) == []
     assert check_results.kind_problems(record, [built], scopes) == []
@@ -1069,6 +1079,7 @@ def test_a_second_proof_is_held_to_its_own_proof_assistant_evidence() -> None:
     record = {
         "id": "T-999",
         "kind": "simplification",
+        "proves_kind": "optimality",
         "headline": "`s(11) = 3.877…` by a shorter route",
         "claim": "s(11) = T, T-060's value, proved again on paper by a shorter route.",
     }
@@ -1082,7 +1093,12 @@ def test_a_second_proof_is_held_to_its_own_proof_assistant_evidence() -> None:
             "`proof-assistant-checked`, performed or reported"
         )
     ]
-    built = {"id": "E-build", "claim": "exact-value", "method": check_results.FORMAL_METHOD}
+    built = {
+        "id": "E-build",
+        "claim": "exact-value",
+        "scope": {"n_values": [11]},
+        "method": check_results.FORMAL_METHOD,
+    }
     assert check_results.kind_problems(formal, [paper, lean, built], scopes, evidence_of) == []
 
 
@@ -1885,3 +1901,87 @@ def test_full_part_citations_cannot_promote_the_whole_result(
     monkeypatch.setattr(check_results, "RESULTS", promoted)
     assert check_results.main() == 1
     assert f"{rid}: declares V3 but the cited atoms support only V0" in capsys.readouterr().out
+
+
+@pytest.mark.parametrize(
+    ("claim", "counts"), [("exact-value", [11]), ("derived-structure", [17])]
+)
+def test_unrelated_formal_evidence_cannot_qualify_the_second_proof(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    claim: str,
+    counts: list[int],
+) -> None:
+    """Scope and whole-claim support apply in the full register gate, even for reports."""
+    document = safe_load(check_results.EVIDENCE.read_text(encoding="utf-8"))
+    own = next(
+        row for row in document["evidence"] if row["id"] == "E-n017-fitzharding-lean-report"
+    )
+    own["reported_method"] = "published-proof"
+    unrelated = dict(
+        own,
+        id="E-test-unrelated-formal",
+        claim=claim,
+        scope={"n_values": counts},
+        reported_method=check_results.FORMAL_METHOD,
+    )
+    document["evidence"].append(unrelated)
+    path = tmp_path / "evidence.yaml"
+    path.write_text(yaml.safe_dump(document, sort_keys=False), encoding="utf-8")
+    monkeypatch.setattr(check_results, "EVIDENCE", path)
+    monkeypatch.setattr(
+        check_results,
+        "RESULTS",
+        _changed_result(
+            tmp_path, "T-154", evidence=["E-n017-fitzharding-lean-report", unrelated["id"]]
+        ),
+    )
+    assert check_results.main() == 1
+    assert (
+        "T-154: kind is formalization, and no cited evidence of its own"
+        in capsys.readouterr().out
+    )
+
+
+def test_second_proof_conclusion_matches_the_target_and_every_case() -> None:
+    record = {
+        "id": "T-999",
+        "kind": "formalization",
+        "proves_kind": "lower-bound",
+        "headline": "A second lower bound",
+        "claim": "T-998 proved again.",
+    }
+    evidence = [
+        {
+            "id": "E-own",
+            "claim": "lower-bound",
+            "scope": {"n_values": [17, 18]},
+            "reported_method": check_results.FORMAL_METHOD,
+        }
+    ]
+    scopes = {"T-999": {17, 18}, "T-998": {17, 18}}
+    target = {"T-998": {"kind": "lower-bound"}}
+    assert check_results.kind_problems(record, evidence, scopes, records=target) == []
+    for incompatible in [
+        {"kind": "optimality"},
+        {"kind": "formalization", "proves_kind": "optimality"},
+    ]:
+        assert any(
+            "proves_kind does not match" in issue
+            for issue in check_results.kind_problems(
+                record, evidence, scopes, records={"T-998": incompatible}
+            )
+        )
+    target["T-998"] = {"kind": "simplification", "proves_kind": "lower-bound"}
+    assert check_results.kind_problems(record, evidence, scopes, records=target) == []
+    scopes["T-998"] = {17}
+    assert any(
+        "every claimed case" in issue
+        for issue in check_results.kind_problems(record, evidence, scopes, records=target)
+    )
+    evidence[0]["scope"] = {"n_values": [17]}
+    assert any(
+        "no cited evidence of its own" in issue
+        for issue in check_results.kind_problems(record, evidence, scopes, records=target)
+    )

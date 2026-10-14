@@ -32502,15 +32502,17 @@ evidence:
     independence:
       coverage:
         extent: full
-        unit: the three hand-overs of the rigidity step, P092 to P095, and the windows of the stored G20S and HW acceptance reports
+        unit: the three hand-overs of the rigidity step, P092 to P095, between the regions stated in EXPECT_G20S.json, EXPECT_HW.json and JG_exact_v2.json
         checked: 3
         of: 3
     limitations: >-
       Run here on 13 October 2026 by the third review of the candidate: the JG terminal
       equals the G20S window; the G20S tube cut by xi_(2,1) <= 0 lies in the HW window and
       without the cut does not; the HW tube with the same cut lies in the sixteen-square
-      entry and without it does not. It decides the inclusions between the stated regions,
-      not the trees that close them; G20S, HW and JG have not been run here. The lane kept
+      entry and without it does not. It decides the comparisons between the stated regions.
+      It prints fields of the stored G20S and HW acceptance reports for inspection only,
+      without checking their status or comparing their windows to EXPECT; those reports
+      and the trees that close the regions are outside this entry's coverage; G20S, HW and JG have not been run here. The lane kept
       no output of this program; the review records what it printed.
     source_reviewed: '2026-10-14'
 
