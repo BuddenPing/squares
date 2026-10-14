@@ -102,20 +102,20 @@ TABLE_MAX = 1600
 REM = 16
 #: A long list of cases: the measure it wraps in, `--site-cases-measure`, 24 digits of
 #: the table's face, with the cell's padding, in pixels; the least the column narrows
-#: to, half the measure; and the most lines the longest list, T-154's 44 values, takes
+#: to, half the measure; and the most lines the longest list, T-155's 44 values, takes
 #: at 1440 pixels with every row showing, where the 1360-pixel table leaves the list its
 #: whole measure. At 1280 the eight columns' floors leave it the whole measure too, so
 #: it takes the same lines there as well, since the Details column left the table
 #: (2026-10-04, `think-46fw`); with nine columns it had its floor there and 11 lines.
-#: T-056's 23 values took six until T-101 (2026-10-06); T-101's 39 took nine until T-154
+#: T-056's 23 values took six until T-101 (2026-10-06); T-101's 39 took nine until T-155
 #: (2026-10-12), whose 44 take nine as well.
 CASES_MEASURE = 224.8
 CASES_MIN = 120.4
 CASES_LINES = 9
 #: The result with the longest list of cases, and the five whose quotients are long.
-MOST_CASES = "T-154"
+MOST_CASES = "T-155"
 #: The results whose lists take `CASES_LINES` lines in the measure. Equally tall rows
-#: report the first in the table, which is T-101's since T-154's list fell to 44 values
+#: report the first in the table, which is T-101's since T-155's list fell to 44 values
 #: (2026-10-12, n = 176 left it).
 CASES_LINES_HELD_BY = ("T-101", MOST_CASES)
 LONG_QUOTIENTS = ("T-022", "T-024", "T-026", "T-033", "T-114")
@@ -280,7 +280,7 @@ def test_a_long_list_of_cases_wraps_in_its_measure(
     """With every row showing at 1440 and at 1280 pixels, where the table bleeds to
     1360 and 1200, the n column takes what the other seven columns' floors leave it,
     between its floor and its measure, which is the whole measure at both, and the
-    longest list, T-154's 44 values, takes nine lines in it, where a column as narrow as
+    longest list, T-155's 44 values, takes nine lines in it, where a column as narrow as
     one value would set them on many more. So the tallest row the list sets is those six lines,
     no taller than the table's tallest row, which another column sets. Where the table
     scrolls the column is at its floor and the list takes more lines. At no width is a
@@ -399,7 +399,7 @@ def test_a_cell_of_cases_holds_each_value_in_a_box_and_reads_as_the_register_doe
         values = boxes.findall(cell)
         assert " ".join(values) == html.escape(result.scope, quote=False)
         assert all(" " not in value for value in values)
-    # T-154's 44 values since 12 October, T-101's 39 from 6 October; T-056 and T-098 have
+    # T-155's 44 values since 12 October, T-101's 39 from 6 October; T-056 and T-098 have
     # 23 each.
     most = max(
         overview.results,

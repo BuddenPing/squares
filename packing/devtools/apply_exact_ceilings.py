@@ -674,7 +674,7 @@ def apply_case(n: int, text: str) -> str:
 
 def later_ceiling(n: int, front: str) -> bool:
     """Whether a later layer holds the verified upper lane below this import's rounded-up
-    side, as the regularized exact certificates do at their counts (T-154): that layer
+    side, as the regularized exact certificates do at their counts (T-155): that layer
     writes over this one and keeps this certificate's sentences as history, so this one
     leaves the record alone (`source_supersession.verified_lane_held_by_later_layer`)."""
     from devtools.source_supersession import (  # noqa: PLC0415

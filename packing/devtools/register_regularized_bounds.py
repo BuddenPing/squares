@@ -39,7 +39,7 @@ It is a new upper bound only where no larger count's verified upper bound is at 
 it; otherwise the result says that its bound follows by monotonicity and names the
 result that proves it (**A bound already implied**, below). A view of
 `devtools.regularize_grid_slack`, this project's port of Evan Daniel's coincidence
-placement, decided at row 3 is registered so, as a batch of its own, T-155 the first
+placement, decided at row 3 is registered so, as a batch of its own, T-156 the first
 (`GRID`): `select --batch grid-slack` reads the named counts' reports in the named runs,
 decides each view by the policy's table against the case record's bound
 (`regularize_grid_slack.decided`), and takes at each count the row-3 view with the least
@@ -56,8 +56,8 @@ one is. The batches are disjoint.
 leaves a packing in the same square, so a ceiling at the next count at or below a view's
 side already proves the view's bound. A grid-slack row records a ceiling at the view's
 side, its evidence and the results that hold it (`implied_by`), and the case record says
-the bound was not new: T-154's certificate at `n = 291`, at exactly the side T-155
-registers, proved `s(290)`'s bound from 12 October 2026, and T-155 is kept as the
+the bound was not new: T-155's certificate at `n = 291`, at exactly the side T-156
+registers, proved `s(290)`'s bound from 12 October 2026, and T-156 is kept as the
 certificate of 290's own packing at that side (the owner's decision of 13 October 2026,
 on jlevy/squares#587). `select` refuses a view whose side lies above the next count's
 ceiling, since the record would then carry a weaker ceiling than the register proves; such
@@ -148,7 +148,7 @@ PACKAGE_LINK = "../cases/regularized_bounds/README.md"
 FORMAT = "regularized-bounds-receipt-v1"
 TOOL = "python -m devtools.register_regularized_bounds"
 POLICY = "docs/project/policies/regularization-policy.md"
-RESULT = "T-154"
+RESULT = "T-155"
 EVIDENCE = "E-regularized-bounds-2026-10-12-exact-decision"
 SOURCE_KEY = "[Daniel regularizer 2026-10-11]"
 REGISTERED = "2026-10-12"
@@ -248,7 +248,7 @@ class Batch:
 
 FIRST_NAME = "evand"
 #: The views of Evan Daniel's regularizer from the full run of 11 and 12 October 2026 and
-#: its re-runs (T-154).
+#: its re-runs (T-155).
 FIRST = Batch(
     FIRST_NAME,
     EVAND_KIND,
@@ -261,11 +261,11 @@ FIRST = Batch(
     run_dates="11 and 12 October 2026",
 )
 #: The views of this project's grid-slack regularizer, its port of Evan Daniel's
-#: coincidence placement, from the runs of 13 October 2026 (T-155).
+#: coincidence placement, from the runs of 13 October 2026 (T-156).
 GRID = Batch(
     "grid-slack",
     GRID_KIND,
-    "T-155",
+    "T-156",
     "E-regularized-bounds-2026-10-13-grid-slack-exact-decision",
     "2026-10-13",
     "13 October 2026",
@@ -884,7 +884,7 @@ def select_grid(
     run_dirs: Sequence[Path], numbers: Sequence[int], batch: Batch = GRID
 ) -> tuple[dict[str, Any], Views]:
     """The named counts' least row-3 grid-slack views among the named runs, measured: a
-    grid-slack batch's receipt (T-155's the first), and the views `retain` writes. Nothing
+    grid-slack batch's receipt (T-156's the first), and the views `retain` writes. Nothing
     is written here, so a refused selection leaves the package as it was."""
     wanted = sorted(set(numbers))
     excluded = sorted(set(wanted) & batch.excluded)
@@ -2024,7 +2024,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--batch",
         choices=tuple(BATCH_NAMES),
         default=FIRST_NAME,
-        help="the batch a command acts on (default: the first, T-154)",
+        help="the batch a command acts on (default: the first, T-155)",
     )
     parser.add_argument(
         "--n",

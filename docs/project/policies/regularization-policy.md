@@ -288,21 +288,21 @@ ladder and before `run.rungs` existed has its rungs recorded from its run’s re
 `python -m devtools.regularize_evand rungs`, which writes them only where a report
 reproduces the drawn view byte for byte, never over rungs or a retry already recorded,
 and names the run that supplied them as `run.rungs_from`. A registered result’s own
-regularization (`by: project` in its `regularizations`, as `T-154`’s 59 are) names them
+regularization (`by: project` in its `regularizations`, as `T-155`’s 59 are) names them
 too, written by the same tool from the item’s `method` and `side`: the patches and the
 same-side re-solve.
-An item records no solve, and `T-154`’s selection kept none while its
+An item records no solve, and `T-155`’s selection kept none while its
 runs’ reports are not retained, so its items say in `modifications_unrecorded` that
 whether the solve climbed a retry rung is not recorded, rather than reading as
 *unmodified*. Where the layer draws that very solve, the item reads the rungs from the
 drawn entry instead and records nothing as unrecorded, so the register and the drawing
 read one solve one way: the result registers the drawing itself, and its registration
-receipt (`T-154`’s `selection.json`) names, at that count, a run whose receipt the
+receipt (`T-155`’s `selection.json`) names, at that count, a run whose receipt the
 entry’s run block records, with the entry’s output and exact side.
-At fourteen counts `T-154`’s certificate is the full run’s view the layer draws, which
+At fourteen counts `T-155`’s certificate is the full run’s view the layer draws, which
 ran no retry, so its item reads *unmodified* or names the same-side re-solve alone.
 At 87 the layer draws a later run’s view at the same side, which says nothing of the
-solve `T-154` registered, so its item still says the rungs are not recorded.
+solve `T-155` registered, so its item still says the rungs are not recorded.
 
 ## 8. Gates
 
@@ -314,11 +314,10 @@ So it runs on request with a receipt, and the gates hold the decisions it produc
 
 | Check | What it holds | Where it runs |
 | --- | --- | --- |
-| `regularized atlas views match their index` | The index against the manifest, the witnesses and the views, by digest; with the layer’s contract, also the generator, method, side relation, identity and review-record fields | Records tier, every pull request |
+| `regularized atlas views match their index` | The index against the manifest, the witnesses and the views, by digest; with the layer’s contract, also the generator, method, side relation, identity and review-record fields; every drawn view’s exact side against $s_W$ and against the case record’s $U$, decided exactly, with the views above $U$ named in `ABOVE_U` | Records tier, every pull request |
 | `regularized atlas drawings match their index` | Every drawing re-rendered from its retained view | Records tier, every pull request |
 | `results rungs are earned and the view agrees` | `devtools.check_results` on each register result’s `regularizations` items, and on `regularized_drawings` and every case record’s `regularization` note against the layer’s index | Records tier, every pull request |
-| `regularized atlas views re-derive exactly` | Every `regularize_axis_components/2` view re-derived byte for byte | Deferred: the `regularized-views` job, under its 450 s ceiling |
-| Re-decision of vendored-generator views | Every retained view decided again over $\mathbb{Q}$ on the maintained routes, its identity and shades re-measured and its digests held | Deferred, once its cost is measured inside a ceiling; selected per invocation while it is above one |
+| `regularized atlas views re-derive exactly` | Every `regularize_axis_components/2` view re-derived byte for byte; every other generator’s view decided again over $\mathbb{Q}$ on the maintained routes, its square count, identity and shades re-measured and its digests held | Deferred: the `regularized-views` job, whose 450 s ceiling bead think-uomm revisits |
 | The generator run | The views reproduced from the pinned code and inputs | On request only, with a receipt |
 
 ## 9. Owner Decisions
@@ -454,18 +453,18 @@ policy applies until there is one.
     (`by: project`, with the generator, its credit line and this project’s
     modifications, section 7), at which side relation (`same` or `bound`), which
     registered result holds the packing (`of`, or that none does), and the view’s path.
-    Where the drawn regularization is itself registered, as `T-154`’s are at fifteen
+    Where the drawn regularization is itself registered, as `T-155`’s are at fifteen
     drawn counts, the field names that result (`registered_in`) and the note says the
     exact side is registered in it; the drawing adds no further result.
-    `T-154` registers 59 exact sides: 26 are new and prove new upper bounds, and 33
+    `T-155` registers 59 exact sides: 26 are new and prove new upper bounds, and 33
     equal the sides of Evan Daniel’s earlier certificates (`T-101`), which the record
     had carried rounded up and which `T-101`’s replay already proves.
     At those 33, eight of them drawn, the item names `T-101` as `first_certified_in`,
     and the note says that the regularization is the Squares Project’s, that its exact
-    side is registered in `T-154`, and that the same side was first certified by Evan
+    side is registered in `T-155`, and that the same side was first certified by Evan
     Daniel’s certificate (`T-101`), so it proves no new bound.
     Where a result registers this project’s own regularization of a count that the atlas
-    does not draw, as `T-154` does at 43 counts, or draws by another method, as at 227,
+    does not draw, as `T-155` does at 43 counts, or draws by another method, as at 227,
     the field carries it too, after any drawing: in the register’s terms (`method`,
     `side`, `of`, `registered_in`) with the generator its method names, its credit line
     and its modifications, and the note credits the Squares Project and names the
@@ -477,16 +476,16 @@ policy applies until there is one.
     `devtools.regularized_drawings` writes it from the layer’s index, its check in the
     records tier holds every case record to the index, and the site’s case page prints
     its note. An exactly verified side below $U$ is always registered as a result however
-    it was made (row 3, question 3), as `T-154` registered the exact views below the
+    it was made (row 3, question 3), as `T-155` registered the exact views below the
     bound. It is a new upper bound only where no earlier certificate already stated that
     side exactly and no larger count’s verified upper bound is at or below it, since
     $s(n) \le s(m)$ for $m > n$. Otherwise the result says that its bound is not new and
-    names the result that already proves it: at the 33 of `T-154`’s counts where Evan
+    names the result that already proves it: at the 33 of `T-155`’s counts where Evan
     Daniel’s certificate stated the side first, the item names `T-101` as
-    `first_certified_in`, and `T-155`, which registered the grid-slack view of $n = 290$
+    `first_certified_in`, and `T-156`, which registered the grid-slack view of $n = 290$
     on 13 October 2026 at the witness’s own side `2.4e-15` below $U$, says that its
-    bound follows by monotonicity from `T-154`’s certificate at $n = 291$, at the same
-    side. The owner decided on 13 October 2026 to keep `T-155`, to say so, and to keep
+    bound follows by monotonicity from `T-155`’s certificate at $n = 291$, at the same
+    side. The owner decided on 13 October 2026 to keep `T-156`, to say so, and to keep
     the grid-slack view as the certificate of $n = 290$’s own packing at that side
     (jlevy/squares#587); that view draws no change, so the atlas draws nothing new
     there.
@@ -539,7 +538,7 @@ recorded where it is implemented, and reversing one is a change to that layer.
    note.
 7. **Registering exact views below the bound** (question 3’s answer, carried out in
    #549): the row 3 views outside the counts #518 and #553 re-housed are registered as
-   one batch result, `T-154`, with the case records’ exact forms moved to the registered
+   one batch result, `T-155`, with the case records’ exact forms moved to the registered
    sides and their printed values kept, so no citation weakens.
    Where a registered side is exactly the side of an earlier exact certificate, as it is
    of Evan Daniel’s (T-101) at 33 counts, that bound was already published, and the

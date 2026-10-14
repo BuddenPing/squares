@@ -117,7 +117,7 @@ $defs:
       the side relation, the registered result that holds the drawn packing (`of`, null
       where none does), the result that registers the drawn regularization itself where
       one does (`registered_in`) and the view's path. Last comes this project's
-      regularization that a result registers but the layer does not draw, as T-154's are at
+      regularization that a result registers but the layer does not draw, as T-155's are at
       44 counts, in the register's terms like a source's (`method`, `side`, `of`,
       `registered_in`) with the generator its method names, its credit line and its
       `modifications`, and `modifications_unrecorded` for what the item cannot establish.

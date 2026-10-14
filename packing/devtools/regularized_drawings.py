@@ -23,16 +23,20 @@ packing the witness retains: `of` is the registered result whose `attribution` n
 witness's source and whose scope holds the count. A view at the verified upper bound
 (`bound`, written `solved` in the register's terms) redraws the packing solved to that
 bound: `of` is the result the case's verified upper bound rests on
-(`build_bound_citations.results_carrying` on the bound's own evidence). A `same` view whose
-side is also exactly the verified upper bound, where no registered result attributes the
-witness's source, redraws the packing at that bound in the same way: the result the bound
-rests on holds it (T-154 certified 26 witnesses' own sides exactly from views that are
-drawn here). Where the bound rests on several results, the one whose `regularizations`
-registered a view of the count at that bound answers: at 33 counts T-154's view lies
-exactly at the side of Evan Daniel's earlier certificate, and the case cites both (T-101,
-T-154). Exactly one result must answer; where none does, or more than one, the count
-is listed under `unregistered`
-with the reason, and its record stays in the layer's index alone. The register holds a
+(`build_bound_citations.results_carrying` on the bound's own evidence), and only while the
+view's side is exactly that bound: a later result that lowers `U` leaves the view at a
+side no result holds, and the count is listed unregistered rather than credited to the
+new holder (#548 review B1). A `same` view whose side is also exactly the verified upper
+bound, where no registered result attributes the witness's source, redraws the packing
+at that bound in the same way: the result the bound rests on holds it (T-155 certified
+26 witnesses' own sides exactly from views that are drawn here). Where the bound rests on
+several results, the one whose `regularizations` registered a view of the count at that
+bound answers: at 33 counts T-155's view lies exactly at the side of Evan Daniel's
+earlier certificate, and the case cites both (T-101, T-155). An axis view is `same` where
+its regularization is, and a view at neither side is not a drawing frame (row 4).
+Exactly one result must answer; where none does, or more than one, the count is listed
+under `unregistered` with the reason, and its record stays in the layer's index alone.
+The register holds a
 result by others only when the record acts on it (`epistemics.md`, Results by Others), so a
 packing from before this project began that no replay here ever registered has no result to
 name, and inventing one is not this tool's to do.
@@ -42,20 +46,20 @@ a result. A drawing changes no side, frontier value, evidence tier or credit (th
 section 1), so these items are not a register result and carry no rung: they are this
 project's regularizations of results the register already holds. A view whose side lies
 below the verified upper bound is a result first (row 3) and is registered by its own
-entry's `regularizations`, as T-154 registered 59 exact sides; where such a view is also
+entry's `regularizations`, as T-155 registered 59 exact sides; where such a view is also
 drawn, at fifteen counts, its case note says that its exact side is registered as that
 result (`registering_result`). It proves a new bound unless an earlier certificate
-already stated that side, which the item then names (`first_certified_in`): T-154's side
+already stated that side, which the item then names (`first_certified_in`): T-155's side
 is new at 26 counts, and at the other 33 it is the side of Evan Daniel's certificate
 (T-101), which the record had carried rounded up, so there the note says that the side
-is registered in T-154, that his certificate first certified it, naming T-101, and that
+is registered in T-155, that his certificate first certified it, naming T-101, and that
 it proves no new bound. `first_certified_problems` holds the field to the case records,
 whose verified upper bound rests on both results exactly where an item names one. Nor is
 the bound new where a larger count's verified upper bound already proved it when the
 side was registered, which the result's registration receipt records at the count
-(`implied_by`, read by `implied_bounds`): T-155's side at n = 290 is that of T-154's
+(`implied_by`, read by `implied_bounds`): T-156's side at n = 290 is that of T-155's
 certificate at n = 291, and `s(290) ≤ s(291)`, so its note says that the side is
-registered in T-155, that the certificate registered at n = 291 (T-154) already proved
+registered in T-156, that the certificate registered at n = 291 (T-155) already proved
 the bound by monotonicity, and that it proves no new bound (the policy's section 9,
 question 16).
 
@@ -71,7 +75,7 @@ retry rungs the kept solve climbed (`run.rungs`, or before the retry ladder
 view at the witness's side was brought to it by, and for a grid-slack view the port
 itself, which is this project's code and not his. An empty list says his regularizer ran
 unmodified; a view of this project's axis tool has no such field. A registered result's
-own regularization (`by: project`, as T-154's 59 are) names them in its item too, read
+own regularization (`by: project`, as T-155's 59 are) names them in its item too, read
 from its `method` and `side` the same way (`registered_modifications`) and written in
 place after its `method`; an item records no solve, so where his regularizer made the view
 it also says that whether the solve climbed a retry rung is not recorded
@@ -79,12 +83,12 @@ it also says that whether the solve climbed a retry rung is not recorded
 that very solve, the item reads its rungs from the drawn entry instead, as the drawing
 does (`recorded_solves`): the result registers the drawing itself, and its registration
 receipt names, at the count, a run whose receipt the entry's run block records, the
-entry's output and its exact side. T-154's certificates are the full run's views at
+entry's output and its exact side. T-155's certificates are the full run's views at
 fourteen drawn counts, which the index records; at 87 the layer draws a later run's
-view at the same side, which records nothing of T-154's solve.
+view at the same side, which records nothing of T-155's solve.
 
 **The case records.** Each case record whose count the layer draws, whose count a
-registered result holds this project's own regularization of (as T-154's 59 are), or
+registered result holds this project's own regularization of (as T-155's 59 are), or
 whose house is itself a regularization its source published (a register result's
 `regularizations` item whose `by` is the bibliography key of the source the witness
 names, as `T-146`'s are), carries a generated `regularization` field in its front
@@ -97,7 +101,7 @@ drawn regularization itself where one does (`registered_in`), the earlier result
 certificate first stated that side where its item names one (`first_certified_in`) and
 the view's path. Last comes this project's regularization a result registers where the
 layer does not draw it (`registered_case_items`), in the register's terms like a
-source's, with its generator, credit line and modifications: T-154's at 43 undrawn
+source's, with its generator, credit line and modifications: T-155's at 43 undrawn
 counts, and at 227, where the grid-slack view is drawn instead. A record the layer does
 not draw, whose count no result holds a regularization of by this project, and whose
 house no source regularized carries no such field.
@@ -194,7 +198,7 @@ UNRECORDED_RUNGS = "retry rungs"
 GRID_THROUGH = ", through devtools.regularize_grid_slack"
 #: A registered regularization's field naming the earlier registered result whose
 #: certificate first stated its exact side (`results.schema.yaml`): there the item
-#: registers that side exactly and proves no new bound, as T-154's do at the 33 counts
+#: registers that side exactly and proves no new bound, as T-155's do at the 33 counts
 #: where its side is that of Evan Daniel's certificate (T-101).
 FIRST_CERTIFIED = "first_certified_in"
 #: The format of the receipt a registration of regularized views keeps among its
@@ -263,9 +267,12 @@ class Resolved:
 
 
 def relation(entry: Mapping[str, Any]) -> str:
-    """A drawn entry's side relation: an axis view is always at the witness's side."""
+    """A drawn entry's side relation: the index's, or, for an axis view, which records
+    none, `same` where its regularization is at the witness's side and `solved` else."""
     side = entry.get("side") or {}
-    return str(side.get("relation") or "same")
+    if side.get("relation"):
+        return str(side["relation"])
+    return "same" if (entry.get("regularization") or {}).get("side") == "same" else "solved"
 
 
 def bound_side(bound: Mapping[str, Any]) -> Fraction | None:
@@ -298,7 +305,7 @@ def registering_holders(
     """The results a verified upper bound rests on, narrowed, where several prove it, to
     those that registered a regularized view of `n` at that bound (a `regularizations` item
     for `n` on `side`). At 33 counts the side of Evan Daniel's certificate (T-101) is also
-    the side of a registered regularized view (T-154), and the case cites both: the view
+    the side of a registered regularized view (T-155), and the case cites both: the view
     drawn there is the registering result's. Where none or several register one, the
     holders stand as they were, and the count is listed unregistered."""
     if len(holders) < 2:
@@ -315,6 +322,26 @@ def registering_holders(
     return registering if len(registering) == 1 else list(holders)
 
 
+def _bound_result(
+    n: int,
+    bound_holders: Sequence[str],
+    results: Sequence[Mapping[str, Any]],
+    *,
+    side_at_bound: bool,
+) -> Resolved:
+    """A `bound` view's result: the one its bound rests on, narrowed to the one that
+    registered a view of `n` there, and only while the view's side is that bound."""
+    holders = registering_holders(n, bound_holders, results, side="solved")
+    if side_at_bound and len(holders) == 1:
+        return Resolved(holders[0], "holds the verified upper bound the view is at")
+    return Resolved(
+        None,
+        f"the verified upper bound rests on {list(holders)}"
+        if side_at_bound
+        else "the view's side is no longer the verified upper bound",
+    )
+
+
 def packing_result(
     entry: Mapping[str, Any],
     results: Sequence[Mapping[str, Any]],
@@ -324,13 +351,12 @@ def packing_result(
     side_at_bound: bool = False,
 ) -> Resolved:
     """The registered result whose packing the drawn entry redraws (see the module).
-    `side_at_bound` says a `same` view's side is also exactly the verified upper bound."""
+    `side_at_bound` says the view's side is exactly the case's verified upper bound."""
     n = int(entry["n"])
+    if relation(entry) == "solved":
+        return Resolved(None, "the view is at neither the witness's side nor the bound (row 4)")
     if relation(entry) == "bound":
-        bound_holders = registering_holders(n, bound_holders, results, side="solved")
-        if len(bound_holders) == 1:
-            return Resolved(bound_holders[0], "holds the verified upper bound the view is at")
-        return Resolved(None, f"the verified upper bound rests on {list(bound_holders)}")
+        return _bound_result(n, bound_holders, results, side_at_bound=side_at_bound)
     if side_at_bound:
         bound_holders = registering_holders(n, bound_holders, results, side="same")
     holders = [
@@ -530,7 +556,7 @@ def registration_receipt(
     result: Mapping[str, Any], repo: Path = REPO
 ) -> tuple[dict[int, Mapping[str, Any]], dict[str, Mapping[str, Any]]]:
     """The receipt among a result's `artifacts` that names the run and output each of its
-    registered certificates came from (`REGISTRATION_RECEIPT`, T-154's `selection.json`):
+    registered certificates came from (`REGISTRATION_RECEIPT`, T-155's `selection.json`):
     its rows by count and its runs by name; both empty where the result keeps none."""
     for artifact in result.get("artifacts") or []:
         path = repo / str(artifact)
@@ -545,15 +571,23 @@ def registration_receipt(
     return {}, {}
 
 
-def same_receipt(block: Mapping[str, Any], run: Mapping[str, Any]) -> bool:
+def same_receipt(
+    block: Mapping[str, Any],
+    run: Mapping[str, Any],
+    blocks: Mapping[str, Mapping[str, Any]] | None = None,
+) -> bool:
     """Whether a run block of the layer's index records the receipt of a registration
     receipt's run: the same generator, the same parameters and the same cost, each as the
     run's own receipt recorded it. `regularize_evand reclassify` leaves a run's
-    parameters and cost as they were, so a copy of the run decided again answers too: its
-    views are that run's solves."""
+    parameters as they were, so a copy of the run decided again answers too: its views are
+    that run's solves. The index records the copy's cost once, on the run it was
+    reclassified from (`reclassified_from`, #548 review B5), so the copy's cost is read
+    from that run's block in `blocks`."""
     parameters = block.get("parameters") or {}
     theirs = run.get("parameters") or {}
-    cost = block.get("cost") or {}
+    source = block.get("reclassified_from")
+    costed = (blocks or {}).get(str(source)) if source else block
+    cost = (costed or {}).get("cost") or {}
     spent = run.get("cost") or {}
     return (
         str(block.get("generator")) == str((run.get("generator") or {}).get("name"))
@@ -574,9 +608,9 @@ def recorded_solves(
     registered where the result registers the drawing itself (`registered_record`), and
     the result's registration receipt names, at that count, a run whose receipt the
     entry's run block records (`same_receipt`), the entry's output and the entry's exact
-    side. T-154's certificates are the full run's views at fourteen drawn counts, and the
+    side. T-155's certificates are the full run's views at fourteen drawn counts, and the
     index records those solves; at 87 the layer draws a later run's view at the same side,
-    which says nothing of the solve T-154 registered."""
+    which says nothing of the solve T-155 registered."""
     blocks = {str(block["id"]): block for block in runs}
     receipts: dict[str, tuple[dict[int, Mapping[str, Any]], dict[str, Mapping[str, Any]]]] = {}
     found: dict[tuple[str, int], Mapping[str, Any]] = {}
@@ -601,7 +635,7 @@ def recorded_solves(
         if (
             block is not None
             and receipt_run is not None
-            and same_receipt(block, receipt_run)
+            and same_receipt(block, receipt_run, blocks)
             and str(run.get("output")) == str(row.get("output"))
             and Fraction(str(view)) == Fraction(str(row.get("side")))
         ):
@@ -714,7 +748,7 @@ def drawn_counts(index: Mapping[str, Any], repo: Path = REPO) -> list[Drawn]:
         exact = False
         if relation(entry) in {"bound", "same"}:
             bound = load_case(n).get("verified_upper_bound") or {}
-            exact = relation(entry) == "same" and at_bound(entry, bound)
+            exact = at_bound(entry, bound)
             if relation(entry) == "bound" or exact:
                 own = own_evidence(bound.get("evidence") or [], register)
                 holders = results_carrying(n, own, results)
@@ -792,7 +826,7 @@ def registered_record(
     """The result that registers the drawn regularization itself as an upper bound, with
     its item: the drawn packing's own result (`of`), where its `regularizations` hold a
     `by: project` item at the count by the drawn view's method and at its side relation.
-    T-154 does so at fifteen drawn counts, whose exact sides it registered (at eight of
+    T-155 does so at fifteen drawn counts, whose exact sides it registered (at eight of
     them the side Evan Daniel's certificate, T-101, first stated); elsewhere a drawing is
     a pure regularization, proving no new bound."""
     of = count.resolved.of
@@ -862,7 +896,7 @@ def registered_case_items(
     the register's terms, like a source's (`method`, `side`, `of`, `registered_in`),
     with the generator its method names, its credit line and its modifications, and the
     earlier result whose certificate first stated its exact side where the item names one
-    (`FIRST_CERTIFIED`). T-154 holds 59; at the fifteen in `drawn`, (result, count) pairs
+    (`FIRST_CERTIFIED`). T-155 holds 59; at the fifteen in `drawn`, (result, count) pairs
     whose drawing is that regularization itself, the drawn item names the result
     instead."""
     found: dict[int, dict[str, Any]] = {}
@@ -982,7 +1016,7 @@ def implied_bounds(
     """The registered regularizations whose bound a larger count's verified upper bound
     already proved when they were registered, by (result, count), each with that ceiling
     as the result's registration receipt records it at the count (`implied_by`, which
-    `register_regularized_bounds.implied_by` writes): T-155's at n = 290, T-154's
+    `register_regularized_bounds.implied_by` writes): T-156's at n = 290, T-155's
     certificate at n = 291. Such a result says that its bound follows by monotonicity
     (the policy's section 9, question 16), and so does the case note
     (`registered_words`)."""
@@ -1325,7 +1359,7 @@ def first_certified_problems(register: Register) -> list[str]:
     record shows one (`FIRST_CERTIFIED`). Where the item is the case's verified upper
     bound, the bound rests on the registering result; where an earlier registered result
     proves the same bound beside it, its certificate stated that side first, and the item
-    must name it, as T-154's do at the 33 counts whose bound T-101's replay of Evan
+    must name it, as T-155's do at the 33 counts whose bound T-101's replay of Evan
     Daniel's certificates also proves. An item that names a result the case's bound does
     not rest on beside the registering one, or names one where the bound rests on the
     registering result alone, is listed."""

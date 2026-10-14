@@ -31,7 +31,7 @@ properties:
       rung. A regularization whose side lies below the verified upper bound is a result
       first and is listed by that result's `regularizations`; it proves a new bound
       unless an earlier certificate already stated that side, which the item names as
-      `first_certified_in` (T-154's 33 counts at the side of Evan Daniel's certificates,
+      `first_certified_in` (T-155's 33 counts at the side of Evan Daniel's certificates,
       T-101). Counts the layer draws whose packing no registered result holds
       are `unregistered`, each with the reason, and their record stays in the layer's
       index alone. Where Evan Daniel's regularizer or the grid-slack port of his placement
@@ -410,7 +410,7 @@ $defs:
           nothing unrecorded. `devtools.regularized_drawings` writes both and holds them
           there. `first_certified_in` names the earlier registered result whose
           certificate first stated this item's exact side, where one did: the item then
-          registers that side exactly and proves no new bound, as T-154's do at the 33
+          registers that side exactly and proves no new bound, as T-155's do at the 33
           counts where its side is that of Evan Daniel's certificate (T-101); at its
           other 26 the side is new. `devtools.regularized_drawings` holds it to the case
           record, whose verified upper bound then rests on both results.

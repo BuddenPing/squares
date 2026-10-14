@@ -92,11 +92,13 @@ DECLARED_CONSUMER_TREES = {
 DECLARED_CONSUMERS = {
     "packing/devtools/regularize_evand.py": (
         "the regularization driver reads each case's verified bound as U, the ceiling a "
-        "regularized view's exact side is compared with (policy rows 3 and 4): a side below "
-        "it is a register-result candidate, a side exactly at it is a drawing frame (`bound`), "
-        "and a side above it is not; `reclassify --refresh-bounds` copies it into a finished "
-        "run's reports again from the case record before deciding. It never reads the field "
-        "as s(n) or as the witness's side, which it takes from the witness"
+        "regularized view's exact side is compared with (policy rows 3 and 4), held exactly: "
+        "a rational U as itself, a closed form as a root of its minimal polynomial, and a form "
+        "it cannot read as deciding nothing. A side below it is a register-result candidate, "
+        "a side exactly at a rational U is a drawing frame (`bound`), and a side above it is "
+        "not; `reclassify --refresh-bounds` copies it into a finished run's reports again "
+        "from the case record before deciding. It never reads the field as s(n) or as the "
+        "witness's side, which it takes from the witness"
     ),
     "packing/tests/test_regularize_evand.py": (
         "a synthetic report for the driver's tests carries U as the driver writes it, so the "
@@ -104,15 +106,15 @@ DECLARED_CONSUMERS = {
         "never s(n)"
     ),
     "packing/devtools/register_regularized_bounds.py": (
-        "writes the ceiling an exact regularized view proves at 59 counts (T-154) and at "
-        "n = 290 (T-155): the view's "
+        "writes the ceiling an exact regularized view proves at 59 counts (T-155) and at "
+        "n = 290 (T-156): the view's "
         "exact side as the exact form, below the ceiling it replaces, and the decimal the "
         "record printed before as the value, an upper display of it; it keeps a blocker and a "
         "ceiling section where that value and the report disagree at the printed precision, "
         "and reads the field as a ceiling and never as s(n)"
     ),
     "packing/tests/test_register_regularized_bounds.py": (
-        "holds the case records' ceilings to the registered views' exact sides (T-154, T-155) "
+        "holds the case records' ceilings to the registered views' exact sides (T-155, T-156) "
         "and "
         "to the earlier ceilings they replace; a ceiling throughout, never s(n)"
     ),
@@ -123,8 +125,9 @@ DECLARED_CONSUMERS = {
     ),
     "packing/devtools/regularize_grid_slack.py": (
         "the grid-slack generator re-solves a view at the case's verified bound U where the "
-        "witness's own side is not a frame, and records the view's side minus U in its index "
-        "entry; U is the ceiling the view's side is held to, never s(n)"
+        "witness's own side is not a frame, and only where U is rational exactly "
+        "(`rational_bound`): a closed form's evaluation is not U; U is the ceiling the "
+        "view's side is held to, never s(n)"
     ),
     "packing/devtools/regularize_select.py": (
         "the selection among finished regularization runs reads each case's verified bound "
@@ -150,8 +153,16 @@ DECLARED_CONSUMERS = {
         "states a difference to a ceiling, never s(n)"
     ),
     "packing/tests/test_regularize_axis_components.py": (
-        "a synthetic index entry for the axis tool's tests carries the v2 contract's "
-        "`view_minus_verified_upper_bound` as null; the test reads no value from it"
+        "synthetic index entries and case records for the axis tool's tests carry the v2 "
+        "contract's `view_minus_verified_upper_bound` and a case's verified bound U, so the "
+        "test can check the layer's check holds a drawn view's side to U; a ceiling there, "
+        "never s(n)"
+    ),
+    "packing/devtools/regularize_axis_components.py": (
+        "the regularized layer's check reads each drawn count's verified bound U from its "
+        "case record and decides the view's exact side against it: none below U, a `bound` "
+        "view at it, and the views above it named; U is the ceiling a drawing frame is held "
+        "to, never s(n) (#548 review B1)"
     ),
     "packing/tests/test_regularize_gallery.py": (
         "a synthetic run report for the gallery's tests carries U as the driver writes it; "
@@ -636,10 +647,10 @@ def trailing_ceilings(loaded_cases: dict[int, dict]) -> dict[int, tuple[Decimal,
 def test_no_verified_ceiling_lies_above_the_next_counts() -> None:
     """`s(n) <= s(n + 1)`, since deleting a square from a packing leaves a packing in the
     same square, so a ceiling above the next count's is weaker than the record already
-    proves. From 12 October 2026, when T-154 certified n = 291 at the side T-155 later
-    registered, n = 290's ceiling lay 2.4e-15 above n = 291's until T-155 moved it (PR
+    proves. From 12 October 2026, when T-155 certified n = 291 at the side T-156 later
+    registered, n = 290's ceiling lay 2.4e-15 above n = 291's until T-156 moved it (PR
     #587, review B1). A count whose ceiling the next one implies is registered by
-    monotonicity, as T-002 and T-155 are, and this test finds the next such gap."""
+    monotonicity, as T-002 and T-156 are, and this test finds the next such gap."""
     loaded = cases()
     ceilings = {
         n: apply_exact_ceilings.bound_value(case["verified_upper_bound"])

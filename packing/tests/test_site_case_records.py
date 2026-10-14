@@ -92,7 +92,7 @@ def test_a_case_page_prints_its_regularization_note_and_nothing_without_one() ->
     registered = regularization(cases[53])
     assert '<span class="site-card-label">Regularization</span>' in registered
     assert "Regularized by the Squares Project" in registered
-    assert "not drawn here; its exact side is registered as T-154, the upper bound" in (
+    assert "not drawn here; its exact side is registered as T-155, the upper bound" in (
         registered
     )
 
@@ -100,7 +100,7 @@ def test_a_case_page_prints_its_regularization_note_and_nothing_without_one() ->
     # claims no new bound (PR #585, review B1).
     earlier = regularization(cases[28])
     assert "Regularized by the Squares Project" in earlier
-    assert "registered in T-154, and the same side was first certified by Evan Daniel" in (
+    assert "registered in T-155, and the same side was first certified by Evan Daniel" in (
         earlier
     )
     assert "(T-101), so it proves no new bound" in earlier

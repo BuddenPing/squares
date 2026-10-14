@@ -1,13 +1,13 @@
 # ruff: noqa: RUF001 -- these tests read case-record prose, whose typography uses curly
 # apostrophes, as the layer that writes it does.
-"""The regularized views registered as verified upper bounds (T-154, T-155).
+"""The regularized views registered as verified upper bounds (T-155, T-156).
 
 `devtools.register_regularized_bounds` retains each view whose exact side lies below its
 case's verified upper bound, decides it on both maintained exact routes, makes three
 controls of it, and writes the case records' verified upper lane. These tests hold the
 committed receipts, the retained views and the case records to each other, the layer to
 its own output, and the controls' construction to the outcomes it promises. The first
-batch (T-154) is Evan Daniel's regularizer's views; the second (T-155) is the grid-slack
+batch (T-155) is Evan Daniel's regularizer's views; the second (T-156) is the grid-slack
 view of n = 290, held to the same receipts in its own words.
 """
 
@@ -230,10 +230,10 @@ def test_prose_calls_a_side_exact_only_where_its_decimal_is_the_side() -> None:
             assert not re.search(rf"{shown}\$?, exactly", text), n
             assert not re.search(rf"exact side, {shown}", text), n
             assert not re.search(
-                rf"{shown}\$?, the verified upper bound \(T-154\), the exact", text
+                rf"{shown}\$?, the verified upper bound \(T-155\), the exact", text
             ), n
             assert f"{row['side_text']}$ (rounded up at 36 places)" in text, n
-            assert "the verified upper bound (T-154) rounded up at 36 places" in text, n
+            assert "the verified upper bound (T-155) rounded up at 36 places" in text, n
         else:
             assert "rounded up at 36 places" not in text, n
             if not row["agrees_with_report"]:
@@ -367,7 +367,7 @@ def test_the_controls_are_151_distinct_mutants() -> None:
 
 
 # --------------------------------------------------------------------------------------
-# The second batch: the grid-slack view of n = 290 (T-155)
+# The second batch: the grid-slack view of n = 290 (T-156)
 # --------------------------------------------------------------------------------------
 
 
@@ -409,10 +409,10 @@ def test_the_second_batchs_record_names_its_result_and_its_generator() -> None:
     text = _flat(290)
     assert registered.GRID.dated in text
     assert registered.FIRST.dated not in text
-    assert "the verified upper bound (T-155)" in text
-    # T-154 is named only where the record says its n = 291 certificate implied the bound:
+    assert "the verified upper bound (T-156)" in text
+    # T-155 is named only where the record says its n = 291 certificate implied the bound:
     # the dated paragraph, the section and the regularization note (review C1).
-    assert text.count("T-154") == 3
+    assert text.count("T-155") == 3
     assert "grid-slack regularizer" in text
     assert "the verified upper bound from 6 to 13 October 2026 (T-101)" in text
     assert f"]({registered.GRID.link})" in text
@@ -431,7 +431,7 @@ def test_the_second_batchs_controls_reached_their_outcomes() -> None:
 
 
 def test_the_grid_batch_refuses_a_count_the_first_batch_registers(tmp_path: Path) -> None:
-    with pytest.raises(registered.RegistrationError, match="registered by T-154"):
+    with pytest.raises(registered.RegistrationError, match="registered by T-155"):
         registered.select_grid([tmp_path], [291])
     with pytest.raises(registered.RegistrationError, match="held"):
         registered.select_grid([tmp_path], [17])
@@ -439,9 +439,9 @@ def test_the_grid_batch_refuses_a_count_the_first_batch_registers(tmp_path: Path
         registered.select_grid([tmp_path], [290])
 
 
-def test_n290s_bound_already_followed_from_t154s_certificate_at_n291() -> None:
-    """`s(290) ≤ s(291)`, and T-154 certified n = 291 at exactly the side T-155 registers,
-    so the bound was not new; the owner kept T-155 as the certificate of 290's own packing
+def test_n290s_bound_already_followed_from_t155s_certificate_at_n291() -> None:
+    """`s(290) ≤ s(291)`, and T-155 certified n = 291 at exactly the side T-156 registers,
+    so the bound was not new; the owner kept T-156 as the certificate of 290's own packing
     and the record says both (PR #587, review B1)."""
     row = registered.committed(registered.GRID)[290]
     side = Fraction(row["side"])
@@ -449,7 +449,7 @@ def test_n290s_bound_already_followed_from_t154s_certificate_at_n291() -> None:
         "n": 291,
         "side": row["side"],
         "evidence": [registered.EVIDENCE],
-        "results": ["T-154"],
+        "results": ["T-155"],
     }
     assert row["implied_by"] == implied
     assert registered.implied_by(290, side) == implied
@@ -457,16 +457,16 @@ def test_n290s_bound_already_followed_from_t154s_certificate_at_n291() -> None:
     assert Fraction(registered.committed()[291]["side"]) == side
     text = _flat(290)
     assert (
-        "The bound was not new: the certificate registered at $n = 291$ (T-154), at the "
+        "The bound was not new: the certificate registered at $n = 291$ (T-155), at the "
         "same side, already proved it by monotonicity; this one certifies this count’s own "
         "packing."
     ) in text
     assert "and $s(290) \\le s(291)$, since deleting a square from a packing of 291" in text
     # The first batch's rows record no implication, and their records say none.
     assert not any("implied_by" in each for each in registered.committed().values())
-    # T-155 cites the evidence of the ceiling that implies its bound, as T-002 and T-016
+    # T-156 cites the evidence of the ceiling that implies its bound, as T-002 and T-016
     # cite their parents', so its derived route is in the register (review C2).
-    assert registered.results_holding(290, implied["evidence"]) == ["T-155"]
+    assert registered.results_holding(290, implied["evidence"]) == ["T-156"]
 
 
 def test_a_second_grid_slack_batch_is_written_in_grid_slack_words(tmp_path: Path) -> None:
@@ -495,7 +495,7 @@ def test_a_second_grid_slack_batch_is_written_in_grid_slack_words(tmp_path: Path
     assert "regularization pass of" not in written
     assert later.command("select").endswith("select --batch grid-slack-2")
     # Its select refuses a count another batch registers, naming that batch's result.
-    with pytest.raises(registered.RegistrationError, match="registered by T-155"):
+    with pytest.raises(registered.RegistrationError, match="registered by T-156"):
         registered.select_grid([tmp_path], [290], later)
 
 
@@ -726,7 +726,7 @@ def test_problems_names_a_count_both_batches_register(monkeypatch: pytest.Monkey
         return rows
 
     monkeypatch.setattr(registered, "committed", overlapping)
-    assert "T-155 and T-154 both register [291]" in registered.problems(registered.GRID)
+    assert "T-156 and T-155 both register [291]" in registered.problems(registered.GRID)
     assert registered.batch_of(291) == registered.FIRST
 
 
@@ -780,7 +780,7 @@ def test_the_grid_batch_refuses_a_view_above_a_larger_counts_ceiling(
             re.escape(
                 f"n=290: the record already proves s(290) ≤ {registered.side_text(below)}"
             )
-            + re.escape(" by monotonicity from T-154; register the count by monotonicity")
+            + re.escape(" by monotonicity from T-155; register the count by monotonicity")
         ),
     ):
         registered.select_grid([run], [290])

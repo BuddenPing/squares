@@ -13,9 +13,11 @@ scratch tree of three records: one regularized, one unchanged and one refused.
 
 from __future__ import annotations
 
+import dataclasses
 import gzip
 import hashlib
 import json
+from collections.abc import Callable
 from fractions import Fraction
 from pathlib import Path
 from typing import Any
@@ -23,6 +25,7 @@ from typing import Any
 import pytest
 
 from devtools import atlas_orientation
+from devtools import regularize_axis_components as axis
 from devtools.atlas_orientation import orient_atlas_witness, reflect_y_axis
 from devtools.regularize_axis_components import (
     ALGORITHM,
@@ -42,6 +45,8 @@ from devtools.regularize_axis_components import (
     axis_square,
     centre,
     check_atlas,
+    costed_once,
+    decide_drawn_view,
     exact_frame,
     house_count_of,
     house_partners,
@@ -50,6 +55,7 @@ from devtools.regularize_axis_components import (
     main,
     promotion_dilations,
     regularize,
+    repeated_costs,
     slide_limit,
     stage_contacts,
     stage_count_of,
@@ -788,3 +794,221 @@ def test_an_oriented_atlas_view_derives_in_the_ancestor_pose_then_rechecks_the_i
     assert image["certificate"]["geometry_transform"]["parent"]["exact_certificate"] == (
         layout.relative(parent)
     )
+
+
+def edit_drawn(
+    layout: AtlasLayout, n: int, change: Callable[[dict[str, Any], dict[str, Any]], None]
+) -> dict[str, Any]:
+    """Apply `change(entry, view)` to a drawn count's index entry and view together, the
+    view re-gzipped deterministically and its digest updated: an edit the cheap check
+    reads as consistent."""
+    index = json.loads(layout.index.read_text())
+    entry = next(record for record in index["entries"] if record["n"] == n)
+    document = load_yaml(gzip.decompress(layout.view(n).read_bytes()).decode())
+    change(entry, document["witness"])
+    text = witness_document(document["witness"], schema=document["softschema"]["schema"])
+    layout.view(n).write_bytes(gzip.compress(text.encode(), mtime=0))
+    entry["view"]["sha256"] = hashlib.sha256(text.encode()).hexdigest()
+    layout.index.write_text(json.dumps(index), encoding="utf-8")
+    return entry
+
+
+def test_the_deep_re_decision_re_measures_the_identity_and_the_count(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """#548 review B3: the register publishes a drawn view's identity as measured, so the
+    re-decision measures it again against the witness, and counts the squares."""
+    monkeypatch.setenv("PACK_JOBS", "1")
+    layout = scratch_atlas(tmp_path)
+    assert main(["--update-atlas"], layout=layout) == 0
+    drawn_by_another_generator(layout, 4)
+    retained = (layout.index.read_text(), layout.view(4).read_bytes())
+
+    def entry() -> dict[str, Any]:
+        index = json.loads(layout.index.read_text())
+        return next(record for record in index["entries"] if record["n"] == 4)
+
+    assert decide_drawn_view(entry(), layout)[1] == []
+
+    # "Moved 0", written into the entry and the view's certificate together: the cheap
+    # check reads the two as consistent, and only measuring again refuses it.
+    def unmoved(record: dict[str, Any], view: dict[str, Any]) -> None:
+        for item in (record["regularization"], view["certificate"]["regularization"]):
+            item["identity"].update(moved=0, max_move=1e-9, max_turn_deg=0.0)
+
+    edit_drawn(layout, 4, unmoved)
+    assert check_atlas(layout) == []
+    (problem,) = decide_drawn_view(entry(), layout)[1]
+    assert problem.startswith(
+        "n=4: the drawn view's identity measures {'one_to_one': True, 'moved': 3"
+    )
+    assert main(["--verify-atlas"], layout=layout) == 1
+
+    # A view one square short is still a valid packing on both routes.
+    layout.index.write_text(retained[0], encoding="utf-8")
+    layout.view(4).write_bytes(retained[1])
+    edit_drawn(layout, 4, lambda _record, view: view["squares"].pop())
+    assert check_atlas(layout) == []
+    problems = decide_drawn_view(entry(), layout)[1]
+    assert "n=4: the drawn view holds 3 squares" in problems
+
+
+def case_record(layout: AtlasLayout, n: int, value: str, exact_form: str | None) -> None:
+    """A case record holding only the verified upper bound the check reads."""
+    assert layout.frontier is not None
+    layout.frontier.mkdir(exist_ok=True)
+    form = "null" if exact_form is None else f"'{exact_form}'"
+    (layout.frontier / f"n-{n:03d}.md").write_text(
+        f"---\npacking:\n  n: {n}\n  verified_upper_bound:\n    value: '{value}'\n"
+        f"    exact_form: {form}\n---\n\n# s({n})\n",
+        encoding="utf-8",
+    )
+
+
+def test_every_drawn_view_is_held_to_its_case_records_verified_upper_bound(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """#548 review B1: the side of every drawn view, this tool's included, against `U`,
+    decided exactly, closed forms included."""
+    monkeypatch.setenv("PACK_JOBS", "1")
+    monkeypatch.setattr(axis, "ABOVE_U", {})
+    layout = scratch_atlas(tmp_path)
+    assert main(["--update-atlas"], layout=layout) == 0
+    layout = dataclasses.replace(layout, frontier=tmp_path / "packing/frontier")
+    (layout.frontier or tmp_path).mkdir()
+    # The row's view is exactly at the printed side 4.
+    assert check_atlas(layout) == ["n=4: its case record states no verified upper bound U"]
+    case_record(layout, 4, "4", None)
+    assert check_atlas(layout) == []
+
+    case_record(layout, 4, "5", "5")
+    assert check_atlas(layout) == [
+        (
+            "n=4: the view is -1.000e+00 from U, below it: a new result, registered before "
+            "it is drawn (row 3)"
+        )
+    ]
+    # 1.25e-41 below a closed form a 40-digit evaluation rounds to the view's side.
+    case_record(layout, 4, "4", "sqrt(16 + 1/10**40)")
+    (problem,) = check_atlas(layout)
+    assert problem.startswith("n=4: the view is -1.250e-41 from U, below it")
+
+    # 4 - (3/2) sqrt(7) above: a view above U is drawn only where it is named.
+    case_record(layout, 4, "3.968627", "(3/2)sqrt(7)")
+    assert check_atlas(layout) == [
+        "n=4: the view is 3.137e-02 above U, at a count ABOVE_U does not name"
+    ]
+    monkeypatch.setattr(axis, "ABOVE_U", {4: "a fixture above U"})
+    assert check_atlas(layout) == []
+    # The list only shrinks on purpose: a named count drawn at U is named no longer.
+    case_record(layout, 4, "4", "4")
+    assert check_atlas(layout) == [
+        "n=4: ABOVE_U names it, but no view is drawn above U there; take it off the list"
+    ]
+    monkeypatch.setattr(axis, "ABOVE_U", {})
+
+    # Another generator's entry records s_V - U, and a `bound` one is at U.
+    drawn_by_another_generator(layout, 4)
+    assert check_atlas(layout) == [
+        "n=4: view_minus_verified_upper_bound is None, not '0.000e+00'"
+    ]
+
+    def at_u(record: dict[str, Any], _view: dict[str, Any]) -> None:
+        record["side"]["view_minus_verified_upper_bound"] = "0.000e+00"
+
+    edit_drawn(layout, 4, at_u)
+    assert check_atlas(layout) == []
+
+    def bound(record: dict[str, Any], _view: dict[str, Any]) -> None:
+        record["side"]["relation"] = "bound"
+
+    edit_drawn(layout, 4, bound)
+    case_record(layout, 4, "4.5", "9/2")
+    problems = check_atlas(layout)
+    assert "n=4: the relation is 'bound', but the view is -5.000e-01 from U" in problems
+    assert "n=4: view_minus_verified_upper_bound is '0.000e+00', not '-5.000e-01'" in problems
+
+
+def test_a_views_side_relation_is_decided_against_the_witnesss_own_side(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """#548 review B2: `same` is `s_V = s_W`, for this tool's views as for any other's."""
+    monkeypatch.setenv("PACK_JOBS", "1")
+    layout = scratch_atlas(tmp_path)
+    assert main(["--update-atlas"], layout=layout) == 0
+    index = json.loads(layout.index.read_text())
+    (record,) = (entry for entry in index["entries"] if entry["n"] == 4)
+    assert record["regularization"]["side"] == "same"
+    record["regularization"]["side"] = "solved"
+    layout.index.write_text(json.dumps(index), encoding="utf-8")
+    assert check_atlas(layout) == [
+        (
+            "n=4: the regularization's side is 'solved', and the view is at the witness's "
+            "own side s_W"
+        )
+    ]
+
+
+def test_a_reclassified_copy_of_a_run_records_no_cost_of_its_own(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """#548 review B5: a run decided again on a copy of its directory keeps the source
+    run's cost in its receipt; the index records that cost once. Review C, C3: the copy is
+    the run its receipt marks (`reclassified_from`), whatever the order of the runs, and
+    equal seconds decide nothing: a cost repeated unmarked is refused."""
+    full = {"cpu_seconds": 49301.63, "wall_seconds": 13812.25, "workers": 4}
+    runs = [
+        {"id": "full", "cost": dict(full)},
+        {
+            "id": "same2",
+            "cost": {"cpu_seconds": 3062.97, "wall_seconds": 3355.87, "workers": 2},
+        },
+        {"id": "refreshed-full", "reclassified_from": "full", "cost": dict(full)},
+        {"id": "fixture", "cost": {"cpu_seconds": 0, "wall_seconds": 0, "workers": 1}},
+        {"id": "fixture-2", "cost": {"cpu_seconds": 0, "wall_seconds": 0, "workers": 1}},
+    ]
+    once = costed_once(runs)
+    assert [once[0], once[1], *once[3:]] == [runs[0], runs[1], *runs[3:]]
+    assert once[2]["reclassified_from"] == "full"
+    assert once[2]["cost"] == {
+        "cpu_seconds": 0.0,
+        "wall_seconds": 0.0,
+        "workers": 4,
+        "note": "reclassified from full without re-running a stage; that run's cost is "
+        "recorded there",
+    }
+    assert costed_once(once) == once
+    assert repeated_costs(runs) == []
+    # The copy listed first, as when a source run is admitted after its copy: the same
+    # run is the copy, and the source keeps its cost.
+    assert costed_once(runs[::-1]) == once[::-1]
+    assert repeated_costs(runs[::-1]) == []
+    # A copy whose source the index does not list is the one record of that cost.
+    (alone,) = costed_once([runs[2]])
+    assert alone == {"id": "refreshed-full", "cost": full}
+    # Unmarked, equal seconds are refused in either order rather than guessed at.
+    unmarked = [runs[0], {"id": "refreshed-full", "cost": dict(full)}]
+    assert costed_once(unmarked) == unmarked
+    for order in (unmarked, unmarked[::-1]):
+        (problem,) = repeated_costs(order)
+        assert "neither is marked as the other's reclassified copy" in problem
+    looped = [{**runs[0], "reclassified_from": "refreshed-full"}, runs[2]]
+    assert "is recorded on none" in repeated_costs(looped)[0]
+
+    monkeypatch.setenv("PACK_JOBS", "1")
+    layout = scratch_atlas(tmp_path)
+    assert main(["--update-atlas"], layout=layout) == 0
+    drawn_by_another_generator(layout, 4)
+    index = json.loads(layout.index.read_text())
+    (run,) = index["runs"]
+    run["cost"] = {"cpu_seconds": 2.5, "wall_seconds": 9.0, "workers": 1}
+    index["runs"].append({**run, "id": "fixture-copy", "reclassified_from": "fixture-run"})
+    layout.index.write_text(json.dumps(index), encoding="utf-8")
+    assert "index run fixture-copy repeats run fixture-run's cost" in check_atlas(layout)
+    index["runs"][-1] = {**run, "id": "fixture-copy"}
+    layout.index.write_text(json.dumps(index), encoding="utf-8")
+    assert (
+        "index run fixture-copy repeats run fixture-run's cost and neither is marked as the "
+        "other's reclassified copy: write `reclassified.from`, the run it was copied from, "
+        "into the copy's receipt.json"
+    ) in check_atlas(layout)

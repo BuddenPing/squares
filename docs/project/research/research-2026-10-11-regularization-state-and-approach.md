@@ -421,17 +421,17 @@ regularization in the register’s `regularizations` terms with identity measure
 The register gained a generated `regularized_drawings` block that lists each drawing
 under the result holding the drawn packing, and `check_results` checks the block.
 
-**The registration (#549).** T-154 registers the exact sides of 59 views that sat just
+**The registration (#549).** T-155 registers the exact sides of 59 views that sat just
 below their verified ceilings: 5.4e-20 to 9.9e-15 below, V3/C3, S1. Each case record
 keeps the decimal it printed.
 At 33 counts the side is exactly that of Evan Daniel’s certificate of the same packing
 (T-101), so those bounds were already published, and the records cite T-101’s
-independent replay beside T-154’s decision; the 26 other sides, the witnesses’ own, are
+independent replay beside T-155’s decision; the 26 other sides, the witnesses’ own, are
 new. With the bounds refreshed from the records, 16 of the 22 counts held at row 3 are
 admitted. 39, 204 and 299 go to review, and 53, 151 and 298 are refused.
 A sixtieth count, 176, left the batch when #553 re-housed it below the side of its view.
 
-The end state when T-154 was registered, before #518 and #553 re-housed 51 counts:
+The end state when T-155 was registered, before #518 and #553 re-housed 51 counts:
 
 | Drawing | Counts |
 | --- | --- |
@@ -446,7 +446,7 @@ The end state when T-154 was registered, before #518 and #553 re-housed 51 count
   unregistered:
   - 18, 26, 66 and 85 are Kingbird and Friedman packings with verified bounds but no
     register result;
-  - 87 is drawn at the witness’s side, 4.3e-16 above T-154’s bound.
+  - 87 is drawn at the witness’s side, 4.3e-16 above T-155’s bound.
 - **Still to draw.** Every count is either drawn regularized or has a recorded reason
   for keeping its drawing:
   - the review queue goes to the owner;
@@ -459,14 +459,16 @@ Both generators were then run on the new witnesses, and each count was decided b
 grid lane’s rule, as in the grid pass above.
 As the layer stands on 13 October:
 
-- 16 of Evan Daniel’s views are drawn.
-  18 were admitted on 12 October; 270’s lapsed when #553 re-housed it (below), and 236’s
-  was withdrawn on 13 October because it turned two squares 0.000537 degrees off their
-  group and drew one more angle class.
+- 14 of Evan Daniel’s views are drawn.
+  18 were admitted on 12 October; 270’s lapsed when #553 re-housed it (below), and three
+  were withdrawn on 13 October: 236’s because it turned two squares 0.000537 degrees off
+  their group and drew one more angle class, and 180’s and 207’s because they tied the
+  axis tool’s views on all seven measures at the same side, which the owner’s rule does
+  not draw.
 - 10 grid views are drawn, at 105, 131, 146, 156, 175, 211, 267, 292, 307 and 308; 305’s
   lapsed with #553.
 - 232’s grid view goes to review: five per-square counts fall against #518’s view.
-- The other 14 counts keep the axis tool’s view of the new house.
+- The other 16 counts keep the axis tool’s view of the new house.
   303 is among them: its new house draws 4 / 8 / 0, which neither generator changes.
 - At 302 the new house already draws 0 / 0 / 0, and Evan Daniel’s view adds four full
   sides.
@@ -670,7 +672,7 @@ and 13 counts in the review queue, 14 after the tolerance re-run.
   #518 adopted them at 42 counts, T-146’s among them, and merged on 12 October 2026,
   after the full pass had run on the witnesses before it; since a changed witness lapses
   every review, those counts are run again (below).
-- [x] Register the exact packings at printed sides in one batch (think-omqv): T-154 on
+- [x] Register the exact packings at printed sides in one batch (think-omqv): T-155 on
   #549.
 - [x] Amend the policy’s decision table, then teach `devtools.regularize_evand.classify`
   the amendments (think-up3h): the policy on #497, the driver on #511.

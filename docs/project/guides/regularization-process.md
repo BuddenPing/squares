@@ -240,17 +240,17 @@ result already proves the bound (the policy’s section 9, question 16). The sel
 lists it under register candidates and never admits it.
 Register such views as one batch result through the
 [import runbook’s](../../../packing/campaign/result-import.md#stage-3-record) record and
-validate stages, with a `regularizations` item for each count, as `T-154` registered 59
+validate stages, with a `regularizations` item for each count, as `T-155` registered 59
 counts through `devtools.register_regularized_bounds`. Where an earlier result’s
 certificate states the same side, the item names it as `first_certified_in`, as 33 of
-`T-154`’s name `T-101`, and the case note then says the side proves no new bound;
+`T-155`’s name `T-101`, and the case note then says the side proves no new bound;
 `python -m devtools.regularized_drawings --check` fails an item that should name one and
-does not. A grid-slack view is registered the same way as a batch of its own, as `T-155`
+does not. A grid-slack view is registered the same way as a batch of its own, as `T-156`
 registered $n = 290$ with `select --batch grid-slack --run-dir RUN ... --n N ...`, then
 `decide` and `controls` with the same `--batch`. Read the next count’s ceiling as well
 as the view’s own: $s(n) \le s(n + 1)$, so where the next count’s verified upper bound
 is at or below the view’s side, the bound is not new.
-`T-155`’s was not, since `T-154`’s certificate at $n = 291$ is at the same side; the
+`T-156`’s was not, since `T-155`’s certificate at $n = 291$ is at the same side; the
 selection records such a ceiling (`implied_by`), and the result says its bound follows
 by monotonicity, as `T-002` says of a lower bound, and is kept as the certificate of the
 count’s own packing.
