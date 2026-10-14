@@ -151,7 +151,17 @@ class Family:
                 atlas._png_with_summary_source(blank, digest)  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
             )
         render_composite_pdf.composite_pdf(self.canvas.spec.stem).write_bytes(
-            b"%PDF-1.5\n%%EOF\n%"
+            b"%PDF-1.5\n%%EOF\n"
+            + (
+                b"%"
+                + render_composite_pdf.PDF_VERSION_KEY
+                + b": "
+                + shown.version.encode("ascii")
+                + b"\n"
+                if shown.version != atlas.LEGACY_INFOGRAPHIC_VERSION
+                else b""
+            )
+            + b"%"
             + render_composite_pdf.PDF_SOURCE_KEY
             + b": "
             + digest.encode("ascii")
@@ -177,6 +187,9 @@ def family(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[Family]:
     monkeypatch.setattr(atlas, "ROOT", packing)
     monkeypatch.setattr(atlas, "ATLAS_ROOT", atlas_root)
     monkeypatch.setattr(render_composite_pdf, "ATLAS_ROOT", atlas_root)
+    published = release.component_version("infographics")
+    monkeypatch.setattr(release, "published_infographic_version", lambda _repo: published)
+    monkeypatch.setattr(atlas, "_published_composite_text", lambda path: path.read_text())
     monkeypatch.setattr(
         atlas,
         "_figure_entries",
@@ -650,10 +663,11 @@ def test_the_complete_pair_refuses_mixed_versions(
         CompositeSpec(first_n=18, last_n=18, columns=1, stem="synthetic-second")
     )
     family.write(current())
-    second.write(atlas.CompositeIdentity(release.DATA_REVISION, "2026-10-01", "v0.5.1"))
+    version = release.successor_version(current().version, "patch")
+    second.write(atlas.CompositeIdentity(release.DATA_REVISION, "2026-10-01", version))
     monkeypatch.setattr(atlas, "COMPOSITES", (family.canvas, second.canvas))
     assert (
-        "infographic family has mixed versions: v0.5.0, v0.5.1"
+        f"infographic family has mixed versions: {current().version}, {version}"
         in atlas.composite_findings().problems
     )
 
@@ -755,7 +769,13 @@ def test_standalone_pdf_correction_cannot_replace_an_existing_edition(
 ) -> None:
     family.write(current())
     pdf = render_composite_pdf.composite_pdf("synthetic")
-    original = b"%PDF-1.5\npreviously published without a receipt\n%%EOF\n"
+    original = (
+        b"%PDF-1.5\npreviously published without a receipt\n%%EOF\n%"
+        + render_composite_pdf.PDF_VERSION_KEY
+        + b": "
+        + current().version.encode("ascii")
+        + b"\n"
+    )
     pdf.write_bytes(original)
     monkeypatch.setattr(
         render_composite_pdf, "render_pdf_bytes", lambda _stem: b"%PDF-1.5\ncorrected\n%%EOF\n"
@@ -1037,14 +1057,18 @@ def test_a_successor_pdf_cannot_be_corrected_again_under_the_same_version(
         atlas.CompositeIdentity, list[tuple[atlas.CompositeCanvas, str]], dict[Path, bytes]
     ],
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     identity, drawings, _old = cut_pair
     stage = tmp_path / "stage"
     atlas.promote_composite_family(
         atlas.staged_composite_family(drawings, identity, stage), stage
     )
+    monkeypatch.setattr(
+        release, "published_infographic_version", lambda _repo: identity.version
+    )
     pdf = render_composite_pdf.composite_pdf("synthetic")
-    # A lost derivation receipt does not erase the PDF's retained semantic edition.
+    # Once main publishes the successor, losing a receipt does not reopen its edition.
     original = pdf.read_bytes().split(b"\n%" + render_composite_pdf.PDF_SOURCE_KEY, 1)[0]
     pdf.write_bytes(original)
     assert render_composite_pdf.pdf_version(original) == identity.version
@@ -1151,3 +1175,117 @@ def test_malformed_or_ambiguous_pdf_editions_do_not_fall_back_to_the_legacy_base
     pdf = b"%PDF-1.5\n%sqpack-infographic-version: " + marker + b"\n%%EOF\n"
     with pytest.raises(ValueError, match=r"is not a version|unambiguous infographic edition"):
         render_composite_pdf.pdf_version(pdf)
+
+
+def _candidate_guard_cut(monkeypatch: pytest.MonkeyPatch) -> tuple[str, str]:
+    published = release.RELEASE_POLICY_BASELINES["infographics"]
+    candidate = release.successor_version(published, "minor")
+    history = (
+        release.PublicationHistoryEntry(candidate, "October 14, 2026", "A candidate redesign."),
+        release.PublicationHistoryEntry(published, "October 2, 2026", "Published baseline."),
+    )
+    decision = release.ReleaseImpactDecision(
+        "infographics", published, candidate, "minor", "A candidate redesign."
+    )
+    monkeypatch.setattr(release, "INFOGRAPHIC_HISTORY", history)
+    monkeypatch.setattr(
+        release,
+        "RELEASE_IMPACTS",
+        (
+            decision,
+            *(item for item in release.RELEASE_IMPACTS if item.component != "infographics"),
+        ),
+    )
+    monkeypatch.setattr(release, "published_infographic_version", lambda _repo: published)
+    return published, candidate
+
+
+def _guard_svg(version: str, body: str) -> str:
+    return (
+        f"<svg {SVG_NAMESPACES}><metadata>"
+        '<sqpack:profile version="8">'
+        '<sqpack:value name="data-date">2026-10-01</sqpack:value>'
+        f'<sqpack:value name="data-revision">{release.DATA_REVISION}</sqpack:value>'
+        f'<sqpack:value name="infographic-version">{version}</sqpack:value>'
+        f"</sqpack:profile></metadata><text>{body}</text></svg>"
+    )
+
+
+def test_unpublished_pair_can_be_corrected_at_its_selected_edition_but_main_cannot(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    published, candidate = _candidate_guard_cut(monkeypatch)
+    canvases = [
+        atlas.CompositeCanvas(CompositeSpec(first_n=18, last_n=18, columns=1, stem=stem))
+        for stem in ("guard-one", "guard-two")
+    ]
+    files = {canvas.svg_path: _guard_svg(published, "Published") for canvas in canvases}
+    main = dict(files)
+    monkeypatch.setattr(atlas, "resolved_composites", lambda: tuple(canvases))
+    monkeypatch.setattr(Path, "is_file", lambda path: path in files)
+    monkeypatch.setattr(Path, "read_text", lambda path, **_kwargs: files[path])
+    monkeypatch.setattr(atlas, "_published_composite_text", lambda path: main[path])
+    identity = atlas.CompositeIdentity(release.DATA_REVISION, "2026-10-01", candidate)
+    first = [(canvas, _guard_svg(candidate, "First candidate")) for canvas in canvases]
+    atlas.validate_composite_redraws(first, identity)
+    files.update((canvas.svg_path, svg) for canvas, svg in first)
+    atlas.validate_composite_redraws(first, identity)
+    corrected = [(canvas, _guard_svg(candidate, "Review correction")) for canvas in canvases]
+    atlas.validate_composite_redraws(corrected, identity)
+    assert all(atlas.retained_identity(svg).version == candidate for _canvas, svg in corrected)
+    with pytest.raises(ValueError, match="complete pair"):
+        atlas.validate_composite_redraws(corrected[:1], identity)
+    files[canvases[0].svg_path] = _guard_svg("v0.4.2", "Unrelated retained edition")
+    with pytest.raises(ValueError, match="neither main nor its selected successor"):
+        atlas.validate_composite_redraws(corrected, identity)
+    files.update((canvas.svg_path, svg) for canvas, svg in first)
+    main.update(files)
+    monkeypatch.setattr(release, "published_infographic_version", lambda _repo: candidate)
+    atlas.validate_composite_redraws(first, identity)
+    with pytest.raises(ValueError, match="existing infographic version"):
+        atlas.validate_composite_redraws(corrected, identity)
+    # Local edits cannot redefine what main already published.
+    files.update((canvas.svg_path, svg) for canvas, svg in corrected)
+    with pytest.raises(ValueError, match="existing infographic version"):
+        atlas.validate_composite_redraws(corrected, identity)
+
+
+def test_unpublished_pdf_corrections_keep_one_cut_and_published_corrections_refuse(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    published, candidate = _candidate_guard_cut(monkeypatch)
+    old = (
+        b"%PDF-1.5\npublished\n%%EOF\n%"
+        + render_composite_pdf.PDF_VERSION_KEY
+        + b": "
+        + published.encode()
+        + b"\n"
+    )
+    first_svg = _guard_svg(candidate, "First candidate")
+    first = render_composite_pdf.prepared_pdf(
+        first_svg, old, render=lambda: b"%PDF-1.5\nfirst candidate\n%%EOF\n"
+    )
+    assert render_composite_pdf.pdf_version(first) == candidate
+
+    def must_not_render() -> bytes:
+        raise AssertionError("an identical retry must retain its PDF")
+
+    assert render_composite_pdf.prepared_pdf(first_svg, first, render=must_not_render) == first
+    corrected_svg = _guard_svg(candidate, "Review correction")
+    corrected = render_composite_pdf.prepared_pdf(
+        corrected_svg, first, render=lambda: b"%PDF-1.5\nreview correction\n%%EOF\n"
+    )
+    assert corrected != first
+    assert render_composite_pdf.pdf_version(corrected) == candidate
+    assert (
+        render_composite_pdf.pdf_receipt(corrected)
+        == hashlib.sha256(corrected_svg.encode()).hexdigest()
+    )
+    unrelated = old.replace(published.encode(), b"v0.4.2")
+    with pytest.raises(ValueError, match="neither main nor its selected successor"):
+        render_composite_pdf.prepared_pdf(corrected_svg, unrelated, render=must_not_render)
+    monkeypatch.setattr(release, "published_infographic_version", lambda _repo: candidate)
+    with pytest.raises(ValueError, match="existing infographic version"):
+        render_composite_pdf.prepared_pdf(
+            corrected_svg, first, render=lambda: b"%PDF-1.5\nreview correction\n%%EOF\n"
+        )

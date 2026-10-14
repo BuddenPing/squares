@@ -206,17 +206,21 @@ def test_a_status_line_is_the_status_then_the_activity_then_the_place() -> None:
 def test_superseded_is_marked_on_a_bound_and_where_a_later_result_is_declared() -> None:
     """Of a standing a table draws one mark, `superseded`, on a result whose kind is a
     bound. That a bound is only reported is the status; a second proof of a held value
-    is the kind simplification; and a result that is no bound is not superseded by its
-    standing, though it may cite a bound's evidence and so derive it. Such a result is
-    marked only where its entry declares a later result that implies it
-    (`superseded_by`): `superseded` for the whole of it, `superseded in part` for some,
-    which keeps it current (think-nlo0). Every mark names what supersedes it."""
+    is the kind simplification, or formalization where a proof assistant checked it; and
+    a result that is no bound is not superseded by its standing, though it may cite a
+    bound's evidence and so derive it. Such a result is marked only where its entry
+    declares a later result that implies it (`superseded_by`): `superseded` for the whole
+    of it, `superseded in part` for some, which keeps it current (think-nlo0). Every mark
+    names what supersedes it."""
     view = render_recent_results
     bound = {"kind": "lower-bound"}
     for held in (view.HOLDS, view.HOLDS_REPORTED, view.NO_STANDING):
         assert not view.superseded(bound, held), held
     for held in (view.SECOND_CERTIFICATE, view.SECOND_CERTIFICATE_REPORTED):
-        assert not view.superseded({"kind": "simplification"}, held), held
+        for second in check_results.SECOND_PROOF_KINDS:
+            assert not view.superseded({"kind": second}, held), (second, held)
+    for second in check_results.SECOND_PROOF_KINDS:
+        assert not view.superseded({"kind": second}, view.PENDING_ADOPTION), second
     for kind in check_results.KINDS:
         marked = view.superseded({"kind": kind}, view.SUPERSEDED)
         assert marked is (kind in check_results.BOUND_KINDS), kind
@@ -276,7 +280,9 @@ def test_superseded_is_marked_on_a_bound_and_where_a_later_result_is_declared() 
     # took the last count T-070 held; fifty when T-117's exact rational refinements
     # took n = 105 and 292, the last verified ceilings T-056 held; fifty-four when
     # Guzhou0806's continuous-pose kernel (T-145) took both of n = 40's lower-bound lanes
-    # from his clipped-corner transfer (T-133) on the same density.
+    # from his clipped-corner transfer (T-133) on the same density; fifty-five on 12
+    # October, when the regularized exact certificates (T-155) took n = 29's verified
+    # ceiling from its interval certificate (T-009), the one count that held.
     # T-120..T-123 report exact side forms for historical source configurations; no
     # current frontier lane relies on these unverified catalogue assertions. Each claim
     # states its side cut where its root interval's ends agree. T-120's lies above the
@@ -295,6 +301,7 @@ def test_superseded_is_marked_on_a_bound_and_where_a_later_result_is_declared() 
     expected = {
         "T-001",
         "T-002",
+        "T-009",
         "T-010",
         "T-015",
         "T-016",
@@ -374,8 +381,15 @@ def test_superseded_is_marked_on_a_bound_and_where_a_later_result_is_declared() 
         "T-020", "T-021", "T-030", "T-043", "T-044", "T-047", "T-049", "T-057", "T-072",
         "T-056", "T-078", "T-079", "T-087", "T-088", "T-089", "T-092",
     } <= set(derived)  # fmt: skip
+    # A mark names the results the case's bound rests on now. At n = 29 that has been
+    # T-155's regularized certificate since 12 October. At n = 69 its side is exactly the
+    # side of Evan Daniel's certificate, below T-088's, so the case cites both T-101's
+    # replays and T-155's decision for it.
+    assert view.position_marks(records.results["T-009"], view.SUPERSEDED, records) == [
+        "superseded by T-155"
+    ]
     assert view.position_marks(records.results["T-088"], view.SUPERSEDED, records) == [
-        "superseded by T-101"
+        "superseded by T-101 and T-155"
     ]
     assert {str(records.results[entry]["kind"]) for entry in derived} == {
         "lower-bound",
@@ -505,11 +519,30 @@ def test_a_bound_better_than_its_cases_hold_is_pending_adoption_not_superseded()
     # No live entry has been both confirmed and pending adoption since the house adoption
     # of 11 October 2026. One raised to C3 by an independently re-implemented replay, as
     # T-128 was by its review of 10 October, renders as T-128 did, with no mark.
+    confirmation_ref = "E-test-n152-upper-replay"
+    evidence = {
+        **evidence,
+        confirmation_ref: {
+            "id": confirmation_ref,
+            "claim": "upper-bound",
+            "scope": {"n_values": [152]},
+            "origin": "replayed-here",
+            "method": "exact-algebraic",
+            "certificate": "a synthetic n152 upper-bound certificate",
+            "replay": "a synthetic complete replay",
+            "replay_status": "passed",
+            "relationship_to_generator": "independent-implementation",
+            "independence": {"coverage": {"extent": "full", "unit": "the n152 certificate"}},
+        },
+    }
+    records = dataclasses.replace(
+        records, register=dataclasses.replace(records.register, evidence=evidence)
+    )
     confirmed = {
         **entry,
         "verification": "V3",
         "confirmation": "C3",
-        "evidence": [*entry["evidence"], "E-couzo-451-exact-feasibility"],
+        "evidence": [*entry["evidence"], confirmation_ref],
     }
     held = view.standing(confirmed, records)
     assert held == view.PENDING_ADOPTION

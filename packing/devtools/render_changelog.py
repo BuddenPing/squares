@@ -399,6 +399,14 @@ def validate(document: Document) -> None:
             raise ValueError(f"PR #{number}: invalid merged_at timestamp") from error
         if not delivery["title"].strip():
             raise ValueError(f"PR #{number}: blank retained title")
+        if not delivery["base_ref"].strip():
+            raise ValueError(f"PR #{number}: blank retained base_ref")
+        if receipt := delivery.get("delivery_to_main"):
+            commit = delivery["merge_commit"]
+            if receipt["commit"] != commit or receipt["evidence"] != (
+                document["repository"] + "/commit/" + commit
+            ):
+                raise ValueError(f"PR #{number}: inconsistent delivery_to_main receipt")
         deliveries[number] = delivery
     stacks: dict[int, set[int]] = {}
     for stack in document.get("stacks", []):
@@ -428,9 +436,20 @@ def validate(document: Document) -> None:
         _prose(entry["summary"])
         if "details" in entry:
             _prose(entry["details"])
-        if len(entry["pull_requests"]) > 1 and "stack_id" not in entry:
+        if entry.get("grouping") == "related" and (
+            "stack_id" in entry or len(entry["pull_requests"]) < 2
+        ):
             raise ValueError(
-                f"{identifier}: grouped PRs require verified formal stack membership"
+                f"{identifier}: related grouping needs multiple PRs and no stack_id"
+            )
+        if (
+            len(entry["pull_requests"]) > 1
+            and "stack_id" not in entry
+            and entry.get("grouping") != "related"
+        ):
+            raise ValueError(
+                f"{identifier}: grouped PRs require verified formal stack membership "
+                "or an explicit related grouping"
             )
         merge_dates: list[str] = []
         for number in entry["pull_requests"]:
@@ -525,6 +544,11 @@ def _markdown_link(label: str, target: str, *, destination: Destination) -> str:
     return f"[{_text(label)}]({serialized_target(target, destination=destination)})"
 
 
+def entry_anchor(identifier: str) -> str:
+    """Stable entry fragments occupy their own namespace within About."""
+    return f"changelog-entry-{identifier}"
+
+
 def _component_label(component: str) -> str:
     if component in {"site", "infographics"}:
         return component.capitalize()
@@ -551,16 +575,34 @@ def render_markdown(
     ):
         if entry["date"] != last_date:
             last_date = entry["date"]
-            out.extend(["#" * (heading_level + 1) + " " + last_date, ""])
+            date_anchor = f"changelog-date-{last_date}"
+            date_level = heading_level + 1
+            if destination == "site":
+                out.extend(
+                    [
+                        f'<h{date_level} id="{date_anchor}">{last_date}</h{date_level}>',
+                        "",
+                    ]
+                )
+            else:
+                out.extend(
+                    [
+                        f'<a id="{date_anchor}"></a>',
+                        "",
+                        "#" * (heading_level + 1) + " " + last_date,
+                        "",
+                    ]
+                )
         level = heading_level + 2
+        anchor = entry_anchor(entry["id"])
         if destination == "site":
             out.extend(
-                [f'<h{level} id="{entry["id"]}">{html.escape(entry["title"])}</h{level}>', ""]
+                [f'<h{level} id="{anchor}">{html.escape(entry["title"])}</h{level}>', ""]
             )
         else:
             out.extend(
                 [
-                    f'<a id="{entry["id"]}"></a>',
+                    f'<a id="{anchor}"></a>',
                     "",
                     "#" * level + " " + _text(entry["title"]),
                     "",

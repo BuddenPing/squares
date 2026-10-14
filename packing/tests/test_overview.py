@@ -809,7 +809,8 @@ def test_the_atlas_is_rendered_as_small_triangle_under_its_view_tabs(
     assert block == [
         (
             'data-atlas-view="triangle" data-atlas-size="small" '
-            'data-atlas-scale="row" data-atlas-first="100" data-atlas-grid'
+            'data-atlas-scale="row" data-atlas-drawing="regularized" '
+            'data-atlas-first="100" data-atlas-grid'
         )
     ]
     tabs = overview_sections.atlas_view_tabs()
@@ -985,6 +986,7 @@ def test_the_atlas_offers_three_sizes_under_tabs_beside_the_views(
     controls = (
         '<div class="site-atlas-controls" data-atlas-controls>'
         f"{overview_sections.atlas_view_tabs()}{tabs}{overview_sections.atlas_scale_tabs()}"
+        f"{overview_sections.atlas_drawing_tabs()}"
         f"{overview_sections.atlas_legend()}"
     )
     assert atlas_page.count(controls) == 1
@@ -1020,13 +1022,14 @@ def test_the_atlas_offers_three_sizes_under_tabs_beside_the_views(
 
 
 def test_one_tile_a_case_is_drawn_from_its_regularized_view_where_it_has_one() -> None:
-    """Each case with a regularized view has one tile, drawn from that view: the
-    regularized rendering reduced by `packing_svg`, the code that reduces a house
-    rendering, so it differs from the house drawing only where the view moved a square
-    or changed a square's shade. At tile resolution, subpixel moves can round to the
-    same drawing. The website shows the selected drawing without layer labels or
-    badges. Every other case is drawn from its house rendering. Read from the generator's own
-    markup, before the page's renderer normalizes it."""
+    """Each case whose default picture is its regularized view (regularization policy,
+    section 12) has one tile, drawn from that view: the regularized rendering reduced by
+    `packing_svg`, the code that reduces a house rendering, so it differs from the house
+    drawing only where the view moved a square or changed a square's shade. At tile
+    resolution, subpixel moves can round to the same drawing. The website shows the
+    selected drawing without layer labels or badges. Every other case is drawn from its
+    house rendering. Read from the generator's own markup, before the page's renderer
+    normalizes it."""
     from devtools import render_frontier_page as frontier  # noqa: PLC0415
 
     page = overview_sections.atlas_grid()
@@ -1046,7 +1049,14 @@ def test_one_tile_a_case_is_drawn_from_its_regularized_view_where_it_has_one() -
         assert bool(reference) == (" data-atlas-row-smaller" in open_tag), n
         assert number == f'<span class="site-atlas-n">{n}</span>', n
         is_regularized = n in regularized
-        assert drawing == frontier.drawing_img(n, regularized=is_regularized, size=400)
+        assert f'src="{frontier.drawing_path(n, regularized=is_regularized)}"' in drawing
+        mode = "Regularized" if is_regularized else "Original"
+        assert f'alt="{mode} packing of {n} unit squares"' in drawing
+        assert 'loading="lazy"' in drawing
+        assert ("data-atlas-original-src=" in drawing) is is_regularized
+        if is_regularized:
+            assert f'data-atlas-original-src="{frontier.drawing_path(n)}"' in drawing
+            assert "Regularized by the Squares Project" in html.unescape(drawing)
         assert "regularized" not in open_tag
         assert "site-atlas-layer-mark" not in number
         assert 'width="400" height="400"' in drawing
@@ -1063,20 +1073,12 @@ def test_one_tile_a_case_is_drawn_from_its_regularized_view_where_it_has_one() -
             identical_thumbnails.add(n)
     # Since the house adoption of 11 October 2026 (think-fvz4), the houses that are
     # already display-regularized packings (T-146) and Robert Barnett's precision
-    # refinement of Ryan Xu's packing at 261 (T-150) have unchanged tile-scale shades;
-    # 400-unit rounding hides moves visible in the full SVG.
-    assert identical_thumbnails == {
-        70,
-        103,
-        236,
-        258,
-        261,
-        263,
-        269,
-        295,
-        302,
-        303,
-    }
+    # refinement of Ryan Xu's packing at 261 (T-150) had unchanged tile-scale shades under
+    # their views: 70, 103, 236, 258, 261, 263, 269, 295 and 303, where 400-unit rounding
+    # hid moves visible in the full SVG. Each of those views ties its exact house on every
+    # goal of the improvement rule, so since 13 October 2026 none is a default picture
+    # (policy, sections 11 and 12), and every view the atlas draws changes its tile.
+    assert identical_thumbnails == set()
     assert "data-atlas-layer" not in tiles
 
 
@@ -1231,6 +1233,7 @@ def test_the_sizes_scale_a_tile_by_one_token_in_either_view() -> None:
         css,
         ".site-atlas-grid .site-atlas-views[hidden],\n"
         ".site-atlas-grid .site-atlas-sizes[hidden],\n"
+        ".site-atlas-grid .site-atlas-drawings[hidden],\n"
         ".site-atlas-grid .site-atlas-scales[hidden],\n"
         ".site-atlas-grid .site-atlas-legend[hidden]",
     )
@@ -1239,18 +1242,21 @@ def test_the_sizes_scale_a_tile_by_one_token_in_either_view() -> None:
 def test_the_regularized_set_is_the_layer_index_and_refuses_a_stale_drawing(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """The cases are the ones the layer's index lists as regularized, never a list kept
-    here, so a view the layer gains joins the atlas at the next render. A drawing the
-    index does not ask for, or one it asks for that is missing, refuses the page; so
-    does an index that labels its drawings with another word than the badge's."""
+    """The cases are the ones the layer's index lists as regularized whose view is the
+    default picture (`default_drawings`), never a list kept here, so a view the layer
+    gains joins the atlas at the next render once it improves on its house drawing. A
+    drawing the index does not ask for, or one it asks for that is missing, refuses the
+    page; so does an index that labels its drawings with another word than the badge's."""
     import json  # noqa: PLC0415
 
     from devtools import render_frontier_page as frontier  # noqa: PLC0415
 
     index = _regularized_index()
     listed = tuple(entry["n"] for entry in index["entries"] if entry["status"] == "regularized")
-    assert overview_sections.atlas_regularized() == listed
-    assert listed, "the atlas has no regularized view to offer"
+    drawn = tuple(n for n in listed if n in frontier.drawn_regularized())
+    assert overview_sections.atlas_regularized() == drawn
+    assert drawn, "the atlas has no regularized view to offer"
+    assert set(drawn) <= set(listed)
     drawings = tmp_path / "rendering"
     drawings.mkdir()
     for n in listed[:2]:
@@ -1263,7 +1269,7 @@ def test_the_regularized_set_is_the_layer_index_and_refuses_a_stale_drawing(
         overview_sections.atlas_regularized()
     for n in listed[2:]:
         (drawings / f"n-{n:03d}.svg").write_text("", encoding="utf-8")
-    assert overview_sections.atlas_regularized() == listed
+    assert overview_sections.atlas_regularized() == drawn
     (drawings / "n-001.svg").write_text("", encoding="utf-8")
     with pytest.raises(SystemExit, match=r"unexpected \[1\]"):
         overview_sections.atlas_regularized()
@@ -1305,6 +1311,7 @@ def test_the_view_tabs_are_the_section_tabs_strip() -> None:
         css,
         ".site-atlas-grid .site-atlas-views,\n"
         ".site-atlas-grid .site-atlas-sizes,\n"
+        ".site-atlas-grid .site-atlas-drawings,\n"
         ".site-atlas-grid .site-atlas-scales",
     )
     assert "line-height: var(--site-chooser-small-leading);" in _rule(
@@ -1314,6 +1321,7 @@ def test_the_view_tabs_are_the_section_tabs_strip() -> None:
     hidden = (
         ".site-atlas-grid .site-atlas-views[hidden],\n"
         ".site-atlas-grid .site-atlas-sizes[hidden],\n"
+        ".site-atlas-grid .site-atlas-drawings[hidden],\n"
         ".site-atlas-grid .site-atlas-scales[hidden],\n"
         ".site-atlas-grid .site-atlas-legend[hidden]"
     )
@@ -3362,8 +3370,14 @@ def test_every_result_shows_its_status_and_its_place_on_the_frontier(
     shown = overview_sections.supersession_marks(before)
     assert f"{t082} (reported)" in shown
     assert html.unescape(re.sub(r"<[^>]+>", "", shown)) == reported.words()
-    for second in ("T-054", "T-055"):
-        assert by_id[second].record["kind"] == "simplification"
+    # A second proof says so by its kind, a simplification or, since the owner's decision
+    # of 13 October 2026, a formalization (T-154), and draws no standing chip.
+    for second, kind in (
+        ("T-054", "simplification"),
+        ("T-055", "simplification"),
+        ("T-154", "formalization"),
+    ):
+        assert by_id[second].record["kind"] == kind, second
         assert "second certificate" not in _row(results, second), second
     for other in render_recent_results.STANDINGS:
         assert "data-tone" not in overview_sections.standing_chip(other), other
@@ -6171,11 +6185,13 @@ def test_the_filter_bar_is_one_helpers_and_reads_the_whole_register(
     assert set(re.findall(r'<option value="([^"]+)"', statuses[1])) == {
         result.status for result in overview.results
     }
-    # Kind offers the kinds the register holds, in the rubric's order and words.
+    # Kind offers the kinds the register holds, in the rubric's order and words: since 13
+    # October 2026 formalization (T-154), straight after simplification.
     kinds = re.search(r'<label>Kind <select data-filter="kind">(.*?)</select>', full)
     assert kinds
     held = {result.record["kind"] for result in overview.results}
-    assert re.findall(r'<option value="([^"]*)"[^>]*>([^<]*)</option>', kinds[1]) == [
+    offered = re.findall(r'<option value="([^"]*)"[^>]*>([^<]*)</option>', kinds[1])
+    assert offered == [
         ("", "All"),
         *(
             (kind, check_results.kind_label(kind))
@@ -6183,6 +6199,9 @@ def test_the_filter_bar_is_one_helpers_and_reads_the_whole_register(
             if kind in held
         ),
     ]
+    values = [value for value, _ in offered]
+    assert ("formalization", "formalization") in offered
+    assert values.index("formalization") == values.index("simplification") + 1
     assert f' min="1" max="{max(overview.cases)}" ' in full
     assert 'data-bound="age" min="0" placeholder="any"> days</label>' in full
     assert 'data-bound="age" min="0" placeholder="any" value="180"> days</label>' in part

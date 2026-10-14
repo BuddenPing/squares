@@ -161,8 +161,11 @@ def _record_context(base: str = "") -> LinkContext:
     ("url", "anchor"),
     [
         ("CHANGELOG.md", "changelog"),
-        ("CHANGELOG.md#regularization-foundations", "regularization-foundations"),
-        ("CHANGELOG.md#missing-entry", "missing-entry"),
+        (
+            "CHANGELOG.md#regularization-foundations",
+            "changelog-entry-regularization-foundations",
+        ),
+        ("CHANGELOG.md#missing-entry", "changelog-entry-missing-entry"),
     ],
 )
 def test_changelog_alias_preserves_and_checks_the_about_landing(url: str, anchor: str) -> None:
@@ -174,11 +177,13 @@ def test_changelog_alias_preserves_and_checks_the_about_landing(url: str, anchor
     page = render_overview.Page(
         "about.html",
         '<article><h2 id="changelog">Changelog</h2>'
-        '<h4 id="regularization-foundations">Regularization</h4></article>',
+        '<h4 id="changelog-entry-regularization-foundations">Regularization</h4></article>',
     )
     problems = unresolved({"about.html": page}, report)
     assert problems == (
-        [f"no heading #{anchor} in about.html: {url}"] if anchor == "missing-entry" else []
+        [f"no heading #{anchor} in about.html: {url}"]
+        if anchor == "changelog-entry-missing-entry"
+        else []
     )
 
 

@@ -2,8 +2,8 @@
 """Export a known-best composite to a print-ready vector PDF.
 
 The page keeps the artwork's intrinsic size rather than being scaled into a
-stock paper box: the 1-100 composite is 2150 by 3823 CSS pixels, which at the
-SVG spec's 96 pixels per inch is 22.40 by 39.82 inches, so the PDF page is
+stock paper box: the 1-100 composite is 2150 by 3898 CSS pixels, which at the
+SVG spec's 96 pixels per inch is 22.40 by 40.60 inches, so the PDF page is
 exactly that and the diagram meets its edges with no silent margin or
 letterboxing. A composite of another size gets its own size the same way. Print
 scaling is then the print dialog's business, not something baked in here.
@@ -213,8 +213,16 @@ def prepared_pdf(
     release.validate_release_impacts()
     if version != release.component_version("infographics"):
         raise ValueError("the PDF must use the current owning infographic edition")
+    published = release.published_infographic_version(ROOT.parent)
+    if version != published:
+        release.validate_release_impacts(
+            externally_changed=("infographics",),
+            previous_versions={"infographics": published},
+        )
     digest = hashlib.sha256(svg_text.encode("utf-8")).hexdigest()
     previous_version = pdf_version(previous) if previous is not None else None
+    if previous_version is not None and previous_version not in {published, version}:
+        raise ValueError("the retained PDF version is neither main nor its selected successor")
     if previous is not None:
         try:
             receipt = pdf_receipt(previous)
@@ -230,15 +238,10 @@ def prepared_pdf(
     )
     if candidate == previous:
         return candidate
-    if previous_version == version:
+    if version == published:
         raise ValueError(
             f"the PDF would change under existing infographic version {version}; "
             "cut a patch or minor successor before correcting the export"
-        )
-    if previous_version is not None:
-        release.validate_release_impacts(
-            externally_changed=("infographics",),
-            previous_versions={"infographics": previous_version},
         )
     return candidate
 

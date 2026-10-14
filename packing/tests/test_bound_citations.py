@@ -925,7 +925,7 @@ RECORDED: dict[int, tuple[tuple[str, str, str] | None, tuple[str, str, str] | No
     101: (
         ("Friedman & Ellsworth, Squares in Squares (reported)", "external", "reported"),
         (
-            "wand125 after Tokoharu, Levy et al. 2026, GitHub (confirmed T-080)",
+            "wand125 after Tokoharu, Levy et al. 2026 (confirmed T-073, T-080)",
             "external",
             "verified",
         ),
@@ -1019,8 +1019,9 @@ def test_n29_credits_finder_and_optimizer_and_takes_the_registers_verdict() -> N
 
     Its assurance is whatever `bounds_agree_at_declared_precision` says, as for every other
     case; this test names it so a change of that rule is seen here, not special-cased. The
-    certificate is scored new and the packing is still Schadt and Ellsworth's. T-009
-    remains linked to the case but its weaker ceiling does not confirm the displayed bound.
+    certificate is scored new and the packing is still Schadt and Ellsworth's. Since 12
+    October 2026 the ceiling is the exact regularized view's side (T-155), below T-009's
+    endpoint; it still lies above the truncated decimal, so it confirms no displayed bound.
     """
     case = citations.load_case(29)
     upper = _entry(29)["upper"]
@@ -1029,7 +1030,7 @@ def test_n29_credits_finder_and_optimizer_and_takes_the_registers_verdict() -> N
     assert (upper["basis"], upper["confirmed_by"], upper["results"]) == (
         "external",
         [],
-        ["T-009"],
+        ["T-155"],
     )
     agrees = bounds_agree_at_declared_precision(
         case["reported_upper_bound"], case["verified_upper_bound"]
@@ -1056,7 +1057,7 @@ RECORDED_LINKS: dict[tuple[int, str], tuple[list[str], list[str]]] = {
     # here since 2026-10-06. n = 101 stood here until its linear certificate's replay was
     # recorded (T-080) on 3 October.
     (106, "lower"): (["T-083"], ["T-083"]),
-    (101, "lower"): (["T-080"], ["T-080"]),
+    (101, "lower"): (["T-073", "T-080"], ["T-073", "T-080"]),
     # This project's own bound, established rather than confirmed, was T-030's until
     # 2026-10-02 (`test_a_novel_first_party_bound_cites_this_project_and_its_result` keeps
     # that shape); then wand125's rectangle bound, which T-045 replays, until 2026-10-05;

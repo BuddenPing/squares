@@ -54,7 +54,7 @@ from itertools import pairwise
 from pathlib import Path
 from urllib.parse import quote, unquote
 
-from devtools import render_overview, repo_links
+from devtools import render_changelog, render_overview, repo_links
 from devtools.render_overview import REPO, Page
 from devtools.repo_links import RepositoryTree, repo_url, repository_tree
 
@@ -294,6 +294,8 @@ def rewrite_link(url: str, *, tag: str, context: LinkContext, report: LinkReport
         if path == repo_links.CHANGELOG:
             landing, _, default_anchor = link.partition("#")
             chosen_anchor = anchor or default_anchor
+            if anchor and anchor != "changelog" and not anchor.startswith("changelog-"):
+                chosen_anchor = render_changelog.entry_anchor(anchor)
             link = landing + (f"#{chosen_anchor}" if chosen_anchor else "")
             if chosen_anchor:
                 report.anchors.append((landing, unquote(chosen_anchor), url))

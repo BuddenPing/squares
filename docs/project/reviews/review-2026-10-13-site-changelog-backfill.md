@@ -150,6 +150,34 @@ omission reason. Entry membership and dates are also retained in `frozen_entries
   deliveries and their retained records, including the unreplayed T-153 and T-154
   proofs.
 
+## Subsequent Main Deliveries
+
+The initial 36-PR window and its twenty entries remain intact.
+The 14 October integration adds the remaining nine layers of formal stack 498 as one
+regularization delivery: #511, #530, #548, #549, #559 and #580 share main merge
+`aeef99ef0`; #585, #587 and #591 share main merge `9f48ccc80`. Each row retains its
+actual GitHub base branch and UTC merge timestamp.
+Seven rows retain a separate `delivery_to_main` receipt, acquired by verifying the merge
+commit on local main’s first-parent history.
+
+The regularization entry cites the completed
+[9f48ccc80 deployment verification](https://github.com/jlevy/squares/actions/runs/38527537367/job/115733950233).
+Its T-155/T-156 statements retain the exact-side scope and distinguish T-156’s existing
+monotonicity implication from a new bound.
+
+The related #592/#595 entry groups proof-report classification, evidence coverage and
+public explanation without asserting a formal stack.
+Their actual main merges are `f73e9de13` and `b8c930338`. The completed
+[f73e9de13 deployment verification](https://github.com/jlevy/squares/actions/runs/38536230832/job/115761676874)
+confirms the current linked artifacts.
+T-153 and T-154 remain V0/C1; no complete proof replay or new verified optimum is
+announced.
+
+The integrated record contains 22 entries, 47 retained deliveries and the original
+thirteen omissions. Current artifact links name moving views rather than archived
+editions. The selected infographic v0.6.0 and explainer v0.4.6 exports are still release
+preparation work and are not attributed to these already verified launches.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->

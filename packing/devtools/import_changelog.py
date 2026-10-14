@@ -43,11 +43,17 @@ def _empty() -> Document:
     }
 
 
-def _delivery(row: Document) -> Document:
+def _delivery(row: Document, *, require_main_delivery: bool = True) -> Document:
     if (
         row.get("state") != "MERGED"
         or not row.get("mergedAt")
-        or row.get("baseRefName") != "main"
+        or not isinstance(row.get("baseRefName"), str)
+        or not row["baseRefName"].strip()
+        or (
+            require_main_delivery
+            and row["baseRefName"] != "main"
+            and not row.get("delivery_to_main")
+        )
     ):
         raise ValueError(
             f"PR #{row.get('number', '?')}: actual merged main metadata is required"
@@ -57,16 +63,19 @@ def _delivery(row: Document) -> Document:
         r"[0-9a-f]{40}", str(commit.get("oid", ""))
     ):
         raise ValueError("merged PR requires a full mergeCommit oid")
-    return {
+    delivery = {
         "number": row["number"],
         "title": row["title"],
         "merged_at": row["mergedAt"],
         "base_ref": row["baseRefName"],
         "merge_commit": commit["oid"],
     }
+    if "delivery_to_main" in row:
+        delivery["delivery_to_main"] = copy.deepcopy(row["delivery_to_main"])
+    return delivery
 
 
-def verify_main_delivery(delivery: Document, main_ref: str = "origin/main") -> None:
+def verify_main_delivery(delivery: Document, main_ref: str = "origin/main") -> Document | None:
     """Authoring boundary: the retained merge commit must actually reach local main."""
     result = subprocess.run(
         ["git", "merge-base", "--is-ancestor", delivery["merge_commit"], main_ref],
@@ -80,6 +89,26 @@ def verify_main_delivery(delivery: Document, main_ref: str = "origin/main") -> N
             f"PR #{delivery['number']}: merge commit is not delivered to {main_ref}; "
             "fetch main before importing"
         )
+    if delivery["base_ref"] == "main":
+        return None
+    # GitHub keeps a formal stack layer's original base ref after the complete stack
+    # lands. Retain that API fact and separately prove the recorded merge on main.
+    first_parent = subprocess.run(
+        ["git", "rev-list", "--first-parent", main_ref],
+        cwd=render_changelog.REPO,
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout.splitlines()
+    if delivery["merge_commit"] not in first_parent:
+        raise ValueError(
+            f"PR #{delivery['number']}: stacked merge is not a "
+            f"first-parent delivery to {main_ref}"
+        )
+    return {
+        "commit": delivery["merge_commit"],
+        "evidence": "https://github.com/jlevy/squares/commit/" + delivery["merge_commit"],
+    }
 
 
 def draft(rows: Sequence[Document], baseline: Document | None = None) -> Document:
@@ -114,7 +143,8 @@ def draft(rows: Sequence[Document], baseline: Document | None = None) -> Documen
         if number in retained:
             old = retained[number]
             if any(
-                old[key] != delivery[key] for key in ("merged_at", "base_ref", "merge_commit")
+                old.get(key) != delivery.get(key)
+                for key in ("merged_at", "base_ref", "merge_commit", "delivery_to_main")
             ):
                 raise ValueError(f"PR #{number}: imported metadata changes a retained delivery")
             continue
@@ -196,7 +226,11 @@ def _write_candidate(options: argparse.Namespace) -> None:
             )
             rows.append(json.loads(result.stdout))
     for row in rows:
-        verify_main_delivery(_delivery(row), options.main_ref)
+        receipt = verify_main_delivery(
+            _delivery(row, require_main_delivery=False), options.main_ref
+        )
+        if receipt is not None:
+            row["delivery_to_main"] = receipt
     document = draft(rows, baseline)
     rendered = yaml.safe_dump(document, allow_unicode=True, sort_keys=False, width=96)
     audit = coverage_audit(document)

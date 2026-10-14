@@ -559,7 +559,7 @@ def changelog_checks(text: str) -> list[tuple[bool, str]]:
         problems.append("requires one changelog section")
     links = {element.attrs.get("href") for element in markup.find(tag="a")}
     for entry in document["entries"]:
-        if markup.ids.get(entry["id"]) != 1:
+        if markup.ids.get(render_changelog.entry_anchor(entry["id"])) != 1:
             problems.append(f"missing or repeated entry {entry['id']}")
         targets = [
             *(f"{document['repository']}/pull/{number}" for number in entry["pull_requests"]),

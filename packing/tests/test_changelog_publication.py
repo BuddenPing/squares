@@ -33,8 +33,9 @@ def test_about_ends_with_the_same_launch_history_as_github(
     assert headings[-1] == "changelog"
     history = about[about.index('id="changelog"') :]
     for entry in document["entries"]:
-        assert entry["id"] in history
-        assert entry["id"] in github
+        anchor = render_changelog.entry_anchor(entry["id"])
+        assert f'id="{anchor}"' in history
+        assert f'id="{anchor}"' in github
         for number in entry["pull_requests"]:
             target = f"{document['repository']}/pull/{number}"
             assert target in history

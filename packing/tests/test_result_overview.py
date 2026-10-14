@@ -992,6 +992,7 @@ def test_recent_upper_lower_and_optimal_marks_follow_independent_contributions()
         "title": "optimal",
     }
     assert badges.count('data-recent="true"') == 1
+    assert "is-new-result" not in result_overview.film_facts_html(facts[11])
     assert 'class="is-upper is-exact-value"' in result_overview.film_bound(facts[11])
     assert "is-new-result" not in result_overview.film_bound(facts[11])
     assert 'class="is-upper" style=' in result_overview.gap_bar(facts[11])
@@ -1012,3 +1013,22 @@ def test_an_exact_value_uses_its_own_recent_upper_contribution(
     bound = result_overview.film_bound(facts[1])
     assert 'class="is-upper is-new-result is-exact-value"' in bound
     assert "is-optimal" not in bound
+
+
+def test_the_head_lists_the_counts_the_atlas_draws_its_packing_regularized(
+    overview: overview_data.Overview, bodies: dict[str, str]
+) -> None:
+    """A result whose packing the atlas draws from a view this project regularized lists
+    the register's `regularized_drawings` naming it, after its own regularizations: at
+    n = 68 the axis tool redrew Seth Rehwaldt's refinement (T-118). A result whose packing
+    is drawn as retained has no such row."""
+    result = _result(overview, "T-118")
+    assert result.drawings
+    assert result.drawings[0].startswith(
+        "n = 68: a regularization of T-118\u2019s packing by Levy"
+    )
+    head = bodies["T-118"].split("</header>", 1)[0]
+    value = result_overview.prose_html("\n".join(result.drawings))
+    assert f"<dt>Regularized drawings</dt><dd>{value}</dd>" in head
+    assert not _result(overview, "T-101").drawings
+    assert "<dt>Regularized drawings</dt>" not in bodies["T-101"]

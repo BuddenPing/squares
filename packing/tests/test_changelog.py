@@ -93,7 +93,7 @@ def test_shared_renderer_orders_links_math_and_anchors() -> None:
     site = render_changelog.render_markdown(data, destination="site")
     for text in (github, site):
         assert text.index("2026-10-14") < text.index("2026-10-13") < text.index("2026-10-12")
-        assert 'id="foundations"' in text
+        assert 'id="changelog-entry-foundations"' in text
         assert "https://github.com/jlevy/squares/pull/497" in text
     assert "$n = 304$" in github
     assert "  - Pinned source" in github
@@ -169,10 +169,10 @@ def test_kpress_preserves_math_and_unique_stable_ids() -> None:
     ids = re.findall(r'\bid="([^"]+)"', tree.html)
     assert len(ids) == len(set(ids))
     assert ids.count("changelog") == 1
-    assert ids.count("foundations") == 1
+    assert ids.count("changelog-entry-foundations") == 1
     assert "<math" in tree.html
     assert "<ul>" in tree.html
-    assert '<h4 id="foundations">Foundations</h4>' in tree.html
+    assert '<h4 id="changelog-entry-foundations">Foundations</h4>' in tree.html
 
 
 def test_math_generated_markup_and_urls_are_rejected_through_full_about(
@@ -514,3 +514,111 @@ def test_candidate_import_requires_actual_merged_main_and_preserves_old_entries(
     )
     assert checked == [(600, "origin/main")]
     assert "editorial review" in output.read_text(encoding="utf-8").lower()
+
+
+def test_entry_anchors_cannot_borrow_an_existing_about_heading(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    data = document()
+    data["entries"][0]["id"] = "the-squares-project"
+    monkeypatch.setattr(render_changelog, "load", lambda: data)
+    about = render_overview.about_page().html
+    ids = re.findall(r'\bid="([^\"]+)"', about)
+    assert ids.count("the-squares-project") == 1
+    assert ids.count("changelog-entry-the-squares-project") == 1
+    assert len(ids) == len(set(ids))
+    assert 'id="changelog-entry-the-squares-project"' in render_changelog.render_markdown(data)
+    with monkeypatch.context() as broken:
+        broken.setattr(render_changelog, "entry_anchor", lambda identifier: identifier)
+        old = render_overview.about_page().html
+        assert re.findall(r'\bid="([^\"]+)"', old).count("the-squares-project") == 2
+
+
+def test_related_launch_group_is_explicit_and_does_not_invent_a_stack() -> None:
+    data = document()
+    data["deliveries"].extend(
+        {
+            "number": number,
+            "title": "Related contribution",
+            "merged_at": day + "T12:00:00Z",
+            "base_ref": "main",
+            "merge_commit": "b" * 40,
+        }
+        for number, day in [(600, "2026-10-15"), (601, "2026-10-16")]
+    )
+    data["coverage"]["pull_requests"].extend([600, 601])
+    entry = {
+        "id": "related-launch",
+        "date": "2026-10-16",
+        "title": "Related launch",
+        "pull_requests": [600, 601],
+        "grouping": "related",
+        "summary": "One public contribution.",
+    }
+    data["entries"].append(entry)
+    render_changelog.validate(data)
+    entry.pop("grouping")
+    with pytest.raises(ValueError, match="explicit related grouping"):
+        render_changelog.validate(data)
+    entry.update(grouping="related", stack_id=498)
+    with pytest.raises(ValueError, match="no stack_id"):
+        render_changelog.validate(data)
+
+
+def test_stacked_delivery_retains_real_api_base_and_requires_matching_main_receipt() -> None:
+    data = document()
+    delivery = data["deliveries"][1]
+    delivery["base_ref"] = "stack/predecessor"
+    with pytest.raises(ValueError, match="delivery_to_main"):
+        render_changelog.validate(data)
+    commit = delivery["merge_commit"]
+    delivery["delivery_to_main"] = {
+        "commit": commit,
+        "evidence": data["repository"] + "/commit/" + commit,
+    }
+    render_changelog.validate(data)
+    delivery["delivery_to_main"]["commit"] = "b" * 40
+    with pytest.raises(ValueError, match="inconsistent delivery_to_main"):
+        render_changelog.validate(data)
+
+
+def test_stacked_import_proves_first_parent_main_delivery_before_preserving_api_base(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    row = {
+        "number": 600,
+        "title": "Stack delivery",
+        "state": "MERGED",
+        "mergedAt": "2026-10-15T00:01:00Z",
+        "baseRefName": "stack/predecessor",
+        "mergeCommit": {"oid": "b" * 40},
+    }
+    with pytest.raises(ValueError, match="merged main metadata"):
+        import_changelog.draft([row], document())
+    calls = []
+
+    def git(args, **_kwargs):
+        calls.append(args)
+        stdout = "b" * 40 + "\n" if args[1] == "rev-list" else ""
+        return subprocess.CompletedProcess(args, 0, stdout=stdout, stderr="")
+
+    monkeypatch.setattr(import_changelog.subprocess, "run", git)
+    parsed = {
+        "number": row["number"],
+        "base_ref": row["baseRefName"],
+        "merge_commit": row["mergeCommit"]["oid"],
+    }
+    row["delivery_to_main"] = import_changelog.verify_main_delivery(parsed)
+    candidate = import_changelog.draft([row], document())
+    assert candidate["deliveries"][-1]["base_ref"] == "stack/predecessor"
+    assert candidate["deliveries"][-1]["delivery_to_main"]["commit"] == "b" * 40
+    assert [call[1] for call in calls] == ["merge-base", "rev-list"]
+    monkeypatch.setattr(
+        import_changelog.subprocess,
+        "run",
+        lambda args, **_kwargs: subprocess.CompletedProcess(
+            args, 0, stdout="a" * 40 + "\n", stderr=""
+        ),
+    )
+    with pytest.raises(ValueError, match="first-parent delivery"):
+        import_changelog.verify_main_delivery(parsed)

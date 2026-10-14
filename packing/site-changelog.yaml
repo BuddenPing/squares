@@ -6,6 +6,111 @@ softschema:
   status: enforced
 repository: https://github.com/jlevy/squares
 entries:
+  - id: n17-proof-reports-and-verification-policy
+    date: '2026-10-14'
+    title: Two Reported 17-Square Proofs and Their Verification Limits
+    pull_requests:
+      - 592
+      - 595
+    grouping: related
+    categories:
+      - records
+      - documentation
+      - pipeline
+    result_ids:
+      - T-153
+      - T-154
+    summary: |
+      Clarified Overbeck’s candidate proof and Fitzharding’s Lean formalization of the
+      17-square optimum, with retained mathematical reviews and public explanations.
+      Both remain reported at V0/C1; complete proof replays have not been established here.
+    details: |
+      - Distinguished formalization and simplification from a new mathematical proof,
+        while allowing a simplification to carry its own proof-assistant check.
+      - Required verification evidence to cover the stated claim and every count;
+        sampled and component checks cannot upgrade an entire bound or optimum.
+      - Documented verifier authorship, shared components and what each independent
+        program’s authors read, with coverage visible beside the retained replays.
+    artifacts:
+      - kind: result
+        label: Current Overbeck proof report
+        target: https://jlevy.github.io/squares/result/t-153.html
+      - kind: result
+        label: Current Fitzharding formalization report
+        target: https://jlevy.github.io/squares/result/t-154.html
+      - kind: paper
+        label: Current explainer, including the 17-square reports
+        target: https://jlevy.github.io/squares/papers/n11-lower-bounds-explainer.html
+    publication:
+      date: '2026-10-14'
+      evidence: https://github.com/jlevy/squares/actions/runs/38536230832/job/115761676874
+    references:
+      - label: Fitzharding mathematical review
+        target: docs/project/reviews/review-2026-10-13-fitzharding-n17-mathematical-correctness.md
+      - label: Overbeck mathematical review
+        target: docs/project/reviews/review-2026-10-13-overbeck-n17-mathematical-correctness.md
+      - label: Evidence and independence rules
+        target: epistemics.md
+  - id: regularized-drawings-and-exact-side-admissions
+    date: '2026-10-14'
+    title: Regularized Drawings, Exact Side Admissions and Original Comparison
+    pull_requests:
+      - 511
+      - 530
+      - 548
+      - 549
+      - 559
+      - 580
+      - 585
+      - 587
+      - 591
+    stack_id: 498
+    categories:
+      - regularization
+      - records
+      - site
+    result_ids:
+      - T-155
+      - T-156
+    summary: |
+      Launched regularized views across the atlas and both posters, with the packing
+      as published still available for comparison. The workflow registers exact
+      sides before using them as bounds and records drawing credit separately.
+    details: |
+      - Added a reproducible regularizer driver, exact same-side re-solving and grid-slack
+        cleanup, followed by comparison, selection and admission tools.
+      - Registered a 59-count exact-side batch as T-155 at V3/C3. T-156 records the
+        290-square ceiling already implied by T-155, with its own exact certificate;
+        it adds no new bound beyond that implication.
+      - Selected 79 of 90 views as regularized defaults using the documented improvement
+        rule; the other 11 retain their house drawings. Regularized / Original controls
+        and the case pages’ “As published” disclosures preserve the source comparison.
+      - Redrew both posters with the selected views and compact attribution, while
+        retaining generator, modifications and construction credit in the records.
+    artifacts:
+      - kind: page
+        label: Current atlas with Regularized / Original comparison
+        target: https://jlevy.github.io/squares/atlas.html
+      - kind: pdf
+        label: Current 1–100 packing infographic
+        target: https://jlevy.github.io/squares/square-packings-100-20261008.pdf
+      - kind: pdf
+        label: Current 1–324 packing poster
+        target: https://jlevy.github.io/squares/square-packings-324-20261008.pdf
+      - kind: result
+        label: Current exact-side batch record
+        target: https://jlevy.github.io/squares/result/t-155.html
+      - kind: result
+        label: Current 290-square exact certificate record
+        target: https://jlevy.github.io/squares/result/t-156.html
+    publication:
+      date: '2026-10-14'
+      evidence: https://github.com/jlevy/squares/actions/runs/38527537367/job/115733950233
+    references:
+      - label: Regularization policy
+        target: docs/project/policies/regularization-policy.md
+      - label: Regularization process
+        target: docs/project/guides/regularization-process.md
   - id: fitzharding-n17-reported-proof
     date: '2026-10-13'
     title: A Second Reported Proof of the Optimal 17-Square Packing
@@ -481,6 +586,101 @@ entries:
       - label: Beyond-horizon source coverage
         target: packing/frontier/source-coverage.yaml
 deliveries:
+- number: 511
+  title: 'feat: drive Evan Daniel''s regularizer, re-solve views at the record''s side, and draw a
+    review gallery, with pilot spikes (think-up3h, think-7hmc, think-ubr0, think-pwmi)'
+  merged_at: '2026-10-14T02:57:39Z'
+  base_ref: main
+  merge_commit: aeef99ef0ef27ace054434094118a6ac355da384
+  stack_id: 498
+- number: 530
+  title: 'feat: close free grid slack exactly at the record''s side, with a census of how evenly the
+    atlas draws its grids (prototype)'
+  merged_at: '2026-10-14T02:57:40Z'
+  base_ref: claude/busy-pascal-vgiccb
+  merge_commit: aeef99ef0ef27ace054434094118a6ac355da384
+  delivery_to_main:
+    commit: aeef99ef0ef27ace054434094118a6ac355da384
+    evidence: https://github.com/jlevy/squares/commit/aeef99ef0ef27ace054434094118a6ac355da384
+  stack_id: 498
+- number: 548
+  title: 'feat: a multi-generator regularized layer, its frontier record, and the first admission
+    batch (think-k35c)'
+  merged_at: '2026-10-14T02:57:41Z'
+  base_ref: claude/busy-pascal-vgiccb-grid
+  merge_commit: aeef99ef0ef27ace054434094118a6ac355da384
+  delivery_to_main:
+    commit: aeef99ef0ef27ace054434094118a6ac355da384
+    evidence: https://github.com/jlevy/squares/commit/aeef99ef0ef27ace054434094118a6ac355da384
+  stack_id: 498
+- number: 549
+  title: 'register: exact regularized sides at 59 counts as T-155, and draw the 16 counts they admit
+    with 4 grid-slack replacements'
+  merged_at: '2026-10-14T02:57:43Z'
+  base_ref: claude/busy-pascal-vgiccb-record
+  merge_commit: aeef99ef0ef27ace054434094118a6ac355da384
+  delivery_to_main:
+    commit: aeef99ef0ef27ace054434094118a6ac355da384
+    evidence: https://github.com/jlevy/squares/commit/aeef99ef0ef27ace054434094118a6ac355da384
+  stack_id: 498
+- number: 559
+  title: 'atlas: draw the 42 counts #518 re-housed from regularized views made on their new witnesses'
+  merged_at: '2026-10-14T02:57:44Z'
+  base_ref: claude/busy-pascal-vgiccb-register
+  merge_commit: aeef99ef0ef27ace054434094118a6ac355da384
+  delivery_to_main:
+    commit: aeef99ef0ef27ace054434094118a6ac355da384
+    evidence: https://github.com/jlevy/squares/commit/aeef99ef0ef27ace054434094118a6ac355da384
+  stack_id: 498
+- number: 580
+  title: 'atlas: draw nineteen counts at the best known side and more regular, by the owner''s rules
+    of 13 October'
+  merged_at: '2026-10-14T02:57:45Z'
+  base_ref: claude/busy-pascal-vgiccb-518
+  merge_commit: aeef99ef0ef27ace054434094118a6ac355da384
+  delivery_to_main:
+    commit: aeef99ef0ef27ace054434094118a6ac355da384
+    evidence: https://github.com/jlevy/squares/commit/aeef99ef0ef27ace054434094118a6ac355da384
+  stack_id: 498
+- number: 585
+  title: 'records: credit each regularized drawing on its case record, with the project''s modifications,
+    and never as a result'
+  merged_at: '2026-10-14T07:18:57Z'
+  base_ref: main
+  merge_commit: 9f48ccc80cee8dcf94c7cadbcaded01408f94fa2
+  stack_id: 498
+- number: 587
+  title: 'register: s(290) by monotonicity from T-155, with its grid-slack view as its own exact certificate
+    (T-156)'
+  merged_at: '2026-10-14T07:18:58Z'
+  base_ref: claude/upbeat-ptolemy-1lxxx8-credits
+  merge_commit: 9f48ccc80cee8dcf94c7cadbcaded01408f94fa2
+  delivery_to_main:
+    commit: 9f48ccc80cee8dcf94c7cadbcaded01408f94fa2
+    evidence: https://github.com/jlevy/squares/commit/9f48ccc80cee8dcf94c7cadbcaded01408f94fa2
+  stack_id: 498
+- number: 591
+  title: 'atlas: draw the regularized view by default wherever it improves on the packing as published,
+    house kept as published'
+  merged_at: '2026-10-14T07:18:59Z'
+  base_ref: claude/upbeat-ptolemy-1lxxx8-register290
+  merge_commit: 9f48ccc80cee8dcf94c7cadbcaded01408f94fa2
+  delivery_to_main:
+    commit: 9f48ccc80cee8dcf94c7cadbcaded01408f94fa2
+    evidence: https://github.com/jlevy/squares/commit/9f48ccc80cee8dcf94c7cadbcaded01408f94fa2
+  stack_id: 498
+- number: 592
+  title: 'feat: formalization kind for T-154, the n = 17 correctness reviews, and documented independence
+    of confirmations'
+  merged_at: '2026-10-14T08:35:46Z'
+  base_ref: main
+  merge_commit: f73e9de13d8ccc40b91d844b164f9c2ad9c032c1
+- number: 595
+  title: 'docs: state the two reported n = 17 proofs on README, TUTORIAL, the explainer and the Frontier
+    page'
+  merged_at: '2026-10-14T07:25:31Z'
+  base_ref: main
+  merge_commit: b8c930338ee3577a43faccb52472c6975ab7eccd
 - number: 588
   title: Import Fitzharding's Lean proof that s(17) = L as T-154 (#565), and the n = 11 and n = 17 announcement
     posts
@@ -682,6 +882,10 @@ stacks:
   - 548
   - 549
   - 559
+  - 580
+  - 585
+  - 587
+  - 591
   evidence: https://github.com/jlevy/squares/pull/497
 - id: 517
   pull_requests:
@@ -692,6 +896,17 @@ stacks:
   evidence: https://github.com/jlevy/squares/pull/518
 coverage:
   pull_requests:
+  - 592
+  - 595
+  - 591
+  - 587
+  - 585
+  - 580
+  - 559
+  - 549
+  - 548
+  - 530
+  - 511
   - 588
   - 509
   - 497

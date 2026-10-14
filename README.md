@@ -75,10 +75,26 @@ The most significant since August 2026:
   project. His $s(k^2 - 4) = k$ for every $k \ge 5$
   ([T-081](packing/frontier/RESULTS.md)) awaits its full replay here, so its nine new
   cases, $n = 96, 117, \ldots, 320$, are on the frontier as reported bounds.
-- **Seventeen squares bracketed:** both ends are machine-checked, Guzhou0806’s lower
-  bound $s(17) > 4.66044275$ ([T-093](packing/frontier/RESULTS.md)) and the upper bound
-  $s(17) \le 4.67553009\ldots$ of John Bidwell’s 1998 packing, certified exactly from
-  Overbeck’s rational witness ([T-065](packing/frontier/RESULTS.md)).
+- **Seventeen squares reported proved:** on 12 October 2026 two proofs were published,
+  by separate routes, that John Bidwell’s 1998 packing is optimal, so that
+  $s(17) = 4.67553009360455\ldots$. Marc Leonard Overbeck (Kleddamag) published what he
+  calls a candidate proof, one that holds if the 210 obligations it lists hold
+  ([T-153](packing/frontier/RESULTS.md),
+  [#557](https://github.com/jlevy/squares/issues/557)); its README says the mathematics,
+  engines, certificates, checkers, reviews and text were produced by AI systems under
+  his direction, Codex (OpenAI) and Claude (Anthropic).
+  Oscar Fitzharding (ofitzharding) published a Lean 4 proof that leaves no premise open
+  within its stated trust boundary ([T-154](packing/frontier/RESULTS.md),
+  [#565](https://github.com/jlevy/squares/issues/565)); its README says the project “was
+  developed with substantial assistance from Claude and Codex”.
+  Reviews here read parts of both and found no mathematical defect in what they read,
+  but neither has been replayed in full: parts of T-153’s computation have been rerun
+  here, and T-154’s Lean build has not been repeated.
+  So the record holds both as reported (`V0/C1`), and until a replay passes, the
+  [case record](packing/frontier/n-017.md) keeps the verified bracket: Guzhou0806’s
+  lower bound $s(17) > 4.66044275$ ([T-093](packing/frontier/RESULTS.md)) and the upper
+  bound of Bidwell’s packing, certified exactly from Overbeck’s rational witness
+  ([T-065](packing/frontier/RESULTS.md)).
 
 ## Papers
 
@@ -254,10 +270,11 @@ The Motion Lab is an exploratory instrument, not a citable research result.
 
 ## Reports
 
-These 41 research reports are the durable topical syntheses:
+These 42 research reports are the durable topical syntheses:
 
 | Report | Scope |
 | --- | --- |
+| [Regularizing Every Known-Best Packing for Display](docs/project/research/research-2026-10-11-regularization-state-and-approach.md) | What makes a drawing look irregular in the house conventions, everything tried so far, the spikes on 25 pilot counts, the full run over all 324 and the standard approach recommended for them; the runs stay outside the record |
 | [Evan Daniel’s Regularization Process, Assessed](docs/project/research/research-2026-10-11-evand-regularization-assessment.md) | Evan Daniel’s `search/regularize` read in full and run on three counts, its dilated certificates, the soundness obligations here, a cross-tabulation against `regularize_axis_components/2`, a five-slice adaptation plan and eight owner questions; no packing is regularized |
 | [n17 Restricted Family-Cell Audit](docs/project/research/research-2026-10-09-n17-family-cell-audit.md) | Exact replay forces the free square into side-S2 for a fixed sixteen-square endpoint skeleton on a restricted slider box; no perturbed-core capture or global exclusion |
 | [n17 Shared-Centre LP Readiness](docs/project/research/research-2026-10-07-n17-shared-centre-lp-readiness.md) | Prospective first-eight shared-centre pilot, exact endpoint feasibility control and bounded certificate contract; no LP implementation or result |

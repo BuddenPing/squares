@@ -770,7 +770,6 @@ def test_a_regularized_slide_too_far_to_match_is_recorded_not_refused(
     }
 
 
-@pytest.mark.slow
 def test_the_489_certificate_at_305_has_488s_side_in_a_quarter_turned_arrangement() -> None:
     """Hunt 3's unnamed n305 certificate states exactly the side #488 reports there.
 
@@ -836,6 +835,57 @@ def test_an_arrangement_matches_its_own_symmetric_copy_and_counts_a_moved_square
     assert found["moved_beyond"] == {"1e-9": 1, "1e-6": 1, "1e-3": 1, "1e-2": 1, "1e-1": 0}
     turned = (pair[0], (x, y, *rotation(HALF_TURN + Fraction(1, 1000))))
     assert route.arrangement_gap((side, pair), (side, turned))["turned_beyond_1e-6"] == 1
+
+
+def test_the_nearest_centre_search_finds_what_the_exhaustive_exact_search_finds(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """think-uomm: `arrangement_gap` compares exactly only the centres binary64 puts within
+    `nearest_reach` of the nearest, and must report what comparing every pair exactly
+    reports, which it does with an infinite reach. Ties and differences far below
+    binary64's resolution are where the two could part."""
+    import random  # noqa: PLC0415
+
+    side = Fraction(5)
+    tiny = Fraction(1, 10**30)
+    left = ((Fraction(1, 2), Fraction(1, 2), Fraction(1), Fraction(0)),)
+    cases: list[tuple[tuple[Fraction, Any], tuple[Fraction, Any]]] = [
+        # 1e-30 away, one 1e-40 nearer than the other: binary64 reads both alike.
+        (
+            (side, left),
+            (side, ((Fraction(1, 2) - tiny + tiny / 10**10, Fraction(1, 2), Fraction(1), 0),
+                    (Fraction(1, 2) + tiny, Fraction(1, 2), Fraction(1), 0))),
+        ),
+        # An exact tie: the lesser index is the nearest, as before.
+        (
+            (side, left),
+            (side, ((Fraction(1, 2) + tiny, Fraction(1, 2), Fraction(1), 0),
+                    (Fraction(1, 2) - tiny, Fraction(1, 2), Fraction(1), 0))),
+        ),
+    ]  # fmt: skip
+    rng = random.Random(20261014)
+    for count in (7, 23, 41):
+        points = [
+            (
+                Fraction(rng.randrange(1, 10**36), 10**36) * side,
+                Fraction(rng.randrange(1, 10**36), 10**36) * side,
+                Fraction(1),
+                Fraction(0),
+            )
+            for _ in range(count)
+        ]
+        nudged = [(x + tiny * rng.choice((-1, 1)), y, c, s) for x, y, c, s in points]
+        rng.shuffle(nudged)
+        cases.append(((side, points), (side, nudged)))
+        mirrored = [route.symmetric(side, square, 6) for square in points]
+        cases.append(((side, points), (side, mirrored)))
+    assert route.nearest_reach([(0.5, 0.5), (4.5, 1.0)]) == 5.5**2 * 2.0**-40
+    with pytest.raises(route.AreaRouteError, match="binary64"):
+        route.nearest_reach([(float("inf"), 0.0)])
+    reduced = [route.arrangement_gap(first, second) for first, second in cases]
+    assert reduced[0]["largest_squared"] == str((tiny - tiny / 10**10) ** 2)
+    monkeypatch.setattr(route, "nearest_reach", lambda _points: float("inf"))
+    assert reduced == [route.arrangement_gap(first, second) for first, second in cases]
 
 
 def test_the_credited_certificates_are_read_as_their_entries_state_them() -> None:
@@ -1362,7 +1412,6 @@ def test_the_505_and_501_imports_agree_with_their_receipts_plans_and_prints_to_e
     )
 
 
-@pytest.mark.slow
 def test_barnetts_refinements_are_ryan_xus_packings_moved_and_ostashevs_are_not() -> None:
     """#505's 146 and 261 match Ryan Xu's certificates square for square at the identity,
     261 moved by at most 9.1e-6 and 146 by at most 5.0e-2 (nearer than Evan Daniel's

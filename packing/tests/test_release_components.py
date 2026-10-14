@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import subprocess
+from pathlib import Path
+
 import pytest
 
 from sqpack import release
@@ -79,9 +82,33 @@ def test_new_cuts_require_owned_impact_decisions_and_untouched_papers_do_not(
         release.validate_release_impacts(
             [decision._replace(component="infographics"), *release.RELEASE_IMPACTS]
         )
-    with pytest.raises(ValueError, match="externally changed infographics"):
-        release.validate_release_impacts(decisions, externally_changed=["infographics"])
+    without_infographics = [item for item in decisions if item.component != "infographics"]
+    with pytest.raises(ValueError, match=r"infographics.*needs.*release-impact decision"):
+        release.validate_release_impacts(
+            without_infographics, externally_changed=["infographics"]
+        )
 
 
 def test_retained_policy_era_cuts_all_have_owned_impact_decisions() -> None:
     release.validate_release_impacts()
+
+
+def test_published_infographic_baseline_reads_main_without_executing_prior_source(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    source = (
+        'PUBLICATION_HISTORY = (PublicationHistoryEntry(version="v0.5.0"),)\n'
+        'raise RuntimeError("prior source must never execute")\n'
+    )
+
+    def git(args: list[str], **_kwargs: object) -> subprocess.CompletedProcess[str]:
+        assert args[-1] == "origin/main:packing/src/sqpack/release.py"
+        return subprocess.CompletedProcess(args, 0, stdout=source, stderr="")
+
+    monkeypatch.setattr(release.subprocess, "run", git)
+    assert release.published_infographic_version(Path("/in-memory-repository")) == "v0.5.0"
+    source += 'INFOGRAPHIC_HISTORY = (PublicationHistoryEntry(version="v0.6.0"),)\n'
+    assert release.published_infographic_version(Path("/in-memory-repository")) == "v0.6.0"
+    source += "INFOGRAPHIC_HISTORY = ()\n"
+    with pytest.raises(ValueError, match="literal published infographic"):
+        release.published_infographic_version(Path("/in-memory-repository"))

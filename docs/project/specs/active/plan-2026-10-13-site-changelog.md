@@ -88,8 +88,9 @@ For a formal stack, record only the layers delivered to main.
 Freeze an entry’s PR membership and date once published.
 Later deliveries from the same stack get another entry sharing `stack_id`, rather than
 moving or enlarging an old announcement.
-Related follow-up PRs can reference an earlier entry without being mislabeled as a
-stack.
+Related PRs sharing one public contribution can use `grouping: related`; this does not
+assert formal-stack membership.
+Follow-ups can also reference an earlier entry.
 
 ### About as a launch index
 
@@ -144,6 +145,7 @@ They demonstrate the record shape, not a completed production backfill.
 | `summary` | Markdown description, normally one sentence to a few lines |
 | `details` | Optional Markdown, usually a short nested bullet list for a substantial effort |
 | `stack_id` | Optional verified formal-stack identity; repeated across later deliveries |
+| `grouping` | Explicit `related` grouping for several PRs sharing a contribution without a formal-stack claim |
 | `categories` | Optional structured labels: records, pipeline, regularization, site or documentation |
 | `result_ids` | Optional record identities for linking, without duplicating their current state |
 | `artifacts` | Optional labeled links to launched papers, PDFs, results, pages or graphics |
@@ -163,6 +165,10 @@ delivery and stack membership at the appropriate semantic boundary.
 A JSON Schema date format is only an annotation.
 Never fetch GitHub during ordinary rendering: merge metadata and editorial decisions are
 acquired during authoring and backfill, then committed as local inputs.
+Retain the actual API `base_ref` for stacked PRs.
+If it names a predecessor branch, `delivery_to_main` records the merge commit and its
+repository commit URL after the importer verifies that same commit on local main’s
+first-parent history.
 
 ### Shared rendering and placement
 
@@ -178,6 +184,8 @@ section typography. Show newest dates first, group entries under date headings a
 metadata out of the reader’s way.
 The initial history should remain fully available without a new page or navigation item;
 add an `about.html#changelog` permalink.
+Entry links use `#changelog-entry-<id>` in both reader views; date headings use a
+separate `changelog-date-` namespace so neither can borrow another About heading.
 
 Use the existing repository-link helper to resolve structured references and Markdown
 links for each destination.
@@ -341,8 +349,11 @@ One implementation phase, with four coordinated deliverables:
 - [x] Integrate GitHub and About views, reference rewriting, discovery, build inputs,
   publication scope and maintenance instructions.
 
-The implementation includes 20 entries covering 23 PRs, 13 editorial omissions and all
-36 retained main-branch deliveries.
+The initial implementation includes 20 entries covering 23 PRs, 13 editorial omissions
+and all 36 retained main-branch deliveries.
+The subsequent main integration adds one grouped regularization delivery and one related
+n17 report-and-policy launch, giving 22 entries, 47 retained PR deliveries and the same
+13 editorial omissions.
 The production record stores delivery, formal-stack and coverage metadata beside the
 entries; the reader views omit that audit metadata.
 The [backfill review](../../reviews/review-2026-10-13-site-changelog-backfill.md)
@@ -367,8 +378,12 @@ The companion planning schema and examples remain the original design samples.
 Python helper imports.
 Each candidate needs its owning patch/minor successor or a fresh review naming the exact
 changed paths, examined outputs and no-change reason.
-The site cut prepares `v0.6.0`; the retained infographic pair and all four papers keep
-their existing editions.
+The site cut prepares `v0.6.0`. After the regularization launch, the shared infographic
+family prepares `v0.6.0`; only the n11 lower-bound explainer prepares `v0.4.6`, a patch
+for its added n17 proof-report explanation.
+The other three papers keep their editions.
+These selected editions require their complete exports and deployment before being
+announced as published; the launch entries cite the already verified main deployments.
 Export-family staging and rollback make an interrupted infographic cut retryable without
 selecting another version.
 

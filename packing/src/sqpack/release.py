@@ -32,6 +32,7 @@ The Python package version in `pyproject.toml` is separate from these public edi
 
 from __future__ import annotations
 
+import ast
 import re
 import subprocess
 from collections.abc import Iterable, Mapping, Sequence
@@ -151,6 +152,14 @@ PUBLICATION_STATUS = ""
 #: Both retained 1-100 and 1-324 graphics, their PDFs and PNGs share this history.
 INFOGRAPHIC_HISTORY = (
     PublicationHistoryEntry(
+        version="v0.6.0",
+        first_published="October 14, 2026",
+        result_scope=(
+            "Show regularized defaults on both atlas posters with compact attribution and "
+            "original-source comparison."
+        ),
+    ),
+    PublicationHistoryEntry(
         version="v0.5.0",
         first_published="October 2, 2026",
         result_scope="The retained infographic pair's already published v0.5.0 edition.",
@@ -204,7 +213,7 @@ COMPOSITES_MAY_TRAIL = True
 #: The last data commit, pinned in full: what `data_revision` returned when it was last
 #: re-pinned. Full rather than six characters so the drift check compares a commit, not
 #: a prefix.
-DATA_REVISION = "8bd9767a511c2fc23b0682bb5981a35792ad085a"
+DATA_REVISION = "5c4380794f027950370907fb9d76e76c5a818181"
 
 #: The version, written the one way it is ever written: `v0.4.1-f5e113`. Semver core,
 #: then the data revision, in the shape a build identifier takes everywhere else.
@@ -301,6 +310,14 @@ FIRST_PUBLISHED = PUBLICATION_HISTORY[-1].first_published
 #:                                            day is the one recorded
 EXPLAINER_HISTORY = (
     PublicationHistoryEntry(
+        version="v0.4.6",
+        first_published="October 14, 2026",
+        result_scope=(
+            "Explain the two reported 17-square optimality proofs and their V0/C1 "
+            "verification limits."
+        ),
+    ),
+    PublicationHistoryEntry(
         version="v0.4.5",
         first_published="October 10, 2026",
         result_scope=(
@@ -368,7 +385,7 @@ EXPLAINER_FIRST_PUBLISHED = EXPLAINER_HISTORY[-1].first_published
 #: `PUBLICATION_DATE`, the day the edition was first published, which stood still while
 #: the article changed under it: merging is the whole publish, so the text a reader sees
 #: moves between editions. Change it in the commit that changes the article.
-EXPLAINER_REVISED = "October 13, 2026"
+EXPLAINER_REVISED = "October 14, 2026"
 
 #: The optimality review's own editions, newest first, each with the day it was first
 #: published and what changed in the paper: the review's history, as `EXPLAINER_HISTORY`
@@ -602,6 +619,26 @@ class ReleaseImpactDecision(NamedTuple):
 # No impact is invented retrospectively for the published baseline editions.
 RELEASE_IMPACTS: tuple[ReleaseImpactDecision, ...] = (
     ReleaseImpactDecision(
+        component="paper:n11-lower-bounds-explainer",
+        previous_version="v0.4.5",
+        version="v0.4.6",
+        impact="patch",
+        reason=(
+            "Explain the two reported 17-square optimality proofs and their V0/C1 "
+            "verification limits."
+        ),
+    ),
+    ReleaseImpactDecision(
+        component="infographics",
+        previous_version="v0.5.0",
+        version="v0.6.0",
+        impact="minor",
+        reason=(
+            "Show regularized defaults on both atlas posters with compact attribution and "
+            "original-source comparison."
+        ),
+    ),
+    ReleaseImpactDecision(
         component="site",
         previous_version="v0.5.0",
         version="v0.6.0",
@@ -626,7 +663,6 @@ class ReleaseNoPublicChange(NamedTuple):
 RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
     ReleaseNoPublicChange(
         components=(
-            "paper:n11-lower-bounds-explainer",
             "paper:n11-threshold-bound-review",
             "paper:n11-optimality-review",
             "paper:square-packing-methods-survey",
@@ -640,13 +676,9 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "packing/devtools/repo_links.py",
             "packing/devtools/site_documents.py",
             "packing/devtools/validate_schemas.py",
-            "packing/src/sqpack/cli/validate.py",
             "packing/src/sqpack/release.py",
         ),
         outputs=(
-            "papers/n11-lower-bounds-explainer.html",
-            "papers/n11-lower-bounds-explainer.md",
-            "papers/n11-lower-bounds-explainer.pdf",
             "papers/n11-threshold-bound-review.html",
             "papers/n11-threshold-bound-review.md",
             "papers/n11-threshold-bound-review.pdf",
@@ -660,51 +692,11 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
         reason=(
             "These shared helpers change About assembly, repository links, the "
             "Results legend, schema and closeout checks, and infographic export "
-            "transactions. None changes the four papers' manuscripts, figures, "
+            "transactions. None changes the three untouched papers' manuscripts, figures, "
             "typography, front matter or content editions. The component resolver "
             "retains their own histories, statuses and dates while the site's "
             "history advances independently. Deployment citation "
             "provenance is independent of a paper revision."
-        ),
-    ),
-    ReleaseNoPublicChange(
-        components=("paper:n11-lower-bounds-explainer",),
-        paths=(
-            "packing/cases/n11_fractional_certificate/t-018-proof-card.md",
-            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-19-5.md",
-            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-381-100.md",
-            "packing/cases/n11_threshold_certificate/t-025-verifiable-claim-191-50.md",
-            "packing/cases/n11_threshold_certificate/t-026-verifiable-claim-dilation-limit.md",
-        ),
-        outputs=(
-            "papers/n11-lower-bounds-explainer.html",
-            "papers/n11-lower-bounds-explainer.md",
-            "papers/n11-lower-bounds-explainer.pdf",
-        ),
-        reason=(
-            "The site cut regenerates standalone claim documents with the site's "
-            "new publication stamp and citation revision. Their mathematical "
-            "claims, certificates and the paper's linked addresses are unchanged; "
-            "the explainer's text, figures and independent edition remain intact."
-        ),
-    ),
-    ReleaseNoPublicChange(
-        components=("infographics",),
-        paths=("packing/src/sqpack/release.py",),
-        outputs=(
-            "packing/atlas/known-best/known-best-1-100.svg",
-            "packing/atlas/known-best/known-best-1-100.png",
-            "packing/atlas/known-best/known-best-1-100@2x.png",
-            "packing/atlas/known-best/known-best-1-100-card.png",
-            "packing/atlas/known-best/known-best-1-324.svg",
-            "packing/atlas/known-best/known-best-1-324.png",
-            "packing/atlas/known-best/square-packings-100-20261008.pdf",
-            "packing/atlas/known-best/square-packings-324-20261008.pdf",
-        ),
-        reason=(
-            "The independent infographic history imports the already printed "
-            "v0.5.0 baseline. Both retained drawings and every PDF/PNG export "
-            "remain unchanged in Git; no infographic redraw is part of this cut."
         ),
     ),
 )
@@ -741,6 +733,42 @@ def successor_version(version: str, impact: ReleaseImpact) -> str:
     if impact == "minor":
         return f"v{major}.{minor + 1}.0"
     raise ValueError(f"unknown release impact {impact!r}; choose patch or minor")
+
+
+def published_infographic_version(repo: Path) -> str:
+    """Read the authoritative main edition without executing prior release source.
+
+    A working-tree successor stays a candidate through review, including redraws.
+    Main retains the published baseline; pre-policy main used the site history.
+    """
+    result = subprocess.run(
+        ["git", "-C", str(repo), "show", "origin/main:packing/src/sqpack/release.py"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode:
+        raise ValueError(
+            "an infographic redraw requires the local origin/main publication baseline"
+        )
+    fields = {
+        target.id: node.value
+        for node in ast.parse(result.stdout).body
+        if isinstance(node, ast.Assign)
+        for target in node.targets
+        if isinstance(target, ast.Name)
+    }
+    history = fields.get("INFOGRAPHIC_HISTORY", fields.get("PUBLICATION_HISTORY"))
+    if isinstance(history, (ast.Tuple, ast.List)) and history.elts:
+        first = history.elts[0]
+        if isinstance(first, ast.Call):
+            for keyword in first.keywords:
+                if keyword.arg == "version" and isinstance(keyword.value, ast.Constant):
+                    version = keyword.value.value
+                    if isinstance(version, str):
+                        parsed_version(version)
+                        return version
+    raise ValueError("main has no literal published infographic history head")
 
 
 def validate_release_impacts(
@@ -807,7 +835,7 @@ def validate_release_impacts(
 #: fresh render, so a link naming the build commit would fail their drift check forever. It is
 #: in no version string. It moves when the claim documents are regenerated for an edition. It
 #: must be a commit on `main`; the site's own links name `main` itself (`devtools.repo_links`).
-PUBLICATION_REVISION = "6279bd0e"
+PUBLICATION_REVISION = "07f01438"
 
 
 def data_pathspec() -> tuple[str, ...]:
