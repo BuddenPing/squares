@@ -3301,8 +3301,13 @@ results:
         held, from 0.0501 to 0.0021 below Trump's packing, and it is this project's T-026
         certificate adopted and carried further outside it. The mathematics is Overbeck's;
         this repository's part is the replay and the method-distinct second decision.
-      scored: '2026-09-29'
-      by: session-161 (repository; draft)
+
+        Confirmed on 11 October against its neighbours: T-018, T-022 and T-024 to T-026 are
+        S5 for smaller movements at the same case, and T-061, the 3.9e-9 step above this
+        bound, is S2 because it changes no stated digit of the gap; the step here is the
+        largest in the case's history, and who made it does not enter the score.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms session-161's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[Kleddamag n11 2026]']
@@ -3323,6 +3328,7 @@ results:
       - E-n011-kleddamag-3875-report
       - E-n011-kleddamag-3875-source-replay
       - E-n011-kleddamag-3875-native-parent-core
+      - E-n011-kleddamag-3875-esummins-replay-report
     artifacts:
       - packing/resources/web/external-square-certificates-2026-09-22/README.md
       - packing/resources/web/external-square-certificates-2026-09-22/kleddamag-11/PROOF.md
@@ -3344,6 +3350,13 @@ results:
       (epistemics.md, No Blind Trust); none is retained for this result, so it stands at
       V3/C3: machine-checked, review record pending. The oversight record restores the
       rung.
+
+      On 12 October 2026 E. Summins' n = 11 lab reported on jlevy/squares#521 a re-run of
+      the release's own Python sweep over all 12,028 rows, none differing from the
+      release's recorded evidence, with the release's controls and a spot check of 3,240
+      poses in the lab's own arithmetic (E-n011-kleddamag-3875-esummins-replay-report). The
+      spot check was re-run here and reproduced the lab's rows. The sweep is the
+      producer's code, so the re-run is a reproduction beside the rung and moves none.
     next_rung: >-
       V4 and C4 need two adversarial AI reviews by distinct reviewers of the complete claim
       and a human oversight record. The two 2026-09-22 reviews are mapped and each reads one
@@ -3388,11 +3401,15 @@ results:
       score: 3
       rationale: >-
         Raised the verified lower bound at n = 17 by 0.0067 over R012 and brought into the
-        record the mixed point/threshold parent-core architecture every later n = 17 rung
-        is built on. Scored as T-015 and T-032 were: a result by others replayed here, on this
-        project's weighted method extended by others.
-      scored: '2026-09-29'
-      by: session-161 (repository; draft)
+        record the mixed point/threshold parent-core architecture every later n = 17 rung is
+        built on. S3 by the T-015 and T-032 precedent, read as the rubric reads it: a result
+        by others takes the score its claim would take from anyone, and the replay here is
+        confirmation, not significance. Confirmed on 11 October: the parent-core charge is
+        the architecture of Overbeck's n = 11 certificate (T-037) at a second count, a
+        further size from one generator at S3 by T-020's calibration, beside T-032 at the
+        same count.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms session-161's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[Kleddamag n17 certified bound]']
@@ -3460,12 +3477,15 @@ results:
     significance:
       score: 3
       rationale: >-
-        A substantive case result that held the verified field at n = 17 for two days. Its
-        movement, 0.000229, is small, and it adds three-of-five groups under the k-of-m rule
-        already reviewed at n = 11 to T-038's architecture. S3 by the T-015 and T-032
-        precedent, at the low end of it.
-      scored: '2026-09-29'
-      by: session-161 (repository; draft)
+        A substantive case result: it adds three-of-five groups under the k-of-m rule
+        already reviewed at n = 11 to T-038's architecture, new certificate content at one
+        count, and the movement, 0.000229, is small. S3 by the T-015 and T-032 precedent, at
+        the low end of it. Confirmed on 11 October against T-043 (S3, one added orbit) and
+        against T-042 and T-093 (S2), which rebuild cores or refine the catalogue on an
+        unchanged charge; the score is of the certificate's content, not of the two days it
+        held the field.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms session-161's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[Guzhou0806 n17 R052]']
@@ -3531,12 +3551,16 @@ results:
       score: 3
       rationale: >-
         Raised the verified lower bound at n = 17 by 0.02, with T-041's 0.01999 the largest
-        step of the ladder after R012's 0.02305, and it is the release that introduced the weighted-threshold and winning-subset charge features that
-        4.66001, R067 and R068 reuse. Those features could argue for S4's reusable
-        technique, but they are others' extension of the weighted method this project
-        banked, so it is held at S3 as T-032 was.
-      scored: '2026-09-29'
-      by: session-161 (repository; draft)
+        step of the ladder after R012's 0.02305, and it is the release that introduced the
+        weighted-threshold and winning-subset charge features that 4.66001, R067 and R068
+        reuse. S3 by the T-015 and T-032 precedent, a result by others scored as its claim
+        would be from anyone. Confirmed on 11 October: the features could argue for S4's
+        reusable technique, but they have been reused at n = 17 alone (T-041, T-043, T-093),
+        one case's ladder, as T-133's transfer and T-145's kernel are one count and not yet
+        a family (S3 with the technique noted); T-047's certificate kind, reused at every
+        count from 18 to 126, is what a reusable technique at S4 looks like here.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms session-161's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[Kleddamag n17 4.640020]']
@@ -3605,9 +3629,10 @@ results:
       rationale: >-
         Raised the verified lower bound at n = 17 by 0.01999 on T-040's checkers and budget
         rules, with a larger dictionary of the same features. A substantive case result, S3
-        by the T-015 and T-032 precedent.
-      scored: '2026-09-29'
-      by: session-161 (repository; draft)
+        by the T-015 and T-032 precedent. Confirmed on 11 October beside T-040 and T-043: a
+        larger dictionary of the features T-040 introduced, at one count.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms session-161's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[Kleddamag n17 4.66001]']
@@ -3673,11 +3698,16 @@ results:
     significance:
       score: 2
       rationale: >-
-        True and replayed in full, but superseded on its publication day by R068 before it
-        held any field: a citable intermediate, +0.00017 over T-041, that changes no
-        standing bound. Registered because it was replayed and reviewed here.
-      scored: '2026-09-29'
-      by: session-161 (repository; draft)
+        True and replayed in full: T-041's charge unchanged at a larger parent side with
+        strict cores rebuilt, +0.00017 over T-041, a step that spends an existing
+        certificate's slack and adds no orbit, rule or weight. A citable detail that changes
+        no standing bound, S2, as T-093 (the same construction, 2.75e-6 further) and T-078
+        (a rescaling at n = 12) are; T-043, one added orbit, is S3. That R068 superseded it
+        on its publication day is a fact about the frontier and does not enter the score,
+        which is of what the step changes. Registered because it was replayed and reviewed
+        here. Confirmed on 11 October.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms session-161's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[Guzhou0806 n17 R067]']
@@ -3740,12 +3770,14 @@ results:
     significance:
       score: 3
       rationale: >-
-        The case's verified lower bound, +0.00043 over T-041 from one added point orbit on an
-        unchanged charge and a finer catalogue. A substantive case result at S3 by the T-015
-        and T-032 precedent; the movement is small, and this repository's replay is the first
-        local validation of it on record.
-      scored: '2026-09-29'
-      by: session-161 (repository; draft)
+        The case's verified lower bound, +0.00043 over T-041 from one added point orbit on
+        an unchanged charge and a finer catalogue. A substantive case result at S3 by the
+        T-015 and T-032 precedent; the movement is small, and this repository's replay is
+        the first local validation of it on record. Confirmed on 11 October: one added orbit
+        is new content, as T-039's rule is, and sets it above T-042 and T-093, which refine
+        an unchanged charge.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms session-161's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[Guzhou0806 n17 R068]']
@@ -3821,8 +3853,14 @@ results:
         Green values DS7 has reported without proof since 2009 and above Nagamochi's closed
         form by 0.02 to 0.21. A substantive family of case results at S3; the generator and
         verifier are this project's, run by someone else, so it is not S4's new technique.
-      scored: '2026-09-29'
-      by: session-161 (repository; draft)
+        Confirmed on 11 October against T-019 and T-020 (S4): their anchor was the
+        displacement of published values by the first certificates of a new generator, and
+        T-020 itself set further sizes from it at S3; ten certificates at ten counts are
+        further sizes, whoever runs the generator, and a bound family in the S4 sense is one
+        argument at every count (T-064, T-081), not many certificates (T-045, T-046, T-056,
+        all S3).
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms session-161's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[wand125 point bounds 2026]']
@@ -3917,10 +3955,11 @@ results:
       score: 3
       rationale: >-
         Raised the verified lower bound at n = 27 and 28 by 0.092 and at n = 31 by 0.21 over
-        Tokoharu's values (T-047), on Tokoharu's method with larger certificates. Substantive
-        case results, S3.
-      scored: '2026-09-29'
-      by: session-161 (repository; draft)
+        Tokoharu's values (T-047), on Tokoharu's method with larger certificates.
+        Substantive case results, S3. Confirmed on 11 October beside T-047 (S4, the
+        technique) and T-068, T-070 and T-074 (S3, further certificates of the same kind).
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms session-161's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[wand125 rectangle bounds 2026]']
@@ -4030,9 +4069,11 @@ results:
         Scored as a claim: if the replays pass, these are the strongest lower bounds on
         record at 48 counts, above Green's DS7 reports and every certificate the register
         holds at those sizes. The score is of what the reports would establish; V0/C0 says
-        how far they stand, and the score gates nothing.
-      scored: '2026-09-29'
-      by: session-161 (repository; draft)
+        how far they stand, and the score gates nothing. Confirmed on 11 October:
+        forty-eight counts by one certificate kind are further sizes from one generator, S3
+        as T-045 and T-068 are, and not a bound family in the S4 sense of T-064 and T-081.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms session-161's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[wand125 rectangle bounds 2026]', '[wand125 rectangle bounds 2026-09-28]']
@@ -4126,11 +4167,15 @@ results:
       rationale: >-
         Scored at S4 by the anchor "a reusable technique": the rectangle-density certificate
         and its interval verifier are Tokoharu's, and wand125's certificates at 48 counts
-        (T-045, T-046) and its n = 50 checker (T-048) are built on them. Its own bounds moved
-        n = 26 to 31 by 0.02 to 0.38 over Nagamochi's closed form; at n = 11 it is below the
-        standing bound and never held a field.
-      scored: '2026-09-29'
-      by: session-161 (repository; draft)
+        (T-045, T-046) and its n = 50 checker (T-048) are built on them. Its own bounds
+        moved n = 26 to 31 by 0.02 to 0.38 over Nagamochi's closed form; at n = 11 it is
+        below the standing bound and never held a field. Confirmed on 11 October: the
+        certificate kind that every rectangle, mixed and linear measure entry from T-045 to
+        T-144 rests on, the widest reuse of any technique in the register, beside T-017 (S4,
+        the weighted point generator and its ladder) and T-051 and T-052 (S4, the covers
+        behind the exact values).
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms session-161's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[Tokoharu density 2026]']
@@ -4209,10 +4254,13 @@ results:
         at n = 51 by 0.236, and stands 0.0826 above Green's reported value at n = 50. The
         two changes to Tokoharu's checker were read and found legitimate on 2026-09-28. A
         substantive case result at S3. The closed form has been a reported bound since
-        Karakuş's finding (T-085, merged 2026-10-03), so the margins over the verified
-        floor it left, Karakuş's general bound, are larger.
-      scored: '2026-09-29'
-      by: session-161 (repository; draft)
+        Karakuş's finding (T-085, merged 2026-10-03), so the margins over the verified floor
+        it left, Karakuş's general bound, are larger. Confirmed on 11 October: the mixed
+        certificate, point masses beside rectangle densities, is a kind within Tokoharu's
+        framework, as T-073's linear measure is, and an extension at one count is S3 with
+        the kind noted, as T-073 is; T-047, the framework, holds the S4.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms session-161's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[wand125 point and mixed bounds 2026-09-28]']
@@ -4306,13 +4354,15 @@ results:
     significance:
       score: 3
       rationale: >-
-        Raised the verified lower bound at n = 12 by 0.0086 to within 0.0314 of the grid's 4,
-        on two methods. The method is Burns's and Massaccesi's, as this repository's own
-        n = 12 ladder is; the instance is new. A substantive case result, S3. It entered
-        its source ten days before T-017 was scored, which bears on T-017's "first lower
-        bound specific to n = 12" (the plan's open question 3) but not on this score.
-      scored: '2026-09-29'
-      by: session-161 (repository; draft)
+        Raised the verified lower bound at n = 12 by 0.0086 to within 0.0314 of the grid's
+        4, on two methods. The method is Burns's and Massaccesi's, as this repository's own
+        n = 12 ladder is; the instance is new. A substantive case result, S3. It entered its
+        source ten days before T-017 was scored, which bears on T-017's "first lower bound
+        specific to n = 12" (the plan's open question 3) but not on this score. Confirmed on
+        11 October beside T-017 (S4, the n = 12 generator and its ladder) and T-079 and
+        T-095 (S3, re-weightings of these points): an instance of the method at one count.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms session-161's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[evand square-packing 2026]']
@@ -4387,9 +4437,11 @@ results:
       rationale: >-
         Moved n = 21 by 0.115 over T-034 to within 5/1001 of the grid's 5, past this
         repository's own fixed-shrink ceiling of 4.9885 for the format. A substantive case
-        result, S3; superseded within two days by the same author's exact value.
-      scored: '2026-09-29'
-      by: session-161 (repository; draft)
+        result, S3; superseded within two days by the same author's exact value. Confirmed
+        on 11 October: supersession does not lower a score, and the step, 0.115 at one
+        count, is a case result as T-021 and T-034 are.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms session-161's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[evand square-packing 2026]']
@@ -4462,13 +4514,17 @@ results:
     significance:
       score: 4
       rationale: >-
-        An exact value for a case that was open, the first this record holds for
-        s(k^2 - 4) with k >= 4, 0.204 above Nagamochi's closed form. S4 by the anchor "a
-        reusable technique": the zero-margin closed cover decided by exhaustive pose-space
+        An exact value for a case that was open, the first this record holds for s(k^2 - 4)
+        with k >= 4, 0.204 above Nagamochi's closed form. S4 by the anchor "a reusable
+        technique": the zero-margin closed cover decided by exhaustive pose-space
         subdivision, which the same author carried to n = 21 and 45 (T-052, T-053) and
-        wand125 to n = 45 (T-054). Not S5: n = 32 is not a central open case of this project.
-      scored: '2026-09-29'
-      by: session-161 (repository; draft)
+        wand125 to n = 45 (T-054). Not S5: n = 32 is not a central open case of this
+        project. Confirmed on 11 October: the first instance of the cover technique, which
+        T-052, T-053, T-062, T-066 and T-067 and the family theorems T-064 and T-081 reuse;
+        the later single-count instances are S3 (T-053, T-062, T-066, T-067) and the
+        families S4.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms session-161's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[evand square-packing 2026]']
@@ -4618,9 +4674,13 @@ results:
         An exact value for a case that was open, the second of the s(k^2 - 4) family after
         T-051, and the release that introduced line mass on the grid lines, which is what
         makes a zero-margin cover below the count possible at an integer side. S4 by the
-        anchor "a reusable technique"; T-053 reuses it at n = 45.
-      scored: '2026-09-29'
-      by: session-161 (repository; draft)
+        anchor "a reusable technique"; T-053 reuses it at n = 45. Confirmed on 11 October:
+        line mass is the idea every later exact value at an integer side uses (T-053, T-062,
+        T-066, T-067, T-064, T-081), which is what a reusable technique at S4 means here;
+        T-073's segments at n = 83 and 101 to 105 are an extension within a framework and
+        are S3.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms session-161's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[evand square-packing 2026-09-28]']
@@ -4693,15 +4753,19 @@ results:
     verification: V3
     confirmation: C3
     significance:
-      score: 4
+      score: 3
       rationale: >-
-        An exact value for a case that was open, 0.169 above Nagamochi's closed form, and the
-        third of the family s(k^2 - 4) = k for k = 5, 6, 7 with T-051 and T-052. The technique
-        is T-052's, which alone would argue for S3 by the calibration T-020 wrote, but that
-        calibration exempts a case that changes character, and this one goes from open to
-        solved; with its two siblings it is a bound family, so S4.
-      scored: '2026-09-29'
-      by: session-161 (repository; draft)
+        An exact value for a case that was open, 0.169 above Nagamochi's closed form, by the
+        technique of T-052 at a third count. S3 by the anchor 'a substantive case result',
+        as T-062 (s(60) = 8), T-066 (s(59) = 8) and T-067 (s(77) = 9) are: the recipe's
+        first instances, T-051 and T-052, hold the S4 for the technique, and the family
+        s(k^2 - 4) = k is T-081's claim and carries its S4 there. The draft's S4 rested on
+        this count going from open to solved and on three siblings making a bound family;
+        every exact value closes a case, and a family in the S4 sense is one argument at
+        every k, not three certificates. Changed from S4 on 11 October, as the 2 October
+        review of T-062 asked, so that the two carry one score.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; changes session-161's draft from S4)
     novelty: previously-published
     attribution:
       source_keys: ['[evand square-packing 2026-09-28]']
@@ -4771,11 +4835,13 @@ results:
     significance:
       score: 2
       rationale: >-
-        A second certificate for a value T-053 already holds, decided by the same checker. It
-        shows the value yields to points alone, with a uniform pointwise margin of 8.35e-4, a
-        citable detail that changes no theorem.
-      scored: '2026-09-29'
-      by: session-161 (repository; draft)
+        A second certificate for a value T-053 already holds, decided by the same checker.
+        It shows the value yields to points alone, with a uniform pointwise margin of
+        8.35e-4, a citable detail that changes no theorem. Confirmed on 11 October beside
+        T-055 and T-066: a second route at a count the record already holds is a citable
+        detail; a second route at a new count (T-066) is a case result.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms session-161's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[wand125 point and mixed bounds 2026-09-28]']
@@ -4852,9 +4918,9 @@ results:
       rationale: >-
         A second, point-only route to a value T-052 already holds, with a positive-margin
         threshold rather than a zero-margin cover and a Lean reduction of its own. A citable
-        detail that changes no theorem.
-      scored: '2026-09-29'
-      by: session-161 (repository; draft)
+        detail that changes no theorem. Confirmed on 11 October beside T-054.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms session-161's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[wand125 point and mixed bounds 2026-09-28]']
@@ -4950,9 +5016,14 @@ results:
         count, 28 of them by more than 0.001, and each moves this repository's verified
         ceiling off the integer grid onto a certified packing, so 46 cases stop trailing
         their report. S3 by the anchor "a substantive case result"; the source publishes no
-        method, so nothing here is a reusable technique.
-      scored: '2026-09-29'
-      by: issue #227 intake (repository; draft)
+        method, so nothing here is a reusable technique. Confirmed on 11 October: new
+        packings lowering 49 best known sides by 3.0e-8 to 0.022 are case results, as T-092,
+        T-113 to T-116 and T-136 are; the exact re-solves and regularizations of packings
+        already credited (T-098, T-101, T-146) are S2. Against T-019 and T-020 (S4): a bound
+        family is one argument at every count, not many packings, and the source publishes
+        no method.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the issue 227 intake's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[franciscouzo square-packing 2026-09-27]']
@@ -5037,9 +5108,11 @@ results:
         Kingbird catalogue and this record, which show s(k^2 - k + 1) < k at n = 241, 273
         and 307 (k = 16 to 18) and hold the grid at n = 31 to 183 (k = 6 to 14), the
         smallest k shown to satisfy it drops from 16 to 15. S3 by the anchor "a substantive
-        case result"; the margin, about 0.002, changes nothing beyond this count.
-      scored: '2026-09-29'
-      by: issue #227 intake (repository; draft)
+        case result"; the margin, about 0.002, changes nothing beyond this count. Confirmed
+        on 11 October beside T-135 (S3), the packing of 308 squares below the grid: one new
+        packing below an integer side.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the issue 227 intake's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[de Winter n211 2026-09-16]']
@@ -5102,9 +5175,13 @@ results:
     confirmation: C3
     significance:
       score: 2
-      rationale: A tooling limit that could prematurely stop searches; resolving its premises affects safe integration but establishes no new packing bound.
-      scored: '2026-09-29'
-      by: W2 tools intake (repository)
+      rationale: >-
+        A tooling limit that could prematurely stop searches; resolving its premises affects
+        safe integration but establishes no new packing bound. Confirmed on 11 October
+        beside T-003 (S2), the other method limit in the register: a ceiling on what a
+        certificate format can give, which bounds nothing about s(n).
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the W2 tools intake's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[wand125 tools 2026]']
@@ -5166,9 +5243,13 @@ results:
     confirmation: C3
     significance:
       score: 2
-      rationale: A reusable independent row-checking implementation worth replaying; the existing n11 bound does not change.
-      scored: '2026-09-29'
-      by: W2 tools intake (repository)
+      rationale: >-
+        A reusable independent row-checking implementation worth replaying; the existing n11
+        bound does not change. Confirmed on 11 October: a same-implementation replay of row
+        minima of a certificate the record had already decided in full (T-037) is a citable
+        detail; T-004 (S3) is a machine audit of a published proof that had none.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the W2 tools intake's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[wand125 tools 2026]']
@@ -5385,15 +5466,22 @@ results:
     significance:
       score: 2
       rationale: >-
-        It strictly raises the verified lower bound at a central case, which the S5
-        anchor names, but by 31/7999999992, about 3.9e-9, spending the slack of T-037's
-        certificate after a reweighting; the release itself calls it a proof-of-slack
-        result, and these data admit at most about twice the step. The case's gap to
-        Trump's packing, 0.0020836, does not change at any printed digit, so it is scored
-        as a citable detail rather than movement; T-042 is the precedent for scoring a
-        true, fully replayed step by what it changes.
-      scored: '2026-09-30'
-      by: issue #247 intake (repository; draft)
+        It strictly raises the verified lower bound at a central case, which the S5 anchor
+        names, but by 31/7999999992, about 3.9e-9, spending the slack of T-037's certificate
+        after a reweighting; the release itself calls it a proof-of-slack result, and these
+        data admit at most about twice the step. The case's gap to Trump's packing,
+        0.0020836, does not change at any printed digit, so it is scored as a citable detail
+        rather than movement; T-042 is the precedent for scoring a true, fully replayed step
+        by what it changes.
+
+        Confirmed on 11 October against T-022 (S5), which also spends an existing
+        certificate's slack at this case: T-022's step, 2.6e-5, changed the stated gap and
+        proved the dilation-limit theorem that T-024, T-026 and T-033 reuse; this step
+        changes no stated digit and proves nothing new, so it is S2 with T-078 and T-093,
+        the other slack-spending steps. The line between them is what the step changes at
+        the precision the record states the gap, not the case.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the issue 247 intake's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[Wang Li n11 2026]']
@@ -5488,12 +5576,13 @@ results:
       score: 3
       rationale: >-
         An exact value for a case that was open, by the line-cover recipe of T-052 and T-053
-        carried to side 8, adding no technique: a substantive case result, S3. The 2 October
-        review of the geometric premises confirmed the draft, and noted that the family
-        argument that lifted T-053 to S4 applies here exactly as there, so the two should
-        carry one score; which one is the rescoring pass's (think-qh3s).
-      scored: '2026-10-02'
-      by: think-x73z stage 4 review, confirming the W1 and W2 draft (repository)
+        carried to side 8, adding no technique: a substantive case result, S3, beside T-066
+        (s(59) = 8) and T-067 (s(77) = 9). The 2 October review of the geometric premises
+        confirmed the draft and asked that T-053 carry the same score; on 11 October T-053
+        was moved to S3 with it, the recipe's first instances T-051 and T-052 holding the S4
+        for the technique and the family s(k^2 - 4) = k its S4 at T-081.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; resolves the pair with T-053 that the think-x73z stage 4 review, which confirmed S3, left open)
     novelty: previously-published
     attribution:
       source_keys: ['[evand square-packing 2026-10-01]']
@@ -5584,13 +5673,19 @@ results:
     verification: V3
     confirmation: C3
     significance:
-      score: 1
+      score: 3
       rationale: >-
-        A routine consequence of T-062, immediate once its premise is proved, though it
-        closes a second open case. The 2 October review of the geometric premises confirmed
-        the draft.
-      scored: '2026-10-02'
-      by: think-x73z stage 4 review, confirming the W1 and W2 draft (repository)
+        s(61) = 8, an exact value for a case that was open, by one line of monotonicity from
+        T-062. The score is of the claim, and the claim settles a case: S3, as T-002 and
+        T-016, the register's other monotone corollaries, carry their premises' S3 to the
+        counts they move, and as T-144 carries five counts at S3. The derivation's
+        triviality is recorded in composition and next_rung, which give it nothing of its
+        own, and not in the score; the S1 anchor, a routine consequence, is for an entry
+        that establishes nothing the record did not hold, as T-129's custody is. Changed
+        from S1 on 11 October; the 2 October review had confirmed S1 and left the pair with
+        T-016 to this pass.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; changes the S1 the think-x73z stage 4 review confirmed)
     novelty: previously-published
     attribution:
       source_keys: ['[evand square-packing 2026-10-01]']
@@ -5718,12 +5813,14 @@ results:
     significance:
       score: 4
       rationale: >-
-        Scored as a claim: a bound family, which would settle eleven open cases of this
-        record and every later k if the finite premise and its reduction pass replay and
-        review here. S4 by the anchor "a reusable technique, bound family"; the score gates
-        nothing.
-      scored: '2026-10-01'
-      by: W1 and W2 source intake
+        A bound family: one argument at every k >= 6 that settled nine cases of this record,
+        k = 10 to 18, which were open, and proved four others again. S4 by the anchor 'a
+        reusable technique, bound family', as T-081 is; T-084 and T-086, infinite families
+        whose values were already held as proved, are S3; and no case it settles is central
+        to this project, so not S5. Confirmed on 11 October; the draft scored the same claim
+        as a report, and the score gates nothing.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the W1 and W2 source intake's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[evand square-packing 2026-10-01]']
@@ -5862,14 +5959,19 @@ results:
     verification: V3
     confirmation: C3
     significance:
-      score: 3
+      score: 2
       rationale: >-
-        The first verified upper bound at n = 17 below the grid's 5: the case's verified
-        bracket becomes 4.66044 < s(17) <= 4.67553009..., both ends machine-checked, where
-        the upper end was a reported catalogue value. S3 by the anchor "a substantive case
-        result or machine audit"; it moves no reported bound.
-      scored: '2026-10-01'
-      by: think-7nez registration (repository; draft)
+        Certifies Bidwell's 1998 packing exactly, from Overbeck's rational witness, so the
+        case's verified bracket became 4.66044 < s(17) <= 4.67553009..., both ends
+        machine-checked where the upper end had been a reported catalogue value; it moves no
+        reported bound and claims no new packing. S2 by the anchor 'a citable detail that
+        changes no theorem', as T-011 is, the exact validation of Trump's 1979 packing at n
+        = 11, and as T-098 and T-101 are, exact certificates of 125 catalogue packings that
+        took 75 verified ceilings off the integer grid. The draft's S3 rested on the ceiling
+        leaving the grid, which is a fact about this record's verification and not about the
+        claim. Changed from S3 on 11 October.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; changes the think-7nez registration's draft from S3)
     novelty: previously-published
     attribution:
       source_keys: ['[Kleddamag n17 certified bound]']
@@ -6198,9 +6300,11 @@ results:
         The strongest rectangle-density lower bounds on record at 34 counts when published,
         each above the certificate T-046 reports there; through T-074's replays, 29 of them
         raised the verified lower bound. Further sizes and raised rungs from one generator
-        at S3. The 2 October review of these certificates confirmed S3.
-      scored: '2026-10-01'
-      by: 'think-6ei5 import, registering lane (repository; draft)'
+        at S3. The 2 October review of these certificates confirmed S3. Confirmed on 11
+        October beside T-045, T-070, T-074 and T-077, further certificates of T-047's kind
+        at S3.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the think-6ei5 registering lane's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[wand125 rectangle bounds 2026-10-01]']
@@ -6502,9 +6606,10 @@ results:
         and on 6 October at n = 51, 57 and 72, by 0.0425, 0.0525 and 0.019 over the mixed
         certificates of T-048 and T-091 and T-074's n = 56 certificate. Substantive case
         results, S3, as T-045. The closed form has been a reported bound since Karakuş's
-        finding (T-085, merged 2026-10-03).
-      scored: '2026-10-02'
-      by: think-6ei5 stage 4, registering lane (repository; draft)
+        finding (T-085, merged 2026-10-03). Confirmed on 11 October beside T-045, T-068 and
+        T-074, further certificates of T-047's kind at S3.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the think-6ei5 registering lane's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[wand125 rectangle bounds 2026-09-28]']
@@ -6821,13 +6926,16 @@ results:
       rationale: >-
         Raised the verified lower bound at five counts, n = 101 to 105 (T-080), and
         confirmed n = 83's value below the replayed 937/100 there; when registered, the
-        strongest lower bounds on record at six counts, past Green's reported values at
-        n = 83 and n = 101 and past Nagamochi's at n = 105, by a certificate kind new to
-        this record that adds points and segments to the rectangle densities. Further sizes from one generator at S3. The 2 October review of the certificates confirmed S3: the kind is new here,
-        but the technique is the measure argument with Tokoharu's net and checker, extended
-        by two capture bounds.
-      scored: '2026-10-02'
-      by: 'think-m7cm import, registering lane (repository; draft)'
+        strongest lower bounds on record at six counts, past Green's reported values at n =
+        83 and n = 101 and past Nagamochi's at n = 105, by a certificate kind new to this
+        record that adds points and segments to the rectangle densities. Further sizes from
+        one generator at S3. The 2 October review of the certificates confirmed S3: the kind
+        is new here, but the technique is the measure argument with Tokoharu's net and
+        checker, extended by two capture bounds. Confirmed on 11 October: a kind within the
+        framework at six counts, S3 with the kind noted, as T-048's mixed kind is; T-080 and
+        T-144 carry it to new sizes at S3.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the think-m7cm registering lane's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[wand125 linear certificates 2026-10-02]']
@@ -6937,10 +7045,12 @@ results:
         Nagamochi's closed form at n = 57 and 58, on Tokoharu's method with larger
         certificates. Substantive case results, S3, as T-045 and T-070; the 2 October review
         of T-068 confirmed S3 for these certificates. The closed form has been a reported
-        bound since Karakuş's finding (T-085, merged 2026-10-03); the floors it left at
-        n = 57 and 58, T-044's 381/50 and Karakuş's general bound, are lower still.
-      scored: '2026-10-02'
-      by: think-6ei5 stage 4, registering lane (repository; draft)
+        bound since Karakuş's finding (T-085, merged 2026-10-03); the floors it left at n =
+        57 and 58, T-044's 381/50 and Karakuş's general bound, are lower still. Confirmed on
+        11 October beside T-045, T-068 and T-070, further certificates of T-047's kind at
+        S3.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the think-6ei5 registering lane's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[wand125 rectangle bounds 2026-10-01]']
@@ -7043,9 +7153,10 @@ results:
         Raised the verified lower bound at nine counts, n = 83 to 96, the first above
         Nagamochi's value at n = 96. Further sizes from the generator and checker of T-069,
         T-071 and T-072, with no new technique, at S3 as those are; the 2 October review of
-        the afternoon certificates proposed S3, which the replays leave standing.
-      scored: '2026-10-03'
-      by: think-r7yt stage 4, the records lane keeping the registering lane's draft (repository)
+        the afternoon certificates proposed S3, which the replays leave standing. Confirmed
+        on 11 October beside T-069, T-071 and T-072.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the think-r7yt records lane's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[wand125 mixed bounds afternoon 2026-10-02]']
@@ -7185,16 +7296,17 @@ results:
     significance:
       score: 3
       rationale: >-
-        Raised the verified lower bound at n = 82 from Nagamochi's closed form past
-        Green's reported value, the one count from 82 to 85 where the record still
-        reported Green's value,
-        by a certificate of T-073's kind that does not rest on Green's argument. A further
-        size from one generator and checker, at S3 as T-073 is; the 2 October review of the afternoon certificates proposed S3, which the replay
-        leaves standing. Nagamochi's closed form has been a reported bound since Karakuş's
-        finding (T-085, merged 2026-10-03); on the merged record the verified floor this
-        replay raised at n = 82 was Karakuş's general bound (T-083), lower still.
-      scored: '2026-10-03'
-      by: think-r7yt stage 4, the records lane keeping the registering lane's draft (repository)
+        Raised the verified lower bound at n = 82 from Nagamochi's closed form past Green's
+        reported value, the one count from 82 to 85 where the record still reported Green's
+        value, by a certificate of T-073's kind that does not rest on Green's argument. A
+        further size from one generator and checker, at S3 as T-073 is; the 2 October review
+        of the afternoon certificates proposed S3, which the replay leaves standing.
+        Nagamochi's closed form has been a reported bound since Karakuş's finding (T-085,
+        merged 2026-10-03); on the merged record the verified floor this replay raised at n
+        = 82 was Karakuş's general bound (T-083), lower still. Confirmed on 11 October
+        beside T-073 and T-080.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the think-r7yt records lane's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[wand125 linear n82 2026-10-02]']
@@ -7293,9 +7405,10 @@ results:
         Raised the verified lower bound at n = 20 and 42, by 0.0025 and 0.0125 over T-074's
         replayed certificates, and the strongest rectangle-density lower bounds on record at
         all three counts. Raised rungs from one generator, as T-068's were, at S3; the 2
-        October review of the afternoon certificates proposed S3.
-      scored: '2026-10-03'
-      by: 'think-r7yt import, registering lane (repository; draft)'
+        October review of the afternoon certificates proposed S3. Confirmed on 11 October
+        beside T-068 and T-074.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the think-r7yt registering lane's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[wand125 rectangle bounds 2026-10-02]']
@@ -7419,13 +7532,15 @@ results:
     significance:
       score: 2
       rationale: >-
-        True and replayed in full by three checkers, and it raises the verified lower
-        bound at n = 12, but by 0.000502, moving the gap to the grid's 4 from 0.0314 to
-        0.0309. It rescales T-049's certificate until a finer angle net stops accepting
-        it, which spends that certificate's slack and adds no technique, as the source
-        says itself; T-061 is the precedent for scoring such a step by what it changes.
-      scored: '2026-10-02'
-      by: think-gh2o stage 1-4 lane (repository; draft, kept by its review)
+        True and replayed in full by three checkers, and it raises the verified lower bound
+        at n = 12, but by 0.000502, moving the gap to the grid's 4 from 0.0314 to 0.0309. It
+        rescales T-049's certificate until a finer angle net stops accepting it, which
+        spends that certificate's slack and adds no technique, as the source says itself;
+        T-061 is the precedent for scoring such a step by what it changes. Confirmed on 11
+        October beside T-061 and T-093 (S2, the other slack-spending steps) and against
+        T-079 and T-095 (S3, new weights on the same points).
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the think-gh2o lane's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[squarepacker s12 2026]']
@@ -7541,10 +7656,11 @@ results:
         repository knows of. T-049, which raised it by 0.0086, is S3, and the step here is
         new weights on Daniel's geometry, not a rescaling alone. Not S4: the method, a
         weighted cover re-optimised at a finer net, is Daniel's, Burns's and Massaccesi's.
-        Not S5: pure point covers are capped well short of 4, so the central question at
-        n = 12 does not move.
-      scored: '2026-10-03'
-      by: the 2 October review of the certificate, lane RV (repository; draft, kept)
+        Not S5: pure point covers are capped well short of 4, so the central question at n =
+        12 does not move. Confirmed on 11 October beside T-095 (S3, the next re-weighting)
+        and against T-078 (S2, a rescaling).
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the 2 October certificate review's draft)
     novelty: apparently-novel
     builds_on:
       credit: [Daniel]
@@ -7769,9 +7885,12 @@ results:
         which would settle nine open cases of this record, k = 10 to 18, and every later k
         if the finite premise and its reduction pass replay and review here. S4 by the
         anchor "a reusable technique, bound family", as T-064 is; not S5, since no case it
-        settles is central to this project. The score gates nothing.
-      scored: '2026-10-03'
-      by: 'think-4uir import, registering lane (repository; draft)'
+        settles is central to this project. The score gates nothing. Confirmed on 11 October
+        beside T-064 (S4) and against T-084 and T-086 (S3): a family that settles open cases
+        against families re-proving values held; T-051 to T-053 and T-062 hold its first
+        instances as case results.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the think-4uir registering lane's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[evand square-packing 2026-10-03]']
@@ -8465,11 +8584,13 @@ results:
       rationale: >-
         Registered as the verified lower bound at n = 37 and n = 61, the only two cases
         where the piercing bound beat the floor its line of the register held; the merge of
-        3 October 2026 brought stronger replayed bounds to both, so it holds neither now.
-        S3 by the anchor "a substantive case result or machine audit"; the score is the
-        theorem's, not ours.
-      scored: '2026-10-03'
-      by: session-168 registration (repository)
+        3 October 2026 brought stronger replayed bounds to both, so it holds neither now. S3
+        by the anchor "a substantive case result or machine audit"; the score is the
+        theorem's, not ours. Confirmed on 11 October beside T-007 and T-083 (S3), the other
+        published general lower bounds registered as floors: the score is the theorem's, and
+        supersession does not lower it.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the session-168 registration's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[Basic-Slivkova 2018]']
@@ -12332,10 +12453,14 @@ results:
     confirmation: C3
     significance:
       score: 2
-      rationale: Certificate refinements of existing constructions; tiny exact improvements over newer
-        retrieved certificates, with no solved case or new arrangement.
-      scored: '2026-10-07'
-      by: think-f3dl / think-v42c import lane (repository)
+      rationale: >-
+        Exact rational refinements of Francisco Couzo's packings at n = 105 and 292,
+        lowering the case ceilings by about 2.1e-11 and 4.3e-11: re-solves of arrangements
+        the record already credits, at the scale of their rounding, which is what T-098
+        (S2), T-137 and T-139 are; a packing moved to a new optimum by 1e-6 or more (T-127,
+        T-128) is S3. No solved case or new arrangement. Confirmed on 11 October.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the think-f3dl and think-v42c import lane's draft)
     novelty: previously-published
     attribution:
       source_keys:
@@ -12385,10 +12510,11 @@ results:
     confirmation: C3
     significance:
       score: 2
-      rationale: Certificate refinements of existing constructions; tiny exact improvements over newer
-        retrieved certificates, with no solved case or new arrangement.
-      scored: '2026-10-07'
-      by: think-f3dl / think-v42c import lane (repository)
+      rationale: >-
+        The same at n = 68: a refinement of Couzo's packing by about 4.3e-12, a re-solve at
+        the scale of its rounding, S2 as T-117 and T-098 are. Confirmed on 11 October.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the think-f3dl and think-v42c import lane's draft)
     novelty: previously-published
     attribution:
       source_keys:
@@ -12440,10 +12566,13 @@ results:
     confirmation: C3
     significance:
       score: 3
-      rationale: Three strictly smaller exact feasible ceilings with complete changed poses; no solved
-        case or optimality claim.
-      scored: '2026-10-07'
-      by: 'think-hh48 #399 import'
+      rationale: >-
+        Three strictly smaller exact feasible ceilings with complete changed poses; no
+        solved case or optimality claim. Confirmed on 11 October: new arrangements lowering
+        three case ceilings, by about 3.3e-5 at n = 266, are case results as T-131 and T-135
+        are; re-solves of credited arrangements (T-117, T-137) are S2.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the think-hh48 import's draft)
     novelty: previously-published
     attribution:
       source_keys:
@@ -12501,10 +12630,13 @@ results:
     confirmation: C0
     significance:
       score: 2
-      rationale: A reported exact algebraic form for an existing source configuration, without a new
-        verified bound.
-      scored: '2026-10-07'
-      by: think-8sm2 reported source intake
+      rationale: >-
+        A reported exact algebraic form for an existing source configuration, without a new
+        verified bound: a citable detail of a packing the record already credits, S2 as
+        T-098's exact optima and T-139's more precise certificate are; a new arrangement in
+        exact form (T-126) is S3. Confirmed on 11 October.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the think-8sm2 reported source intake's draft)
     novelty: previously-published
     attribution:
       source_keys:
@@ -12546,10 +12678,13 @@ results:
     confirmation: C0
     significance:
       score: 2
-      rationale: A reported exact algebraic form for an existing source configuration, without a new
-        verified bound.
-      scored: '2026-10-07'
-      by: think-8sm2 reported source intake
+      rationale: >-
+        A reported exact algebraic form for an existing source configuration, without a new
+        verified bound: a citable detail of a packing the record already credits, S2 as
+        T-098's exact optima and T-139's more precise certificate are; a new arrangement in
+        exact form (T-126) is S3. Confirmed on 11 October.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the think-8sm2 reported source intake's draft)
     novelty: previously-published
     attribution:
       source_keys:
@@ -12591,10 +12726,13 @@ results:
     confirmation: C0
     significance:
       score: 2
-      rationale: A reported exact algebraic form for an existing source configuration, without a new
-        verified bound.
-      scored: '2026-10-07'
-      by: think-8sm2 reported source intake
+      rationale: >-
+        A reported exact algebraic form for an existing source configuration, without a new
+        verified bound: a citable detail of a packing the record already credits, S2 as
+        T-098's exact optima and T-139's more precise certificate are; a new arrangement in
+        exact form (T-126) is S3. Confirmed on 11 October.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the think-8sm2 reported source intake's draft)
     novelty: previously-published
     attribution:
       source_keys:
@@ -12636,10 +12774,13 @@ results:
     confirmation: C0
     significance:
       score: 2
-      rationale: A reported exact algebraic form for an existing source configuration, without a new
-        verified bound.
-      scored: '2026-10-07'
-      by: think-8sm2 reported source intake
+      rationale: >-
+        A reported exact algebraic form for an existing source configuration, without a new
+        verified bound: a citable detail of a packing the record already credits, S2 as
+        T-098's exact optima and T-139's more precise certificate are; a new arrangement in
+        exact form (T-126) is S3. Confirmed on 11 October.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the think-8sm2 reported source intake's draft)
     novelty: previously-published
     attribution:
       source_keys:
@@ -12856,10 +12997,15 @@ results:
     confirmation: C0
     significance:
       score: 2
-      rationale: Reported local structure for a named configuration roster; no global optimum or new
-        feasible bound.
-      scored: '2026-10-07'
-      by: think-juuq reported source intake
+      rationale: >-
+        Reported local structure for a named configuration roster; no global optimum or new
+        feasible bound. A non-strict local minimum under a stated perturbation convention is
+        a property of each packing short of rigidity: T-012 to T-014 (S3) prove rigidity and
+        its failure at single famous cases with machinery the corpus lacked, and T-036 and
+        T-112 (S3) are optimality statements; this is weaker than either at every count, and
+        reported, so S2. Confirmed on 11 October.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the think-juuq reported source intake's draft)
     novelty: previously-published
     attribution:
       source_keys:
@@ -12925,10 +13071,14 @@ results:
     confirmation: C3
     significance:
       score: 3
-      rationale: Rational certificates improve the pre-intake ceilings at 18 counts; 17 are currently
-        selected alongside separate radical n51. No solved case or lower-bound theorem.
-      scored: '2026-10-08'
-      by: think-1cvf source integration
+      rationale: >-
+        Rational certificates of ry-xu's packings that improved the pre-intake ceilings at
+        18 counts, by about 1.3e-3 at n = 102 and between 1e-7 and 1e-2 at the others as the
+        11 October grading review measured; 17 are selected, with the radical form at n = 51
+        (T-126) beside them. New arrangements moving case ceilings are case results, S3, as
+        T-127 and T-128 are; no solved case or lower-bound theorem. Confirmed on 11 October.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the think-1cvf source integration's draft)
     novelty: previously-published
     attribution:
       source_keys:
@@ -12958,8 +13108,9 @@ results:
       The same adoption moved the houses at 84, 86, 105, 108, 126, 127, 131, 175 and 267 to
       smaller confirmed certificates: Francisco Couzo's refinements of these packings (T-128,
       T-130, T-134, T-140), Evan Daniel's reconstruction of the arrangement at 126 (T-139) and
-      SQUISH's packing at 131 (T-136). This entry now holds no case record; each of its
-      certificates stays retained and verified as history.
+      SQUISH's packing at 131 (T-136); at 175 Daniil Ostashev's composition of issue 528
+      (T-158) replaced T-140 on 12 October 2026. This entry now holds no case record; each of
+      its certificates stays retained and verified as history.
     controls:
     - packing/resources/web/ry-xu-new-packings-2026-10-08/receipts/exact-certification.json.xz
     - packing/tests/test_ryxu_house_links.py
@@ -12989,9 +13140,15 @@ results:
     confirmation: C3
     significance:
       score: 3
-      rationale: A simpler degree-two exact construction ceiling at 51; no optimum established.
-      scored: '2026-10-08'
-      by: think-1cvf source integration
+      rationale: >-
+        ry-xu's new 51-square arrangement at its exact side (16 + 5 sqrt 2)/3, about 0.0104
+        below the ceiling Evan Daniel's certificate of the catalogue packing held (T-101),
+        and the side the case now holds. A new arrangement lowering a case ceiling is a case
+        result, S3, as T-125's rational certificate of the same packing is; the exact closed
+        form is the citable detail and not the claim's weight, where an exact form alone
+        (T-120 to T-123) is S2. No optimum established. Confirmed on 11 October.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the think-1cvf source integration's draft)
     novelty: previously-published
     attribution:
       source_keys:
@@ -13053,9 +13210,13 @@ results:
     confirmation: C3
     significance:
       score: 3
-      rationale: Fourteen strict finite upper-bound improvements; no solved case or lower-bound theorem.
-      scored: '2026-10-08'
-      by: think-q3pd Gupta refinement import
+      rationale: >-
+        Fourteen strict finite upper-bound improvements, SQUISH packings refined to new
+        optima by between 1e-7 and 1e-2 as the 11 October grading review measured; no solved
+        case or lower-bound theorem. S3 as T-128 and T-130, refinements to new optima, are;
+        re-solves at the scale of rounding (T-117, T-137) are S2. Confirmed on 11 October.
+      scored: '2026-10-11'
+      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the think-q3pd import's draft)
     novelty: previously-published
     attribution:
       source_keys:
@@ -13321,9 +13482,9 @@ results:
       re-implemented. The 10 October review found no blocking defect.
 
       On 11 October 2026 the case records adopted three of them as the house, at 84, 86 and
-      105. At 175 and 270 smaller certificates hold the case (T-140 at 175, and at 270
-      issue 500's, T-151, since 12 October 2026), and these two stay verified and are not
-      selected.
+      105. At 175 and 270 smaller certificates hold the case (at 175 issue 528's, T-158, and
+      at 270 issue 500's, T-151, both since 12 October 2026), and these two stay verified and
+      are not selected.
 
       Credit Francisco Couzo (https://github.com/franciscouzo/square-packing), refining Ryan
       Xu's packings at 84, 86, 105 and 175 and Evan Daniel's at 270 by his basin hopping
@@ -13402,7 +13563,8 @@ results:
       smaller, and since 12 October issue 500's (T-151), smaller still, holds the case. On 11
       October 2026 the case records adopted T-130 as the house at 84, 86 and 105, each
       earlier house kept as history, and T-140 at 175 and 270, where T-130's stay verified
-      and are not selected; on 12 October T-151 replaced T-140 at 270.
+      and are not selected; on 12 October
+      T-151 replaced T-140 at 270 and T-158 at 175.
     next_rung: >-
       V4 and C4 need a retained human oversight record: two accepted adversarial
       reviews by distinct AI reviewers are retained, the 10 October review and the 11 October
@@ -14233,14 +14395,16 @@ results:
       Daniel's later regularized certificates (T-146) are smaller, and at 153 and 207, where
       PingYou Ltd's later certificates of issues 504 and 503 (T-148, T-147) are smaller still;
       at 270 and 305 the author's own later packings of issue 500 (T-151) are smaller than
-      T-140's, and at 305 Francisco Couzo's issue 506 refinement of that packing (T-152) is
-      smaller again.
+      T-140's, at 305 Francisco Couzo's issue 506 refinement of that packing (T-152) is
+      smaller again, at 232 Daniil Ostashev's later composition of issue 528 (T-158) is
+      smaller, and at 154 Evan Daniel's later packing of issue 552 (T-160) is smaller.
 
       On 11 October 2026 the case records adopted this entry as the house at 131, 154, 232,
       259 and 307, T-140 at 209, 237, 270 and 305, T-146 at 236, 263, 269,
       292, 302 and 303, which regularizes these packings there and credits them to this
-      entry, T-147 at 207 and T-148 at 153; on 12 October T-151 replaced T-140 at 270 and
-      T-152 at 305.
+      entry, T-147 at 207 and
+      T-148 at 153; on 12 October T-151 replaced T-140 at 270, T-152 replaced it at 305,
+      T-158 replaced this entry at 232, and T-160 replaced it at 154.
 
       Credit Nate Chaoweeraprasit (https://github.com/itsnaka/squish-certs), using SQUISH
       and its Mondrian composition method, after Francisco Couzo, Ryan Xu, Frits Göbel,
@@ -14347,13 +14511,14 @@ results:
       its store's best packings, are smaller still, by 8.48e-16, 3.29e-16, 5.05e-13,
       6.73e-16, 2.03e-13, 2.21e-17 and 4.48e-16. At 207 PingYou Ltd's later certificate of
       issue 503 (T-147) is smaller, by 4.55e-03, and at 153 that of issue 504 (T-148) is
-      smaller than T-146's, so it is the smallest report known at 131, 154, 232, 259 and
-      307.
+      smaller than T-146's, so it is the smallest report known at 131, 259 and 307; at 232
+      Daniil Ostashev's later certificate of issue 528 (T-158) is smaller, by 3.25e-03, and
+      at 154 Evan Daniel's of issue 552 (T-160), by 5.04e-04.
 
       At 154, 207, 209, 236, 237, 263, 302 and 303 it replaces earlier SQUISH packings the
       cases hold directly or through Siddharth Gupta's refinements, and at 153 it is below
-      SQUISH's own n153 report of 7 October as well. At 232 it is below both the Kingbird
-      print the case reports and Evan Daniel's rational ceiling it verifies (T-101).
+      SQUISH's own n153 report of 7 October as well. At 232 it was below both the
+      Kingbird print the case reported and Evan Daniel's rational ceiling it verified (T-101).
 
       The review recommended this entry as the house at all seventeen counts, with T-128's
       side at 131 and issue 476's and T-130's at 270 kept verified and not selected. The
@@ -14374,6 +14539,14 @@ results:
       259 and 307. Private-worker custody (RI-5) was closed on 11 October 2026
       (packing/devtools/house-custody-2026-10-11.json), and the case records adopted the
       houses that day, each earlier house kept as history.
+
+      The review of issues 528 and 529
+      (docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md) recommends T-158
+      at 232, which the case holds since 12 October 2026, this entry's certificate kept as
+      history. The review of issue 552
+      (docs/project/reviews/review-2026-10-12-upper-bound-import-552.md) recommends T-160
+      at 154, which the case holds since 12 October 2026, this entry's certificate kept as
+      history.
 
       The three sources/ certificates at 155, 240 and 306 are above their cases and are
       not imported. The source's own checkers were not run here. No two independent
@@ -14914,10 +15087,11 @@ results:
       re-implemented. The 10 October review found no blocking defect.
 
       On 11 October 2026 the case records adopted five of them as the house, at 175, 209,
-      237, 270 and 305. On 12 October the smaller certificates of issue 500 at 270 (T-151)
-      and of issue 506 at 305 (T-152), the latter refining issue 500's packing there,
-      replaced them at those two counts; there, and at 132, where the smaller certificate of
-      issue 489 (T-141) holds the case, this entry stays verified and is not selected.
+      237, 270 and 305. On 12 October the smaller certificates of issue 500 at 270 (T-151),
+      of issue 506 at 305 (T-152), the latter refining issue 500's packing there, and of
+      issue 528 at 175 (T-158), Daniil Ostashev's composition, replaced them at those three
+      counts; there, and at 132, where the smaller certificate of issue 489 (T-141) holds the
+      case, this entry stays verified and is not selected.
 
       Credit Francisco Couzo (https://github.com/franciscouzo/square-packing), with the
       packings each started from, as the author asks: Nate Chaoweeraprasit's SQUISH
@@ -14988,7 +15162,8 @@ results:
       issue 476's sides at 237 and 270 by 7.21e-04 and 6.94e-03, T-130's at 270 by 6.95e-03
       and Mishapolk's issue 470 prints. The later exact sides of issue 500 (T-151) are
       smaller at 270 and 305, by 1.58e-03 and 5.95e-04, and issue 506's (T-152) at 305, by
-      6.73e-04, so it is the smallest known at 175, 209 and 237.
+      6.73e-04, and issue 528's (T-158) at 175, by 2.95e-03,
+      so it is the smallest known at 209 and 237.
 
       At 132 it is below the case's ceiling (Francisco Couzo, improved by Evan Daniel, T-098)
       by 4.37e-03, below issue 476's side by 6.06e-07, T-131's by 1.46e-04 and Mishapolk's
@@ -15002,8 +15177,9 @@ results:
       Private-worker custody (RL-6) was closed on 11 October 2026
       (packing/devtools/house-custody-2026-10-11.json), and the case records adopted the five
       houses that day, each earlier house kept as history. The reviews of issues 500 and 506
-      recommend T-151 at 270 and T-152 at 305, which replaced this entry there on 12 October
-      2026.
+      recommend T-151 at 270 and
+      T-152 at 305, and the review of issues 528 and 529 recommends T-158 at 175, which
+      replaced this entry there on 12 October 2026.
 
       The same commit changes 3 further certificates the issue does not name, at n = 303,
       338 and 340, and leaves 54 byte-identical to the issue-476 certificates; the packet's
@@ -15690,6 +15866,9 @@ results:
 
       n = 40's reported and verified lower bounds move from T-133's 335427/50000, which the case
       record keeps as history, to 1340000/199529.
+
+      T-157, registered on 12 October on a new density, raised both lanes of n-040.md to
+      3359/500; the case record keeps this entry as history.
 
   - id: T-146
     kind: upper-bound
@@ -16551,7 +16730,11 @@ results:
       pairs the squares with the case's packing one to one.
 
       The source and the issue make no statement about AI assistance, and the issue omits
-      the template's section on it.
+      the template's section on it. On 12 October 2026 the author stated on
+      jlevy/squares#528 that AI agents wrote and ran his search, composition and
+      verification code; the verification code it names is the one retained here, the same
+      byte for byte in both releases, and whether the statement covers these three
+      packings' search is asked (think-e59i).
     scope:
       n_values: [155, 156, 211]
     verification: V3
@@ -17184,8 +17367,10 @@ results:
       The same commits hold 4 further certificates the issue does not name, at n = 175, 308,
       340 and 343, and leave 53 byte-identical to the issue-476 and issue-488 packets'
       copies; the packet's claim record compares the four, and each is an import of its
-      own. 175 is the smallest side known at its count and has its own import (think-9fjl);
-      340 is the smallest known at 340 and its row is the owner's decision; 308 and 343 are
+      own. 175 was the smallest side known at its count until Daniil Ostashev's issue 528
+      (T-158), 2.94e-03 below it, and stays in the packet unless its author asks for it to
+      be registered (think-9fjl); 340 is the smallest known at 340 and its row is the
+      owner's decision; 308 and 343 are
       beaten by T-141's 308 and Hunt 3's 343, and the source marks both superseded.
 
       The source's own checkers were not run here, and its KKT statements are not decided.
@@ -18903,6 +19088,13 @@ results:
       agent (Claude) in the overnight regularization work of 12 October 2026; no review is
       yet retained.
 
+      At n = 264 the house adoption of 12 October 2026 moved the verified upper bound to
+      Daniil Ostashev's composition of issue 528 (T-158), 16.7747351323878329, 3.44e-03
+      below this entry's exact side there; layer 6 was open beside this batch, so the two
+      met at the merge. The case record keeps this entry's dated paragraph and section as
+      history. This entry stays true as stated and is superseded there as a ceiling; at
+      the other 58 counts its exact side is the case's verified upper bound.
+
   - id: T-156
     kind: upper-bound
     registered: '2026-10-13'
@@ -19067,6 +19259,661 @@ results:
       nothing new at n = 290. The run took 19.2 seconds at this count; the decision here
       took 14.9 CPU seconds and the controls 48.2. The view was registered by an AI agent
       (Claude) on 13 October 2026; no review is yet retained.
+
+  - id: T-157
+    kind: lower-bound
+    registered: '2026-10-12'
+    headline: "`s(40) > 3359/500 = 6.718`, by T-145's continuous-pose kernel on a density with 163 new supports"
+    claim: >-
+      s(40) > 3359/500 = 6.718, by Guzhou0806, published on 11 October 2026 as release
+      n40-new-supports-6718-20261011 of Guzhou0806/n40-square-packing and reported on
+      jlevy/squares#485. It raises T-145's 1340000/199529 by 217911/99764500 = 0.00218425...,
+      from a new certificate.
+
+      The certificate is a new rational density of 685 positive D4 rectangle orbits, 522 of them
+      rows of wand125's rect_n40_L67 pool and 163 generated outside it, every weight new, of mass
+      3999/100. Every closed square of side 3350/3359 inside [0, 67/10]^2, at every angle and every
+      legal centre, captures mass at least 4999/5000, and 40 x 4999/5000 - 3999/100 = 1/500, so no
+      packing fits at side 3359/500; compactness makes the bound strict.
+
+      The two kernels are T-145's, byte for byte: the continuous-pose interval kernel over the
+      same 43 closed slabs of t = tan(theta/2) in [10^-6, 83/200], and the exact integer axis
+      certificate, here at side 249329659/250000000, which lies inside every side-B square at
+      t <= 10^-6. The source decided both parts in a local run and a GitHub Actions run.
+
+      Both were decided here on 12 October 2026: the two kernels, built from the retained
+      source into the CI run's binaries, ran the axis certificate and all 43 slabs, every output
+      equal to both release receipts apart from timing, and refused every synthetic density whose
+      least capture is below the threshold: confirmed, reproduced with the producer's code.
+
+      This repository's exact audit, which shares no code with the release's, decided the
+      density's orbit facts and every finite step and regenerated both kernel inputs to the
+      digests both receipts name; sqverify-fast decided the near-axis statement a second way on
+      the density itself and verified the 401-direction nodal statement at the new side. The 12
+      October review found no blocking defect. No second method decided the continuous cover.
+
+      Guzhou0806 after wand125, Tokoharu and Levy,
+      [n40-square-packing](https://github.com/Guzhou0806/n40-square-packing/tree/6a65957e6c5c51cdf267917d882dab7f5b4928dd).
+      The source credits the original density and pool to wand125, the translation-derivative
+      structure to Tokoharu, says the concave-section calculations draw on this repository's
+      sqverify_fast, and gives Guzhou0806's AI-assisted contribution as the new supports, the
+      weight optimization, the continuous-cover certificate and the support-family obstruction,
+      with AI assistance in exploration, code, tests, proof writing and publication.
+    scope: {n_values: [40]}
+    verification: V3
+    confirmation: C3
+    significance:
+      score: 3
+      rationale: >-
+        The strongest lower bound on record at n = 40, 0.00218 above T-145, by T-145's technique
+        on a density with 163 new supports and new weights; a single-count raise on an existing
+        technique, the kernel's reuse at the same count and not a bound family. S3 by the
+        precedent of T-099, T-100 and T-145, as the 12 October review keeps it.
+      scored: '2026-10-12'
+      by: >-
+        the 12 October stage 4 review
+        (docs/project/reviews/review-2026-10-12-n40-new-supports-6718.md), which compared it with
+        T-099, T-100, T-145 and the S4 set, keeping lane E's draft of 11 October
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Guzhou0806 n40 new supports 2026-10-11]']
+      published: '2026-10-11'
+    composition: >-
+      One certificate, Guzhou0806's 685-orbit density, and three load-bearing parts. The continuous
+      cover of the 43 slabs is decided by the release's continuous_pose.cpp, interval-certified, the
+      producer's code, rebuilt here from reviewed source into the CI run's binary and replayed in
+      full. The near-axis statement at side 249329659/250000000 is decided by the release's
+      axis_integer_grid.cpp, exact, rebuilt into the CI run's binary and replayed here, and again by
+      sqverify-fast's exact axis-vertex sweep on the density itself, undominated, which shares no
+      code with it.
+
+      The finite steps, the density's orbit facts, both inputs' identity, the near-axis
+      containment, the slab partition, the threshold and the counting margin, are decided by this
+      repository's exact audit, independently re-implemented with respect to exact.py, and are
+      recorded as structure.
+
+      The result takes the part closest to the producer's code: confirmed, reproduced with the
+      producer's code. C3 rests on the complete replay of both kernels and its controls, and the
+      kernels' lemmas on the 10 October review of T-145, which read the same bytes. No second
+      method decides the continuous cover; the 401-direction run of sqverify-fast at the new side
+      is a necessary condition it passed. wand125's published sqverify_continuous (think-xzob),
+      once reviewed and replayed here, would make the cover independently re-implemented and
+      move the mark, not the rung.
+    evidence:
+      - E-n040-guzhou-new-supports-report
+      - E-n040-guzhou-new-supports-kernel-replay
+      - E-n040-guzhou-new-supports-finite-audit
+      - E-n040-guzhou-new-supports-crate-axis
+    reviews:
+      - path: docs/project/reviews/review-2026-10-12-n40-new-supports-6718.md
+        kind: adversarial
+        reviewer: AI agent (Claude, at the highest reasoning effort), stage 4 of the import of the issue 485 follow-up of 11 October (think-tln9), the lane that ran the complete replay, prompted separately from lane E, which wrote the finite audit and the packet, and from the three reviews of pull request 512
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-12'
+        scope: >-
+          Guzhou0806's s(40) > 3359/500, pinned at 6a65957e: the new density's admissibility and
+          orbit facts re-derived and recomputed with the reviewer's own code; the argument from the
+          density to the bound on T-145's lemmas, with the near-axis containment at the new side and
+          the counting at the new X re-derived; the kernel's input and threshold code read; the CI
+          binaries rebuilt; the axis certificate and all 43 slabs replayed with the producer's
+          kernels and held to both receipts; the contract's controls A to H; the near-axis and the
+          401-direction statements decided by sqverify-fast; the release's two dual programs; the
+          replay's judge; the rungs and the drafted significance; and what a replay of wand125's
+          sqverify_continuous would change.
+        verdict: accepted
+        covers: [T-157]
+    artifacts:
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/README.md
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/source/PROOF.md
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/source/certificate/certified_candidate.json.gz
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/source/certificate/parameters.json
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/source/verifier/continuous_pose.cpp
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/source/verifier/axis_integer_grid.cpp
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/source/results/verification.json
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/release-ci/results/verification.json
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/finite-audit.json
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/axis-stage.json
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/axis-check.json
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/builds.json
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/axis-run.json
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/slabs.jsonl.gz
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/crate-runs.json.gz
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/duals.json
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/replay-check.json
+      - packing/devtools/audit_n40_new_supports.py
+      - packing/devtools/audit_continuous_pose.py
+      - docs/project/reviews/review-2026-10-12-n40-new-supports-6718.md
+    controls:
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/controls.jsonl.gz
+      - packing/resources/web/guzhou-n40-new-supports-2026-10-11/receipts/control-G-release.json
+      - packing/tests/test_audit_n40_new_supports.py
+    next_rung: >-
+      V4 and C4 need a second retained adversarial AI review by a distinct reviewer (the 11
+      October final review covers T-145's kernel and density, not this density) and a human
+      oversight record. Beside the rung: a decision of the continuous cover by code other than the
+      producer's, which wand125's published sqverify_continuous (think-xzob: retention, a soundness
+      review, about 2.3 CPU-hours here) or a first-party interval kernel with the angle as an
+      interval dimension (GC-4 of the 10 October review) would supply; either would make the
+      result independently re-implemented and leave the rung where it is.
+    notes: >-
+      Registered on 12 October 2026 by the records lane of the 2026-10-11 intake pass after the
+      complete replay of both kernels, the finite audit, the crate's two runs and the release's
+      dual programs, whose receipts are in the packet; stage 2 retained and audited the release on
+      11 October (pull request 512), and stage 4 replayed and reviewed it on 12 October.
+
+      Of the review's findings, GN-1 (the near-axis containment margin 5.05e-10, sound in exact
+      rationals only) is a note for the author and the replayer; the packet keeps both release receipts and
+      names them, and the pose binaries are T-145's (GN-2); the measured replay price is recorded
+      (GN-3); the composition and the claim say what decides the continuous cover (GN-4); the
+      kernel contract held at the new parameters without re-tuning (GN-5); OBSTRUCTION.md's
+      negative result was replayed with the release's programs and is registered nowhere (GN-6);
+      wand125's sqverify_continuous is published and unretained (GN-7); the release's tests were
+      not run here (GN-8).
+
+      wand125's review comment of 11 October (#485, 6111583905, edited 12 October) reports a fresh
+      run of the release's entry point and his own continuous-angle verifier, both verified; it
+      publishes no receipt, so it is a third party's report and confirms nothing here.
+
+      n = 40's reported and verified lower bounds move from T-145's 1340000/199529, which the case
+      record keeps as history, to 3359/500.
+
+      Registered as T-153 on the intake branch of 12 October and renumbered to T-157 when that
+      branch merged with main, where T-153 to T-156 had been registered in the meantime, in every
+      record, view, test and tool that names it. The stage 4 review of 12 October is stored as its
+      reviewer wrote it and is not edited: its "T-153" is this entry, T-157.
+
+  - id: T-158
+    kind: upper-bound
+    registered: '2026-10-12'
+    headline: New packings of 175, 232 and 264 squares built on a new 38-square rectangle, each certified exactly
+    claim: >-
+      Three complete rational source certificates by Daniil Ostashev, reported on
+      jlevy/squares#528, prove finite upper bounds at the exact sides they state: s(175) <=
+      27528348634973193258855646440084685651524191041221518308579027528348634973193258855646440084685651524191041221518308579/2000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+      s(232) <=
+      31528348634973193258895646440084685651524191041221518308579031528348634973193258895646440084685651524191041221518308579/2000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+      and s(264) <=
+      167747351323878328426102645873217709808239488409494842884223167747351323878328426102645873217709808239488409494842884223/10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.
+
+      Each certificate gives a rational side and, for each unit square, a rational centre
+      and the tangent of its half-angle, in the source's sqcert format: the 60-digit optimum
+      of its packing with the load-bearing squares scaled by 1 + 1e-20, then every centre
+      and the side dilated by 1 + 1e-60. Each side rounds up at 38 places to the side the
+      issue prints and at 15 to the README's.
+
+      The author reports that each packing passes his own C++ checker in GMP rational
+      arithmetic, on the shipped certificates with no dilation and no tolerance and on
+      certificates rebuilt from the 60-digit decimal packings, and an 80-digit mpmath
+      cross-check written separately, all three written with AI assistance; he also states
+      that each side is the exact first-order optimum of its packing's contact topology,
+      with nonnegative KKT multipliers at a 60-digit solution. Those statements are the
+      author's; no source program ran here.
+
+      All nine retained jobs, the three positives with their duplicate-square and
+      outside-container controls, were decided again here on 12 October 2026 by both
+      maintained exact routes and equal their retained rows. A third exact route,
+      half-extent containment and exact intersection area, decided the three with six
+      controls each and held each retained file to its upstream bytes fetched at the pin.
+      No route here is the source's code, and the source ran none of them, so the replay is
+      independently re-implemented. The 12 October review found no blocking defect.
+
+      Each side was below the ceiling its case held, by 2.95e-03 at 175 (Francisco Couzo's
+      refinement of ry-xu's packing, T-140), 3.25e-03 at 232 (SQUISH's third request, T-136)
+      and 3.44e-03 at 264 (the catalogue's 9 + 11 sqrt(2)/2, Goebel's pattern, verified by
+      Evan Daniel's exact ceiling, T-101, and at its exact side by T-155's regularized
+      certificate of the same packing); at 175 it is also 2.94e-03 below Francisco
+      Couzo's certificate of 11 October, which the issue names as the previous best and
+      which the record holds in the issue-506 packet and has not registered, and 4.72e-03
+      below ry-xu's T-125. At all three counts it is the smallest exact side the record
+      holds.
+
+      On 12 October 2026 the case records adopted this entry as the house at all three counts, each case's reported and verified upper bounds moving together and each
+      earlier house kept as history, with T-140, T-130, T-138 and T-125 verified and not
+      selected at 175; private-worker custody was closed in the same change
+      (packing/devtools/house-custody-2026-10-11.json).
+
+      Credit Daniil Ostashev (https://github.com/dostashev/square-packing) with the three
+      packings and their certificates. The issue says each is a composition: two library
+      rectangles in opposite corners of the box with aligned squares around them, each
+      using his new packing of 38 unit squares in an (h + 2) x h rectangle,
+      h = 5.7641743..., found by a GPU soft-to-rigid search after Yohei Nakajima's idea; at
+      175 in place of the pieces of David Ellsworth's s(171) template, cut from Thomas
+      Schadt's s(50); at 232 beside a 76-square piece of Erich Friedman's s(85); at 264
+      beside a 93-square piece of Evan Daniel's exact optimum of Joost de Winter's s(126);
+      each then taken to the exact optimum of its contact topology. He asks that the pieces'
+      sources be acknowledged as the record sees fit.
+
+      Measured pose by pose, none of the three is a placement of the packing its case holds
+      or of any report pending at its count: no symmetry of the box pairs the 175 square
+      for square with T-140, with Couzo's certificate of 11 October or with T-125, the 232
+      with T-136, or the 264 with T-101's certificate. Where the record retains a named
+      piece exactly, it reappears: 66 of the 171 squares of Evan Daniel's certificate of
+      Ellsworth's s(171) (T-101) land on squares of the 175 to the ninth decimal under a
+      half turn, none turned, and 88 of the 126 of his exact optimum of de Winter's s(126)
+      (T-098) on squares of the 264. Friedman's s(85) and the 38-square block are the
+      author's statement, not measured.
+
+      The issue states AI assistance: the author set up an AI-assisted research loop and
+      drove it with his own ideas, the rectangle library and composition being his; AI
+      agents wrote and ran the search, composition and verification code.
+    scope:
+      n_values: [175, 232, 264]
+    verification: V3
+    confirmation: C3
+    significance:
+      score: 3
+      rationale: >-
+        Three new packings, measured as no placement of the packings their cases hold or
+        have pending, smaller finite construction sides at n = 175, 232 and 264, 2.95e-03 to
+        3.44e-03 below the case ceilings and the smallest known at all three; no lower bound
+        or optimum.
+      scored: '2026-10-12'
+      by: >-
+        the 12 October review
+        (docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md),
+        confirming the draft of think-em0b Daniil Ostashev import
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Ostashev records 2026-10-12]']
+      published: '2026-10-12'
+    evidence:
+      - E-ostashev-528-certificate-report
+      - E-ostashev-528-exact-feasibility
+    artifacts:
+      - packing/resources/web/dostashev-records-2026-10-12/README.md
+      - packing/resources/web/dostashev-records-2026-10-12/acquisition/claims.json
+      - packing/resources/web/dostashev-records-2026-10-12/source/records/n0175.sqcert
+      - packing/resources/web/dostashev-records-2026-10-12/source/records/n0232.sqcert
+      - packing/resources/web/dostashev-records-2026-10-12/source/records/n0264.sqcert
+      - packing/resources/web/dostashev-records-2026-10-12/receipts/exact-certification.json.xz
+      - packing/devtools/upper_bound_reports.py
+      - packing/devtools/check_half_angle_area.py
+      - docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md
+    controls:
+      - packing/tests/test_upper_bound_reports.py
+      - packing/tests/test_check_half_angle_area.py
+    notes: >-
+      A separate complete repository replay is retained for n = 175, 232 and 264: 3
+      positives and 6 duplicate-square and outside-container controls passed their required
+      outcomes on both routes, 460422 pair decisions; summed over the 9 jobs, the receipt
+      records 647.47 route CPU seconds and 1544.83 job wall seconds, the longest job 291.46
+      seconds. Every positive clears every wall by at least 5.00e-21 and every pair by at
+      least 4.99e-21; the third route finds a least Euclidean distance of 5.000000e-21 at
+      every count and no square touching a wall.
+
+      The issue also restates issue 501's three sides at the same commit; those
+      certificates are byte-identical to the ones the issue-501 packet retains and T-149
+      states, and are not read again. The issue's new 38-square rectangle packing is no
+      bound on s(n) and stays in the packet, and its KKT statement is recorded as reported
+      and not decided.
+
+      V3 and C3 rest on the 12 October review
+      (docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md) and the
+      replay it reproduced (E-ostashev-528-exact-feasibility). Its findings here are
+      non-blocking: the kernel's controls are gross (RX-6); the README describes a 1e-30
+      dilation while every certificate uses 1e-60 (RX-8); the lineage is measured only
+      where the record retains the pieces (RX-11); and no private-worker custody was on
+      file until the adoption below.
+
+      The review recommends this entry as the house at 175, 232 and 264, crediting Daniil
+      Ostashev, with T-140, Couzo's certificate of 11 October in its packet and T-125 after
+      it at 175, T-136 at 232 and T-101 at 264 kept as history. Private-worker custody was
+      closed on 12 October 2026 (packing/devtools/house-custody-2026-10-11.json), and the
+      case records adopted the houses that day, each earlier house kept as
+      history.
+
+      The source's own checker and cross-check, pinned at the same revision and
+      byte-identical to the issue-501 packet's copies, were not built or run here. The two
+      maintained routes, the sqpack rational witness verifier and the independent rational
+      corner checker, share certificate parsing, half-angle conversion, Fraction arithmetic
+      and the separating-axis method. No two independent methods, human oversight or
+      optimality is claimed.
+
+      Registered as T-154 on the intake branch of 12 October and renumbered to T-158 when
+      that branch merged with main, where T-153 to T-156 had been registered in the
+      meantime, in every record, view, test and tool that names it. The reviews of 12
+      October are stored as their reviewers wrote them and are not edited: in the review of
+      issues 528 and 529, "T-154" is this entry, T-158, and "T-155" is T-159; in the review
+      of issue 552, "T-154" is this entry and "T-156" is T-160.
+    next_rung: >-
+      V4 and C4 need a second accepted adversarial review by a distinct reviewer and a
+      retained human oversight record; one AI review, of 12 October, is retained.
+    reviews:
+      - path: docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md
+        kind: adversarial
+        reviewer: >-
+          AI agent (Claude, at extra-high reasoning effort), the stage 4 review lane (W2) of
+          the 2026-10-12 intake under the 2026-10-11 pass's epic, prompted separately from
+          the import lane that built the two packets, with no shared context beyond their
+          committed notes, scratch measurements and register plans
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-12'
+        scope: >-
+          Finite feasibility of the four certificates the two imports' entries cite: issue
+          528 at 175, 232 and 264 and issue 529 at 102. Both retained receipts replayed on
+          both maintained routes, the third exact route extended for Calle's decimal format
+          with its sharp controls, every file of both pinned scopes fetched at its pin and
+          held to its digest, the derived certificate derived again by the third route's own
+          arithmetic, admission against each print, the claim comparisons, each route's
+          trust boundary, each certificate measured pose by pose against the packing its
+          case holds and every report pending at its count, and the named pieces measured
+          where the record retains them.
+        verdict: accepted
+        covers: [T-158, T-159]
+
+  - id: T-159
+    kind: upper-bound
+    registered: '2026-10-12'
+    headline: Another arrangement of Ryan Xu's design for 102 squares, certified exactly from its decimal layout
+    claim: >-
+      An exact rational certificate derived here from Rio Calle's decimal layout of 102 unit
+      squares, reported on jlevy/squares#529, proves a finite upper bound at the side the
+      layout prints: s(102) <= 10.605828696455852.
+
+      The source's file is a layout, not a certificate: each centre and each rotation in
+      radians is printed to 18 significant digits, and a rotation printed in radians has no
+      rational cosine and sine. The certificate is this repository's: the printed side with
+      no dilation, every centre as printed, and each half-angle tangent rounded down at 40
+      places, which turns a square by less than 2e-40 radians against margins of 2e-12.
+
+      The author reports that a 60-digit decimal separating-axis check of his own, run once
+      here from scratch and reproducing its two gaps, finds least gaps of 1.9e-12 between
+      squares and 2.0e-12 to the walls, and that his search engine's exact rational-interval
+      certificate accepts the layout; the engine is not public and that certificate cannot
+      be rerun.
+
+      All three retained jobs, the positive with its duplicate-square and outside-container
+      controls, were decided again here on 12 October 2026 by both maintained exact routes
+      and equal their retained rows. A third exact route, half-extent containment and exact
+      intersection area, decided the certificate with six controls and derived it again
+      from the layout fetched at the pin with its own reader and arithmetic, square for
+      square. The certificate is the project's derivation and no route is the source's
+      code, so the replay is independently re-implemented. The 12 October review found no
+      blocking defect.
+
+      The side is above the certificate the case holds, Evan Daniel's regularization of
+      Ryan Xu's packing (T-146), by 2.43e-11, and below Ryan Xu's own certificate (T-125),
+      the case's ceiling until 11 October 2026 and the one the issue compares with, by
+      5.48e-11, the issue's figure; so it moves no case, the house at 102 is unchanged, and
+      the entry is superseded by T-146 from the day it was registered.
+
+      Credit Rio Calle (https://github.com/riocalle/my-repo, University of New Hampshire)
+      with this arrangement and its layout, found by his own search engine from scratch,
+      and ry-xu (T-125) with finding the design and width first, as the issue asks: ry-xu
+      published on 8 October 2026 and the author's search finished its first packing of the
+      design about ten hours later. Measured pose by pose, every square pairs with one of
+      ry-xu's under a half turn of the box, 40 within 1e-9 and none turned, and 62 moved, 19
+      of them beyond a tenth of a unit and the largest by 0.494, 11 turned by up to about 43
+      degrees: another arrangement of the design, not a refinement or a regularization of
+      ry-xu's packing.
+
+      The issue and README state AI assistance: the author designed and directed the
+      project and its experiments, and Claude wrote and ran the code, the GPU search, the
+      exact finishing step, the refinement search and both checkers.
+    scope:
+      n_values: [102]
+    verification: V3
+    confirmation: C3
+    significance:
+      score: 2
+      rationale: >-
+        A certified side at n = 102, 2.43e-11 above the case's ceiling (T-146) and 5.48e-11
+        below Ryan Xu's certificate (T-125), of another arrangement of ry-xu's design: a
+        citable detail of the case that moves no bound and no theorem, S2 as T-120, T-137
+        and T-150 are; no lower bound or optimum.
+      scored: '2026-10-12'
+      by: >-
+        the 12 October review
+        (docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md),
+        confirming the draft of think-s2i8 Rio Calle import
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Calle n102 2026-10-12]']
+      published: '2026-10-11'
+    evidence:
+      - E-calle-529-certificate-report
+      - E-calle-529-exact-feasibility
+    artifacts:
+      - packing/resources/web/riocalle-n102-2026-10-12/README.md
+      - packing/resources/web/riocalle-n102-2026-10-12/acquisition/claims.json
+      - packing/resources/web/riocalle-n102-2026-10-12/facts/n-102.yaml.gz
+      - packing/resources/web/riocalle-n102-2026-10-12/receipts/exact-certification.json.xz
+      - packing/devtools/upper_bound_reports.py
+      - packing/devtools/check_half_angle_area.py
+      - docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md
+    controls:
+      - packing/tests/test_upper_bound_reports.py
+      - packing/tests/test_check_half_angle_area.py
+    notes: >-
+      A separate complete repository replay is retained for n = 102: 1 positive and 2
+      duplicate-square and outside-container controls passed their required outcomes on
+      both routes, 30906 pair decisions; summed over the 3 jobs, the receipt records 39.06
+      route CPU seconds and 96.84 job wall seconds, the longest job 32.78 seconds. The
+      positive clears every wall by 2.002066e-12 and its closest pair by 1.932818e-12 on
+      every route, and no square touches a wall.
+
+      The README's "valley bottom", s = 10.605828696431638, is an author report with no
+      layout published, 6.0e-14 above T-146's side; it is not certified here. The author's
+      earlier layout at s = 10.605828708, first reported on 8 October 2026 on Davidebyzero's
+      tools repository, is above every ceiling and stays pinned in the packet.
+
+      The source gives 11 October 2026 as the date of the certified side; its repository's
+      only commit is of 12 October, and the bibliography key is dated by the pin.
+
+      V3 and C3 rest on the 12 October review
+      (docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md) and the
+      replay it reproduced (E-calle-529-exact-feasibility). Its findings here are
+      non-blocking: the entry moves no case and is registered as a replayed and reviewed
+      result (RX-1); the published date is the source's (RX-2); the reported atom describes
+      the source's numerical check (RX-3); the kernel's controls are gross (RX-6); no
+      retained check binds the fact to upstream bytes beyond this review's (RX-7); the
+      README's digit count and stated margin are approximate (RX-9, RX-10).
+
+      The house at 102 stays T-146; this certificate is retained and not selected, with
+      T-125 after it. The source's own checkers were not run here beyond the import lane's
+      one run of verify_exact.py outside the repository. The two maintained routes, the
+      sqpack rational witness verifier and the independent rational corner checker, share
+      certificate parsing, half-angle conversion, Fraction arithmetic and the
+      separating-axis method. No two independent methods, human oversight or optimality is
+      claimed.
+
+      Registered as T-155 on the intake branch of 12 October and renumbered to T-159 when
+      that branch merged with main, where T-153 to T-156 had been registered in the
+      meantime, in every record, view, test and tool that names it. The review of 12
+      October is stored as its reviewer wrote it and is not edited: its "T-155" is this
+      entry, T-159, and its "T-154" is T-158.
+    next_rung: >-
+      V4 and C4 need a second accepted adversarial review by a distinct reviewer and a
+      retained human oversight record; one AI review, of 12 October, is retained.
+    reviews:
+      - path: docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md
+        kind: adversarial
+        reviewer: >-
+          AI agent (Claude, at extra-high reasoning effort), the stage 4 review lane (W2) of
+          the 2026-10-12 intake under the 2026-10-11 pass's epic, prompted separately from
+          the import lane that built the two packets, with no shared context beyond their
+          committed notes, scratch measurements and register plans
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-12'
+        scope: >-
+          Finite feasibility of the four certificates the two imports' entries cite: issue
+          528 at 175, 232 and 264 and issue 529 at 102. Both retained receipts replayed on
+          both maintained routes, the third exact route extended for Calle's decimal format
+          with its sharp controls, every file of both pinned scopes fetched at its pin and
+          held to its digest, the derived certificate derived again by the third route's own
+          arithmetic, admission against each print, the claim comparisons, each route's
+          trust boundary, each certificate measured pose by pose against the packing its
+          case holds and every report pending at its count, and the named pieces measured
+          where the record retains them.
+        verdict: accepted
+        covers: [T-158, T-159]
+
+  - id: T-160
+    kind: upper-bound
+    registered: '2026-10-12'
+    headline: A smaller packing of 154 squares from Evan Daniel's size-chaining explorer, certified exactly
+    claim: >-
+      One complete rational source certificate by Evan Daniel, reported on
+      jlevy/squares#552, proves a finite upper bound at the exact side it states: s(154) <=
+      12922566401934059503377267965457/10^30 = 12.922566401934059503377267965457.
+
+      The certificate gives a rational side and, for each of the 154 unit squares, a
+      rational centre and the tangent of its half-angle, in the author's text format: the
+      80-digit KKT point of the packing with every centre scaled by 1 + 1e-20 about the
+      origin corner and the side rounded up at 30 places.
+
+      The author reports that his two exact rational checkers, verify_cert.py by separating
+      axes and verify_cert2.py by polygon intersection, accept it with least certified
+      clearances of 1e-20 between squares and 5e-21 to the walls; he states that the KKT
+      point has positive multipliers on its load-bearing contacts, the least 1.5e-4, a
+      reduced Hessian positive semidefinite modulo 45 exact flat motions, a first-order
+      MILP jammed in all 98 corner-to-corner branches and 8 rattlers, numerical evidence by
+      his own statement and not proofs. Those statements are the author's; no source
+      program ran here.
+
+      All three retained jobs, the positive with its duplicate-square and
+      outside-container controls, were decided again here on 12 October 2026 by both
+      maintained exact routes and equal their retained rows. A third exact route,
+      half-extent containment and exact intersection area, decided the certificate with six
+      controls and held the retained file to its upstream bytes fetched at the pin. No
+      route here is the source's code, and the source ran none of them, so the replay is
+      independently re-implemented. The 12 October review found no blocking defect.
+
+      The side is 5.04e-04 below the ceiling the case held, SQUISH's third request (T-136),
+      adopted on 11 October 2026 and on main since 12 October; 4.00e-03 below T-127, issue
+      470's pose and T-115; 5.73e-03 below T-113; and 9.10e-03 below T-098 and T-056: the
+      smallest exact side the record holds or has pending at 154.
+
+      On 12 October 2026 the case record adopted this entry as the house at 154, its
+      reported and verified upper bounds moving together and T-136 kept as history, with
+      T-127, T-115 and T-113 verified and not selected; private-worker custody was closed
+      in the same change (packing/devtools/house-custody-2026-10-11.json).
+
+      Credit Evan Daniel (https://github.com/evand/square-packing) with the packing and its
+      certificate, its start credited to Francisco Couzo's 5 October packing of 155 squares
+      as the author asks. Measured here, the packing is another arrangement than T-136's:
+      no symmetry of the box pairs the two square for square, and under the best placement
+      found 32 of T-136's squares land within 1e-9 of one of these, one to the digit.
+
+      The author states that the packing came from a time-travel test of his size-chaining
+      explorer, the quality-diversity basin explorer of issues 465 and 489, restarted from
+      this register as it stood on 5 October, and that the chain never saw T-136's
+      packing; in his comment of 12 October he states that it descends from Couzo's packing
+      of 155 squares with one square removed, after 17 productive rounds at 154. The
+      measurements here are consistent with that statement and do not establish it: 43
+      squares of Couzo's 155, as T-098 solved it, reappear to the digit, but so do 45 of
+      Couzo's 154, and at a tenth of a unit the 155 is the nearer of the two, 114 squares
+      against 87; the round-by-round trace is not published.
+
+      The search code, the run and the request were done with Claude (Claude Code), which
+      Evan Daniel directed and reviewed.
+    scope:
+      n_values: [154]
+    verification: V3
+    confirmation: C3
+    significance:
+      score: 3
+      rationale: >-
+        A new arrangement of 154 squares, measured as no placement of the packing the case
+        held (T-136) or of Couzo's 154, a smaller finite construction side 5.04e-04 below
+        the case ceiling and the smallest known at the count, as T-149, T-136 and T-158 are;
+        not a re-solve, regularization or refinement of a packing the record credits; no
+        lower bound or optimum.
+      scored: '2026-10-12'
+      by: >-
+        the 12 October review
+        (docs/project/reviews/review-2026-10-12-upper-bound-import-552.md),
+        confirming the draft of think-6no5 Evan Daniel import
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Daniel n154 2026-10-12]']
+      published: '2026-10-12'
+    evidence:
+      - E-evand-552-n154-report
+      - E-evand-552-exact-feasibility
+    artifacts:
+      - packing/resources/web/evand-n154-2026-10-12/README.md
+      - packing/resources/web/evand-n154-2026-10-12/acquisition/claims.json
+      - packing/resources/web/evand-n154-2026-10-12/source/search/packer/candidates/tt_n154.cert
+      - packing/resources/web/evand-n154-2026-10-12/receipts/exact-certification.json.xz
+      - packing/devtools/upper_bound_reports.py
+      - packing/devtools/check_half_angle_area.py
+      - docs/project/reviews/review-2026-10-12-upper-bound-import-552.md
+    controls:
+      - packing/tests/test_upper_bound_reports.py
+      - packing/tests/test_check_half_angle_area.py
+    notes: >-
+      A separate complete repository replay is retained for n = 154: 1 positive and 2
+      duplicate-square and outside-container controls passed their required outcomes on
+      both routes, 70686 pair decisions; summed over the 3 jobs, the receipt records 40.97
+      route CPU seconds and 80.68 job wall seconds, the longest job 29.49 seconds. The
+      positive clears every wall by exactly 5.00e-21 at the low walls and by
+      5.0000000007e-21 at the far walls, and every pair by a separating-axis gap just under
+      1.00e-20, which the third route's least Euclidean distance equals exactly; no square
+      touches a wall.
+
+      The regularized drawing of the same packing at the same side,
+      tt_n154_regularized.cert, is retained beside the certificate as the source's display
+      view, decided here as a diagnostic on all three routes and no separate claim: it
+      keeps 112 of the 154 poses and turns only the eight rattlers.
+
+      V3 and C3 rest on the 12 October review
+      (docs/project/reviews/review-2026-10-12-upper-bound-import-552.md) and the replay
+      it reproduced (E-evand-552-exact-feasibility). Its findings are non-blocking: the
+      issue's 0.396 matching distance is to Couzo's 154, not to the parent the comment
+      names (RD-1); the lineage trace the comment names is not published (RD-2); the
+      regularizer's report at the pin lists the packing by Francisco Couzo, while the issue
+      credits it to Evan Daniel with the start to Couzo (RD-3); T-136's adoption is dated
+      11 October (RD-4); the author's statements are attributed (RD-5); the kernel's
+      controls are gross (RD-6); the measurement by pose does not identify the start
+      (RD-7).
+
+      The review recommends this entry as the house at 154, crediting Evan Daniel with the
+      start credited to Francisco Couzo's 5 October packing of 155 squares as the author
+      asks, with T-136, T-127, T-115 and T-113 kept as history. Private-worker custody was
+      closed on 12 October 2026 (packing/devtools/house-custody-2026-10-11.json), and the
+      case record adopted the house that day, T-136 kept as history.
+
+      The source's own checkers, pinned at the same revision and byte-identical to the
+      issue-399 packet's copies, were not run here. The two maintained routes, the sqpack
+      rational witness verifier and the independent rational corner checker, share
+      certificate parsing, half-angle conversion, Fraction arithmetic and the
+      separating-axis method. No two independent methods, human oversight or optimality is
+      claimed.
+
+      Registered as T-156 on the intake branch of 12 October and renumbered to T-160 when
+      that branch merged with main, where T-153 to T-156 had been registered in the
+      meantime, in every record, view, test and tool that names it. The review of 12
+      October is stored as its reviewer wrote it and is not edited: its "T-156" is this
+      entry, T-160, and its "T-154" and "T-155" are T-158 and T-159.
+    next_rung: >-
+      V4 and C4 need a second accepted adversarial review by a distinct reviewer and a
+      retained human oversight record; one AI review, of 12 October, is retained.
+    reviews:
+      - path: docs/project/reviews/review-2026-10-12-upper-bound-import-552.md
+        kind: adversarial
+        reviewer: >-
+          AI agent (Claude, at extra-high reasoning effort), the stage 4 review lane (W2) of
+          the 2026-10-12 intake continuation under the 2026-10-11 pass's epic, prompted
+          separately from the import lane that built the packet, with no shared context
+          beyond its committed notes, scratch measurements and register plan
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-12'
+        scope: >-
+          Finite feasibility of the one certificate the import's entry cites, issue 552 at
+          154. The retained receipt replayed on both maintained routes, the third exact route
+          given its roster line with its sharp controls, every file of the pinned scope
+          fetched at its pin and held to its digest and the retained certificate to its
+          upstream bytes, admission against the issue's print, the claim comparison, each
+          route's trust boundary, the certificate measured pose by pose against the packing
+          its case holds and against Couzo's 154, and the start the author names measured
+          where the record retains it.
+        verdict: accepted
+        covers: [T-160]
 
 # Generated by python -m devtools.regularized_drawings from the regularized layer's
 # index (packing/atlas/known-best/regularized/index.json); do not edit by hand.
@@ -19513,7 +20360,7 @@ regularized_drawings:
         max_turn_deg: 0.0
       view: packing/atlas/known-best/regularized/n-153-regularized.yaml.gz
     - n: 154
-      of: T-136
+      of: T-160
       by: project
       method: regularize_axis_components/2
       side: same
@@ -19521,9 +20368,9 @@ regularized_drawings:
         basis: measured
         measured_in: packing/atlas/known-best/regularized/index.json
         one_to_one: true
-        moved: 51
-        max_move: 0.06320055
-        max_turn_deg: 0.0
+        moved: 15
+        max_move: 0.1350142
+        max_turn_deg: 0.00238252
       view: packing/atlas/known-best/regularized/n-154-regularized.yaml.gz
     - n: 155
       of: T-149
@@ -19583,18 +20430,17 @@ regularized_drawings:
         max_turn_deg: 1.3138
       view: packing/atlas/known-best/regularized/n-172-regularized.yaml.gz
     - n: 175
-      of: T-140
+      of: T-158
       by: project
-      method: "regularize_grid_slack/1: Evan Daniel's coincidence placement (evand/square-packing search/regularize reg.coincidences and reg.place, MIT), ported to start from the witness's exact frame and to keep its contacts, then the same-side exact re-solve, through devtools.regularize_grid_slack"
-      modifications: ["port of his coincidence placement (regularize_grid_slack/1) rather than his code", "same-side exact re-solve (devtools.regularize_same_side)"]
+      method: regularize_axis_components/2
       side: same
       identity:
         basis: measured
         measured_in: packing/atlas/known-best/regularized/index.json
         one_to_one: true
-        moved: 15
-        max_move: 0.2347488
-        max_turn_deg: 0.0
+        moved: 8
+        max_move: 0.03142235
+        max_turn_deg: 1.88881e-64
       view: packing/atlas/known-best/regularized/n-175-regularized.yaml.gz
     - n: 176
       of: T-151
@@ -19854,7 +20700,7 @@ regularized_drawings:
         max_turn_deg: 4.149e-35
       view: packing/atlas/known-best/regularized/n-230-regularized.yaml.gz
     - n: 232
-      of: T-136
+      of: T-158
       by: project
       method: regularize_axis_components/2
       side: same
@@ -19862,8 +20708,8 @@ regularized_drawings:
         basis: measured
         measured_in: packing/atlas/known-best/regularized/index.json
         one_to_one: true
-        moved: 52
-        max_move: 0.1491268
+        moved: 19
+        max_move: 0.2515494
         max_turn_deg: 0.0
       view: packing/atlas/known-best/regularized/n-232-regularized.yaml.gz
     - n: 234
@@ -20019,6 +20865,19 @@ regularized_drawings:
         max_move: 2.05061e-19
         max_turn_deg: 0.0
       view: packing/atlas/known-best/regularized/n-263-regularized.yaml.gz
+    - n: 264
+      of: T-158
+      by: project
+      method: regularize_axis_components/2
+      side: same
+      identity:
+        basis: measured
+        measured_in: packing/atlas/known-best/regularized/index.json
+        one_to_one: true
+        moved: 23
+        max_move: 0.0374764
+        max_turn_deg: 3.56465e-16
+      view: packing/atlas/known-best/regularized/n-264-regularized.yaml.gz
     - n: 266
       of: T-119
       by: project
