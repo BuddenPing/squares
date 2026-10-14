@@ -21,7 +21,7 @@ softschema:
   status: enforced
 repository: jlevy/squares
 owner: jlevy
-last_reviewed: '2026-10-12'
+last_reviewed: '2026-10-14'
 issues:
   - number: 420
     title: 'Lean proofs that 178 best-known packings are local minima (n ≤ 324): registration request'
@@ -5259,6 +5259,15 @@ issues:
       outdated:
       - 'the AI-assistance question is still open; the author answered on #503 on 12 October 2026,
         for both issues, and the record carries the answer'
+    - url: https://github.com/jlevy/squares/issues/503#issuecomment-6161058151
+      date: '2026-10-14'
+      by: jlevy
+      kind: follow-up
+      reported:
+      - result: n207-exact-certificate
+        id: T-147
+      corrects:
+      - https://github.com/jlevy/squares/issues/503#issuecomment-6127536031
     close_when: The import and its disposition are on main, the house adoption at 207 has landed or
       is owned, the author has been asked which AI-assistance account stands, and the owner has
       posted the resulting state; optimality is outside this request.
@@ -5278,6 +5287,14 @@ issues:
       change is on main (think-ckjc). The final reply's "still open" statement is marked
       `outdated`, so a reply is due here until the thank-you names that reply in `corrects`
       (review A3 of #558).
+
+      The thank-you was posted on 14 October 2026, 04:42:10Z
+      (https://github.com/jlevy/squares/issues/503#issuecomment-6161058151), after #558 merged:
+      the record now quotes the author's answer as the AI-assistance statement of T-147 and T-148,
+      on both case pages. It names the final reply in `corrects`. It also says that the refined
+      N207 certificate posted here and the refined N153 certificate on #504 are being retained
+      and replayed with #564 and #566 to #569; those comments are read by the lane that takes them
+      in, not here.
   - number: 504
     title: 's(153) ≤ 12.870013850408: registration request'
     author: BuddenPing
@@ -5361,6 +5378,15 @@ issues:
       outdated:
       - 'the AI-assistance question is still open; the author answered on #503 on 12 October 2026,
         for both issues, and the record carries the answer'
+    - url: https://github.com/jlevy/squares/issues/504#issuecomment-6161058348
+      date: '2026-10-14'
+      by: jlevy
+      kind: follow-up
+      reported:
+      - result: n153-exact-certificate
+        id: T-148
+      corrects:
+      - https://github.com/jlevy/squares/issues/504#issuecomment-6127536658
     close_when: The import and its disposition are on main, the house adoption at 153 has landed or
       is owned, and the owner has posted the resulting state; optimality and the undilated contact
       solution are outside this request.
@@ -5377,6 +5403,12 @@ issues:
       (think-ckjc). The final reply's "still open" statement is marked `outdated`, and since
       `corrects` names replies on the same issue, a one-line pointer here to the #503 thank-you,
       naming the final reply in `corrects`, clears the reply due (review A3 of #558).
+
+      The pointer was posted on 14 October 2026, 04:42:11Z
+      (https://github.com/jlevy/squares/issues/504#issuecomment-6161058348): the thank-you on #503
+      covers this issue, T-148 carries the author's statement, and the refined N153 certificate
+      posted here is being replayed. It names the final reply in `corrects`; the refined
+      certificate's comment is read by the lane that takes it in, not here.
   - number: 501
     title: New results for n=155, n=156 and n=211 to the best of my knowledge
     author: dostashev
