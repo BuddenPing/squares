@@ -1,7 +1,7 @@
 {
  "schema": "pr574-exact-sides/v1",
  "tool": "devtools.decide_undecided_comparisons extract",
- "note": "PR #574's exact sides at the 17 decidable rows of the 14 October ledger's Undecided Comparisons. The PR #574 lane's packet is not on main, so the sides are kept here with the digests of the files they were read from.",
+ "note": "PR #574's exact sides at the 17 decidable rows of the 14 October ledger's Undecided Comparisons. The PR #574 lane's packet is not on main, so the sides are kept here with the commit and path of each file they were read from, and the downloaded n = 17 certificate with its digest.",
  "lane": {
   "branch": "claude/wizardly-meitner-wqn4x3-intake-1014-pr574",
   "commit": "56cf868c617975eaada5b0c10dab953cc6fa2e37"
@@ -19,32 +19,32 @@
  },
  "files": {
   "lane-claims.json": {
-   "path": "packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/claims.json",
-   "sha256": "ea97e4311e181b12eb2e1d45b7761603cf32263ac321a3ae8802db0558c84fba"
+   "commit": "56cf868c617975eaada5b0c10dab953cc6fa2e37",
+   "path": "packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/claims.json"
   },
   "lane-algebraic-claims.json": {
-   "path": "packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json",
-   "sha256": "ec7716a9781694cfccc4664345f2ac9706cf23fdce395bb8929404f54aa8c567"
+   "commit": "56cf868c617975eaada5b0c10dab953cc6fa2e37",
+   "path": "packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json"
   },
   "pr-claims.json": {
-   "path": "packing/resources/web/pingyou-numerical-refinements-2026-10-13/claims.json",
-   "sha256": "1cb5110dd26933812e0f340c17b466674a131e449d23f1691e92476e7e18980d"
+   "commit": "4c319c24a6217dbbbf05e79ebb7e2dc5be0a2cde",
+   "path": "packing/resources/web/pingyou-numerical-refinements-2026-10-13/claims.json"
   },
   "n017.cert.json": {
    "path": "numerical-refinements/certificates/n017.cert.json",
    "sha256": "c2742c9155e69c5bce4e6befbb5e31a1601749405fcf9063bc7ad1e8be8f84bf"
   },
   "facts/alg-n-054.yaml.gz": {
-   "path": "packing/resources/web/pingyou-pr574-certificates-2026-10-13/facts/alg-n-054.yaml.gz",
-   "sha256": "120f332843ddb16ef2810a6ec36bd342d59fdd7000173615eeaa1431ebd9b06f"
+   "commit": "56cf868c617975eaada5b0c10dab953cc6fa2e37",
+   "path": "packing/resources/web/pingyou-pr574-certificates-2026-10-13/facts/alg-n-054.yaml.gz"
   },
   "facts/alg-n-107.yaml.gz": {
-   "path": "packing/resources/web/pingyou-pr574-certificates-2026-10-13/facts/alg-n-107.yaml.gz",
-   "sha256": "959043d1095f689b5d3327bbed0332c7a6beda4b33121888b440667ddecd2399"
+   "commit": "56cf868c617975eaada5b0c10dab953cc6fa2e37",
+   "path": "packing/resources/web/pingyou-pr574-certificates-2026-10-13/facts/alg-n-107.yaml.gz"
   },
   "facts/alg-n-178.yaml.gz": {
-   "path": "packing/resources/web/pingyou-pr574-certificates-2026-10-13/facts/alg-n-178.yaml.gz",
-   "sha256": "038cace32b0072488dd23584aba1e43a3a4ead935a4859aad66e5c234926d408"
+   "commit": "56cf868c617975eaada5b0c10dab953cc6fa2e37",
+   "path": "packing/resources/web/pingyou-pr574-certificates-2026-10-13/facts/alg-n-178.yaml.gz"
   }
  },
  "sides": {

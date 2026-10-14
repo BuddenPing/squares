@@ -126,6 +126,19 @@ def test_the_gated_rows_are_the_four_without_an_exact_record_side() -> None:
             tool.record_side(n)
 
 
+def test_only_the_downloaded_certificate_is_named_by_its_digest() -> None:
+    # OR-16: a file this repository's branches hold is named by its commit and path, so
+    # re-indenting the sides file or rewriting a lane file changes no decision's receipt.
+    sides = json.loads(tool.SIDES.read_text(encoding="utf-8"))
+    digested = {name for name, entry in sides["files"].items() if "sha256" in entry}
+    assert digested == {"n017.cert.json"}
+    for name, entry in sides["files"].items():
+        if name != "n017.cert.json":
+            assert entry["commit"] in (tool.LANE_COMMIT, tool.PR_COMMIT)
+    receipt = json.loads(tool.RESOLVED.read_text(encoding="utf-8"))
+    assert [key for key in receipt if "sha256" in key] == []
+
+
 @pytest.mark.slow
 def test_the_whole_receipt_is_current() -> None:
     receipt = tool.resolved_receipt(json.loads(tool.SIDES.read_text(encoding="utf-8")))

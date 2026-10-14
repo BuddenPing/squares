@@ -35,8 +35,9 @@ Two commands:
 
 - ``extract`` reads PR #574's sides from files exported from the PR #574 lane's branch
   and from the pull request (`LANE_COMMIT`, `PR_COMMIT`), and from the v2 certificate
-  at 17, and writes them with their digests to `SIDES`. That lane's packet is not on
-  ``main``, so its sides are kept here.
+  at 17, and writes them to `SIDES` with the commit and path each file was read at; the
+  downloaded certificate alone keeps its digest. That lane's packet is not on ``main``,
+  so its sides are kept here.
 - ``decide`` reads `SIDES` and the record's sides from the repository and writes
   `RESOLVED`; ``--check`` compares the retained receipt with a fresh decision.
 
@@ -505,7 +506,6 @@ def resolved_receipt(sides: Json) -> Json:
             "bounds rounded outward"
         ),
         "sides": _rel(SIDES),
-        "sides_sha256": sha256(SIDES.read_bytes()),
         "counts": counts,
         "rows": rows,
         "gated": [
@@ -520,15 +520,28 @@ def resolved_receipt(sides: Json) -> Json:
 
 def extract(inputs: Path) -> Json:
     """PR #574's sides at the 17 rows, from the exported files in ``inputs``."""
-    files = {
-        "lane-claims.json": f"{LANE_PACKET}/acquisition/claims.json",
-        "lane-algebraic-claims.json": f"{LANE_PACKET}/acquisition/algebraic-claims.json",
-        "pr-claims.json": PR_CLAIMS,
-        "n017.cert.json": V2_ARCHIVE["member"],
+    # The files this repository's branches hold are named by commit and path; the
+    # certificate, downloaded from the release archive, by the digest PR #574 names.
+    files: dict[str, Json] = {
+        "lane-claims.json": {
+            "commit": LANE_COMMIT,
+            "path": f"{LANE_PACKET}/acquisition/claims.json",
+        },
+        "lane-algebraic-claims.json": {
+            "commit": LANE_COMMIT,
+            "path": f"{LANE_PACKET}/acquisition/algebraic-claims.json",
+        },
+        "pr-claims.json": {"commit": PR_COMMIT, "path": PR_CLAIMS},
+        "n017.cert.json": {
+            "path": V2_ARCHIVE["member"],
+            "sha256": sha256((inputs / "n017.cert.json").read_bytes()),
+        },
     }
     for n in (54, 107, 178):
-        files[f"facts/alg-n-{n:03d}.yaml.gz"] = f"{LANE_PACKET}/facts/alg-n-{n:03d}.yaml.gz"
-    digests = {name: sha256((inputs / name).read_bytes()) for name in files}
+        files[f"facts/alg-n-{n:03d}.yaml.gz"] = {
+            "commit": LANE_COMMIT,
+            "path": f"{LANE_PACKET}/facts/alg-n-{n:03d}.yaml.gz",
+        }
     lane = {
         row["n"]: row
         for row in json.loads((inputs / "lane-claims.json").read_bytes())["results"]
@@ -546,7 +559,7 @@ def extract(inputs: Path) -> Json:
                 if r["n"] == 17
             ]
             certificate = json.loads((inputs / "n017.cert.json").read_bytes())
-            if digests["n017.cert.json"] != row["portable_certificate_sha256"]:
+            if files["n017.cert.json"]["sha256"] != row["portable_certificate_sha256"]:
                 raise DecisionError(
                     "n017.cert.json is not the certificate PR #574's claim names"
                 )
@@ -602,14 +615,13 @@ def extract(inputs: Path) -> Json:
         "note": (
             "PR #574's exact sides at the 17 decidable rows of the 14 October ledger's "
             "Undecided Comparisons. The PR #574 lane's packet is not on main, so the sides "
-            "are kept here with the digests of the files they were read from."
+            "are kept here with the commit and path of each file they were read from, and "
+            "the downloaded n = 17 certificate with its digest."
         ),
         "lane": {"branch": LANE_BRANCH, "commit": LANE_COMMIT},
         "pull_request": {"number": 574, "commit": PR_COMMIT},
         "v2_archive": V2_ARCHIVE,
-        "files": {
-            name: {"path": path, "sha256": digests[name]} for name, path in files.items()
-        },
+        "files": files,
         "sides": sides,
     }
 
