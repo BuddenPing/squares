@@ -61,6 +61,10 @@ PINGYOU_1012 = (
     "pingyou-n105-refinement-2026-10-12",
     "pingyou-n272-refinement-2026-10-12",
 )
+#: Issue #561 at 0fa0e0d, and issues #583 and #586 at b85dee2, which also holds five
+#: certificates no issue names: Couzo's releases of 12 and 13 October.
+COUZO_561 = "couzo-certificates-2026-10-12"
+COUZO_586 = "couzo-certificates-2026-10-13"
 #: How a declaration cites a beyond-horizon row of the source register.
 COVERAGE_URL = "packing/frontier/source-coverage.yaml"
 EVERY = (
@@ -75,6 +79,8 @@ EVERY = (
     SQUISH_500,
     COUZO_506,
     *PINGYOU_1012,
+    COUZO_561,
+    COUZO_586,
 )
 
 
@@ -548,6 +554,27 @@ def test_a_printed_side_stands_for_the_numbers_its_rounding_allows() -> None:
     assert reports.relation(Fraction(5, 4), reports.exact_span(Fraction(5, 4))) == "equal"
 
 
+def test_a_binary64_print_stands_for_every_side_its_double_may_render() -> None:
+    """#593 prints each side as '%.16f' of its double, which the last places do not fix.
+
+    Its 271 print lies 1.2e-15 from the exact side of its own certificate (and of Couzo's
+    #561 certificate, the same side), more than a unit at 16 places, so an unstated
+    rounding excludes the side the print renders; the binary64 span holds it.
+    """
+    side = Fraction(16948992356451205603226618436627, 10**30)
+    printed = "16.9489923564512068"
+    assert f"{float(side):.16f}" == printed
+    assert reports.relation(side, reports.printed_span(printed, "unstated")) == "below"
+    span = reports.printed_span(printed, "binary64")
+    assert span.low < side < span.high
+    assert reports.relation(side, span) == "undecided"
+    # The span is one ulp of the double and one printed unit either side of the print.
+    slack = Fraction(2**-48) + Fraction(1, 10**16)
+    assert (span.low, span.high) == (Fraction(printed) - slack, Fraction(printed) + slack)
+    # A side further away than that is still decided.
+    assert reports.relation(side - Fraction(1, 10**14), span) == "below"
+
+
 def test_smallest_names_one_report_only_when_it_is_decidably_below_every_other() -> None:
     exact = reports.exact_span
     assert reports.smallest([("a", exact(Fraction(1))), ("b", exact(Fraction(2)))]) == {
@@ -730,6 +757,83 @@ def test_the_506_claims_hold_each_count_against_its_case_or_tracked_row() -> Non
     # A later import reads these sides exactly, by the packet's source key.
     assert reports.house_side("[Couzo certificates 2026-10-11]", 304) == Fraction(
         8964782973424250487190982671787, 5 * 10**29
+    )
+
+
+def test_the_561_claims_name_each_smaller_or_undecided_report() -> None:
+    rows = _rows(COUZO_561)
+    assert all(row["requested"] for row in rows.values())
+    assert all(rows[n]["case"]["relation"] == "below" for n in (156, 176, 237, 271))
+    assert [rows[n]["case"]["result"] for n in (156, 176, 237, 271)] == [
+        "T-149",
+        "T-151",
+        "T-140",
+        "T-151",
+    ]
+    # Ostashev's #575 and Mishapolk's #593 are 1.18e-2 smaller at 176, and #593 2.43e-4
+    # smaller at 237. At 156 and 271 #593 states this certificate's own exact side, and
+    # PingYou's #574 states it with its side about one part in 1e20 smaller, as it states
+    # #575's at 176: below the side it tightens, and undecided against #593's prints.
+    assert rows[237]["smallest"] == "#593"
+    for n in (156, 176, 271):
+        assert rows[n]["undecided_among"] == ["#574", "#593"]
+        (pingyou,) = [other for other in rows[n]["pending"] if other["report"] == "#574"]
+        assert pingyou["relation"] == "above"
+    for n in (156, 237, 271):
+        side = Fraction(rows[n]["exact_side"])
+        (pingyou,) = [other for other in rows[n]["pending"] if other["report"] == "#574"]
+        reduction = (side - Fraction(pingyou["printed"])) / side
+        assert Fraction(99, 10**22) < reduction < Fraction(101, 10**22)
+    # Beyond the corpus each is below the row tracked from #506, and #584 is below at 375.
+    for n in (338, 344, 375, 376, 378):
+        tracked = [other for other in rows[n]["pending"] if other["url"] == COVERAGE_URL]
+        assert [other["relation"] for other in tracked] == ["below"]
+    assert rows[375]["smallest"] == "#584"
+    claims = coverage_check.load_claims(_packet(COUZO_561) / reports.BEYOND)
+    assert sorted(claims) == [338, 344, 375, 376, 378]
+
+
+def test_the_586_claims_are_smallest_at_every_requested_count_but_the_two_ties() -> None:
+    rows = _rows(COUZO_586)
+    requested = [n for n, row in rows.items() if row["requested"]]
+    assert requested == [154, 211, 241, 302, 339, 379, 380, 381, 382]
+    assert [rows[n]["printed_in"] for n in (302, 381)] == [
+        "https://github.com/jlevy/squares/issues/583"
+    ] * 2
+    smallest = {n: rows[n].get("smallest") for n in requested}
+    assert smallest == {**dict.fromkeys(requested, reports.THIS), 211: None, 241: None}
+    for n in (211, 241):
+        assert rows[n]["undecided_among"] == [reports.THIS, "#593"]
+    # #586 replaces #583 below its print at every count it names again, and #570's 154 is
+    # #583's certificate.
+    for n in (154, 211, 241, 339, 379, 380, 382):
+        (earlier,) = [other for other in rows[n]["pending"] if other["report"] == "#583"]
+        assert earlier["relation"] == "below"
+    # PingYou's #574 tightenings of the case ceilings at 211 and 241, and its 302, are larger.
+    for n in (211, 241, 302):
+        (pingyou,) = [other for other in rows[n]["pending"] if other["report"] == "#574"]
+        assert pingyou["relation"] == "below"
+    # mstrmg's #582 and Kevin Fang's 078789a certificate are larger at 381.
+    assert {other["report"]: other["relation"] for other in rows[381]["pending"]} == {
+        "couzo-certificates-2026-10-11": "below",
+        "#582": "below",
+        "TheSnakeFang/squarepack-certs@078789a": "below",
+    }
+    # The five no issue names are each below #561's certificate at the count, read exactly.
+    unnamed = [n for n, row in rows.items() if not row["requested"]]
+    assert unnamed == [176, 344, 375, 376, 378]
+    for n in unnamed:
+        (earlier,) = [other for other in rows[n]["pending"] if other["report"] == "#561"]
+        assert earlier["relation"] == "below"
+        assert Fraction(earlier["exact_side"]) == reports.house_side(
+            "[Couzo certificates 2026-10-12]", n
+        )
+    assert rows[176]["undecided_among"] == ["#574", "#593"]
+    assert rows[375]["smallest"] == "#584"
+    claims = coverage_check.load_claims(_packet(COUZO_586) / reports.BEYOND)
+    assert sorted(claims) == [339, 379, 380, 381, 382]
+    assert reports.house_side("[Couzo certificates 2026-10-13]", 381) == Fraction(
+        19974977397656713743580918961689, 10**30
     )
 
 
@@ -1019,6 +1123,8 @@ def test_the_register_plan_states_each_bound_as_check_standing_reads_it(name: st
         SQUISH_500: "2026-10-11",
         COUZO_506: "2026-10-11",
         **dict.fromkeys(PINGYOU_1012, "2026-10-12"),
+        COUZO_561: "2026-10-12",
+        COUZO_586: "2026-10-13",
     }
     assert result["attribution"]["published"] == published.get(name, "2026-10-10")
     evidence = plan["evidence.yaml"]
