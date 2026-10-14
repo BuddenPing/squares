@@ -76,7 +76,7 @@ def test_a_tie_with_the_record_itself_is_not_recorded_and_is_an_owner_decision()
     assert [item.label for item in walk.standing] == ["record T-001"]
     data = _minimal()
     data["reports"][0]["claims"] = [{"n": 100, "printed": "10.5", "rounding": "exact"}]
-    decisions = ledger.evaluate(cast("ledger.Ledger", data), {100: [record()]})
+    decisions = ledger.evaluate(cast(ledger.Ledger, data), {100: [record()]})
     assert decisions["owner_decisions"]["exact_ties"] == [
         {
             "n": 100,
@@ -162,7 +162,7 @@ def test_a_claim_of_unknown_time_is_kept_out_of_the_walk_and_listed() -> None:
         }
     )
     assert ledger.problems(data) == []
-    verdict = ledger.evaluate(cast("ledger.Ledger", data), {100: [record()]})
+    verdict = ledger.evaluate(cast(ledger.Ledger, data), {100: [record()]})
     assert [step["report"] for step in verdict["counts"][0]["steps"]] == ["#1"]
     assert verdict["owner_decisions"]["unknown_times"] == [
         {"n": 100, "report": "#2", "holders": "B"}
