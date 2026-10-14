@@ -3676,9 +3676,10 @@ def _regularized_atlas_drawings(context: Context) -> str:
 
 
 def _default_drawings(context: Context) -> str:
-    # About 20 cpu-seconds, 5 to 18 s of wall at four workers depending on the host's
-    # load (2026-10-13, 90 views): every view the regularized layer draws, and its house
-    # drawing, measured again on the improvement rule's goals and decided under the
+    # About 20 cpu-seconds: 5.5 s of wall at four workers on a quiet host, 24 to 34 s in
+    # the records tier on a loaded one (2026-10-13 and 14, 90 views), the tier's slowest
+    # step and well inside its 300 s ceiling: every view the regularized layer draws, and
+    # its house drawing, measured again on the improvement rule's goals and decided under the
     # policy's sections 11 and 12, then compared with the retained record the site and
     # the posters draw from. A regularized default that the rule refuses, a stale record,
     # or a policy statement that stops naming a goal the code judges fails it; the counts

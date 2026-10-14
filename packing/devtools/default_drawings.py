@@ -35,8 +35,9 @@ worse on. `--check` measures every view again and fails when the record is not w
 data gives, when a regularized default breaks the rule, or when the policy's statement
 stops naming a goal the rule judges. It lists, failing nothing, each count that keeps the
 house picture and why: "no gain", "above U, not in the exceptions", a goal it is worse on,
-or an exact route's refusal. It costs about 18 cpu-seconds for the 90 views of
-13 October 2026, 5.5 seconds of wall at four workers.
+or an exact route's refusal. It costs about 20 cpu-seconds for the 90 views of
+13 October 2026: 5.5 seconds of wall at four workers on a quiet host, and 24 to 34
+seconds in the records tier on a host other work was loading.
 
 The site's drawings (`render_frontier_page`), the atlas tiles (`overview_sections`) and
 the posters (`build_known_best_atlas`) read the record through `regularized_defaults`,

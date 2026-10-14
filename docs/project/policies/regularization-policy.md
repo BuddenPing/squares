@@ -580,9 +580,10 @@ is valid and improves on the house drawing:
    against today’s drawing.
 
 Everywhere else the house drawing is the picture.
-That includes a drawn view that ties the house drawing on every goal, an exact house
-redrawn at its own side whose picture is the house’s to well under a pixel; the layer
-keeps such views, admitted before this rule, and draws none of them by default.
+That includes a drawn view that ties an exactly verified house drawing on every goal at
+its own side, whose picture differs from the house’s by little more than a square’s
+small slide, and at most counts by less than a pixel at tile size; the layer keeps such
+views, admitted before this rule, and draws none of them by default.
 
 Where the default is the view, the homepage and atlas tiles, the frontier survey’s
 thumbnail, both posters and the case page draw it, and the case page keeps the house
