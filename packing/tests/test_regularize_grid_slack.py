@@ -13,8 +13,10 @@ on to the next way rather than refusing the count.
 
 from __future__ import annotations
 
+import gzip
 import hashlib
 import json
+import os
 from fractions import Fraction
 from pathlib import Path
 from typing import Any
@@ -23,6 +25,7 @@ import pytest
 
 from devtools import census_drawing_regularity as census
 from devtools import regularize_axis_components as axis
+from devtools import regularize_evand as driver
 from devtools import regularize_grid_slack as slack
 from devtools import render_regularized_atlas as render
 from devtools.regularize_evand import Decision, view_geometry
@@ -410,7 +413,15 @@ def test_admission_holds_the_view_to_this_checkouts_witness(
 
     admit = Decision(10, "admit", None, None, "every admission condition holds")
     monkeypatch.setattr(slack, "measure", measure)
-    monkeypatch.setattr(slack, "decided", lambda _report, _witness: admit)
+    monkeypatch.setattr(slack, "decided", lambda _report, _witness, _routes: admit)
+
+    # The view is the drawn one; deciding it on both exact routes takes about 80 s at 241,
+    # and is the next test's subject, on a count that decides in well under a second.
+    def view_decided(_n: int, _report: Any, path: Path, _witness: Any) -> Any:
+        view = load_yaml(gzip.decompress(path.read_bytes()).decode())["witness"]
+        return view, dict.fromkeys(VERDICTS, True)
+
+    monkeypatch.setattr(slack, "view_decided", view_decided)
     witness = slack.load_source(n)
     own = slack.same.literal(slack.same.exact_frame(witness).side)
     held = hashlib.sha256((axis.REPO / entry["source"]["witness"]).read_bytes()).hexdigest()
@@ -450,6 +461,131 @@ def test_admission_holds_the_view_to_this_checkouts_witness(
 
 
 VERDICTS = ("exact_verify", "independent")
+
+
+def test_a_grid_run_is_dated_by_its_reports_and_not_by_its_files_time(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """#548 review C, C2: Git keeps no modification times, so a copied or restored grid
+    run directory would be dated the day it was copied. The run is dated by the latest
+    time its reports record; a run none of whose reports records one is dated by the
+    index, as the driver's undated receipts are, and refused where the index has none."""
+    run_dir = tmp_path / "all"
+    run_id = f"grid-slack-{run_dir.name}"
+    admit = Decision(10, "admit", None, None, "every admission condition holds")
+    monkeypatch.setattr(slack, "decided", lambda _report, _witness: admit)
+
+    def report(n: int, **extra: Any) -> Path:
+        directory = run_dir / f"n-{n:03d}"
+        directory.mkdir(parents=True, exist_ok=True)
+        path = directory / "report.json"
+        body = {"n": n, "generator": slack.GENERATOR, "seconds": 1.5, "settings": {}}
+        path.write_text(json.dumps({**body, **extra}))
+        os.utime(path, (0, 0))
+        return path
+
+    report(4)  # from before reports recorded the time: written before the others
+    report(5, finished="2026-10-13T01:00:00Z")
+    report(6, finished="2026-10-12T05:00:00Z")
+    block, _settings = slack.run_block(run_dir, run_id)
+    assert (block["finished"], block["counts"]) == ("2026-10-13", 3)
+
+    for n in (5, 6):
+        report(n)
+    block, _settings = slack.run_block(run_dir, run_id)
+    assert block["finished"] is None
+    held = [{"id": run_id, "finished": "2026-10-12"}]
+    assert driver.dated_runs([block], held)[0]["finished"] == "2026-10-12"
+    with pytest.raises(driver.EvandRunError, match="records no finish time"):
+        driver.dated_runs([block], [])
+
+
+def test_admission_decides_the_view_file_it_admits(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """#548 review C, C1: admission decides the view file as it is now, on both exact
+    routes, with its exact side and id held to its report's, before anything is measured
+    on it; the table decides on those routes and the entry records them, not the report's
+    verdicts. A square moved 1e-15 into its neighbour, beside a report whose verdicts say
+    both routes passed, is refused, as the reviewer's mutant at 241 is; so are another
+    side, another id, routes the run recorded otherwise and a file that does not read."""
+    n = 4
+    witness = slack.load_source(n)
+    directory = tmp_path / f"n-{n:03d}"
+    directory.mkdir()
+    pristine = {**json.loads(json.dumps(witness)), "id": slack.regularized_id(witness)}
+    side = slack.same.literal(slack.same.exact_frame(witness).side)
+    shades = {"before": [0] * n, "after": [0] * n}
+    measured: list[str] = []
+    routed: list[Any] = []
+
+    def measure(_n: int, _witness: Any, view: Any, _straightened: Any) -> dict[str, Any]:
+        measured.append(str(view["id"]))
+        return {
+            "identity": {
+                "one_to_one": True,
+                "moved": 0,
+                "max_move": 0.0,
+                "max_turn_deg": 0.0,
+                "symmetry": 0,
+            },
+            "shades": {
+                "house": dict(shades),
+                "stage": dict(shades),
+                "regressions": [],
+                "against_current": {"regressions": []},
+            },
+        }
+
+    def decided(_report: Any, _witness: Any, routes: Any) -> Decision:
+        routed.append(routes)
+        return Decision(10, "admit", None, None, "every admission condition holds")
+
+    monkeypatch.setattr(slack, "measure", measure)
+    monkeypatch.setattr(slack, "decided", decided)
+
+    def admitted(view: dict[str, Any], *, said: str = side, passed: bool = True) -> Any:
+        text = slack.witness_document(view)
+        (directory / "view.yaml.gz").write_bytes(gzip.compress(text.encode(), mtime=0))
+        verdicts = {"exact_verify": {"passed": True}, "independent": {"passed": passed}}
+        report = {
+            "n": n,
+            "generator": slack.GENERATOR,
+            "source": {"s_W_exact": side},
+            "attempts": [{"exact": {"side": said, "verdicts": verdicts}}],
+            "measured": {"identity": {"one_to_one": True}},
+        }
+        (directory / "report.json").write_text(json.dumps(report))
+        return slack.admitted(directory, "grid-slack-fixture")
+
+    entry = admitted(pristine)
+    assert routed == [dict.fromkeys(VERDICTS, True)]
+    assert entry.routes == {"repository_verifier": True, "independent_checker": True}
+    assert measured == [pristine["id"]]
+    # Square 2 moved 1e-15 left, into square 1: both routes refuse the file, whatever the
+    # report says, and it is refused before anything is measured on it.
+    moved = json.loads(json.dumps(pristine))
+    moved["squares"][1]["corners"] = [
+        [slack.same.literal(Fraction(x) - Fraction(1, 10**15)), y]
+        for x, y in moved["squares"][1]["corners"]
+    ]
+    with pytest.raises(slack.GridSlackError, match="fails exact_verify and independent"):
+        admitted(moved)
+    assert measured == [pristine["id"]]
+    with pytest.raises(slack.GridSlackError, match="side is 2, not the 3 its report"):
+        admitted(pristine, said="3")
+    edited = {**pristine, "id": "W-known-best-n004-edited"}
+    with pytest.raises(slack.GridSlackError, match="id is W-known-best-n004-edited"):
+        admitted(edited)
+    with pytest.raises(slack.GridSlackError, match="decided otherwise by independent"):
+        admitted(pristine, passed=False)
+    (directory / "view.yaml.gz").write_bytes(gzip.compress(b"witness: [", mtime=0))
+    with pytest.raises(slack.GridSlackError, match="does not read as a rational view"):
+        slack.admitted(directory, "grid-slack-fixture")
+    (directory / "view.yaml.gz").unlink()
+    with pytest.raises(slack.GridSlackError, match=r"no view\.yaml\.gz beside the report"):
+        slack.admitted(directory, "grid-slack-fixture")
+    assert measured == [pristine["id"]]
 
 
 def test_feasibility_holds_the_move_bound_and_a_zero_trust_is_refused() -> None:
