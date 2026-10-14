@@ -326,6 +326,9 @@ include = [
     # Local type stubs for dependencies that ship none (gmpy2, for the kernel's rationals),
     # held to the same floor as the code that relies on them.
     "typings",
+    # An intake pass's retained review programs, which recompute its verdicts from the
+    # record (`campaign/issue-intake/*/review/`), held to the floor like any other tool.
+    "campaign/issue-intake",
 ]
 exclude = [
     "**/__pycache__",
