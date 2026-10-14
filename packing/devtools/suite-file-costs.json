@@ -299,6 +299,7 @@
     "packing/tests/test_independent_five_dot_union.py": 0.288,
     "packing/tests/test_index_n11_capture_source.py": 0.048,
     "packing/tests/test_inspect_n17_subpattern_relevance.py": 0.398,
+    "packing/tests/test_intake_comments.py": 0.04,
     "packing/tests/test_intake_ledger.py": 0.389,
     "packing/tests/test_intake_sweep.py": 1.841,
     "packing/tests/test_integral_piercing.py": 0.058,
@@ -795,6 +796,20 @@
           "report": "packing/devtools/suite-file-cost-admissions/intake-2026-10-14.json",
           "provenance": {},
           "tests": 87
+        }
+      ]
+    },
+    {
+      "method": "successful-unsharded-unfiltered-whole-module-local-reports",
+      "aggregation": "per-file-geometric-mean",
+      "files": [
+        "packing/tests/test_intake_comments.py"
+      ],
+      "reports": [
+        {
+          "report": "packing/devtools/suite-file-cost-admissions/intake-comments-2026-10-14.json",
+          "provenance": {},
+          "tests": 15
         }
       ]
     }
