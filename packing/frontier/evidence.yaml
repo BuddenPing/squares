@@ -34451,12 +34451,13 @@ evidence:
     source_reviewed: '2026-10-14'
     limitations: >-
       This atom records the source author's report of 14 exact rational certificates at
-      078789a. A separate complete repository replay is retained for n = 380, 381 and 382: 3
-      positives and 6 duplicate-square and outside-container controls passed their required
-      outcomes on both routes, 1303026 pair decisions; summed over the 9 jobs, the receipt
-      records 652.11 route CPU seconds and 863.27 job wall seconds, the longest job 138.29
+      078789a. A separate complete repository replay is retained for n = 380, 381, 382, 421,
+      422, 463, 464, 507, 508, 553, 601, 651, 758 and 814: 14 positives and 28
+      duplicate-square and outside-container controls passed their required outcomes on
+      both routes, 12168762 pair decisions; summed over the 42 jobs, the receipt records
+      6206.59 route CPU seconds and 7310.06 job wall seconds, the longest job 496.24
       seconds. Every positive clears every wall by at least 2.71e-20 and every pair by at
-      least 1.58e-20. Independent review and confirmation remain pending. The source's own
+      least 7.13e-21. Independent review and confirmation remain pending. The source's own
       checkers were not run here. The two maintained routes, the sqpack rational witness
       verifier and the independent rational corner checker, share certificate parsing,
       half-angle conversion, Fraction arithmetic and the separating-axis method. No two
@@ -34476,7 +34477,8 @@ evidence:
         exact fraction; it decided the other eleven strict-valid on one route.
   - id: E-fang-direct-exact-feasibility
     claim: upper-bound
-    scope: {n_values: [380, 381, 382]}
+    scope: {n_values: [380, 381, 382, 421, 422, 463, 464, 507, 508, 553, 601, 651, 758,
+                        814]}
     assurance: verified
     method: exact-algebraic
     performed_by: repository
@@ -34488,10 +34490,11 @@ evidence:
     replay: >-
       From packing/ with the project interpreter, one process at a time: python -m
       devtools.upper_bound_reports fang-direct-certificates-2026-10-13 certify --workers 1
-      decided the 9 jobs of the certificates at 380, 381 and 382, each with its
-      duplicate-square and outside-container controls, through both maintained routes on
-      2026-10-14, and a fresh serial check --replay decided all nine again, equal to the
-      retained rows.
+      decided the 42 jobs of the fourteen certificates, each with its duplicate-square and
+      outside-container controls, through both maintained routes on 2026-10-14, in two
+      one-worker runs that certify --finished assembled, and a fresh serial check --replay
+      decided all 42 again, equal to the retained rows apart from timing. The receipts are
+      one a count, receipts/exact-certification-nNNN.json.xz.
     replay_status: passed
     verifiers:
       - V-sqpack-verify
@@ -34503,10 +34506,11 @@ evidence:
       coverage:
         extent: full
         unit: >-
-          the complete certificates at 380, 381 and 382, every wall and every pair decided by
-          both maintained routes; the six kernel controls are retained separately
-        checked: 3
-        of: 3
+          the complete certificates at 380, 381, 382, 421, 422, 463, 464, 507, 508, 553, 601,
+          651, 758 and 814, every wall and every pair decided by both maintained routes; the
+          28 kernel controls are retained separately
+        checked: 14
+        of: 14
       read: [specification, certificate-format, producer-code]
       clean_room: false
       shares: []
@@ -34551,12 +34555,13 @@ evidence:
         checker decided the same three certificates and found the same least margins to the
         exact fraction; it decided the other eleven strict-valid on one route.
     limitations: >-
-      Both maintained routes accept the three certificates and refuse their six controls:
-      1,303,026 pair decisions, 652.11 route CPU seconds and 863.27 job wall seconds. In
-      every positive the least wall clearance is exactly 2^-65 and the least pair gaps are
-      2.33e-20, 1.79e-20 and 1.58e-20. The other eleven certificates, 421 to 814, are not
-      replayed here; their two-route replay is priced at 3.02 CPU-hours (think-7bw3). Finite
-      feasibility only.
+      Both maintained routes accept the fourteen certificates and refuse their 28 controls:
+      12,168,762 pair decisions, 6,206.59 route CPU seconds and 7,310.06 job wall seconds.
+      In every positive the least wall clearance is exactly 2^-65, and the least pair gap is
+      at least 7.13e-21, the smallest at 758. The nine jobs at 380, 381 and 382 ran first;
+      the 33 at the other eleven counts ran once the owner set a replay budget
+      (think-7bw3). The 14 October review confirmed the replay at 380, 381 and 382 and
+      decided the other eleven on one route of its own. Finite feasibility only.
     source_reviewed: '2026-10-14'
   - id: E-wand125-closed-form-cfcheck-report
     claim: lower-bound
