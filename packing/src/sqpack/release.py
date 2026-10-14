@@ -88,10 +88,8 @@ PUBLICATION_HISTORY = (
         version="v0.6.3",
         first_published="October 14, 2026",
         result_scope=(
-            "Register 24 results from the 14 October intake, none adopting a house: "
-            "smaller exact packings and certificates at 69 counts, lower bounds at 37, "
-            "39, 44 and 145 to 149, Hiroaki Hosono's closed form, which raises 154 "
-            "reported lower bounds, Kevin Fang's n^2 - n + 1 theorem and s(76) = 9."
+            "Add the 14 October intake ledger to the project changelog and state on the "
+            "epistemics page that credits name people by name."
         ),
     ),
     PublicationHistoryEntry(
@@ -660,10 +658,8 @@ RELEASE_IMPACTS: tuple[ReleaseImpactDecision, ...] = (
         version="v0.6.3",
         impact="patch",
         reason=(
-            "Register 24 results from the 14 October intake, none adopting a house: "
-            "smaller exact packings and certificates at 69 counts, lower bounds at 37, "
-            "39, 44 and 145 to 149, Hiroaki Hosono's closed form, which raises 154 "
-            "reported lower bounds, Kevin Fang's n^2 - n + 1 theorem and s(76) = 9."
+            "Add the 14 October intake ledger to the project changelog and state on the "
+            "epistemics page that credits name people by name."
         ),
     ),
     ReleaseImpactDecision(
@@ -995,6 +991,26 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "provenance is independent of a paper revision."
         ),
     ),
+    ReleaseNoPublicChange(
+        components=("paper:n11-lower-bounds-explainer",),
+        paths=(
+            "packing/cases/n11_fractional_certificate/t-018-proof-card.md",
+            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-19-5.md",
+            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-381-100.md",
+            "packing/cases/n11_threshold_certificate/t-025-verifiable-claim-191-50.md",
+            "packing/cases/n11_threshold_certificate/t-026-verifiable-claim-dilation-limit.md",
+        ),
+        outputs=(
+            "papers/n11-lower-bounds-explainer.html",
+            "papers/n11-lower-bounds-explainer.md",
+        ),
+        reason=(
+            "The site v0.6.3 cut regenerates the five claim documents at its new link "
+            "revision and changes nothing else in them. The explainer rendered with "
+            "main's claim documents and release module and with this branch's is "
+            "byte-identical in all 54 files it writes, so the explainer keeps v0.4.6."
+        ),
+    ),
 )
 
 
@@ -1131,7 +1147,7 @@ def validate_release_impacts(
 #: fresh render, so a link naming the build commit would fail their drift check forever. It is
 #: in no version string. It moves when the claim documents are regenerated for an edition. It
 #: must be a commit on `main`; the site's own links name `main` itself (`devtools.repo_links`).
-PUBLICATION_REVISION = "11174f07"
+PUBLICATION_REVISION = "e4d46b8d"
 
 
 def data_pathspec() -> tuple[str, ...]:

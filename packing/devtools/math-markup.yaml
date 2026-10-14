@@ -1571,6 +1571,18 @@ keep:
 - path: development.md
   span: '3.14'
   reason: the Python version this project runs, not a number
+- path: development.md
+  span: n-11
+  reason: a GitHub label's name, not a difference
+- path: development.md
+  span: n-17
+  reason: a GitHub label's name, not a difference
+- path: development.md
+  span: n-18
+  reason: a GitHub label's name, not a difference
+- path: development.md
+  span: n-<k>
+  reason: the pattern a new GitHub case label's name follows, not a difference
 - path: docs/project/reviews/review-2026-09-01-agenda013-overnight-synthesis.md
   span: 17--19
   reason: a range written with a TeX-style double hyphen; as math it reads as two

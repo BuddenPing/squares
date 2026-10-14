@@ -34,6 +34,23 @@ First public: 2026-10-14 ([publication evidence](https://github.com/jlevy/square
 
 PRs and supporting records: [\#592](https://github.com/jlevy/squares/pull/592) · [\#595](https://github.com/jlevy/squares/pull/595) · [Fitzharding mathematical review](docs/project/reviews/review-2026-10-13-fitzharding-n17-mathematical-correctness.md) · [Overbeck mathematical review](docs/project/reviews/review-2026-10-13-overbeck-n17-mathematical-correctness.md) · [Evidence and independence rules](epistemics.md).
 
+<a id="changelog-entry-october-fourteen-intake-ledger"></a>
+
+#### The 14 October Intake Ledger, Every Open Report in Report Order
+
+Evaluated every open upper-bound report, 306 claims at 163 counts from 28 reports,
+in the order each reached the project, recording a claim only where it is decidably
+smaller than everything reported before it. The verdicts decide the 14 October
+register entries.
+
+- Built a ledger tool that compares printed and exact sides rigorously, starts from
+  a frozen copy of the record, and lists the decisions it leaves to the owner.
+- Retained Kevin Fang's direct certificates and his excess theorem, and wand125's
+  fine-net, linear and closed-form lower bounds, each with a mathematical review.
+- Posted the per-count verdict on every open result issue.
+
+PRs and supporting records: [\#601](https://github.com/jlevy/squares/pull/601) · [The intake ledger](packing/campaign/issue-intake/upper-bounds-20261014/README.md) · [Ledger review](docs/project/reviews/review-2026-10-14-intake-ledger.md) · [Fang theorem and direct-certificate review](docs/project/reviews/review-2026-10-14-fang-excess-theorem-and-direct-certificates.md) · [wand125 closed-form review](docs/project/reviews/review-2026-10-14-wand125-closed-form-lower-bound.md).
+
 <a id="changelog-entry-regularized-drawings-and-exact-side-admissions"></a>
 
 #### Regularized Drawings, Exact Side Admissions and Original Comparison
