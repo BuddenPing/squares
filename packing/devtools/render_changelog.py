@@ -665,7 +665,7 @@ def ordered_entries(document: Document) -> list[Document]:
     )
 
 
-class _NewsPreviewText(HTMLParser):
+class NewsPreviewText(HTMLParser):
     """Plain preview text from sanitized prose, keeping semantic math exactly once."""
 
     VOID_TAGS = frozenset(
@@ -757,7 +757,7 @@ def render_news(document: Document, *, limit: int | None = None) -> str:
             '<span class="site-news-preview">'
         )
         for entry in items:
-            preview = _NewsPreviewText(_prose(entry["summary"], destination="site"))
+            preview = NewsPreviewText(_prose(entry["summary"], destination="site"))
             text = html.escape(" ".join("".join(preview.parts).split()))
             out.append(
                 '<span class="site-news-preview-item">'

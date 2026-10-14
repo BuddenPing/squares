@@ -7,6 +7,7 @@ import re
 from fnmatch import fnmatchcase
 
 import pytest
+from kpress.format.markdown import parse_markdown
 
 from devtools import (
     check_published_site,
@@ -16,6 +17,7 @@ from devtools import (
     site_documents,
 )
 from devtools.pages_scope import REPO
+from devtools.render_changelog import NewsPreviewText
 from tests import site_renders
 
 
@@ -116,10 +118,10 @@ def test_news_groups_days_and_home_previews_only_the_first_two_items(
 
 
 def test_news_preview_keeps_semantic_math_once_and_skips_hidden_subtrees() -> None:
-    source = render_changelog._prose(
-        "Verified **bound** $s(11) \\ge 381/100$.", destination="site"
-    )
-    preview = " ".join("".join(render_changelog._NewsPreviewText(source).parts).split())
+    source = parse_markdown(
+        r"Verified **bound** $s(11) \ge 381/100$.", title="News preview", trust_mode="sanitized"
+    ).html
+    preview = " ".join("".join(NewsPreviewText(source).parts).split())
     assert preview == "Verified bound s(11)≥381/100."
     nested = (
         '<p>Before <span aria-hidden="true">visual<annotation>nested<br/>'
@@ -128,5 +130,5 @@ def test_news_preview_keeps_semantic_math_once_and_skips_hidden_subtrees() -> No
         "<annotation>duplicate</annotation><annotation-xml>"
         "<span>duplicate again</span></annotation-xml></math><br/>after<br>end.</p>"
     )
-    clean = " ".join("".join(render_changelog._NewsPreviewText(nested).parts).split())
+    clean = " ".join("".join(NewsPreviewText(nested).parts).split())
     assert clean == "Before x≥1 after end."
