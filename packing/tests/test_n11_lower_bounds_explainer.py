@@ -390,7 +390,7 @@ def test_figure_three_marks_the_verified_lower_bound_beside_the_packing(
     assert recorded["exact_form"] == packing["verified_upper_bound"]["exact_form"]
     assert render_n11_lower_bounds_explainer.n11_solved(verified)
     assert verified.display == "3.8770835…"
-    assert verified.credit == "Ahmed after Levy, Kleddamag 2026"
+    assert verified.credit == "Ahmed after Levy, Overbeck 2026"
 
     best_x = round(
         render_n11_lower_bounds_explainer.line_x(
@@ -406,7 +406,7 @@ def test_figure_three_marks_the_verified_lower_bound_beside_the_packing(
     assert '<line x1="356" y1="76.0"' in figure
 
     caption = " ".join(document.split())
-    assert "T-060, by Ahmed after Levy, Kleddamag 2026, closes the remaining gap" in caption
+    assert "T-060, by Ahmed after Levy, Overbeck 2026, closes the remaining gap" in caption
     assert "the exact algebraic side $T$" in caption
     assert "a truncated decimal display of $T$" in caption
     assert "leaves a gap of $0.0000000" not in caption
@@ -460,7 +460,7 @@ def test_historical_open_bracket_keeps_its_separate_tick_and_gap(
     old = render_n11_lower_bounds_explainer.VerifiedLowerBound(
         value=Fraction(31, 8),
         display="3.875",
-        credit="Kleddamag after Levy et al. 2026",
+        credit="Overbeck after Levy et al. 2026",
         confirmed_by=("T-037",),
     )
     monkeypatch.setattr(
@@ -851,6 +851,9 @@ def test_the_pages_filter_covers_every_overview_input() -> None:
     declared = render_overview.inputs()
     assert REPO / "TUTORIAL.md" in declared
     assert REPO / "packing/frontier/evidence.yaml" in declared
+    from devtools.evand_exact_certificates import COMPARISON_RECEIPT  # noqa: PLC0415
+
+    assert COMPARISON_RECEIPT in declared
     for event, patterns in pages_filters().items():
         missing = [
             path.relative_to(REPO).as_posix()
@@ -861,6 +864,10 @@ def test_the_pages_filter_covers_every_overview_input() -> None:
         without_documents = [p for p in patterns if p != "TUTORIAL.md"]
         exposed = [path for path in declared if not covered(path, without_documents)]
         assert exposed == [REPO / "TUTORIAL.md"], event
+        receipt = COMPARISON_RECEIPT.relative_to(REPO).as_posix()
+        without_receipt = [pattern for pattern in patterns if pattern != receipt]
+        exposed = [path for path in declared if not covered(path, without_receipt)]
+        assert exposed == [COMPARISON_RECEIPT], event
 
 
 def test_every_declared_overview_input_exists() -> None:

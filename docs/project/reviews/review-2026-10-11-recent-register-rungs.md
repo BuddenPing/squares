@@ -19,10 +19,10 @@ optional replay that moves no bound.
 Nine findings are recorded.
 None blocks a current rung; RR-1 must be settled before any `V4`/`C4` promotion.
 
-This review was written by an AI agent (Claude Opus 5.5, at the extra-high reasoning
-setting its dispatch named), lane R1 of the 2026-10-11 intake pass under `think-18b8`
-(epic `think-mq0k`), prompted by the pass’s coordinator separately from the import lanes
-and from every review it reads, with no shared context.
+This review was written by an AI agent (Claude, the operations tier, at the extra-high
+reasoning setting its dispatch named), lane R1 of the 2026-10-11 intake pass under
+`think-18b8` (epic `think-mq0k`), prompted by the pass’s coordinator separately from the
+import lanes and from every review it reads, with no shared context.
 The owner asked for a review of the verification levels on recent items.
 Its relation to the results is `project`. It reviews the record’s ratings, not any
 result’s mathematics, so it is no adversarial review of a result and no entry should

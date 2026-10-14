@@ -63,6 +63,7 @@ name: Certificate page
       - packing/resources/web/evand-record-hunt-2026-10-09/README.md
       - packing/resources/web/evand-record-hunt-2026-10-09/acquisition/claims.json
       - packing/resources/web/evand-square-packing-2026-10-05/README.md
+      - packing/resources/web/evand-square-packing-2026-10-05/receipts/register-comparison.json
       - packing/resources/web/evand-square-packing-2026-10-05/square-packing/s12/search/exact/README.md
       - packing/resources/web/evand-square-packing-2026-10-05/square-packing/s12/search/exact/batch/README.md
       - packing/resources/web/franciscouzo-square-packing-2026-09-27/README.md
@@ -101,6 +102,7 @@ name: Certificate page
       - packing/atlas/known-best/bound-citations.json
       - packing/atlas/known-best/rendering/**
       - packing/atlas/known-best/regularized/index.json
+      - packing/atlas/known-best/default-drawings.json
       - packing/atlas/known-best/regularized/rendering/**
       - packing/witnesses/known-best/**
       - packing/devtools/templates/n11-lower-bounds-explainer-shell.html
@@ -125,6 +127,10 @@ name: Certificate page
       - packing/devtools/overview_sections.py
       - packing/devtools/build_known_best_atlas.py
       - packing/devtools/atlas_print_font.py
+      - packing/devtools/default_drawings.py
+      - packing/devtools/improvement_rule.py
+      - packing/devtools/pictured_source.py
+      - packing/devtools/evand_exact_certificates.py
       - packing/devtools/fonts/atlas-print/**
       - packing/devtools/result_overview.py
       - packing/devtools/atlas_legend.py
@@ -463,7 +469,7 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-  # Part II of the series, the review of Kleddamag's s(11) > 31/8 (T-037), built as
+  # Part II of the series, the review of Overbeck's s(11) > 31/8 (T-037), built as
   # the optimality review is: its figures' and renderer's tests, then the page, its
   # Markdown and its PDF under `site/papers/`. Its partial checkout keeps the archived
   # proof it cites and reads, the T-059 replay journal and the native verifier's row
@@ -851,9 +857,10 @@ jobs:
       run:
         working-directory: packing
     steps:
-      # The same partial checkout as `prepare`, for the same reason. The one file the
-      # render reads under `packing/resources` is `bibliography.yaml`, a top-level file the
-      # pattern keeps (2026-09-29, every file the render opened, audited). The reader
+      # The same partial checkout as `prepare`, with the exact-optima comparison receipt
+      # also retained for pictured-source credit. Reopen only its ancestors and file;
+      # the remaining archive stays omitted. Top-level bibliography.yaml is kept too.
+      # The reader
       # documents' repository links, which name `main`, are resolved against the checked-out
       # commit's tree with `git ls-tree`, which reads only tree objects: a blobless clone of
       # depth one already holds every tree of that commit, so the render needs no history
@@ -870,6 +877,13 @@ jobs:
             /*
             !/packing/resources/*/
             !/packing/campaign/*/
+            /packing/resources/web/
+            !/packing/resources/web/*
+            /packing/resources/web/evand-square-packing-2026-10-05/
+            !/packing/resources/web/evand-square-packing-2026-10-05/*
+            /packing/resources/web/evand-square-packing-2026-10-05/receipts/
+            !/packing/resources/web/evand-square-packing-2026-10-05/receipts/*
+            /packing/resources/web/evand-square-packing-2026-10-05/receipts/register-comparison.json
 
       - name: Install uv and Python 3.14
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
@@ -1951,6 +1965,13 @@ jobs:
             /*
             !/packing/resources/*/
             !/packing/campaign/*/
+            /packing/resources/web/
+            !/packing/resources/web/*
+            /packing/resources/web/evand-square-packing-2026-10-05/
+            !/packing/resources/web/evand-square-packing-2026-10-05/*
+            /packing/resources/web/evand-square-packing-2026-10-05/receipts/
+            !/packing/resources/web/evand-square-packing-2026-10-05/receipts/*
+            /packing/resources/web/evand-square-packing-2026-10-05/receipts/register-comparison.json
 
       - name: Install uv and Python 3.14
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
@@ -2242,7 +2263,14 @@ jobs:
     if: ${{ !cancelled() && needs.deploy.result == 'success' }}
     runs-on: ubuntu-latest
     # Bound the live network audit; exceeding this ceiling leaves verification
-    # failed (think-6y2j).
+    # failed (think-6y2j). A job killed here prints no verdict, so the checker's own
+    # `--deadline-minutes` below stops it first, with every verdict it reached. Over
+    # the 40 verify jobs measured on 2026-10-10 (PR #496, review F) the steps before
+    # the audit took 41–72 s and those after it 2–6 s; the slowest healthy audit step
+    # was 388 s, and the failing ones ran 256–3,465 s, the three GitHub 503 storms
+    # among them 825–3,465 s. A 25-minute deadline leaves 5 of the 30 minutes for
+    # setup and teardown, about 3.9× the slowest measured, and is about 3.9× the
+    # slowest healthy audit. `test_pages_workflow` pins both values.
     timeout-minutes: 30
     steps:
       - name: Check out the repository
@@ -2280,3 +2308,4 @@ jobs:
           uv run --frozen --group dev python -m devtools.check_published_site
           --site "${{ needs.deploy.outputs.page-url }}"
           --commit "${{ github.sha }}"
+          --deadline-minutes 25

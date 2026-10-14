@@ -1560,17 +1560,19 @@ it.
   The printed posters put “recent result (since August, 2026)” after the degree key,
   with only “recent result” in red, the suffix in black, and no count.
   Both 100- and 324-case SVG, PNG and PDF exports share that legend (`think-rxkc`). A
-  case with a retained derived view in `atlas/known-best/regularized/` (X-049) uses that
-  selected drawing directly, without a website layer badge, label or legend link.
+  case whose default picture is its retained derived view in
+  `atlas/known-best/regularized/` (X-049; the regularization policy’s section 12, as
+  `atlas/known-best/default-drawings.json` records it) uses that drawing directly,
+  without a website layer badge, label or legend link.
   The index and atlas documentation keep the provenance.
-  `devtools.render_regularized_atlas` draws the selected views and its `--check`
-  verifies them against the index.
-  Each tile opens the same case record, whose drawing is the house rendering.
-  `devtools.measure_atlas_views` checks count centering, actual outline and count-ink
-  clearances, first-grid horizontal separation, uniform row pitch, complete rows and
-  their right endpoints; `tests/test_site_atlas_views.py` checks the selected counts
-  against the canonical manifest and verifies the initial CSS layout and actual
-  scroll-frame extent too.
+  `devtools.render_regularized_atlas` draws the views and its `--check` verifies them
+  against the index. Each tile opens the same case record, which draws the same picture
+  first and keeps the house rendering one click away, under *As published*, with its
+  source’s credit. `devtools.measure_atlas_views` checks count centering, actual outline
+  and count-ink clearances, first-grid horizontal separation, uniform row pitch,
+  complete rows and their right endpoints; `tests/test_site_atlas_views.py` checks the
+  selected counts against the canonical manifest and verifies the initial CSS layout and
+  actual scroll-frame extent too.
 
 - **Action under a table or grid.** Where one control follows a table or a grid, it is
   the site’s one action button, `.site-action`, in a centred `.site-action-row`: the
@@ -2770,14 +2772,14 @@ weight, the gap above and the width of every line and chip, and
 The three papers on $n = 11$ are one series, read in order, and every listing of them
 keeps that order: the Papers page, the home cards (one line of three), README and each
 paper’s strip.
-[The series plan](../../../docs/project/specs/active/plan-2026-10-05-n11-explainer-series.md)
+[The series plan](../../../docs/project/specs/done/plan-2026-10-05-n11-explainer-series.md)
 holds the decisions and their evidence; these are the rules a change to any of the three
 keeps.
 
 | Part | Slug | Explains |
 | --- | --- | --- |
 | I | `n11-lower-bounds-explainer` | The project’s point and 2-of-3 certificates: T-018, T-025, T-026 |
-| II | `n11-threshold-bound-review` | Kleddamag’s `s(11) > 31/8` (T-037): k-of-m charges, parents with strict cores over angle rows, the exact sweep |
+| II | `n11-threshold-bound-review` | Overbeck’s `s(11) > 31/8` (T-037): k-of-m charges, parents with strict cores over angle rows, the exact sweep |
 | III | `n11-optimality-review` | Ahmed’s `s(11) = T` (T-060): cover, pose invariant, charge transfer, symmetry, capture, isolation |
 
 - **Every paper stands alone, and each concept has one owner.** One paper derives a

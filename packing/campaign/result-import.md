@@ -78,8 +78,8 @@ It does answer the issues, by the owner’s standing instruction of 2026-10-11: 
 comments on every issue it touches and follows up each later change of its state, each
 comment posted once the pull request that carries the change has merged, and it closes
 an issue only with its final comment ([stage 7](#stage-7-answer)). The owner may post
-instead. Beyond those comments, it edits nothing on an issue without the owner’s word,
-except adding the `intake` label under the `github-workflows` grant.
+instead. Under the `github-workflows` grant it also adds the `intake` label; it edits
+nothing else on an issue without the owner’s word.
 
 ### The Prompt
 
@@ -133,8 +133,8 @@ Comment on every issue the pass touches and follow up each later change of its s
 until the issue is closed with a final comment: the owner's standing instruction of
 2026-10-11. Post only after the pull request that carries the change has merged, link
 only to main, and check first that main and the deployed site say what the comment
-says. Edit nothing else on an issue without the owner's word, except adding the
-`intake` label under the github-workflows grant. If github.com, kingbird.myphotos.cc or
+says. Add the `intake` label under the github-workflows grant; edit nothing else on a
+GitHub issue without the owner's word. If github.com, kingbird.myphotos.cc or
 evand.github.io is unreachable, say so in the pull request and continue with the rest.
 ```
 
@@ -500,7 +500,7 @@ lower-bounds explainer and the optimality review.
 It is one entry in `render_overview.PAPERS`, defines every term before it uses it, and
 follows the series rules in
 [paper-design.md](../devtools/templates/paper-design.md#the-papers-front)
-([the series plan](../../docs/project/specs/active/plan-2026-10-05-n11-explainer-series.md)).
+([the series plan](../../docs/project/specs/done/plan-2026-10-05-n11-explainer-series.md)).
 
 ## Stage 7: Answer
 

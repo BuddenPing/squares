@@ -15,11 +15,11 @@ from pathlib import Path
 import mpmath as mp
 import pytest
 
+from devtools import adopt_houses, refinement_packets
 from devtools import build_known_best_atlas as atlas
 from devtools import census_atlas_contact_shades as shades
 from devtools import confirm_ryxu_records as confirmation
 from devtools import generate_frontier_case as generator
-from devtools import refinement_packets
 from devtools import register_ryxu_reports as register
 from devtools import regularize_axis_components as regularizer
 from devtools import run_negative_controls as controls
@@ -270,13 +270,21 @@ def test_frontier_witness_field_parser_is_independent_of_key_order() -> None:
     assert safe_load(updated.split("---\n", 2)[1]) == original
 
 
-@pytest.mark.parametrize("n", [51])
+@pytest.mark.parametrize("n", [51, 105, 108])
 @pytest.mark.parametrize("mutation", ["side", "credit", "body"])
 def test_source_adoption_refuses_mutable_upper_geometry_claims(
     private: Path, n: int, mutation: str
 ) -> None:
+    """51 takes the radical route and 105 and 108 the rational route, through the drafted
+    lower lanes of a generated record."""
     assert private == houses.REPO
-    original = (SOURCE / f"packing/frontier/n-{n:03d}.md").read_text()
+    if n in adopted.ADOPTED:
+        # Since the house adoption of 11 October 2026 (think-fvz4) T-130 and T-128 hold
+        # 105 and 108. The refusal is this packet's, so each case is staged as the
+        # adoption found it (`adopt_houses.read_history`), at the ry-xu house.
+        original = adopt_houses.read_history()[n]
+    else:
+        original = (SOURCE / f"packing/frontier/n-{n:03d}.md").read_text()
     prefix, front, body = original.split("---\n", 2)
     document = safe_load(front)
     if mutation == "side":
@@ -313,8 +321,8 @@ def test_source_adoption_refuses_mutable_upper_geometry_claims(
             review_date="2026-10-08",
             retrieved_date="2026-10-08",
         )
-    adopted = register.adopt_case(n, changed, drafted)
-    result = safe_load(adopted.split("---\n", 2)[1])["packing"]
+    redrafted = register.adopt_case(n, changed, drafted)
+    result = safe_load(redrafted.split("---\n", 2)[1])["packing"]
     assert result["reported_upper_bound"] == register.reported_bound(n)
     before = safe_load(old.split("---\n", 2)[1])["packing"]
     original_case = safe_load(original.split("---\n", 2)[1])["packing"]
@@ -326,7 +334,7 @@ def test_source_adoption_refuses_mutable_upper_geometry_claims(
     lower_draft = safe_load(drafted.split("---\n", 2)[1])["packing"]
     for field in ("reported_lower_bound", "verified_lower_bound", "status"):
         assert result[field] == lower_draft[field]
-    assert "global optimum exactly equals" not in adopted
+    assert "global optimum exactly equals" not in redrafted
 
 
 def test_unmapped_confirming_evidence_is_refused(private: Path) -> None:
@@ -421,6 +429,36 @@ def test_existing_incomplete_history_is_refused_before_case_writes(
     }
 
 
+def restore_ryxu_selections(path: Path, numbers: list[int]) -> None:
+    """Select the ry-xu report again at each count a later house took from it.
+
+    The adoption kept each displaced selection's source and side among the superseded
+    reports; the evidence is this packet's report, and the reason is the confirmation's
+    to write.
+    """
+    text = path.read_text()
+    value = safe_load(text)
+    displaced = {
+        row["n"]: row
+        for row in value["superseded_reports"]
+        if row["source_id"] == houses.SOURCE_ID and row["n"] in numbers
+    }
+    assert sorted(displaced) == sorted(numbers)
+    for row in value["selected_overrides"]:
+        if row["n"] in displaced:
+            row.update(
+                source_id=houses.SOURCE_ID,
+                value=displaced[row["n"]]["value"],
+                evidence=register.REPORT,
+                reason="Selected as reported before the confirmation.",
+            )
+    start = text.index("selected_overrides:")
+    end = text.index("superseded_reports:", start)
+    lines = register.dump(value["selected_overrides"]).splitlines(keepends=True)
+    rendered = "".join("  " + line for line in lines)
+    path.write_text(text[:start] + "selected_overrides:\n" + rendered + text[end:])
+
+
 def confirmation_frontier(
     private: Path, monkeypatch: pytest.MonkeyPatch, *, reported: bool = False
 ) -> Path:
@@ -434,6 +472,16 @@ def confirmation_frontier(
         name = f"n-{n:03d}.md"
         shutil.copyfile(SOURCE / "packing/frontier" / name, frontier / name)
     if reported:
+        # The confirmation ran before the house adoption of 11 October 2026 (think-fvz4),
+        # which gave most of these cases to later sources. The reported stage it confirms
+        # is rebuilt from what the adoption retained: each moved case as it stood before
+        # (`adopt_houses.read_history`), and its ry-xu selection, which the coverage
+        # register keeps among the superseded reports.
+        moved = [n for n in houses.NUMBERS if n in adopted.ADOPTED]
+        prior = adopt_houses.read_history()
+        for n in moved:
+            (frontier / f"n-{n:03d}.md").write_text(prior[n])
+        restore_ryxu_selections(frontier / "source-coverage.yaml", moved)
         for name, field, identifiers in (
             ("results.yaml", "results", {"T-125", "T-126"}),
             ("evidence.yaml", "evidence", {confirmation.RATIONAL, confirmation.RADICAL}),

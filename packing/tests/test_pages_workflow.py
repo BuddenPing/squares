@@ -71,7 +71,7 @@ PUT_OPTIMALITY_REVIEW = (
 PUT_METHODS_PAPER = (
     "Put the methods survey beside the other papers, refusing any name already there"
 )
-#: The archived copy of Kleddamag's proof, which both reviews cite.
+#: The archived copy of Overbeck's proof, which both reviews cite.
 KLEDDAMAG = "packing/resources/web/external-square-certificates-2026-09-22/kleddamag-11"
 KLEDDAMAG_README_PATTERN = f"/{KLEDDAMAG}/README.md"
 #: Every methods render input inside the two omitted source trees, including geometry.
@@ -816,10 +816,19 @@ def test_live_verification_waits_for_the_exact_deployed_revision() -> None:
     verify = workflow["jobs"]["verify-deployment"]
     assert deploy["outputs"]["page-url"] == "${{ steps.deployment.outputs.page_url }}"
     assert verify["needs"] == "deploy"
-    timeout = verify["timeout-minutes"]
-    assert type(timeout) in (int, float)
-    assert 0 < timeout <= 30
     commands = "\n".join(step.get("run", "") for step in verify["steps"])
+    # The job's ceiling and the checker's own deadline are a pair (think-6y2j): a job
+    # killed at the ceiling prints no verdict, so the checker stops itself first and
+    # prints what it checked. Over the 40 verify jobs measured on 2026-10-10 (PR #496,
+    # review F) the steps before the audit took 41 to 72 s and those after it 2 to 6 s, so
+    # the five minutes kept between the two, the margin the workflow comment and
+    # development.md derive, are nearly four times what they need; the slowest healthy
+    # audit was 388 s, and 25 minutes is about 3.9 times that. All three values are pinned
+    # exactly: changing the ceiling, the deadline or the margin is a deliberate edit here.
+    ceiling_minutes, deadline_minutes = 30, 25
+    assert verify["timeout-minutes"] == ceiling_minutes
+    assert f"--deadline-minutes {deadline_minutes}" in commands
+    assert ceiling_minutes - deadline_minutes == 5
     assert "python -m devtools.check_published_site" in commands
     assert '--site "${{ needs.deploy.outputs.page-url }}"' in commands
     assert '--commit "${{ github.sha }}"' in commands
@@ -1818,9 +1827,21 @@ def test_the_partial_checkouts_keep_the_directories_the_render_links() -> None:
             "/packing/campaign/agent-sessions/session-153-native-reconciliation.json",
         ),
     }
-    assert set(kept) == PAPER_JOBS
+    kept["overview"] = (
+        "/packing/resources/web/",
+        "!/packing/resources/web/*",
+        "/packing/resources/web/evand-square-packing-2026-10-05/",
+        "!/packing/resources/web/evand-square-packing-2026-10-05/*",
+        "/packing/resources/web/evand-square-packing-2026-10-05/receipts/",
+        "!/packing/resources/web/evand-square-packing-2026-10-05/receipts/*",
+        "/packing/resources/web/evand-square-packing-2026-10-05/receipts/register-comparison.json",
+    )
+    kept["publish"] = kept["overview"]
+    assert set(kept) == PAPER_JOBS | {"overview", "publish"}
 
     def keeps(job: str, declared: Path) -> bool:
+        if job in {"overview", "publish"}:
+            return declared == REPO / kept["overview"][-1].removeprefix("/")
         for pattern in kept.get(job, ()):
             path = REPO / pattern.strip("/")
             if declared == path or (pattern.endswith("/") and declared.is_relative_to(path)):
@@ -1902,6 +1923,19 @@ def test_optimality_archive_links_are_all_in_its_sparse_checkout() -> None:
 #: What each review's partial checkout must materialize of the two omitted trees, and two
 #: files beside them it must not.
 REVIEW_CHECKOUTS: dict[str, tuple[tuple[str, ...], tuple[str, ...]]] = {
+    "overview": (
+        (
+            "packing/resources/bibliography.yaml",
+            "packing/resources/web/evand-square-packing-2026-10-05/receipts/register-comparison.json",
+        ),
+        (
+            "packing/resources/web/unrelated/README.md",
+            "packing/resources/web/evand-square-packing-2026-10-05/README.md",
+            "packing/resources/web/evand-square-packing-2026-10-05/receipts/other.json",
+            "packing/resources/web/evand-square-packing-2026-10-05/square-packing/README.md",
+            "packing/campaign/old/README.md",
+        ),
+    ),
     "square-packing-methods-survey": (
         tuple(pattern.removeprefix("/") for pattern in METHODS_ARCHIVED_RENDER_PATTERNS),
         (
@@ -1946,11 +1980,14 @@ REVIEW_CHECKOUTS: dict[str, tuple[tuple[str, ...], tuple[str, ...]]] = {
 }
 
 
+REVIEW_CHECKOUTS["publish"] = REVIEW_CHECKOUTS["overview"]
+
+
 @pytest.mark.parametrize("job", sorted(REVIEW_CHECKOUTS))
 def test_each_review_sparse_checkout_keeps_only_its_archive_inputs(
     tmp_path: Path, job: str
 ) -> None:
-    """Git must actually materialize a review's data and citations despite the archive
+    """Git must actually materialize a page's data and citations despite the archive
     and campaign exclusions, and nothing else of them."""
     source = tmp_path / "source"
     checkout = tmp_path / "checkout"

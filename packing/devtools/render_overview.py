@@ -95,8 +95,7 @@ TABLE_SCRIPT = BROWSER / "table.js"
 MATH_SCRIPT = BROWSER / "math.js"
 POPOVER_SCRIPT = BROWSER / "popover.js"
 ROW_POPOVER_SCRIPT = BROWSER / "row-popover.js"
-#: The atlas's two views and three sizes of tile, and the move between layouts. The
-#: drawing tabs' own script, `atlas-layer.js`, went with them on 2026-10-04 (think-k8x9).
+#: Atlas layout, size, scale and page-local Regularized/Original drawing controls.
 ATLAS_VIEW_SCRIPT = BROWSER / "atlas-view.js"
 ATLAS_GRID_SCRIPT = BROWSER / "atlas-grid.js"
 EMBED_SCRIPT = BROWSER / "embed.js"
@@ -257,8 +256,8 @@ class PaperRecord(NamedTuple):
 #: The site's papers, in reading order: the one list a new paper is entered in. They are
 #: the n = 11 series, read I, II, III, followed by standalone papers. Only records
 #: with a part number belong to that series (the plan of 2026-10-05,
-#: `docs/project/specs/active/plan-2026-10-05-n11-explainer-series.md`): the project's
-#: own lower bounds, the review of Kleddamag's s(11) > 31/8, and the review of the
+#: `docs/project/specs/done/plan-2026-10-05-n11-explainer-series.md`): the project's
+#: own lower bounds, the review of Overbeck's s(11) > 31/8, and the review of the
 #: optimality proof. The standalone methods tutorial follows the series and explains
 #: how record configurations are found and verified. `SITE_PAGES`, the cards
 #: (`overview_sections.PAPERS`), each paper's
@@ -476,6 +475,10 @@ RENDER_INPUTS: tuple[Path, ...] = (
     Path(__file__).resolve(),
     PACKING / "devtools/build_known_best_atlas.py",
     PACKING / "devtools/atlas_print_font.py",
+    PACKING / "devtools/default_drawings.py",
+    PACKING / "devtools/improvement_rule.py",
+    PACKING / "devtools/pictured_source.py",
+    PACKING / "devtools/evand_exact_certificates.py",
     PACKING / "devtools/fonts/atlas-print",
     SITE_CSS,
     PACKING / "devtools/templates/site-math.css",
@@ -739,6 +742,7 @@ def inputs() -> tuple[Path, ...]:
     """
     from devtools import overview_data  # noqa: PLC0415
     from devtools import render_n11_lower_bounds_explainer as explainer  # noqa: PLC0415
+    from devtools.evand_exact_certificates import COMPARISON_RECEIPT  # noqa: PLC0415
     from devtools.render_case_pages import CASES_INPUTS  # noqa: PLC0415
     from devtools.render_frontier_page import FRONTIER_INPUTS  # noqa: PLC0415
 
@@ -749,6 +753,7 @@ def inputs() -> tuple[Path, ...]:
                 BROWSER / "favicon-48.png",
                 BROWSER / "apple-touch-icon.png",
                 *overview_data.INPUTS,
+                COMPARISON_RECEIPT,
                 *FRONTIER_INPUTS,
                 *CASES_INPUTS,
                 *explainer.COMPOSITE_ASSETS,
