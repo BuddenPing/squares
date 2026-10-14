@@ -320,7 +320,8 @@ class Intake:
         self, comment: Comment, steps: Sequence[tuple[int, Mapping[str, Any]]]
     ) -> list[str]:
         """Recorded refinements grouped by whose packing each refines; then ties, the
-        claims above the record, and the undecided ones, each as one line."""
+        claims above the record or a register entry pending adoption, and the undecided
+        ones, each as one line."""
         groups: dict[str, list[int]] = {}
         equal: list[int] = []
         above: list[str] = []
@@ -337,10 +338,14 @@ class Intake:
             elif step["verdict"] == "undecided":
                 undecided.append(n)
             else:
-                if not all(label.startswith("record ") for label in step["decided_against"]):
+                if not all(
+                    label.startswith(("record ", "register "))
+                    for label in step["decided_against"]
+                ):
                     raise CommentsError(
                         f"{comment.name}: n = {n} is held by another report, not the record; "
-                        "layout by-finder states ties and claims above the record only"
+                        "layout by-finder states ties and claims above the record or a "
+                        "pending register entry only"
                     )
                 if step["reason"] == "equal":
                     equal.append(n)

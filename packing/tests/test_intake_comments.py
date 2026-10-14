@@ -281,6 +281,30 @@ def test_the_summary_layouts_group_the_verdicts(tmp_path: Path) -> None:
     assert "- **Undecided at print precision:** 104.\n" in by_count
 
 
+def test_by_finder_states_a_claim_above_a_pending_register_entry(tmp_path: Path) -> None:
+    data = ledger(
+        count(103, [step("#1", "not recorded", "above", "record T-001")]),
+        count(106, [step("#1", "not recorded", "above", "register T-121, pending adoption")]),
+    )
+    headings = dict.fromkeys(comments.BY_FINDER_HEADINGS, "x") | {"above": "Above"}
+    raw = {
+        "skip": [
+            {"report": "#2", "reason": "covered elsewhere"},
+            {"report": "#1 comment 99", "reason": "covered elsewhere"},
+        ],
+        "comments": [{"issue": 1, "layout": "by-finder", "headings": headings}],
+    }
+    text = comments.drafts(comments.load(write_pass(tmp_path, data, **raw)))["1.md"]
+    assert (
+        "- **Above:** 103, 2.00e-03 above the record on main (Ryan Xu); "
+        "106, 2.00e-03 above a register entry pending adoption.\n"
+    ) in text
+    # A claim held by another report still has no line its headings can say.
+    data["counts"].append(count(107, [step("#1", "not recorded", "above", "#2")]))
+    with pytest.raises(comments.CommentsError, match="or a pending register entry only"):
+        _ = comments.drafts(comments.load(write_pass(tmp_path, data, **raw)))
+
+
 def test_by_finder_refuses_what_its_headings_cannot_say(tmp_path: Path) -> None:
     data = ledger(
         count(100, [step("#1", "recorded", "below", "#2", packing={"kind": "new packing"})]),
