@@ -483,9 +483,35 @@ AT_C4 = Register(
 )
 
 
+#: A full statement of an entry below its current rungs.
+V2_C2_RECORDED = {"verification": "V2", "confirmation": "C2", "status": "recorded"}
+
+
 def _named(**fields: str) -> Record:
     """A reply's item naming T-001 under `bound`, with the fields it states."""
     return {"result": "bound", "id": "T-001", **fields}
+
+
+def test_each_reply_whose_statement_has_moved_is_its_own_reason_oldest_first() -> None:
+    """Two replies' statements have moved: a full statement at V2/C2, recorded, and a later
+    reply that restated only the status, as reviewed. Each is its own reason, in the
+    record's order, in `replies_due` and in the draft's corrections alike: neither is
+    dropped, and the older comes first (#597's review, A2)."""
+    moved = issue(
+        replies=[
+            reply(1, "2026-10-02", reported=[_named(**V2_C2_RECORDED)]),
+            reply(2, "2026-10-04", reported=[_named(status="reviewed")]),
+        ]
+    )
+    state = check_requests.issue_state(moved, AT_C4)
+    assert list(state.replies_due) == [
+        "bound: the reply of 2026-10-02 stated T-001 at V2/C2; it is now V3/C4",
+        "bound: the reply of 2026-10-04 stated T-001 at reviewed; it is now confirmed",
+    ]
+    assert check_requests.corrections(moved, state.results) == [
+        "The reply of 2026-10-02 gave T-001 as V2/C2; it now reads V3/C4.",
+        "The reply of 2026-10-04 gave T-001 as reviewed; it now reads confirmed.",
+    ]
 
 
 def test_two_replies_of_one_day_are_each_quoted_for_what_it_stated() -> None:
