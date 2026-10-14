@@ -443,9 +443,7 @@ def test_home_and_about_share_the_documentation_introduction_and_cards(
         "Squares Project Documentation</h1>"
     )
     home_section = page.split(heading, 1)[1].split('<h1 id="more-resources"', 1)[0]
-    about_section = about.split(heading, 1)[1].split(
-        "<!-- This document follows common-doc-guidelines.md.", 1
-    )[0]
+    about_section = about.split(heading, 1)[1].split('<h2 id="changelog">', 1)[0]
     home_block, action_row = home_section.rsplit('<p class="site-action-row site-more">', 1)
     assert re.findall(r"<p>(.*?)</p>", home_block, re.DOTALL) == re.findall(
         r"<p>(.*?)</p>", about_section, re.DOTALL
@@ -4138,7 +4136,8 @@ def test_the_full_project_statement_lives_on_about_and_the_card_keeps_its_anchor
         "squares-project-documentation",
     ]
     assert all('class="site-title"' in tag for tag in re.findall(r"<h1\b[^>]*>", about))
-    assert re.search(r"<h2\b", about) is None
+    assert re.search(r"<h2\b", about.split('<h2 id="changelog">', 1)[0]) is None
+    assert re.findall(r'<h2\b[^>]*\bid="([^"]+)"', about) == ["changelog"]
     following = about.split(heading, 1)[1].lstrip()
     assert following.startswith("<p>Work on the square packing problem")
     assert "Work on the square packing problem has exploded" not in page

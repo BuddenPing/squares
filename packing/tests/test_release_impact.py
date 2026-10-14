@@ -43,6 +43,7 @@ def test_actual_overview_section_helper_delta_selects_site(
 class Repository:
     def __init__(self, root: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         self.root = root
+        self.root.mkdir(parents=True, exist_ok=True)
         self.histories: dict[str, tuple[release.PublicationHistoryEntry, ...]] = {
             component: (
                 release.PublicationHistoryEntry("v1.0.0", "October 1, 2026", "Baseline"),

@@ -2706,7 +2706,7 @@ urls:
   generator: devtools.render_overview:support_files
   producer: overview
   first_published: '2026-10-08'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-14'
   status: live
 - path: atlas/regularized/n-108.svg
   canonical: atlas/regularized/n-108.svg
@@ -2834,7 +2834,7 @@ urls:
   generator: devtools.render_overview:support_files
   producer: overview
   first_published: '2026-10-08'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-14'
   status: live
 - path: atlas/regularized/n-172.svg
   canonical: atlas/regularized/n-172.svg
@@ -2874,7 +2874,7 @@ urls:
   generator: devtools.render_overview:support_files
   producer: overview
   first_published: '2026-10-08'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-14'
   status: live
 - path: atlas/regularized/n-179.svg
   canonical: atlas/regularized/n-179.svg
@@ -2890,7 +2890,7 @@ urls:
   generator: devtools.render_overview:support_files
   producer: overview
   first_published: '2026-10-08'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-14'
   status: live
 - path: atlas/regularized/n-180.svg
   canonical: atlas/regularized/n-180.svg
@@ -2922,7 +2922,7 @@ urls:
   generator: devtools.render_overview:support_files
   producer: overview
   first_published: '2026-10-08'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-14'
   status: live
 - path: atlas/regularized/n-199.svg
   canonical: atlas/regularized/n-199.svg
@@ -2986,7 +2986,7 @@ urls:
   generator: devtools.render_overview:support_files
   producer: overview
   first_published: '2026-10-08'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-14'
   status: live
 - path: atlas/regularized/n-228.svg
   canonical: atlas/regularized/n-228.svg
@@ -3002,7 +3002,7 @@ urls:
   generator: devtools.render_overview:support_files
   producer: overview
   first_published: '2026-10-08'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-14'
   status: live
 - path: atlas/regularized/n-232.svg
   canonical: atlas/regularized/n-232.svg
@@ -3018,7 +3018,7 @@ urls:
   generator: devtools.render_overview:support_files
   producer: overview
   first_published: '2026-10-08'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-14'
   status: live
 - path: atlas/regularized/n-236.svg
   canonical: atlas/regularized/n-236.svg
@@ -3178,7 +3178,7 @@ urls:
   generator: devtools.render_overview:support_files
   producer: overview
   first_published: '2026-10-08'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-14'
   status: live
 - path: atlas/regularized/n-292.svg
   canonical: atlas/regularized/n-292.svg
@@ -3194,7 +3194,7 @@ urls:
   generator: devtools.render_overview:support_files
   producer: overview
   first_published: '2026-10-08'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-14'
   status: live
 - path: atlas/regularized/n-295.svg
   canonical: atlas/regularized/n-295.svg
@@ -3282,7 +3282,7 @@ urls:
   generator: devtools.render_overview:support_files
   producer: overview
   first_published: '2026-10-08'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-14'
   status: live
 - path: atlas/regularized/n-41.svg
   canonical: atlas/regularized/n-41.svg
@@ -3290,7 +3290,7 @@ urls:
   generator: devtools.render_overview:support_files
   producer: overview
   first_published: '2026-10-08'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-14'
   status: live
 - path: atlas/regularized/n-50.svg
   canonical: atlas/regularized/n-50.svg
@@ -3298,7 +3298,7 @@ urls:
   generator: devtools.render_overview:support_files
   producer: overview
   first_published: '2026-10-08'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-14'
   status: live
 - path: atlas/regularized/n-54.svg
   canonical: atlas/regularized/n-54.svg
@@ -3306,7 +3306,7 @@ urls:
   generator: devtools.render_overview:support_files
   producer: overview
   first_published: '2026-10-08'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-14'
   status: live
 - path: atlas/regularized/n-66.svg
   canonical: atlas/regularized/n-66.svg
@@ -3314,7 +3314,7 @@ urls:
   generator: devtools.render_overview:support_files
   producer: overview
   first_published: '2026-10-08'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-14'
   status: live
 - path: atlas/regularized/n-68.svg
   canonical: atlas/regularized/n-68.svg
@@ -3338,7 +3338,7 @@ urls:
   generator: devtools.render_overview:support_files
   producer: overview
   first_published: '2026-10-08'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-14'
   status: live
 - path: atlas/regularized/n-83.svg
   canonical: atlas/regularized/n-83.svg
@@ -3346,7 +3346,7 @@ urls:
   generator: devtools.render_overview:support_files
   producer: overview
   first_published: '2026-10-08'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-14'
   status: live
 - path: atlas/regularized/n-84.svg
   canonical: atlas/regularized/n-84.svg
@@ -3362,7 +3362,7 @@ urls:
   generator: devtools.render_overview:support_files
   producer: overview
   first_published: '2026-10-08'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-14'
   status: live
 - path: atlas/regularized/n-86.svg
   canonical: atlas/regularized/n-86.svg
@@ -3378,7 +3378,7 @@ urls:
   generator: devtools.render_overview:support_files
   producer: overview
   first_published: '2026-10-08'
-  lastmod: '2026-10-08'
+  lastmod: '2026-10-14'
   status: live
 - path: atlas/regularized/n-88.svg
   canonical: atlas/regularized/n-88.svg

@@ -3504,7 +3504,7 @@ def test_fast_composite_check_rejects_a_stamp_that_is_not_the_composites_own() -
     canvas = known_best_builder.CompositeCanvas(
         CompositeSpec(first_n=18, last_n=18, columns=1, stem="synthetic")
     )
-    identity = known_best_builder.CompositeIdentity("1" * 40, "2026-09-28")
+    identity = known_best_builder.CompositeIdentity("1" * 40, "2026-09-28", INFOGRAPHIC_VERSION)
     assert identity.dateline == "Including new results (September 28, 2026)"
     assert identity.stamp == infographic_edition_at("1" * 40)
     assert not identity.current
@@ -3550,7 +3550,7 @@ def test_composite_identity_checks_each_modes_visible_date_and_edition(
     canvas = known_best_builder.CompositeCanvas(
         CompositeSpec(1, 1, 1, "synthetic", placement=placement)
     )
-    identity = known_best_builder.CompositeIdentity("1" * 40, data_date)
+    identity = known_best_builder.CompositeIdentity("1" * 40, data_date, INFOGRAPHIC_VERSION)
     assert identity.formatted_date == formatted_date
     assert identity.poster_stamp == f"{formatted_date} · {identity.stamp}"
     root = ET.Element(f"{{{SVG['svg']}}}svg")

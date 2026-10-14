@@ -238,7 +238,17 @@ def test_component_cut_preserves_all_other_histories_and_records_its_impact(
 
 
 @pytest.mark.parametrize(
-    ("version", "impact"), [("v0.7.0", "minor"), ("v0.6.0", "patch"), ("v1.0.0", "minor")]
+    ("version", "impact"),
+    [
+        (release.successor_version(release.INFOGRAPHIC_VERSION, "patch"), "minor"),
+        (release.successor_version(release.INFOGRAPHIC_VERSION, "minor"), "patch"),
+        (
+            release.successor_version(
+                release.successor_version(release.INFOGRAPHIC_VERSION, "minor"), "minor"
+            ),
+            "minor",
+        ),
+    ],
 )
 def test_a_cut_refuses_skipped_or_wrong_impact_successors(
     version: str, impact: release.ReleaseImpact
