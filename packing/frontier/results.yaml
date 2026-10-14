@@ -6925,12 +6925,13 @@ results:
         strongest lower bounds on record at six counts, past Green's reported values at n =
         83 and n = 101 and past Nagamochi's at n = 105, by a certificate kind new to this
         record that adds points and segments to the rectangle densities. Further sizes from
-        one generator at S3. The 2 October review of the certificates confirmed S3: the kind
-        is new here, but the technique is the measure argument with Tokoharu's net and
-        checker, extended by two capture bounds. Confirmed on 11 October: a kind within the
-        framework at six counts, S3 with the kind noted, as T-048's mixed kind is; T-144
-        carries it to new sizes at S3, and T-080 registers the replay of its own n = 101 to
-        105 counts.
+        one generator at S3.
+
+        The 2 October review of the certificates confirmed S3: the kind is new here, but the
+        technique is the measure argument with Tokoharu's net and checker, extended by two
+        capture bounds. Confirmed on 11 October: a kind within the framework at six counts,
+        S3 with the kind noted, as T-048's mixed kind is; T-144 carries it to new sizes at
+        S3, and T-080 registers the replay of its own n = 101 to 105 counts.
       scored: '2026-10-11'
       by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the think-m7cm registering lane's draft)
     novelty: previously-published
