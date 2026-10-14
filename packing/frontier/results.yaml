@@ -13572,7 +13572,7 @@ results:
       October 2026 the case records adopted T-130 as the house at 84, 86 and 105, each
       earlier house kept as history, and T-140 at 175 and 270, where T-130's stay verified
       and are not selected; on 12 October
-      T-151 replaced T-140 at 270 and T-158 at 175.
+      T-151 replaced T-140 at 270, and T-158 replaced it at 175.
     next_rung: >-
       V4 and C4 need a retained human oversight record: two accepted adversarial
       reviews by distinct AI reviewers are retained, the 10 October review and the 11 October
@@ -18060,8 +18060,9 @@ results:
       not decided.
 
       Each s_n lies below the verified upper bound the record held, by 5.4e-20 at n = 29 to
-      9.9e-15 at n = 37, and each is now the exact form of its case's verified upper bound,
-      which the case record still prints at the decimal it printed before. The counts are
+      9.9e-15 at n = 37, and each became the exact form of its case's verified upper bound,
+      which the case record prints at the decimal it printed before; at n = 264 Daniil
+      Ostashev's composition (T-158) has held the case since 12 October 2026. The counts are
       28, 29, 37, 39, 41, 50, 53, 54, 55, 69, 71, 83, 87, 101, 104, 107, 109, 122, 124, 125,
       128, 145, 147, 148, 149, 151, 170, 171, 173, 174, 178, 197, 198, 200, 201, 202, 203,
       204, 205, 226, 227, 229, 230, 231, 233, 234, 235, 257, 260, 262, 264, 265, 291, 293,
@@ -19098,10 +19099,10 @@ results:
 
       At n = 264 the house adoption of 12 October 2026 moved the verified upper bound to
       Daniil Ostashev's composition of issue 528 (T-158), 16.7747351323878329, 3.44e-03
-      below this entry's exact side there; layer 6 was open beside this batch, so the two
-      met at the merge. The case record keeps this entry's dated paragraph and section as
-      history. This entry stays true as stated and is superseded there as a ceiling; at
-      the other 58 counts its exact side is the case's verified upper bound.
+      below this entry's exact side there, registered the same day as that adoption. The
+      case record keeps this entry's dated paragraph and section as history. Its bound
+      stays true and is superseded there as a ceiling; at the other 58 counts its exact
+      side is the case's verified upper bound.
 
   - id: T-156
     kind: upper-bound

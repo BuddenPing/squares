@@ -509,8 +509,8 @@ It was checked against `main` at `b8c930338`.
 | 270 | T-140 | T-151 |
 | 305 | T-140 | T-152 |
 
-  `T-125`’s notes now say it holds no case record and name the adoption, and `T-136`’s
-  `next_rung` names no houses, so `RR-9`’s fixes have nothing left to change.
+`T-125`’s notes now say it holds no case record and name the adoption, and `T-136`’s
+`next_rung` names no houses, so `RR-9`’s fixes have nothing left to change.
 
 - **`RR-1` misquotes `T-146`.** Its `next_rung` reads “the 11 October review and the 11
   October final review”, not “the 10 October review”; the other thirteen read as quoted.

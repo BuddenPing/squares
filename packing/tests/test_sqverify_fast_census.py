@@ -131,32 +131,42 @@ def controls() -> dict[str, dict[str, Any]]:
 
 @cache
 def decided() -> dict[str, dict[str, Any]]:
-    """Each evidence entry that `V-sqverify-fast` decides a bound for, by its id.
-
-    The census rows are bounds. An entry that decides a lemma (`derived-structure`) with
-    the crate's exact axis sweep rests on no census row and keeps its receipts in its own
-    packet: the near-axis lemmas of T-145 (on wand125's rect_n40_L67, which only shares
-    the census row's file) and T-157 (on Guzhou0806's new-supports density, which has no
-    census row).
-    """
+    """Each evidence entry that `V-sqverify-fast` decides, by its id."""
     register = safe_load(EVIDENCE.read_text(encoding="utf-8"))
     return {
         entry["id"]: entry
         for entry in register["evidence"]
         if VERIFIER in (entry.get("verifiers") or [])
-        and entry.get("claim") != "derived-structure"
     }
+
+
+#: The entries that decide a lemma with the crate's exact axis sweep and rest on no
+#: census row, since the census rows are bounds: the near-axis lemmas of T-145 (on
+#: wand125's rect_n40_L67, which only shares a census row's file) and T-157 (on
+#: Guzhou0806's new-supports density, which has none). Their receipts are their packets'
+#: (`test_audit_n40_new_supports`). A third lemma entry fails here until it is named.
+LEMMA_ENTRIES = frozenset(
+    {"E-n040-guzhou-continuous-pose-crate-axis", "E-n040-guzhou-new-supports-crate-axis"}
+)
+
+
+def test_only_the_named_lemma_entries_rest_on_no_census_row() -> None:
+    lemmas = {ident for ident, entry in decided().items() if entry["claim"] != "lower-bound"}
+    assert lemmas == LEMMA_ENTRIES
 
 
 @cache
 def cited() -> dict[str, str]:
-    """Each evidence entry that `V-sqverify-fast` decides, by the certificate it names."""
+    """Each evidence entry that `V-sqverify-fast` decides a bound for, by the census
+    certificate it names; the lemma entries (`LEMMA_ENTRIES`) rest on no census row."""
     by_path = {
         str(case.candidate.relative_to(census.PROJECT)): name
         for name, case in {**cases(), **rectangle_cases()}.items()
     }
     found: dict[str, str] = {}
     for ident, entry in decided().items():
+        if ident in LEMMA_ENTRIES:
+            continue
         name = by_path.get(str(entry.get("certificate")))
         assert name is not None, f"{ident}: no census case for its certificate"
         found[ident] = name
@@ -403,7 +413,7 @@ def test_every_entry_the_verifier_decides_rests_on_a_review_of_its_certificate()
     covering the result: the 5 October review of the route for T-094's two, and for
     T-097's mixed_n66_L843 the review of the same day that read it before its replay.
     """
-    for evidence_id in cited():
+    for evidence_id in decided():
         record = decided()[evidence_id]["proof"]["audit_record"]
         results = citing().get(evidence_id) or []
         assert results, f"{evidence_id}: no result cites it"
