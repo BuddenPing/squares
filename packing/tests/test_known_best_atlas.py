@@ -4505,8 +4505,17 @@ def test_shared_print_attributions_preserve_full_roles_sources_and_corpus_scope(
     lower, optimal = attributions.paragraphs
     assert list(lower.names) == expected_lower
     assert list(optimal.clauses[0].names) == expected_optimal
-    assert set(optimal.clauses[1].names) == {"Gurevitch", "Guzhou0806"}
-    assert set(optimal.clauses[2].names) == {"Lewis", "Julian-JJ", "EvolvingPrograms"}
+    # Formalization and its verification infrastructure print as one clause (the owner,
+    # 14 October 2026); the curated roles stay apart in the input and the metadata.
+    assert len(optimal.clauses) == 2
+    assert optimal.clauses[1].prefix == "formalization by"
+    assert set(optimal.clauses[1].names) == {
+        "Gurevitch",
+        "Guzhou0806",
+        "Lewis",
+        "Julian-JJ",
+        "EvolvingPrograms",
+    }
     assert len(optimal.names) == len(set(optimal.names)) == 18
     assert "Nagamochi" not in optimal.names
     assert attributions.normalize_name("wand125") == "Hosono"
