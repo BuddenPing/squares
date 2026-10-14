@@ -152,10 +152,13 @@ What each rung needs, read from epistemics.md and the checker, in the same words
 | Formalization review by a human expert | None |
 | `open_review` | None; and the source states no licence, so `terms` has nothing true to say (`LR-6`) |
 
-Supported now: `V3/C3`. For `V4` and `C4` the record lacks only the second review
-*entry* and the oversight record; the reviews exist (`LR-3`). For `V5` it lacks a build
-the record can rest on and the expert review (`LR-4`); for `C5`, the build must be
-`replayed-here`, the terms must exist and two experts must sign.
+Supported now: `V3/C3`. For `V4` and `C4` the record lacks a second review entry and the
+oversight record. GPT-6 Pro’s review of 3 October is recorded on `T-112` as accepted.
+It names Astra’s review of 29 September as a source (its R4), so whether it counts as a
+distinct reviewer under epistemics.md (“no shared context”) is the owner’s decision,
+which the oversight record states (`LR-3`). For `V5` it lacks a build the record can
+rest on and the expert review (`LR-4`); for `C5`, the build must be `replayed-here`, the
+terms must exist and two experts must sign.
 
 ### 3.2 `T-084`, `s(k² − 1) = k` (`V3/C3`)
 
@@ -315,10 +318,14 @@ What `T-060` would need in the record:
   and is not recorded.** `T-060`’s `reviews` holds Astra’s review of 29 September;
   `T-112` already records GPT-6 Pro’s review of 3 October as `accepted`,
   `relation: project`, and that review is of `T-060`’s proof and paper.
-  Under decision 11’s reading, a separately prompted lane of the same family is
-  distinct. With it recorded on `T-060`, the only missing piece for `V4` is the human
-  oversight record, which the owner can write (D2) and no outside expert is needed for.
-  `C4` follows, since the machine evidence is `audited-here` and every review is
+  It names Astra’s review of 29 September as a source (its R4, “Mathematical acceptance
+  and dependency contract”, which it cites eleven times), so whether it counts as a
+  distinct reviewer under epistemics.md (“a separately prompted independent lane with no
+  shared context”) is the owner’s decision, which the oversight record states (D2), as
+  `RR-1` of the sibling rungs review asks for fourteen entries.
+  If the owner rules it distinct and it is recorded on `T-060`, the oversight record is
+  the only other piece `V4` needs, and no outside expert is needed for it.
+  `C4` then follows, since the machine evidence is `audited-here` and every review is
   project-side.
 - **`LR-4`, blocking for `V5` on `T-060`: no build the record holds.** The formal entry
   is `reported`; `_formal` fails on `replay_status`. Three routes: a third party’s
@@ -369,11 +376,16 @@ What `T-060` would need in the record:
   same pins.
 - **`LR-12`, not blocking: the owner’s question answered in the ladder’s terms.** Both
   repositories are linked (since 29 September and 6 October).
-  A formalization merits no `V4`: `V4` is two adversarial AI reviews and a human
-  oversight record over machine evidence `T-060` already has, so the owner’s own record
-  is the shortest path to `V4/C4` (`LR-3`). It merits `V5` only with a build the record
-  holds and a human expert’s review, neither of which the source’s private run supplies
-  as recorded (`LR-4`); `C5` is further off still (`LR-6`).
+  A formalization merits no `V4`: `V4` is two adversarial AI reviews by distinct
+  reviewers and a human oversight record over machine evidence `T-060` already has, so
+  the owner’s own record, with the ruling on distinctness that `LR-3` leaves to it, is
+  the shortest path to `V4/C4`. It merits `V5` only with a build the record holds and a
+  human expert’s review, neither of which the source’s private run supplies as recorded
+  (`LR-4`); `C5` is further off still (`LR-6`). The owner’s “not C4 until replayed here”
+  is met for `T-060` by the audited-here executions that carry its `C3`
+  (`E-n011-global-optimality-independent`); the Lean does not enter `C4`. If the owner
+  means a fresh end-to-end replay (`think-e2ot`), that is `C5`’s requirement today, and
+  asking it at `C4` would be a change to the ladder.
 
 ## 8. Proposed Record Changes, for the Records Lane
 
@@ -381,11 +393,13 @@ What `T-060` would need in the record:
    `reviewer_kind: ai`, `relation: project`, `verdict: accepted`,
    `covers: [T-060, T-112]` (its row in `T-112` is the template), and the 2026-10-03
    paper review by Claude Code as a third, with its scope in its own words.
-   Neither moves the rung without the oversight record, and `rung_label_problems`
-   accepts the `next_rung` text as it stands.
+   Neither moves the rung without the oversight record, which must state the owner’s
+   decision whether GPT-6 Pro’s review, which names Astra’s as its source R4, is by a
+   distinct reviewer (`LR-3`); `rung_label_problems` accepts the `next_rung` text as it
+   stands.
 2. `T-060.next_rung` and `notes`: a dated line that the source repository and run are
    visible to the owner since 11 October, that the pin is unchanged, and that `V4` waits
-   on the oversight record only.
+   on the oversight record and the distinctness ruling it states.
 3. `E-n011-lean-statement-closure-build.limitations`: the second build of 11 October
    (§5), with its receipt `receipts/lean/build-statement-closure-2026-10-11.log` in the
    packet.
@@ -425,6 +439,17 @@ What `T-060` would need in the record:
 - **D6. Whether to pay for the full build**, and where: the fork-dispatched Actions
   route of §5 is the only one this project can run; a third party’s published build
   would do for `V5` but not `C5`.
+
+## Status, 14 October
+
+Review A of the pull request that carries this review (#563, finding A1) found that
+`LR-3`, §3.1 and `LR-12` called GPT-6 Pro’s review of 3 October distinct from Astra’s
+under decision 11’s reading, dropping epistemics.md’s “with no shared context”, though
+that review names Astra’s as its source R4 and cites it eleven times.
+Those passages and §8’s items 1 and 2 now leave the ruling to the owner’s oversight
+record, as `RR-1` of the sibling rungs review does.
+`LR-12` also now says how the owner’s “not C4 until replayed here” stands against the
+ladder. The other findings stand.
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.

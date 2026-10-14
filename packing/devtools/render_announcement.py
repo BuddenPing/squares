@@ -17,32 +17,37 @@ from the record, and the wording is chosen not to overstate it:
   printed rounded up and a lower bound rounded down, so the printed number is itself a
   true bound, to as many places as it takes to stay strictly better than the previous
   best. An entry that states no bound but holds its case's bound prints that bound. A
-  line about several counts elides their bounds, and past `LISTED_COUNTS` gives how many
-  and their range.
+  line about several counts prints each bound where they are at most `LISTED_COUNTS`
+  and the line stays within `BRIEF_LIMIT`; otherwise it elides them, and past
+  `LISTED_COUNTS` gives how many counts and their range.
 - **New best known**, or **new best lower bound**: said only at the counts where
   nothing on record is as good: the case record holds this entry's bound or a worse one,
   and no other entry states a better bound, or an equal one registered first. That is
   the case's house, or an entry pending adoption that is still below every other. A
   regularization of the entry's own packing (`regularizations`) is the same packing and
-  does not count against it. `--margins` adds how far the bound passes the best one on
-  record before the entry was registered, cut to two significant figures; the previous
-  holder is never named, so a line never credits a bound to the wrong person.
+  does not count against it, as another entry or as the case record it holds; where its
+  side is the smaller, the line elides the entry's number there. `--margins` adds how
+  far the bound passes the best one on record before the entry was registered, cut to
+  two significant figures; the previous holder is never named, so a line never credits a
+  bound to the wrong person.
 - **(verified)** at `V3` and above, and **(reported)** below, which is never called
   verified. The rungs, and which code confirmed the result, are on its row, which the
   line links.
 - **Credit.** The result's finders: the names before `after` in the register's credit
   line (`result_credit.credit_line`), each by its full name where the bibliography's
   `credited_names` or a contributor profile gives one, and whose packing it refines or
-  regularizes, as its `regularizations` or its headline says. `--lineage` adds the names
-  after `after`. The project's owner (`result_credit.PROJECT_AUTHOR`) is never credited
-  or tagged: the announcement is the owner's own post, and `after Levy` is this
-  project's lineage, not a finding.
+  regularizes, as its `regularizations` say, or its headline (`refinements of Ryan Xu's
+  packings`) and, where that names a request rather than a person, the entry its claim
+  names (`refined`). `--lineage` adds the names after `after`. The project's owner
+  (`result_credit.PROJECT_AUTHOR`) is never credited or tagged: the announcement is the
+  owner's own post, and `after Levy` is this project's lineage, not a finding.
 
 The results are selected by `--ids`, or by `--since`, the date the register received
 them (`registered`, the field an intake pass sets), and by `--min-significance`, 3 by
 default. A selected bound that is the best known at no count, because it is superseded
-or a later entry betters it everywhere, is left out unless `--all` keeps it; stderr says
-why each result was left out.
+or a later entry betters it everywhere, is left out unless `--all` keeps it, at
+`PLACES` decimals with what betters, equals or supersedes it: up to `SINCE_NAMED` by
+name, else how many. stderr says why each result was left out.
 
 A handle comes only from evidence, in this order, and never from a user name:
 
@@ -60,12 +65,17 @@ A handle comes only from evidence, in this order, and never from a user name:
 
 stderr says where each handle came from, and which credited names have none.
 
-Usage, from `packing/`:
+The owner announces from it as they choose. Each line is held to `POST_LIMIT` on its
+own, so that a thread of one line a post fits, and stderr says whether the whole
+announcement also fits one post (`block_fit`).
+
+Usage, from `packing/`, selecting an intake pass's own results by id, since `--since`
+also picks up what other passes registered that day:
     uv run --frozen --all-extras --group dev python -m devtools.render_announcement \\
-        --since 2026-10-11 [--github] [--min-significance 3] [--all] [--lineage] \\
+        --ids T-147 T-148 [--github] [--min-significance 3] [--all] [--lineage] \\
         [--margins] [--date YYYY-MM-DD]
     uv run --frozen --all-extras --group dev python -m devtools.render_announcement \\
-        --ids T-147 T-148 [--github]
+        --since 2026-10-11 [--github]
 """
 
 from __future__ import annotations
@@ -76,7 +86,7 @@ import re
 import subprocess
 import sys
 from collections.abc import Callable, Iterable, Mapping, Sequence
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from datetime import UTC, date, datetime
 from fractions import Fraction
 from pathlib import Path
@@ -143,9 +153,15 @@ MONTHS = (
 LOGIN = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$")
 #: A `credited_names` key that carries its person's login: `Nate Chaoweeraprasit (itsnaka)`.
 NAMED_LOGIN = re.compile(r"^(.+) \(([A-Za-z0-9-]+)\)$")
-#: A headline's own words for whose packing an entry refines: `refinement of Ryan Xu's
-#: packing`, `refining Ryan Xu's packing`.
-REFINED = re.compile(r"\brefin(?:ement of|ing) ((?:[A-Z][\w.-]*\s)*[A-Z][\w.-]*)'s packing")
+#: A headline's own words for whose packings an entry refines, and whether it says one
+#: or several: `refinement of Ryan Xu's packing`, `refining Ryan Xu's packing`,
+#: `refinements of SQUISH's Mondrian packings`.
+REFINED = re.compile(
+    r"\brefin(?:ements? of|ing) ((?:[A-Z][\w.-]*\s)*[A-Z][\w.-]*)['\u2019]s "
+    r"(?:[\w-]+ ){0,3}(packings?)\b"
+)
+#: A register id, as a claim names another entry.
+RESULT_ID = re.compile(r"\bT-\d{3}\b")
 #: What a line says a bound is, where it is the best on record.
 NEWS = {UPPER: "new best known", LOWER: "new best lower bound"}
 #: The most characters a line holds before its link (the owner, 2026-10-11).
@@ -155,6 +171,10 @@ SEPARATORS = re.compile(r"(; | after |, | and )")
 ET_AL = " et al."
 #: The most counts a line lists one by one; past it, a line gives how many and the range.
 LISTED_COUNTS = 6
+#: The most results or case records a `since` clause names; past it, it says how many.
+SINCE_NAMED = 3
+#: How a rival that is a case record, with no register entry under it, is labelled.
+CASE_LABEL = re.compile(r"^the n = \d+ case record$")
 #: X's limit on a post, how long it counts any link, and the code point ranges it counts
 #: once (twitter-text, version 3); every other character counts twice.
 POST_LIMIT = 280
@@ -241,15 +261,22 @@ def _decimal(scaled: int, places: int) -> str:
 
 def shown(bound: Span, direction: str, previous: Span | None = None) -> str:
     """The bound as a line prints it: an upper bound rounded up and a lower bound rounded
-    down, so the printed number is a true bound itself, at `PLACES` decimals or more until
-    it is still strictly better than `previous`. Exact where it ends sooner."""
+    down, so the printed number is a true bound itself, at `PLACES` decimals, or more
+    until it is still strictly better than `previous` where it is. A bound that only ties
+    or trails `previous` no number of places makes better, so it is printed at `PLACES`.
+    Exact where it ends sooner."""
     edge = bound.high if direction == UPPER else bound.low
+    target = None
+    if previous is not None and (
+        previous.low > bound.high if direction == UPPER else bound.low > previous.high
+    ):
+        target = previous
     scaled, places = 0, PLACES
-    for places in range(PLACES, MAX_PLACES + 1):
+    for places in range(PLACES, (PLACES if target is None else MAX_PLACES) + 1):
         scale = 10**places
         scaled = _ceil(edge * scale) if direction == UPPER else _floor(edge * scale)
         printed = Fraction(scaled, scale)
-        if previous is None or better(Span(printed, printed), previous, direction):
+        if target is None or better(Span(printed, printed), target, direction):
             break
     return _decimal(scaled, places)
 
@@ -289,6 +316,9 @@ class Count:
     bettered_by: tuple[str, ...] = ()
     tied_with: tuple[str, ...] = ()
     previous: Span | None = None
+    regularized_by: tuple[str, ...] = ()
+    """Regularizations of the entry's own packing whose bound here is strictly better.
+    They take nothing from it, but a line does not print a number they better."""
 
     @property
     def best(self) -> bool:
@@ -384,29 +414,38 @@ def counts(
     records: Records,
     index: Mapping[tuple[int, str], Sequence[tuple[str, Span]]],
 ) -> list[Count]:
-    """Each bound the entry states, held against the case record and every other entry."""
+    """Each bound the entry states, held against the case record and every other entry.
+    A regularization of the entry's own packing (`regularizes`) is no rival, whether as
+    another entry or as the case record it holds."""
     entry, key = str(record["id"]), _key(record)
     assessed: list[Count] = []
     for (n, direction), bound in sorted(own_bounds(record, records).items()):
         rivals: list[Rival] = []
+        regularized: list[str] = []
         case = records.cases.get(n) or {}
         for lane in ("verified", "reported"):
             held = case.get(f"{lane}_{direction}_bound")
-            if not held:
+            if not held or entry in (holders := lane_holders(n, records, direction, [lane])):
                 continue
-            holders = lane_holders(n, records, direction, [lane])
-            if entry in holders:
+            label = ", ".join(sorted(holders)) or f"the n = {n} case record"
+            if holders and all(regularizes(records.results[h], n, entry) for h in holders):
+                if better(Span.of_case(held), bound, direction):
+                    regularized.append(label)
                 continue
             earlier = not holders or any(
                 _key(records.results[holder]) < key for holder in holders
             )
-            label = ", ".join(sorted(holders)) or f"the n = {n} case record"
             rivals.append(Rival(label, Span.of_case(held), earlier))
         for other, stated in index.get((n, direction), ()):
-            if other == entry or regularizes(records.results[other], n, entry):
+            if other == entry:
+                continue
+            if regularizes(records.results[other], n, entry):
+                if better(stated, bound, direction):
+                    regularized.append(other)
                 continue
             rivals.append(Rival(other, stated, _key(records.results[other]) < key))
-        assessed.append(assess(n, direction, bound, rivals))
+        count = assess(n, direction, bound, rivals)
+        assessed.append(replace(count, regularized_by=tuple(dict.fromkeys(regularized))))
     return assessed
 
 
@@ -792,15 +831,24 @@ def margins(group: Sequence[Count]) -> str:
     return f"{gap} {way} the previous {best}"
 
 
-def statement(record: Mapping[str, Any], group: Sequence[Count]) -> str:
-    """What the line says is bounded: one bound, one bound at several counts, or the
-    counts alone, their bounds elided (`s(n) ≤ … at n = 108, 127`)."""
+def statement(record: Mapping[str, Any], group: Sequence[Count], *, each: bool = True) -> str:
+    """What the line says is bounded: one bound, one bound at several counts, with `each`
+    each bound at up to `LISTED_COUNTS` counts (`s(155) ≤ 12.95243, s(156) ≤ 12.97918`),
+    or the counts alone, their bounds elided (`s(n) ≤ … at n = 108, 127`). A bound that a
+    regularization of the same packing betters is elided, since a smaller number than
+    the entry's own is on record there."""
     direction = group[0].direction
     relation = RELATIONS[(direction, _strict(record, direction))]
-    values = {shown(c.bound, direction, c.previous) for c in group}
+    printed = {
+        c.n: ELLIPSIS if c.regularized_by else shown(c.bound, direction, c.previous)
+        for c in group
+    }
+    values = set(printed.values())
     if len(group) == 1:
         return f"s({group[0].n}) {relation} {values.pop()}"
-    found = sorted(c.n for c in group)
+    found = sorted(printed)
+    if each and len(values) > 1 and ELLIPSIS not in values and len(found) <= LISTED_COUNTS:
+        return ", ".join(f"s({n}) {relation} {printed[n]}" for n in found)
     cases = f"n = {compress(found)}"
     if len(found) > LISTED_COUNTS:
         cases = f"{len(found)} counts, n = {found[0]}{EN_DASH}{found[-1]}"
@@ -853,33 +901,81 @@ def regularized(
     return people(dict.fromkeys(names))
 
 
-def refined(record: Mapping[str, Any], sources: Mapping[str, Mapping[str, Any]]) -> str:
-    """Whose packing the entry refines, in its headline's own words (`refinement of Ryan
-    Xu's packing`), where that person is in its credit line; else nothing."""
+class Refinement(NamedTuple):
+    """Whose packings an entry refines: each person as a credit token, with the words its
+    headline names them by where it names them (`Ryan Xu`), and whether it says several."""
+
+    people: tuple[tuple[str, str], ...]
+    plural: bool
+
+
+def refined(
+    record: Mapping[str, Any], records: Records, at: Iterable[int] | None = None
+) -> Refinement | None:
+    """Whose packings the entry refines at the counts `at`, by default all its own, as its
+    headline says: the person it names (`refinement of Ryan Xu's packing`) where its
+    credit line credits them; else, where it names a request or a project (`refinements
+    of SQUISH's Mondrian packings`), the first-credited of the entry its claim names first,
+    at each count, among those whose headline names it too and whose scope holds the count
+    (T-152's claim names T-151's). Only a person this entry's credit line credits is
+    named; where none is, nothing."""
     match = REFINED.search(plain(str(record.get("headline") or "")))
     if match is None:
-        return ""
-    finders, lineage = credit_parts(credit_text(record, sources))
+        return None
+    owner, plural = match.group(1), match.group(2) == "packings"
+    finders, lineage = credit_parts(credit_text(record, records.sources))
     credited = {_bare(token) for token in (*finders, *lineage)}
-    name = match.group(1)
-    return name if name.split()[-1] in credited else ""
+    if owner.split()[-1] in credited:
+        return Refinement(((owner.split()[-1], owner),), plural)
+    entry = str(record["id"])
+    named = [
+        other
+        for other in dict.fromkeys(RESULT_ID.findall(str(record.get("claim") or "")))
+        if other != entry
+        and other in records.results
+        and re.search(
+            rf"{re.escape(owner)}['\u2019]s\b",
+            plain(str(records.results[other].get("headline") or "")),
+        )
+    ]
+    found: list[str] = []
+    for n in sorted(set(at) if at is not None else scope_values(dict(record["scope"]))):
+        source = next(
+            (
+                records.results[other]
+                for other in named
+                if n in scope_values(dict(records.results[other]["scope"]))
+            ),
+            None,
+        )
+        if source is not None:
+            found.extend(primary_names(credit_text(source, records.sources)))
+    people_ = [token for token in people(dict.fromkeys(found)) if _bare(token) in credited]
+    return Refinement(tuple((token, "") for token in people_), plural) if people_ else None
 
 
 def worked_on(
     record: Mapping[str, Any], group: Sequence[Count], records: Records, names: Names
 ) -> str:
     """Whose packing the entry regularizes at the listed counts (`regularizations`), or
-    refines (`refined`), as the record says it: `regularizing Ryan Xu's packing`."""
+    refines (`refined`), as the record says it: `regularizing Ryan Xu's packing`,
+    `refining Nate Chaoweeraprasit's packings`."""
     finders = [names.show(token) for token in regularized(record, group, records)]
     if len(finders) == 1:
         return f"regularizing {finders[0]}'s packing"
     if finders:
         return f"regularizing packings by {listed(finders)}"
-    name = refined(record, records.sources)
-    if not name:
+    refinement = refined(record, records, [c.n for c in group] or None)
+    if refinement is None:
         return ""
-    surname = name.split()[-1]
-    return f"refining {names.show(surname) if surname in names.handles else name}'s packing"
+    shown_ = [
+        names.show(token) if token in names.handles or not written else written
+        for token, written in refinement.people
+    ]
+    several = len(group) > 1 if group else refinement.plural
+    if len(shown_) == 1:
+        return f"refining {shown_[0]}'s {'packings' if several else 'packing'}"
+    return f"refining packings by {listed(shown_)}"
 
 
 def credit_phrase(
@@ -912,9 +1008,30 @@ def credited_people(record: Mapping[str, Any], records: Records, *, lineage: boo
         found.extend(
             primary_names(credit_text(records.results[str(item["of"])], records.sources))
         )
-    if name := refined(record, records.sources):
-        found.append(name.split()[-1])
+    if refinement := refined(record, records):
+        found.extend(token for token, _ in refinement.people)
     return list(dict.fromkeys(_bare(token) for token in people(found)))
+
+
+def whom(verb: str, labels: Sequence[str], at: int | None = None) -> str:
+    """What a `since` clause says betters, equals or supersedes a result: up to
+    `SINCE_NAMED` labels by name, else how many results and whether case records, at how
+    many counts where `at` says (`bettered at 14 counts by their case records`)."""
+    if len(labels) <= SINCE_NAMED:
+        return f"{verb} by {listed(labels)}"
+    results = sorted(
+        {
+            entry
+            for label in labels
+            if not CASE_LABEL.match(label)
+            for entry in label.split(", ")
+        }
+    )
+    who = (results if len(results) <= SINCE_NAMED else [f"{len(results)} results"]) + (
+        ["their case records"] if any(CASE_LABEL.match(label) for label in labels) else []
+    )
+    where = "" if at is None else f" at {at} {'count' if at == 1 else 'counts'}"
+    return f"{verb}{where} by {listed(who)}"
 
 
 def render_line(
@@ -943,30 +1060,44 @@ def render_line(
     best = [c for c in assessed if c.best]
     since = ""
     if standing(record, records) == SUPERSEDED:
-        since = f"superseded by {listed(superseding(record, records)) or 'the case records'}"
+        since = whom("superseded", superseding(record, records) or ["the case records"])
     elif assessed and not best:
         bettered = sorted({who for c in assessed for who in c.bettered_by})
         tied = sorted({who for c in assessed for who in c.tied_with} - set(bettered))
         since = " and ".join(
             words
             for words in (
-                f"bettered by {listed(bettered)}" if bettered else "",
-                f"equalled first by {listed(tied)}" if tied else "",
+                whom("bettered", bettered, sum(1 for c in assessed if c.bettered_by))
+                if bettered
+                else "",
+                whom(
+                    "equalled first",
+                    tied,
+                    sum(1 for c in assessed if c.tied_with and not c.bettered_by),
+                )
+                if tied
+                else "",
             )
             if words
         )
     if since and not keep_all:
         at = compress([c.n for c in assessed]) if assessed else "no count it states"
         return Line(entry, "", f"the best known at no count (n = {at}): {since}")
-    group = best or assessed
+    group = assessed if since else best
     if not group:
-        return line(f"{plain(str(record['headline']))} {tag(record)}", [])
-    what = statement(record, group)
-    if show_margins and not since and (gap := margins(group)):
-        what += f" ({gap})"
-    if since:
-        return line(f"{what} {tag(record)}, since {since}", group)
-    return line(f"{what}, {NEWS[group[0].direction]} {tag(record)}", group)
+        what = f"{plain(str(record['headline']))} {tag(record)}"
+        return line(f"{what}, since {since}" if since else what, [])
+
+    def stated(*, each: bool) -> Line:
+        what = statement(record, group, each=each)
+        if show_margins and not since and (gap := margins(group)):
+            what += f" ({gap})"
+        if since:
+            return line(f"{what} {tag(record)}, since {since}", group)
+        return line(f"{what}, {NEWS[group[0].direction]} {tag(record)}", group)
+
+    full = stated(each=True)
+    return full if len(before_link(full.text)) <= BRIEF_LIMIT else stated(each=False)
 
 
 # ---------------------------------------------------------------------------------------
@@ -1053,6 +1184,21 @@ def _github(records: Records, credited: Mapping[str, str], fetch: Fetch) -> GitH
             for entry, record in records.results.items()
         },
         fetch=fetch,
+    )
+
+
+def block_fit(lines: Sequence[str]) -> str:
+    """Whether the whole announcement fits one X post, as `posted_length` counts each line
+    and one character each line break, and where it does not, whether each line fits one
+    post of a thread."""
+    length = sum(posted_length(line) for line in lines) + len(lines) - 1
+    if length <= POST_LIMIT:
+        return f"the announcement fits one X post: {length} of {POST_LIMIT} characters"
+    over = [line for line in lines if posted_length(line) > POST_LIMIT]
+    thread = "every line fits" if not over else f"{len(over)} lines do not fit"
+    return (
+        f"the announcement is {length} characters on X, over one post's {POST_LIMIT}; "
+        f"as a thread of one line a post, {thread}"
     )
 
 
@@ -1145,6 +1291,7 @@ def main(argv: Sequence[str] | None = None, *, fetch: Fetch = gh_user) -> int:
             )
         if (length := posted_length(text)) > POST_LIMIT:
             print(f"warning: {entry}'s line is {length} characters on X", file=sys.stderr)
+    print(block_fit(lines), file=sys.stderr)
     for handle in handles.values():
         print(f"@{handle.handle} for {handle.name}: {handle.source}", file=sys.stderr)
     for warning in warnings:
