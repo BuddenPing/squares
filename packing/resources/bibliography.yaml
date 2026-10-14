@@ -1701,6 +1701,22 @@ sources:
       and 307 squares; Daniel's certificate format and SQUISH's JSON layout. MIT verifier
       and CC0 certificates retained; Claude assistance disclosed. No exact form, local or
       global optimality claim.
+  - key: '[Fang direct certificates 2026-10-13]'
+    authors: [Fang]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-13'
+    lineage: independent
+    credit: Fang after Arslanov, Mustafin, Shangitbayev, Couzo, Daniel
+    short_credit: Fang after Arslanov et al.
+    note: >-
+      Fourteen complete exact certificates at 078789a4cfd36f915f1bfbe76d742413d79b2965, all
+      beyond the case corpus, at 380, 381, 382, 421, 422, 463, 464, 507, 508, 553, 601, 651,
+      758 and 814, first committed in e646c47 and c284cd0 with no issue: packings in the
+      k^2 - k + 1 two-wedge family of Arslanov, Mustafin and Shangitbayev, grown from
+      Couzo's 342 and Daniel's improved 343 or from parametric seeds; Daniel's certificate
+      format and SQUISH's JSON layout. MIT checkers and CC0 certificates retained; Claude
+      assistance disclosed. No exact form, local or global optimality claim.
   - key: '[SQUISH third request 2026-10-09]'
     authors: [Chaoweeraprasit]
     year: 2026
