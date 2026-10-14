@@ -163,11 +163,11 @@ later change of its state until the issue is closed with a final comment; the ow
 standing instruction of 2026-10-11 is why. Without the grant, draft each reply and ask
 the owner to post it. Post only after the pull request that carries the change has
 merged, link only to main, and check first that main and the deployed site say what
-the comment says; the verdict comment, which states no id, is the one exception. Add
-the `intake` label, and a case label where one applies, under the github-workflows
-grant; edit nothing else on a GitHub issue without the owner's word. If github.com,
-kingbird.myphotos.cc or evand.github.io is unreachable, say so in the pull request and
-continue with the rest.
+the comment says; the verdict comment is the one exception, on the condition stage 7,
+"Report-Order Verdict Comments", states. Add the `intake` label, and a case label where
+one applies, under the github-workflows grant; edit nothing else on a GitHub issue
+without the owner's word. If github.com, kingbird.myphotos.cc or evand.github.io is
+unreachable, say so in the pull request and continue with the rest.
 ```
 
 ## Intake Sources
@@ -705,7 +705,7 @@ What lets an agent post is the `github-workflows` grant, which covers issues.
   quoted from one can change.
   An agent drafts it in the issue’s answer bead while that pull request is open.
   A [report-order verdict comment](#report-order-verdict-comments) is the one progress
-  comment that may come before.
+  comment that may come before, on the condition that section states.
 - **The poster validates first** that `main` and the deployed site say what the reply
   says: it is rendered with `check_requests --draft N` from `main`, and the site is
   checked as [Verify the Published Result](#verify-the-published-result) says.
@@ -750,8 +750,10 @@ has neither a comment nor a stated skip.
   `owner/repository@commit`, never as a link.
 
 The verdict comment is a progress comment: it may go out before the records pull request
-merges, when the owner asks for one, because it states the ledger’s verdicts and no id,
-rung or branch link.
+merges, because it names no id, rung or branch link.
+When the ledger later changes what a posted comment stated, the comment is edited to the
+regenerated draft, as deciding 17 of PR #574’s undecided comparisons in the 14 October
+ledger required of the #574 and #593 comments.
 The reply with ids and rungs follows the merge, as above.
 Posting stays manual, under the `github-workflows` grant.
 The drafts go to a scratch directory, not into the record, and `--check DIR` confirms

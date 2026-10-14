@@ -2,8 +2,8 @@
 
 `devtools.intake_ledger` writes the verdicts of the owner's report-order rule to an intake
 directory's ``ledger.json``. This module turns them into one comment per result issue,
-for an agent or the owner to post by hand once the records pull request has merged
-(``campaign/result-import.md``, stage 7). It reads only ``ledger.json`` and a small
+for an agent or the owner to post by hand when ``campaign/result-import.md`` (stage 7,
+Report-Order Verdict Comments) allows it. It reads only ``ledger.json`` and a small
 comments file, ``comments.yaml``, which holds everything one pass says that another
 would not: which issues get a comment and who wrote them, which reports each covers, the
 issues skipped and why, the records pull request, how a holder or handle the ledger
