@@ -174,6 +174,9 @@ name: Certificate page
       - packing/devtools/check_published_site.py
       - packing/devtools/site_urls.py
       - packing/site-urls.yaml
+      - packing/site-changelog.yaml
+      - packing/site-changelog.schema.yaml
+      - packing/devtools/render_changelog.py
       - packing/devtools/site_math.py
       - packing/devtools/node/render-site-math.mjs
       - packing/devtools/site_assets.py

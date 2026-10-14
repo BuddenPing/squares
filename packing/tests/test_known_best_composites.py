@@ -15,10 +15,12 @@ so no test draws a poster or reads the 324-case corpus.
 from __future__ import annotations
 
 import hashlib
+import re
 import struct
 import subprocess
 from collections.abc import Iterator
 from datetime import date
+from functools import cache
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
@@ -111,6 +113,12 @@ class Family:
                 f'      <sqpack:value name="data-date">{identity.data_date}</sqpack:value>\n'
                 '      <sqpack:value name="data-revision">'
                 f"{identity.data_revision}</sqpack:value>\n"
+                + (
+                    '      <sqpack:value name="infographic-version">'
+                    f"{identity.version}</sqpack:value>\n"
+                    if identity.version != atlas.LEGACY_INFOGRAPHIC_VERSION
+                    else ""
+                )
             )
         )
         shown = identity or atlas.CompositeIdentity(EARLIER, "2026-09-28")
@@ -142,7 +150,7 @@ class Family:
             export.path.write_bytes(
                 atlas._png_with_summary_source(blank, digest)  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
             )
-        render_composite_pdf.composite_pdf("synthetic").write_bytes(
+        render_composite_pdf.composite_pdf(self.canvas.spec.stem).write_bytes(
             b"%PDF-1.5\n%%EOF\n%"
             + render_composite_pdf.PDF_SOURCE_KEY
             + b": "
@@ -199,7 +207,7 @@ def test_a_composite_that_shows_the_pinned_data_and_agrees_with_it_passes(
     assert findings.problems == ()
     assert findings.notes == (
         (
-            f"atlas/known-best/synthetic.svg shows {release.PUBLICATION_EDITION}, data of "
+            f"atlas/known-best/synthetic.svg shows {release.INFOGRAPHIC_EDITION}, data of "
             "2026-10-01: the data every page prints"
         ),
     )
@@ -233,7 +241,7 @@ def test_a_composite_that_trails_the_pin_is_listed_and_fails_nothing(family: Fam
     family.write(trailing(), lower="s(18) ≥ 4.67")
     findings = atlas.composite_findings()
     assert findings.problems == ()
-    stamp = release.edition_at(EARLIER)
+    stamp = release.infographic_edition_at(EARLIER)
     assert findings.notes == (
         (
             f"atlas/known-best/synthetic.svg shows {stamp}, data of 2026-09-28; the pin has "
@@ -296,10 +304,6 @@ def test_a_stamp_that_is_not_the_composites_own_record_fails(
             "atlas/known-best/synthetic.svg release-stamp is ('v0.0.0-000000',); "
             f"expected ({identity.poster_stamp!r},)"
         ),
-        (
-            "atlas/known-best/synthetic.svg was drawn for another version than "
-            f"{release.PUBLICATION_VERSION}; redraw it with --update-composites"
-        ),
     )
 
 
@@ -314,14 +318,13 @@ def test_a_version_bump_fails_every_composite_until_it_is_redrawn(
     """
     family.write(trailing())
     assert atlas.composite_findings().problems == ()
-    monkeypatch.setattr(release, "PUBLICATION_VERSION", "v9.9.9")
-    monkeypatch.setattr(atlas, "PUBLICATION_VERSION", "v9.9.9")
+    monkeypatch.setattr(release, "INFOGRAPHIC_VERSION", "v9.9.9")
+    monkeypatch.setattr(atlas, "INFOGRAPHIC_VERSION", "v9.9.9")
     problems = atlas.composite_findings().problems
-    assert len(problems) == 2
-    assert "expected ('September 28, 2026 · v9.9.9-111111',)" in problems[0]
-    assert problems[1] == (
+    assert len(problems) == 1
+    assert problems[0] == (
         "atlas/known-best/synthetic.svg was drawn for another version than v9.9.9; "
-        "redraw it with --update-composites"
+        "redraw it with --update-composites after cutting the infographic edition"
     )
 
 
@@ -599,7 +602,7 @@ def test_the_retained_composites_agree_with_their_own_records() -> None:
         }
         expected = {"release-stamp": identity.poster_stamp}
         assert texts == expected
-        assert identity.stamp.startswith(release.PUBLICATION_VERSION + "-")
+        assert identity.stamp.startswith(release.INFOGRAPHIC_VERSION + "-")
 
 
 def test_a_composite_pdf_is_dated_by_its_data_and_not_by_the_clock() -> None:
@@ -623,3 +626,523 @@ def test_a_composite_pdf_is_dated_by_its_data_and_not_by_the_clock() -> None:
     assert render_composite_pdf.pdf_dates(
         b"<< /CreationDate (D:20261001195544+00'00') /ModDate (20261001120000Z) >>"
     ) == {"CreationDate": "20261001195544+00'00'", "ModDate": "20261001120000Z"}
+
+
+def test_a_site_cut_leaves_the_retained_infographic_edition_valid(
+    family: Family,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    family.write(current())
+    monkeypatch.setattr(release, "PUBLICATION_VERSION", "v0.6.0")
+    assert atlas.composite_findings().problems == ()
+
+
+def test_the_complete_pair_refuses_mixed_versions(
+    family: Family,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    second = Family(family.root)
+    second.canvas = atlas.CompositeCanvas(
+        CompositeSpec(first_n=18, last_n=18, columns=1, stem="synthetic-second")
+    )
+    family.write(current())
+    second.write(atlas.CompositeIdentity(release.DATA_REVISION, "2026-10-01", "v0.5.1"))
+    monkeypatch.setattr(atlas, "COMPOSITES", (family.canvas, second.canvas))
+    assert (
+        "infographic family has mixed versions: v0.5.0, v0.5.1"
+        in atlas.composite_findings().problems
+    )
+
+
+@pytest.mark.parametrize("missing", ["svg", "png", "pdf"])
+def test_each_advertised_family_output_is_required(family: Family, missing: str) -> None:
+    family.write(current())
+    path = {
+        "svg": family.canvas.svg_path,
+        "png": family.canvas.rasters[0].path,
+        "pdf": render_composite_pdf.composite_pdf("synthetic"),
+    }[missing]
+    path.unlink()
+    assert any(
+        path.name in problem and "missing" in problem
+        for problem in atlas.composite_findings().problems
+    )
+
+
+def test_a_changed_redraw_is_refused_before_any_existing_edition_is_overwritten(
+    family: Family,
+) -> None:
+    svg = family.write(current())
+    paths = [
+        family.canvas.svg_path,
+        *(export.path for export in family.canvas.rasters),
+        render_composite_pdf.composite_pdf("synthetic"),
+    ]
+    retained = {path: path.read_bytes() for path in paths}
+    atlas.validate_composite_redraws([(family.canvas, svg)], current())
+    with pytest.raises(ValueError, match="requires the complete pair"):
+        atlas.validate_composite_redraws([], current())
+    with pytest.raises(ValueError, match="would change under existing infographic version"):
+        atlas.validate_composite_redraws(
+            [(family.canvas, svg.replace(LOWER, "3.826"))], current()
+        )
+    assert {path: path.read_bytes() for path in paths} == retained
+
+
+def test_a_new_family_revision_uses_a_recorded_successor_on_both_graphics(
+    family: Family,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    before = family.write(current())
+    version = release.successor_version(release.INFOGRAPHIC_VERSION, "patch")
+    revised = atlas.CompositeIdentity(release.DATA_REVISION, "2026-10-01", version)
+    after = family.write(revised)
+    family.write(current())
+    entry = release.PublicationHistoryEntry(version, "October 13, 2026", "Refresh the pair.")
+    monkeypatch.setattr(release, "INFOGRAPHIC_HISTORY", (entry, *release.INFOGRAPHIC_HISTORY))
+    with pytest.raises(ValueError, match="needs a release-impact decision"):
+        atlas.validate_composite_redraws([(family.canvas, after)], revised)
+    decision = release.ReleaseImpactDecision(
+        "infographics", "v0.5.0", version, "patch", "Refresh the pair."
+    )
+    monkeypatch.setattr(release, "RELEASE_IMPACTS", (decision,))
+    atlas.validate_composite_redraws([(family.canvas, after)], revised)
+    assert family.canvas.svg_path.read_text() == before
+    assert atlas.retained_identity(after).version == version
+    with pytest.raises(ValueError, match="mixed infographic redraw identity"):
+        atlas.validate_composite_redraws([(family.canvas, before)], revised)
+
+
+def test_a_successor_without_version_metadata_is_refused(family: Family) -> None:
+    identity = atlas.CompositeIdentity(release.DATA_REVISION, "2026-10-01", "v0.5.1")
+    svg = family.write(identity)
+    svg = re.sub(
+        r'      <sqpack:value name="infographic-version">[^<]+</sqpack:value>\n', "", svg
+    )
+    family.canvas.svg_path.write_text(svg)
+    assert any(
+        "release-stamp" in problem and "expected" in problem
+        for problem in atlas.composite_findings().problems
+    )
+
+
+def test_an_export_correction_requires_a_successor_even_when_the_svg_is_identical(
+    family: Family,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    svg = family.write(current())
+    export = family.canvas.rasters[0]
+    retained = export.path.read_bytes()
+    export.path.write_bytes(b"previously published incorrect raster")
+    monkeypatch.setattr(atlas, "png_export_bytes", lambda *_args, **_kwargs: retained)
+    update = atlas._update_png_export  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+    with pytest.raises(ValueError, match="before correcting the export"):
+        update(export, svg, preserve_edition=True)
+    assert export.path.read_bytes() == b"previously published incorrect raster"
+    update(export, svg, preserve_edition=False)
+    assert export.path.read_bytes() == retained
+
+
+def test_standalone_pdf_correction_cannot_replace_an_existing_edition(
+    family: Family,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    family.write(current())
+    pdf = render_composite_pdf.composite_pdf("synthetic")
+    original = b"%PDF-1.5\npreviously published without a receipt\n%%EOF\n"
+    pdf.write_bytes(original)
+    monkeypatch.setattr(
+        render_composite_pdf, "render_pdf_bytes", lambda _stem: b"%PDF-1.5\ncorrected\n%%EOF\n"
+    )
+    with pytest.raises(ValueError, match="existing infographic version"):
+        render_composite_pdf.update("synthetic")
+    assert pdf.read_bytes() == original
+    assert render_composite_pdf.main(["--update", "--stem", "synthetic"]) == 1
+    assert "existing infographic version" in capsys.readouterr().err
+    assert pdf.read_bytes() == original
+
+
+@pytest.fixture
+def cut_pair(
+    family: Family,
+    monkeypatch: pytest.MonkeyPatch,
+) -> tuple[atlas.CompositeIdentity, list[tuple[atlas.CompositeCanvas, str]], dict[Path, bytes]]:
+    second = Family(family.root)
+    second.canvas = atlas.CompositeCanvas(
+        CompositeSpec(first_n=18, last_n=18, columns=1, stem="synthetic-second")
+    )
+    previous = release.component_version("infographics")
+    version = release.successor_version(previous, "patch")
+    identity = atlas.CompositeIdentity(release.DATA_REVISION, "2026-10-01", version)
+    drawings = []
+    for graphic in (family, second):
+        drawings.append((graphic.canvas, graphic.write(identity)))
+        graphic.write(current())
+    monkeypatch.setattr(atlas, "COMPOSITES", (family.canvas, second.canvas))
+    monkeypatch.setattr(atlas, "INFOGRAPHIC_VERSION", version)
+    entry = release.PublicationHistoryEntry(
+        version, "October 13, 2026", "Refresh both graphics."
+    )
+    decision = release.ReleaseImpactDecision(
+        "infographics", previous, version, "patch", "Refresh both graphics."
+    )
+    monkeypatch.setattr(release, "INFOGRAPHIC_HISTORY", (entry, *release.INFOGRAPHIC_HISTORY))
+    monkeypatch.setattr(release, "RELEASE_IMPACTS", (decision, *release.RELEASE_IMPACTS))
+    monkeypatch.setattr(atlas, "png_export_bytes", _synthetic_png)
+    monkeypatch.setattr(
+        render_composite_pdf,
+        "render_svg_pdf_bytes",
+        _synthetic_pdf,
+    )
+    paths = [
+        path
+        for canvas, _svg in drawings
+        for path in (
+            canvas.svg_path,
+            *(export.path for export in canvas.rasters),
+            render_composite_pdf.composite_pdf(canvas.spec.stem),
+        )
+    ]
+    return identity, drawings, {path: path.read_bytes() for path in paths}
+
+
+def _synthetic_pdf(svg_text: str) -> bytes:
+    stated = render_composite_pdf.pdf_date_text(render_composite_pdf.svg_data_date(svg_text))
+    return (
+        f"%PDF-1.5\n/CreationDate ({stated})\n/ModDate ({stated})\nprepared artwork\n%%EOF\n"
+    ).encode("ascii")
+
+
+def _synthetic_png(
+    export: atlas.RasterExport, svg_text: str, *, full_png: bytes | None = None
+) -> bytes:
+    del full_png
+    header = struct.pack(">IIBBBBB", export.width, export.height, 8, 2, 0, 0, 0)
+    blank = (
+        atlas.PNG_SIGNATURE
+        + atlas._png_chunk(b"IHDR", header)  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+        + atlas._png_chunk(b"IEND", b"")  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+    )
+    digest = hashlib.sha256(svg_text.encode("utf-8")).hexdigest()
+    return atlas._png_with_summary_source(blank, digest)  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+
+
+@pytest.mark.parametrize(
+    ("producer", "failure_index"), [("png", 1), ("png", 3), ("pdf", 1), ("pdf", 2)]
+)
+def test_producer_failure_leaves_the_complete_old_family_and_retry_keeps_the_cut_version(
+    cut_pair: tuple[
+        atlas.CompositeIdentity, list[tuple[atlas.CompositeCanvas, str]], dict[Path, bytes]
+    ],
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    producer: str,
+    failure_index: int,
+) -> None:
+    identity, drawings, old = cut_pair
+    stage = tmp_path / "staged-family"
+    calls = 0
+    armed = True
+
+    def failure() -> None:
+        nonlocal calls
+        calls += 1
+        # Every vector is staged already, but neither live SVG has moved.
+        assert all((stage / canvas.svg_path.name).is_file() for canvas, _svg in drawings)
+        assert {path: path.read_bytes() for path in old} == old
+        if armed and calls == failure_index:
+            raise OSError("injected producer failure")
+
+    if producer == "png":
+
+        def png(
+            export: atlas.RasterExport, svg: str, *, full_png: bytes | None = None
+        ) -> bytes:
+            failure()
+            return _synthetic_png(export, svg, full_png=full_png)
+
+        monkeypatch.setattr(atlas, "png_export_bytes", png)
+    else:
+
+        def pdf(_svg: str) -> bytes:
+            failure()
+            return _synthetic_pdf(_svg)
+
+        monkeypatch.setattr(render_composite_pdf, "render_svg_pdf_bytes", pdf)
+    with pytest.raises(OSError, match="injected producer failure"):
+        atlas.staged_composite_family(drawings, identity, stage)
+    assert {path: path.read_bytes() for path in old} == old
+    armed = False
+    staged = atlas.staged_composite_family(drawings, identity, stage)
+    assert set(staged) == set(old)
+    assert {path: path.read_bytes() for path in old} == old
+    atlas.promote_composite_family(staged, stage)
+    assert atlas.composite_findings().problems == ()
+    assert all(
+        atlas.retained_identity(canvas.svg_path.read_text()).version == identity.version
+        for canvas, _svg in drawings
+    )
+    assert all(
+        render_composite_pdf.pdf_version(
+            render_composite_pdf.composite_pdf(canvas.spec.stem).read_bytes()
+        )
+        == identity.version
+        for canvas, _svg in drawings
+    )
+
+
+@pytest.mark.parametrize("failure_index", [1, 3, 8])
+def test_promotion_failure_restores_every_old_final_and_allows_retry(
+    cut_pair: tuple[
+        atlas.CompositeIdentity, list[tuple[atlas.CompositeCanvas, str]], dict[Path, bytes]
+    ],
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    failure_index: int,
+) -> None:
+    identity, drawings, old = cut_pair
+    stage = tmp_path / "staged-family"
+    staged = atlas.staged_composite_family(drawings, identity, stage)
+    promote = atlas._promote_composite_file  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+    calls = 0
+
+    def fail_after_commit(destination: Path, source: Path) -> None:
+        nonlocal calls
+        promote(destination, source)
+        if source.parent.name != "backups":
+            calls += 1
+            if calls == failure_index:
+                raise OSError("injected promotion failure after commit")
+
+    monkeypatch.setattr(atlas, "_promote_composite_file", fail_after_commit)
+    with pytest.raises(OSError, match="injected promotion failure"):
+        atlas.promote_composite_family(staged, stage)
+    assert {path: path.read_bytes() for path in old} == old
+    monkeypatch.setattr(atlas, "_promote_composite_file", promote)
+    # Retry staging from the same held edition must see the old family, not new SVGs.
+    staged = atlas.staged_composite_family(drawings, identity, stage)
+    atlas.promote_composite_family(staged, stage)
+    assert atlas.composite_findings().problems == ()
+
+
+def test_invalid_staged_export_receipt_blocks_all_promotion(
+    cut_pair: tuple[
+        atlas.CompositeIdentity, list[tuple[atlas.CompositeCanvas, str]], dict[Path, bytes]
+    ],
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    identity, drawings, old = cut_pair
+    monkeypatch.setattr(
+        atlas,
+        "png_export_bytes",
+        lambda export, _svg, **_kwargs: _synthetic_png(export, "wrong source"),
+    )
+    with pytest.raises(ValueError, match="receipt"):
+        atlas.staged_composite_family(drawings, identity, tmp_path / "stage")
+    assert {path: path.read_bytes() for path in old} == old
+
+
+def test_same_edition_pdf_with_valid_receipt_is_reused_without_redrawing(
+    family: Family,
+) -> None:
+    svg = family.write(current())
+    pdf = render_composite_pdf.composite_pdf("synthetic")
+    before = pdf.read_bytes()
+
+    def fail_if_redrawn() -> bytes:
+        pytest.fail("a valid same-edition PDF must be retained byte-for-byte")
+
+    assert render_composite_pdf.prepared_pdf(svg, before, render=fail_if_redrawn) == before
+    assert pdf.read_bytes() == before
+
+
+@pytest.mark.parametrize("arguments", [["--update"], ["--update", "--stem", "synthetic"]])
+def test_standalone_published_pdf_update_uses_the_complete_staged_family(
+    monkeypatch: pytest.MonkeyPatch,
+    arguments: list[str],
+) -> None:
+    calls = []
+    monkeypatch.setattr(
+        render_composite_pdf, "published_stems", lambda: ("synthetic", "second")
+    )
+    monkeypatch.setattr(atlas, "update_composites", lambda: calls.append("complete family"))
+    assert render_composite_pdf.main(arguments) == 0
+    assert calls == ["complete family"]
+
+
+def test_the_update_entrypoint_recovers_from_producer_failure_without_rebumping(
+    cut_pair: tuple[
+        atlas.CompositeIdentity, list[tuple[atlas.CompositeCanvas, str]], dict[Path, bytes]
+    ],
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    identity, drawings, old = cut_pair
+    svg_by_path = {canvas.svg_path: svg for canvas, svg in drawings}
+    monkeypatch.setattr(atlas, "drawable_identity", lambda: identity)
+    monkeypatch.setattr(atlas.build_composite_figure_data, "check", lambda: None)
+    entries = cache(atlas._figure_entries)  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+    monkeypatch.setattr(atlas, "_figure_entries", entries)
+    monkeypatch.setattr(atlas, "_retained_problems", lambda: ([], None))
+    monkeypatch.setattr(atlas, "retained_cases", lambda _numbers: [])
+    monkeypatch.setattr(atlas, "_cards", lambda _cases, _canvas: [])
+    monkeypatch.setattr(
+        atlas,
+        "render_known_best_summary_svg",
+        lambda _cards, canvas, _identity: svg_by_path[canvas.svg_path],
+    )
+    stages: list[Path] = []
+
+    def staging_directory(**_kwargs: str) -> str:
+        path = tmp_path / f"publication-stage-{len(stages)}"
+        path.mkdir()
+        stages.append(path)
+        return str(path)
+
+    monkeypatch.setattr(atlas, "mkdtemp", staging_directory)
+
+    def failing_pdf(_svg: str) -> bytes:
+        assert {path: path.read_bytes() for path in old} == old
+        raise OSError("injected PDF production failure")
+
+    monkeypatch.setattr(render_composite_pdf, "render_svg_pdf_bytes", failing_pdf)
+    with pytest.raises(OSError, match="injected PDF production failure"):
+        atlas.update_composites()
+    assert {path: path.read_bytes() for path in old} == old
+    assert not stages[0].exists()
+    monkeypatch.setattr(
+        render_composite_pdf,
+        "render_svg_pdf_bytes",
+        _synthetic_pdf,
+    )
+    atlas.update_composites()
+    assert atlas.composite_findings().problems == ()
+    assert not stages[1].exists()
+    completed = {path: (path.read_bytes(), path.stat().st_mtime_ns) for path in old}
+    atlas.update_composites()
+    assert {path: (path.read_bytes(), path.stat().st_mtime_ns) for path in old} == completed
+    assert not stages[2].exists()
+    assert release.component_version("infographics") == identity.version
+
+
+def test_a_successor_pdf_cannot_be_corrected_again_under_the_same_version(
+    cut_pair: tuple[
+        atlas.CompositeIdentity, list[tuple[atlas.CompositeCanvas, str]], dict[Path, bytes]
+    ],
+    tmp_path: Path,
+) -> None:
+    identity, drawings, _old = cut_pair
+    stage = tmp_path / "stage"
+    atlas.promote_composite_family(
+        atlas.staged_composite_family(drawings, identity, stage), stage
+    )
+    pdf = render_composite_pdf.composite_pdf("synthetic")
+    # A lost derivation receipt does not erase the PDF's retained semantic edition.
+    original = pdf.read_bytes().split(b"\n%" + render_composite_pdf.PDF_SOURCE_KEY, 1)[0]
+    pdf.write_bytes(original)
+    assert render_composite_pdf.pdf_version(original) == identity.version
+    with pytest.raises(ValueError, match="existing infographic version"):
+        render_composite_pdf.update("synthetic")
+    assert pdf.read_bytes() == original
+
+
+def test_an_incomplete_staging_map_cannot_be_promoted(
+    cut_pair: tuple[
+        atlas.CompositeIdentity, list[tuple[atlas.CompositeCanvas, str]], dict[Path, bytes]
+    ],
+    tmp_path: Path,
+) -> None:
+    identity, drawings, old = cut_pair
+    stage = tmp_path / "stage"
+    staged = atlas.staged_composite_family(drawings, identity, stage)
+    staged.pop(render_composite_pdf.composite_pdf("synthetic"))
+    with pytest.raises(ValueError, match="every configured SVG, PNG and PDF"):
+        atlas.promote_composite_family(staged, stage)
+    assert {path: path.read_bytes() for path in old} == old
+
+
+def test_wrong_staged_pdf_dates_leave_every_final_untouched(
+    cut_pair: tuple[
+        atlas.CompositeIdentity, list[tuple[atlas.CompositeCanvas, str]], dict[Path, bytes]
+    ],
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    identity, drawings, old = cut_pair
+    monkeypatch.setattr(
+        render_composite_pdf,
+        "render_svg_pdf_bytes",
+        lambda svg: _synthetic_pdf(svg).replace(b"20261001", b"20261002"),
+    )
+    with pytest.raises(ValueError, match="PDF dates other than its SVG"):
+        atlas.staged_composite_family(drawings, identity, tmp_path / "stage")
+    assert {path: path.read_bytes() for path in old} == old
+
+
+def test_pdf_producer_renders_prepared_svg_without_reading_retained_artwork(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    svg = (
+        f'<svg {SVG_NAMESPACES} width="10" height="10">'
+        '<metadata><sqpack:profile version="8">'
+        '<sqpack:value name="data-date">2026-10-01</sqpack:value>'
+        '</sqpack:profile></metadata><rect width="10" height="10" fill="red"/></svg>'
+    )
+
+    def forbid_retained_read(_stem: str) -> Path:
+        pytest.fail("the prepared SVG producer cannot read retained artwork")
+
+    monkeypatch.setattr(render_composite_pdf, "composite_svg", forbid_retained_read)
+    pdf = render_composite_pdf.render_svg_pdf_bytes(svg)
+    assert pdf.startswith(render_composite_pdf.PDF_SIGNATURE)
+    assert render_composite_pdf.pdf_dates(pdf) == {
+        "CreationDate": "20261001120000Z",
+        "ModDate": "20261001120000Z",
+    }
+
+
+def test_rollback_failure_retains_old_bytes_at_the_reported_backup_path(
+    cut_pair: tuple[
+        atlas.CompositeIdentity, list[tuple[atlas.CompositeCanvas, str]], dict[Path, bytes]
+    ],
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    identity, drawings, old = cut_pair
+    stage = tmp_path / "stage"
+    staged = atlas.staged_composite_family(drawings, identity, stage)
+    promote = atlas._promote_composite_file  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+
+    def fail_promotion_and_rollback(destination: Path, source: Path) -> None:
+        if source.parent.name == "backups":
+            raise OSError("rollback denied")
+        promote(destination, source)
+        raise OSError("promotion failed after commit")
+
+    monkeypatch.setattr(atlas, "_promote_composite_file", fail_promotion_and_rollback)
+    with pytest.raises(atlas.CompositePromotionError, match=str(stage / "backups")):
+        atlas.promote_composite_family(staged, stage)
+    assert (stage / "backups/0").read_bytes() == old[drawings[0][0].svg_path]
+    assert all(
+        (stage / f"backups/{index}").read_bytes() == old[path]
+        for index, path in enumerate(staged)
+    )
+
+
+@pytest.mark.parametrize(
+    "marker",
+    [
+        b"v0.5.1-invalid",
+        b"Draft v0.5.1",
+        b"v01.5.1",
+        b"v0.5.1\n%sqpack-infographic-version: v0.5.1",
+    ],
+)
+def test_malformed_or_ambiguous_pdf_editions_do_not_fall_back_to_the_legacy_baseline(
+    marker: bytes,
+) -> None:
+    pdf = b"%PDF-1.5\n%sqpack-infographic-version: " + marker + b"\n%%EOF\n"
+    with pytest.raises(ValueError, match=r"is not a version|unambiguous infographic edition"):
+        render_composite_pdf.pdf_version(pdf)

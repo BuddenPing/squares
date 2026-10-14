@@ -9,7 +9,7 @@ author: Codex, for the repository owner
 
 **Author:** Codex, for the repository owner
 
-**Status:** Draft for review; implementation has not started.
+**Status:** Implemented in PR #590; final validation and publication pending.
 
 **Tracking:** `think-j7nb` (planning), `think-jpto` (implementation epic)
 
@@ -331,20 +331,40 @@ scheduled job or unreviewed prose publication is needed for the initial feature.
 
 One implementation phase, with four coordinated deliverables:
 
-- [ ] Settle the schema, validated loader, shared renderer, draft/import command and
+- [x] Settle the schema, validated loader, shared renderer, draft/import command and
   freshness check. Keep schema-bound validation in the ordinary fast surface.
-- [ ] Backfill and editorially review the 36-PR window, with explicit coverage and
+- [x] Backfill and editorially review the 36-PR window, with explicit coverage and
   verified stack grouping.
   Reuse available work and retain merge-time claim limits.
-- [ ] Add component release-impact policy, shared infographic versioning and consistency
+- [x] Add component release-impact policy, shared infographic versioning and consistency
   checks, preserving independent paper histories.
-- [ ] Integrate GitHub and About views, reference rewriting, discovery, build inputs,
+- [x] Integrate GitHub and About views, reference rewriting, discovery, build inputs,
   publication scope and maintenance instructions.
 
-The production implementation should land with the initial backfill and both reader
-views, rather than publishing an empty changelog.
-The companion schema and examples in this planning branch remain drafts until that
-implementation settles the contract.
+The implementation includes 20 entries covering 23 PRs, 13 editorial omissions and all
+36 retained main-branch deliveries.
+The production record stores delivery, formal-stack and coverage metadata beside the
+entries; the reader views omit that audit metadata.
+The [backfill review](../../reviews/review-2026-10-13-site-changelog-backfill.md)
+records every disposition and publication evidence.
+
+The owner’s editorial refinement excludes routine internal documentation, planning and
+bookkeeping from the public history.
+Retain external-facing documentation, results, important tooling improvements and
+substantive research or admission policy changes.
+The coverage audit remains complete without forcing every audited PR into a public
+entry.
+
+The closed production contract is `packing/site-changelog.schema.yaml`.
+`devtools.render_changelog --check --baseline-ref origin/main` checks generated Markdown
+and independently freezes prior entries from the local main reference.
+`devtools.import_changelog` acquires merged metadata during authoring and verifies local
+main ancestry before writing candidates.
+Neither normal rendering nor validation fetches GitHub.
+The companion planning schema and examples remain the original design samples.
+
+The additional legend-removal request is tracked as `think-8lsv`: remove the redundant
+bottom S/V/C strip while retaining the Results page’s complete ladder documentation.
 
 ## Testing Strategy
 

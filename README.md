@@ -109,6 +109,7 @@ every claim is graded, and every defect is logged
 
 | Where | What |
 | --- | --- |
+| [**Changelog**](CHANGELOG.md) | Noteworthy merged contributions and launched papers, PDFs, results and site features; also at the bottom of [About](https://jlevy.github.io/squares/about.html#changelog) |
 | [**Tutorial**](TUTORIAL.md) | First-principles introduction to the objects, bounds, cells, stationary branches, search, and proof obligations |
 | [**Synopsis**](SYNOPSIS.md) | Current research status and roadmap, established results, terminology, workflow contracts, and handoff |
 | [**Results register**](packing/frontier/RESULTS.md) | Whole-result bounds, audits, structural theorems, and errata graded under [`epistemics.md`](epistemics.md) |

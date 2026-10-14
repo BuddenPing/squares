@@ -188,6 +188,7 @@ _BY_SOURCE = {doc.source.relative_to(REPO).as_posix(): doc for doc in DOCUMENTS}
 RECORD_PAGES: dict[str, str] = {
     repo_links.RESULTS: render_overview.RESULTS_PAGE,
     repo_links.STATUS: "atlas.html",
+    repo_links.CHANGELOG: "about.html#changelog",
 }
 #: Where every case's record is served, one address per case (`render_case_pages`).
 CASES_DIR = "cases"
