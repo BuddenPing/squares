@@ -685,23 +685,25 @@ def _reproduce(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     assert registered.view_path(290, registered.GRID).read_bytes() == retained
 
 
-@pytest.mark.slow
 def test_the_grid_batch_reproduces_its_row_and_writes_nothing(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     """From a run directory holding the retained view, `select_grid` rebuilds the
     committed row's facts, the identity measured again included, and returns the view's
-    bytes for `retain`, writing nothing. The exact identity measurement takes 5 to 6 s
-    here (review C5), so this runs in the deep surface; the quick lane runs the rest."""
+    bytes for `retain`, writing nothing. The identity measurement took 5 to 6 s when
+    review C5 marked this slow; with `arrangement_gap`'s nearest-centre search it is 0.65
+    to 0.70 s of call (14 October 2026), under the 2 s threshold, so it runs on the
+    pull-request surface."""
     _reproduce(monkeypatch, tmp_path)
 
 
 def test_the_grid_batch_rebuilds_its_row_and_writes_nothing_on_the_quick_lane(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The reproduction above with the identity measurement taken as committed, so the
-    pull-request surface still holds every other fact of the row and that nothing is
-    written; the measurement's own refusals are tested directly (PR #587, review C5)."""
+    """The reproduction above with the identity measurement taken as committed, so every
+    other fact of the row and that nothing is written are held apart from the
+    measurement; the measurement's own refusals are tested directly (PR #587, review
+    C5)."""
     committed = registered.committed(registered.GRID)[290]["identity"]
     measured: list[int] = []
 
