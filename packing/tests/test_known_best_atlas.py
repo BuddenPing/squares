@@ -72,9 +72,9 @@ from sqpack.known_best import (
 from sqpack.release import (
     COMPOSITES_MAY_TRAIL,
     DATA_PATHS,
-    PUBLICATION_VERSION,
+    INFOGRAPHIC_VERSION,
     data_pathspec,
-    edition_at,
+    infographic_edition_at,
 )
 from sqpack.render.color import ANGLE_CLASS_CONTRACT
 from sqpack.render.model import RenderSpec
@@ -88,8 +88,9 @@ from sqpack.yamlio import safe_load
 #: The first SQUISH update moved n = 179 and 258 onto packet-derived facts;
 #: the second also moved n = 88. Complete evand and ry-xu packets now supersede
 #: earlier catalogue sources. These inventory counts follow the current corpus; the house
-#: adoption of 12 October 2026 moved n = 176 onto SQUISH's issue 500 packet (think-fvz4).
-GOLDEN_DERIVED_ABOVE_100: dict[str, int] = {"n=1..100": 0, "n=1..200": 22, "n=1..324": 48}
+#: adoption of 12 October 2026 moved n = 176 onto SQUISH's issue 500 packet (think-fvz4),
+#: and its pass for issue 528 moved n = 264 onto Daniil Ostashev's packet (think-cq95).
+GOLDEN_DERIVED_ABOVE_100: dict[str, int] = {"n=1..100": 0, "n=1..200": 22, "n=1..324": 47}
 #: The cases whose retained upstream rendering is the UnitSquare release, per corpus.
 GOLDEN_UNITSQUARE: dict[str, set[int]] = {
     # 68, 103, 105, 110 and 131 moved onto Francisco Couzo's packet on 2026-09-29, and 69
@@ -112,11 +113,12 @@ GOLDEN_SOURCE_KINDS: dict[str, dict[str, int]] = {
         "packet-derived-facts": 34,
     },
     # 232 (from Kingbird) and 308 (from the grid) moved to packet houses in the house
-    # adoption of 11 October 2026, and 176 (from Kingbird) on 12 October (think-fvz4).
+    # adoption of 11 October 2026, and 176 (from Kingbird) on 12 October (think-fvz4), as
+    # did 264 (from Kingbird) in the pass for issue 528 (think-cq95).
     "n=1..324": {
         "exact-grid": 175,
-        "kingbird-derived-facts": 78,
-        "packet-derived-facts": 71,
+        "kingbird-derived-facts": 77,
+        "packet-derived-facts": 72,
     },
 }
 
@@ -2131,9 +2133,11 @@ def test_poster_packing_credits_name_every_retained_construction_author_and_sour
     assert credit_block is not None
     # The house adoption of 11 October 2026 credits Fang, Mishapolk, PingYou Ltd, Ostashev
     # and Barnett and draws no de Winter packing, from eight more sources; that of 12
-    # October draws from SQUISH's and Couzo's 11 October releases (think-fvz4).
+    # October draws from SQUISH's and Couzo's 11 October releases (think-fvz4), and the
+    # pass for issue 528 from Daniil Ostashev's 12 October release, and that for issue 552
+    # from Evan Daniel's n = 154 packet (think-cq95).
     assert len(expected_names) == 26
-    assert len(expected_sources) == 20
+    assert len(expected_sources) == 22
     assert set(json.loads(credit_block.attrib["data-credited-names"])) == expected_names
     assert set(json.loads(credit_block.attrib["data-source-keys"])) == expected_sources
     assert credit_block.find("svg:text[@data-feature='packing-credits-heading']", SVG) is None
@@ -3504,13 +3508,13 @@ def test_fast_composite_check_rejects_a_stamp_that_is_not_the_composites_own() -
     canvas = known_best_builder.CompositeCanvas(
         CompositeSpec(first_n=18, last_n=18, columns=1, stem="synthetic")
     )
-    identity = known_best_builder.CompositeIdentity("1" * 40, "2026-09-28")
+    identity = known_best_builder.CompositeIdentity("1" * 40, "2026-09-28", INFOGRAPHIC_VERSION)
     assert identity.dateline == "Including new results (September 28, 2026)"
-    assert identity.stamp == edition_at("1" * 40)
+    assert identity.stamp == infographic_edition_at("1" * 40)
     assert not identity.current
     root = ET.fromstring(
         f"""<svg xmlns="http://www.w3.org/2000/svg">
-        <text data-feature="release-stamp">{PUBLICATION_VERSION}-000000</text>
+        <text data-feature="release-stamp">{INFOGRAPHIC_VERSION}-000000</text>
         </svg>"""
     )
 
@@ -3518,7 +3522,7 @@ def test_fast_composite_check_rejects_a_stamp_that_is_not_the_composites_own() -
         canvas, root, identity
     )
     expected = (
-        f"atlas/known-best/synthetic.svg release-stamp is ('{PUBLICATION_VERSION}-000000',); "
+        f"atlas/known-best/synthetic.svg release-stamp is ('{INFOGRAPHIC_VERSION}-000000',); "
         f"expected ({identity.poster_stamp!r},)"
     )
     assert problems == [expected]
@@ -3550,7 +3554,7 @@ def test_composite_identity_checks_each_modes_visible_date_and_edition(
     canvas = known_best_builder.CompositeCanvas(
         CompositeSpec(1, 1, 1, "synthetic", placement=placement)
     )
-    identity = known_best_builder.CompositeIdentity("1" * 40, data_date)
+    identity = known_best_builder.CompositeIdentity("1" * 40, data_date, INFOGRAPHIC_VERSION)
     assert identity.formatted_date == formatted_date
     assert identity.poster_stamp == f"{formatted_date} · {identity.stamp}"
     root = ET.Element(f"{{{SVG['svg']}}}svg")
