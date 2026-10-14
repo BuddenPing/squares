@@ -3819,7 +3819,7 @@ def _result_requests(context: Context) -> str:
     # the record against the register -- that every issue's results name entries that
     # exist and every reply is a comment on its own issue, the join stage 7 of the result
     # import process reads to say which author is owed a reply. A reply due is reported,
-    # never failed: it is the owner's next move, not a broken record.
+    # never failed: it is owed after the merge, not a broken record.
     return _module(context, "devtools.check_requests")
 
 
