@@ -580,6 +580,7 @@ key remain bound to the bytes they originally named.
 | [Kleddamag/17-squares-certified-bound](https://github.com/Kleddamag/17-squares-certified-bound) | The `n = 17` mixed-charge certificate line through `466001/100000` | **[Kleddamag n17 4.66001]**; [27 September packet](web/n17-kleddamag-466001-2026-09-27/README.md) |
 | [Kleddamag/the-seventeenth-square-candidate](https://github.com/Kleddamag/the-seventeenth-square-candidate) | Marc Leonard Overbeck’s verification edition of a candidate proof that `s(17) = L`, Bidwell’s side | **[Overbeck n17 candidate 2026]**; [12 October packet](web/kleddamag-n17-candidate-2026-10-12/README.md) |
 | [ofitzharding/sq17-lean](https://github.com/ofitzharding/sq17-lean) | Oscar Fitzharding’s Lean 4 proof that `s(17) = L`, `Sq17.square17_optimality`, announced on 13 October 2026: the source reports a clean rebuild of the theorem’s 4,951-module import closure, trusting Lean’s compiler for 13,343 `native_decide` facts | **[Fitzharding n17 Lean 2026]**; [13 October packet](web/fitzharding-n17-lean-2026-10-13/README.md), pinned `e6ee548090dc1dbf938ecf8590481de837a6a454` |
+| [bengreff/s76-certificate](https://github.com/bengreff/s76-certificate) | Benjamin Greff’s mixed cover for `s(76) = 9`, decided by Evan Daniel’s `zmx2` and `zm_mixed.py`; issue #594 | **[bengreff s76 certificate 2026-10-14]**; [14 October packet](web/bengreff-s76-certificate-2026-10-14/README.md), pinned `1cb924fa2fb7e8e30d8ddeb9b5e0dfcfae4f9f1f` |
 | [Guzhou0806/n17-square-packing](https://github.com/Guzhou0806/n17-square-packing) | Parent-angle and mixed-charge certificates for `n = 17`, including R068 and R071 | **[Guzhou0806 n17 R068]**; [28 September packet](web/n17-guzhou-r068-2026-09-28/README.md); **[Guzhou0806 n17 R071]**; [30 September packet](web/n17-guzhou-r071-2026-09-30/README.md), pinned `8c11f6962506940c5de67a9fa73b3d1e2e151196` |
 | [Guzhou0806/n40-square-packing](https://github.com/Guzhou0806/n40-square-packing) | The clipped-corner transfer `s(40) > 335427/50000` on wand125’s `rect_n40_L67` density, with its 401-direction nodal run and exact finite checks, and then the continuous-pose kernel `s(40) > 1340000/199529` on the same density, with its 43-slab interval cover, exact axis certificate and finite checks, and the same kernels’ `s(40) > 3359/500` on a new density of 685 rectangle orbits | **[Guzhou0806 n40 clipped corner 2026-10-10]**; [10 October packet](web/guzhou-n40-clipped-corner-2026-10-10/README.md), pinned `e5abeb4d078a5c5b35df6204dd9b93378e5a7880`; **[Guzhou0806 n40 continuous pose 2026-10-10]**; [10 October continuous-pose packet](web/guzhou-n40-continuous-pose-2026-10-10/README.md), pinned `71c97d07553d7d5ff5c5c82f0c9d1c75a150a4e3`; **[Guzhou0806 n40 new supports 2026-10-11]**; [11 October new-supports packet](web/guzhou-n40-new-supports-2026-10-11/README.md), pinned `6a65957e6c5c51cdf267917d882dab7f5b4928dd` |
 | [Mira-acc/17squares](https://github.com/Mira-acc/17squares) | Exact point and weighted certificates used in the `n = 17` lineage | **[n17 weighted certificates 2026-09-20]**; [20 September packet](web/n17-weighted-certificates-2026-09-20/README.md) |
@@ -1275,6 +1276,25 @@ project “was developed with substantial assistance from Claude and Codex”.
 The author’s announcement of 13 October says it was “Built with @OpenAI Astra +
 @AnthropicAI Opus 5.5”. The author asked for its registration in issue #565 on 12
 October 2026, and the owner reported it on 13 October 2026.
+
+## Benjamin Greff’s certificate for s(76) = 9, 14 October 2026
+
+**[bengreff s76 certificate 2026-10-14]**: Benjamin Greff’s (GitHub bengreff) mixed
+cover for $s(76) \ge 9$, hence $s(76) = 9$ with the $9 \times 9$ grid: 41,633 points and
+9,744 segments of $[0,9]^2$ in Evan Daniel’s `mixed 1` format, total
+$3788361049/50000000 < 76$, exactly D4-invariant.
+It is pinned in [bengreff/s76-certificate](https://github.com/bengreff/s76-certificate)
+at `1cb924fa2fb7e8e30d8ddeb9b5e0dfcfae4f9f1f`, committed on 14 October 2026, and
+retained whole; [packet](web/bengreff-s76-certificate-2026-10-14/README.md).
+MIT licence. The source decides the covering statement with two of Daniel’s checkers
+pinned at evand/square-packing `b91d70b6`: `zmx2` on 8,096 of the 8,100 root cells of
+the D4 region and `zm_mixed.py` on the 64 cells that tile the other four.
+Its Lean wrapper on Daniel’s `Sqpack` takes that statement as a hypothesis.
+Its README credits Evan Daniel for the method, the format, the checkers and the Lean
+library, and wand125 for the $s(59) = 8$ cover reused in the corners and the
+band-insertion construction, and says the search, LP and verification pipeline “were
+built and run with Claude (Anthropic) as an AI assistant” under the author’s direction.
+The author asked for its registration in issue #594 on 14 October 2026.
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.

@@ -2111,7 +2111,33 @@ sources:
       credits Ahmed's formalization only as a reference for its trust boundary, where the
       issue names his s(11) proof for the proof's shape. The lineage stays
       credits-project, as the source's own files state it.
+  - key: '[bengreff s76 certificate 2026-10-14]'
+    authors: [Greff]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-14'
+    credit: Greff after Daniel, wand125
+    lineage: independent
+    note: >-
+      bengreff/s76-certificate at 1cb924fa2fb7e8e30d8ddeb9b5e0dfcfae4f9f1f
+      (2026-10-14T02:05:47Z), Benjamin Greff's mixed cover for s(76) >= 9, hence s(76) = 9
+      with the 9 x 9 grid: 41,633 points and 9,744 segments in Evan Daniel's mixed 1
+      format, total 3788361049/50000000 < 76, first committed in 7c78327 at
+      2026-10-14T01:57:08Z, decided by Daniel's zmx2 and zm_mixed.py pinned at
+      evand/square-packing b91d70b6, with a Lean wrapper on Daniel's Sqpack at 1718a58 that
+      takes the covering statement as a hypothesis. Registration was requested in
+      jlevy/squares#594. The README credits Evan Daniel for the method at margin zero, the
+      mixed format, the checkers and the Lean library, and wand125 for the s(59) = 8 cover
+      reused for the corners, the band-insertion construction and the pinned toolchain;
+      it does not mention this project, and the issue cites the record's n-076.md only for
+      the standing bound. AI assistance, README.md: "Benjamin Greff directed the work. The
+      search, LP and verification pipeline were built and run with Claude (Anthropic) as an
+      AI assistant." The issue adds that Claude, working as an agent in Claude Code, built
+      and ran the LP search, the export, the verification script, the coverage checks, the
+      Lean wrapper and the replay, and drafted the write-up. MIT licence. Retained whole in
+      web/bengreff-s76-certificate-2026-10-14/. Dated by that revision, 2026-10-14 UTC.
 credited_names:
+  Benjamin Greff: Greff
   Oscar Fitzharding: Fitzharding
   Marc Leonard Overbeck: Overbeck
   Daniil Ostashev: Ostashev
