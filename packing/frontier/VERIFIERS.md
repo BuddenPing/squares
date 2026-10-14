@@ -1104,7 +1104,7 @@ Decides a packing pair by pair and wall by wall: by exact sign in a number field
 | `E-regularized-bounds-2026-10-13-grid-slack-exact-decision` | replayed here | reproduced with the producer’s code | full, 1 of 1: the retained rational packing view at n = 290, every wall and all 41,905 pairs decided by both maintained checkers; the three negative-control decisions on two distinct mutants are retained separately | T-156 |
 | `E-ostashev-528-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | full, 3 of 3: the three complete certificates at n = 175, 232 and 264, every wall and every pair decided by both maintained routes and again by the third route; the six kernel controls and the third route's controls are retained separately | T-158 |
 | `E-calle-529-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | full, 1 of 1: the certificate derived here from Rio Calle's layout of 102 squares, every wall and every pair decided by both maintained routes and again by the third route, which also derived it again from the layout at the pin | T-159 |
-| `E-evand-552-exact-feasibility` | replayed here | independently re-implemented | full, 1 of 1: the complete certificate at n = 154, every wall and every pair decided by both maintained routes and again by the third route; the two kernel controls and the third route's controls are retained separately | T-160 |
+| `E-evand-552-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | full, 1 of 1: the complete certificate at n = 154, every wall and every pair decided by both maintained routes and again by the third route; the two kernel controls and the third route's controls are retained separately | T-160 |
 
 ### `V-check-rational-witness-independent`
 
@@ -1159,7 +1159,7 @@ Decides a rational-corner witness pair by pair and wall by wall in Fraction arit
 | `E-regularized-bounds-2026-10-13-grid-slack-exact-decision` | replayed here | reproduced with the producer’s code | full, 1 of 1: the retained rational packing view at n = 290, every wall and all 41,905 pairs decided by both maintained checkers; the three negative-control decisions on two distinct mutants are retained separately | T-156 |
 | `E-ostashev-528-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | full, 3 of 3: the three complete certificates at n = 175, 232 and 264, every wall and every pair decided by both maintained routes and again by the third route; the six kernel controls and the third route's controls are retained separately | T-158 |
 | `E-calle-529-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | full, 1 of 1: the certificate derived here from Rio Calle's layout of 102 squares, every wall and every pair decided by both maintained routes and again by the third route, which also derived it again from the layout at the pin | T-159 |
-| `E-evand-552-exact-feasibility` | replayed here | independently re-implemented | full, 1 of 1: the complete certificate at n = 154, every wall and every pair decided by both maintained routes and again by the third route; the two kernel controls and the third route's controls are retained separately | T-160 |
+| `E-evand-552-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | full, 1 of 1: the complete certificate at n = 154, every wall and every pair decided by both maintained routes and again by the third route; the two kernel controls and the third route's controls are retained separately | T-160 |
 
 ### `V-check-nagamochi-lemma1-counterexample`
 
@@ -1734,7 +1734,7 @@ Decides a rational centre and half-angle certificate, or a rational centre-basis
 | `E-couzo-506-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-152 |
 | `E-ostashev-528-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | full, 3 of 3: the three complete certificates at n = 175, 232 and 264, every wall and every pair decided by both maintained routes and again by the third route; the six kernel controls and the third route's controls are retained separately | T-158 |
 | `E-calle-529-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | full, 1 of 1: the certificate derived here from Rio Calle's layout of 102 squares, every wall and every pair decided by both maintained routes and again by the third route, which also derived it again from the layout at the pin | T-159 |
-| `E-evand-552-exact-feasibility` | replayed here | independently re-implemented | full, 1 of 1: the complete certificate at n = 154, every wall and every pair decided by both maintained routes and again by the third route; the two kernel controls and the third route's controls are retained separately | T-160 |
+| `E-evand-552-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | full, 1 of 1: the complete certificate at n = 154, every wall and every pair decided by both maintained routes and again by the third route; the two kernel controls and the third route's controls are retained separately | T-160 |
 
 ### `V-k3-n17-capture-row-checker`
 
@@ -2089,7 +2089,7 @@ Reads Evan Daniel's rational certificates, refusing anything the format does not
 | `E-couzo-506-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-152 |
 | `E-ostashev-528-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | full, 3 of 3: the three complete certificates at n = 175, 232 and 264, every wall and every pair decided by both maintained routes and again by the third route; the six kernel controls and the third route's controls are retained separately | T-158 |
 | `E-calle-529-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | full, 1 of 1: the certificate derived here from Rio Calle's layout of 102 squares, every wall and every pair decided by both maintained routes and again by the third route, which also derived it again from the layout at the pin | T-159 |
-| `E-evand-552-exact-feasibility` | replayed here | independently re-implemented | full, 1 of 1: the complete certificate at n = 154, every wall and every pair decided by both maintained routes and again by the third route; the two kernel controls and the third route's controls are retained separately | T-160 |
+| `E-evand-552-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | full, 1 of 1: the complete certificate at n = 154, every wall and every pair decided by both maintained routes and again by the third route; the two kernel controls and the third route's controls are retained separately | T-160 |
 
 ### `V-check-n11-final-composition`
 
@@ -2621,7 +2621,7 @@ Binds all three complete source certificates and all nine full deciding inputs/n
 | `E-couzo-506-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-152 |
 | `E-ostashev-528-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | full, 3 of 3: the three complete certificates at n = 175, 232 and 264, every wall and every pair decided by both maintained routes and again by the third route; the six kernel controls and the third route's controls are retained separately | T-158 |
 | `E-calle-529-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | full, 1 of 1: the certificate derived here from Rio Calle's layout of 102 squares, every wall and every pair decided by both maintained routes and again by the third route, which also derived it again from the layout at the pin | T-159 |
-| `E-evand-552-exact-feasibility` | replayed here | independently re-implemented | full, 1 of 1: the complete certificate at n = 154, every wall and every pair decided by both maintained routes and again by the third route; the two kernel controls and the third route's controls are retained separately | T-160 |
+| `E-evand-552-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | full, 1 of 1: the complete certificate at n = 154, every wall and every pair decided by both maintained routes and again by the third route; the two kernel controls and the third route's controls are retained separately | T-160 |
 
 ### `V-upper-bound-reports`
 
@@ -2652,7 +2652,7 @@ Imports a report of rational upper-bound certificates by another author from its
 | `E-couzo-506-exact-feasibility` | replayed here | independently re-implemented | not recorded | T-152 |
 | `E-ostashev-528-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | full, 3 of 3: the three complete certificates at n = 175, 232 and 264, every wall and every pair decided by both maintained routes and again by the third route; the six kernel controls and the third route's controls are retained separately | T-158 |
 | `E-calle-529-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | full, 1 of 1: the certificate derived here from Rio Calle's layout of 102 squares, every wall and every pair decided by both maintained routes and again by the third route, which also derived it again from the layout at the pin | T-159 |
-| `E-evand-552-exact-feasibility` | replayed here | independently re-implemented | full, 1 of 1: the complete certificate at n = 154, every wall and every pair decided by both maintained routes and again by the third route; the two kernel controls and the third route's controls are retained separately | T-160 |
+| `E-evand-552-exact-feasibility` | replayed here | independently re-implemented after reading the producer’s code | full, 1 of 1: the complete certificate at n = 154, every wall and every pair decided by both maintained routes and again by the third route; the two kernel controls and the third route's controls are retained separately | T-160 |
 
 ### `V-rehwaldt-n68-verify`
 

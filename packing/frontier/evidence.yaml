@@ -33046,7 +33046,7 @@ evidence:
           the near-axis statement at side 249329659/250000000, decided by sqverify-fast's
           exact axis-vertex sweep on the density itself over all 10,929,636 vertices, with
           the 401-direction necessary condition at side 3350/3359 over all 401 directions
-      read: [mathematics, specification, certificate-format]
+      read: [mathematics, proof-text, specification, certificate-format, producer-code, producer-output]
       clean_room: false
       shares: []
       written_by:
@@ -33063,8 +33063,10 @@ evidence:
           sqverify-fast shares no code with axis_integer_grid.cpp. The release says its
           concave-section calculations draw on this repository's sqverify_fast, so the
           producer read the crate; whether the crate's authors read the release's kernels is
-          not recorded, so the run is not called clean-room. The release's AI system is not
-          named.
+          not recorded. Lane E derived the crate's input with audit_n40_new_supports, whose
+          read log names the release's PROOF.md, the runner's diff and the receipts, and with
+          audit_continuous_pose's input builders, whose author read both C++ kernels in full;
+          so the run is not clean-room. The release's AI system is not named.
     proof:
       source: packing/sqverify_fast/SOUNDNESS.md
       theorem: >-
@@ -33188,12 +33190,19 @@ evidence:
             the project's verification lanes that wrote sqpack's exact verifier, the
             independent rational corner checker and the half-angle area route over September
             and October 2026; each lane's tier and reasoning setting is not retained here
+        - kind: ai
+          system: Claude (Anthropic)
+          setting: >-
+            the stage 4 review lane (W2) of 12 October 2026, at extra-high reasoning effort,
+            which changed the third route in the run that decided these certificates and read
+            the source's verify/ sources; tier not retained here
       overlaps_producer:
         extent: unknown
         separate_prompt: true
         separate_code: true
         note: >-
-          The review of 12 October read the source's verify/ sources and
+          The producer-code entry is the review lane's reading: the review of 12 October
+          read the source's verify/ sources and
           tools/crosscheck_mpmath.py at the pin, byte-identical to the issue-501 packet's
           copies, and ran none of them; no route here imports or copies them. The issue says
           AI agents wrote the source's search, composition and verification code without
@@ -33470,7 +33479,7 @@ evidence:
           third route's controls are retained separately
         checked: 1
         of: 1
-      read: [specification, certificate-format]
+      read: [specification, certificate-format, producer-code]
       clean_room: false
       shares: []
       written_by:
@@ -33480,6 +33489,12 @@ evidence:
             the project's verification lanes that wrote sqpack's exact verifier, the
             independent rational corner checker and the half-angle area route over September
             and October 2026; each lane's tier and reasoning setting is not retained here
+        - kind: ai
+          system: Claude (Anthropic)
+          setting: >-
+            the lane that wrote devtools.evand_exact_certificates for T-101's import of 5 and
+            6 October 2026, whose parse and half-angle map both maintained routes use;
+            tier and reasoning setting not retained here
       overlaps_producer:
         extent: system-family
         separate_prompt: true
@@ -33487,10 +33502,11 @@ evidence:
         note: >-
           The issue says the source's search code, run and request were done with Claude,
           which Evan Daniel directed; the project's routes are Claude's too, written from
-          prompts of their own. The source's checkers, verify_cert.py and verify_cert2.py,
-          were fetched at the pin and not run, and no route imports or copies them; whether
-          the routes' authors read them when the routes were written is not recorded, so the
-          run is not called clean-room.
+          prompts of their own. Both maintained routes take their parse and half-angle map
+          from devtools.evand_exact_certificates (V-evand-exact-certificates), whose read log
+          says its author read the source's verify_cert.py and verify_cert2.py before writing
+          it; the copies at 597e660 are byte-identical to those, so the run is not
+          clean-room. No route imports or copies them, and neither was run here.
     independence_record: docs/project/reviews/review-2026-10-12-upper-bound-import-552.md
     external_review:
       state: informally-verified
