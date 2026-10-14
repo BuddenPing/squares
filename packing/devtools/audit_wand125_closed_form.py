@@ -388,7 +388,8 @@ def write_controls(record: Path, out: Path, *, roots: int = 20) -> Json:
             name: {"bytes": len(data), "sha256": sha256(data)} for name, data in files.items()
         },
         "truncated": (
-            "the record's first 2 root lines, run with the region bounds: not the product grid"
+            "the record's first 2 root lines, run with the region bounds: "
+            "they do not cover the region"
         ),
         "leaves": (
             f"the {len(leaves)} leaves of the record's first {roots} roots, run with --leaves"
@@ -412,7 +413,7 @@ def parse_receipt_log(text: str) -> Json:
     footer = _FOOTER.fullmatch(lines[-1])
     if host is None or footer is None:
         raise ValueError("not a replay_receipt log")
-    output = [line for line in lines[4:-1] if not line.startswith("# ")]
+    output = [line for line in lines[4:-1] if line.strip() and not line.startswith("# ")]
     return {
         "command": command,
         "cores": int(host["cores"]),
@@ -427,7 +428,17 @@ def parse_receipt_log(text: str) -> Json:
     }
 
 
-def _binary_digests(log: Path) -> dict[str, str]:
+def _reason(bad: Json) -> str:
+    """Why replay4d refused: a domain check's reason, or the leaf whose test failed."""
+    if bad.get("why"):
+        return str(bad["why"])
+    result: Json = bad.get("result") or {}
+    if result.get("why"):
+        return str(result["why"])
+    return f"leaf {bad.get('leaf')} ({bad.get('kind')}): its test returned ok false"
+
+
+def binary_digests(log: Path) -> dict[str, str]:
     """``sha256sum`` lines of a receipt log, by the binary's file name."""
     digests: dict[str, str] = {}
     for line in log.read_text(encoding="utf-8").splitlines():
@@ -440,11 +451,18 @@ def _binary_digests(log: Path) -> dict[str, str]:
 def calibration_receipt(directory: Path = CALIBRATION) -> Json:
     """Bind every run in ``directory/runs.json`` to its log, summary and the record."""
     plan = json.loads((directory / "runs.json").read_text(encoding="utf-8"))
-    binaries = _binary_digests(directory / plan["binary_digests"])
-    builds = {
-        label: parse_receipt_log((directory / log).read_text(encoding="utf-8"))
-        for label, log in plan["builds"].items()
-    }
+    binaries = binary_digests(directory / plan["binary_digests"])
+    builds: dict[str, Json] = {}
+    for label, log in plan["builds"].items():
+        text = (directory / log).read_text(encoding="utf-8")
+        builds[label] = parse_receipt_log(text)
+        results = re.findall(r"test result: (\w+)\. (\d+) passed; (\d+) failed", text)
+        if results:
+            builds[label]["tests"] = {
+                "passed": sum(int(passed) for _, passed, _ in results),
+                "failed": sum(int(failed) for _, _, failed in results),
+                "all_ok": all(status == "ok" for status, _, _ in results),
+            }
     runs: list[Json] = []
     for run in plan["runs"]:
         log = parse_receipt_log((directory / run["log"]).read_text(encoding="utf-8"))
@@ -459,7 +477,7 @@ def calibration_receipt(directory: Path = CALIBRATION) -> Json:
         row["summary"]["leaves"] = sum(summary["kinds"].values())
         row["summary"]["cpu_seconds"] = round(summary["cpu_seconds"], 3)
         row["summary"]["wall_seconds"] = round(summary["wall_seconds"], 3)
-        row["summary"]["first_bad"] = [bad.get("why") for bad in summary["bad"][:3]]
+        row["summary"]["first_bad"] = [_reason(bad) for bad in summary["bad"][:3]]
         if "interval" in run:
             want = region_plan(run["interval"], run["region"])
             row["plan"] = want

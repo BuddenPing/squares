@@ -132,3 +132,33 @@ def test_write_controls_truncates_and_relabels_one_leaf(tmp_path: Path) -> None:
         "to": "CORE",
         "note": "the same leaves with this one relabelled, run with --leaves",
     }
+
+
+def test_binary_digests_are_read_from_a_sha256sum_receipt(tmp_path: Path) -> None:
+    log = tmp_path / "binaries.log"
+    log.write_text(
+        "# command: sha256sum replay4d-0.1.0\n"
+        + "a" * 64
+        + "  replay4d-0.1.0\nnot a digest line\n"
+    )
+    assert audit.binary_digests(log) == {"replay4d-0.1.0": "a" * 64}
+
+
+def test_the_retained_calibration_receipt_is_current() -> None:
+    receipt = audit.calibration_receipt()
+    text = json.dumps(receipt, indent=1, ensure_ascii=False) + "\n"
+    assert audit.CALIBRATION_RECEIPT.read_text(encoding="utf-8") == text
+    assert receipt["all_as_expected"]
+    timed = [run for run in receipt["runs"] if "plan" in run]
+    assert [(run["plan"]["interval"], run["plan"]["region"]) for run in timed] == [
+        (26, "top"),
+        (14, "top"),
+    ]
+    assert all(all(run["binds"].values()) for run in timed)
+    tests = [build["tests"] for build in receipt["builds"].values() if "tests" in build]
+    assert tests == [{"passed": 28, "failed": 0, "all_ok": True}] * 2
+    hashes = {
+        run["summary"]["version"]: run["summary"]["source_sha256"] for run in receipt["runs"]
+    }
+    assert hashes["0.1.0"].startswith("92002e0e")
+    assert hashes["0.1.1"].startswith("f8cafeab")

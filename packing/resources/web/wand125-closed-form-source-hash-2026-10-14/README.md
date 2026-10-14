@@ -95,6 +95,11 @@ this pin.
   author’s account of a rerun, which the bytes alone cannot show.
 - **`B3_PLAIN_RF`.** `main.rs` at this pin writes `env.B3_PLAIN_RF` into the summary
   JSON; at `9a28a84` it did not.
+- **The compiled programs.** The calibration of bead think-au7j built both versions with
+  rustc 1.86.0 and the locked crates
+  ([`../wand125-closed-form-2026-10-14/receipts/calibration/`](../wand125-closed-form-2026-10-14/receipts/calibration/calibration.json)).
+  The 0.1.0 binary printed `92002e0e…` and the 0.1.1 binary printed `f8cafeab…`, with
+  `env.B3_PLAIN_RF` recorded as `unset`. So the programs agree with the recomputation.
 
 ## What It Answers, and What It Does Not
 
