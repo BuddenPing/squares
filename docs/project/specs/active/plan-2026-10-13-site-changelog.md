@@ -186,8 +186,11 @@ manually maintained source.
 Publish the complete history at `news.html`, with News as the second navigation item.
 Use the usual uppercase sans-serif H1 and sans-serif operational text, with one
 hairline-bordered card per entry.
-Each card places the paper heading’s sans-base date above an ordinary H3 in the theme’s
-text foreground, followed by smaller Results-style topic chips and the article.
+Each card starts with an ordinary H3 in the theme’s text foreground, followed by the
+paper heading’s sans-base date.
+The next row holds smaller Results-style topic chips on the left and the fixed-width
+significance meter on the right, with its level and rationale available through the
+shared tooltip. The article follows.
 Homepage News and the archive share the component and CSS roles; topic chips retain
 shared fills, corners and leading at 85% of the note-size chip scale.
 Each card contains its actual article once, with about ten lines visible after the
@@ -199,21 +202,24 @@ motion. Hover adds a light green wash without changing height.
 Ordinary links keep their action; body-link focus reveals the article.
 Without scripting, complete articles remain visible.
 Entry and legacy date fragments reveal the corresponding card.
-Topic chips reuse the Results chips with separate subject metadata: lower bounds, upper
-bounds, optimality, engineering, verification and documentation.
-They classify the article’s subject without changing proof or verification status.
-A result kind without an accurate topic mapping omits that subject tag while preserving
-its real kind, claim, credit and evidence.
-The homepage highlights the three newest S5 results from the authoritative results
-register, followed by the shared “All news →” action.
+Topic chips and labels use the shared vocabulary defined below, preserving each
+registered result kind and its verification limits.
+Compact single-select and multi-select choosers share the homepage component, including
+typography, padding, selected states, hover and keyboard focus.
+News defaults to S4/S5 and all topics; its group names remain accessible without visible
+labels. The result count reuses the Results control row and aligns right immediately
+above the cards. The homepage highlights the three newest S5 results from the
+authoritative results register, followed by the shared “All news →” action.
 These highlights reuse result claims, credit and evidence without inventing changelog
 launch entries for older results.
 Explanations combines the former Papers and Visualize navigation entries.
 Its landing page (`papers.html`) has the Explanations H1 and four sections: Tutorial,
 Papers, PDFs and Visuals.
-Tutorial comes first as a prominent starting point.
-Visuals contains the film and the existing two-choice Film/Workbench switch; Film links
-to `papers.html#visuals`, and Workbench retains `workbench/`. The standalone
+Tutorial comes first as a prominent starting point, with the short basic tutorial
+followed by its advanced companion.
+The separate tutorial plan records the complete section and definition preservation
+audit. Visuals contains the film and the existing two-choice Film/Workbench switch; Film
+links to `papers.html#visuals`, and Workbench retains `workbench/`. The standalone
 `visualize.html` film URL remains available.
 Inline film playback requires a press; visiting Explanations does not start it.
 The homepage browser title and sharing title are The Squares Project, from the existing
