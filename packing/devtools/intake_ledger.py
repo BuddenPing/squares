@@ -600,9 +600,11 @@ def scientific(value: Fraction) -> str:
     return f"{float(value):.2e}"
 
 
-def _record_holders(bound: Mapping[str, Any]) -> str:
-    found = [str(name) for name in bound.get("found_by") or []]
-    improved = [str(name) for name in bound.get("improved_by") or []]
+def _record_holders(bound: Mapping[str, Any], names: Mapping[str, str]) -> str:
+    """A case lane's credit: its finders, then its improvers, each by the display name
+    ``names`` gives it (`display_names`), else as the record writes it."""
+    found = [names.get(str(name), str(name)) for name in bound.get("found_by") or []]
+    improved = [names.get(str(name), str(name)) for name in bound.get("improved_by") or []]
     text = ", ".join(found) or str(bound.get("source_key") or "")
     return f"{text}, improved by {', '.join(improved)}" if improved else text
 
@@ -838,13 +840,16 @@ def lane_member(
     bound: Mapping[str, Any],
     entries: Iterable[str],
     polynomial_text: str = "",
+    *,
+    names: Mapping[str, str] | None = None,
 ) -> StartMember:
     """One case lane's upper bound: its exact form where that is rational, a rigorous
     interval where it is a closed form with ``sqrt``, an enclosure of the root a ``root(``
-    form names where the case states the polynomial, else its print within one unit."""
+    form names where the case states the polynomial, else its print within one unit.
+    ``names`` credits a holder by the display name the intake gives it (`display_names`)."""
     named = ", ".join(sorted(entries)) or str(bound.get("source_key") or "")
     label = f"record {named}"
-    holders = _record_holders(bound) or ", ".join(sorted(entries))
+    holders = _record_holders(bound, names or {}) or ", ".join(sorted(entries))
     value = str(bound["value"])
     form = str(bound.get("exact_form") or "")
     lanes = [[lane, value, form, polynomial_text]]
@@ -1015,10 +1020,26 @@ def lane_polynomials(
     return stated, own or (stated if named else "")
 
 
-def tree_members(counts: Iterable[int]) -> dict[int, list[StartMember]]:
+def display_names(sources: Mapping[str, Any]) -> dict[str, str]:
+    """How the intake credits a case record's finder or improver where the owner asked for
+    a name other than the one the record writes: ``sources.yaml``'s ``display_names``."""
+    names = sources.get("display_names") or {}
+    _require(
+        isinstance(names, Mapping)
+        and all(
+            isinstance(key, str) and isinstance(value, str) for key, value in names.items()
+        ),
+        f"{SOURCES}: display_names maps a name the record writes to the name credited",
+    )
+    return dict(names)
+
+
+def tree_members(
+    counts: Iterable[int], *, names: Mapping[str, str] | None = None
+) -> dict[int, list[StartMember]]:
     """Each count's start members, read from the records on the tree: both case lanes and
     any register entry pending adoption that states a smaller bound, or above the horizon
-    the beyond-horizon row or the grid."""
+    the beyond-horizon row or the grid. A lane's holders are credited by ``names``."""
     wanted = sorted(set(counts))
     members: dict[int, list[StartMember]] = {}
     inside = [n for n in wanted if n <= HORIZON]
@@ -1044,6 +1065,7 @@ def tree_members(counts: Iterable[int]) -> dict[int, list[StartMember]]:
                     reported,
                     view.lane_holders(n, records, "upper", ("reported",)),
                     reported_text,
+                    names=names,
                 ),
                 lane_member(
                     n,
@@ -1051,6 +1073,7 @@ def tree_members(counts: Iterable[int]) -> dict[int, list[StartMember]]:
                     verified,
                     view.lane_holders(n, records, "upper", ("verified",)),
                     verified_text,
+                    names=names,
                 ),
             )
             members[n] = [*lanes, *pending.get(n, [])]
@@ -1239,7 +1262,7 @@ def tree_drift(directory: Path) -> list[str]:
     """Where the records on the tree now give a start other than the frozen one."""
     frozen = load_yaml(directory / STARTS)
     counts = [int(count["n"]) for count in frozen["counts"]]
-    now = tree_members(counts)
+    now = tree_members(counts, names=display_names(load_yaml(directory / SOURCES)))
     drift = []
     for count in frozen["counts"]:
         n = int(count["n"])
@@ -2592,7 +2615,8 @@ def gather(
             f"of read_at_main {read_at_main[:12]}",
         )
     else:
-        starts = starts_document(read_at_main, tree_members(counts_of(ledger)))
+        members = tree_members(counts_of(ledger), names=display_names(sources))
+        starts = starts_document(read_at_main, members)
         texts.append(
             (STARTS, yaml.safe_dump(starts, sort_keys=False, allow_unicode=True, width=88))
         )

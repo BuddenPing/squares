@@ -160,6 +160,36 @@ def test_each_lane_reads_its_own_polynomial_and_a_root_off_its_print_is_refused(
     assert ledger.lane_polynomials(reported, {"value": "2", "exact_form": "2"})[1] == ""
 
 
+def test_a_holder_is_credited_by_the_display_name_the_intake_gives() -> None:
+    bound = {
+        "value": "10.5",
+        "exact_form": "21/2",
+        "found_by": ["ry-xu"],
+        "improved_by": ["Evan Daniel"],
+    }
+    names = ledger.display_names({"display_names": {"ry-xu": "Ryan Xu"}})
+    member = ledger.lane_member(100, "reported", bound, ["T-146"], names=names)
+    assert (member["label"], member["holders"]) == (
+        "record T-146",
+        "Ryan Xu, improved by Evan Daniel",
+    )
+    assert ledger.lane_member(100, "reported", bound, ["T-146"])["holders"].startswith("ry-")
+    with pytest.raises(ledger.LedgerError, match="display_names"):
+        ledger.display_names({"display_names": ["ry-xu"]})
+
+
+def test_the_committed_ledger_credits_ryan_xu_by_name() -> None:
+    # The owner, 2026-10-14: credit Ryan Xu by name or surname, never by the handle.
+    verdicts = json.loads((ledger.DEFAULT_DIRECTORY / ledger.VERDICTS).read_text("utf-8"))
+    named = [report["holders"] for report in verdicts["reports"]]
+    for count in verdicts["counts"]:
+        named += [side["holders"] for side in (*count["start"], *count["best_now"])]
+        steps = [step for step in count["steps"] if "packing" in step]
+        named += [step["packing"].get("packing_of", "") for step in steps]
+    assert any("Ryan Xu" in credit for credit in named)
+    assert not [credit for credit in named if "ry-xu" in credit]
+
+
 def test_two_lanes_with_one_side_are_one_member() -> None:
     bound = {"value": "7.6903559372884918", "exact_form": "(16+5*sqrt(2))/3"}
     lanes = ledger.merged_lanes(
@@ -568,7 +598,7 @@ def test_gather_keeps_the_frozen_starts_and_reads_the_tree_only_to_refresh_them(
     frozen = yaml.safe_dump(ledger.starts_document(read_at_main, {100: [member]}))
     (tmp_path / ledger.STARTS).write_text(frozen, encoding="utf-8")
 
-    def refuse(*_: object) -> None:
+    def refuse(*_: object, **__: object) -> None:
         raise AssertionError("gather read the tree")
 
     monkeypatch.setattr(ledger, "tree_members", refuse)

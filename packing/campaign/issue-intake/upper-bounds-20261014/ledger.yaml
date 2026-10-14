@@ -366,7 +366,7 @@ reports:
     note: the further refinement replaced the issue's first certificate in an edit announced
       by comment 6134736610
     refines:
-      packing_of: Ryan Xu (ry-xu)
+      packing_of: Ryan Xu
       entry: T-150
       source: 'packing/resources/web/pingyou-n146-refinement-2026-10-12/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pingyou@680123806e979029a25948aa98d9aaf5473ccc33:
         a further refinement of Robert Barnett''s refinement (T-150) of Ryan Xu''s packing,
@@ -389,7 +389,7 @@ reports:
     note: the further refinement replaced the issue's first certificate in an edit announced
       by comment 6134779741
     refines:
-      packing_of: Ryan Xu (ry-xu)
+      packing_of: Ryan Xu
       entry: T-150
       source: 'packing/resources/web/pingyou-n261-refinement-2026-10-12/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pingyou@680123806e979029a25948aa98d9aaf5473ccc33:
         a further refinement of Robert Barnett''s refinement (T-150) of Ryan Xu''s packing,
@@ -409,7 +409,7 @@ reports:
       at claude/wizardly-meitner-wqn4x3-intake-1014-pingyou@680123806e979029a25948aa98d9aaf5473ccc33
     first_committed: '2026-10-12T22:53:57Z'
     refines:
-      packing_of: Ryan Xu (ry-xu)
+      packing_of: Ryan Xu
       entry: T-130
       source: 'packing/resources/web/pingyou-n105-refinement-2026-10-12/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pingyou@680123806e979029a25948aa98d9aaf5473ccc33:
         an exact contact refinement of Couzo''s refinement (T-130) of Ryan Xu''s packing,
@@ -977,7 +977,7 @@ reports:
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37
     refines:
-      packing_of: Ryan Xu (ry-xu)
+      packing_of: Ryan Xu
       entry: T-126
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
@@ -1187,7 +1187,7 @@ reports:
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37
     refines:
-      packing_of: Ryan Xu (ry-xu)
+      packing_of: Ryan Xu
       entry: T-146
       source: 'think-9v2k: N70 attains Xu''s packing exactly, 8.9e-20 below the case'
     reported_at: '2026-10-13T01:58:06Z'
@@ -1252,7 +1252,7 @@ reports:
       at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37
     first_committed: '2026-10-13T00:24:05Z'
     refines:
-      packing_of: Ryan Xu (ry-xu)
+      packing_of: Ryan Xu
       entry: T-130
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
@@ -1291,7 +1291,7 @@ reports:
       at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37
     first_committed: '2026-10-13T00:24:05Z'
     refines:
-      packing_of: Ryan Xu (ry-xu)
+      packing_of: Ryan Xu
       entry: T-130
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
@@ -1383,7 +1383,7 @@ reports:
       at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37
     first_committed: '2026-10-13T00:24:05Z'
     refines:
-      packing_of: Ryan Xu (ry-xu)
+      packing_of: Ryan Xu
       entry: T-146
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
@@ -1397,7 +1397,7 @@ reports:
       at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37
     first_committed: '2026-10-13T00:24:05Z'
     refines:
-      packing_of: Ryan Xu (ry-xu)
+      packing_of: Ryan Xu
       entry: T-146
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
@@ -1436,7 +1436,7 @@ reports:
       at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37
     first_committed: '2026-10-13T00:24:05Z'
     refines:
-      packing_of: Ryan Xu (ry-xu)
+      packing_of: Ryan Xu
       entry: T-130
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
@@ -1482,7 +1482,7 @@ reports:
       at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37
     first_committed: '2026-10-13T00:24:05Z'
     refines:
-      packing_of: Ryan Xu (ry-xu)
+      packing_of: Ryan Xu
       entry: T-128
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
@@ -1560,7 +1560,7 @@ reports:
       at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37
     first_committed: '2026-10-13T00:24:05Z'
     refines:
-      packing_of: Ryan Xu (ry-xu)
+      packing_of: Ryan Xu
       entry: T-146
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
@@ -1624,7 +1624,7 @@ reports:
       at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37
     first_committed: '2026-10-13T00:24:05Z'
     refines:
-      packing_of: Ryan Xu (ry-xu)
+      packing_of: Ryan Xu
       entry: T-139
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
@@ -1638,7 +1638,7 @@ reports:
       at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37
     first_committed: '2026-10-13T00:24:05Z'
     refines:
-      packing_of: Ryan Xu (ry-xu)
+      packing_of: Ryan Xu
       entry: T-128
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
@@ -1748,7 +1748,7 @@ reports:
       at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37
     first_committed: '2026-10-13T01:58:06Z'
     refines:
-      packing_of: Ryan Xu (ry-xu)
+      packing_of: Ryan Xu
       entry: '#566'
       source: 'think-9v2k triage: 12 rational counts relay newer packings of open reports
         (N129 #562, N146 #566, N156 #561, N175, N176 #575, N204 #562, N232, N237 #561, N261
@@ -2828,7 +2828,7 @@ reports:
       at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37
     first_committed: '2026-10-13T01:58:06Z'
     refines:
-      packing_of: Ryan Xu (ry-xu)
+      packing_of: Ryan Xu
       entry: '#567'
       source: 'think-9v2k triage: 12 rational counts relay newer packings of open reports
         (N129 #562, N146 #566, N156 #561, N175, N176 #575, N204 #562, N232, N237 #561, N261
@@ -2938,7 +2938,7 @@ reports:
       at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37
     first_committed: '2026-10-13T00:24:05Z'
     refines:
-      packing_of: Ryan Xu (ry-xu)
+      packing_of: Ryan Xu
       entry: T-134
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
@@ -3140,7 +3140,7 @@ reports:
       at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37
     first_committed: '2026-10-13T00:24:05Z'
     refines:
-      packing_of: Ryan Xu (ry-xu)
+      packing_of: Ryan Xu
       entry: T-146
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
@@ -3714,7 +3714,7 @@ reports:
     exact_from: packing/resources/web/mishapolk-records-2026-10-14/acquisition/claims.json
       at claude/wizardly-meitner-wqn4x3-intake-1014-mishapolk@d4c198d0da8fe619bef0bccf18a8e6e32520c0f3
     first_committed: '2026-10-13T21:38:13Z'
-    restates: 'restates the packing of the record T-146 (ry-xu, improved by Evan Daniel):
+    restates: 'restates the packing of the record T-146 (Ryan Xu, improved by Evan Daniel):
       the same exact side'
   - n: 84
     printed: '9.6979347990149218'
@@ -3723,7 +3723,7 @@ reports:
     exact_from: packing/resources/web/mishapolk-records-2026-10-14/acquisition/claims.json
       at claude/wizardly-meitner-wqn4x3-intake-1014-mishapolk@d4c198d0da8fe619bef0bccf18a8e6e32520c0f3
     first_committed: '2026-10-13T16:39:57Z'
-    restates: 'restates the packing of the record T-130 (ry-xu, improved by Francisco Couzo):
+    restates: 'restates the packing of the record T-130 (Ryan Xu, improved by Francisco Couzo):
       the same exact side'
   - n: 86
     printed: '9.8205354074967417'
@@ -3732,7 +3732,7 @@ reports:
     exact_from: packing/resources/web/mishapolk-records-2026-10-14/acquisition/claims.json
       at claude/wizardly-meitner-wqn4x3-intake-1014-mishapolk@d4c198d0da8fe619bef0bccf18a8e6e32520c0f3
     first_committed: '2026-10-13T16:39:57Z'
-    restates: 'restates the packing of the record T-130 (ry-xu, improved by Francisco Couzo):
+    restates: 'restates the packing of the record T-130 (Ryan Xu, improved by Francisco Couzo):
       the same exact side'
   - n: 88
     printed: '9.8824510304812474'
@@ -3750,7 +3750,7 @@ reports:
     exact_from: packing/resources/web/mishapolk-records-2026-10-14/acquisition/claims.json
       at claude/wizardly-meitner-wqn4x3-intake-1014-mishapolk@d4c198d0da8fe619bef0bccf18a8e6e32520c0f3
     first_committed: '2026-10-13T21:38:13Z'
-    restates: 'restates the packing of the record T-146 (ry-xu, improved by Evan Daniel):
+    restates: 'restates the packing of the record T-146 (Ryan Xu, improved by Evan Daniel):
       the same exact side'
   - n: 103
     printed: '10.6792320473613493'
@@ -3768,7 +3768,7 @@ reports:
     exact_from: packing/resources/web/mishapolk-records-2026-10-14/acquisition/claims.json
       at claude/wizardly-meitner-wqn4x3-intake-1014-mishapolk@d4c198d0da8fe619bef0bccf18a8e6e32520c0f3
     first_committed: '2026-10-13T16:39:57Z'
-    restates: 'restates the packing of the record T-130 (ry-xu, improved by Francisco Couzo):
+    restates: 'restates the packing of the record T-130 (Ryan Xu, improved by Francisco Couzo):
       the same exact side'
   - n: 106
     printed: '10.8229080441328467'
@@ -3784,7 +3784,7 @@ reports:
     exact_from: packing/resources/web/mishapolk-records-2026-10-14/acquisition/claims.json
       at claude/wizardly-meitner-wqn4x3-intake-1014-mishapolk@d4c198d0da8fe619bef0bccf18a8e6e32520c0f3
     first_committed: '2026-10-14T01:24:10Z'
-    restates: 'restates the packing of the record T-128 (ry-xu, improved by Francisco Couzo):
+    restates: 'restates the packing of the record T-128 (Ryan Xu, improved by Francisco Couzo):
       the same exact side'
   - n: 110
     printed: '10.9967833966315922'
@@ -3800,7 +3800,7 @@ reports:
     exact_from: packing/resources/web/mishapolk-records-2026-10-14/acquisition/claims.json
       at claude/wizardly-meitner-wqn4x3-intake-1014-mishapolk@d4c198d0da8fe619bef0bccf18a8e6e32520c0f3
     first_committed: '2026-10-13T21:38:13Z'
-    restates: 'restates the packing of the record T-146 (ry-xu, improved by Evan Daniel):
+    restates: 'restates the packing of the record T-146 (Ryan Xu, improved by Evan Daniel):
       the same exact side'
   - n: 126
     printed: '11.7426406871192857'
@@ -3809,7 +3809,7 @@ reports:
     exact_from: packing/resources/web/mishapolk-records-2026-10-14/acquisition/claims.json
       at claude/wizardly-meitner-wqn4x3-intake-1014-mishapolk@d4c198d0da8fe619bef0bccf18a8e6e32520c0f3
     first_committed: '2026-10-13T21:38:14Z'
-    restates: 'restates the packing of the record T-139 (ry-xu, improved by Evan Daniel):
+    restates: 'restates the packing of the record T-139 (Ryan Xu, improved by Evan Daniel):
       the same exact side'
   - n: 127
     printed: '11.8108787875891803'
@@ -3818,7 +3818,7 @@ reports:
     exact_from: packing/resources/web/mishapolk-records-2026-10-14/acquisition/claims.json
       at claude/wizardly-meitner-wqn4x3-intake-1014-mishapolk@d4c198d0da8fe619bef0bccf18a8e6e32520c0f3
     first_committed: '2026-10-14T01:24:10Z'
-    restates: 'restates the packing of the record T-128 (ry-xu, improved by Francisco Couzo):
+    restates: 'restates the packing of the record T-128 (Ryan Xu, improved by Francisco Couzo):
       the same exact side'
   - n: 129
     printed: '11.8700138504044652'
@@ -4146,7 +4146,7 @@ reports:
     exact_from: packing/resources/web/mishapolk-records-2026-10-14/acquisition/claims.json
       at claude/wizardly-meitner-wqn4x3-intake-1014-mishapolk@d4c198d0da8fe619bef0bccf18a8e6e32520c0f3
     first_committed: '2026-10-14T01:24:10Z'
-    restates: 'restates the packing of the record T-134 (ry-xu, improved by Francisco Couzo):
+    restates: 'restates the packing of the record T-134 (Ryan Xu, improved by Francisco Couzo):
       the same exact side'
   - n: 268
     printed: '16.8788148210067632'
@@ -4209,7 +4209,7 @@ reports:
     exact_from: packing/resources/web/mishapolk-records-2026-10-14/acquisition/claims.json
       at claude/wizardly-meitner-wqn4x3-intake-1014-mishapolk@d4c198d0da8fe619bef0bccf18a8e6e32520c0f3
     first_committed: '2026-10-13T21:38:19Z'
-    restates: 'restates the packing of the record T-146 (ry-xu, improved by Evan Daniel):
+    restates: 'restates the packing of the record T-146 (Ryan Xu, improved by Evan Daniel):
       the same exact side'
   - n: 297
     printed: '17.7404172875438029'
@@ -4433,7 +4433,7 @@ exceptions: []
 key_reason_candidates:
 - n: 102
   report: '#529'
-  argument: An independent arrangement of ry-xu's design, found from scratch, credited as
+  argument: An independent arrangement of Ryan Xu's design, found from scratch, credited as
     the author asked, after the precedents T-120, T-137 and T-150.
   proposed_as: T-159, an S2 entry that moves no case, in the coordinator's layer 6 (jlevy/squares#598
     at bd2ae5869); not on main
