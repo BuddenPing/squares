@@ -558,8 +558,7 @@ def test_verifiers_md_lists_every_program_with_what_it_backs() -> None:
         assert f"### `{verifier_id}`" in text
     row = (
         "| `E-k2m3-wand125-valid7-independent` | replayed here | "
-        "independently re-implemented after reading the producer\u2019s code | "
-        "not recorded | T-064 |"
+        "independently re-implemented | not recorded | T-064 |"
     )
     assert row in text
 

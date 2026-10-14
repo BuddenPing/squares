@@ -1284,7 +1284,7 @@ evidence:
     replay: >-
       wand125_replay_output="$(mktemp -d "${TMPDIR:-/tmp}/wand125-rectangle-replay.XXXXXX")" &&
       .venv/bin/python3 -m devtools.audit_wand125_rectangles --out "$wand125_replay_output"
-      --replay --workers 2 --n 18 --n 19 --n 20 --n 26 --n 27 --n 30 --n 31 --n 40 --n 61 --n 75 --n 78
+      --replay --workers 2 --n 18 --n 19 --n 20 --n 26 --n 27 --n 30 --n 31 --n 32 --n 40 --n 61 --n 75 --n 78
     replay_status: passed
     verifiers: [V-tokoharu-verify-cpp, V-audit-wand125-rectangles]
     proof:

@@ -1985,3 +1985,19 @@ def test_second_proof_conclusion_matches_the_target_and_every_case() -> None:
         "no cited evidence of its own" in issue
         for issue in check_results.kind_problems(record, evidence, scopes, records=target)
     )
+
+
+def test_registration_backfill_preserves_second_proof_dates_and_is_idempotent() -> None:
+    text = (
+        "results:\n  - id: T-001\n    kind: formalization\n"
+        "    proves_kind: optimality\n    registered: '2026-10-13'\n"
+        "  - id: T-002\n    kind: simplification\n"
+        "    proves_kind: lower-bound\n    claim: a shorter proof\n"
+    )
+    dates = {"T-001": "x", "T-002": "2026-10-14"}
+    wanted = text.replace(
+        "    claim: a shorter proof\n",
+        "    registered: '2026-10-14'\n    claim: a shorter proof\n",
+    )
+    assert backfill_result_registration.insert_dates(text, dates) == wanted
+    assert backfill_result_registration.insert_dates(wanted, dates) == wanted
