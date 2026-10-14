@@ -67,8 +67,9 @@ the starts from the checkout only when there is none or ``--refresh-starts`` ask
 is run from a checkout of ``read_at_main`` (``check --tree`` reports where the checkout's
 records give other starts). ``render`` and ``check`` are offline. Both refuse a
 ``starts.yaml`` member whose span its stored lanes, stated bound or print do not give, so
-a start edited by hand fails; ``render --check`` also fails when either rendered file
-would change.
+a start edited by hand fails, and a record relation that reads no member of its count's
+start, since it would decide nothing; ``render --check`` also fails when either rendered
+file would change.
 """
 
 from __future__ import annotations
@@ -2384,13 +2385,41 @@ def json_text(value: Any) -> str:
     return retained_dumps(value, ensure_ascii=False)
 
 
-def rendered(directory: Path) -> dict[str, str]:
-    """The two rendered files' text, from the ledger and the starts ``gather`` froze; the
-    records on the tree are not read (`tree_drift` compares them)."""
+def inert_relations(ledger: Ledger, starts: Mapping[int, Sequence[Side]]) -> list[str]:
+    """Every record relation that reads no member of its count's start: a lane, value or
+    form the starts never froze, or a register entry they do not hold. Such a relation
+    decides nothing (`_frozen_relation`), so it is refused rather than kept."""
+    found: list[str] = []
+    for report in ledger["reports"]:
+        for claim in report["claims"]:
+            prints = {
+                read for member in starts.get(claim["n"], ()) for read in member.record_prints
+            }
+            found.extend(
+                f"{report['report']} n = {claim['n']}: the record relation to "
+                f"{relation['lane']} at {relation['value']!r} reads no member of the start"
+                for relation in claim.get("record_relations", [])
+                if (relation["lane"], relation["value"], relation["exact_form"]) not in prints
+            )
+    return found
+
+
+def load_walk(directory: Path) -> tuple[Ledger, dict[int, list[Side]]]:
+    """The ledger and the starts ``gather`` froze, refused when a count has no start or a
+    record relation reads no member of its start (`inert_relations`)."""
     ledger = load_ledger(directory)
     starts = load_starts(directory, ledger["read_at_main"])
     missing = sorted(set(counts_of(ledger)) - set(starts))
     _require(not missing, f"{STARTS} has no start at n = {missing}")
+    inert = inert_relations(ledger, starts)
+    _require(not inert, "; ".join(inert))
+    return ledger, starts
+
+
+def rendered(directory: Path) -> dict[str, str]:
+    """The two rendered files' text, from the ledger and the starts ``gather`` froze; the
+    records on the tree are not read (`tree_drift` compares them)."""
+    ledger, starts = load_walk(directory)
     verdicts = evaluate(ledger, starts)
     return {VERDICTS: json_text(verdicts), README: readme(ledger, verdicts)}
 
@@ -2840,14 +2869,12 @@ def _run(args: argparse.Namespace) -> int:
         print(f"{wrote}; {len(warnings)} cross-check warnings")
         return 0
     if args.action == "check":
-        ledger = load_ledger(directory)
-        starts = load_starts(directory, ledger["read_at_main"])
-        missing = sorted(set(counts_of(ledger)) - set(starts))
-        _require(not missing, f"{STARTS} has no start at n = {missing}")
+        ledger, starts = load_walk(directory)
         claims = sum(len(report["claims"]) for report in ledger["reports"])
         print(
             f"OK: {len(ledger['reports'])} reports, {claims} claims, {len(starts)} starts, "
-            "each member's span recomputed from its stored inputs"
+            "each member's span recomputed from its stored inputs, each record relation "
+            "read against its start"
         )
         if args.tree:
             drift = tree_drift(directory)

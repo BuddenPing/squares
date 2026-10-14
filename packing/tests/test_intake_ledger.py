@@ -766,6 +766,47 @@ def test_render_reads_the_frozen_starts_and_never_the_tree(
         ledger.rendered(tmp_path)
 
 
+def test_a_record_relation_that_reads_no_member_of_its_start_is_refused(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    # A relation decides only a comparison with a start member that prints what it read;
+    # one naming another lane, value or register entry would decide nothing.
+    member = ledger.lane_member(
+        100, "reported", {"value": "10.5", "exact_form": "21/2"}, ["T-1"]
+    )
+    starts = ledger.starts_document(FROZEN_AT, {100: [member]})
+    (tmp_path / ledger.STARTS).write_text(yaml.safe_dump(starts), encoding="utf-8")
+    lane, value, form = member["lanes"][0][:3]
+    live: ledger.RecordRelation = {
+        "lane": lane,
+        "relation": "below",
+        "value": value,
+        "exact_form": form,
+        "read_from": "a receipt",
+    }
+    for relation, refused in (
+        (live, False),
+        (DECIDED, True),
+        ({**live, "value": "10.6"}, True),
+        ({**live, "lane": "verified"}, True),
+    ):
+        data = _minimal()
+        data["reports"][0]["claims"][0]["record_relations"] = [relation]
+        (tmp_path / ledger.LEDGER).write_text(yaml.safe_dump(data), encoding="utf-8")
+        assert ledger.problems(data) == []
+        assert ledger.main(["check", str(tmp_path)]) == int(refused)
+        if not refused:
+            assert set(ledger.rendered(tmp_path)) == {ledger.VERDICTS, ledger.README}
+            continue
+        error = capsys.readouterr().err
+        assert error.startswith(
+            f"FAIL  check: #1 n = 100: the record relation to {relation['lane']} at "
+            f"{relation['value']!r} reads no member of the start"
+        )
+        with pytest.raises(ledger.LedgerError, match="reads no member of the start"):
+            ledger.rendered(tmp_path)
+
+
 FROZEN_AT = "f" * 40
 
 
