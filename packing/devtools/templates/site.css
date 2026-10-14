@@ -3496,19 +3496,33 @@ html[data-site-atlas-view="triangle"]
   text-align: start;
   text-transform: none;
 }
-.kpress .site-news-item > h3 {
+.kpress .site-news-header > h3 {
   margin-block: 0.6rem;
   text-align: start;
 }
-.kpress .site-news-item > h3 :is(.kpress-math, .katex, .tex, math) {
+.kpress .site-news-header > h3 :is(.kpress-math, .katex, .tex, math) {
   letter-spacing: normal;
   text-transform: none;
+}
+/* One metadata row on the archive and homepage: topics wrap on the left while
+   the shared significance meter keeps its fixed width at the right. */
+.kpress .site-news-metadata {
+  align-items: baseline;
+  display: flex;
+  gap: 0.6rem;
+  margin-block-end: 0.5rem;
+}
+.kpress .site-news-significance {
+  flex: none;
+  margin: 0;
+  margin-inline-start: auto;
 }
 .kpress .site-news-topics {
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
-  margin-block: 0 0.5rem;
+  margin: 0;
+  min-inline-size: 0;
 }
 /* News topics keep the Results chip's fill, corners and leading at a smaller scale. */
 .kpress .site-news-topics .site-chip {
@@ -3539,8 +3553,8 @@ html[data-site-atlas-view="triangle"]
 .kpress .site-news-filters {
   font-weight: var(--site-font-weight-sans-light);
   display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.9rem;
   font-family: var(--kpress-font-sans);
   font-size: var(--site-font-size-note);
   margin-block: 1rem;
@@ -3548,41 +3562,20 @@ html[data-site-atlas-view="triangle"]
 .kpress .site-news-filters[hidden] {
   display: none;
 }
+.site-news-filters > .site-table-tools {
+  flex-basis: 100%;
+}
 .site-news-filters fieldset {
   border: 0;
+  max-inline-size: 100%;
   margin: 0;
   min-inline-size: 0;
   padding: 0;
 }
-.site-news-filters legend {
-  font-weight: var(--site-font-weight-sans-medium);
-  margin-block-end: 0.25rem;
-  padding: 0;
-}
-.site-news-filter-options,
-.site-news-filter-status {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-}
-.site-news-filters button {
-  background: transparent;
-  border: 1px solid var(--kpress-doc-border);
-  border-radius: 0;
-  color: var(--kpress-doc-text);
-  cursor: pointer;
-  font: inherit;
-  padding: 0.2em 0.5em;
-  transition: var(--site-hover-transition);
-}
-.site-news-filters button[aria-pressed="true"] {
-  background: color-mix(
-    in oklch,
-    var(--kpress-doc-accent) var(--site-chip-tint),
-    var(--kpress-doc-bg)
-  );
-  border-color: var(--kpress-doc-accent);
+/* Placement only: compact choices and the Results count row own their shared
+   typography, colors, selected states and right alignment. */
+.site-news-filters :is(.site-tabs, .site-table-tools) {
+  margin: 0;
 }
 
 /* The default first paint already shows S4/S5. Readers without scripting receive

@@ -881,17 +881,24 @@ it.
   history. Its H1 uses the shared sans-serif caps; its operational text uses the sans
   face. Each entry is one hairline-bordered card containing its actual article once.
   Dates use the paper heading’s sans-base date role.
-  Each date is followed by an ordinary H3 in the theme’s text foreground, then smaller
-  Results-style topic chips and the article.
+  Each card starts with an ordinary H3 in the theme’s text foreground, followed by the
+  date, then a metadata row with smaller Results-style topic chips on the left and the
+  shared significance meter fixed at the right.
+  The article follows.
   H3 typography comes from the shared heading role; the chips retain shared fills,
   corners and leading at 85% of the note-size chip scale.
   Homepage News and the archive use the same card renderer and CSS roles.
   Every post has an explicit importance score and a plain rationale.
-  A visible “Significance” line uses the shared meter; homepage highlights keep their
-  actual result scores and assurance qualifiers.
-  Archive controls default to S4/S5 and all topics, with OR within a facet and AND
-  across facets. All significance and All topics clear their facet; Reset restores the
-  defaults. Counts and an empty state describe the selection.
+  The meter’s accessible label names its S level; its shared tooltip explains the level
+  and the post’s rationale.
+  Homepage highlights keep their actual result scores and assurance qualifiers, with one
+  S meter per card. Archive controls default to S4/S5 and all topics, with OR within a
+  facet and AND across facets.
+  All significance and All topics clear their facet; Reset restores the defaults.
+  The compact chooser groups share the homepage’s small controls, wrap inline, and keep
+  their group names accessible without visible headings.
+  Counts use the Results control row, right aligned above the cards; an empty state
+  describes a selection without matches.
   URL state preserves unrelated query parameters and browser history; a low-score
   bookmark widens the filters to reveal its target.
   Without JavaScript the controls stay hidden and the complete history remains visible.
@@ -1765,11 +1772,19 @@ it.
   no styling class. Popover detail and mathematical record headings retain their
   dedicated compact rules.
 
-- **Small choosers.** Atlas layout, size and scale use `site-chooser-small`, shared on
-  the homepage and Atlas.
-  The text uses the Results widget control size, 1.35 leading, and 0.15rem by 0.65rem
-  padding (`think-ticj`). All action groups use a shared 0.7rem gap and wrap together at
-  narrow widths; no section owns separate button spacing.
+- **Small choosers.** Single-select and multi-select choices share the homepage Atlas’s
+  `site-tabs site-chooser-small` component in `site-nav.css`. The text uses the Results
+  widget control size, 1.35 leading, and 0.15rem by 0.65rem padding (`think-ticj`).
+  Borders, selected fill, hover, keyboard focus and motion use the same rules on every
+  page. Single-select tabs keep `aria-selected` and arrow-key navigation; multi-select
+  groups use native buttons with `aria-pressed`. Group names remain accessible when
+  visually hidden. Momentary All and Reset actions use the same compact button appearance
+  without a selected state.
+  Chooser strips wrap at narrow widths; pages only place the groups.
+  All action groups use a shared 0.7rem gap and wrap together at narrow widths; no
+  section owns separate button spacing.
+  Filter counts use the Results `site-table-tools` row and `site-count` role, aligned to
+  the right above the items they describe, with the shared control typography.
 
 - **Visual summary.** A case has one view wherever it is shown, its visual summary
   (`render_case_pages.visual_summary`, a `section.site-case-summary`), shared by the

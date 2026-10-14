@@ -93,6 +93,17 @@ def document() -> dict:
     return data
 
 
+def test_news_title_math_uses_the_escaped_register_headline_boundary() -> None:
+    data = document()
+    title = "Initial Review of proofs for n = 17 <script>alert(1)</script>"
+    data["entries"][0]["title"] = title
+    rendered = render_changelog.render_news(data)
+    assert f"<h3>{render_changelog.tex_bounds(title)}</h3>" in rendered
+    assert "<math" in rendered
+    assert "&lt;script&gt;alert(1)&lt;/script&gt;" in rendered
+    assert "<script>" not in rendered
+
+
 def test_shared_renderer_orders_links_math_and_anchors() -> None:
     data = document()
     render_changelog.validate(data)

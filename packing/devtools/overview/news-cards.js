@@ -97,7 +97,13 @@
     }).observe(card);
   }
   const reveal = () => {
-    const card = document.getElementById(location.hash.slice(1))?.closest("[data-news-day]");
+    let id;
+    try {
+      id = decodeURIComponent(location.hash.slice(1));
+    } catch {
+      return;
+    }
+    const card = document.getElementById(id)?.closest("[data-news-day]");
     if (card) {
       cards.get(card)?.(true);
     }

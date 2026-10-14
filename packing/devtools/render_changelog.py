@@ -33,6 +33,7 @@ from mdit_py_plugins.attrs import attrs_block_plugin, attrs_plugin
 from mdit_py_plugins.dollarmath import dollarmath_plugin
 from strif import atomic_output_file
 
+from devtools.overview_data import tex_bounds
 from devtools.repo_links import path_kind, repo_url
 from devtools.site_topics import TOPICS, topic_chip
 from sqpack import release
@@ -726,11 +727,26 @@ def news_topics(topics: Sequence[str]) -> str:
 
 def news_rating(rating: Significance) -> str:
     """An archive article uses the same significance meter as a result."""
-    from devtools.overview_sections import significance_mark  # noqa: PLC0415
+    from devtools.overview_sections import rung_meanings, significance_mark  # noqa: PLC0415
 
+    meaning = f"{rung_meanings()[f'S{rating["score"]}']} {rating['rationale']}"
     return (
-        '<p class="site-news-significance">Significance '
-        f"{significance_mark(rating['score'], rating['rationale'])}</p>"
+        f'<p class="site-news-significance">{significance_mark(rating["score"], meaning)}</p>'
+    )
+
+
+def news_article_header(
+    title_html: str, day_text: str, topics: Sequence[str], rating: Significance
+) -> str:
+    """The shared News head: title, publication date, then topics and the rating."""
+    day = date.fromisoformat(day_text)
+    label = f"{day:%B} {day.day}, {day.year}"
+    return (
+        f'<header class="site-news-header"><h3>{title_html}</h3>'
+        '<p class="site-news-date publication-date">'
+        f'<time datetime="{day_text}">{label}</time></p>'
+        f'<div class="site-news-metadata">{news_topics(topics)}{news_rating(rating)}</div>'
+        "</header>"
     )
 
 
@@ -748,13 +764,20 @@ def news_filters(topics_present: set[str] | None = None) -> str:
     )
     return (
         '<div class="site-news-filters sans-text" data-news-filters hidden>'
-        '<fieldset><legend>Significance</legend><div class="site-news-filter-options">'
-        f'{scores}<button type="button" data-news-all="scores">All significance</button>'
-        "</div></fieldset><fieldset><legend>Topics</legend>"
-        f'<div class="site-news-filter-options">{topics}'
-        '<button type="button" data-news-all="topics">All topics</button></div></fieldset>'
-        '<div class="site-news-filter-status">'
-        '<button type="button" data-news-reset>Reset filters</button>'
+        '<fieldset><legend class="site-visually-hidden" id="news-significance-label">'
+        'Significance</legend><div class="site-tabs site-chooser-small" role="group" '
+        'aria-labelledby="news-significance-label">'
+        f'{scores}<button type="button" data-news-all="scores" '
+        'aria-label="All significance">All</button>'
+        '</div></fieldset><fieldset><legend class="site-visually-hidden" '
+        'id="news-topics-label">Topics</legend>'
+        '<div class="site-tabs site-chooser-small" role="group" '
+        f'aria-labelledby="news-topics-label">{topics}'
+        '<button type="button" data-news-all="topics" '
+        'aria-label="All topics">All</button></div></fieldset>'
+        '<div class="site-table-tools">'
+        '<div class="site-tabs site-chooser-small">'
+        '<button type="button" data-news-reset>Reset filters</button></div>'
         '<span class="site-count" data-news-count role="status" '
         'aria-live="polite"></span></div>'
         "<p data-news-empty hidden>No news matches these filters.</p></div>"
@@ -770,10 +793,8 @@ def news_card(anchor: str, day_text: str, body: str) -> str:
     safe_anchor = html.escape(anchor, quote=True)
     return (
         f'<section class="site-news-day" id="{safe_anchor}" '
-        f'data-news-day="{day_text}"><header class="site-news-header">'
-        '<p class="site-news-date publication-date">'
-        f'<time datetime="{day_text}">{label}</time></p>'
-        f'</header><div class="site-news-body" id="{safe_anchor}-body">{body}</div>'
+        f'data-news-day="{day_text}">'
+        f'<div class="site-news-body" id="{safe_anchor}-body">{body}</div>'
         f'<footer class="site-news-footer"><button class="site-news-expand" '
         f'type="button" hidden aria-expanded="true" aria-controls="{safe_anchor}-body" '
         f'aria-label="Collapse news for {label}">{arrow_icon("double-up")}</button>'
@@ -798,7 +819,7 @@ def render_news(document: Document, *, limit: int | None = None) -> str:
     seen_dates: set[str] = set()
     for entry in entries:
         anchor = entry_anchor(entry["id"])
-        title = html.escape(entry["title"])
+        title = tex_bounds(entry["title"])
         if limit is not None:
             title = f'<a href="news.html#{anchor}">{title}</a>'
         article = []
@@ -806,10 +827,11 @@ def render_news(document: Document, *, limit: int | None = None) -> str:
             # Retain the old daily bookmark at the first individual card for that day.
             article.append(f'<div id="changelog-date-{entry["date"]}"></div>')
             seen_dates.add(entry["date"])
+        header = news_article_header(
+            title, entry["date"], entry.get("topics", []), entry_significance(entry)
+        )
         article.append(
-            f'<article class="site-news-item" data-news-entry="{entry["id"]}">'
-            f"<h3>{title}</h3>{news_topics(entry.get('topics', []))}"
-            f"{news_rating(entry_significance(entry))}"
+            f'<article class="site-news-item" data-news-entry="{entry["id"]}">{header}'
         )
         article.extend(
             _prose(field, destination="site")

@@ -32,14 +32,22 @@ def _article(result: Result) -> str:
         if result.record["verification"] == "V0"
         else ""
     )
+    header = render_changelog.news_article_header(
+        tex_bounds(result.summary),
+        overview_sections.first_day(result.dated[1]),
+        [topic] if topic else [],
+        {
+            "score": overview_sections.significance(result),
+            "rationale": result.record["significance"]["rationale"],
+        },
+    )
     return (
         f'<article class="site-news-item" data-news-entry="{result.id}">'
-        f"<h3>{tex_bounds(result.summary)}</h3>"
-        f"{render_changelog.news_topics([topic] if topic else [])}"
-        '<p class="site-result-status">Significance '
-        f"{overview_sections.status_chips(result)}</p>"
-        f'<p class="site-result-meta">{overview_sections.date_cell(result)} · '
-        f"{overview_sections.credit_cell(result.credit)}</p>"
+        f"{header}"
+        '<p class="site-result-status">'
+        f"{overview_sections.ladder_chips(result)} "
+        f"{overview_sections.kind_and_status(result)}</p>"
+        f'<p class="site-result-meta">{overview_sections.credit_cell(result.credit)}</p>'
         f"{qualifier}<p>{claim}</p><p>{rationale}</p>"
         f'<p><a href="result/{result.id.lower()}.html">Full result '
         f"{result.id}</a></p></article>"

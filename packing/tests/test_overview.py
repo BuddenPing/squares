@@ -1298,19 +1298,22 @@ def test_the_view_tabs_are_the_section_tabs_strip() -> None:
     line, and hides it while it is `hidden`."""
     nav = render_overview.SITE_NAV_CSS.read_text(encoding="utf-8")
     for selector in (
-        'nav.site-tabs a,\n.site-tabs [role="tab"] {',
-        'nav.site-tabs a + a,\n.site-tabs [role="tab"] + [role="tab"] {',
+        'nav.site-tabs a,\n.site-tabs :is([role="tab"], button) {',
+        (
+            "nav.site-tabs a + a,\n"
+            '.site-tabs :is([role="tab"], button) + :is([role="tab"], button) {'
+        ),
         (
             "nav.site-tabs a:is(:hover, :focus-visible),\n"
-            '.site-tabs [role="tab"]:is(:hover, :focus-visible) {'
+            '.site-tabs :is([role="tab"], button):is(:hover, :focus-visible) {'
         ),
         (
             'nav.site-tabs a[aria-current="page"],\n'
-            '.site-tabs [role="tab"][aria-selected="true"] {'
+            '.site-tabs :is([role="tab"][aria-selected="true"], button[aria-pressed="true"]) {'
         ),
     ):
         assert selector in nav, selector
-    button = _rule(nav, '.site-tabs [role="tab"]')
+    button = _rule(nav, '.site-tabs :is([role="tab"], button)')
     for declaration in (
         "background: none;",
         "border: 0;",

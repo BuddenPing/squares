@@ -42,6 +42,10 @@
       const title = day.querySelector(".site-news-item h3");
       const date = day.querySelector("time");
       const topics = day.querySelector(".site-news-topics");
+      const metadata = day.querySelector(".site-news-metadata");
+      const meter = metadata?.querySelector(".site-significance");
+      const meterBox = meter?.getBoundingClientRect();
+      const chipBox = topics?.querySelector(".site-chip")?.getBoundingClientRect();
       const titleBox = title?.getBoundingClientRect();
       const topicBox = topics?.getBoundingClientRect();
       const button = day.querySelector(".site-news-expand");
@@ -67,10 +71,21 @@
         title_transform: title ? getComputedStyle(title).textTransform : null,
         title_style: title ? typography(title) : null,
         topic_styles: [...(topics?.querySelectorAll(".site-chip") ?? [])].map(typography),
-        date_before_title:
-          !!date && !!titleBox && date.getBoundingClientRect().bottom <= titleBox.top,
-        title_before_topics: !topicBox || (!!titleBox && titleBox.bottom <= topicBox.top),
-        topics_after_title: !topics || topics.previousElementSibling === title,
+        title_before_date:
+          !!date && !!titleBox && titleBox.bottom <= date.getBoundingClientRect().top,
+        date_before_topics:
+          !topicBox || (!!date && date.getBoundingClientRect().bottom <= topicBox.top),
+        metadata_after_date: metadata?.previousElementSibling === date?.parentElement,
+        meter_count: day.querySelectorAll(".site-significance").length,
+        meter_label: meter?.getAttribute("aria-label"),
+        meter_tooltip: meter?.getAttribute("data-site-tooltip") || meter?.getAttribute("title"),
+        meter_right_gap:
+          metadata && meterBox ? metadata.getBoundingClientRect().right - meterBox.right : null,
+        meter_with_topics:
+          !chipBox ||
+          (!!meterBox && chipBox.top < meterBox.bottom && meterBox.top < chipBox.bottom),
+        visible_rating_label: metadata?.querySelector(".site-news-significance")?.textContent,
+
         date_size: date ? Number.parseFloat(getComputedStyle(date).fontSize) : 0,
         title_size: title ? Number.parseFloat(getComputedStyle(title).fontSize) : 0,
         border: Number.parseFloat(style.borderTopWidth),

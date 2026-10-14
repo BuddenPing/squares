@@ -924,9 +924,15 @@ def test_news_cards_expand_only_on_press_and_legacy_bookmarks_forward(
                 assert day["date_transform"] == "none"
                 assert day["title_style"] == surface["reference_h3"]
                 assert day["title_style"]["color"] == surface["text_color"]
-                assert day["date_before_title"]
-                assert day["title_before_topics"]
-                assert day["topics_after_title"]
+                assert day["title_before_date"]
+                assert day["date_before_topics"]
+                assert day["metadata_after_date"]
+                assert day["meter_count"] == 1
+                assert day["meter_label"].startswith("Significance S")
+                assert day["meter_tooltip"]
+                assert abs(day["meter_right_gap"]) <= 0.5
+                assert day["meter_with_topics"]
+                assert "Significance" not in day["visible_rating_label"]
                 for topic in day["topic_styles"]:
                     assert topic["transform"] == "none"
                     assert topic["caps"] == "normal"
@@ -1058,7 +1064,7 @@ def test_news_cards_expand_only_on_press_and_legacy_bookmarks_forward(
 
 @pytest.mark.parametrize("width", WIDTHS)
 def test_news_facets_history_bookmarks_and_shared_meters(
-    browser: Any, payloads: dict[str, bytes], width: int
+    browser: Any, payloads: dict[str, bytes], width: int, request: pytest.FixtureRequest
 ) -> None:
     document = render_changelog.load()
     page = browser.new_page(
@@ -1089,7 +1095,92 @@ def test_news_facets_history_bookmarks_and_shared_meters(
         assert seen["overflow"] == 0
         return seen
 
+    def shared_chooser_contract() -> None:
+        for scheme in ("light", "dark"):
+            page.emulate_media(color_scheme=scheme)
+            appearances = {}
+            for name, surface, group, chosen, other in (
+                (
+                    "home",
+                    "index.html",
+                    ".site-atlas-views",
+                    '[aria-selected="true"]',
+                    '[aria-selected="false"]',
+                ),
+                (
+                    "scores",
+                    "news.html",
+                    '[aria-labelledby="news-significance-label"]',
+                    '[data-news-score="4"]',
+                    '[data-news-score="1"]',
+                ),
+                (
+                    "topics",
+                    "news.html",
+                    '[aria-labelledby="news-topics-label"]',
+                    '[data-news-topic][aria-pressed="true"]',
+                    '[data-news-topic][aria-pressed="false"]',
+                ),
+            ):
+                page.goto(f"{ORIGIN}{surface}", wait_until="load")
+                if name == "topics":
+                    page.locator(group).locator("[data-news-topic]").first.click()
+                samples = {}
+                for selection, choice in (("selected", chosen), ("unselected", other)):
+                    control = page.locator(group).locator(choice).first
+                    for interaction in ("normal", "hover", "focus"):
+                        page.locator("h1").first.click()
+                        page.mouse.move(0, 0)
+                        if interaction == "hover":
+                            control.hover()
+                        elif interaction == "focus":
+                            page.keyboard.press("Tab")
+                            control.focus()
+                        sample = page.evaluate(
+                            NEWS_FILTERS, {"chooser": group, "choice": choice}
+                        )["chooser"]
+                        assert sample is not None
+                        if interaction == "focus":
+                            assert sample["focus_visible"]
+                        samples[selection, interaction] = {
+                            key: sample[key]
+                            for key in ("appearance", "border", "gap", "height")
+                        }
+                appearances[name] = samples
+            assert appearances["scores"] == appearances["home"], scheme
+            assert appearances["topics"] == appearances["home"], scheme
+            request.node.user_properties.append(
+                (f"chooser-{scheme}", str(appearances["home"]["selected", "normal"]))
+            )
+            seen = state()
+            assert seen["groups"] == [
+                {"name": "Significance", "hidden_legend": True, "tabs": 0},
+                {"name": "Topics", "hidden_legend": True, "tabs": 0},
+            ]
+            assert abs(seen["count_right_gap"]) <= 0.5
+            assert abs(seen["count_card_right_gap"]) <= 0.5
+            assert seen["count_above_cards"]
+            news_count = seen["count_style"]
+            broken = page.evaluate(
+                NEWS_FILTERS,
+                {
+                    "chooser": '[aria-labelledby="news-significance-label"]',
+                    "choice": '[data-news-score="4"]',
+                    "overrideChooser": True,
+                },
+            )["chooser"]
+            assert (
+                broken["appearance"]["font-size"]
+                != appearances["home"]["selected", "normal"]["appearance"]["font-size"]
+            ), "the contract must reject a page-specific chooser override"
+            page.goto(f"{ORIGIN}results.html", wait_until="load")
+            results_count = state()["count_style"]
+            for key in ("font-family", "font-size", "font-weight", "line-height", "color"):
+                assert news_count[key] == results_count[key], (scheme, key)
+        page.emulate_media(color_scheme="light")
+
     try:
+        shared_chooser_contract()
         page.goto(f"{ORIGIN}news.html?reader=kept", wait_until="load")
         seen = check({4, 5})
         assert seen["scores"] == ["4", "5"]
@@ -1126,7 +1217,11 @@ def test_news_facets_history_bookmarks_and_shared_meters(
             key=lambda entry: len(entry["summary"]) + len(entry.get("details", "")),
         )
         anchor = render_changelog.entry_anchor(low["id"])
-        page.goto(f"{ORIGIN}news.html?reader=kept#{anchor}", wait_until="load")
+        # Begin with a hidden card, so a prior plain bookmark cannot mask a
+        # failure to expand the equivalent percent-encoded bookmark.
+        encoded = f"%{ord(anchor[0]):02X}{anchor[1:]}"
+        page.goto(f"{ORIGIN}news.html?reader=kept#{encoded}", wait_until="load")
+        assert urlsplit(page.url).fragment == encoded
         seen = check({4, 5, low["significance"]["score"]})
         target = next(card for card in seen["cards"] if card["id"] == anchor)
         assert target["expanded"] == "true"
@@ -1143,6 +1238,11 @@ def test_news_facets_history_bookmarks_and_shared_meters(
             next(card for card in state()["cards"] if card["id"] == anchor)["expanded"]
             == "true"
         )
+        errors = []
+        page.on("pageerror", lambda error: errors.append(str(error)))
+        page.goto(f"{ORIGIN}news.html?reader=kept#%E0%A4%A", wait_until="load")
+        check({4, 5})
+        assert errors == [], "a malformed bookmark must not break either enhancement"
         specimens = "".join(
             overview_sections.significance_mark(level, "Importance only.")
             for level in range(overview_sections.SIGNIFICANCE_TOP + 1)

@@ -109,8 +109,9 @@ def test_news_keeps_the_registered_claims_credit_rungs_and_canonical_result_link
         article = match.group(1)
         assert f"<h3>{overview_data.tex_bounds(result.summary)}</h3>" in article
         assert overview_sections.credit_cell(result.credit) in article
-        assert overview_sections.date_cell(result) in article
-        assert overview_sections.status_chips(result) in article
+        assert f'<time datetime="{overview_sections.first_day(result.dated[1])}">' in article
+        assert overview_sections.ladder_chips(result) in article
+        assert overview_sections.kind_and_status(result) in article
         qualifier = "Reported result: this project has not verified the complete claim."
         if result.record["verification"] == "V0":
             assert article.index(qualifier) < article.index(
@@ -163,7 +164,10 @@ def test_every_accepted_result_kind_uses_the_same_topic_in_results_and_news(
     )
     assert label[0].isupper()
     assert label[1:] == label[1:].lower()
-    assert overview_sections.status_chips(candidate) in rendered
+    assert overview_sections.ladder_chips(candidate) in rendered
+    assert overview_sections.kind_and_status(candidate) in rendered
+    assert rendered.count('class="site-significance"') == 1
+    assert 'data-level="5"' in rendered
     assert overview_sections.credit_cell(candidate.credit) in rendered
     assert overview_data.prose_html(candidate.record["claim"], between="</p><p>") in rendered
 
@@ -179,7 +183,8 @@ def test_a_real_rigidity_result_can_enter_the_s5_news_without_changing_its_claim
     rendered = news_highlights.render(example)
     article = rendered.split('data-news-entry="T-012">', 1)[1].split("</article>", 1)[0]
     assert 'data-news-topic="rigidity">Rigidity</span>' in article
-    assert overview_sections.status_chips(candidate) in article
+    assert overview_sections.ladder_chips(candidate) in article
+    assert overview_sections.kind_and_status(candidate) in article
     assert overview_sections.credit_cell(original.credit) in article
     assert overview_data.prose_html(original.record["claim"], between="</p><p>") in article
     with pytest.raises(ValueError, match="unknown News topic"):
