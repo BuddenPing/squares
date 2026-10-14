@@ -735,9 +735,9 @@ The tool owns the comment’s form: `@author,`, a thank-you and the rule, then a
 each count’s side at 12 places, its verdict and the best side now, then a pointer to the
 records pull request and the Claude Code footer.
 A comment over many counts can lead with a summary and fold the table into `<details>`.
-It refuses a draft that names a `T-NNN` or links into a branch, and a result issue that
-has neither a comment nor a stated skip.
-`comments.yaml` holds what one pass says that another would not:
+It refuses a draft that names a `T-NNN` or holds any `tree/` or `blob/` link, into
+`main` as well as into a branch, and a result issue that has neither a comment nor a
+stated skip. `comments.yaml` holds what one pass says that another would not:
 
 - the issues that get a comment and their authors, and each issue skipped because
   another comment already covers it, with the reason;

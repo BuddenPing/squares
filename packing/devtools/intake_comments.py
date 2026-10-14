@@ -15,9 +15,9 @@ the count now), states what the YAML adds in its own paragraphs, and ends with a
 to the records pull request and the Claude Code footer. A comment over many counts can
 lead with a summary (``layout: by-count`` or ``by-finder``) and fold the table into a
 ``<details>`` block. The drafts are refused, and nothing is written, when one names a
-``T-NNN`` (an id is quoted to no author until it is on ``main``), links into a branch's
-``tree/`` or ``blob/``, or when a result issue of the ledger has neither a comment nor a
-stated skip.
+``T-NNN`` (an id is quoted to no author until it is on ``main``) or holds any ``tree/``
+or ``blob/`` link, into ``main`` as well as into a branch, or when a result issue of the
+ledger has neither a comment nor a stated skip.
 
 From ``packing/``, with the project interpreter::
 
@@ -82,7 +82,8 @@ LAYOUTS = ("table", "by-count", "by-finder")
 BY_FINDER_HEADINGS = ("recorded", "equal", "above", "undecided")
 COMMENTED_KINDS = frozenset({"issue", "comment", "pull-request"})
 
-#: What a draft may not contain: an id that is not yet on main, or a link into a branch.
+#: What a draft may not contain: an id that is not yet on main, or any tree/ or blob/
+#: link, main's included.
 REFUSED = (
     (re.compile(r"\bT-\d+"), "a T-NNN id"),
     (re.compile(r"tree/|blob/"), "a tree/ or blob/ link"),

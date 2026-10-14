@@ -265,8 +265,13 @@ def test_publications_comments_rows_and_the_grid_are_described(tmp_path: Path) -
     assert "below the row on main |" in text
 
 
-def test_a_draft_that_names_an_id_or_links_a_branch_is_refused(tmp_path: Path) -> None:
-    for note in ("registered as T-123", "see https://github.com/o/r/tree/abc"):
+def test_a_draft_that_names_an_id_or_a_tree_or_blob_link_is_refused(tmp_path: Path) -> None:
+    # A tree/ or blob/ link is refused into main as well as into a branch.
+    for note in (
+        "registered as T-123",
+        "see https://github.com/o/r/tree/abc",
+        "see https://github.com/jlevy/squares/blob/main/README.md",
+    ):
         with pytest.raises(comments.CommentsError, match="refused"):
             _ = basic(tmp_path, comments=[{"issue": 1, "notes": [note]}, {"issue": 2}])
 
