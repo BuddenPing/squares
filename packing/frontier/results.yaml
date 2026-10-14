@@ -3762,8 +3762,9 @@ results:
     significance:
       score: 3
       rationale: >-
-        The case's verified lower bound, +0.00043 over T-041 from one added point orbit on
-        an unchanged charge and a finer catalogue. A substantive case result at S3 by the
+        The case's verified lower bound from its registration until T-093 (5 October),
+        +0.00043 over T-041 from one added point orbit on an unchanged charge and a finer
+        catalogue. A substantive case result at S3 by the
         T-015 and T-032 precedent; the movement is small, and this repository's replay is
         the first local validation of it on record. Confirmed on 11 October: one added orbit
         is new content, as T-039's rule is, and sets it above T-042 and T-093, which refine
@@ -4058,9 +4059,10 @@ results:
     significance:
       score: 3
       rationale: >-
-        Scored as a claim: if the replays pass, these are the strongest lower bounds on
-        record at 48 counts, above Green's DS7 reports and every certificate the register
-        holds at those sizes. The score is of what the reports would establish; V0/C0 says
+        Scored as a claim: when reported, and if the replays pass, these were the strongest
+        lower bounds on record at 48 counts, above Green's DS7 reports and every certificate
+        the register then held at those sizes; later certificates, from T-068 on, have
+        passed them at all 48. The score is of what the reports would establish; V0/C0 says
         how far they stand, and the score gates nothing. Confirmed on 11 October:
         forty-eight counts by one certificate kind are further sizes from one generator, S3
         as T-045 and T-068 are, and not a bound family in the S4 sense of T-064 and T-081.
