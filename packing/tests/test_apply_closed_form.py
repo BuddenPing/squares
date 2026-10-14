@@ -119,3 +119,31 @@ def test_a_proved_count_is_left_to_its_generator() -> None:
     packing = _case(63)
     assert packing["reported_lower_bound"]["source_key"] != tool.SOURCE_KEY
     assert tool.REPORT not in packing["evidence"]
+
+
+def test_the_generator_redrafts_a_raised_record_as_held_and_a_fresh_one_without_it() -> None:
+    """`generate_frontier_case` replays the closed form where a record carries it, so a
+    check or a refresh keeps the raised lane (review C2 of #602); a fresh draft, which
+    knows nothing of it, leaves the lane to this tool."""
+    from devtools import generate_frontier_case as generator  # noqa: PLC0415
+
+    n = 106
+    held = (tool.FRONTIER / f"n-{n:03d}.md").read_text(encoding="utf-8")
+    assert tool.carried(held)
+    availability = generator.load_availability()
+    catalogue = generator.load_drafting_catalogue([n], availability)
+    on = "2026-09-30"
+    redrafted = generator.redraft(
+        n,
+        held,
+        availability=availability,
+        catalogue=catalogue,
+        review_date=on,
+        retrieved_date=on,
+    )
+    assert tool.carried(redrafted)
+    assert redrafted.count(tool.OPENING) == 1
+    fresh = generator.generate_record(
+        n, availability=availability, catalogue=catalogue, review_date=on, retrieved_date=on
+    )
+    assert not tool.carried(generator.adopt_upper_bound_packet(n, fresh))

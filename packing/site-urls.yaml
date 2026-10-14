@@ -13952,6 +13952,7 @@ urls:
     builds_on: null
     evidence:
     - E-pingyou-574-certificate-report
+    - E-pingyou-574-algebraic-report
     artifacts:
     - packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md
     - packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/claims.json

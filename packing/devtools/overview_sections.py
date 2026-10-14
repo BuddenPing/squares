@@ -1863,7 +1863,7 @@ OTHER_PROJECTS: tuple[tuple[str, str, str], ...] = (
         "PingYou Ltd",
         (
             "Pull request #574's tighter certificates of others' packings, recorded at 68"
-            " counts and replayed on both exact routes at 39 of them here (T-174)."
+            " counts and replayed at every one of them here (T-174)."
         ),
     ),
     (

@@ -599,7 +599,8 @@ def side_agrees(printed: object, side: Any) -> bool:
         return False
     if _RATIONAL_SIDE.fullmatch(printed):
         return not isinstance(side, FieldElement) and Fraction(printed) == side
-    if not _DECIMAL_SIDE.fullmatch(printed):
+    # A decimal side binds only at the route's own precision (review C9 of #602).
+    if not _DECIMAL_SIDE.fullmatch(printed) or len(printed.partition(".")[2]) < DISPLAY_PLACES:
         return False
     return against(side, reports.printed_span(printed, "unstated")) not in {"below", "above"}
 

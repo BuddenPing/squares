@@ -5755,16 +5755,17 @@ results:
   - id: T-064
     kind: optimality
     registered: '2026-10-01'
-    headline: "`s(k² − 3) = k` for every integer `k` from 6 up; `k = 6…18` are the cases held here"
+    headline: >-
+      `s(k² − 3) = k` for every integer `k` from 6 up; `k = 6…18` are the cases held here
     claim: >-
       Evan Daniel's theorem s(k^2 - 3) = k for every integer k >= 6, dated 29 September 2026
       by the source and public in its repository on 30 September: the lower half by one
       family of periodic measures, the upper half by the k x k grid.
 
-      This entry's scope is the projection of that theorem onto the cases this record
-      holds, n <= 324, which is k = 6 to 18: s(33) = 6, s(46) = 7, s(61) = 8, s(78) = 9,
-      s(97) = 10, s(118) = 11, s(141) = 12, s(166) = 13, s(193) = 14, s(222) = 15,
-      s(253) = 16, s(286) = 17 and s(321) = 18. The reported theorem does not end at k = 18.
+      This entry's scope is the projection of that theorem onto the cases this record holds,
+      n <= 324, which is k = 6 to 18: s(33) = 6, s(46) = 7, s(61) = 8, s(78) = 9, s(97) =
+      10, s(118) = 11, s(141) = 12, s(166) = 13, s(193) = 14, s(222) = 15, s(253) = 16,
+      s(286) = 17 and s(321) = 18. The reported theorem does not end at k = 18.
 
       For each k the measure on [0,k]^2 is a corner module in each corner, a profile of
       period one along each wall and Lebesgue measure on the middle square, of total mass
@@ -5788,8 +5789,8 @@ results:
       cover and its format.
 
       Here both parts of the lower half were rebuilt. Daniel's checker was replayed in full
-      on the retained cover on 2 and 3 October 2026, in two shards: all 9,800 root boxes
-      and 32,079 leaves, none uncertified, each root's leaves equal to the published run's,
+      on the retained cover on 2 and 3 October 2026, in two shards: all 9,800 root boxes and
+      32,079 leaves, none uncertified, each root's leaves equal to the published run's,
       which discharges Valid7 for this cover. The Lean reduction was built from retained
       bytes with the pinned toolchain, and bentz_of_valid7 depends only on the standard
       axioms. Together they prove the theorem here, for every k >= 6.
@@ -5799,23 +5800,23 @@ results:
       replayed here in full on 2 and 3 October with that test's accepting case made a
       refusal, in fourteen shards: all 156,800 root boxes certified in 9,808,968 leaves,
       none uncertified, and each root the source ran under its published code with the
-      published leaves. So Valid7 is decided here by two separately written exact
-      checkers, Daniel's reproduced with the producer's code and wand125's independently
+      published leaves. So Valid7 is decided here by two separately written exact checkers,
+      Daniel's reproduced with the producer's code and wand125's independently
       re-implemented.
 
-      So s(97) = 10, s(118) = 11, s(141) = 12, s(166) = 13, s(193) = 14, s(222) = 15,
-      s(253) = 16, s(286) = 17 and s(321) = 18 are proved here, nine cases closed. s(33) =
-      6 and s(46) = 7 were proved already on Bentz's proofs, s(61) = 8 on Daniel's s(60)
-      cover (T-063), and s(78) = 9 on wand125's s(77) cover (T-067); this family proves
-      each again by another route.
+      So s(97) = 10, s(118) = 11, s(141) = 12, s(166) = 13, s(193) = 14, s(222) = 15, s(253)
+      = 16, s(286) = 17 and s(321) = 18 are proved here, nine cases closed. s(33) = 6 and
+      s(46) = 7 were proved already on Bentz's proofs, s(61) = 8 on Daniel's s(60) cover
+      (T-063), and s(78) = 9 on wand125's s(77) cover (T-067); this family proves each again
+      by another route.
 
       Evan Daniel,
       [evand/square-packing](https://github.com/evand/square-packing/tree/08e8a5faa54c0a7b0bb1cb0134c77d3565ce40c5/s12/certificates/k2m3),
       building on Burns's and Massaccesi's method. The source's CREDITS.md says the work was
       produced by Claude (Anthropic) in a single session under human direction.
 
-      For k >= 8 wand125's closed form (T-180) gives the same value by another route, a
-      measure of line segments whose certified saving at the full side exceeds 3/4; it is
+      For k >= 8 Hiroaki Hosono's closed form (T-180) gives the same value by another route,
+      a measure of line segments whose certified saving at the full side exceeds 3/4; it is
       reported and not yet replayed here, and the source's second checker, cfcheck, has
       checked interval 34, on which these counts rest.
     scope: {n_values: [33, 46, 61, 78, 97, 118, 141, 166, 193, 222, 253, 286, 321]}
@@ -5831,7 +5832,9 @@ results:
         to this project, so not S5. Confirmed on 11 October; the draft scored the same claim
         as a report, and the score gates nothing.
       scored: '2026-10-11'
-      by: docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms the W1 and W2 source intake's draft)
+      by: >-
+        docs/project/reviews/review-2026-10-11-significance-scores.md (repository; confirms
+        the W1 and W2 source intake's draft)
     novelty: previously-published
     attribution:
       source_keys: ['[evand square-packing 2026-10-01]']
@@ -5842,16 +5845,16 @@ results:
       finite premise Valid7 for the k = 7 cover, decided by the full replay of Daniel's
       exact checker (E-k2m3-evand-valid7-qx2-replay, exact-algebraic, same-implementation),
       and the reduction from Valid7 to every k >= 6, kernel-checked here
-      (E-k2m3-evand-bentz-lean-build, proof-assistant-checked, with its axiom receipt).
-      Each is V3 and C3, so the result is.
+      (E-k2m3-evand-bentz-lean-build, proof-assistant-checked, with its axiom receipt). Each
+      is V3 and C3, so the result is.
 
       Valid7 has a second replayed checker, wand125's separately written one, replayed here
       in full with D-1 guarded (E-k2m3-wand125-valid7-independent, exact-algebraic,
-      independent-implementation). It is the same method as Daniel's, so it adds no
-      distinct method and moves no rung. No human formalization review is retained, so the
-      Lean build does not reach rung 5. The scope lists the cases this record holds, since a
-      scope is a set of cases; the theorem's own domain is every k >= 6, and a scope that
-      can say so is think-kqi1.
+      independent-implementation). It is the same method as Daniel's, so it adds no distinct
+      method and moves no rung. No human formalization review is retained, so the Lean build
+      does not reach rung 5. The scope lists the cases this record holds, since a scope is a
+      set of cases; the theorem's own domain is every k >= 6, and a scope that can say so is
+      think-kqi1.
     evidence:
       - E-k2m3-evand-family-report
       - E-k2m3-evand-valid7-qx2-replay
@@ -5861,42 +5864,60 @@ results:
     reviews:
       - path: docs/project/reviews/review-2026-10-02-valid7-independent-checker.md
         kind: adversarial
-        reviewer: Claude (AI review; model unstated), method-review lane Y of the 2 October W2 phase, separately prompted
+        reviewer: >-
+          Claude (AI review; model unstated), method-review lane Y of the 2 October W2
+          phase, separately prompted
         reviewer_kind: ai
         relation: project
         date: '2026-10-02'
         scope: >-
-          The method of wand125's independent Valid7 checker (DESIGN.md, every module of src/), its independence, the statement and assumptions of the Lean reduction, and the replay cost of both checkers.
+          The method of wand125's independent Valid7 checker (DESIGN.md, every module of
+          src/), its independence, the statement and assumptions of the Lean reduction, and
+          the replay cost of both checkers.
         verdict: accepted
         covers: [T-064]
     artifacts:
       - packing/resources/web/evand-square-packing-2026-10-01/README.md
-      - packing/resources/web/evand-square-packing-2026-10-01/source/s12/certificates/k2m3/README.md
-      - packing/resources/web/evand-square-packing-2026-10-01/source/s12/certificates/k2m3/L4_k02_box7.txt
-      - packing/resources/web/evand-square-packing-2026-10-01/source/s12/lean/Sqpack/Bentz.lean
+      - >-
+        packing/resources/web/evand-square-packing-2026-10-01/source/s12/certificates/k2m3/README.md
+      - >-
+        packing/resources/web/evand-square-packing-2026-10-01/source/s12/certificates/k2m3/L4_k02_box7.txt
+      - >-
+        packing/resources/web/evand-square-packing-2026-10-01/source/s12/lean/Sqpack/Bentz.lean
       - docs/project/reviews/review-2026-10-01-evand-source-coverage.md
       - docs/project/reviews/review-2026-10-01-evand-mathematical-transfer.md
       - packing/resources/web/wand125-valid7-independent-check-2026-10-02/README.md
-      - packing/resources/web/wand125-valid7-independent-check-2026-10-02/receipts/valid7_verify.log
-      - packing/resources/web/wand125-valid7-independent-check-2026-10-02/receipts/valid7_records_audit.json
+      - >-
+        packing/resources/web/wand125-valid7-independent-check-2026-10-02/receipts/valid7_verify.log
+      - >-
+        packing/resources/web/wand125-valid7-independent-check-2026-10-02/receipts/valid7_records_audit.json
       - packing/devtools/audit_valid7_independent.py
-      - packing/resources/web/wand125-valid7-independent-check-2026-10-02/receipts/valid7_replay_plan.json
-      - packing/resources/web/wand125-valid7-independent-check-2026-10-02/receipts/replay/wand125_replay_compare.json
+      - >-
+        packing/resources/web/wand125-valid7-independent-check-2026-10-02/receipts/valid7_replay_plan.json
+      - >-
+        packing/resources/web/wand125-valid7-independent-check-2026-10-02/receipts/replay/wand125_replay_compare.json
       - packing/resources/web/wand125-valid7-independent-check-2026-10-03/README.md
-      - packing/resources/web/wand125-valid7-independent-check-2026-10-03/receipts/valid7_verify.log
-      - packing/resources/web/wand125-valid7-independent-check-2026-10-03/receipts/valid7_fix_probe.json
+      - >-
+        packing/resources/web/wand125-valid7-independent-check-2026-10-03/receipts/valid7_verify.log
+      - >-
+        packing/resources/web/wand125-valid7-independent-check-2026-10-03/receipts/valid7_fix_probe.json
       - packing/devtools/probe_valid7_fixes.py
-      - packing/resources/web/evand-square-packing-2026-10-01/receipts/valid7/qx2_replay_compare.json
-      - packing/resources/web/evand-square-packing-2026-10-01/receipts/valid7/qx2_replay_plan.json
-      - packing/resources/web/evand-square-packing-2026-10-01/receipts/valid7/k2m3_verify_fast.log
+      - >-
+        packing/resources/web/evand-square-packing-2026-10-01/receipts/valid7/qx2_replay_compare.json
+      - >-
+        packing/resources/web/evand-square-packing-2026-10-01/receipts/valid7/qx2_replay_plan.json
+      - >-
+        packing/resources/web/evand-square-packing-2026-10-01/receipts/valid7/k2m3_verify_fast.log
       - packing/resources/web/evand-square-packing-2026-10-01/receipts/lean/build_bentz.log
       - packing/resources/web/evand-square-packing-2026-10-01/receipts/lean/axioms_bentz.log
       - packing/devtools/plan_valid7_replay.py
       - packing/devtools/stage_evand_bentz_lean.py
       - docs/project/reviews/review-2026-10-02-valid7-independent-checker.md
       - packing/resources/web/evand-square-packing-2026-10-04/README.md
-      - packing/resources/web/evand-square-packing-2026-10-04/square-packing/s12/notes/lean-leb-mass.md
-      - packing/resources/web/evand-square-packing-2026-10-04/square-packing/s12/lean/Sqpack/LebMass7.lean
+      - >-
+        packing/resources/web/evand-square-packing-2026-10-04/square-packing/s12/notes/lean-leb-mass.md
+      - >-
+        packing/resources/web/evand-square-packing-2026-10-04/square-packing/s12/lean/Sqpack/LebMass7.lean
     controls:
       - packing/tests/test_plan_valid7_replay.py
       - packing/tests/test_stage_evand_bentz_lean.py
@@ -5906,8 +5927,8 @@ results:
       human oversight record; the one retained review read the second checker's method and
       the reduction's statement. Valid7's two replayed checkers are both exact-algebraic; a
       checker of another kind, interval-certified or a Lean proof of Valid7, would add a
-      method beside the rung. Rung 5 needs human formalization reviews of the Lean
-      statement and a Lean proof of Valid7 itself.
+      method beside the rung. Rung 5 needs human formalization reviews of the Lean statement
+      and a Lean proof of Valid7 itself.
 
       The source has begun that proof: by 4 October its Lean reduces Valid7 to the tilted
       part ValidTilt7 (bentz_of_validTilt7, with the D4 reduction and the axis face proved)
@@ -5922,22 +5943,20 @@ results:
       reader of its newest lemmas.
     notes: >-
       V0/C1 until 3 October 2026, when the full qx2_zm.py replay (two shards, think-4k80)
-      and lane LL's Lean build were recorded; the 1 October mathematical review and lane
-      Y's review of 2 October are the reads. The review's D-1 is recorded on wand125's
-      entry, which was reported evidence until its replay with D-1 guarded (fourteen
-      shards, think-e3tq) was recorded on 3 October; that moved no rung.
+      and lane LL's Lean build were recorded; the 1 October mathematical review and lane Y's
+      review of 2 October are the reads. The review's D-1 is recorded on wand125's entry,
+      which was reported evidence until its replay with D-1 guarded (fourteen shards,
+      think-e3tq) was recorded on 3 October; that moved no rung.
 
-      The source's six adversarial reviews by AI agents are its own and are not retained
-      as review records here; their reports, private until the source published them on 3
-      October, are kept in the evand packet of 4 October as the source's files
-      (think-83zc). The source's Lean toward ValidTilt7 (LebMass, LebMass7, ValidSplit7)
-      was retained on 5 October 2026 in the evand packet of 4 October (think-plrl); it
-      moves no rung.
+      The source's six adversarial reviews by AI agents are its own and are not retained as
+      review records here; their reports, private until the source published them on 3
+      October, are kept in the evand packet of 4 October as the source's files (think-83zc).
+      The source's Lean toward ValidTilt7 (LebMass, LebMass7, ValidSplit7) was retained on 5
+      October 2026 in the evand packet of 4 October (think-plrl); it moves no rung.
 
-      wand125 fixed the review's D-1 to D-3 upstream on 3 October; that revision's
-      verify.sh ran here on 5 October on the unchanged records, an evidence update on
+      wand125 fixed the review's D-1 to D-3 upstream on 3 October; that revision's verify.sh
+      ran here on 5 October on the unchanged records, an evidence update on
       E-k2m3-wand125-valid7-independent that moves no rung (think-uu60).
-
   - id: T-065
     kind: upper-bound
     registered: '2026-10-01'
@@ -8359,7 +8378,8 @@ results:
   - id: T-084
     kind: optimality
     registered: '2026-10-02'
-    headline: "`s(k² − 1) = k` for every integer `k ≥ 3`; `k = 3…18` are the cases held here"
+    headline: >-
+      `s(k² − 1) = k` for every integer `k ≥ 3`; `k = 3…18` are the cases held here
     claim: >-
       s(k^2 - 1) = k for every integer k >= 3: Karakuş 2026, Corollary 1.2. The lower half
       is his rectangle bound, Theorem 1.1, at a = b = k, through Corollary 6.1, and is the
@@ -8367,30 +8387,31 @@ results:
       square removed. k = 2, s(3) = 2, is classical and is not this entry's.
 
       This entry's scope is the cases this record holds, k = 3 to 18: s(8) = 3, s(15) = 4,
-      s(24) = 5, s(35) = 6, s(48) = 7, s(63) = 8, s(80) = 9, s(99) = 10, s(120) = 11,
-      s(143) = 12, s(168) = 13, s(195) = 14, s(224) = 15, s(255) = 16, s(288) = 17 and
-      s(323) = 18. Nagamochi 2005 stated the family first (T-007); Nagamochi's Lemma 1, on
-      which that proof rests, is false (T-085), and Karakuş's proof uses neither that lemma
-      nor the paper's technical lemmas.
+      s(24) = 5, s(35) = 6, s(48) = 7, s(63) = 8, s(80) = 9, s(99) = 10, s(120) = 11, s(143)
+      = 12, s(168) = 13, s(195) = 14, s(224) = 15, s(255) = 16, s(288) = 17 and s(323) = 18.
+      Nagamochi 2005 stated the family first (T-007); Nagamochi's Lemma 1, on which that
+      proof rests, is false (T-085), and Karakuş's proof uses neither that lemma nor the
+      paper's technical lemmas.
 
       The proof was read in full and re-derived here. Its Proposition 5.1 is machine-checked
       here, independently re-implemented (devtools.check_karakus_strip_measure), by its own
       decomposition rather than the paper's Lemma 5.2. Hakan Karakuş,
       [arXiv:2609.37410](https://arxiv.org/abs/2609.37410), 29 September 2026.
 
-      For k >= 8 wand125's closed form (T-180) gives the same value by another route, a
-      measure of line segments whose certified saving at the full side exceeds 3/4; it is
+      For k >= 8 Hiroaki Hosono's closed form (T-180) gives the same value by another route,
+      a measure of line segments whose certified saving at the full side exceeds 3/4; it is
       reported and not yet replayed here, and the source's second checker, cfcheck, has
       checked interval 34, on which these counts rest.
-    scope: {n_values: [8, 15, 24, 35, 48, 63, 80, 99, 120, 143, 168, 195, 224, 255, 288, 323]}
+    scope: {n_values: [8, 15, 24, 35, 48, 63, 80, 99, 120, 143, 168, 195, 224, 255, 288,
+                        323]}
     verification: V3
     confirmation: C3
     significance:
       score: 3
       rationale: >-
-        An infinite family of exact values, proved again after the published proof was
-        found incomplete; every value was already held as proved. S3 by the anchor "a
-        substantive case result or machine audit".
+        An infinite family of exact values, proved again after the published proof was found
+        incomplete; every value was already held as proved. S3 by the anchor "a substantive
+        case result or machine audit".
       scored: '2026-10-02'
       by: session-168 review (repository)
     novelty: previously-published
@@ -8398,15 +8419,15 @@ results:
       source_keys: ['[Karakuş 2026]']
       published: '2026-09-29'
     composition: >-
-      Compound, an equality. The upper half is the grid, E-basic-grid-upper, replayed exactly
-      here. The lower half is Corollary 6.1 at a = b = k >= 3, where Delta(k) = 1, and its
-      load-bearing step, Proposition 5.1, is decided by E-karakus-strip-measure-interval;
-      E-karakus-strip-lower is the read of the whole proof. Read and not machine-checked are
-      the chord profile (5.3), the reduction to it, the case split with its reflection and
-      central symmetry, the soundness of the coded rules (the review of 2026-10-06),
-      Theorem 1.1's scale-and-sum and Corollary 6.1's step to s(k^2 - 1) >= k, each of which
-      estimates nothing over the pose space. So the lower half is at the machine check's
-      rung, and the equality takes it.
+      Compound, an equality. The upper half is the grid, E-basic-grid-upper, replayed
+      exactly here. The lower half is Corollary 6.1 at a = b = k >= 3, where Delta(k) = 1,
+      and its load-bearing step, Proposition 5.1, is decided by
+      E-karakus-strip-measure-interval; E-karakus-strip-lower is the read of the whole
+      proof. Read and not machine-checked are the chord profile (5.3), the reduction to it,
+      the case split with its reflection and central symmetry, the soundness of the coded
+      rules (the review of 2026-10-06), Theorem 1.1's scale-and-sum and Corollary 6.1's step
+      to s(k^2 - 1) >= k, each of which estimates nothing over the pose space. So the lower
+      half is at the machine check's rung, and the equality takes it.
     corrects:
       source_key: '[Nagamochi 2005]'
       result: T-007
@@ -8419,14 +8440,15 @@ results:
       - packing/resources/papers/karakus-2026-counterexample-nagamochi-scoring-lemma.pdf
       - packing/resources/papers/karakus-2026-counterexample-nagamochi-scoring-lemma.md
       - packing/devtools/check_karakus_strip_measure.py
-      - packing/campaign/series/series-000-smoke-and-calibration/results/karakus-strip-measure/receipt.json
+      - >-
+        packing/campaign/series/series-000-smoke-and-calibration/results/karakus-strip-measure/receipt.json
       - packing/devtools/check_basic_bounds.py
       - docs/project/reviews/review-2026-10-02-nagamochi-lemma1-karakus.md
       - docs/project/reviews/review-2026-10-06-karakus-proposition-5-1-machine-check.md
-    controls:
-      - packing/tests/test_karakus_strip_measure.py
+    controls: [packing/tests/test_karakus_strip_measure.py]
     reviews:
-      - path: docs/project/reviews/review-2026-10-06-karakus-proposition-5-1-machine-check.md
+      - path: >-
+          docs/project/reviews/review-2026-10-06-karakus-proposition-5-1-machine-check.md
         kind: adversarial
         reviewer: >-
           AI agent (claude-opus-5-5, tbd-strong tier), a separately prompted lane sharing no
@@ -8442,16 +8464,17 @@ results:
           explicit squares, mutations of the measure, an analytic proof of the reduced
           claim; and the rungs T-083 and T-084 may carry.
         verdict: accepted
-        covers: [T-083, T-084]
+        covers:
+          - T-083
+          - T-084
     next_rung: >-
       V4 and C4 need a second adversarial AI review of the machine check by a distinct
       reviewer and a human oversight record; the review of 2026-10-06 is the first.
       chelokot's Lean development proves the same family by an augmented measure
       (Records.NearSquare.squareMinusOne_isMinimumSide); the build of 2 October 2026
-      retained for T-086 compiled it and its Audit module printed standard axioms for it, but
-      no statement-fidelity reading of it is retained, so it is not yet evidence here.
+      retained for T-086 compiled it and its Audit module printed standard axioms for it,
+      but no statement-fidelity reading of it is retained, so it is not yet evidence here.
       Registered with that reading, it would be a second machine method beside the rung.
-
   - id: T-085
     kind: correction
     registered: '2026-10-02'
@@ -8509,7 +8532,8 @@ results:
   - id: T-086
     kind: optimality
     registered: '2026-10-02'
-    headline: "`s(k² − 2) = k` for every integer `k ≥ 2`; `k = 3…18` are the cases held here"
+    headline: >-
+      `s(k² − 2) = k` for every integer `k ≥ 2`; `k = 3…18` are the cases held here
     claim: >-
       s(k^2 - 2) = k for every integer k >= 2: chelokot's Lean theorem
       Records.NearSquare.squareMinusTwo_isMinimumSide, kernel-checked here. The lower half
@@ -8518,28 +8542,29 @@ results:
       (T-085); the upper half is the k x k grid with two squares removed.
 
       This entry's scope is the cases this record holds, k = 3 to 18: s(7) = 3, s(14) = 4,
-      s(23) = 5, s(34) = 6, s(47) = 7, s(62) = 8, s(79) = 9, s(98) = 10, s(119) = 11,
-      s(142) = 12, s(167) = 13, s(194) = 14, s(223) = 15, s(254) = 16, s(287) = 17 and
-      s(322) = 18. Nagamochi 2005 stated the family first (T-007).
+      s(23) = 5, s(34) = 6, s(47) = 7, s(62) = 8, s(79) = 9, s(98) = 10, s(119) = 11, s(142)
+      = 12, s(167) = 13, s(194) = 14, s(223) = 15, s(254) = 16, s(287) = 17 and s(322) = 18.
+      Nagamochi 2005 stated the family first (T-007).
 
-      The development was built here with its pinned toolchain and Mathlib's cache, and
-      its axioms are exactly propext, Classical.choice and Quot.sound. chelokot,
+      The development was built here with its pinned toolchain and Mathlib's cache, and its
+      axioms are exactly propext, Classical.choice and Quot.sound. chelokot,
       [square-packing-archive](https://github.com/chelokot/square-packing-archive),
       September 2026.
 
-      For k >= 8 wand125's closed form (T-180) gives the same value by another route, a
-      measure of line segments whose certified saving at the full side exceeds 3/4; it is
+      For k >= 8 Hiroaki Hosono's closed form (T-180) gives the same value by another route,
+      a measure of line segments whose certified saving at the full side exceeds 3/4; it is
       reported and not yet replayed here, and the source's second checker, cfcheck, has
       checked interval 34, on which these counts rest.
-    scope: {n_values: [7, 14, 23, 34, 47, 62, 79, 98, 119, 142, 167, 194, 223, 254, 287, 322]}
+    scope: {n_values: [7, 14, 23, 34, 47, 62, 79, 98, 119, 142, 167, 194, 223, 254, 287,
+                        322]}
     verification: V3
     confirmation: C3
     significance:
       score: 3
       rationale: >-
-        An infinite family of exact values, proved again after the published proof was
-        found incomplete; every value was already held as proved. S3 by the anchor "a
-        substantive case result or machine audit".
+        An infinite family of exact values, proved again after the published proof was found
+        incomplete; every value was already held as proved. S3 by the anchor "a substantive
+        case result or machine audit".
       scored: '2026-10-02'
       by: session-168 review (repository)
     novelty: previously-published
@@ -8549,9 +8574,9 @@ results:
     composition: >-
       Compound. The upper half is the grid, E-basic-grid-upper, replayed exactly here; the
       lower half is E-chelokot-square-minus-two-lean, the source's Lean development rebuilt
-      here with its axiom receipt. A kernel check is machine evidence at rung 3: rung 5
-      also needs a human expert's review of the formalization, and the statement-fidelity
-      reading retained here is the review lane's.
+      here with its axiom receipt. A kernel check is machine evidence at rung 3: rung 5 also
+      needs a human expert's review of the formalization, and the statement-fidelity reading
+      retained here is the review lane's.
     corrects:
       source_key: '[Nagamochi 2005]'
       result: T-007
@@ -8560,26 +8585,25 @@ results:
       - E-chelokot-square-minus-two-lean
       - E-basic-grid-upper
     artifacts:
-      - packing/campaign/series/series-000-smoke-and-calibration/results/chelokot-lean-replay/receipt.json
+      - >-
+        packing/campaign/series/series-000-smoke-and-calibration/results/chelokot-lean-replay/receipt.json
       - packing/devtools/replay_chelokot_lean.py
       - packing/resources/web/chelokot-nagamochi-counterexample-2026-09-05/README.md
       - docs/project/reviews/review-2026-10-02-nagamochi-lemma1-karakus.md
-    controls:
-      - packing/tests/test_replay_chelokot_lean.py
+    controls: [packing/tests/test_replay_chelokot_lean.py]
     next_rung: >-
       Rung 4 needs two adversarial AI reviews by distinct reviewers and a human oversight
       record; rung 5 needs a named human expert's review of the formalization, and C5 two,
       with the open-review pointer the public repository already supports.
     notes: >-
       On 3 October 2026 Evan Daniel's Lean module SpecChelokot restated chelokot's
-      IsMinimumSide from a reading of his Geometry.lean, and proved it equivalent
-      to minSide n = s for every n >= 1 in Daniel's own statement of the problem. It reads
-      chelokot's definitions and builds none of his proofs, so it adds no route and moves no
-      rung; it is a second reading of the statement this entry's theorem uses, retained in
-      the 2026-10-04 evand packet (think-plrl). The modules it imports, the source's
-      common specification, its bridges and the attainment theorem isLeast_minSide, joined
-      that packet on 5 October (think-83zc).
-
+      IsMinimumSide from a reading of his Geometry.lean, and proved it equivalent to minSide
+      n = s for every n >= 1 in Daniel's own statement of the problem. It reads chelokot's
+      definitions and builds none of his proofs, so it adds no route and moves no rung; it
+      is a second reading of the statement this entry's theorem uses, retained in the
+      2026-10-04 evand packet (think-plrl). The modules it imports, the source's common
+      specification, its bridges and the attainment theorem isLeast_minSide, joined that
+      packet on 5 October (think-83zc).
   - id: T-087
     kind: lower-bound
     registered: '2026-10-03'
@@ -20022,23 +20046,23 @@ results:
       5.00e-21 and every pair by at least 9.99e-21.
 
       At n = 156 the certificate is below the case's ceiling (Daniil Ostashev, T-149) by
-      6.76e-06; above #574 (PingYou Ltd (BuddenPing)) by 1.30e-19; equal #593 (Mykhailo
-      Polkovskyi (Mishapolk)); smallest: #574.
+      6.76e-06; above PR #574 (PingYou Ltd (BuddenPing)) by 1.30e-19; equal #593 (Mykhailo
+      Polkovskyi (Mishapolk)); smallest: PR #574.
 
       At n = 176 the certificate is below the case's ceiling (Nate Chaoweeraprasit
-      (itsnaka), T-151) by 5.22e-03; above #574 (PingYou Ltd (BuddenPing)) by 1.18e-02;
+      (itsnaka), T-151) by 5.22e-03; above PR #574 (PingYou Ltd (BuddenPing)) by 1.18e-02;
       above #575 (Daniil Ostashev) by 1.18e-02; above #593 (Mykhailo Polkovskyi (Mishapolk))
       by 1.18e-02; below #562 (Daniil Ostashev) by 1.03e-03; above #586 (Francisco Couzo) by
-      2.54e-10; smallest: #574.
+      2.54e-10; smallest: PR #574.
 
       At n = 237 the certificate is below the case's ceiling (Nate Chaoweeraprasit
-      (itsnaka), improved by Francisco Couzo, T-140) by 1.83e-06; above #574 (PingYou Ltd
+      (itsnaka), improved by Francisco Couzo, T-140) by 1.83e-06; above PR #574 (PingYou Ltd
       (BuddenPing)) by 1.59e-19; above #593 (Mykhailo Polkovskyi (Mishapolk)) by 2.43e-04;
       below #573 (Mykhailo Polkovskyi (Mishapolk)) by 1.83e-06; smallest: #593.
 
       At n = 271 the certificate is below the case's ceiling (Nate Chaoweeraprasit
-      (itsnaka), T-151) by 1.24e-04; above #574 (PingYou Ltd (BuddenPing)) by 1.69e-19;
-      equal #593 (Mykhailo Polkovskyi (Mishapolk)); smallest: #574.
+      (itsnaka), T-151) by 1.24e-04; above PR #574 (PingYou Ltd (BuddenPing)) by 1.69e-19;
+      equal #593 (Mykhailo Polkovskyi (Mishapolk)); smallest: PR #574.
 
       At n = 338 the certificate is beyond the horizon, with no case record, and 9.37e-02
       below the grid; below couzo-certificates-2026-10-11 (Francisco Couzo) by 1.04e-04;
@@ -20074,9 +20098,9 @@ results:
       order they reached this repository and records one only where it is decidably below
       every earlier report at the count, records it at 156 (6.76e-06 below T-149), 176
       (5.22e-03 below T-151), 237 (1.83e-06 below T-140), 271 (1.24e-04 below T-151), 338
-      (at least 1.04e-04 below the couzo-certificates-2026-10-11 row), 344 (at least
-      6.11e-04 below the couzo-certificates-2026-10-11 row), 375 (at least 4.72e-03 below
-      the couzo-certificates-2026-10-11 row), 376 (at least 5.33e-03 below the
+      (at least 1.03e-04 below the couzo-certificates-2026-10-11 row), 344 (at least
+      6.11e-04 below the couzo-certificates-2026-10-11 row), 375 (at least 4.71e-03 below
+      the couzo-certificates-2026-10-11 row), 376 (at least 5.32e-03 below the
       couzo-certificates-2026-10-11 row) and 378 (at least 5.62e-06 below the
       couzo-certificates-2026-10-11 row).
     next_rung: >-
@@ -20476,10 +20500,10 @@ results:
       every wall by at least 5.00e-21 and every pair by at least 9.99e-21.
 
       At n = 176 the certificate is below the case's ceiling (Nate Chaoweeraprasit
-      (itsnaka), T-151) by 5.22e-03; below #561 (Francisco Couzo) by 2.54e-10; above #574
+      (itsnaka), T-151) by 5.22e-03; below #561 (Francisco Couzo) by 2.54e-10; above PR #574
       (PingYou Ltd (BuddenPing)) by 1.18e-02; above #575 (Daniil Ostashev) by 1.18e-02;
       above #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.18e-02; below #562 (Daniil Ostashev)
-      by 1.03e-03; smallest: #574.
+      by 1.03e-03; smallest: PR #574.
 
       The same packet retains the certificates of issues 583 and 586 (T-181, T-182) and four
       more beyond the corpus that no issue names; the ledger records those as beyond-horizon
@@ -21147,24 +21171,23 @@ results:
       least 6.38e-16.
 
       At n = 153 the certificate is below the case's ceiling (PingYou Ltd, T-148) by
-      2.56e-12; below #504 refinement (PingYou) (PingYou Ltd (BuddenPing)) by 2.55e-12;
-      above PR #574 (PingYou) (PingYou Ltd (BuddenPing), exact 153/302) by 1.57e-14; below
-      T-101 (#375) (Daniel after Couzo, de Winter, Ellsworth, Levy) by 1.17e-02; below T-114
-      (#401) (Chaoweeraprasit after Ellsworth) by 9.67e-03; below T-125 (#432) ([ry-xu
-      square packing 2026]) by 1.13e-02; below T-127 (#438) (Gupta after Chaoweeraprasit,
-      Daniel) by 9.67e-03; below T-136 (#481) (Chaoweeraprasit after Couzo, Xu, Goebel,
-      Schadt, Ellsworth, Hajba, Levy) by 2.02e-03; below T-146 (no issue) (Daniel after Xu,
-      Chaoweeraprasit, Mishapolk, Levy) by 2.02e-03; equal #593 (Mykhailo Polkovskyi
-      (Mishapolk)); smallest: PR #574 (PingYou).
+      2.56e-12; below #504 refinement (PingYou Ltd (BuddenPing)) by 2.55e-12; above PR #574
+      (PingYou Ltd (BuddenPing), exact 153/302) by 1.57e-14; below T-101 (#375) (Daniel
+      after Couzo, de Winter, Ellsworth, Levy) by 1.17e-02; below T-114 (#401)
+      (Chaoweeraprasit after Ellsworth) by 9.67e-03; below T-125 (#432) (Ryan Xu) by
+      1.13e-02; below T-127 (#438) (Gupta after Chaoweeraprasit, Daniel) by 9.67e-03; below
+      T-136 (#481) (Chaoweeraprasit after Couzo, Xu, Goebel, Schadt, Ellsworth, Hajba, Levy)
+      by 2.02e-03; below T-146 (no issue) (Daniel after Xu, Chaoweeraprasit, Mishapolk,
+      Levy) by 2.02e-03; equal #593 (Mykhailo Polkovskyi (Mishapolk)); smallest: PR #574.
 
       At n = 207 the certificate is below the case's ceiling (PingYou Ltd, T-147) by
-      1.49e-09; below #503 refinement (PingYou) (PingYou Ltd (BuddenPing)) by 5.56e-13;
-      above PR #574 (PingYou) (PingYou Ltd (BuddenPing), algebraic) by 2.42e-12; below T-098
-      (#375) (Daniel after Couzo, de Winter, Ellsworth, Levy) by 1.30e-02; below T-116
-      (#422) (Chaoweeraprasit after Ellsworth, Couzo and SQUISH) by 7.03e-03; below T-127
-      (#438) (Gupta after Chaoweeraprasit, Daniel) by 7.03e-03; below T-136 (#481)
-      (Chaoweeraprasit after Couzo, Xu, Goebel, Schadt, Ellsworth, Hajba, Levy) by 4.55e-03;
-      equal #593 (Mykhailo Polkovskyi (Mishapolk)); smallest: PR #574 (PingYou).
+      1.49e-09; below #503 refinement (PingYou Ltd (BuddenPing)) by 5.56e-13; above PR #574
+      (PingYou Ltd (BuddenPing), algebraic) by 2.42e-12; below T-098 (#375) (Daniel after
+      Couzo, de Winter, Ellsworth, Levy) by 1.30e-02; below T-116 (#422) (Chaoweeraprasit
+      after Ellsworth, Couzo and SQUISH) by 7.03e-03; below T-127 (#438) (Gupta after
+      Chaoweeraprasit, Daniel) by 7.03e-03; below T-136 (#481) (Chaoweeraprasit after Couzo,
+      Xu, Goebel, Schadt, Ellsworth, Hajba, Levy) by 4.55e-03; equal #593 (Mykhailo
+      Polkovskyi (Mishapolk)); smallest: PR #574.
 
       The same commit holds 17 further certificates that this entry does not record, at n =
       103, 108, 127, 131, 154, 175, 180, 209, 236, 237, 258, 263, 267, 270, 302, 303 and
@@ -21261,7 +21284,9 @@ results:
     attribution:
       source_keys: ['[PingYou PR 574 certificates 2026-10-13]']
       published: '2026-10-13'
-    evidence: [E-pingyou-574-certificate-report]
+    evidence:
+      - E-pingyou-574-certificate-report
+      - E-pingyou-574-algebraic-report
     artifacts:
       - packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md
       - packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/claims.json
@@ -21648,8 +21673,9 @@ results:
 
       The same pull request states certificates at 80 more counts, which the ledger does not
       record (59 not below an earlier report, 21 undecided): rational ones at 21 and
-      algebraic ones at 56, which stay in the packet, and rows of its v2 release at 11, 17
-      and 29 that neither of the packet's declarations states.
+      algebraic ones at 56, which stay in the packet and are not replayed here (priced at
+      under an hour and about 2.1 hours), and rows of its v2 release at 11, 17 and 29 that
+      neither of the packet's declarations states.
 
       The source's own checkers were not run here. The two maintained routes, the sqpack
       rational witness verifier and the independent rational corner checker, share
@@ -21662,10 +21688,8 @@ results:
       pair decisions, 1001.0 route CPU seconds; no second route over a number field exists
       here.
 
-      Twenty-three of the 64 rational counts (105, 129, 146, 156, 172, 175, 176, 199, 232,
-      238, 240, 241, 258, 259, 261, 267, 271, 272, 295, 297, 306, 307 and 308) and the
-      algebraic 70, 153 and 207 were decided again by check --replay, every row equal to the
-      retained one; the other counts' rows are admitted, not decided again.
+      Every recorded count, the 64 rational and the four algebraic, was decided again by
+      check --replay, every row equal to the retained one.
     next_rung: >-
       Add a second route at the algebraic counts, then independently review the replay and
       weigh adoption at each count against the later entries: issue 573 (T-173) at 153 and
@@ -23215,13 +23239,13 @@ results:
       every pair by at least 9.99e-21.
 
       At n = 211 the certificate is below the case's ceiling (Daniil Ostashev, T-149) by
-      2.78e-03; below #574 (PingYou Ltd (BuddenPing)) by 2.78e-03; below #575 (Daniil
+      2.78e-03; below PR #574 (PingYou Ltd (BuddenPing)) by 2.78e-03; below #575 (Daniil
       Ostashev) by 1.35e-04; above #586 (Francisco Couzo) by 1.49e-10; above #593 (Mykhailo
       Polkovskyi (Mishapolk)) by 1.49e-10; no report is smallest, since #586 and #593 are
       one exact side.
 
       At n = 241 the certificate is below the case's ceiling (Francisco Couzo, improved by
-      Evan Daniel, T-098) by 1.02e-03; below #574 (PingYou Ltd (BuddenPing)) by 1.02e-03;
+      Evan Daniel, T-098) by 1.02e-03; below PR #574 (PingYou Ltd (BuddenPing)) by 1.02e-03;
       below #575 (Daniil Ostashev) by 1.72e-05; above #586 (Francisco Couzo) by 1.88e-11;
       above #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.88e-11; no report is smallest, since
       #586 and #593 are one exact side.
@@ -23261,8 +23285,8 @@ results:
       The per-count ledger of 14 October (jlevy/squares#601), which takes the reports in the
       order they reached this repository and records one only where it is decidably below
       every earlier report at the count, records it at 211 (1.35e-04 below T-175), 241
-      (1.72e-05 below T-175), 302 (at least 2.62e-04 below T-174), 339 (at least 2.05e-03
-      below the couzo-certificates-2026-10-11 row), 379 (at least 1.11e-05 below issue 570's
+      (1.72e-05 below T-175), 302 (at least 2.61e-04 below T-174), 339 (at least 2.05e-03
+      below the couzo-certificates-2026-10-11 row), 379 (at least 1.10e-05 below issue 570's
       printed side, which T-172 does not register and the source register has no row for),
       380 (3.22e-03 below Kevin Fang's publication of 12 October), 381 (1.99e-03 below Kevin
       Fang's publication of 12 October) and 382 (8.79e-04 below Kevin Fang's publication of
@@ -23356,13 +23380,13 @@ results:
       Polkovskyi (Mishapolk)) by 1.36e-03; smallest: this certificate.
 
       At n = 211 the certificate is below the case's ceiling (Daniil Ostashev, T-149) by
-      2.78e-03; below #574 (PingYou Ltd (BuddenPing)) by 2.78e-03; below #575 (Daniil
+      2.78e-03; below PR #574 (PingYou Ltd (BuddenPing)) by 2.78e-03; below #575 (Daniil
       Ostashev) by 1.35e-04; below #583 (Francisco Couzo) by 1.49e-10; equal #593 (Mykhailo
       Polkovskyi (Mishapolk)); no report is smallest, since this certificate and #593 are
       one exact side.
 
       At n = 241 the certificate is below the case's ceiling (Francisco Couzo, improved by
-      Evan Daniel, T-098) by 1.02e-03; below #574 (PingYou Ltd (BuddenPing)) by 1.02e-03;
+      Evan Daniel, T-098) by 1.02e-03; below PR #574 (PingYou Ltd (BuddenPing)) by 1.02e-03;
       below #575 (Daniil Ostashev) by 1.72e-05; below #583 (Francisco Couzo) by 1.88e-11;
       equal #593 (Mykhailo Polkovskyi (Mishapolk)); no report is smallest, since this
       certificate and #593 are one exact side.
@@ -23454,8 +23478,8 @@ results:
       123, 269, 292, 295) and Francisco Couzo (105, 108, 127, 209, 267, 305, 306), 40 have
       the case's exact side, and at 129, 176, 204, 303 and 304 the side is within 1e-30 of
       Daniil Ostashev's earlier issues 562 and 575, at 211 and 241 it equals Couzo's
-      issue-586 certificates exactly, and at 156 and 271 it matches Couzo's issue 561 at 12
-      places. No pose comparison has been made, so no finding of copying or of independent
+      issue-586 certificates exactly, and at 156 and 271 it equals Couzo's issue 561
+      exactly. No pose comparison has been made, so no finding of copying or of independent
       rediscovery is made either. The source discloses Gemini assistance with solver
       scripting, precision checks and formatting.
     scope: {n_values: [237]}
@@ -23490,15 +23514,15 @@ results:
       least 9.99e-21.
 
       At n = 237 the certificate is below the case's ceiling (Nate Chaoweeraprasit
-      (itsnaka), improved by Francisco Couzo, T-140) by 2.45e-04; below #561 (Couzo)
-      (Francisco Couzo) by 2.43e-04; below PR #574 (PingYou) (PingYou Ltd (BuddenPing),
-      numerical v2) by 2.43e-04; below T-098 (#375) (Daniel after Couzo, de Winter,
-      Ellsworth, Levy) by 8.49e-03; below T-115 (#401) (Chaoweeraprasit after Couzo and
-      Ellsworth) by 9.71e-04; below T-127 (#438) (Gupta after Chaoweeraprasit, Daniel) by
-      9.71e-04; below T-134 (#476) (Couzo after Mishapolk, Chaoweeraprasit, Gupta, Xu,
-      Daniel, Ellsworth, Levy) by 9.66e-04; below T-136 (#481) (Chaoweeraprasit after Couzo,
-      Xu, Goebel, Schadt, Ellsworth, Hajba, Levy) by 2.84e-04; below #573 (Mykhailo
-      Polkovskyi (Mishapolk)) by 2.45e-04; smallest: this certificate.
+      (itsnaka), improved by Francisco Couzo, T-140) by 2.45e-04; below #561 (Francisco
+      Couzo) by 2.43e-04; below PR #574 (PingYou Ltd (BuddenPing), numerical v2) by
+      2.43e-04; below T-098 (#375) (Daniel after Couzo, de Winter, Ellsworth, Levy) by
+      8.49e-03; below T-115 (#401) (Chaoweeraprasit after Couzo and Ellsworth) by 9.71e-04;
+      below T-127 (#438) (Gupta after Chaoweeraprasit, Daniel) by 9.71e-04; below T-134
+      (#476) (Couzo after Mishapolk, Chaoweeraprasit, Gupta, Xu, Daniel, Ellsworth, Levy) by
+      9.66e-04; below T-136 (#481) (Chaoweeraprasit after Couzo, Xu, Goebel, Schadt,
+      Ellsworth, Hajba, Levy) by 2.84e-04; below #573 (Mykhailo Polkovskyi (Mishapolk)) by
+      2.45e-04; smallest: this certificate.
 
       The same commit holds 71 further certificates that this entry does not record, at n =
       68, 70, 84, 86, 88, 102, 103, 105, 106, 108, 110, 123, 126, 127, 129, 130, 131, 132,

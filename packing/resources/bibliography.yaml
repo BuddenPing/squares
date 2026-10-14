@@ -2492,7 +2492,7 @@ sources:
     lineage: builds-on-project
     credit: >-
       PingYou Ltd after Friedman, Ellsworth, Daniel, Xu, Barnett, Couzo, Ostashev,
-      Chaoweeraprasit, Gupta, Fang, Mishapolk, Levy
+      Chaoweeraprasit, Gupta, Fang, Polkovskyi, Levy
     short_credit: PingYou Ltd after Friedman et al.
     note: >-
       Pull request jlevy/squares#574 at 4c319c24a6217dbbbf05e79ebb7e2dc5be0a2cde
@@ -2596,6 +2596,8 @@ sources:
       both checkers. MIT. Dated by the pin.
 credited_names:
   Benjamin Greff: Greff
+  Hiroaki Hosono: Hosono
+  Mykhailo Polkovskyi: Polkovskyi
   Oscar Fitzharding: Fitzharding
   Marc Leonard Overbeck: Overbeck
   Daniil Ostashev: Ostashev

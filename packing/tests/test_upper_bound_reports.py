@@ -814,15 +814,15 @@ def test_the_561_claims_name_each_smaller_or_undecided_report() -> None:
     # three (review A1 of #602).
     assert rows[237]["smallest"] == "#593"
     for n in (156, 176, 271):
-        assert rows[n]["smallest"] == "#574"
-        (pingyou,) = [other for other in rows[n]["pending"] if other["report"] == "#574"]
+        assert rows[n]["smallest"] == "PR #574"
+        (pingyou,) = [other for other in rows[n]["pending"] if other["report"] == "PR #574"]
         assert pingyou["relation"] == "above"
     for n in (156, 271):
         (mishapolk,) = [other for other in rows[n]["pending"] if other["report"] == "#593"]
         assert mishapolk["relation"] == "equal"
     for n in (156, 237, 271):
         side = Fraction(rows[n]["exact_side"])
-        (pingyou,) = [other for other in rows[n]["pending"] if other["report"] == "#574"]
+        (pingyou,) = [other for other in rows[n]["pending"] if other["report"] == "PR #574"]
         reduction = (side - Fraction(pingyou["exact_side"])) / side
         assert Fraction(99, 10**22) < reduction < Fraction(101, 10**22)
     # Beyond the corpus each is below the row tracked from #506; issue 586's rows and #584's
@@ -860,7 +860,7 @@ def test_the_586_claims_are_smallest_at_every_requested_count_but_the_two_ties()
         assert earlier["relation"] == "below"
     # PingYou's #574 tightenings of the case ceilings at 211 and 241, and its 302, are larger.
     for n in (211, 241, 302):
-        (pingyou,) = [other for other in rows[n]["pending"] if other["report"] == "#574"]
+        (pingyou,) = [other for other in rows[n]["pending"] if other["report"] == "PR #574"]
         assert pingyou["relation"] == "below"
     # mstrmg's #582 and Kevin Fang's 078789a certificate are larger at 381.
     assert {other["report"]: other["relation"] for other in rows[381]["pending"]} == {
@@ -877,7 +877,7 @@ def test_the_586_claims_are_smallest_at_every_requested_count_but_the_two_ties()
         assert Fraction(earlier["exact_side"]) == reports.house_side(
             "[Couzo certificates 2026-10-12]", n
         )
-    assert rows[176]["smallest"] == "#574"
+    assert rows[176]["smallest"] == "PR #574"
     assert rows[375]["smallest"] == "evand-compositions-2026-10-13"
     claims = coverage_check.load_claims(_packet(COUZO_586) / reports.BEYOND)
     assert sorted(claims) == [339, 344, 375, 376, 378, 379, 380, 381, 382]
@@ -1590,10 +1590,11 @@ def test_the_593_release_is_smallest_only_at_237_and_ties_couzo_at_211_and_241()
     assert relations == {"above": 18, "equal": 40, "below": 14}
     assert [n for n, row in rows.items() if row["smallest"] == reports.THIS] == [237]
     for n in (211, 241):
-        assert rows[n]["tied"] == [reports.THIS, "#586 (Couzo)"]
+        assert rows[n]["tied"] == [reports.THIS, "#586"]
     # At 129, 176, 204, 303 and 304 Ostashev's earlier sides are below by under 1e-30.
-    for n in (129, 176, 204, 303, 304):
-        (ostashev,) = [item for item in rows[n]["pending"] if "Ostashev" in item["report"]]
+    earlier = {129: "#562", 176: "#575", 204: "#562", 303: "#562", 304: "#575"}
+    for n, report in earlier.items():
+        (ostashev,) = [item for item in rows[n]["pending"] if item["report"] == report]
         assert ostashev["relation"] == "above"
         assert 0 < -Fraction(ostashev["difference"]) < Fraction(1, 10**30)
 

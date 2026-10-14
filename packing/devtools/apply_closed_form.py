@@ -247,6 +247,12 @@ def replay(n: int, text: str) -> str:
     return text if plan is None else apply_text(plan, text)
 
 
+def carried(text: str) -> bool:
+    """Whether a record's text already carries the closed form's reported lane."""
+    payload: Mapping[str, Any] = safe_load(text.split("---\n", 2)[1])["packing"]
+    return _ours(payload.get("reported_lower_bound"))
+
+
 def apply_text(plan: Plan, text: str) -> str:
     """The record `text` with this plan written into it."""
     _, front, body = text.split("---\n", 2)

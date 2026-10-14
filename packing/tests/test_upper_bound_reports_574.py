@@ -521,6 +521,7 @@ def test_a_stored_algebraic_row_is_held_to_its_own_witness() -> None:
         (changed(id="W-pingyou-574-alg-n153-positive"), "not this witness's job"),
         (changed(side=moved), "side is not this witness's"),
         (changed(pairs_tested=verdict["pairs_tested"] - 1), "every pair decided"),
+        (changed(side=printed[:3]), "side is not this witness's"),
     ):
         with pytest.raises(algebraic.ReportError, match=message):
             algebraic.validate_job(row, witness, "positive", side=side)

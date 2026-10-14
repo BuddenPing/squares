@@ -33874,19 +33874,55 @@ evidence:
     limitations: >-
       This atom records the source author's report of 85 exact rational certificates at
       4c319c2. A separate complete repository replay is retained for n = 68, 84, 86, 88,
-      102, 103, 105, 108, 110, 123, 126, 127, 129, 130, 131, 132, 146, 155, 156, 172, 175,
-      176, 179, 180, 181, 182, 199, 204, 206, 208, 209, 210, 211, 228, 232, 236, 237, 238,
-      239, 240, 241, 258, 259, 261, 263, 264, 266, 267, 268, 269, 270, 271, 272, 273, 292,
-      295, 297, 301, 303, 304, 305, 306, 307 and 308: 64 positives and 128 duplicate-square
-      and outside-container controls passed their required outcomes on both routes, 9164850
-      pair decisions; summed over the 192 jobs, the receipt records 14497.02 route CPU
-      seconds and 16968.51 job wall seconds, the longest job 509.89 seconds. In every
-      positive squares touch the box, a least wall clearance of exactly 0, and every pair
-      clears by at least 0. Independent review and confirmation remain pending. The source's
-      own checkers were not run here. The two maintained routes, the sqpack rational witness
-      verifier and the independent rational corner checker, share certificate parsing,
-      half-angle conversion, Fraction arithmetic and the separating-axis method. No two
-      independent methods, human oversight or optimality is claimed.
+      102, 103, 105, 108, 110, 123, 126, 127, 129, 130, 131, 132, 146, 155, 156, 172,
+      175, 176, 179, 180, 181, 182, 199, 204, 206, 208, 209, 210, 211, 228, 232, 236,
+      237, 238, 239, 240, 241, 258, 259, 261, 263, 264, 266, 267, 268, 269, 270, 271,
+      272, 273, 292, 295, 297, 301, 303, 304, 305, 306, 307 and 308: 64 positives and
+      128 duplicate-square and outside-container controls passed their required outcomes
+      on both routes, 9164850 pair decisions; summed over the 192 jobs, the receipt
+      records 14497.02 route CPU seconds and 16968.51 job wall seconds, the longest job
+      509.89 seconds. In every positive squares touch the box, a least wall clearance of
+      exactly 0, and every pair clears by at least 0. check --replay decided every one
+      of the 192 jobs again, every row equal to the retained one. The 21 declared
+      rational counts the intake ledger does not record were not replayed, priced at
+      under an hour. Independent review and confirmation remain pending. The source's
+      own checkers were not run here. The two maintained routes, the sqpack rational
+      witness verifier and the independent rational corner checker, share certificate
+      parsing, half-angle conversion, Fraction arithmetic and the separating-axis
+      method. No two independent methods, human oversight or optimality is claimed.
+  - id: E-pingyou-574-algebraic-report
+    claim: upper-bound
+    scope: {n_values: [5, 10, 18, 19, 26, 27, 38, 40, 51, 52, 53, 54, 65, 66, 67, 70,
+                        82, 85, 89, 101, 104, 107, 109, 122, 124, 125, 145, 147, 148,
+                        149, 150, 151, 153, 170, 173, 174, 178, 197, 200, 201, 202, 203,
+                        207, 226, 227, 229, 231, 233, 234, 257, 260, 262, 265, 290, 291,
+                        294, 296, 298, 299, 302]}
+    assurance: reported
+    reported_method: exact-algebraic
+    performed_by: source-author
+    relationship_to_generator: same-implementation
+    origin: external
+    novelty: previously-published
+    source_key: '[PingYou PR 574 certificates 2026-10-13]'
+    certificate: packing/resources/web/pingyou-pr574-certificates-2026-10-13/facts/
+    replay_status: not-attempted
+    verifiers: []
+    source_reviewed: '2026-10-14'
+    limitations: >-
+      This atom records the source author's report of 60 exact algebraic certificates at
+      4c319c2, each side a root of an integer polynomial that the author isolates by
+      rational Sturm counts. A separate complete repository replay is retained for n =
+      70, 153, 207 and 302, on one route: sqpack's exact witness verifier decided each
+      positive and its duplicate-square and outside-container controls over the
+      witness's field, 12 jobs and 242445 pair decisions, 1001.0 route CPU seconds and
+      1094.42 job wall seconds, the longest job 166.45 seconds; the four positives pass,
+      squares touching the box and each other exactly, and the eight controls are
+      refused. check --replay decided the 12 jobs again with the same outcomes. The
+      other 56 counts were not replayed, priced at about 2.1 hours on the one route. No
+      second route over a number field exists here: the independent corner checker reads
+      rational corners only. Independent review and confirmation remain pending. The
+      source's own checkers were not run here. No two independent methods, human
+      oversight or optimality is claimed.
   - id: E-ostashev-575-certificate-report
     claim: upper-bound
     scope: {n_values: [176, 211, 241, 304]}

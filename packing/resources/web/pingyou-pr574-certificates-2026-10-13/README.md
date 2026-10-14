@@ -154,7 +154,7 @@ ledger keeps the counts for algebraic reconstruction, so the catalogue’s exact
 likely below the certificate. The certificate is above #575, #583 and #593 at N211 and
 N241, above #593 at N237, and above #575 and #593 at N304.
 
-Read from Mishapolk’s certificates at
+Read from Mykhailo Polkovskyi’s certificates at
 [`46f638c`](https://github.com/Mishapolk/square-packing-records/tree/46f638ce0537beeb1bad24242c6a3d357eecd9ee),
 whose digests are the ones #593 states, the exact sides decide every #593 count, and with
 the Couzo and PingYou packets of this pass on their branches they decide every other
@@ -183,7 +183,7 @@ are not retained; the frozen records compare #593 by its prints.
   Couzo’s #583 by 2.6e-4.
 
 By prints, N207 is below every other report; N70 and N153 are undecided against #593’s
-and #573’s prints and below Mishapolk’s exact sides at `46f638c`, where #573’s N153
+and #573’s prints and below Mykhailo Polkovskyi’s exact sides at `46f638c`, where #573’s N153
 certificate has the digest of #593’s.
 
 ## The Replay
@@ -269,7 +269,7 @@ Each count’s `credits.json` or provenance record names the construction’s fi
 earlier refiners, among them Erich Friedman’s and David Ellsworth’s catalogue
 constructions as Evan Daniel’s certificates state them, Ryan Xu, Robert Barnett,
 Francisco Couzo, Daniil Ostashev, Nate Chaoweeraprasit (SQUISH), Siddharth Gupta, Kevin
-Fang and Mishapolk, and Joshua Levy and this project for the native schema and verifiers.
+Fang and Mykhailo Polkovskyi (Mishapolk), and Joshua Levy and this project for the native schema and verifiers.
 N153, N207 and N302 are PingYou’s own constructions; N70 is Ryan Xu’s.
 The pull request makes no statement about AI assistance; its branch is named
 `codex/numerical-certificate-refinements`. For its #503 and #504 certificates the author

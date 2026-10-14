@@ -787,6 +787,7 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
         components=("paper:n11-optimality-review", "paper:n11-threshold-bound-review"),
         paths=(
             "packing/devtools/evand_arrangement_reports.py",
+            "packing/devtools/generate_frontier_case.py",
             "packing/devtools/overview_sections.py",
             "packing/devtools/run_negative_controls.py",
             "packing/devtools/site_urls.py",
@@ -803,8 +804,9 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "Rendered from main at 2319afaa and from this branch at one link revision, "
             "both papers' HTML before the browser's math pass and their Markdown are "
             "byte-identical; the math pass and the PDF take that same HTML. The register "
-            "gains T-161 to T-184, the importer reads longer literals, and the site gains "
-            "two project cards and two page budgets, none of which either review cites."
+            "gains T-161 to T-184, the importer reads longer literals, the case generator "
+            "replays the closed form, and the site gains two project cards and two page "
+            "budgets, none of which either review cites."
         ),
     ),
     ReleaseNoPublicChange(
@@ -816,6 +818,7 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "packing/cases/n11_threshold_certificate/t-025-verifiable-claim-191-50.md",
             "packing/cases/n11_threshold_certificate/t-026-verifiable-claim-dilation-limit.md",
             "packing/devtools/evand_arrangement_reports.py",
+            "packing/devtools/generate_frontier_case.py",
             "packing/devtools/overview_sections.py",
             "packing/devtools/run_negative_controls.py",
             "packing/devtools/site_urls.py",
@@ -839,6 +842,7 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
         paths=(
             "packing/campaign/result-requests.yaml",
             "packing/devtools/evand_arrangement_reports.py",
+            "packing/devtools/generate_frontier_case.py",
             "packing/devtools/overview_sections.py",
             "packing/devtools/run_negative_controls.py",
             "packing/devtools/site_urls.py",
@@ -877,8 +881,8 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "HTML before the browser's math pass and the Markdown are byte-identical; the "
             "PDF prints from that HTML. Each case record gains the closed form's reported "
             "lower bound, its evidence and resource, a later source_reviewed date and a "
-            "dated paragraph; no house moves, so the survey's account of the adopted houses "
-            "is unchanged and it keeps v0.2.2."
+            "dated paragraph, which the case generator now replays; no house moves, so the "
+            "survey's account of the adopted houses is unchanged and it keeps v0.2.2."
         ),
     ),
     ReleaseNoPublicChange(
