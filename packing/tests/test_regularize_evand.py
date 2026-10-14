@@ -1292,3 +1292,17 @@ def test_reclassify_sends_a_report_mislabelled_before_b1_to_review(
     assert receipt["reclassified"]["stale_settings"] == []
     report = json.loads(report_path.read_text())
     assert (report["decision"]["row"], report["decision"]["decision"]) == (10, "admit")
+
+
+def test_a_closed_form_bound_narrower_than_its_evaluation_is_still_read() -> None:
+    """SymPy refines sqrt(16 + 10^-40)'s isolating interval to 1.6e-82, below the 80-digit
+    value's error, which then fell outside it and left the bound unread; the root is
+    matched within that error instead, and a rational side is decided against it."""
+    bound = drive.verified_bound(
+        {"verified_upper_bound": "4.0", "exact_form": "sqrt(16 + 1/10**40)"}
+    )
+    assert bound is not None
+    assert bound.unread is None
+    assert bound.compare(Fraction(4)) == -1
+    assert bound.compare(Fraction(4) + Fraction(1, 10**40)) == 1
+    assert f"{bound.difference(Fraction(4)):.3e}" == "-1.250e-41"
