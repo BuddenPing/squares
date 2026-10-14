@@ -172,7 +172,7 @@ def _assert_print_body_ink(nodes: Sequence[ET.Element]) -> None:
     assert recent[0][0].text == " (since August, 2026)"
     assert recent[0][0].attrib["fill"] == "#000000"
     assert all(
-        node.attrib["fill"] == (FIRST_PARTY_ACCENT_COLOR if node is recent[0] else "#000000")
+        node.attrib["fill"] == "#000000"
         for node in nodes
     )
 
@@ -1492,15 +1492,17 @@ def test_print_cards_color_recent_numbers_and_keep_independent_accents(index: in
         )
     assert not root.findall(".//svg:polygon[@data-feature='legend-star']", SVG)
     cards = {int(card.attrib["data-n"]): card for card in root}
-    for n, card in cards.items():
+    for card in cards.values():
         number = card.find("svg:text[@data-feature='packing-label']", SVG)
         assert number is not None
-        assert number.attrib["fill"] == (
-            FIRST_PARTY_ACCENT_COLOR if flags[n].any else known_best_builder.LABEL_MUTED_COLOR
-        )
+        assert number.attrib["fill"] == known_best_builder.LABEL_MUTED_COLOR
     optimal = cards[11].find("svg:rect[@data-evidence='proved optimal']", SVG)
     assert optimal is not None
-    assert optimal.attrib["fill"] == FIRST_PARTY_ACCENT_COLOR
+    assert optimal.attrib["fill"] != FIRST_PARTY_ACCENT_COLOR
+    for card in cards.values():
+        label = card.find("svg:text[@data-feature='packing-label']", SVG)
+        assert label is not None
+        assert label.attrib["fill"] == known_best_builder.LABEL_MUTED_COLOR
     for feature in ("side-bound", "lower-bound"):
         line = cards[17].find(f"svg:text[@data-feature='{feature}']", SVG)
         assert line is not None
@@ -1518,7 +1520,7 @@ def test_print_cards_color_recent_numbers_and_keep_independent_accents(index: in
         if (node.text or "").startswith("recent result")
     ]
     assert len(recent) == 1
-    assert recent[0].attrib["fill"] == FIRST_PARTY_ACCENT_COLOR
+    assert recent[0].attrib["fill"] == known_best_builder.SUMMARY_SMALL_FILL
 
 
 def test_print_arrangements_share_measured_outline_and_annotation_clearances() -> None:
@@ -1750,14 +1752,14 @@ def test_composite_tiles_draw_each_case_s_default_picture_and_credit_it() -> Non
         assert json.loads(block.attrib["data-regularized-cases"]) == marked
         feature = "svg:text[@data-feature='regularization-credit-line']"
         printed = " ".join("".join(node.itertext()) for node in block.findall(feature, SVG))
-        lead = known_best_builder.POSTER_REGULARIZATION_LEAD.format(
-            drawn=len(marked), count=canvas.spec.count
-        )
-        # One sentence: the lead counts the marked cards, and the shared opening is said
-        # once.
-        assert printed.startswith(f"{lead}, by the Squares Project with ")
+        assert printed == known_best_builder.POSTER_REGULARIZATION_CREDIT
+        for card in cards.values():
+            label = card.find("svg:text[@data-feature='packing-label']", SVG)
+            assert label is not None
+            assert label.attrib["fill"] == known_best_builder.LABEL_MUTED_COLOR
         assert printed.count("Squares Project") == 1
-        assert printed.count("Regularized") == 1
+        assert "Daniel\u2019s regularizer" in printed
+        assert "regularized" in printed
         # The owner, 14 October 2026: people are named by surname, as in every other print
         # credit; the only full name in the information block is the diagram's credit.
         information = root.find("svg:g[@data-feature='poster-information']", SVG)
@@ -1824,45 +1826,31 @@ def test_a_composite_trailing_the_pin_may_show_defaults_the_record_has_changed(
     test_composite_tiles_draw_each_case_s_default_picture_and_credit_it()
 
 
-def test_the_regularization_credit_factors_its_shared_opening_and_keeps_any_other_whole(
+def test_the_regularization_credit_is_compact_and_preserves_full_generator_attribution(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """The owner, 14 October 2026: the regularization credits are one sentence that
-    "doesn't repeat itself too much". The generators' credit lines (policy section 7) that
-    open "Regularized by the Squares Project with" are named once each after that shared
-    opening, joined by commas and "and", and never broken inside a name; a credit line
-    that opens otherwise is printed whole, as a sentence of its own."""
     from devtools import default_drawings  # noqa: PLC0415
 
-    credit_lines = {
-        1: "Regularized by the Squares Project with tool A (a, MIT)",
-        2: "Regularized by the Squares Project with tool B",
-        3: "Regularized by the Squares Project with tool A (a, MIT)",
-        4: "Regularized by the Squares Project with tool C",
-        5: "Redrawn by someone else entirely",
-        6: "Regularized by the Squares Project with Evan Daniel's tool D",
+    generator_credits = {
+        1: "Regularized by tool A (MIT)",
+        2: "Regularized by tool B",
+        3: "Regularized by tool A (MIT)",
     }
-    monkeypatch.setattr(default_drawings, "credit_line", credit_lines.__getitem__)
-    sentences = known_best_builder.regularization_sentences((1, 2, 3, 4, 5), 9)
-    assert [" ".join(atoms) for atoms in sentences] == [
+    monkeypatch.setattr(default_drawings, "credit_line", generator_credits.__getitem__)
+    assert [
+        " ".join(atoms) for atoms in known_best_builder.regularization_sentences((1, 2, 3), 9)
+    ] == [
         (
-            "Regularized drawings (5 of 9), where they improve on the packings as "
-            "published, by the Squares Project with tool A (a, MIT), tool B and tool C"
-        ),
-        "Redrawn by someone else entirely",
-    ]
-    assert "tool A (a, MIT)," in sentences[0]
-    only = known_best_builder.regularization_sentences((2,), 9)
-    assert [" ".join(atoms) for atoms in only] == [
-        (
-            "Regularized drawings (1 of 9), where they improve on the packings as "
-            "published, by the Squares Project with tool B"
+            "Drawn packings are regularized for cleaner display using Squares Project rules, "
+            "based on Daniel\u2019s regularizer"
         )
     ]
     assert known_best_builder.regularization_sentences((), 9) == ()
-    # A full personal name prints by its surname, as the other print credits print names.
-    named = known_best_builder.regularization_sentences((6,), 9)
-    assert " ".join(named[0]).endswith("by the Squares Project with Daniel's tool D")
+    found = known_best_builder._regularization_generator_credits((1, 2, 3))  # noqa: SLF001  # pyright: ignore[reportPrivateUsage]
+    assert found == (
+        generator_credits[1],
+        generator_credits[2],
+    )
 
 
 def test_poster_enlarges_information_type_without_changing_card_geometry() -> None:
@@ -2319,7 +2307,11 @@ def test_poster_accents_recent_contributions_independently_in_svg_and_pdf() -> N
     cards = {int(card.attrib["data-n"]): card for card in root}
     optimal = cards[11].find("svg:rect[@data-evidence='proved optimal']", SVG)
     assert optimal is not None
-    assert optimal.attrib["fill"] == FIRST_PARTY_ACCENT_COLOR
+    assert optimal.attrib["fill"] != FIRST_PARTY_ACCENT_COLOR
+    for card in cards.values():
+        label = card.find("svg:text[@data-feature='packing-label']", SVG)
+        assert label is not None
+        assert label.attrib["fill"] == known_best_builder.LABEL_MUTED_COLOR
     upper = cards[11].find("svg:text[@data-feature='side-bound']", SVG)
     assert upper is not None
     assert "".join(upper.itertext()) == "s(11) = 3.87708"
@@ -2343,7 +2335,7 @@ def test_poster_accents_recent_contributions_independently_in_svg_and_pdf() -> N
     accent = tuple(
         int(FIRST_PARTY_ACCENT_COLOR[index : index + 2], 16) / 255 for index in (1, 3, 5)
     )
-    assert any(
+    assert not any(
         all(
             abs(actual - expected) < 1e-6
             for actual, expected in zip(color, accent, strict=True)
@@ -2450,7 +2442,7 @@ def test_primary_composite_routes_contributions_to_cards_and_legend(
     assert card is not None
     optimal = card.find("svg:rect[@data-evidence='proved optimal']", SVG)
     assert optimal is not None
-    assert (optimal.attrib["fill"] == FIRST_PARTY_ACCENT_COLOR) is contributions[11].optimal
+    assert optimal.attrib["fill"] != FIRST_PARTY_ACCENT_COLOR
     upper = card.find("svg:text[@data-feature='side-bound']", SVG)
     assert upper is not None
     assert "".join(upper.itertext()) == "s(11) = 3.877084"
@@ -2459,7 +2451,7 @@ def test_primary_composite_routes_contributions_to_cards_and_legend(
     if marked:
         assert marked[0].text == "3.877084"
     for node, expected_accent in (
-        (optimal, contributions[11].optimal),
+        (optimal, False),
         (upper, contributions[11].upper),
     ):
         isolated = ET.Element(f"{{{SVG['svg']}}}svg", root.attrib)
@@ -2621,7 +2613,7 @@ def test_poster_legend_columns_align_left_and_end_with_the_recent_result_key(
         "recent result (since August, 2026)",
     ]
     assert labels[1][-1].text == "recent result"
-    assert labels[1][-1].attrib["fill"] == FIRST_PARTY_ACCENT_COLOR
+    assert labels[1][-1].attrib["fill"] == known_best_builder.SUMMARY_SMALL_FILL
     assert labels[1][-1][0].text == " (since August, 2026)"
     assert labels[1][-1][0].attrib["fill"] == "#000000"
     assert not root.findall(".//svg:polygon[@data-feature='legend-star']", SVG)
@@ -2760,7 +2752,7 @@ def test_both_pdf_legends_label_only_the_first_two_angle_swatches(index: int) ->
     assert Decimal(recent.attrib["y"]) == canvas.legend_baseline + 3 * pitch
     assert "".join(recent.itertext()) == "recent result (since August, 2026)"
     assert recent.text == "recent result"
-    assert recent.attrib["fill"] == FIRST_PARTY_ACCENT_COLOR
+    assert recent.attrib["fill"] == known_best_builder.SUMMARY_SMALL_FILL
     assert recent[0].attrib["fill"] == "#000000"
 
 

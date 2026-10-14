@@ -101,6 +101,7 @@ name: Certificate page
       - packing/atlas/known-best/bound-citations.json
       - packing/atlas/known-best/rendering/**
       - packing/atlas/known-best/regularized/index.json
+      - packing/atlas/known-best/default-drawings.json
       - packing/atlas/known-best/regularized/rendering/**
       - packing/witnesses/known-best/**
       - packing/devtools/templates/n11-lower-bounds-explainer-shell.html
@@ -125,6 +126,9 @@ name: Certificate page
       - packing/devtools/overview_sections.py
       - packing/devtools/build_known_best_atlas.py
       - packing/devtools/atlas_print_font.py
+      - packing/devtools/default_drawings.py
+      - packing/devtools/improvement_rule.py
+      - packing/devtools/pictured_source.py
       - packing/devtools/fonts/atlas-print/**
       - packing/devtools/result_overview.py
       - packing/devtools/atlas_legend.py

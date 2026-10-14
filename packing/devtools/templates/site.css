@@ -236,6 +236,11 @@ body {
    column's own top padding is that token, and its first block, a hero or a document's
    title, brings no margin of its own. */
 @media screen {
+  /* Wide blocks use the page container's width. Keep their outer clip at that
+     width too; the layout and text wrappers retain the reading-column cap. */
+  .kpress-page-main > .kpress-doc:has(.site-page) {
+    max-width: none;
+  }
   .kpress-page-main > .kpress-doc > .kpress-doc-layout > .kpress-long-text {
     padding-block-start: var(--site-page-top);
   }
@@ -2538,7 +2543,7 @@ html[data-site-atlas-view="triangle"] .site-atlas-grid:where([data-atlas-grid]) 
   line-height: 1.15;
   margin-block-start: calc(var(--site-atlas-tile) * 0.04);
 }
-/* Perfect-square endpoints use the text color and bold weight. */
+/* Perfect-square endpoints use bold weight while keeping the same gray number ink. */
 html:not([data-site-atlas-view="grid"])
   .site-atlas-grid:where([data-atlas-grid]):where([data-atlas-view="triangle"])
   [data-atlas-square]
@@ -2547,7 +2552,6 @@ html[data-site-atlas-view="triangle"]
   .site-atlas-grid:where([data-atlas-grid])
   [data-atlas-square]
   .site-atlas-n {
-  color: var(--kpress-doc-text);
   font-weight: var(--site-font-weight-sans-bold);
 }
 /* The grid shows n = 1 to 100 until its button, centred under it, places the rest. The
@@ -2790,25 +2794,17 @@ html[data-site-atlas-view="triangle"]
   inline-size: 3px;
   inset-block-start: -0.4rem;
 }
-/* An equality displays the packing value. A recent proof accents O independently;
-   historical exact values retain the ordinary text ink. */
+/* An equality displays the packing value; historical exact values retain ordinary
+   text ink. Status badges and their labels keep their usual neutral ink. */
 .site-atlas-pop .is-exact-value:not(.is-new-result),
 .site-atlas-pop .is-exact-value:not(.is-new-result) .katex {
   color: var(--kpress-doc-text);
 }
-/* Recent construction, proof and optimality contributions share the new-result ink.
-   Historical upper packings retain their role colour when only optimality is new. */
+/* Only a changed numerical bound takes the new-result ink. Historical upper packings
+   retain their role colour when only optimality is new. */
 .kpress .site-page .is-new-result,
 .kpress .site-page .is-new-result .katex {
   color: var(--site-new-result);
-}
-.kpress .site-atlas-badge[data-recent="true"] {
-  border-color: var(--site-new-result);
-  color: var(--site-new-result);
-}
-.kpress .site-atlas-badge[data-recent="true"][data-style="solid"] {
-  background: var(--site-new-result);
-  color: var(--kpress-doc-bg);
 }
 /* ---------- Case records ----------
    One record per case, in its own file at `cases/11.html`, shown by the record page
@@ -3359,6 +3355,11 @@ html[data-site-atlas-view="triangle"]
   justify-content: center;
   padding-inline-start: 0.15rem;
   transition: transform var(--site-hover-duration) var(--site-hover-easing);
+}
+.site-film-play-icon::before {
+  border-block: 0.7rem solid transparent;
+  border-inline-start: 1.1rem solid currentColor;
+  content: "";
 }
 .site-film-play:is(:hover, :focus-visible) .site-film-play-icon {
   transform: scale(1.08);

@@ -835,8 +835,8 @@ PRIMARY_COMPOSITE = COMPOSITES[0]
 POSTER_REGULARIZATION_PROSE = (
     "A tile draws its packing's regularized view, an exact redrawing of the same packing "
     "at the same side, where that view improves on the packing as published, and the "
-    "packing as published elsewhere; the regularized tiles are counted and credited to "
-    "the Squares Project and the regularizer that made them in the information block."
+    "packing as published elsewhere. The information block gives the compact credit; "
+    "metadata records the regularized cases and their complete generator attribution."
 )
 
 #: The accessible title and description, per composite. Prose about a particular range
@@ -2084,9 +2084,7 @@ def _append_summary_card(
             "font-size": "29",
             "font-weight": "700",
             "letter-spacing": "-0.5",
-            "fill": FIRST_PARTY_ACCENT_COLOR
-            if recent is not None and recent.any
-            else LABEL_MUTED_COLOR,
+            "fill": LABEL_MUTED_COLOR,
         },
     ).text = str(n)
 
@@ -2106,9 +2104,7 @@ def _append_summary_card(
             label,
             x=cursor,
             top=badge_top,
-            accent=FIRST_PARTY_ACCENT_COLOR
-            if recent is not None and recent.optimal and glyph == "O"
-            else None,
+            accent=None,
         )
         cursor -= SUMMARY_BADGE_SIZE + Decimal(4)
     bound = sub(
@@ -2604,9 +2600,7 @@ def _append_summary_legend(
                 font_family=POSTER_BODY_FONT,
                 font_weight=POSTER_BODY_WEIGHT,
                 mark_font_weight=POSTER_BODY_WEIGHT,
-                label_fill=FIRST_PARTY_ACCENT_COLOR
-                if item.key == "recent"
-                else SUMMARY_SMALL_FILL,
+                label_fill=SUMMARY_SMALL_FILL,
             )
             if item.key == "recent":
                 recent = column[-1]
@@ -2890,19 +2884,12 @@ def _print_attribution_lines() -> tuple[tuple[str, ...], ...]:
     )
 
 
-#: The lead of a composite's regularization credit: how many of its tiles are drawn from
-#: regularized views, each because it improves on the packing as published, which the
-#: other tiles draw (regularization policy, sections 11 and 12).
-POSTER_REGULARIZATION_LEAD = (
-    "Regularized drawings ({drawn} of {count}), where they improve on the packings as published"
+#: The owner's compact print credit; detailed generator attribution stays in metadata.
+POSTER_REGULARIZATION_LINES = (
+    "Drawn packings are regularized for cleaner display using Squares Project rules,",
+    "based on Daniel\u2019s regularizer",
 )
-#: What the generators' credit lines share (policy section 7: "Regularized by the Squares
-#: Project with ..."), factored out of the composites' one sentence; its first word is
-#: the lead's own. The owner asked on 14 October 2026 that the credits be one sentence
-#: that "doesn't repeat itself too much". A credit line that does not begin this way is
-#: printed whole, as a sentence of its own, rather than cut.
-REGULARIZATION_CREDIT_STEM = "Regularized "
-REGULARIZATION_CREDIT_SHARED = "by the Squares Project with "
+POSTER_REGULARIZATION_CREDIT = " ".join(POSTER_REGULARIZATION_LINES)
 
 
 @cache
@@ -2922,52 +2909,18 @@ def _full_names() -> tuple[tuple[str, str], ...]:
     return tuple(sorted(found, key=lambda pair: (-len(pair[0]), pair[0])))
 
 
-def _print_surnames(text: str) -> str:
-    """`text` with every full personal name printed as the other print credits print
-    names, by surname (the owner, 14 October 2026: the only full name in the information
-    block is the diagram's own credit)."""
-    for full, name in _full_names():
-        text = re.sub(rf"(?<!\w){re.escape(full)}(?!\w)", name, text)
-    return text
+def regularization_sentences(
+    numbers: Sequence[int], _count: int
+) -> tuple[tuple[str, ...], ...]:
+    """The compact print credit, with detailed attribution in the poster's metadata."""
+    return (tuple(POSTER_REGULARIZATION_CREDIT.split()),) if numbers else ()
 
 
-def _series(items: Sequence[str]) -> tuple[str, ...]:
-    """Items as a written list's atoms: commas between, "and" before the last; each item
-    one atom, so no line breaks inside a credit."""
-    if len(items) == 1:
-        return (items[0],)
-    return (
-        *(f"{item}," for item in items[:-2]),
-        f"{items[-2]} and",
-        items[-1],
-    )
-
-
-def regularization_sentences(numbers: Sequence[int], count: int) -> tuple[tuple[str, ...], ...]:
-    """A composite's regularization credit as sentences of unbreakable atoms: one
-    sentence, the lead and then, after the shared "by the Squares Project with", what each
-    generator's credit line names, once, in the order the cases first draw it; then any
-    credit line that does not share that opening, whole and on its own. A full personal
-    name in a credit line prints as its surname (`_print_surnames`)."""
+def _regularization_generator_credits(numbers: Sequence[int]) -> tuple[str, ...]:
+    """Full generator credit for every pictured regularization, retained as metadata."""
     from devtools.default_drawings import credit_line  # noqa: PLC0415
 
-    if not numbers:
-        return ()
-    shared = REGULARIZATION_CREDIT_STEM + REGULARIZATION_CREDIT_SHARED
-    # The poster's compact form names people by surname, as its other credits do; the
-    # case pages and the register keep the full credit line.
-    lines = tuple(dict.fromkeys(_print_surnames(credit_line(n)) for n in numbers))
-    named = [line.removeprefix(shared) for line in lines if line.startswith(shared)]
-    whole = [line for line in lines if not line.startswith(shared)]
-    lead = POSTER_REGULARIZATION_LEAD.format(drawn=len(numbers), count=count)
-    if named:
-        lead += ","
-    first = (
-        *lead.split(" "),
-        *(REGULARIZATION_CREDIT_SHARED.split() if named else ()),
-        *_series(named),
-    )
-    return (first, *((line,) for line in whole))
+    return tuple(dict.fromkeys(credit_line(n) for n in numbers))
 
 
 def _regularized_numbers(canvas: CompositeCanvas) -> tuple[int, ...]:
@@ -2976,23 +2929,12 @@ def _regularized_numbers(canvas: CompositeCanvas) -> tuple[int, ...]:
 
 
 @cache
-def _regularization_lines_for(numbers: tuple[int, ...], count: int) -> tuple[str, ...]:
-    return tuple(
-        line
-        for atoms in regularization_sentences(numbers, count)
-        # Each sentence on the fewest lines the information block holds, never breaking
-        # inside a generator's credit.
-        for line in _balanced_atoms(
-            atoms,
-            failure="poster regularization credits exceed their information block",
-        )
-    )
+def _regularization_lines_for(numbers: tuple[int, ...], _count: int) -> tuple[str, ...]:
+    return POSTER_REGULARIZATION_LINES if numbers else ()
 
 
 def _regularization_lines(canvas: CompositeCanvas) -> tuple[str, ...]:
-    """A composite's credit paragraph for the tiles it draws from regularized views: one
-    sentence, how many and by whom, from each generator's credit line (policy, section 7
-    and section 9, question 16; `regularization_sentences`); empty where it draws none."""
+    """The owner's two-line print credit for regularized default pictures."""
     return _regularization_lines_for(_regularized_numbers(canvas), canvas.spec.count)
 
 
@@ -3305,6 +3247,10 @@ def _append_composite_information(
                 "data-feature": "regularization-credits",
                 "data-depicted-range": canvas.spec.cases.label,
                 "data-regularized-cases": json.dumps(list(_regularized_numbers(canvas))),
+                "data-generator-credits": json.dumps(
+                    _regularization_generator_credits(_regularized_numbers(canvas)),
+                    ensure_ascii=False,
+                ),
             },
         )
         regularization_lines = [

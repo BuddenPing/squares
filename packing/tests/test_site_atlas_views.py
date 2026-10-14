@@ -1932,19 +1932,24 @@ def test_wide_triangle_uses_grid_capacity_without_a_row_length_cap(seen: Reading
     assert initial["overflow"] == 0
 
 
-def test_contribution_accents_paint_independently_and_rigidity_stays_dark(
+def test_only_changed_numerical_bounds_are_red_and_numbers_and_badges_stay_neutral(
     seen: Readings,
 ) -> None:
     seventeen = seen["contributions, 17"]
     assert seventeen["lower_gap_label"] == "4.66"
     assert seventeen["lower_bound_label"] == "4.66044"
+    assert seventeen["lower_value"] == seventeen["colors"]["recent"]
+    for n in (1, 11, 17, 211):
+        reading = seen[f"contributions, {n}"]
+        assert reading["number_colors"] == [reading["colors"]["dark"]]
+        assert reading["bound_prefix"] == reading["colors"]["neutral"]
     eleven = seen["contributions, 11"]
     assert eleven["upper"] == eleven["colors"]["upper"]
-    assert eleven["lower_citation"] == eleven["colors"]["recent"]
+    assert eleven["lower_citation"] == eleven["colors"]["lower"]
     assert eleven["equality_upper"] == eleven["colors"]["neutral"]
     for badge in eleven["badges"]:
         if badge["glyph"] == "O":
-            assert badge["background"] == eleven["colors"]["recent"]
+            assert badge["background"] == eleven["colors"]["dark"]
         if badge["glyph"] == "R":
             assert badge["style"] == "solid"
             assert badge["background"] == eleven["colors"]["dark"]
