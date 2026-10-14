@@ -131,12 +131,20 @@ def controls() -> dict[str, dict[str, Any]]:
 
 @cache
 def decided() -> dict[str, dict[str, Any]]:
-    """Each evidence entry that `V-sqverify-fast` decides, by its id."""
+    """Each evidence entry that `V-sqverify-fast` decides a bound for, by its id.
+
+    The census rows are bounds. An entry that decides a lemma (`derived-structure`) with
+    the crate's exact axis sweep rests on no census row and keeps its receipts in its own
+    packet: the near-axis lemmas of T-145 (on wand125's rect_n40_L67, which only shares
+    the census row's file) and T-157 (on Guzhou0806's new-supports density, which has no
+    census row).
+    """
     register = safe_load(EVIDENCE.read_text(encoding="utf-8"))
     return {
         entry["id"]: entry
         for entry in register["evidence"]
         if VERIFIER in (entry.get("verifiers") or [])
+        and entry.get("claim") != "derived-structure"
     }
 
 
