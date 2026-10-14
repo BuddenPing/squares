@@ -82,7 +82,7 @@ from dataclasses import dataclass, field, replace
 from decimal import Decimal
 from fractions import Fraction
 from pathlib import Path
-from typing import Any, NotRequired, TypedDict, cast
+from typing import Any, NotRequired, TypedDict, TypeIs, cast
 
 import mpmath as mp
 import yaml
@@ -287,7 +287,7 @@ class Ledger(TypedDict):
     other_items: list[OtherItem]
 
 
-def _is_count(value: object) -> bool:
+def _is_count(value: object) -> TypeIs[int]:
     """A positive integer count; a bool is not one."""
     return isinstance(value, int) and not isinstance(value, bool) and value >= 1
 
@@ -345,12 +345,23 @@ def load_yaml(path: Path) -> Any:
     return safe_load(path.read_text(encoding="utf-8"))
 
 
+#: The top-level keys every ledger states (`Ledger`), and the fields every report does.
+LEDGER_KEYS = ("format", "read_at_main", "read_on", "rule", "lanes", "reports", "exceptions")
+REPORT_KEYS = ("report", "url", "kind", "holders", "reported_at", "bead")
+#: The parts of a claim that are themselves mappings, and the fields each must name.
+CLAIM_PARTS: Mapping[str, tuple[str, ...]] = {
+    "refines": ("packing_of", "entry", "source"),
+    "new_packing": ("source",),
+    "measured": ("against", "finding", "source"),
+}
+
+
 def _problems_of_claim(where: str, claim: Mapping[str, Any], reported_at: str) -> list[str]:
     problems: list[str] = []
     allowed = set(Claim.__annotations__)
     if set(claim) - allowed:
         problems.append(f"{where}: unknown fields {sorted(set(claim) - allowed)}")
-    if not isinstance(claim.get("n"), int) or claim["n"] < 1:
+    if not _is_count(claim.get("n")):
         return [*problems, f"{where}: n is not a positive count"]
     try:
         span = printed_side(str(claim.get("printed")), str(claim.get("rounding")))
@@ -371,33 +382,65 @@ def _problems_of_claim(where: str, claim: Mapping[str, Any], reported_at: str) -
         for key in ("first_committed", "reported_at")
         if key in claim and not _UTC.fullmatch(str(claim[key]))
     )
-    own = claim.get("reported_at")
-    if own and reported_at != UNKNOWN and _UTC.fullmatch(str(own)) and own < reported_at:
+    own = str(claim.get("reported_at") or "")
+    if own and reported_at != UNKNOWN and _UTC.fullmatch(own) and own < reported_at:
         problems.append(f"{where}: a claim cannot arrive before its report")
-    refines, new = claim.get("refines"), claim.get("new_packing")
-    if refines is not None and new is not None:
+    problems.extend(
+        f"{where}: {key} is not a string"
+        for key in ("restates", "note", "exact_from")
+        if key in claim and not isinstance(claim[key], str)
+    )
+    parts = {key: claim.get(key) for key in CLAIM_PARTS if claim.get(key) is not None}
+    for key, part in parts.items():
+        if not isinstance(part, Mapping):
+            problems.append(f"{where}: {key} is not a mapping")
+        elif not all(str(part.get(name) or "").strip() for name in CLAIM_PARTS[key]):
+            problems.append(f"{where}: {key} names {', '.join(CLAIM_PARTS[key])}")
+    if "refines" in parts and "new_packing" in parts:
         problems.append(f"{where}: a claim is a refinement or a new packing, not both")
-    if refines is not None and not all(
-        str(refines.get(key) or "").strip() for key in ("packing_of", "entry", "source")
-    ):
-        problems.append(f"{where}: refines names packing_of, entry and source")
-    if new is not None and not str(new.get("source") or "").strip():
-        problems.append(f"{where}: new_packing names its source")
-    for relation in claim.get("record_relations") or []:
+    relations = claim.get("record_relations") or []
+    if not isinstance(relations, list):
+        return [*problems, f"{where}: record_relations is not a list"]
+    for relation in relations:
+        if not isinstance(relation, Mapping):
+            problems.append(f"{where}: a record relation is not a mapping")
+            continue
         if relation.get("relation") not in (BELOW, ABOVE, EQUAL):
             problems.append(f"{where}: a record relation is below, above or equal")
         if relation.get("lane") not in ("reported", "verified"):
             problems.append(f"{where}: a record relation names the reported or verified lane")
-    measured = claim.get("measured")
-    if measured is not None and not all(
-        str(measured.get(key) or "").strip() for key in ("against", "finding", "source")
-    ):
-        problems.append(f"{where}: measured names against, finding and source")
+        if not all(isinstance(relation.get(key), str) for key in ("value", "exact_form")):
+            problems.append(f"{where}: a record relation states the value and form it read")
     return problems
+
+
+def _mappings(found: list[str], items: Any, what: str) -> list[Mapping[str, Any]]:
+    """The mappings of a list the ledger holds, each other item named in ``found``."""
+    if items is None:
+        return []
+    if not isinstance(items, list):
+        found.append(f"{what} is not a list")
+        return []
+    kept = [item for item in items if isinstance(item, Mapping)]
+    found.extend(
+        f"{what}: {str(item)[:60]!r} is not a mapping"
+        for item in items
+        if not isinstance(item, Mapping)
+    )
+    return kept
+
+
+def _named(item: Mapping[str, Any]) -> tuple[str, int]:
+    """The (report, count) an exception or a key-reason candidate names; 0 for no count."""
+    n = item.get("n")
+    return str(item.get("report")), n if _is_count(n) else 0
 
 
 def problems(ledger: Mapping[str, Any]) -> list[str]:
     """Every way the input breaks its contract; empty when it holds."""
+    missing = [key for key in LEDGER_KEYS if key not in ledger]
+    if missing:
+        return [f"the ledger is missing {missing}"]
     found: list[str] = []
     if ledger.get("format") != LEDGER_FORMAT:
         found.append(f"format is not {LEDGER_FORMAT}")
@@ -409,54 +452,74 @@ def problems(ledger: Mapping[str, Any]) -> list[str]:
         found.append("the rule is not quoted")
     found.extend(
         f"lane {lane.get('name')}: a branch and a full commit"
-        for lane in ledger.get("lanes") or []
+        for lane in _mappings(found, ledger["lanes"], "lanes")
         if not _COMMIT.fullmatch(str(lane.get("commit"))) or not lane.get("branch")
     )
     labels: set[str] = set()
     claimed: set[tuple[str, int]] = set()
-    for report in ledger.get("reports") or []:
+    arrivals: dict[int, dict[str, list[str]]] = {}
+    for report in _mappings(found, ledger["reports"], "reports"):
         label = str(report.get("report"))
-        missing = {"report", "url", "kind", "holders", "reported_at", "bead", "claims"} - set(
-            report
-        )
-        if missing:
-            found.append(f"{label}: missing {sorted(missing)}")
+        absent = [key for key in (*REPORT_KEYS, "claims") if key not in report]
+        if absent:
+            found.append(f"{label}: missing {absent}")
+            continue
+        mistyped = [key for key in REPORT_KEYS if not isinstance(report[key], str)]
+        if mistyped:
+            found.append(f"{label}: {mistyped} are not strings")
             continue
         if label in labels:
             found.append(f"{label}: the report is listed twice")
         labels.add(label)
         if report["kind"] not in KINDS:
             found.append(f"{label}: unknown kind {report['kind']!r}")
-        when = str(report["reported_at"])
+        when = report["reported_at"]
         if when != UNKNOWN and not _UTC.fullmatch(when):
             found.append(f"{label}: reported_at is neither a UTC time nor {UNKNOWN}")
-        if report["bead"] and not _BEAD.fullmatch(str(report["bead"])):
+        if report["bead"] and not _BEAD.fullmatch(report["bead"]):
             found.append(f"{label}: bead is not a think-xxxx id")
+        claims = _mappings(found, report["claims"], f"{label} claims")
         if not report["claims"]:
             found.append(f"{label}: no claims")
-        for claim in report["claims"]:
+        for claim in claims:
             where = f"{label} n={claim.get('n')}"
-            found.extend(_problems_of_claim(where, claim, when))
-            key = (label, int(claim.get("n") or 0))
+            own = _problems_of_claim(where, claim, when)
+            found.extend(own)
+            if own:
+                continue
+            key = (label, int(claim["n"]))
             if key in claimed:
                 found.append(f"{where}: the claim is listed twice")
             claimed.add(key)
-    for exception in ledger.get("exceptions") or []:
-        key = (str(exception.get("report")), int(exception.get("n") or 0))
+            arrived = str(claim.get("reported_at") or when)
+            if arrived != UNKNOWN:
+                arrivals.setdefault(key[1], {}).setdefault(arrived, []).append(label)
+    found.extend(
+        f"n={n}: {' and '.join(sorted(tied))} arrive at {arrived}, so only their labels "
+        "would order them; give each claim its own reported_at"
+        for n, times in sorted(arrivals.items())
+        for arrived, tied in times.items()
+        if len(tied) > 1
+    )
+    for exception in _mappings(found, ledger["exceptions"], "exceptions"):
+        key = _named(exception)
         if key not in claimed:
             found.append(f"exception {key}: names no claim of the ledger")
         if not str(exception.get("reason") or "").strip():
             found.append(f"exception {key}: states no reason")
-    for candidate in ledger.get("key_reason_candidates") or []:
-        key = (str(candidate.get("report")), int(candidate.get("n") or 0))
+    candidates = ledger.get("key_reason_candidates")
+    for candidate in _mappings(found, candidates, "key_reason_candidates"):
+        key = _named(candidate)
         if key not in claimed:
             found.append(f"key-reason candidate {key}: names no claim of the ledger")
         if not str(candidate.get("argument") or "").strip():
             found.append(f"key-reason candidate {key}: states no argument")
-    for item in ledger.get("other_items") or []:
-        missing = set(OtherItem.__annotations__) - set(item)
-        if missing:
-            found.append(f"other item {item.get('issue')}: missing {sorted(missing)}")
+    for item in _mappings(found, ledger.get("other_items"), "other_items"):
+        absent = set(OtherItem.__annotations__) - set(item)
+        if absent:
+            found.append(f"other item {item.get('issue')}: missing {sorted(absent)}")
+    if not isinstance(ledger.get("cross_check", []), list):
+        found.append("cross_check is not a list")
     return found
 
 
@@ -1085,7 +1148,7 @@ def recomputed(n: int, member: Mapping[str, Any]) -> list[dict[str, Any]]:
                 isinstance(lane, list)
                 and len(lane) == 4
                 and all(isinstance(x, str) for x in lane),
-                f"n = {n} {member['label']}: a lane is [name, value, exact form, polynomial]",
+                "a lane is [name, value, exact form, polynomial]",
             )
             name, value, form, text = lane
             bound = {"value": value, "exact_form": form, "minimal_polynomial": text}
@@ -1093,10 +1156,7 @@ def recomputed(n: int, member: Mapping[str, Any]) -> list[dict[str, Any]]:
     elif member["kind"] == "register":
         stated = member.get("stated")
         stated = stated if isinstance(stated, list) else []
-        _require(
-            len(stated) == 2,
-            f"n = {n} {member['label']}: a pending entry states [value, slack]",
-        )
+        _require(len(stated) == 2, "a pending entry states [value, slack]")
         value, slack = (number(str(item)) for item in stated)
         found = [pending_member({"id": "-"}, check_standing.Stated(value, slack))]
     elif member["label"] == "the grid":
@@ -1125,7 +1185,7 @@ def starts_problems(value: Any, read_at_main: str) -> list[str]:
         if not isinstance(count, Mapping) or not _is_count(count.get("n")):
             found.append(f"{STARTS}: a count without a positive n: {str(count)[:80]}")
             continue
-        n = int(count["n"])
+        n = count["n"]
         if n in seen:
             found.append(f"{STARTS} n = {n}: listed twice")
         seen.add(n)
@@ -2661,6 +2721,15 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
             mode.add_argument("--write", action="store_true", help="write them (the default)")
     args = parser.parse_args(argv)
+    try:
+        return _run(args)
+    except LedgerError as error:
+        message = " ".join(str(error).split())
+        print(f"FAIL  {args.action}: {message}", file=sys.stderr)
+        return 1
+
+
+def _run(args: argparse.Namespace) -> int:
     directory = cast("Path", args.directory).resolve()
     if args.action == "gather":
         kept = (directory / STARTS).is_file() and not args.refresh_starts

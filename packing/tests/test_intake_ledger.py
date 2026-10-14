@@ -365,6 +365,92 @@ def test_check_holds_the_schema_the_prints_and_the_times() -> None:
     assert "names no claim" in " ".join(ledger.problems(orphan))
 
 
+@pytest.mark.parametrize(
+    ("edit", "expected"),
+    [
+        (lambda data: data.pop("reports"), "missing ['reports']"),
+        (lambda data: data.pop("lanes"), "missing ['lanes']"),
+        (lambda data: data.update(reports="#1"), "reports is not a list"),
+        (lambda data: data["reports"][0]["claims"].append("n=100"), "is not a mapping"),
+        (lambda data: data["reports"][0]["claims"][0].update(n="abc"), "not a positive count"),
+        (lambda data: data["reports"][0]["claims"][0].update(n=True), "not a positive count"),
+        (lambda data: data["reports"][0].update(holders=["A"]), "are not strings"),
+        (
+            lambda data: data["reports"][0]["claims"][0].update(refines="T-001"),
+            "refines is not a mapping",
+        ),
+        (
+            lambda data: data["reports"][0]["claims"][0].update(record_relations=["below"]),
+            "a record relation is not a mapping",
+        ),
+        (
+            lambda data: data["reports"][0]["claims"][0].update(record_relations="below"),
+            "record_relations is not a list",
+        ),
+        (
+            lambda data: data.update(exceptions=[{"n": "abc", "report": "#1", "reason": "r"}]),
+            "names no claim",
+        ),
+        (lambda data: data.update(exceptions=["#1"]), "is not a mapping"),
+        (lambda data: data.update(lanes=["main"]), "is not a mapping"),
+    ],
+)
+def test_malformed_input_is_a_problem_and_never_a_crash(edit: Any, expected: str) -> None:
+    data = _minimal()
+    edit(data)
+    assert expected in " ".join(ledger.problems(data))
+
+
+def test_claims_at_one_count_and_one_time_are_refused_rather_than_ordered_by_label() -> None:
+    data = _minimal()
+    second = copy.deepcopy(data["reports"][0])
+    second.update(report="#2", url="https://github.com/jlevy/squares/issues/2")
+    data["reports"].append(second)
+    assert "#1 and #2 arrive at 2026-10-12T00:00:00Z" in " ".join(ledger.problems(data))
+    # A claim with a time of its own, or at another count, is ordered by its time.
+    second["claims"][0]["reported_at"] = "2026-10-12T00:00:01Z"
+    assert ledger.problems(data) == []
+    second["claims"][0].pop("reported_at")
+    second["claims"][0]["n"] = 101
+    assert ledger.problems(data) == []
+
+
+def test_a_malformed_start_is_refused_and_main_reports_one_line(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    data = _minimal()
+    (tmp_path / ledger.LEDGER).write_text(yaml.safe_dump(data), encoding="utf-8")
+    good = _starts()
+    cases: list[tuple[Any, str]] = [
+        ({**good, "format": "intake-ledger-starts-v1"}, "format intake-ledger-starts-v2"),
+        ({**good, "counts": {"n": 100}}, "counts is not a list"),
+        ({**good, "counts": [{"n": 100, "members": []}]}, "a start is never empty"),
+        ({**good, "counts": [{"n": "abc", "members": []}]}, "without a positive n"),
+        ({**good, "counts": [*good["counts"], good["counts"][0]]}, "listed twice"),
+    ]
+    missing = copy.deepcopy(good)
+    missing["counts"][0]["members"][0].pop("open_low")
+    cases.append((missing, "missing or mistyped ['open_low']"))
+    short = copy.deepcopy(good)
+    short["counts"][0]["members"][0]["lanes"][0].pop()
+    cases.append((short, "a lane is [name, value, exact form, polynomial]"))
+    unstated = copy.deepcopy(good)
+    unstated["counts"][1]["members"][1].pop("stated")
+    cases.append((unstated, "pending adoption: a pending entry states [value, slack]"))
+    for starts, expected in cases:
+        assert expected in " ".join(ledger.starts_problems(starts, FROZEN_AT))
+    # The empty start would record the first claim against nothing; check refuses it.
+    empty = {**good, "counts": [{"n": 100, "members": []}]}
+    (tmp_path / ledger.STARTS).write_text(yaml.safe_dump(empty), encoding="utf-8")
+    assert ledger.main(["check", str(tmp_path)]) == 1
+    error = capsys.readouterr().err
+    assert error.startswith("FAIL  check: starts.yaml n = 100: no members")
+    assert error.count("\n") == 1
+    (tmp_path / ledger.LEDGER).write_text(yaml.safe_dump({"format": "x"}), encoding="utf-8")
+    assert ledger.main(["render", "--check", str(tmp_path)]) == 1
+    assert "the ledger is missing" in capsys.readouterr().err
+
+
 def test_a_publication_dependent_verdict_is_listed_with_its_alternative() -> None:
     data = _minimal()
     data["reports"][0]["claims"] = [{"n": 400, "printed": "19.99", "rounding": "exact"}]
