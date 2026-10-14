@@ -617,3 +617,20 @@ repositories:
       results/threshold-2026-10-10.json and #505's publication metadata; 9947091 adds diagrams of
       the n146 and n261 packings; 52cf1cc moves the superseded files into superseded/ with an
       archive index, their bytes unchanged. Nothing to import.
+  - url: https://github.com/wand125/square-packing
+    read_through: 9a28a84bd55dc124bfa2919bb6c4fb504dda3149
+    read_on: '2026-10-14'
+    bead: think-xzob
+    note: >-
+      The 22 commits of 12 to 14 October (UTC) from f30cc2c to 9a28a84 past the 04fbef0 read.
+      f30cc2c and d4a1981 add tools/sqverify_continuous (v3, then v4 with --resume), the
+      continuous-angle route for the two n = 40 lower bounds, which think-xzob owns (#533).
+      dfb2cf8, 9f24185, 7a42c16 and 22f06b3 add the mixed certificates s(39) >= 533/80, s(44) >=
+      2799/400, s(37) >= 2599/400 and s(145) >= 306/25, which the
+      wand125-fine-net-n37-n39-n44-2026-10-13 and wand125-linear-n145-2026-10-13 packets retain
+      (think-u0av); eb0fd19 adds problems/closed-form, s(N) >= a(N) for every non-square N >= 49,
+      which the wand125-closed-form-2026-10-14 packet retains at 9a28a84 (think-tsox). 77d3fc5 proves
+      s(15) = 6 for a right isosceles triangle container, outside this record, which is squares in
+      a square. The other fifteen commits rebuild the site (themes, results tables, papers). The
+      release data/n17-m2048064-v1 of 13 October, one n = 17 sub-pattern certificate for #413, is
+      no commit's and think-p2cy owns it. Nothing else to import.
