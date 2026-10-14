@@ -90,14 +90,19 @@ def _target(target: str, *, destination: Destination) -> str:
         raise ValueError(f"unsafe link target: {target}")
     parts = urlsplit(decoded)
     if parts.scheme:
+        original = urlsplit(target)
         if (
             parts.scheme != "https"
-            or urlsplit(target).scheme != "https"
+            or original.scheme != "https"
             or not parts.hostname
             or parts.username is not None
             or parts.password is not None
+            or not original.hostname
+            or original.username is not None
+            or original.password is not None
         ):
             raise ValueError(f"unsafe link scheme or authority: {target}")
+        _https_authority(original, target)
         _https_authority(parts, target)
         return target
     if parts.netloc or decoded.startswith("/"):

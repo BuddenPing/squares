@@ -307,14 +307,15 @@ jobs:
         working-directory: packing
         shell: bash
     env:
-      TMPDIR: ${{ runner.temp }}/candidate-infographics-tmp
-      UV_CACHE_DIR: ${{ runner.temp }}/candidate-infographics-uv
-      CARGO_TARGET_DIR: ${{ runner.temp }}/candidate-infographics-cargo
       PYTHONDONTWRITEBYTECODE: "1"
     steps:
       - name: Prepare isolated candidate scratch
         working-directory: ${{ runner.temp }}
-        run: mkdir -p "$TMPDIR" "$UV_CACHE_DIR" "$CARGO_TARGET_DIR" "$RUNNER_TEMP/candidate-infographics"
+        run: |
+          mkdir -p "$RUNNER_TEMP/candidate-infographics-tmp" "$RUNNER_TEMP/candidate-infographics-uv" "$RUNNER_TEMP/candidate-infographics-cargo" "$RUNNER_TEMP/candidate-infographics"
+          printf 'TMPDIR=%s\n' "$RUNNER_TEMP/candidate-infographics-tmp" >> "$GITHUB_ENV"
+          printf 'UV_CACHE_DIR=%s\n' "$RUNNER_TEMP/candidate-infographics-uv" >> "$GITHUB_ENV"
+          printf 'CARGO_TARGET_DIR=%s\n' "$RUNNER_TEMP/candidate-infographics-cargo" >> "$GITHUB_ENV"
 
       - name: Check out the selected source commit
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -2332,6 +2333,7 @@ jobs:
     needs: [publish, pages-required]
     if: >-
       ${{ !cancelled() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+      && !inputs.redraw_infographics
       && needs.publish.result == 'success' && needs.pages-required.result == 'success' }}
     runs-on: ubuntu-latest
     outputs:

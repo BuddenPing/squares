@@ -261,6 +261,8 @@ def test_structured_links_reject_decoded_markup_and_unsafe_authorities() -> None
         "https://example.com\\evil/path",
         "https://user@example.com/path",
         "https://@example.com/path",
+        "https://visible.example%23@actual.example/path",
+        "https://visible.example%2F@actual.example/path",
         "https://example.com:invalid/path",
         "https://exam ple.com/path",
         "javascript:alert(1)",

@@ -491,6 +491,7 @@ def test_the_deploy_path_does_not_inherit_skips_from_its_ancestors() -> None:
     assert jobs["deploy"]["if"] == (
         "${{ !cancelled() && github.ref == 'refs/heads/main' "
         "&& github.event_name != 'pull_request' "
+        "&& !inputs.redraw_infographics "
         "&& needs.publish.result == 'success' && needs.pages-required.result == 'success' }}"
     )
     assert jobs["verify-deployment"]["if"] == (
@@ -2316,7 +2317,33 @@ def test_candidate_infographics_are_dispatch_only_independent_and_source_bound()
     assert "candidate-infographics" not in pull_request_jobs(workflow)
     assert all("candidate-infographics" not in needs_of(other) for other in jobs.values())
     assert "environment" not in job
+    # GitHub excludes `runner` from job-level env, before any runner is selected.
+    assert job["env"] == {"PYTHONDONTWRITEBYTECODE": "1"}
+    assert not any("runner." in str(value) for value in job["env"].values())
     steps = job["steps"]
+    prepare = steps[0]
+    assert prepare["name"] == "Prepare isolated candidate scratch"
+    assert prepare["working-directory"] == "${{ runner.temp }}"
+    assert "if" not in prepare
+    assert "continue-on-error" not in prepare
+    scratch = {
+        "TMPDIR": "candidate-infographics-tmp",
+        "UV_CACHE_DIR": "candidate-infographics-uv",
+        "CARGO_TARGET_DIR": "candidate-infographics-cargo",
+    }
+    expected_exports = {
+        f'''printf '{name}=%s\\n' "$RUNNER_TEMP/{directory}" >> "$GITHUB_ENV"'''
+        for name, directory in scratch.items()
+    }
+    prepare_lines = prepare["run"].splitlines()
+    assert set(prepare_lines[1:]) == expected_exports
+    assert len(prepare_lines[1:]) == len(expected_exports) == 3
+    assert shlex.split(prepare_lines[0]) == [
+        "mkdir",
+        "-p",
+        *(f"$RUNNER_TEMP/{directory}" for directory in scratch.values()),
+        "$RUNNER_TEMP/candidate-infographics",
+    ]
     checkout = next(
         step for step in steps if step.get("uses", "").startswith("actions/checkout@")
     )
@@ -2373,3 +2400,45 @@ def test_candidate_infographics_are_dispatch_only_independent_and_source_bound()
     assert "if" not in upload
     assert "continue-on-error" not in upload
     assert not any("deploy-pages@" in step.get("uses", "") for step in steps)
+
+
+def test_export_dispatch_skips_deployment_but_normal_main_launches_still_deploy() -> None:
+    """Even successful normal jobs must not deploy an export-only dispatch."""
+    jobs = load()["jobs"]
+
+    def deploys(
+        *,
+        event: str,
+        ref: str = "refs/heads/main",
+        redraw: bool | None = None,
+        cancelled: bool = False,
+        publish: str = "success",
+        required: str = "success",
+    ) -> bool:
+        clauses = conjuncts(jobs["deploy"]["if"])
+        assert clauses is not None
+        values = {
+            "!cancelled()": not cancelled,
+            "github.ref == 'refs/heads/main'": ref == "refs/heads/main",
+            "github.event_name != 'pull_request'": event != "pull_request",
+            "!inputs.redraw_infographics": not redraw,
+            "needs.publish.result == 'success'": publish == "success",
+            "needs.pages-required.result == 'success'": required == "success",
+        }
+        assert set(clauses) <= values.keys(), clauses
+        return all(values[clause] for clause in clauses)
+
+    assert deploys(event="push")
+    assert deploys(event="workflow_dispatch", redraw=False)
+    assert not deploys(event="workflow_dispatch", redraw=True)
+    assert not deploys(event="pull_request")
+    assert not deploys(event="workflow_dispatch", ref="refs/heads/candidate", redraw=False)
+    assert not deploys(event="push", cancelled=True)
+    assert not deploys(event="push", publish="failure")
+    assert not deploys(event="push", required="failure")
+    verify_clauses = conjuncts(jobs["verify-deployment"]["if"])
+    assert verify_clauses is not None
+    assert verify_clauses == ["!cancelled()", "needs.deploy.result == 'success'"]
+    for result, expected in (("success", True), ("skipped", False), ("failure", False)):
+        values = {"!cancelled()": True, "needs.deploy.result == 'success'": result == "success"}
+        assert all(values[clause] for clause in verify_clauses) is expected
