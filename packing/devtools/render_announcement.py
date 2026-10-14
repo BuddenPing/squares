@@ -69,12 +69,13 @@ The owner announces from it as they choose. Each line is held to `POST_LIMIT` on
 own, so that a thread of one line a post fits, and stderr says whether the whole
 announcement also fits one post (`block_fit`).
 
-Usage, from `packing/`:
+Usage, from `packing/`, selecting an intake pass's own results by id, since `--since`
+also picks up what other passes registered that day:
     uv run --frozen --all-extras --group dev python -m devtools.render_announcement \\
-        --since 2026-10-11 [--github] [--min-significance 3] [--all] [--lineage] \\
+        --ids T-147 T-148 [--github] [--min-significance 3] [--all] [--lineage] \\
         [--margins] [--date YYYY-MM-DD]
     uv run --frozen --all-extras --group dev python -m devtools.render_announcement \\
-        --ids T-147 T-148 [--github]
+        --since 2026-10-11 [--github]
 """
 
 from __future__ import annotations

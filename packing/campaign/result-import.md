@@ -46,11 +46,13 @@ W1 phase on one branch:
    Checked.
 6. **Render the announcement** of the results the pass registered, from `packing/`:
    `uv run --frozen --all-extras --group dev python -m devtools.render_announcement
-   --since YYYY-MM-DD --github`, with the day the pass began, or `--ids` and the pass’s
-   `T-NNN`. [The tool](../devtools/render_announcement.py) prints a dated header and one
-   brief line per result, crediting its finders by an X handle the record or their
-   GitHub profile declares and by full name otherwise, never the owner, and says on
-   stderr what it left out and where each handle came from.
+   --ids T-NNN … --github`, with the pass’s own `T-NNN`. Select by id, not with
+   `--since`: the date the register received a result also picks up what other passes
+   registered that day.
+   [The tool](../devtools/render_announcement.py) prints a dated header and one brief
+   line per result, crediting its finders by an X handle the record or their GitHub
+   profile declares and by full name otherwise, never the owner, and says on stderr what
+   it left out and where each handle came from.
    Put its output in the pull request description under **Announcement**, for the owner
    to post; an agent never posts it.
 7. **Draft the replies** in each issue’s answer bead: every issue the pass touches gets
@@ -115,9 +117,10 @@ claude/intake-YYYY-MM-DD, with today's date.
    `tbd shortcut create-or-update-pr-simple`. List every item with its bead and the
    stage it reached, and every source the sweep could not check.
 7. From packing/, run `uv run --frozen --all-extras --group dev python -m
-   devtools.render_announcement --since YYYY-MM-DD --github` with the day this pass
-   began, and add its output to the pull request description under "Announcement",
-   for the owner to post. Do not post it.
+   devtools.render_announcement --ids T-NNN ... --github` with the T-NNN this pass
+   registered (not --since, which also picks up other passes' results), and add its
+   output to the pull request description under "Announcement", for the owner to
+   post. Do not post it.
 8. Draft the reply each issue the pass touches is owed in its answer bead; every one
    gets a comment. Once the pull request merges, render each from main with
    `check_requests --draft N`, check that main and the deployed site say what it says
