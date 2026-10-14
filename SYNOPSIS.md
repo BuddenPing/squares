@@ -624,6 +624,7 @@ case or experiment separately.
 | [Project changelog](CHANGELOG.md) | generated status view | generated | generated | — |
 | [Site Changelog Backfill Review](docs/project/reviews/review-2026-10-13-site-changelog-backfill.md) | dated review record | record | retained | — |
 | [Feature: Project Changelog and Recent PR Backfill](docs/project/specs/active/plan-2026-10-13-site-changelog.md) | implementation plan | current | transient | — |
+| [Mathematical Review: wand125’s Closed-Form Lower Bound s(N) ≥ a(N) for Every Non-Square N ≥ 49](docs/project/reviews/review-2026-10-14-wand125-closed-form-lower-bound.md) | dated review record | record | retained | — |
 | [Fitzharding’s Lean Proof of s(17) = L: Mathematical-Correctness Review](docs/project/reviews/review-2026-10-13-fitzharding-n17-mathematical-correctness.md) | dated review record | record | retained | — |
 | [Mathematical Review: Overbeck’s Candidate Proof That `s(17) = L`, Correctness Lane](docs/project/reviews/review-2026-10-13-overbeck-n17-mathematical-correctness.md) | dated review record | record | retained | — |
 | [Adversarial Review: Fitzharding’s Lean Proof That `s(17) = L`](docs/project/reviews/review-2026-10-13-fitzharding-n17-lean.md) | dated review record | record | retained | — |

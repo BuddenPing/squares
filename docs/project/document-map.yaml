@@ -15,6 +15,7 @@ documents:
   - {path: CHANGELOG.md, role: generated-view, authority: generated, lifecycle: generated}
   - {path: docs/project/reviews/review-2026-10-13-site-changelog-backfill.md, role: review, authority: record, lifecycle: retained}
   - {path: docs/project/specs/active/plan-2026-10-13-site-changelog.md, role: plan, authority: current, lifecycle: transient}
+  - {path: docs/project/reviews/review-2026-10-14-wand125-closed-form-lower-bound.md, role: review, authority: record, lifecycle: retained}
   - {path: docs/project/reviews/review-2026-10-13-fitzharding-n17-mathematical-correctness.md, role: review, authority: record, lifecycle: retained}
   - {path: docs/project/reviews/review-2026-10-13-overbeck-n17-mathematical-correctness.md, role: review, authority: record, lifecycle: retained}
   - {path: docs/project/reviews/review-2026-10-13-fitzharding-n17-lean.md, role: review, authority: record, lifecycle: retained}
