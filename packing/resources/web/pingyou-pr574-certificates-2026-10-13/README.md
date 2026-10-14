@@ -188,11 +188,68 @@ certificate has the digest of #593’s.
 
 ## The Replay
 
-REPLAY-PENDING
+The full batch was priced above three hours on one worker, so the counts where the
+certificate is below every report, by the exact sides above, were replayed first.
+
+**Rational, on both maintained routes.** `devtools.upper_bound_reports` decides each
+fact through the two-route kernel of `devtools.evand_arrangement_reports`: `sqpack`’s
+exact witness verifier and the independent rational corner checker, each deciding every
+wall and every pair over Q. A positive job, a duplicate-square control and an
+outside-container control ran for each count in its own child process, one at a time,
+from a resumable driver that runs `decide-job` with no per-job deadline, from 08:11 to
+10:13 UTC with other lanes on the machine. The session’s two-hour ceiling on a background
+task stopped the driver during the last job of N269, which was then decided alone, and
+`certify --finished` assembled the receipts of the 39 counts whose three jobs had all
+finished, one file per count under `receipts/exact-certification-nNNN.json.xz`:
+N68, N84, N86, N88, N102, N103, N105, N108, N110, N123, N126, N127, N129 to N132, N155,
+N156, N175, N176, N179, N180, N206, N209, N232, N236, N238, N258, N259, N261, N264,
+N266 to N269, N271, N292, N303 and N305.
+
+The 117 jobs made 4,555,860 pair decisions in 4,836.27 route CPU seconds and 6,992.23 job
+wall seconds, the longest 203.51 seconds. All 39 positives pass both routes and both
+routes refuse all 78 controls. The certificates are exact contact solutions: in every
+positive a square touches the box, a least wall clearance of exactly 0, and at 38 counts
+two squares touch, a least pair gap of exactly 0; at N261 the least gap is 4.84e-89. The
+two routes find the same least clearance and gap at every count.
+`check --replay` decided the 21 jobs of N129, N156, N175, N176, N258, N261 and N271 again
+in 21 minutes 43 seconds, equal to the retained rows, and admitted all 117; the other 32
+counts’ rows are admitted, not decided again, which is priced at about 1.5 hours.
+
+**Algebraic, on one route.** `devtools.algebraic_witness_reports` decided N70, N153 and
+N207 on `sqpack`’s exact witness verifier over each witness’s field, with the same two
+controls, each job in its own child process: 9 jobs, 106,092 pair decisions, 699.13 route
+CPU seconds and 787.03 job wall seconds, the longest 166.45. The three positives pass,
+every square and pair decided by exact signs in the field, and the six controls are
+refused. All three touch the box and touch between squares exactly. The receipts are
+`receipts/algebraic-route1-nNNN.json.xz`.
+`check --replay` decided all nine jobs again in 12 minutes 57 seconds, with the same
+outcomes.
 
 ## What Is Not Established
 
-REST-PENDING
+- **The other 21 counts below every report** (N146, N172, N181, N182, N199, N204, N208,
+  N210, N228, N239, N240, N263, N270, N272, N273, N295, N297, N301 and N306 to N308)
+  and **the other 25 declared rational counts** were not replayed. Fitted to the 117
+  jobs above, a pair decision costs about 4.27e-6 L^0.93 seconds of wall time on the
+  shared machine, L the certificates’ median literal length, which prices them at about
+  2.8 and 0.8 hours, the longest job about 316 seconds (N308). `certify` continues from
+  the finished jobs once `replayed` names them.
+- **The other 57 algebraic counts** were not replayed. At the measured rates, about
+  2.3 ms a pair over Q(√2), 6 to 8 ms in the degree-5 and degree-7 fields, and 305
+  seconds for N53’s degree-8 positive, they are priced at about 2.2 hours on the one route.
+- **A second route over a number field** does not exist here. The independent corner
+  checker reads rational corners only. Run as a diagnostic on `sqpack.field` values, its
+  geometry accepted N5, N10 and N40 unchanged, in 0.02 to 1.05 seconds; as a recorded
+  route it would share the field arithmetic and sign decisions with the first, so it
+  needs a W7 slice and a review of that relationship. A second implementation of
+  number-field arithmetic is a larger slice.
+- The source’s checkers (`VERIFY.py`, `verify_exact.py`, `exact_sat.py`,
+  `exact_polygon.py`, `independent/verify_attainments.py` and the conversion scripts)
+  were not run; the routes above decide the certificates from their own poses. The
+  derivations in `CONSTRUCTION-NOTES.md`, the per-count credit records and the
+  predecessor comparisons of the submission were not checked.
+- N11, N17 and N29 are not declared, for the reasons above. The replay has not been
+  reviewed. A finite certificate establishes an upper bound only.
 
 ## Credit
 
@@ -377,3 +434,7 @@ is not the one its manifest pins.
 | `facts/alg-n-298.yaml.gz` | receipt | `798a266701b33a61c7903a5696e3512e6fdc33a6` | `ffcec527649fafc6717e7862a82d97074caac1dde48be97b5a33a260dd29128a` |
 | `facts/alg-n-299.yaml.gz` | receipt | `5a967b6826d6a48808ea1f22578d461e70a5bc2c` | `b907527614de970e1c3b96c918455f1ffe5d2ad2b5e1f92a5732e963ba82b739` |
 | `facts/alg-n-302.yaml.gz` | receipt | `db56fa2b6aab42c45727609e303b5f45af830f7d` | `8be9b59cff78030ea2443a4c799824d98643e17c0b24adf1b267d8aaea1b895a` |
+
+<!-- This document follows common-doc-guidelines.md.
+See github.com/jlevy/practical-prose and review guidelines before editing.
+-->

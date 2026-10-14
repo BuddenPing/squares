@@ -443,7 +443,7 @@ def test_a_half_turn_has_no_half_angle_tangent(degrees: int) -> None:
         ({**DILATED, "dilation": "1.5"}, "positive integer or p/q"),
         ({**DILATED, "dilation": "-2"}, "positive integer or p/q"),
         ({**DILATED, "dilation": "3/0"}, "positive integer or p/q"),
-        ({**DILATED, "dilation": "1" * 1025}, "positive integer or p/q"),
+        ({**DILATED, "dilation": "1" * (reports.MAX_LITERAL_CHARS + 1)}, "integer or p/q"),
         ({**DILATED, "dilation": "1/2"}, "below 1"),
         ({**DILATED, "half_angle_places": "29"}, "integer from 30 to 100"),
         ({**DILATED, "half_angle_places": "101"}, "integer from 30 to 100"),

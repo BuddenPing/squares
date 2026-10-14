@@ -14,6 +14,9 @@ import functools
 import hashlib
 import io
 import json
+import os
+import shutil
+import subprocess
 import zipfile
 from collections.abc import Callable
 from fractions import Fraction
@@ -22,16 +25,7 @@ from typing import Any
 
 import pytest
 import yaml
-from test_upper_bound_reports import (  # noqa: F401 -- `private` is a fixture
-    CENTRED,
-    DATE,
-    DELEEUW,
-    _git,
-    _json,
-    _readme,
-    _write_json,
-    private,
-)
+from test_upper_bound_reports import CENTRED, DATE, DELEEUW
 
 from devtools import algebraic_witness_reports as algebraic
 from devtools import check_standing
@@ -47,6 +41,53 @@ MEMBER = "bundle/certificate.json"
 ASSET = "synthetic.zip"
 TAG = "data/synthetic-v1"
 REPOSITORY = "example/synthetic"
+
+
+def _git(directory: Path, *arguments: str) -> str:
+    environment = {**os.environ, "GIT_AUTHOR_DATE": DATE, "GIT_COMMITTER_DATE": DATE}
+    identity = ["-c", "user.name=Test", "-c", "user.email=test@example.invalid"]
+    completed = subprocess.run(
+        ["git", *identity, "-C", str(directory), *arguments],
+        capture_output=True,
+        text=True,
+        check=True,
+        env=environment,
+    )
+    return completed.stdout.strip()
+
+
+def _json(path: Path) -> Any:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _write_json(path: Path, value: Any) -> None:
+    path.write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
+
+
+def _readme(packet: Path, rows: list[Any]) -> None:
+    table = "\n".join(row.markdown() for row in rows)
+    (packet / "README.md").write_text(
+        "# Synthetic\n\n## Compressed Files\n\n"
+        "| Stored File | Origin | Git Blob of Original | SHA-256 of Original |\n"
+        f"| --- | --- | --- | --- |\n{table}\n"
+    )
+
+
+@pytest.fixture
+def private(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Callable[[str], Path]:
+    """Copy a packet into a private repository root and point the importer at it."""
+    repo = tmp_path / "private"
+    web = repo / reports.WEB.relative_to(reports.REPO)
+    monkeypatch.setattr(reports, "REPO", repo)
+    monkeypatch.setattr(reports, "WEB", web)
+    monkeypatch.setattr(kernel, "REPO", repo)
+
+    def copy(name: str) -> Path:
+        target = web / name
+        shutil.copytree(reports.ROOT / "resources/web" / name, target)
+        return target
+
+    return copy
 
 
 def _zip(members: dict[str, bytes]) -> bytes:
@@ -77,7 +118,7 @@ def _spec(**changes: str) -> dict[str, str]:
 
 
 @pytest.fixture
-def archived(private: Callable[[str], Path], tmp_path: Path) -> tuple[Path, Path, Path]:  # noqa: F811
+def archived(private: Callable[[str], Path], tmp_path: Path) -> tuple[Path, Path, Path]:
     """A derived-only packet whose certificate is a member of a manifest-pinned asset."""
     asset = _zip({MEMBER: CERTIFICATE})
     assets = tmp_path / "assets"

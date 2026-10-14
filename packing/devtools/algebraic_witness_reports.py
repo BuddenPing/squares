@@ -38,6 +38,7 @@ from __future__ import annotations
 import argparse
 import copy
 import json
+import re
 import subprocess
 import sys
 import time
@@ -77,6 +78,7 @@ ROUTE = "exact_verify"
 #: The digits each side is enclosed to before it is compared, and the most tried.
 DIGITS = (60, 120, 240)
 DISPLAY_PLACES = 40
+_FRACTION = re.compile(r"[1-9][0-9]*/[1-9][0-9]*")
 
 
 class ReportError(reports.ReportError):
@@ -159,7 +161,7 @@ def load_declaration(packet: Path) -> Declaration:
     )
     for row in declaration["witnesses"]:
         where = f"n={row['n']}"
-        reports._archive_spec(row["archive"], row["path"], where)  # noqa: SLF001
+        reports.archive_spec(row["archive"], row["path"], where)
         fact = PurePosixPath(row["fact"])
         _require(
             fact.parent.as_posix() == reports.FACTS
@@ -172,7 +174,7 @@ def load_declaration(packet: Path) -> Declaration:
         _require(item["n"] in counts, f"{where}: a pending report at an undeclared count")
         if "exact" in item:
             _require(
-                reports._FRACTION.fullmatch(item["exact"]) and "printed" not in item,  # noqa: SLF001
+                _FRACTION.fullmatch(item.get("exact", "")) and "printed" not in item,
                 f"{where}: an exact side is a fraction, alone",
             )
         else:
@@ -192,7 +194,10 @@ def _validated(document: object, n: int) -> dict[str, Any]:
         return validate_witness_document(
             {
                 **cast("dict[str, Any]", document),
-                "softschema": {**metadata, "schema": "witness.schema.yaml"},
+                "softschema": {
+                    **cast("dict[str, Any]", metadata),
+                    "schema": "witness.schema.yaml",
+                },
             },
             path=WITNESS_SCHEMA,
             fallback_schema=WITNESS_SCHEMA,
@@ -235,7 +240,7 @@ def fact_witness(
     packet: Path, declaration: Declaration, row: Witness, geometry: dict[str, Any]
 ) -> dict[str, Any]:
     """The derived fact: the geometry exactly, under this packet's id, claim and source."""
-    record = cast("dict[str, Any]", reports._record(packet))  # noqa: SLF001
+    record = json.loads((packet / acquire_source.RECORD).read_text(encoding="utf-8"))
     source = record["sources"][0]
     pinned = {item["path"] for item in source["pinned_only"]}
     archive = row["archive"]
@@ -277,7 +282,7 @@ def derive(
     reports.acquisition(packet)
     if problems := reports.checkout_problems(packet, checkout):
         raise ReportError("; ".join(problems))
-    store = reports._Assets(packet, checkout, assets)  # noqa: SLF001
+    store = reports.ReleaseAssets(packet, checkout, assets)
     written = []
     for row in declaration["witnesses"]:
         raw = store.member(row["archive"])
@@ -427,7 +432,9 @@ def _closed(form: Any) -> regularized.VerifiedBound | None:
     try:
         return regularized.VerifiedBound(text, rational=Fraction(text.replace(" ", "")))
     except ValueError:
-        return regularized._closed_form_bound(text.replace(" sqrt", "*sqrt"))  # noqa: SLF001
+        return regularized.verified_bound(
+            {"verified_upper_bound": text, "exact_form": text.replace(" sqrt", "*sqrt")}
+        )
 
 
 def compare(packet: Path) -> dict[str, Any]:
@@ -449,9 +456,9 @@ def compare(packet: Path) -> dict[str, Any]:
             if item["n"] != n:
                 continue
             span = (
-                reports.exact_span(Fraction(item["exact"]))
+                reports.exact_span(Fraction(item.get("exact", "")))
                 if "exact" in item
-                else reports.printed_span(item["printed"], item["rounding"])
+                else reports.printed_span(item.get("printed", ""), item.get("rounding", ""))
             )
             entry = {key: value for key, value in item.items() if key != "n"}
             entry["relation"] = against(side, span)
@@ -498,18 +505,38 @@ def compare(packet: Path) -> dict[str, Any]:
     }
 
 
+def _record_text(value: dict[str, Any]) -> str:
+    """A claim record with one result per line, as the importer writes its own."""
+    head = [
+        f"  {json.dumps(key)}: {json.dumps(item, ensure_ascii=False)}"
+        for key, item in value.items()
+        if key != "results"
+    ]
+    rows = [
+        "    " + json.dumps(row, allow_nan=False, ensure_ascii=False)
+        for row in value["results"]
+    ]
+    return (
+        "{\n" + ",\n".join([*head, '  "results": [\n' + ",\n".join(rows) + "\n  ]"]) + "\n}\n"
+    )
+
+
 def write_claims(packet: Path) -> dict[str, Any]:
     claims = compare(packet)
     path = packet / CLAIMS
     reports.ensure_private(path.parent)
     with atomic_output_file(path) as temporary:
-        temporary.write_text(reports._record_text(claims), encoding="utf-8")  # noqa: SLF001
+        temporary.write_text(_record_text(claims), encoding="utf-8")
     return claims
 
 
 def check_claims(packet: Path) -> dict[str, Any]:
     rebuilt = compare(packet)
-    stored = reports._stored(packet / CLAIMS)  # noqa: SLF001
+    path = packet / CLAIMS
+    reports.ensure_private(path)
+    stored = json.loads(
+        path.read_text(encoding="utf-8"), object_pairs_hook=kernel.unique_object
+    )
     _require(stored == rebuilt, "frozen algebraic claim record differs from its rebuild")
     return rebuilt
 
@@ -556,12 +583,13 @@ def decide(witness: dict[str, Any], control: str) -> dict[str, Any]:
 def validate_job(row: Any, witness: dict[str, Any], control: str) -> None:
     """A job row is its count's, and has the outcome its control requires."""
     n = witness["n"]
+    _require(type(row) is dict, f"n={n} {control}: wrong row")
+    fields = cast("dict[str, Any]", row)
     _require(
-        type(row) is dict and row.get("n") == n and row.get("control") == control,
-        f"n={n} {control}: wrong row",
+        fields.get("n") == n and fields.get("control") == control, f"n={n} {control}: wrong row"
     )
-    verdict = row.get(ROUTE)
-    _require(type(verdict) is dict, f"n={n} {control}: no route verdict")
+    _require(type(fields.get(ROUTE)) is dict, f"n={n} {control}: no route verdict")
+    verdict = cast("dict[str, Any]", fields[ROUTE])
     passed = verdict.get("verification_passed")
     if control == "positive":
         _require(
@@ -576,7 +604,8 @@ def validate_job(row: Any, witness: dict[str, Any], control: str) -> None:
         expected = "overlap" if control == "duplicate-square-overlap" else "container"
         _require(passed is False and expected in kinds, f"n={n} {control}: not refused")
     for key in ("cpu_seconds", "wall_seconds"):
-        _require(type(row.get(key)) in (int, float) and row[key] >= 0, f"n={n}: bad time")
+        value = fields.get(key)
+        _require(type(value) in (int, float) and cast("float", value) >= 0, f"n={n}: bad time")
 
 
 def receipt_path(packet: Path, n: int) -> Path:
@@ -707,7 +736,7 @@ def main(argv: list[str] | None = None) -> int:
             print(row.markdown())
     elif args.action == "compare":
         claims_record = write_claims(packet) if args.write else check_claims(packet)
-        print(reports._record_text(claims_record), end="")  # noqa: SLF001
+        print(_record_text(claims_record), end="")
     elif args.action == "certify":
         certify(packet, args.jobs_dir, args.n)
         print(json.dumps(summary(check(packet, args.n), packet), indent=2))

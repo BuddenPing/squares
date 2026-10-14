@@ -375,7 +375,7 @@ def _plain_path(path: str) -> bool:
     )
 
 
-def _archive_spec(spec: ArchiveMember, path: str, where: str) -> None:
+def archive_spec(spec: ArchiveMember, path: str, where: str) -> None:
     """Refuse a release-asset member that is not named plainly and bound by a digest."""
     _require(spec["member"] == path, f"{where}: the row's path is not its asset member")
     _require(
@@ -434,13 +434,13 @@ def load_declaration(packet: Path) -> Declaration:
             )
         if "archive" in row:
             _require("fact" in row, f"n={row['n']}: a release-asset certificate is a fact")
-            _archive_spec(row["archive"], row["path"], f"n={row['n']}")
+            archive_spec(row["archive"], row["path"], f"n={row['n']}")
         _require(_UTC.fullmatch(row["first_committed"]), f"n={row['n']}: first_committed")
         for other in row.get("same_packing", []):
             _require(other["format"] in ADAPTERS, f"n={row['n']}: unknown format")
             if "archive" in other:
                 _require("archive" in row, f"n={row['n']}: an asset member beside a tree file")
-                _archive_spec(other["archive"], other["path"], f"n={row['n']} same packing")
+                archive_spec(other["archive"], other["path"], f"n={row['n']} same packing")
     _require(
         [house["n"] for house in declaration["houses"]] == [n for n in counts if n <= HORIZON],
         "the houses must be exactly the in-horizon counts, in order",
@@ -699,9 +699,13 @@ def witness_center_basis(raw: bytes, n: int, options: Mapping[str, str]) -> lega
         raise ReportError(f"n={n}: invalid witness YAML: {error}") from error
     metadata = document.get("softschema") if type(document) is dict else None
     _require(type(metadata) is dict, f"n={n}: not a witness document")
+    fields = cast("dict[str, Any]", document)
     try:
         witness = validate_witness_document(
-            {**document, "softschema": {**metadata, "schema": CORNER_SCHEMA}},
+            {
+                **fields,
+                "softschema": {**cast("dict[str, Any]", metadata), "schema": CORNER_SCHEMA},
+            },
             path=WITNESS_SCHEMA,
             fallback_schema=WITNESS_SCHEMA,
         )
@@ -1524,7 +1528,7 @@ def _checkout_bytes(packet: Path, checkout: Path, path: str) -> bytes:
 MAX_ASSET_BYTES = 64_000_000
 
 
-class _Assets:
+class ReleaseAssets:
     """Release assets read from a local directory, each held to the pinned manifest once.
 
     An asset is admitted only where a manifest the checkout pins, read from that admitted
@@ -1545,12 +1549,13 @@ class _Assets:
         directory = cast("Path", self.directory)
         raw = _checkout_bytes(self.packet, self.checkout, spec["manifest"])
         try:
-            manifest = safe_load(raw.decode("utf-8"))
+            loaded: object = safe_load(raw.decode("utf-8"))
         except (UnicodeDecodeError, yaml.YAMLError) as error:
             raise ReportError(f"{spec['manifest']}: not a YAML manifest: {error}") from error
+        _require(type(loaded) is dict, f"{spec['manifest']}: not a manifest")
+        manifest = cast("dict[str, Any]", loaded)
         _require(
-            type(manifest) is dict
-            and manifest.get("repository") == spec["repository"]
+            manifest.get("repository") == spec["repository"]
             and manifest.get("tag") == spec["tag"],
             f"{spec['manifest']}: does not name {spec['repository']} at {spec['tag']}",
         )
@@ -1604,14 +1609,14 @@ def derive(
     Each ``same_packing`` file of a fact's row is read from the same checkout and must
     state the certificate's packing exactly, or the fact is refused. A row read from a
     release asset (``archive``) is read from ``assets``, a directory holding the assets
-    by name, through a manifest the checkout pins (`_Assets`).
+    by name, through a manifest the checkout pins (`ReleaseAssets`).
     """
     ensure_private(packet)
     declaration = load_declaration(packet)
     acquisition(packet)
     if problems := checkout_problems(packet, checkout):
         raise ReportError("; ".join(problems))
-    store = _Assets(packet, checkout, assets)
+    store = ReleaseAssets(packet, checkout, assets)
 
     def read(item: CertificateRow | SamePacking) -> bytes:
         if "archive" in item:
