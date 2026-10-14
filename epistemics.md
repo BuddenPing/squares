@@ -332,6 +332,13 @@ second is the status, and the third is the result’s kind: a second certificate
 *simplification*. The vocabulary is provisional until the owner confirms it; the
 proposal and the status of every result are in
 [the result-status plan](docs/project/specs/done/plan-2026-10-01-result-status.md).
+On 2026-10-13 the owner added the kind *formalization*, a proof-assistant proof of a
+result the record already holds, apart from a simplification: “simplification is one
+thing but formalization is another.”
+The decision was made on `T-154`, Fitzharding’s Lean 4 proof of $s(17) = L$, which was
+registered as a simplification that day and moved to the new kind on 2026-10-14
+([Result Kinds](#result-kinds)). `T-054` and `T-055`, which no proof assistant checked,
+stay simplifications.
 
 ## What Changed on 2026-09-30
 
@@ -411,6 +418,7 @@ matters; the kind says what sort of claim it is.
 | optimality | Settles an exact value $s(n) = v$: a lower bound that meets an upper bound |
 | uniqueness | Classifies every packing that attains $s(n)$: each is one of finitely many named packings, up to the container’s symmetries and the relabelling of the squares, and moves no bound |
 | simplification | Proves again a result the record already holds, by a shorter, cleaner or more elementary route, and moves no bound |
+| formalization | Proves in a proof assistant a result the record already holds, by formalizing an existing argument or by a route of its own, and moves no bound by itself |
 | rigidity | Says whether one named packing can move at fixed side: its flexes, its rigidity at first or second order, the isolation of its pose |
 | case exclusion | Shows that one named class of configurations, such as a branch, a corner class or a region of pose space, holds no packing at a stated side, and moves no bound by itself |
 | restricted optimality | Finds the best packing within a declared family, such as fixed orientation classes near one pose, and says nothing about $s(n)$ outside it |
@@ -419,7 +427,7 @@ matters; the kind says what sort of claim it is.
 | audit | Checks an existing proof or certificate independently and finds it correct as published |
 
 The register stores a kind in lowercase with hyphens, `lower-bound` or `case-exclusion`.
-A result has exactly one, chosen by four rules.
+A result has exactly one, chosen by five rules.
 
 - The kind is what the claim concludes.
   Where a claim ends in a bound or a value of $s(n)$, the kind is that bound, however it
@@ -432,13 +440,22 @@ A result has exactly one, chosen by four rules.
   is.
 - A second proof of a result the record already holds is a simplification, and its claim
   names the result it proves again.
+- A proof in a proof assistant of a result the record already holds is a formalization,
+  whether it formalizes an existing argument or takes a route of its own, and its claim
+  names the result it formalizes or proves again.
+  Where a second proof fits both kinds, it is a formalization; one that no proof
+  assistant has checked, by a shorter, cleaner or more elementary route, stays a
+  simplification. A proof-assistant proof of a value the record does not yet hold is no
+  formalization: by the first rule it takes that value’s kind, optimality or a bound.
 
 The kind is declared, and the checker holds it to what the record already says.
 A headline that opens with a relation on $s(n)$ states its kind: `≥` or `>` is a lower
-bound, `≤` or `<` an upper bound and `=` optimality, and only a simplification may
-restate one.
-A bound cites evidence that claims that bound, and optimality cites an exact
-value or both halves.
+bound, `≤` or `<` an upper bound and `=` optimality, and only a simplification or a
+formalization may restate one.
+A bound cites evidence that claims that bound, and optimality cites an exact value or
+both halves. A formalization cites evidence whose method, performed or reported, is
+`proof-assistant-checked`, and a simplification cites none, since where both would fit
+the kind is formalization.
 Uniqueness, rigidity, case exclusion and restricted optimality cite `derived-structure`
 evidence and state no relation on $s(n)$ in their headline.
 Method limit, correction and audit are told apart by review alone.
@@ -449,13 +466,15 @@ it; a later result that implies it is declared instead ([Status](#status)). Of a
 standing, the register’s views show one thing, the *superseded* mark, which a standing
 gives only a bound; another kind carries the mark only where its entry declares it.
 
-A simplification’s standing reads the relation its claim restates as a bound’s. While
-every bound it states equals its case record’s in the lane it can hold, it is a second
-certificate. Its own build can land before that of the result it proves again, as when a
-reported proof of a value the record holds only as reported is replayed first.
+The standing of a simplification or a formalization reads the relation its claim
+restates as a bound’s. While every bound it states equals its case record’s in the lane
+it can hold, it is a second certificate.
+Its own build can land before that of the result it proves again, as when a reported
+proof of a value the record holds only as reported is replayed first.
 It then states a bound better than the case’s verified one, and its standing is pending
-adoption. A simplification moves no bound, so when the case record adopts that bound the
-kind is revisited, and the result page’s registered identity is amended with a dated
+adoption.
+Neither kind moves a bound by itself, so when the case record adopts that bound
+the kind is revisited, and the result page’s registered identity is amended with a dated
 reason (`packing/site-urls.yaml`).
 
 ## Results by Others
@@ -636,7 +655,8 @@ The checker:
   the sources of a result by others published since 22 August 2026;
 - requires a `kind` on every result, one of the [Result Kinds](#result-kinds), and
   cross-checks it against the relations the headline and the claim state, the claims of
-  the cited evidence, and, for a simplification, the result its claim names;
+  the cited evidence, and, for a simplification or a formalization, the result its claim
+  names and whether a proof assistant checked the evidence it cites;
 - refuses `builds_on` on a result by others, and on a result of this project holds it to
   the record: each source key resolves in the bibliography and is the `source_key` of an
   evidence entry the result cites, and each credited name is an author of one of them;

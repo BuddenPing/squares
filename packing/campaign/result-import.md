@@ -251,7 +251,7 @@ Triage decides what the import is before anything is retained, in an hour or les
 | Bounds of one kind at several counts in one release | One entry whose `scope` covers them |
 | A later release that raises an earlier entry’s values or adds counts | A new entry; the earlier one keeps its claim, and the case records decide which is current |
 | A theorem with an unbounded parameter | One entry stating the theorem, whose `scope` lists the cases this record holds |
-| A second certificate for a value the record holds | A new `simplification` entry |
+| A second certificate for a value the record holds | A new `simplification` entry, or a `formalization` entry where a proof assistant checked it |
 | A consequence of another claim, such as monotonicity, at a count where the record holds no such value | Its own entry only when it settles a case; otherwise the parent’s `scope` covers it |
 | A consequence that another entry already registers | No new entry and no change of scope: both stand, and the older claim gains a sentence naming the newer route |
 | New evidence or an author’s answer about a registered entry | No new entry: the source retained at the revision that holds it, and an evidence update |

@@ -142,6 +142,7 @@ KINDS = (
     "optimality",
     "uniqueness",
     "simplification",
+    "formalization",
     "rigidity",
     "case-exclusion",
     "restricted-optimality",
@@ -150,6 +151,12 @@ KINDS = (
     "audit",
 )
 SIMPLIFICATION = "simplification"
+FORMALIZATION = "formalization"
+#: The kinds of a second proof: each proves again a result the record already holds and
+#: moves no bound by itself, its claim names that result, and its headline may restate the
+#: result's relation on `s(n)`. A formalization is one a proof assistant checked; where
+#: both would fit, the kind is formalization (epistemics.md, Result Kinds).
+SECOND_PROOF_KINDS = frozenset({SIMPLIFICATION, FORMALIZATION})
 #: The relations on `s(n)` each bound kind states, as a headline (`≥`) and a claim (`>=`)
 #: write them. These three kinds are the bounds; every other kind is no bound on `s(n)`.
 KIND_RELATIONS = {
@@ -781,7 +788,7 @@ def _relation_problems(kind: str, headline: str, claim: str) -> list[str]:
     """Where the relations a headline and a claim write disagree with a declared kind."""
     label = kind_label(kind)
     opens = headline_kind(headline)
-    if opens is not None and kind not in {opens, SIMPLIFICATION}:
+    if opens is not None and kind != opens and kind not in SECOND_PROOF_KINDS:
         return [f"kind is {label}, but its headline opens with {_OPENS_WITH[opens]}"]
     in_headline, in_claim = stated_relations(headline), stated_relations(claim)
     if kind == "optimality":
@@ -826,16 +833,19 @@ def kind_problems(
     The kind is declared, and three things the record already holds check it.
 
     - **The relations written.** A headline that opens with a relation on `s(n)` states
-      its kind, and only a simplification, a second proof of a result the record holds,
-      may restate one under another kind. A bound's headline writes no relation of
-      another direction, its claim writes one of its own if it writes any, and an
-      optimality result writes its `=`. A kind that says nothing about `s(n)` has a
-      headline that writes none.
+      its kind, and only a second proof of a result the record holds, a simplification or
+      a formalization (`SECOND_PROOF_KINDS`), may restate one under another kind. A
+      bound's headline writes no relation of another direction, its claim writes one of
+      its own if it writes any, and an optimality result writes its `=`. A kind that says
+      nothing about `s(n)` has a headline that writes none.
     - **The cited evidence.** It claims what the kind needs: the bound for a bound, an
       exact value or both halves for optimality, and `derived-structure` for the kinds
-      that say nothing about `s(n)`.
-    - **The results the claim names.** A simplification's claim names the registered
-      result it proves again, on a case they share. `scopes` is every result's cases.
+      that say nothing about `s(n)`. A formalization cites evidence a proof assistant
+      checked (`proof_assistant_checked`), and a simplification cites none, since where
+      both would fit the kind is formalization.
+    - **The results the claim names.** The claim of a simplification or a formalization
+      names the registered result it proves again, on a case they share. `scopes` is
+      every result's cases.
 
     Method limit, correction and audit are told apart by review alone.
     """
@@ -851,15 +861,35 @@ def kind_problems(
     needed = _evidence_needed(kind, {str(entry.get("claim")) for entry in cited})
     if needed is not None:
         problems.append(f"kind is {kind_label(kind)}, and no cited evidence claims {needed}")
-    if kind == SIMPLIFICATION:
+    if kind in SECOND_PROOF_KINDS:
         cases = scopes.get(rid, set())
         named = {other for other in _RESULT_ID.findall(claim) if other != rid}
         if not any(cases & scopes.get(other, set()) for other in named):
+            again = "formalizes or proves again" if kind == FORMALIZATION else "proves again"
             problems.append(
-                "a simplification's claim names the registered result it proves again, "
-                "on a case they share"
+                f"a {kind}'s claim names the registered result it {again}, on a case they share"
+            )
+        checked = sorted(
+            str(entry.get("id")) for entry in cited if proof_assistant_checked(entry)
+        )
+        if kind == FORMALIZATION and not checked:
+            problems.append(
+                f"kind is formalization, and no cited evidence is `{FORMAL_METHOD}`, "
+                "performed or reported"
+            )
+        if kind == SIMPLIFICATION and checked:
+            problems.append(
+                f"kind is simplification, but it cites `{FORMAL_METHOD}` evidence "
+                f"({', '.join(checked)}): a proof-assistant proof of a result the record "
+                "holds is a formalization"
             )
     return [f"{rid}: {problem}" for problem in problems]
+
+
+def proof_assistant_checked(entry: Mapping[str, Any]) -> bool:
+    """Whether an evidence entry is a proof assistant's check, performed (`method`) or
+    reported by its source (`reported_method`)."""
+    return FORMAL_METHOD in {entry.get("method"), entry.get("reported_method")}
 
 
 def result_date(record: Mapping[str, Any]) -> str:
