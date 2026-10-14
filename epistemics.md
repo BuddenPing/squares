@@ -593,11 +593,13 @@ Its three end points are fixed here.
    what remains. The answer goes on their issue, which stays open while work they asked
    for is still queued.
    Every issue an intake pass touches is answered, and every later change of its state
-   gets a follow-up until the issue closes with a final comment.
-   An agent posts each as part of the pass, by the owner’s standing instruction of
-   2026-10-11, once the pull request that carries the change has merged; the owner may
-   post instead. An answer is kept true: when an id or a rung it states changes, a
-   follow-up says so.
+   gets a follow-up until the issue closes with a final comment (stage 7 of
+   [result-import.md](packing/campaign/result-import.md#stage-7-answer) says what
+   touching is). An agent posts each as part of the pass, under the `github-workflows`
+   grant, once the pull request that carries the change has merged, and without the
+   grant drafts it for the owner; the owner’s standing instruction of 2026-10-11 is why
+   the rule exists, and the owner may post instead.
+   An answer is kept true: when an id or a rung it states changes, a follow-up says so.
 
 ### Where the Frontier Is Recorded
 

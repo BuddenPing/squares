@@ -75,13 +75,17 @@ so. On 2026-10-05 the agent sessions reached GitHub and PyPI and nothing else.
 
 A pass never merges without the owner’s word, never pushes to `main`, never posts the
 announcement, and never starts a replay measured in CPU-hours without a budget the owner
-has set.
-It does answer the issues, by the owner’s standing instruction of 2026-10-11: it
-comments on every issue it touches and follows up each later change of its state, each
-comment posted once the pull request that carries the change has merged, and it closes
-an issue only with its final comment ([stage 7](#stage-7-answer)). The owner may post
-instead. Under the `github-workflows` grant it also adds the `intake` label; it edits
-nothing else on an issue without the owner’s word.
+has set. It does answer the issues, under the `github-workflows` grant
+(`tbd policy show`); the owner’s standing instruction of 2026-10-11 is why the rule
+exists. It comments on every issue it touches ([stage 7](#stage-7-answer) says what
+touching is) and follows up each later change of its state, each comment posted once the
+pull request that carries the change has merged, and it closes an issue only with its
+final comment.
+Without the grant it drafts each reply in the issue’s answer bead and asks
+the owner to post it.
+The owner may post instead.
+Under the same grant it adds the `intake` label; it edits nothing else on an issue
+without the owner’s word.
 
 ### The Prompt
 
@@ -132,13 +136,15 @@ claude/intake-YYYY-MM-DD, with today's date.
 
 Never merge without the owner's word, never push to main, never post the announcement,
 and never start a replay measured in CPU-hours without a budget the owner has set.
-Comment on every issue the pass touches and follow up each later change of its state
-until the issue is closed with a final comment: the owner's standing instruction of
-2026-10-11. Post only after the pull request that carries the change has merged, link
-only to main, and check first that main and the deployed site say what the comment
-says. Add the `intake` label under the github-workflows grant; edit nothing else on a
-GitHub issue without the owner's word. If github.com, kingbird.myphotos.cc or
-evand.github.io is unreachable, say so in the pull request and continue with the rest.
+Under the github-workflows grant, comment on every issue the pass touches (runbook
+stage 7 says what touching is) and follow up each later change of its state until the
+issue is closed with a final comment; the owner's standing instruction of 2026-10-11 is
+why. Without the grant, draft each reply and ask the owner to post it. Post only after
+the pull request that carries the change has merged, link only to main, and check
+first that main and the deployed site say what the comment says. Add the `intake`
+label under the github-workflows grant; edit nothing else on a GitHub issue without
+the owner's word. If github.com, kingbird.myphotos.cc or evand.github.io is
+unreachable, say so in the pull request and continue with the rest.
 ```
 
 ## Intake Sources
@@ -509,15 +515,22 @@ follows the series rules in
 
 [epistemics.md](../../epistemics.md#import-integration-and-reply) says what an answer
 contains and who posts it.
-The process adds when and how, by the owner’s standing instruction of 2026-10-11: “be
-sure the process codifies that you need to comment on every issue and follow up on
-each”, and “An update on the issues as they are approved.
+The process adds when and how.
+The owner’s standing instruction of 2026-10-11 is why: “be sure the process codifies
+that you need to comment on every issue and follow up on each”, and “An update on the
+issues as they are approved.
 We should validate everything follows and then comment after the PRs are merged.”
+What lets an agent post is the `github-workflows` grant, which covers issues.
 
 - **Every issue a pass touches gets a comment**, and every later change of its state
-  gets a follow-up: imported, registered, confirmed or a defect found, adopted on its
-  case, superseded, closed.
+  gets a follow-up: imported, registered, confirmed or a defect found, a rung or status
+  moved, adopted on its case, superseded, closed.
   No issue is left without a reply, and the last is the final comment that closes it.
+- **A pass touches an issue** when its change makes one of those changes to a result the
+  issue reports or asks for, or reads one of the issue’s comments into the record: a
+  review, case record, register entry or bead that quotes the comment or rests on it.
+  A change of significance alone touches no issue: a reply states ids, rungs and status,
+  and a score guides reading order and changes none of them.
 - **A reply follows the merge** of the pull request that carries the change, and links
   only to `main`. A link into a working branch dies with the branch, and a `T-NNN`
   quoted from one can change.
@@ -525,7 +538,9 @@ We should validate everything follows and then comment after the PRs are merged.
 - **The poster validates first** that `main` and the deployed site say what the reply
   says: it is rendered with `check_requests --draft N` from `main`, and the site is
   checked as [Verify the Published Result](#verify-the-published-result) says.
-- **An agent posts it as part of the pass.** The owner may post instead.
+- **An agent posts it as part of the pass**, under the `github-workflows` grant; without
+  the grant it drafts the reply in the answer bead and asks the owner to post it.
+  The owner may post instead.
   Either way the reply is recorded under the issue’s `replies` in the next change
   ([After the Merge](#after-the-merge)).
 - The reply that reports a confirmation names the programs that ran, and says whether
@@ -588,8 +603,8 @@ broken record.
    it says, and post it; an agent does as part of the pass, or the owner does.
    `--report` marks what the register shows: no reply yet, a new or renumbered id, a
    moved rung or status, an `outdated` statement.
-   A change it does not show, such as a case adopting the result or a supersession, is
-   followed up by the pass that makes it.
+   A change it does not show, such as a case adopting the result, a supersession or a
+   comment read into the record, is followed up by the pass that makes it.
 3. Record the reply under the issue’s `replies` in the next change: its URL, date and
    kind, and in `reported` the id, rungs and status it stated for each result.
    Name in `corrects` any earlier reply whose `outdated` statements it corrects.
