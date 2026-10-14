@@ -1794,6 +1794,26 @@ until they are cut again
 ([Regenerating and publishing the ascent videos](packages/workbench/README.md#regenerating-and-publishing-the-ascent-videos)).
 The papers’ PDFs are built by Pages from the merge.
 
+#### Hosted infographic exports when local scratch is unavailable
+
+After committing the selected edition and checking its data pin, set `CANDIDATE_REF` to
+the reviewed branch and dispatch the existing Pages workflow:
+
+```bash
+gh workflow run pages.yml --ref "$CANDIDATE_REF" -f redraw_infographics=true
+```
+
+The optional `candidate-infographics` job has a fifteen-minute ceiling and builds the
+complete pair independently of publication checks.
+It uploads eight checked SVG/PNG/PDF exports plus `source-sha.txt` as
+`candidate-infographics-<full-source-sha>`. Before promotion, match that receipt to the
+reviewed commit, reject missing or extra archive members, and review all eight outputs.
+Commit the complete family and rerun the ordinary publication gates; those gates build
+the explainer’s own HTML and PDF. The candidate job uploads outputs without deployment,
+commits or repository writes.
+An unchanged selected successor can be redrawn through review; main’s published edition
+remains immutable.
+
 ### Bumping a paper’s version
 
 A paper’s version moves when the paper changes in a way its author calls a new version,

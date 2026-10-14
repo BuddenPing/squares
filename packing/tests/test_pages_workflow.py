@@ -21,6 +21,7 @@ from devtools import render_overview
 from devtools import render_packing_methods as methods_paper
 from devtools.pages_scope import BUILDER_INPUTS, declared_inputs, pull_request_jobs
 from devtools.render_n11_lower_bounds_explainer import SITE_PATH as EXPLAINER_PATH
+from sqpack.known_best import KNOWN_BEST_COMPOSITES
 from sqpack.yamlio import safe_load
 
 #: The lower-bounds explainer as the jobs read it: where `prepare` renders it under
@@ -33,6 +34,7 @@ REGISTER = REPO / "packing/devtools/gate-budgets.yaml"
 #: The jobs a pull request never runs: the deploy path, which only a push to `main`
 #: starts, and the dispatch-only timing experiment.
 DEPLOY_PATH = {"deploy", "verify-deployment"}
+OPTIONAL_DISPATCH_JOBS = {"candidate-infographics"}
 
 # Native dependencies keep these consumers off runners until prepare succeeds.
 # Their bounded artifact join still validates the exact run, attempt and artifact id.
@@ -362,7 +364,11 @@ def test_the_required_aggregate_passes_a_justified_skip_and_nothing_else() -> No
     # `!cancelled()`, not `always()`: a superseded run reports nothing here, as D-380 made
     # `packing-required` do; a failed or cancelled job in a run that goes on still fails it.
     assert aggregate["if"] == "!cancelled()"
-    assert set(needs_of(aggregate)) == set(jobs) - {"pages-required", *DEPLOY_PATH}
+    assert set(needs_of(aggregate)) == set(jobs) - {
+        "pages-required",
+        *DEPLOY_PATH,
+        *OPTIONAL_DISPATCH_JOBS,
+    }
     step = next(
         item
         for item in aggregate["steps"]
@@ -2294,3 +2300,76 @@ def test_prepare_failure_skips_consumers_and_fails_the_real_aggregate(
         check=False,
     )
     assert ran.returncode == (0 if producer_result == "scope-skipped" else 1), ran
+
+
+def test_candidate_infographics_are_dispatch_only_independent_and_source_bound() -> None:
+    workflow = load()
+    option = workflow["on"]["workflow_dispatch"]["inputs"]["redraw_infographics"]
+    assert option["type"] == "boolean"
+    assert option["default"] is False
+    jobs = workflow["jobs"]
+    job = jobs["candidate-infographics"]
+    assert job["if"] == "github.event_name == 'workflow_dispatch' && inputs.redraw_infographics"
+    assert job["timeout-minutes"] == 15
+    assert job["permissions"] == {"contents": "read"}
+    assert needs_of(job) == []
+    assert "candidate-infographics" not in pull_request_jobs(workflow)
+    assert all("candidate-infographics" not in needs_of(other) for other in jobs.values())
+    assert "environment" not in job
+    steps = job["steps"]
+    checkout = next(
+        step for step in steps if step.get("uses", "").startswith("actions/checkout@")
+    )
+    assert checkout["with"] == {
+        "ref": "${{ github.sha }}",
+        "fetch-depth": 0,
+        "submodules": True,
+        "persist-credentials": False,
+        "filter": "blob:none",
+    }
+    uv = next(step for step in steps if step.get("uses", "").startswith("astral-sh/setup-uv@"))
+    node = next(
+        step for step in steps if step.get("uses", "").startswith("actions/setup-node@")
+    )
+    assert uv["with"]["version"] == "0.12.8"
+    assert uv["with"]["python-version"] == "3.14.7"
+    assert node["with"]["node-version"] == "24.18.0"
+    assert all(re.search(r"@[0-9a-f]{40}\Z", step["uses"]) for step in steps if "uses" in step)
+    commands = [step["run"] for step in steps if "run" in step]
+    assert "uv sync --frozen --all-extras --group dev" in commands
+    assert "npm ci --ignore-scripts" in commands
+    redraw = next(command for command in commands if "--update-composites" in command)
+    assert redraw.index("--update-composites") < redraw.index("--check-composites")
+    assert redraw.count("uv run --frozen --no-sync --all-extras --group dev") == 2
+    retain = next(command for command in commands if "exports=(" in command)
+    array = re.search(r"exports=\(\s*(.*?)\s*\)", retain, re.DOTALL)
+    assert array is not None
+    expected = {
+        name
+        for spec in KNOWN_BEST_COMPOSITES
+        for name in (
+            spec.svg_name,
+            spec.pdf_name,
+            *(spec.raster_name(scale) for scale in spec.raster_scales),
+        )
+    }
+    expected.update(
+        spec.card_png_name for spec in KNOWN_BEST_COMPOSITES if spec.card_units is not None
+    )
+    exports = shlex.split(array[1])
+    assert len(exports) == len(set(exports)) == 8
+    assert set(exports) == expected
+    assert 'test "$(git rev-parse HEAD)" = "$GITHUB_SHA"' in retain
+    assert 'test -s "atlas/known-best/$name"' in retain
+    assert 'cp "atlas/known-best/$name" "$RUNNER_TEMP/candidate-infographics/$name"' in retain
+    assert '"$GITHUB_SHA" > "$RUNNER_TEMP/candidate-infographics/source-sha.txt"' in retain
+    upload = next(
+        step for step in steps if step.get("uses", "").startswith("actions/upload-artifact@")
+    )
+    assert upload["with"]["name"] == "candidate-infographics-${{ github.sha }}"
+    assert upload["with"]["path"] == "${{ runner.temp }}/candidate-infographics/"
+    assert upload["with"]["if-no-files-found"] == "error"
+    assert upload["with"]["retention-days"] == 7
+    assert "if" not in upload
+    assert "continue-on-error" not in upload
+    assert not any("deploy-pages@" in step.get("uses", "") for step in steps)
