@@ -23051,8 +23051,9 @@ results:
 
       Here the source's structure check passed on all 68 families from the release, and an
       exact evaluation written here derives a(n) at every count from the retained intervals
-      by two routes; both agree with the source's own a(N) at every count to 3600. No record
-      has been replayed here, so the bound stands as reported. The 14 October review
+      by two routes; both agree with the source's own a(N) at every count to 3600. Two of the
+      136 records, the smallest, were replayed here by replay4d as a calibration, REPLAY OK;
+      a sample sets no rung, so the bound stands as reported. The 14 October review
       re-derived the argument from the certificate to the claim and found no blocking
       defect.
 
@@ -23114,15 +23115,18 @@ results:
       of every record, the coverage of (0, 1] by the intervals, and the chord of the affine
       saving on each interval. The value at each count is derived from the intervals by
       V-closed-form-evaluation, exactly. A replay here would run the source's replay4d
-      unchanged, one implementation of one method. The source's cfcheck is a second
-      implementation of SPEC.md's procedures, sharing none of replay4d's code, run by the
-      source on 8 of the 136 records and here on a sample of 2,909 leaves.
+      unchanged, one implementation of one method; it has run here on 2 of the 136 records,
+      as a calibration. The source's cfcheck is a second implementation of SPEC.md's
+      procedures, sharing none of replay4d's code, run by the source on 8 of the 136 records
+      and here on a sample of 2,909 leaves.
     evidence:
       - E-wand125-closed-form-report
       - E-wand125-closed-form-cfcheck-report
       - E-wand125-closed-form-cfcheck-sample
+      - E-wand125-closed-form-replay4d-sample
     artifacts:
       - packing/resources/web/wand125-closed-form-2026-10-14/README.md
+      - packing/resources/web/wand125-closed-form-source-hash-2026-10-14/README.md
       - packing/resources/web/wand125-closed-form-2026-10-14/receipts/release-custody.json
       - >-
         packing/resources/web/wand125-closed-form-2026-10-14/receipts/structure-check/run.json
@@ -23133,7 +23137,9 @@ results:
     next_rung: >-
       C3 needs a complete replay of all 136 records by replay4d from the retained crates,
       built with the locked Cargo.lock, with the structure check, two mutated records
-      refused and a review that reads the replay; the source prices it at 4,294 CPU-hours.
+      refused and a review that reads the replay; the source prices it at 4,294 CPU-hours,
+      and a calibration here at about 5,250 on this host. It is held over the owner's
+      40 CPU-hour cap for each validation item (think-wu73).
       The source's second checker, cfcheck, written from SPEC.md and sharing no code with
       replay4d (E-wand125-closed-form-cfcheck-report), has checked intervals 1 and 34 of the
       34; a complete replay of all 136 records by it would be a second route at a higher
@@ -23150,9 +23156,14 @@ results:
           basis: >-
             The source's own complete replay, receipts/replay.json: 4,294.08 CPU-hours
             summed from replay4d's cpu_seconds over 269 runs on two Ubuntu 24.04.5 machines
-            (rustc 1.86.0). Not calibrated here: the smallest records take 0.27 to 0.32
-            CPU-hours by the source, so a calibration on two of them, plus the build of GMP
-            from source, is about one CPU-hour.
+            (rustc 1.86.0). Calibrated here on 14 October 2026
+            (wand125-closed-form-2026-10-14/receipts/calibration/): replay4d 0.1.0, built
+            with rustc 1.86.0 from the retained crates, replayed the two smallest records,
+            interval 26 and interval 14 top, REPLAY OK, in 0.672 CPU-hours against the
+            source's 0.55. That is a ratio of 1.223, 1.20 to 1.25 at the source's two
+            decimals, measured at nice 10 on four cores shared under load. At that ratio the
+            complete replay is about 5,250 CPU-hours on this host, held over the owner's 40
+            CPU-hour cap for each validation item (think-wu73).
           priced: '2026-10-14'
       - what: >-
           a complete replay of all 136 records by cfcheck built from the retained crate at
