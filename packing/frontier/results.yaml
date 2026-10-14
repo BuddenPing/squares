@@ -4061,8 +4061,10 @@ results:
       rationale: >-
         Scored as a claim: when reported, and if the replays pass, these were the strongest
         lower bounds on record at 48 counts, above Green's DS7 reports and every certificate
-        the register then held at those sizes; later certificates, from T-068 on, have
-        passed them at all 48. The score is of what the reports would establish; V0/C0 says
+        the register then held at those sizes, except at the ten counts where T-045,
+        registered the same day, states the same values (n = 18 to 20, 26, 27, 30, 40, 61,
+        75 and 78); later entries, from T-062 on (1 October), have passed them at all 48.
+        The score is of what the reports would establish; V0/C0 says
         how far they stand, and the score gates nothing. Confirmed on 11 October:
         forty-eight counts by one certificate kind are further sizes from one generator, S3
         as T-045 and T-068 are, and not a bound family in the S4 sense of T-064 and T-081.
