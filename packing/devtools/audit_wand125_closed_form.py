@@ -6,9 +6,11 @@ revisions of wand125/square-packing: ``9a28a84`` (replay4d 0.1.0,
 ``web/wand125-closed-form-2026-10-14/``), ``746e2c5`` (cfcheck added, replay4d
 unchanged, ``web/wand125-closed-form-cfcheck-2026-10-14/``) and ``1c661b7`` (replay4d
 0.1.1, ``web/wand125-closed-form-source-hash-2026-10-14/``). This tool reads them through
-their acquisition records alone: a pinned-only file is read from the copy it names, and
-every file's bytes must have the digest the packet's manifest records. It runs no source
-program, and decides nothing about the certificate. Three commands:
+their acquisition records alone: a pinned-only file is read from the copy it names. Their
+custody is `devtools.acquire_source` ``--check``'s, which binds every file to the pin
+and every named copy to its bytes, so nothing here re-hashes the repository against
+itself. It runs no source program, and decides nothing about the certificate. Three
+commands:
 
 - ``hashes`` recomputes, at each revision, the source hash replay4d prints, by the rule
   in that revision's own ``main.rs`` (`source_order`, `source_hash`): for each covered
@@ -144,26 +146,21 @@ class PacketTree:
         self.commit: str = source["source_commit"]
         self.archived = REPO / source["archived_path"]
         self.pinned: dict[str, Json] = {item["path"]: item for item in source["pinned_only"]}
-        self.manifest: dict[str, str] = {}
-        manifest = REPO / source["subtree_manifest"]
-        for line in manifest.read_text(encoding="utf-8").splitlines():
-            digest, path = line.split("  ", 1)
-            self.manifest[path.removeprefix("./")] = digest
+        manifest = (REPO / source["subtree_manifest"]).read_text(encoding="utf-8")
+        self.scope = {
+            line.split("  ", 1)[1].removeprefix("./") for line in manifest.splitlines()
+        }
 
     def read(self, upstream: str) -> bytes:
-        """The bytes of ``upstream`` at this packet's pin, checked against the manifest."""
-        if upstream not in self.manifest:
+        """The bytes of ``upstream`` at this packet's pin."""
+        if upstream not in self.scope:
             raise KeyError(f"{self.packet.name}: {upstream} is not in the manifest")
         if upstream in self.pinned:
             twin = self.pinned[upstream].get("identical_to")
             if twin is None:
                 raise KeyError(f"{self.packet.name}: {upstream} is pinned with no copy")
-            data = read_retained_bytes(REPO / twin)
-        else:
-            data = read_retained_bytes(self.archived / upstream)
-        if sha256(data) != self.manifest[upstream]:
-            raise ValueError(f"{self.packet.name}: {upstream} differs from its manifest")
-        return data
+            return read_retained_bytes(REPO / twin)
+        return read_retained_bytes(self.archived / upstream)
 
     def where(self, upstream: str) -> str:
         """The repository-relative file the bytes of ``upstream`` were read from."""

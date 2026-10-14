@@ -81,11 +81,10 @@ def test_the_retained_hashes_receipt_is_current() -> None:
     assert audit.HASHES_RECEIPT.read_text(encoding="utf-8") == text
 
 
-def test_a_file_that_differs_from_its_manifest_is_refused() -> None:
+def test_a_path_outside_the_packets_scope_is_refused() -> None:
     tree = audit.PacketTree(audit.PACKET_1C661B7)
-    tree.manifest[audit.B3D_SORT] = "0" * 64
-    with pytest.raises(ValueError, match="differs from its manifest"):
-        tree.read(audit.B3D_SORT)
+    with pytest.raises(KeyError, match="not in the manifest"):
+        tree.read("problems/closed-form/no-such-file.rs")
 
 
 def test_region_plan_names_the_smallest_record() -> None:
