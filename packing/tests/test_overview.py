@@ -390,7 +390,10 @@ def test_the_homepage_sections_run_in_the_requested_order(page: str, atlas_page:
     assert len(re.findall(r'data-atlas-n="\d+"', atlas_page)) == 324
     assert '<div class="site-atlas-rest" data-atlas-rest hidden>' in page
     assert page.count("data-atlas-toggle data-homepage-atlas-toggle") == 1
-    assert re.search(r"<h[3-6]\b", page) is None
+    headings = re.findall(r"<h[3-6]\b.*?</h[3-6]>", page, re.DOTALL)
+    news = page.split('id="news"', 1)[1].split('<h2 id="recent-results"', 1)[0]
+    assert headings == re.findall(r"<h3\b.*?</h3>", news, re.DOTALL)
+    assert len(headings) == 3
     assert '<h1 id="more-resources" class="site-title">More Resources' in page
     assert "site-resource-links" not in page
 
@@ -445,7 +448,10 @@ def test_home_and_about_share_the_documentation_introduction_and_cards(
         "Squares Project Documentation</h1>"
     )
     home_section = page.split(heading, 1)[1].split('<h1 id="more-resources"', 1)[0]
-    about_section = about.split(heading, 1)[1].split('<h2 id="changelog">', 1)[0]
+    about_section = about.split(heading, 1)[1].split('<h1 id="news"', 1)[0]
+    about_section = re.sub(
+        r'<p>(?:<a class="site-news-legacy-anchor"[^>]*></a>)+</p>', "", about_section
+    )
     home_block, action_row = home_section.rsplit('<p class="site-action-row site-more">', 1)
     assert re.findall(r"<p>(.*?)</p>", home_block, re.DOTALL) == re.findall(
         r"<p>(.*?)</p>", about_section, re.DOTALL
@@ -4137,10 +4143,13 @@ def test_the_full_project_statement_lives_on_about_and_the_card_keeps_its_anchor
         "the-squares-project",
         "report-your-results",
         "squares-project-documentation",
+        "news",
     ]
     assert all('class="site-title"' in tag for tag in re.findall(r"<h1\b[^>]*>", about))
-    assert re.search(r"<h2\b", about.split('<h2 id="changelog">', 1)[0]) is None
-    assert re.findall(r'<h2\b[^>]*\bid="([^"]+)"', about) == ["changelog"]
+    assert re.search(r"<h2\b", about) is None
+    assert 'id="changelog" href="news.html#changelog" data-news-target' in about
+    assert "data-news-entry=" not in about
+    assert 'href="news.html">News and the complete project history</a>' in about
     following = about.split(heading, 1)[1].lstrip()
     assert following.startswith("<p>Work on the square packing problem")
     assert "Work on the square packing problem has exploded" not in page

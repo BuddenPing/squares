@@ -871,17 +871,28 @@ it.
 
 - **News.** News is the second navigation item and carries the complete retained project
   history. Its H1 uses the shared sans-serif caps; its operational text uses the sans
-  face. Each day is one hairline-bordered native disclosure with a three-line preview and
-  “Show more” indicator.
-  Hover or keyboard focus expands it inline.
-  A pointer press pins the expansion; focusing or using a body link keeps it open.
-  Otherwise a transient card closes once both pointer and focus leave.
-  Keyboard activation and touch toggle the disclosure, including without scripts.
-  PR, paper and download links remain ordinary links inside the expanded body.
-  Entry and day fragments open their owning disclosure.
-  The homepage selects the first two individual entries in the same newest-day order,
-  groups them by day and follows them with “All news →”. About keeps one short News
-  link; its old history bookmarks forward without duplicating the feed.
+  face. Each entry is one hairline-bordered card containing its actual article once.
+  Dates use the paper heading’s sans-base date role; titles reuse compact small-caps
+  labels, with mathematical notation retaining its original case.
+  After the enhancement loads, about ten lines are visible.
+  Clicking or tapping the card or its small shared arrow in the footer expands or
+  contracts it inline; Enter and Space activate the button.
+  A short fade marks the clipped edge.
+  Height, fade and arrow rotation share the existing motion timing and honor reduced
+  motion. Hover adds a subtle green wash without changing height.
+  Article links retain their ordinary actions; body-link focus reveals the article.
+  Readers without scripting see complete articles.
+  Entry and legacy date fragments reveal their corresponding card.
+  Topic labels reuse square-cornered Results chips with distinct subject metadata: lower
+  and upper bounds and optimality reuse bound fills, engineering uses the accent tint,
+  verification the review-blue palette, and documentation the neutral chip.
+  These subject labels assert no result kind or verification status.
+  The homepage highlights the three newest S5 results from the results register, using
+  their existing claims, credit and evidence, and follows them with “All news →”.
+  Formalization and simplification highlights carry an optimality subject tag while
+  retaining their actual result-kind and evidence chips.
+  About keeps one short News link; its old history bookmarks forward without duplicating
+  the feed.
 
 - **Page headings.** The homepage opens with “The Square Packing Problem” as its `h1`,
   followed by visible section `h1`s in the same title style.

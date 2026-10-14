@@ -527,7 +527,9 @@ body {
   mask: var(--site-arrow) center / contain no-repeat;
   rotate: var(--site-arrow-turn);
   scale: var(--site-arrow-flip) 1;
-  transition: translate var(--site-hover-duration) var(--site-hover-easing);
+  transition:
+    translate var(--site-hover-duration) var(--site-hover-easing),
+    rotate var(--site-hover-duration) var(--site-hover-easing);
   vertical-align: -0.125em;
 }
 .kpress
@@ -878,7 +880,8 @@ body {
   text-align: center;
 }
 
-.kpress :is(.site-card, .site-popover, .site-case) .site-card-label {
+.kpress :is(.site-card, .site-popover, .site-case) .site-card-label,
+.kpress .site-news-item > h3 {
   color: var(--kpress-doc-muted);
   font-family: var(--kpress-font-sans);
   font-size: var(--kpress-caps-label-size, 0.8rem);
@@ -1229,7 +1232,12 @@ body {
    `confirmed` is the green of the confirmation rungs, at C3's strength, and its
    `reviewed` the verification rungs' blue. Bound kinds use the bound colours, recorded is yellow, and
    superseded standings keep the plain gray chip. `devtools.rung_scale` measures these fills too. */
-.site-chip:is([data-case-status], [data-status="confirmed"], [data-status="reviewed"]) {
+.site-chip:is(
+  [data-case-status],
+  [data-status="confirmed"],
+  [data-status="reviewed"],
+  [data-news-topic="verification"]
+) {
   --rung-chroma-boost: 0;
   background: oklch(
     calc(var(--site-rung-base) + var(--rung-level) * var(--site-rung-step))
@@ -1246,7 +1254,8 @@ body {
   --rung-hue: 158;
   --rung-level: 3;
 }
-.site-chip[data-status="reviewed"] {
+.site-chip[data-status="reviewed"],
+.site-chip[data-news-topic="verification"] {
   --rung-hue: 250;
   --rung-level: 2;
 }
@@ -1261,17 +1270,33 @@ body {
 }
 
 /* Bound chips share the plotted bound hues, diluted into the current page background. */
-.site-chip:is([data-kind="lower-bound"], [data-status="incomplete"]) {
+.site-chip:is(
+  [data-kind="lower-bound"],
+  [data-status="incomplete"],
+  [data-news-topic="lower-bound"]
+) {
   background: color-mix(
     in oklab,
     var(--site-bound-lower) var(--site-chip-tint),
     var(--kpress-doc-bg)
   );
 }
-.site-chip:is([data-kind="upper-bound"], [data-kind="optimality"]) {
+.site-chip:is(
+  [data-kind="upper-bound"],
+  [data-kind="optimality"],
+  [data-news-topic="upper-bound"],
+  [data-news-topic="optimality"]
+) {
   background: color-mix(
     in oklab,
     var(--site-bound-upper) var(--site-chip-tint),
+    var(--kpress-doc-bg)
+  );
+}
+.site-chip[data-news-topic="engineering"] {
+  background: color-mix(
+    in oklab,
+    var(--kpress-doc-accent) var(--site-chip-tint),
     var(--kpress-doc-bg)
   );
 }
@@ -3395,8 +3420,9 @@ html[data-site-atlas-view="triangle"]
   margin-block-start: 2rem;
 }
 
-/* News is operational content: sans text, with one quiet frame for each day. */
+/* News is operational content: sans text, with one quiet frame for each entry. */
 .kpress .site-news {
+  --site-news-hover-tint: 7%;
   font-family: var(--kpress-font-sans);
   font-size: var(--site-font-size-sans-base);
   font-weight: var(--site-font-weight-sans-light);
@@ -3405,24 +3431,93 @@ html[data-site-atlas-view="triangle"]
 .kpress .site-news-day {
   border: 1px solid var(--kpress-doc-border);
   margin-block: 1.25rem;
-  padding: 1.25rem;
+  padding: 0.9rem 1rem;
+  transition: var(--site-hover-transition);
 }
-.kpress .site-news-summary > h2 {
-  color: var(--site-support-color);
-  font-family: inherit;
-  font-size: var(--site-font-size-support);
+.kpress .site-news-day[data-news-enhanced] {
+  cursor: pointer;
+}
+.kpress .site-news-day[data-news-enhanced]:hover {
+  background: color-mix(
+    in oklch,
+    var(--kpress-doc-accent) var(--site-news-hover-tint),
+    transparent
+  );
+}
+.kpress .site-news-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-block-start: 0.4rem;
+}
+.kpress .site-news-footer:has([hidden]) {
+  display: none;
+}
+.kpress .site-news-expand {
+  background: none;
+  border: 0;
+  color: var(--kpress-doc-accent);
+  cursor: pointer;
+  font: inherit;
+  padding: 0.2rem;
+}
+.kpress .site-news-body {
+  overflow: hidden;
+  position: relative;
+  transition: max-block-size var(--site-hover-duration) var(--site-hover-easing);
+}
+.kpress .site-news-body::before,
+.kpress .site-news-body::after {
+  block-size: 1.25lh;
+  content: "";
+  inset-block-end: 0;
+  inset-inline: 0;
+  mask-image: linear-gradient(transparent, currentColor);
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  transition: opacity var(--site-hover-duration) var(--site-hover-easing);
+}
+.kpress .site-news-body::before {
+  background: var(--kpress-doc-bg);
+}
+.kpress .site-news-body::after {
+  background: color-mix(
+    in oklch,
+    var(--kpress-doc-accent) var(--site-news-hover-tint),
+    transparent
+  );
+}
+.kpress .site-news-day.is-collapsed .site-news-body::before,
+.kpress .site-news-day.is-collapsed:hover .site-news-body::after {
+  opacity: 1;
+}
+.kpress .site-news-date {
+  color: inherit;
+  font-family: var(--kpress-font-sans);
+  font-feature-settings: var(--kpress-font-features-sans);
+  font-size: var(--site-font-size-sans-base);
   font-style: normal;
-  font-weight: var(--site-font-weight-sans-medium);
-  margin: 0;
+  font-weight: var(--site-font-weight-sans-light);
+  letter-spacing: normal;
+  line-height: 1.45;
+  margin: 0 0 0.6rem;
   text-align: start;
+  text-transform: none;
 }
 .kpress .site-news-item > h3 {
-  font-family: inherit;
-  font-size: 1.1em;
-  font-style: normal;
-  font-weight: var(--site-font-weight-sans-medium);
-  margin-block: 0.8rem;
+  line-height: var(--paper-heading-leading);
+  margin-block: 0.6rem;
+  text-align: start;
+}
+.kpress .site-news-item > h3 :is(.kpress-math, .katex, .tex, math) {
+  letter-spacing: normal;
   text-transform: none;
+}
+.kpress .site-news-topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-block: 0 0.5rem;
 }
 .kpress .site-news-item + .site-news-item {
   border-block-start: 1px solid var(--kpress-doc-border);
@@ -3437,39 +3532,4 @@ html[data-site-atlas-view="triangle"]
   display: block;
   inline-size: 0;
   overflow: hidden;
-}
-
-.kpress .site-news-summary {
-  cursor: pointer;
-  list-style: none;
-}
-.kpress .site-news-summary::-webkit-details-marker {
-  display: none;
-}
-.kpress .site-news-summary:hover,
-.kpress .site-news-summary:focus-visible {
-  background: var(--site-wash);
-}
-.kpress .site-news-preview {
-  -webkit-box-orient: vertical;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  margin-block: 0.6rem;
-  overflow: hidden;
-}
-.kpress .site-news-preview-item {
-  display: block;
-}
-.kpress .site-news-toggle {
-  color: var(--kpress-doc-accent);
-  font-size: var(--site-font-size-control);
-  font-weight: var(--site-font-weight-sans-medium);
-}
-.kpress .site-news-day [data-news-open],
-.kpress .site-news-day[open] [data-news-closed],
-.kpress .site-news-day[open] .site-news-preview {
-  display: none;
-}
-.kpress .site-news-day[open] [data-news-open] {
-  display: inline;
 }

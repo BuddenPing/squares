@@ -732,6 +732,7 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "packing/cases/n11_threshold_certificate/t-026-verifiable-claim-dilation-limit.md",
             "packing/devtools/probes/measure_atlas_views/layout.js",
             "packing/devtools/probes/measure_atlas_views/widen.js",
+            "packing/devtools/news_highlights.py",
             "packing/devtools/render_changelog.py",
             "packing/devtools/render_overview.py",
             "packing/devtools/site_documents.py",
@@ -753,10 +754,11 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
         ),
         reason=(
             "Reviewed the four paper renderers, manuscripts, paper styles and fronts "
-            "against main: no paper content or typesetting input changes. Shared "
-            "navigation adds News; CHANGELOG aliases move to News, and the new "
-            "feed/disclosure renderers are used by the site pages only. Navigation and "
-            "publication-link provenance are site chrome, not independent paper editions. "
+            "against main: no paper content or paper-owned typesetting rules change. "
+            "Shared navigation adds News; CHANGELOG aliases move to News, and the new "
+            "article-card and result-highlight renderers are used by site pages only. "
+            "Navigation, shared arrow motion and publication-link provenance are site "
+            "chrome, not independent paper editions. "
             "Atlas measurement probes add report fields and remove the obsolete "
             "screenshot width override. Exact comparison proves the five regenerated "
             "claim documents change only GitHub blob-link revisions, 93822bfe to "

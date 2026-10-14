@@ -7,7 +7,6 @@ import re
 from fnmatch import fnmatchcase
 
 import pytest
-from kpress.format.markdown import parse_markdown
 
 from devtools import (
     check_published_site,
@@ -15,9 +14,9 @@ from devtools import (
     render_changelog,
     render_overview,
     site_documents,
+    site_math,
 )
 from devtools.pages_scope import REPO
-from devtools.render_changelog import NewsPreviewText
 from tests import site_renders
 
 
@@ -94,16 +93,16 @@ def test_publication_audit_accepts_the_renderers_encoded_artifact_destinations(
     assert all(passed for passed, _line in check_published_site.changelog_checks(news))
 
 
-def test_news_groups_days_and_home_previews_only_the_first_two_items(
+def test_news_has_one_card_per_entry_and_home_highlights_three_existing_s5_results(
     views: tuple[dict, str, str, str, str],
 ) -> None:
     document, news, _github, about, home = views
     ordered = render_changelog.ordered_entries(document)
     assert re.findall(r'data-news-entry="([^"]+)"', news) == [e["id"] for e in ordered]
-    assert re.findall(r'data-news-day="([^"]+)"', news) == sorted(
-        {e["date"] for e in ordered}, reverse=True
-    )
-    assert re.findall(r'data-news-entry="([^"]+)"', home) == [e["id"] for e in ordered[:2]]
+    assert re.findall(r'data-news-day="([^"]+)"', news) == [e["date"] for e in ordered]
+    for day in {entry["date"] for entry in ordered}:
+        assert news.count(f'id="changelog-date-{day}"') == 1
+    assert re.findall(r'data-news-entry="([^"]+)"', home) == ["T-154", "T-153", "T-060"]
     assert '<a class="site-action" href="news.html">All news' in home
     assert 'id="news" class="site-title">News' in news
     assert 'data-page="news" aria-current="page" href="news.html"' in news
@@ -113,22 +112,35 @@ def test_news_groups_days_and_home_previews_only_the_first_two_items(
     for entry in ordered:
         anchor = render_changelog.entry_anchor(entry["id"])
         assert f'id="{anchor}" href="news.html#{anchor}" data-news-target' in about
-        if entry in ordered[:2]:
-            assert f'href="news.html#{anchor}"' in home
+        card = news.split(f'id="{anchor}"', 1)[1].split("</section>", 1)[0]
+        assert re.findall(r'data-news-topic="([^"]+)"', card) == entry.get("topics", [])
 
 
-def test_news_preview_keeps_semantic_math_once_and_skips_hidden_subtrees() -> None:
-    source = parse_markdown(
-        r"Verified **bound** $s(11) \ge 381/100$.", title="News preview", trust_mode="sanitized"
-    ).html
-    preview = " ".join("".join(NewsPreviewText(source).parts).split())
-    assert preview == "Verified bound s(11)≥381/100."
-    nested = (
-        '<p>Before <span aria-hidden="true">visual<annotation>nested<br/>'
-        "<span>hidden</span></annotation><span>still hidden</span></span>"
-        "<math><mrow><mi>x</mi><mo>≥</mo><mn>1</mn></mrow>"
-        "<annotation>duplicate</annotation><annotation-xml>"
-        "<span>duplicate again</span></annotation-xml></math><br/>after<br>end.</p>"
-    )
-    clean = " ".join("".join(NewsPreviewText(nested).parts).split())
-    assert clean == "Before x≥1 after end."
+@pytest.mark.parametrize(
+    ("formula", "structure"),
+    [
+        (r"s(11) \ge 381/100", "mrow"),
+        (r"s(n) \ge \sqrt{n}", "msqrt"),
+        (r"s(11) \ge \frac{381}{100}", "mfrac"),
+        (r"s(n)^2 \ge n", "msup"),
+    ],
+)
+def test_news_cards_keep_the_actual_article_and_structured_math_once(
+    formula: str, structure: str
+) -> None:
+    document = copy.deepcopy(render_changelog.load())
+    first = render_changelog.ordered_entries(document)[0]
+    first["summary"] = f"Verified **bound & label** ${formula}$. Use `<tag>`."
+    first["details"] = "Actual article detail with a [proof](https://example.com/proof)."
+    rendered = render_changelog.render_news(document, limit=1)
+    assert rendered.count("Actual article detail") == 1
+    assert rendered.count("data-news-entry=") == 1
+    assert "<strong>bound &amp; label</strong>" in rendered
+    assert "<code>&lt;tag&gt;</code>" in rendered
+    assert f"<{structure}>" in rendered
+    assert "<summary" not in rendered
+    assert "site-news-preview" not in rendered
+    assert 'href="https://example.com/proof"' in rendered
+    formulas = site_math.formula_sources(rendered)
+    assert [item.source for item in formulas].count(formula) == 1
+    assert all(item.profile == "sans" for item in formulas)

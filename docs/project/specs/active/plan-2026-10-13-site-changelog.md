@@ -22,8 +22,8 @@ progress.
 Add a project-wide changelog that explains what each meaningful merged PR or stack
 contributed. Store the entries in YAML under a Soft Schema contract, with Markdown for
 reader-facing descriptions.
-Generate a readable GitHub document and publish the same history on News, with daily
-inline disclosures and a two-item homepage preview.
+Generate a readable GitHub document and publish the same history on News, with
+individual article cards and a homepage preview of the three newest S5 results.
 Keep a short News link and legacy bookmark forwarding on About.
 
 Backfill the latest 36 PRs merged into main, using their descriptions, reviews and the
@@ -185,12 +185,25 @@ manually maintained source.
 
 Publish the complete history at `news.html`, with News as the second navigation item.
 Use the usual uppercase sans-serif H1 and sans-serif operational text, with one
-hairline-bordered inline disclosure per day.
-Each day shows a clamped preview and a “Show more” affordance, expands on hover or
-focus, and stays open after a press or interaction with its body.
-Native disclosure toggling supports keyboard, touch and readers without scripting.
-Preview the first two individual items on the homepage, newest first, followed by the
-shared “All news →” action.
+hairline-bordered card per entry.
+Dates use the paper heading’s sans-base date role; entry headings reuse the compact
+small-caps label role.
+Each card contains its actual article once, with about ten lines visible after the
+enhancement loads. Click or tap the card or its small shared arrow button in the footer
+to expand or contract it inline; Enter and Space activate the button.
+A short fade marks the clipped edge.
+Height, fade and shared-arrow rotation use the existing hover timing and honor reduced
+motion. Hover adds a light green wash without changing height.
+Ordinary links keep their action; body-link focus reveals the article.
+Without scripting, complete articles remain visible.
+Entry and legacy date fragments reveal the corresponding card.
+Topic chips reuse the Results chips with separate subject metadata: lower bounds, upper
+bounds, optimality, engineering, verification and documentation.
+They classify the article’s subject without changing proof or verification status.
+The homepage highlights the three newest S5 results from the authoritative results
+register, followed by the shared “All news →” action.
+These highlights reuse result claims, credit and evidence without inventing changelog
+launch entries for older results.
 About retains one short News link at its former changelog section; hidden legacy anchors
 forward old entry and date bookmarks without duplicating the feed.
 Entry links retain `#changelog-entry-<id>` in both reader views; date headings retain
@@ -415,9 +428,10 @@ Use a small set of meaningful behavioral and negative checks:
   Markdown bullets and math survive both render paths and formatting.
 - Launch tests distinguish merged/prepared work from verified publication, preserve
   unknown first-live dates, and check direct public artifact links.
-- News has stable anchors and readable desktop/mobile daily cards, remains discoverable
-  from GitHub and the second navigation item, and receives old About bookmarks.
-  The homepage previews exactly two individual items and About keeps one short link.
+- News has stable anchors and readable desktop/mobile individual cards, remains
+  discoverable from GitHub and the second navigation item, and receives old About
+  bookmarks. The homepage previews the three newest S5 results and About keeps one short
+  link.
 - Component tests cover patch and minor successors, both infographic versions advancing
   together, a missing/mixed export refusal, independent paper editions, and no invented
   backfill versions.

@@ -84,6 +84,7 @@ def test_the_bar_has_one_papers_entry_reaching_the_site_root(page: str) -> None:
     entries = re.findall(r'<a data-page="(\w+)"[^>]* href="([^"]+)">([^<]+)</a>', page)
     assert [key for key, _, _ in entries] == [
         "overview",
+        "news",
         "atlas",
         "results",
         "papers",
@@ -91,6 +92,7 @@ def test_the_bar_has_one_papers_entry_reaching_the_site_root(page: str) -> None:
         "about",
         "github",
     ]
+    assert ("news", "../news.html", "News") in entries
     assert ("papers", "../papers.html", "Papers") in entries
     assert ("atlas", "../atlas.html", "Atlas") in entries
     assert ("about", "../about.html", "About") in entries

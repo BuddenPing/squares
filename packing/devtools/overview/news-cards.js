@@ -1,70 +1,75 @@
-// Daily News disclosures open inline. Hover/focus expansion is transient until a
-// reader pins it with a press or uses the body; native details works without this file.
+// News entry cards keep their actual articles; presses only change the visible height.
+// Without this enhancement, the complete articles and their ordinary links stay visible.
 (() => {
+  /** @type {Map<Element, (open: boolean) => void>} */
+  const cards = new Map();
   for (const card of document.querySelectorAll("[data-news-day]")) {
-    const summary = card.querySelector("summary");
-    if (!(card instanceof HTMLDetailsElement) || !(summary instanceof HTMLElement)) {
+    const button = card.querySelector(".site-news-expand");
+    const body = card.querySelector(".site-news-body");
+    if (
+      !(card instanceof HTMLElement) ||
+      !(button instanceof HTMLButtonElement) ||
+      !(body instanceof HTMLElement)
+    ) {
       continue;
     }
-    const expand = () => {
-      if (!card.open) {
-        card.dataset.newsTransient = "true";
-        card.open = true;
+    const date = card.querySelector("time")?.textContent ?? card.dataset.newsDay;
+    const setOpen = (/** @type {boolean} */ open, animate = true) => {
+      if (card.dataset.newsEnhanced && (button.getAttribute("aria-expanded") === "true") === open) {
+        return;
       }
+      if (animate) {
+        body.style.maxBlockSize = `${body.getBoundingClientRect().height}px`;
+        // Commit the current height so rapid presses reverse from the visible frame.
+        body.getBoundingClientRect();
+      }
+      card.classList.toggle("is-collapsed", !open);
+      body.style.maxBlockSize = open ? `${body.scrollHeight}px` : "10lh";
+      if (open && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        body.style.removeProperty("max-block-size");
+      }
+      button.setAttribute("aria-expanded", String(open));
+      button.setAttribute("aria-label", `${open ? "Collapse" : "Expand"} news for ${date}`);
+      const arrow = button.querySelector("[data-arrow]");
+      arrow?.setAttribute("data-arrow", open ? "double-up" : "double-down");
     };
-    const leave = () => {
+    body.addEventListener("transitionend", (event) => {
       if (
-        card.dataset.newsTransient === "true" &&
-        card.dataset.newsPinned !== "true" &&
-        !card.matches(":hover") &&
-        !card.contains(document.activeElement)
+        event.target === body &&
+        ["max-block-size", "max-height"].includes(event.propertyName) &&
+        button.getAttribute("aria-expanded") === "true"
       ) {
-        card.open = false;
-        delete card.dataset.newsTransient;
-      }
-    };
-    card.addEventListener("pointerenter", (event) => {
-      if (event.pointerType !== "touch" && window.matchMedia("(hover: hover)").matches) {
-        expand();
+        body.style.removeProperty("max-block-size");
       }
     });
-    card.addEventListener("pointerleave", leave);
-    card.addEventListener("focusin", (event) => {
-      if (event.target === summary) {
-        expand();
-      } else {
-        card.dataset.newsPinned = "true";
-      }
-    });
-    card.addEventListener("focusout", () => queueMicrotask(leave));
-    summary.addEventListener("click", (event) => {
-      if (card.open && card.dataset.newsTransient === "true" && event.detail > 0) {
-        event.preventDefault();
-        card.dataset.newsPinned = "true";
-        delete card.dataset.newsTransient;
-      } else {
-        card.dataset.newsPinned = String(!card.open);
-      }
-    });
+    setOpen(false, false);
+    if (body.scrollHeight <= body.clientHeight) {
+      setOpen(true, false);
+      continue;
+    }
+    const toggle = () => setOpen(button.getAttribute("aria-expanded") !== "true");
+    button.addEventListener("click", toggle);
+    card.querySelector(".site-news-body")?.addEventListener("focusin", () => setOpen(true));
     card.addEventListener("click", (event) => {
-      if (event.target instanceof Node && !summary.contains(event.target)) {
-        card.dataset.newsPinned = "true";
+      if (
+        !(event.target instanceof Element) ||
+        event.target.closest(
+          "a, button, input, select, textarea, summary, details, [contenteditable]",
+        ) ||
+        window.getSelection()?.isCollapsed === false
+      ) {
+        return;
       }
+      toggle();
     });
-    card.addEventListener("toggle", () => {
-      if (!card.open) {
-        delete card.dataset.newsPinned;
-        delete card.dataset.newsTransient;
-      }
-    });
+    cards.set(card, setOpen);
+    card.dataset.newsEnhanced = "true";
+    button.hidden = false;
   }
   const reveal = () => {
-    const target = document.getElementById(location.hash.slice(1));
-    const card = target?.closest("[data-news-day]");
-    if (card instanceof HTMLDetailsElement) {
-      card.open = true;
-      card.dataset.newsPinned = "true";
-      delete card.dataset.newsTransient;
+    const card = document.getElementById(location.hash.slice(1))?.closest("[data-news-day]");
+    if (card) {
+      cards.get(card)?.(true);
     }
   };
   reveal();

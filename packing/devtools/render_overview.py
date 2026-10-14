@@ -92,8 +92,8 @@ VISUALIZE_ARTICLE = TEMPLATES / "visualize-article.md"
 PAPERS_ARTICLE = TEMPLATES / "papers-article.md"
 BROWSER = PACKING / "devtools" / "overview"
 FORWARD_SCRIPT = BROWSER / "forward.js"
-NEWS_FORWARD_SCRIPT = BROWSER / "news-forward.js"
 NEWS_CARDS_SCRIPT = BROWSER / "news-cards.js"
+NEWS_FORWARD_SCRIPT = BROWSER / "news-forward.js"
 TABLE_SCRIPT = BROWSER / "table.js"
 MATH_SCRIPT = BROWSER / "math.js"
 POPOVER_SCRIPT = BROWSER / "popover.js"
@@ -480,6 +480,7 @@ RENDER_INPUTS: tuple[Path, ...] = (
     PACKING / "site-changelog.yaml",
     PACKING / "site-changelog.schema.yaml",
     PACKING / "devtools/render_changelog.py",
+    PACKING / "devtools/news_highlights.py",
     PACKING / "devtools/build_known_best_atlas.py",
     PACKING / "devtools/atlas_print_font.py",
     PACKING / "devtools/default_drawings.py",
@@ -1260,12 +1261,12 @@ def report_results() -> str:
 
 def overview_page() -> Page:
     """A short introduction, bounded previews, papers, and links to the full pages."""
-    from devtools import overview_data, overview_sections, render_changelog  # noqa: PLC0415
+    from devtools import news_highlights, overview_data, overview_sections  # noqa: PLC0415
 
     overview = overview_data.load()
     values = {
         "HERO": overview_sections.hero(),
-        "NEWS_PREVIEW": render_changelog.render_news(render_changelog.load(), limit=2),
+        "NEWS_PREVIEW": news_highlights.render(overview),
         "ATLAS_GRID": overview_sections.atlas_preview(),
         "PAPER_CARDS": overview_sections.paper_cards(),
         "DOCUMENTATION_BLOCK": overview_sections.documentation_block(),

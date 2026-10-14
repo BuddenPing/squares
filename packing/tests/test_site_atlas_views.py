@@ -74,6 +74,7 @@ PREPARE_SHOT = probe(PROBES, "site_atlas_views/prepare-shot")
 CONTROLS = probe(PROBES, "site_atlas_views/controls")
 CONTAINER_MOVE = probe(PROBES, "site_atlas_views/container-move")
 SIZE_STATE = probe(PROBES, "site_atlas_views/size-state")
+WIDTH_CAP = probe(PROBES, "site_atlas_views/width-cap")
 
 GRID, TRIANGLE = atlas.tab("grid"), atlas.tab("triangle")
 SMALL, MEDIUM, LARGE = (atlas.size_tab(size) for size in atlas.SIZES)
@@ -1952,9 +1953,13 @@ def test_atlas_fills_available_width_with_and_without_scripts(
                     assert report["overflow"] == 0, where
                     if width == 390 and view == "triangle":
                         assert report["pan"]["width"] > report["pan"]["viewport"], where
-            page.add_style_tag(content=".site-page .site-atlas-grid { --site-wide: 140rem; }")
+            control = page.evaluate(WIDTH_CAP)
             capped = page.evaluate(LAYOUT)
-            assert capped["available"]["width"] - capped["block"]["width"] > 500
+            assert capped["available"]["width"] - capped["block"]["width"] > 500, (
+                name,
+                javascript,
+                control,
+            )
         finally:
             context.close()
 

@@ -175,7 +175,7 @@ def test_kpress_preserves_math_and_unique_stable_ids() -> None:
     assert '<h4 id="changelog-entry-foundations">Foundations</h4>' in tree.html
 
 
-def test_math_generated_markup_and_urls_are_rejected_through_full_about(
+def test_math_generated_markup_and_urls_are_rejected_through_full_news(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     payloads = [
@@ -191,14 +191,14 @@ def test_math_generated_markup_and_urls_are_rejected_through_full_about(
             data["entries"][0][field] = payload
             monkeypatch.setattr(render_changelog, "load", lambda data=data: data)
             with pytest.raises(ValueError, match=r"unsafe|sanitized|raw HTML"):
-                render_overview.about_page()
+                render_overview.news_page()
             with pytest.raises(ValueError, match=r"unsafe|sanitized|raw HTML"):
                 render_changelog.validate(data)
             with pytest.raises(ValueError, match=r"unsafe|sanitized|raw HTML"):
                 render_changelog.render_markdown(data)
 
 
-def test_normal_math_and_safe_math_links_survive_full_about(
+def test_normal_math_and_safe_math_links_survive_full_news(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     data = document()
@@ -210,12 +210,12 @@ def test_normal_math_and_safe_math_links_survive_full_about(
         "- Matrix:\n\n" + r"$$\begin{pmatrix}1&2\\3&4\end{pmatrix}$$"
     )
     monkeypatch.setattr(render_changelog, "load", lambda: data)
-    about = render_overview.about_page().html
-    assert "<math" in about
-    assert "<mfrac>" in about
-    assert "<mtable" in about
-    assert "<strong>bound</strong>" in about
-    assert 'href="https://example.com/proof%281%29"' in about
+    news = render_overview.news_page().html
+    assert "<math" in news
+    assert "<mfrac>" in news
+    assert "<mtable" in news
+    assert "<strong>bound</strong>" in news
+    assert 'href="https://example.com/proof%281%29"' in news
     assert data["entries"][0]["summary"] in render_changelog.render_markdown(data)
 
 

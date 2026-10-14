@@ -665,130 +665,83 @@ def ordered_entries(document: Document) -> list[Document]:
     )
 
 
-class NewsPreviewText(HTMLParser):
-    """Plain preview text from sanitized prose, keeping semantic math exactly once."""
+NEWS_TOPICS = {
+    "lower-bound": "Lower bounds",
+    "upper-bound": "Upper bounds",
+    "optimality": "Optimality",
+    "engineering": "Engineering",
+    "verification": "Verification",
+    "documentation": "Documentation",
+}
 
-    VOID_TAGS = frozenset(
-        {
-            "area",
-            "base",
-            "br",
-            "col",
-            "embed",
-            "hr",
-            "img",
-            "input",
-            "link",
-            "meta",
-            "param",
-            "source",
-            "track",
-            "wbr",
-        }
+
+def news_topics(topics: Sequence[str]) -> str:
+    """Subject tags reuse result chips without asserting a result kind or status."""
+    if not topics:
+        return ""
+    if any(topic not in NEWS_TOPICS for topic in topics):
+        raise ValueError("unknown News topic")
+    return (
+        '<p class="site-news-topics">'
+        + " ".join(
+            f'<span class="site-chip" data-news-topic="{topic}">{NEWS_TOPICS[topic]}</span>'
+            for topic in topics
+        )
+        + "</p>"
     )
 
-    def __init__(self, text: str) -> None:
-        super().__init__()
-        self.parts: list[str] = []
-        self.stack: list[tuple[str, bool]] = []
-        self.feed(text)
-        self.close()
 
-    def _hidden(self) -> bool:
-        return bool(self.stack and self.stack[-1][1])
+def news_card(anchor: str, day_text: str, body: str) -> str:
+    """One dated card around already sanitized article HTML, complete without scripts."""
+    from devtools.overview_sections import arrow_icon  # noqa: PLC0415
 
-    @override
-    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        hidden = (
-            self._hidden()
-            or tag in {"annotation", "annotation-xml"}
-            or any(
-                name == "aria-hidden" and value is not None and value.lower() == "true"
-                for name, value in attrs
-            )
-        )
-        if tag in self.VOID_TAGS:
-            if tag in {"br", "wbr"} and not hidden:
-                self.parts.append(" ")
-        else:
-            self.stack.append((tag, hidden))
-
-    @override
-    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        self.handle_starttag(tag, attrs)
-        if tag not in self.VOID_TAGS:
-            self.handle_endtag(tag)
-
-    @override
-    def handle_endtag(self, tag: str) -> None:
-        for index in range(len(self.stack) - 1, -1, -1):
-            if self.stack[index][0] == tag:
-                hidden = self.stack[index][1]
-                del self.stack[index:]
-                if tag in {"p", "li"} and not hidden:
-                    self.parts.append(" ")
-                break
-
-    @override
-    def handle_data(self, data: str) -> None:
-        if not self._hidden():
-            self.parts.append(data)
+    day = date.fromisoformat(day_text)
+    label = f"{day:%B} {day.day}, {day.year}"
+    safe_anchor = html.escape(anchor, quote=True)
+    return (
+        f'<section class="site-news-day" id="{safe_anchor}" '
+        f'data-news-day="{day_text}"><header class="site-news-header">'
+        '<p class="site-news-date publication-date">'
+        f'<time datetime="{day_text}">{label}</time></p>'
+        f'</header><div class="site-news-body" id="{safe_anchor}-body">{body}</div>'
+        f'<footer class="site-news-footer"><button class="site-news-expand" '
+        f'type="button" hidden aria-expanded="true" aria-controls="{safe_anchor}-body" '
+        f'aria-label="Collapse news for {label}">{arrow_icon("double-up")}</button>'
+        f"</footer></section>"
+    )
 
 
 def render_news(document: Document, *, limit: int | None = None) -> str:
-    """Daily inline disclosures, or a homepage preview of individual contributions."""
+    """One complete article per card, optionally limited to the first few items."""
     validate(document)
     if limit is not None and limit < 1:
         raise ValueError("a News preview needs at least one item")
     entries = ordered_entries(document)
     if limit is not None:
         entries = entries[:limit]
-    days: dict[str, list[Document]] = {}
+    out = ['<div class="site-news sans-text" data-news>']
+    seen_dates: set[str] = set()
     for entry in entries:
-        days.setdefault(entry["date"], []).append(entry)
-    out = ['<div class="site-news" data-news>']
-    for day_text, items in days.items():
-        day = date.fromisoformat(day_text)
-        label = f"{day:%B} {day.day}, {day.year}"
-        out.append(
-            f'<details class="site-news-day" id="changelog-date-{day_text}" '
-            f'data-news-day="{day_text}"><summary class="site-news-summary">'
-            f'<h2><time datetime="{day_text}">{label}</time></h2>'
-            '<span class="site-news-preview">'
+        anchor = entry_anchor(entry["id"])
+        title = html.escape(entry["title"])
+        if limit is not None:
+            title = f'<a href="news.html#{anchor}">{title}</a>'
+        article = []
+        if entry["date"] not in seen_dates:
+            # Retain the old daily bookmark at the first individual card for that day.
+            article.append(f'<div id="changelog-date-{entry["date"]}"></div>')
+            seen_dates.add(entry["date"])
+        article.append(
+            f'<article class="site-news-item" data-news-entry="{entry["id"]}">'
+            f"{news_topics(entry.get('topics', []))}<h3>{title}</h3>"
         )
-        for entry in items:
-            preview = NewsPreviewText(_prose(entry["summary"], destination="site"))
-            text = html.escape(" ".join("".join(preview.parts).split()))
-            out.append(
-                '<span class="site-news-preview-item">'
-                f"<strong>{html.escape(entry['title'])}</strong> {text}</span>"
-            )
-        out.append(
-            '</span><span class="site-news-toggle"><span data-news-closed>Show more '
-            '<span aria-hidden="true">⌄</span></span><span data-news-open>Show less '
-            '<span aria-hidden="true">⌃</span></span></span></summary>'
-            '<div class="site-news-body">'
+        article.extend(
+            _prose(field, destination="site")
+            for field in _entry_lines(document, entry, "github")
+            if field
         )
-        for entry in items:
-            anchor = entry_anchor(entry["id"])
-            title = html.escape(entry["title"])
-            if limit is not None:
-                title = f'<a href="news.html#{anchor}">{title}</a>'
-            out.append(
-                f'<article class="site-news-item" id="{anchor}" '
-                f'data-news-entry="{entry["id"]}"><h3>{title}</h3>'
-            )
-            if limit is None:
-                # Metadata and authored prose share the same sanitized link policy.
-                out.extend(
-                    _prose(field, destination="site")
-                    for field in _entry_lines(document, entry, "github")
-                    if field
-                )
-            else:
-                out.append(_prose(entry["summary"], destination="site"))
-            out.append("</article>")
-        out.append("</div></details>")
+        article.append("</article>")
+        out.append(news_card(anchor, entry["date"], "\n".join(article)))
     out.append("</div>")
     return "\n".join(out)
 
