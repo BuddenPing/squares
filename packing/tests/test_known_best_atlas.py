@@ -11,6 +11,7 @@ import hashlib
 import io
 import json
 import lzma
+import math
 import os
 import re
 import subprocess
@@ -1092,11 +1093,12 @@ def test_the_poster_canvas_is_what_its_specification_computes() -> None:
     assert (canvas.information_left, canvas.information_right) == (204, 2804)
     assert float(canvas.legend_baseline) == pytest.approx(778.7511853125)
     assert float(canvas.explainer_baseline) == pytest.approx(484.16015625)
-    # Two lower-bound and four optimality-credit lines precede the closing anchors.
+    # Two lower-bound and four optimality-credit lines, then the three lines of the
+    # regularization credits, precede the closing anchors.
     # The default canvas reserves the deepest possible date descender.
-    assert float(canvas.citations_baseline) == pytest.approx(2443.3058728125)
-    assert float(canvas.credit_baseline) == pytest.approx(2182.3527478125)
-    assert float(canvas.stamp_baseline) == pytest.approx(2254.3527478125)
+    assert float(canvas.citations_baseline) == pytest.approx(2776.2589978125)
+    assert float(canvas.credit_baseline) == pytest.approx(2515.3058728125)
+    assert float(canvas.stamp_baseline) == pytest.approx(2587.3058728125)
     assert (composite.svg_name, composite.pdf_name) == (
         "known-best-1-324.svg",
         "square-packings-324-20261008.pdf",
@@ -2141,16 +2143,27 @@ def test_poster_packing_credits_name_every_retained_construction_author_and_sour
     proof_lines = information.findall(
         "svg:g/svg:text[@data-feature='optimality-credit-line']", SVG
     )
-    assert _print_text_ink_bounds(ending[0])[0] - _print_text_ink_bounds(proof_lines[-1])[
-        1
-    ] == pytest.approx(144, abs=1)
+    regularization_lines = information.findall(
+        "svg:g/svg:text[@data-feature='regularization-credit-line']", SVG
+    )
+    assert regularization_lines
+    assert _print_text_ink_bounds(regularization_lines[0])[0] - _print_text_ink_bounds(
+        proof_lines[-1]
+    )[1] == pytest.approx(144, abs=1)
+    assert _print_text_ink_bounds(ending[0])[0] - _print_text_ink_bounds(
+        regularization_lines[-1]
+    )[1] == pytest.approx(144, abs=1)
     assert _print_text_ink_bounds(ending[2])[0] - _print_text_ink_bounds(ending[1])[
         1
     ] == pytest.approx(144, abs=1)
     # Measure every actual text line against the right-aligned cards, rather than
     # treating empty information-block space as ink.
+    # The regularization credits carry the closing lines past the top of row 10, whose
+    # first card stands at x = 3428, well right of the block's 2804-unit edge; they end
+    # above row 11.
     canvas = known_best_builder.resolved_composites()[1]
-    assert Decimal(ending[2].attrib["y"]) + Decimal("17.1") < canvas.card_position(82).top
+    assert Decimal(ending[2].attrib["y"]) + Decimal("17.1") < canvas.card_position(101).top
+    assert canvas.card_position(82).left > canvas.information_right
     _assert_poster_text_clears_cards(information, canvas)
 
 
@@ -2850,7 +2863,17 @@ def test_a_second_composite_is_a_specification_and_not_a_second_set_of_constants
     third = known_best_builder.CompositeCanvas(CompositeSpec(1, 400, 20, "known-best-1-400"))
     assert (third.spec.rows, third.spec.square_count) == (20, 80200)
     assert third.width == figure.width + 10 * known_best_builder.SUMMARY_COLUMN_PITCH
-    assert third.height == figure.height + 10 * known_best_builder.SUMMARY_ROW_PITCH
+    # Ten more rows, and the regularization credits' lines for the cases it would draw
+    # from regularized views, one line per generator that made one in its range.
+    layout = known_best_builder._information_layout  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+    paragraph = known_best_builder._regularization_lines  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+    extra_lines = len(paragraph(third)) - len(paragraph(figure))
+    assert layout(third).bottom - layout(figure).bottom == (
+        10 * known_best_builder.SUMMARY_ROW_PITCH + extra_lines * layout(figure).line_pitch
+    )
+    assert third.height == math.ceil(
+        layout(third).bottom + known_best_builder.SUMMARY_BOTTOM_MARGIN
+    )
     assert third.spec.stem not in known_best_builder.SUMMARY_PROSE
 
 
@@ -4052,6 +4075,8 @@ def test_print_information_shares_content_style_and_measured_block_gaps(data_dat
             for key in ("lower-bound", "optimality")
         ]
         assert all(node is not None for node in attribution_blocks)
+        regularization = block.find("svg:g[@data-feature='regularization-credits']", SVG)
+        assert regularization is not None
         assert all(node is not None for node in closing)
         assert len(legend.findall("svg:g[@data-feature='legend-column']", SVG)) == 2
         assert len(legend.findall(".//svg:text[@data-feature='legend-label']", SVG)) == 8
@@ -4065,6 +4090,7 @@ def test_print_information_shares_content_style_and_measured_block_gaps(data_dat
                 "packing-credit-line",
                 "lower-bound-credit-line",
                 "optimality-credit-line",
+                "regularization-credit-line",
                 "credit",
                 "release-stamp",
                 "citations",
@@ -4086,6 +4112,7 @@ def test_print_information_shares_content_style_and_measured_block_gaps(data_dat
                 for node in attribution_blocks
                 if node is not None
             ),
+            list(regularization.iter(f"{{{SVG['svg']}}}text")),
             [node for node in closing if node is not None],
         ]
         bounds = [
@@ -4107,7 +4134,7 @@ def test_print_information_shares_content_style_and_measured_block_gaps(data_dat
             ),
         )
         gaps = [below[0] - above[1] for above, below in pairwise(bounds)]
-        assert gaps == pytest.approx([size * 3] * 5, abs=1.0)
+        assert gaps == pytest.approx([size * 3] * 6, abs=1.0)
         if canvas.information_in_corner:
             title = block.find("svg:text[@data-feature='poster-title']", SVG)
             assert title is not None
