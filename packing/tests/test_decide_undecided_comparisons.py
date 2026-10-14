@@ -35,6 +35,14 @@ def test_parse_polynomial_reads_braced_and_bare_powers() -> None:
         tool.parse_polynomial("x^2-1")
 
 
+def test_parse_polynomial_refuses_a_right_hand_side_other_than_zero() -> None:
+    cubic = [1, 0, -1, 0]
+    assert tool.parse_polynomial("s^3 - s = 0") == tool.parse_polynomial("s^3 - s") == cubic
+    for text in ("s^3 - s = 1", "s^3 = s", "s^2 - 2 = 0 = 1"):
+        with pytest.raises(tool.DecisionError, match="right-hand side is not 0"):
+            tool.parse_polynomial(text)
+
+
 def test_sturm_count_and_squarefree_refusal() -> None:
     assert tool.root_count([1, 0, -2], Fraction(1), Fraction(2)) == 1
     assert tool.root_count([1, 0, -2], Fraction(-2), Fraction(2)) == 2

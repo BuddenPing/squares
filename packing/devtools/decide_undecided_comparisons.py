@@ -161,8 +161,12 @@ def _rel(path: Path) -> str:
 
 
 def parse_polynomial(text: str) -> list[int]:
-    """The integer coefficients, highest first, of ``4775s^{18} - 190430s^{17} + ... = 0``."""
-    written = text.split("=", 1)[0].replace(" ", "")
+    """The integer coefficients, highest first, of ``4775s^{18} - 190430s^{17} + ... = 0``;
+    a right-hand side other than none or ``0`` is refused."""
+    written, _, right = text.partition("=")
+    if right.strip() not in ("", "0"):
+        raise DecisionError(f"the right-hand side is not 0: {text!r}")
+    written = written.replace(" ", "")
     terms: dict[int, int] = {}
     position = 0
     while position < len(written):
