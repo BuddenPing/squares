@@ -48,6 +48,19 @@ OSTASHEV = "dostashev-records-2026-10-11"
 SQUISH_500 = "squish-500-fourth-request-2026-10-11"
 #: Issue #506: Couzo's next release, two counts in the corpus and nine beyond it.
 COUZO_506 = "couzo-certificates-2026-10-11"
+#: Issue #567: PingYou Ltd's n261, whose squares touch the box and each other exactly.
+PINGYOU_261 = "pingyou-n261-refinement-2026-10-12"
+#: PingYou Ltd's releases of 12 October (#564, #566 to #569, and the refinements posted on
+#: #503 and #504), one derived-only packet each; ``test_upper_bound_reports_pingyou_1012``.
+PINGYOU_1012 = (
+    "pingyou-n302-certificate-2026-10-12",
+    "pingyou-n153-refinement-2026-10-12",
+    "pingyou-n207-refinement-2026-10-12",
+    "pingyou-n146-refinement-2026-10-12",
+    PINGYOU_261,
+    "pingyou-n105-refinement-2026-10-12",
+    "pingyou-n272-refinement-2026-10-12",
+)
 #: How a declaration cites a beyond-horizon row of the source register.
 COVERAGE_URL = "packing/frontier/source-coverage.yaml"
 EVERY = (
@@ -61,6 +74,7 @@ EVERY = (
     OSTASHEV,
     SQUISH_500,
     COUZO_506,
+    *PINGYOU_1012,
 )
 
 
@@ -443,7 +457,7 @@ def test_a_half_turn_has_no_half_angle_tangent(degrees: int) -> None:
         ({**DILATED, "dilation": "1.5"}, "positive integer or p/q"),
         ({**DILATED, "dilation": "-2"}, "positive integer or p/q"),
         ({**DILATED, "dilation": "3/0"}, "positive integer or p/q"),
-        ({**DILATED, "dilation": "1" * 1025}, "positive integer or p/q"),
+        ({**DILATED, "dilation": "1" * (reports.MAX_LITERAL_CHARS + 1)}, "integer or p/q"),
         ({**DILATED, "dilation": "1/2"}, "below 1"),
         ({**DILATED, "half_angle_places": "29"}, "integer from 30 to 100"),
         ({**DILATED, "half_angle_places": "101"}, "integer from 30 to 100"),
@@ -815,14 +829,20 @@ def test_the_receipt_admits_every_job_on_both_routes(name: str) -> None:
     for margins in reports.margins(positives).values():
         for field in ("containment_clearance", "best_pair_gap"):
             assert margins[f"exact_verify_{field}"] == margins[f"independent_{field}"]
-        assert Fraction(margins["exact_verify_best_pair_gap"]) > 0
+        assert Fraction(margins["exact_verify_best_pair_gap"]) >= 0
         assert Fraction(margins["exact_verify_containment_clearance"]) >= 0
-    # SQUISH's squares touch the box; every other source's clear it.
+    # SQUISH's and #567's squares touch the box; every other source's clear it.
     walls = {
         Fraction(m["exact_verify_containment_clearance"])
         for m in reports.margins(positives).values()
     }
-    assert (walls == {0}) is (name in {SQUISH_481, SQUISH_500})
+    assert (walls == {0}) is (name in {SQUISH_481, SQUISH_500, PINGYOU_261})
+    # Only #567's squares touch each other, an exact contact the kernel admits; every other
+    # source's pairs clear.
+    gaps = {
+        Fraction(m["exact_verify_best_pair_gap"]) for m in reports.margins(positives).values()
+    }
+    assert (0 in gaps) is (name == PINGYOU_261)
 
 
 def _jobs_from_receipt(packet: Path, directory: Path) -> None:
@@ -998,6 +1018,7 @@ def test_the_register_plan_states_each_bound_as_check_standing_reads_it(name: st
         OSTASHEV: "2026-10-11",
         SQUISH_500: "2026-10-11",
         COUZO_506: "2026-10-11",
+        **dict.fromkeys(PINGYOU_1012, "2026-10-12"),
     }
     assert result["attribution"]["published"] == published.get(name, "2026-10-10")
     evidence = plan["evidence.yaml"]

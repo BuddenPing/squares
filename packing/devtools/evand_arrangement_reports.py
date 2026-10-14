@@ -44,6 +44,10 @@ RECEIPT_FORMAT = "evand-399-complete-exact-replay-v1"
 JOBS = ("positive", "duplicate-square-overlap", "square-translated-outside-container")
 ROUTES = ("exact_verify", "independent")
 MAX_BYTES = 4_000_000
+#: The longest exact diagnostic a receipt row may state, in characters. Two receipts passed
+#: the earlier ceiling of 1,024: #567's n261 outside-container control states a wall
+#: clearance of 2,205 characters, and #569's n272 positive a least pair gap of 1,043.
+MAX_RATIONAL_CHARS = 4096
 MAX_XZ_MEMORY = 32 * 1024 * 1024
 JOB_TIMEOUT = 600
 WITNESS_PREFIX = "W-evand-399-n"
@@ -304,7 +308,7 @@ def _seconds(value: Any) -> None:
 def _rational(value: Any) -> Fraction:
     if (
         type(value) is not str
-        or len(value) > 1024
+        or len(value) > MAX_RATIONAL_CHARS
         or re.fullmatch(r"-?[0-9]+(?:/[1-9][0-9]*)?", value) is None
     ):
         raise ReportError("invalid exact diagnostic")

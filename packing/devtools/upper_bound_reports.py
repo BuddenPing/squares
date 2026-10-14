@@ -136,8 +136,12 @@ JOBS = kernel.JOBS
 ROUTES = kernel.ROUTES
 JOB_TIMEOUT = kernel.JOB_TIMEOUT
 MAX_WORKERS = 2
-MAX_SOURCE_BYTES = 1_000_000
-MAX_LITERAL_CHARS = 1024
+#: The largest file an adapter reads. #567's n261 release pins a 1,076,936-byte certificate
+#: and a 4,842,525-byte corners witness of the same packing.
+MAX_SOURCE_BYTES = 6_000_000
+#: The longest rational literal an adapter reads, the longest a receipt row may state:
+#: that witness has corner literals of 2,522 characters.
+MAX_LITERAL_CHARS = kernel.MAX_RATIONAL_CHARS
 #: How a printed side was rounded: up, as the report states, or not stated.
 ROUNDINGS = ("up", "unstated")
 THIS = "this certificate"
@@ -505,7 +509,7 @@ PINGYOU_METADATA: dict[str, tuple[type, ...]] = {
 
 
 def pingyou_json(raw: bytes, n: int, options: Mapping[str, str]) -> legacy.Certificate:
-    """PingYou Ltd's JSON (#503, #504): ``s_exact`` and ``[x, y, t]`` squares in [0, S]^2.
+    """PingYou Ltd's JSON (#503, #504, #564, #566-#569): ``s_exact`` and ``[x, y, t]`` squares.
 
     The rows are SQUISH's. ``note``, ``dilation_exact``, ``raw_side`` and ``provenance``
     are the source's prose, its guard dilation, its undilated floating-point side and its
@@ -1010,6 +1014,13 @@ HOUSES: dict[str, Callable[[int], Fraction]] = {
     "[Barnett refinements 2026-10-11]": _import("barnett-refinements-2026-10-11"),
     "[SQUISH fourth request 2026-10-11]": _import("squish-500-fourth-request-2026-10-11"),
     "[Couzo certificates 2026-10-11]": _import("couzo-certificates-2026-10-11"),
+    "[PingYou n302 certificate 2026-10-12]": _import("pingyou-n302-certificate-2026-10-12"),
+    "[PingYou n153 refinement 2026-10-12]": _import("pingyou-n153-refinement-2026-10-12"),
+    "[PingYou n207 refinement 2026-10-12]": _import("pingyou-n207-refinement-2026-10-12"),
+    "[PingYou n146 refinement 2026-10-12]": _import("pingyou-n146-refinement-2026-10-12"),
+    "[PingYou n261 refinement 2026-10-12]": _import("pingyou-n261-refinement-2026-10-12"),
+    "[PingYou n105 refinement 2026-10-12]": _import("pingyou-n105-refinement-2026-10-12"),
+    "[PingYou n272 refinement 2026-10-12]": _import("pingyou-n272-refinement-2026-10-12"),
 }
 
 
