@@ -31,9 +31,10 @@ from devtools.verifier_registry import (
     LABELS,
     LEGEND,
     REGISTRY,
-    SHORT_LABELS,
     Verifier,
+    coverage_line,
     independence_line,
+    ladder_label,
     load,
     run_label,
 )
@@ -110,7 +111,10 @@ def citing_results(results: Sequence[Mapping[str, Any]]) -> dict[str, list[str]]
 
 
 def program_section(
-    verifier: Verifier, entries: Sequence[Mapping[str, Any]], cited: Mapping[str, list[str]]
+    verifier: Verifier,
+    entries: Sequence[Mapping[str, Any]],
+    cited: Mapping[str, list[str]],
+    verifiers: Mapping[str, Verifier],
 ) -> list[str]:
     """One program's section: what it is, whose, which versions ran, and what it backs."""
     record = verifier.record
@@ -148,12 +152,13 @@ def program_section(
         lines += ["No evidence entry names it yet.", ""]
         return lines
     lines += [
-        "| evidence | run | code | results |",
-        "| --- | --- | --- | --- |",
+        "| evidence | run | code | coverage | results |",
+        "| --- | --- | --- | --- | --- |",
     ]
     lines.extend(
         f"| `{entry['id']}` | {run_label(entry)} "
-        f"| {SHORT_LABELS.get(str(entry.get('relationship_to_generator')), '-')} "
+        f"| {ladder_label(entry, verifiers)} "
+        f"| {coverage_line(entry)} "
         f"| {', '.join(cited.get(str(entry['id']), [])) or '-'} |"
         for entry in backed
     )
@@ -223,7 +228,7 @@ def render() -> str:
     )
     lines += ["", "## By Program", ""]
     for verifier in verifiers.values():
-        lines.extend(program_section(verifier, entries, cited))
+        lines.extend(program_section(verifier, entries, cited, verifiers))
     lines += [
         "<!-- This document follows common-doc-guidelines.md.",
         "See github.com/jlevy/practical-prose and review guidelines before editing.",

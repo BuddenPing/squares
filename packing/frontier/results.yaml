@@ -6830,12 +6830,13 @@ results:
       replay runs the source's C++ checker unchanged: one interval-certified method,
       replayed here, C3. Coverage is decided by that checker alone, which the 2 October
       review read function by function. n = 83's replay entry is cited here; n = 101's
-      is entered once, in T-080, which carries n = 101 to 105 in the verified lane, so a
-      case's citation names one result.
+      is cited here and by T-080, which carries n = 101 to 105 in the verified lane.
+      The same complete replay supports both registered claims.
     evidence:
       - E-n083-wand125-linear-935-report
       - E-n083-wand125-linear-935-source-replay
       - E-n101-wand125-linear-1028-report
+      - E-n101-wand125-linear-1028-source-replay
     reviews:
       - path: docs/project/reviews/review-2026-10-02-wand125-linear-certificates-and-n76.md
         kind: adversarial
@@ -17749,9 +17750,10 @@ results:
       one thing but formalization is another"; "let's go with formalization then"), which
       epistemics.md's Result Kinds holds (think-8e0p): a proof in a proof assistant of a
       result the record already holds, by formalizing an existing argument or by a route of
-      its own. In the same exchange the owner said "simplif[ic]ation should be allowed too
-      but that is different", and stated no precedence between the two kinds: where a second
-      proof fits both, the owner chooses at registration.
+      its own. Review A (https://github.com/jlevy/squares/pull/592#issuecomment-6159185393)
+      relays the owner's third remark as "simplification should be allowed too but that is
+      different"; the original human message was not recovered. Where a second proof fits
+      both kinds, the owner chooses at registration.
 
       Why formalization: this proof does not formalize T-153's argument, and T-153 has no
       formalization: Overbeck's is a candidate proof with Python and JavaScript checkers,

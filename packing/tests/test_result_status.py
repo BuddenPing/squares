@@ -509,11 +509,30 @@ def test_a_bound_better_than_its_cases_hold_is_pending_adoption_not_superseded()
     # No live entry has been both confirmed and pending adoption since the house adoption
     # of 11 October 2026. One raised to C3 by an independently re-implemented replay, as
     # T-128 was by its review of 10 October, renders as T-128 did, with no mark.
+    confirmation_ref = "E-test-n152-upper-replay"
+    evidence = {
+        **evidence,
+        confirmation_ref: {
+            "id": confirmation_ref,
+            "claim": "upper-bound",
+            "scope": {"n_values": [152]},
+            "origin": "replayed-here",
+            "method": "exact-algebraic",
+            "certificate": "a synthetic n152 upper-bound certificate",
+            "replay": "a synthetic complete replay",
+            "replay_status": "passed",
+            "relationship_to_generator": "independent-implementation",
+            "independence": {"coverage": {"extent": "full", "unit": "the n152 certificate"}},
+        },
+    }
+    records = dataclasses.replace(
+        records, register=dataclasses.replace(records.register, evidence=evidence)
+    )
     confirmed = {
         **entry,
         "verification": "V3",
         "confirmation": "C3",
-        "evidence": [*entry["evidence"], "E-couzo-451-exact-feasibility"],
+        "evidence": [*entry["evidence"], confirmation_ref],
     }
     held = view.standing(confirmed, records)
     assert held == view.PENDING_ADOPTION

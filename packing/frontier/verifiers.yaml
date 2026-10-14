@@ -1541,7 +1541,7 @@ verifiers:
     independence:
       read: [proof-text, certificate-format, producer-code, producer-output]
       clean_room: false
-      shares: []
+      shares: [HalfPlaneFast, CaptureRunFast, CaptureTableFast, CaptureSummaryFast]
       written_by:
         - kind: ai
           system: Claude (Anthropic)
@@ -1549,12 +1549,12 @@ verifiers:
       overlaps_producer:
         extent: system-family
         separate_prompt: true
-        separate_code: true
+        separate_code: false
         note: >-
           The source's README says it was developed with substantial assistance from
           Claude and Codex. These programs were written by a Claude agent prompted
           separately from the source and from the first review lane, in files of their own
-          that import or copy none of the source.
+          that transcribe the four producer definitions named above.
       note: >-
         Written after reading the Lean text of the four checker modules and their
         soundness proofs, by eye: a transcription of the same definitions into Python.

@@ -20,8 +20,9 @@ to 5 say what each establishes.
 The lane read the whole hand-written Lean development before writing any of these
 programs, the checker modules and their soundness proofs included (the review’s Scope
 and Evidence). In a Lean proof the proof text and the producer’s checking code are one
-body of source, so every program here is independent of the producer’s code in that it
-imports and copies none of it, and none is clean-room.
+body of source, so none of these programs is clean-room. The trace checker shares the
+four producer definitions it transcribes into Python; the other programs share none
+of the producer’s implementation.
 
 The trace checker, [`hpfast.py`](programs/hpfast.py) with its drivers, is a transcription
 into Python of the definitions of `HalfPlaneFast`, `CaptureRunFast`, `CaptureTableFast`

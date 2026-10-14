@@ -245,36 +245,36 @@ The programs behind each result, by its cited evidence: who ran each check, how 
 
 - **T-001** — confirmed, independently re-implemented
   - `E-green17-sixteen-point-lower`, replayed here, reproduced with the producer’s code: `V-sqpack-cover` (first-party)
-  - `E-green17-interval-audit`, replayed here, independently re-implemented: `V-green17-interval-audit` (first-party)
+  - `E-green17-interval-audit`, replayed here, independently re-implemented after reading the producer’s code: `V-green17-interval-audit` (first-party)
 - **T-002** — confirmed, independently re-implemented
   - `E-green17-sixteen-point-lower`, replayed here, reproduced with the producer’s code: `V-sqpack-cover` (first-party)
-  - `E-green17-interval-audit`, replayed here, independently re-implemented: `V-green17-interval-audit` (first-party)
+  - `E-green17-interval-audit`, replayed here, independently re-implemented after reading the producer’s code: `V-green17-interval-audit` (first-party)
 - **T-003** — confirmed, independently re-implemented
   - `E-green17-sixteen-point-lower`, replayed here, reproduced with the producer’s code: `V-sqpack-cover` (first-party)
-  - `E-green17-interval-audit`, replayed here, independently re-implemented: `V-green17-interval-audit` (first-party)
+  - `E-green17-interval-audit`, replayed here, independently re-implemented after reading the producer’s code: `V-green17-interval-audit` (first-party)
 - **T-004** — confirmed, independently re-implemented
-  - `E-bentz46-theorem8-audit`, audited here, independently re-implemented: `V-sqpack-cover` (first-party)
+  - `E-bentz46-theorem8-audit`, audited here, independently re-implemented after reading the producer’s code: `V-sqpack-cover` (first-party)
   - `E-bentz-2010-proof`, a published proof: no verification code
 - **T-005** — confirmed, independently re-implemented
-  - `E-bentz13-figure2-audit`, audited here, independently re-implemented: `V-sqpack-cover` (first-party)
+  - `E-bentz13-figure2-audit`, audited here, independently re-implemented after reading the producer’s code: `V-sqpack-cover` (first-party)
   - `E-bentz-2010-proof`, a published proof: no verification code
 - **T-006** — confirmed, reproduced with the producer’s code
   - `E-bentz-2010-proof`, a published proof: no verification code
-  - `E-bentz13-figure2-audit`, audited here, independently re-implemented: `V-sqpack-cover` (first-party)
+  - `E-bentz13-figure2-audit`, audited here, independently re-implemented after reading the producer’s code: `V-sqpack-cover` (first-party)
   - `E-n013-evand-casefree-cover-zmx2-replay`, replayed here, reproduced with the producer’s code: `V-evand-zmx2` (external); `V-audit-evand-mixed-covers` (first-party, premises)
   - `E-n013-evand-casefree-cover-lean-kernel`, replayed here, reproduced with the producer’s code: `V-evand-lean` (external)
 - **T-007** — incomplete
   - `E-nagamochi-lower`, a published proof: no verification code
 - **T-008** — confirmed, independently re-implemented
-  - `E-bentz46-theorem8-audit`, audited here, independently re-implemented: `V-sqpack-cover` (first-party)
-  - `E-basic-grid-upper`, replayed here, independently re-implemented: `V-check-basic-bounds` (first-party)
+  - `E-bentz46-theorem8-audit`, audited here, independently re-implemented after reading the producer’s code: `V-sqpack-cover` (first-party)
+  - `E-basic-grid-upper`, replayed here, independently re-implemented after reading the producer’s code: `V-check-basic-bounds` (first-party)
   - `E-bentz-2010-proof`, a published proof: no verification code
 - **T-009** — confirmed, independently re-implemented
-  - `E-n029-interval-certified-upper`, replayed here, independently re-implemented: `V-sqpack-verify` (first-party)
+  - `E-n029-interval-certified-upper`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify` (first-party)
 - **T-010** — confirmed, reproduced with the producer’s code
   - `E-n011-repaired-lower`, replayed here, reproduced with the producer’s code: `V-sqpack-cover` (first-party)
 - **T-011** — confirmed, independently re-implemented
-  - `E-n011-trump-upper`, replayed here, independently re-implemented: `V-sqpack-verify` (first-party)
+  - `E-n011-trump-upper`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify` (first-party)
 - **T-012** — confirmed, reproduced with the producer’s code
   - `E-n005-second-order-rigidity`, replayed here, reproduced with the producer’s code: `V-assess-n5-rigidity` (first-party)
 - **T-013** — confirmed, reproduced with the producer’s code
@@ -284,87 +284,87 @@ The programs behind each result, by its cited evidence: who ran each check, how 
   - `E-n005-second-order-rigidity`, replayed here, reproduced with the producer’s code: `V-assess-n5-rigidity` (first-party)
 - **T-015** — confirmed, independently re-implemented
   - `E-n017-massaccesi-source-replay`, replayed here, reproduced with the producer’s code: `V-massaccesi-n17-verify-py` (external)
-  - `E-n017-massaccesi-h052-agreement`, replayed here, independently re-implemented: `V-n17-weighted-instrument` (first-party)
+  - `E-n017-massaccesi-h052-agreement`, replayed here, independently re-implemented after reading the producer’s code: `V-n17-weighted-instrument` (first-party)
 - **T-016** — confirmed, independently re-implemented
   - `E-n017-massaccesi-source-replay`, replayed here, reproduced with the producer’s code: `V-massaccesi-n17-verify-py` (external)
-  - `E-n017-massaccesi-h052-agreement`, replayed here, independently re-implemented: `V-n17-weighted-instrument` (first-party)
+  - `E-n017-massaccesi-h052-agreement`, replayed here, independently re-implemented after reading the producer’s code: `V-n17-weighted-instrument` (first-party)
 - **T-017** — confirmed, re-implemented, sharing the producer’s components
   - `E-n012-fractional-certificate`, audited here, reproduced with the producer’s code: `V-sqpack-fractional-exact` (first-party)
-  - `E-fractional-interval-decision`, audited here, re-implemented, sharing the producer’s components: `V-sqpack-fractional-interval` (first-party)
+  - `E-fractional-interval-decision`, audited here, re-implemented, sharing named components: `V-sqpack-fractional-interval` (first-party)
 - **T-018** — confirmed, re-implemented, sharing the producer’s components
   - `E-n011-fractional-certificate`, audited here, reproduced with the producer’s code: `V-sqpack-fractional-exact` (first-party)
-  - `E-fractional-interval-decision`, audited here, re-implemented, sharing the producer’s components: `V-sqpack-fractional-interval` (first-party)
+  - `E-fractional-interval-decision`, audited here, re-implemented, sharing named components: `V-sqpack-fractional-interval` (first-party)
 - **T-019** — confirmed, re-implemented, sharing the producer’s components
   - `E-n017-fractional-certificate`, audited here, reproduced with the producer’s code: `V-sqpack-fractional-exact` (first-party)
-  - `E-fractional-interval-decision`, audited here, re-implemented, sharing the producer’s components: `V-sqpack-fractional-interval` (first-party)
+  - `E-fractional-interval-decision`, audited here, re-implemented, sharing named components: `V-sqpack-fractional-interval` (first-party)
 - **T-020** — confirmed, re-implemented, sharing the producer’s components
   - `E-n020-fractional-certificate`, audited here, reproduced with the producer’s code: `V-sqpack-fractional-exact` (first-party)
-  - `E-fractional-interval-decision`, audited here, re-implemented, sharing the producer’s components: `V-sqpack-fractional-interval` (first-party)
+  - `E-fractional-interval-decision`, audited here, re-implemented, sharing named components: `V-sqpack-fractional-interval` (first-party)
 - **T-021** — confirmed, re-implemented, sharing the producer’s components
   - `E-n020-fractional-certificate-97-20`, audited here, reproduced with the producer’s code: `V-sqpack-fractional-exact` (first-party)
-  - `E-fractional-interval-decision`, audited here, re-implemented, sharing the producer’s components: `V-sqpack-fractional-interval` (first-party)
+  - `E-fractional-interval-decision`, audited here, re-implemented, sharing named components: `V-sqpack-fractional-interval` (first-party)
 - **T-022** — confirmed, re-implemented, sharing the producer’s components
   - `E-n011-fractional-certificate`, audited here, reproduced with the producer’s code: `V-sqpack-fractional-exact` (first-party)
-  - `E-fractional-interval-decision`, audited here, re-implemented, sharing the producer’s components: `V-sqpack-fractional-interval` (first-party)
+  - `E-fractional-interval-decision`, audited here, re-implemented, sharing named components: `V-sqpack-fractional-interval` (first-party)
   - `E-n011-fractional-dilation-limit`, audited here, reproduced with the producer’s code: `V-dilation-corollary` (first-party)
 - **T-023** — confirmed, independently re-implemented
   - `E-n011-five-dot-full-net`, replayed here, reproduced with the producer’s code: `V-replay-owner-footprint-cover` (first-party)
-  - `E-n011-five-dot-independent-union`, replayed here, independently re-implemented: `V-five-dot-independent-union` (first-party)
+  - `E-n011-five-dot-independent-union`, replayed here, independently re-implemented after reading the producer’s code: `V-five-dot-independent-union` (first-party)
   - `E-n011-five-dot-physical-transfer`, audited here: no verification code
 - **T-024** — confirmed, re-implemented, sharing the producer’s components
   - `E-n011-fractional-net1440-certificate`, audited here, reproduced with the producer’s code: `V-sqpack-fractional-exact` (first-party)
-  - `E-n011-fractional-net1440-interval-decision`, audited here, re-implemented, sharing the producer’s components: `V-sqpack-fractional-interval` (first-party)
+  - `E-n011-fractional-net1440-interval-decision`, audited here, re-implemented, sharing named components: `V-sqpack-fractional-interval` (first-party)
   - `E-n011-fractional-net1440-dilation-limit`, audited here, reproduced with the producer’s code: `V-dilation-corollary` (first-party)
   - `E-n011-fractional-net720-certificate`, audited here, reproduced with the producer’s code: `V-sqpack-fractional-exact` (first-party)
   - `E-n011-fractional-net720-dilation-limit`, audited here, reproduced with the producer’s code: `V-dilation-corollary` (first-party)
 - **T-025** — confirmed, re-implemented, sharing the producer’s components
   - `E-n011-threshold-certificate`, audited here, reproduced with the producer’s code: `V-sqpack-threshold-exact` (first-party)
-  - `E-n011-threshold-interval-decision`, audited here, re-implemented, sharing the producer’s components: `V-sqpack-threshold-interval` (first-party)
+  - `E-n011-threshold-interval-decision`, audited here, re-implemented, sharing named components: `V-sqpack-threshold-interval` (first-party)
 - **T-026** — confirmed, re-implemented, sharing the producer’s components
   - `E-n011-threshold-net1440-certificate`, audited here, reproduced with the producer’s code: `V-sqpack-threshold-exact` (first-party)
-  - `E-n011-threshold-net1440-interval-decision`, audited here, re-implemented, sharing the producer’s components: `V-sqpack-threshold-interval` (first-party)
+  - `E-n011-threshold-net1440-interval-decision`, audited here, re-implemented, sharing named components: `V-sqpack-threshold-interval` (first-party)
   - `E-n011-threshold-net1440-dilation-limit`, audited here, reproduced with the producer’s code: `V-dilation-corollary` (first-party)
   - `E-n011-threshold-net720-certificate`, audited here, reproduced with the producer’s code: `V-sqpack-threshold-exact` (first-party)
   - `E-n011-threshold-net720-dilation-limit`, audited here, reproduced with the producer’s code: `V-dilation-corollary` (first-party)
 - **T-027** — confirmed, re-implemented, sharing the producer’s components
   - `E-n018-fractional-certificate`, audited here, reproduced with the producer’s code: `V-sqpack-fractional-exact` (first-party)
-  - `E-fractional-interval-decision`, audited here, re-implemented, sharing the producer’s components: `V-sqpack-fractional-interval` (first-party)
+  - `E-fractional-interval-decision`, audited here, re-implemented, sharing named components: `V-sqpack-fractional-interval` (first-party)
 - **T-028** — confirmed, re-implemented, sharing the producer’s components
   - `E-n018-t028-fractional-certificate`, audited here, reproduced with the producer’s code: `V-sqpack-fractional-exact` (first-party)
-  - `E-fractional-interval-decision`, audited here, re-implemented, sharing the producer’s components: `V-sqpack-fractional-interval` (first-party)
+  - `E-fractional-interval-decision`, audited here, re-implemented, sharing named components: `V-sqpack-fractional-interval` (first-party)
 - **T-029** — confirmed, re-implemented, sharing the producer’s components
   - `E-n018-t029-fractional-certificate`, audited here, reproduced with the producer’s code: `V-sqpack-fractional-exact` (first-party)
-  - `E-fractional-interval-decision`, audited here, re-implemented, sharing the producer’s components: `V-sqpack-fractional-interval` (first-party)
+  - `E-fractional-interval-decision`, audited here, re-implemented, sharing named components: `V-sqpack-fractional-interval` (first-party)
 - **T-030** — confirmed, re-implemented, sharing the producer’s components
   - `E-n018-t030-fractional-certificate`, audited here, reproduced with the producer’s code: `V-sqpack-fractional-exact` (first-party)
-  - `E-fractional-interval-decision`, audited here, re-implemented, sharing the producer’s components: `V-sqpack-fractional-interval` (first-party)
+  - `E-fractional-interval-decision`, audited here, re-implemented, sharing named components: `V-sqpack-fractional-interval` (first-party)
 - **T-031** — confirmed, re-implemented, sharing the producer’s components
   - `E-n011-corner-class-96-25-exact-decision`, audited here, reproduced with the producer’s code: `V-sqpack-fractional-exact` (first-party)
-  - `E-n011-corner-class-96-25-interval-decision`, audited here, re-implemented, sharing the producer’s components: `V-sqpack-fractional-interval` (first-party)
+  - `E-n011-corner-class-96-25-interval-decision`, audited here, re-implemented, sharing named components: `V-sqpack-fractional-interval` (first-party)
 - **T-032** — confirmed, independently re-implemented
   - `E-n017-guzhou-r012-source-replay`, replayed here, reproduced with the producer’s code: `V-guzhou-r012-verify-py` (external)
-  - `E-n017-guzhou-r012-interval-decision`, audited here, independently re-implemented: `V-sqpack-fractional-interval` (first-party)
-  - `E-n017-mira-4613-exact-replay`, replayed here, independently re-implemented: `V-sqpack-fractional-exact` (first-party)
-  - `E-n017-mira-4613-interval-decision`, replayed here, independently re-implemented: `V-sqpack-fractional-interval` (first-party)
+  - `E-n017-guzhou-r012-interval-decision`, audited here, independently re-implemented after reading the producer’s code: `V-sqpack-fractional-interval` (first-party)
+  - `E-n017-mira-4613-exact-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-fractional-exact` (first-party)
+  - `E-n017-mira-4613-interval-decision`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-fractional-interval` (first-party)
 - **T-033** — confirmed, re-implemented, sharing the producer’s components
   - `E-n011-threshold-net2880-certificate`, audited here, reproduced with the producer’s code: `V-sqpack-threshold-exact` (first-party)
-  - `E-n011-threshold-net2880-interval-decision`, audited here, re-implemented, sharing the producer’s components: `V-sqpack-threshold-interval` (first-party)
+  - `E-n011-threshold-net2880-interval-decision`, audited here, re-implemented, sharing named components: `V-sqpack-threshold-interval` (first-party)
   - `E-n011-threshold-net2880-dilation-limit`, audited here, reproduced with the producer’s code: `V-dilation-corollary` (first-party)
   - `E-n011-threshold-net1440-certificate`, audited here, reproduced with the producer’s code: `V-sqpack-threshold-exact` (first-party)
   - `E-n011-threshold-net1440-dilation-limit`, audited here, reproduced with the producer’s code: `V-dilation-corollary` (first-party)
 - **T-034** — confirmed, re-implemented, sharing the producer’s components
   - `E-n021-fractional-certificate-122-25`, audited here, reproduced with the producer’s code: `V-sqpack-fractional-exact` (first-party)
-  - `E-fractional-interval-decision`, audited here, re-implemented, sharing the producer’s components: `V-sqpack-fractional-interval` (first-party)
+  - `E-fractional-interval-decision`, audited here, re-implemented, sharing named components: `V-sqpack-fractional-interval` (first-party)
 - **T-035** — confirmed, independently re-implemented
-  - `E-n011-h236-rung0-reduction`, replayed here, independently re-implemented: `V-trump11-fixed-angle-tree-check` (first-party)
+  - `E-n011-h236-rung0-reduction`, replayed here, independently re-implemented after reading the producer’s code: `V-trump11-fixed-angle-tree-check` (first-party)
 - **T-036** — confirmed, independently re-implemented
-  - `E-n011-h236-rung0-reduction`, replayed here, independently re-implemented: `V-trump11-fixed-angle-tree-check` (first-party)
-  - `E-n011-trump-local-theorem-first-clause`, audited here, independently re-implemented: `V-review-trump-local-theorem` (first-party)
+  - `E-n011-h236-rung0-reduction`, replayed here, independently re-implemented after reading the producer’s code: `V-trump11-fixed-angle-tree-check` (first-party)
+  - `E-n011-trump-local-theorem-first-clause`, audited here, independently re-implemented after reading the producer’s code: `V-review-trump-local-theorem` (first-party)
   - `E-n011-trump-isolation-radius`, replayed here, reproduced with the producer’s code: `V-trump11-isolation-radius` (first-party)
 - **T-037** — confirmed, independently re-implemented
   - `E-n011-kleddamag-3875-report`, the source’s own run: `V-kleddamag-n11-verify` (external)
   - `E-n011-kleddamag-3875-source-replay`, replayed here, reproduced with the producer’s code: `V-kleddamag-n11-verify` (external)
-  - `E-n011-kleddamag-3875-native-parent-core`, audited here, independently re-implemented: `V-sqpack-parent-core-native` (first-party)
+  - `E-n011-kleddamag-3875-native-parent-core`, audited here, independently re-implemented after reading the producer’s code: `V-sqpack-parent-core-native` (first-party)
 - **T-038** — confirmed, reproduced with the producer’s code
   - `E-n017-kleddamag-461300-99853-report`, the source’s own run: `V-kleddamag-n17-verify` (external)
   - `E-n017-kleddamag-461300-99853-source-replay`, replayed here, reproduced with the producer’s code: `V-kleddamag-n17-verify` (external)
@@ -404,7 +404,7 @@ The programs behind each result, by its cited evidence: who ran each check, how 
 - **T-049** — confirmed, independently re-implemented
   - `E-n012-evand-15680-3951-report`, the source’s own run: `V-evand-angle-net-verify`, `V-evand-xcheck-py` (external)
   - `E-n012-evand-15680-3951-source-replay`, replayed here, reproduced with the producer’s code: `V-evand-angle-net-verify`, `V-evand-xcheck-py` (external)
-  - `E-n012-evand-15680-3951-native-parent-core`, audited here, independently re-implemented: `V-sqpack-parent-core-native` (first-party)
+  - `E-n012-evand-15680-3951-native-parent-core`, audited here, independently re-implemented after reading the producer’s code: `V-sqpack-parent-core-native` (first-party)
 - **T-050** — confirmed, reproduced with the producer’s code
   - `E-n021-evand-5000-1001-report`, the source’s own run: `V-evand-angle-net-verify`, `V-evand-xcheck-py` (external)
   - `E-n021-evand-5000-1001-source-replay`, replayed here, reproduced with the producer’s code: `V-evand-angle-net-verify`, `V-evand-xcheck-py` (external)
@@ -414,109 +414,109 @@ The programs behind each result, by its cited evidence: who ran each check, how 
   - `E-n032-evand-closed-cover-zmx2-replay`, replayed here, reproduced with the producer’s code: `V-evand-zmx2` (external); `V-audit-evand-mixed-covers` (first-party, premises)
   - `E-n032-evand-zmx2-full-sym-report`, the source’s own run: `V-evand-zmx2` (external)
   - `E-n032-evand-zmx2-full-sym-replay`, replayed here, reproduced with the producer’s code: `V-evand-zmx2` (external); `V-replay-evand-zmx2`, `V-audit-evand-mixed-covers` (first-party, premises)
-  - `E-basic-grid-upper`, replayed here, independently re-implemented: `V-check-basic-bounds` (first-party)
+  - `E-basic-grid-upper`, replayed here, independently re-implemented after reading the producer’s code: `V-check-basic-bounds` (first-party)
 - **T-052** — confirmed, reproduced with the producer’s code
   - `E-n021-evand-mixed-cover-report`, the source’s own run: `V-evand-zm-mixed-py`, `V-evand-zmx2`, `V-evand-lean` (external)
   - `E-n021-evand-mixed-cover-zmx2-replay`, replayed here, reproduced with the producer’s code: `V-evand-zmx2` (external); `V-audit-evand-mixed-covers` (first-party, premises)
-  - `E-basic-grid-upper`, replayed here, independently re-implemented: `V-check-basic-bounds` (first-party)
+  - `E-basic-grid-upper`, replayed here, independently re-implemented after reading the producer’s code: `V-check-basic-bounds` (first-party)
 - **T-053** — confirmed, reproduced with the producer’s code
   - `E-n045-evand-mixed-cover-report`, the source’s own run: `V-evand-zm-mixed-py`, `V-evand-zmx2` (external)
   - `E-n045-evand-mixed-cover-zmx2-replay`, replayed here, reproduced with the producer’s code: `V-evand-zmx2` (external); `V-audit-evand-mixed-covers` (first-party, premises)
-  - `E-basic-grid-upper`, replayed here, independently re-implemented: `V-check-basic-bounds` (first-party)
+  - `E-basic-grid-upper`, replayed here, independently re-implemented after reading the producer’s code: `V-check-basic-bounds` (first-party)
 - **T-054** — confirmed, reproduced with the producer’s code
   - `E-n045-wand125-point-cover-report`, the source’s own run: `V-evand-zmx2` (external)
   - `E-n045-wand125-point-cover-source-replay`, replayed here, reproduced with the producer’s code: `V-evand-zmx2` (external); `V-audit-wand125-point-and-mixed` (first-party, premises)
-  - `E-basic-grid-upper`, replayed here, independently re-implemented: `V-check-basic-bounds` (first-party)
+  - `E-basic-grid-upper`, replayed here, independently re-implemented after reading the producer’s code: `V-check-basic-bounds` (first-party)
 - **T-055** — confirmed, reproduced with the producer’s code
   - `E-n021-wand125-point-endpoint-report`, the source’s own run: `V-wand125-verify-portable-py` (external)
   - `E-n021-wand125-point-endpoint-source-replay`, replayed here, reproduced with the producer’s code: `V-wand125-verify-portable-py` (external); `V-audit-wand125-point-and-mixed` (first-party, premises)
-  - `E-basic-grid-upper`, replayed here, independently re-implemented: `V-check-basic-bounds` (first-party)
+  - `E-basic-grid-upper`, replayed here, independently re-implemented after reading the producer’s code: `V-check-basic-bounds` (first-party)
 - **T-056** — confirmed, independently re-implemented
   - `E-franciscouzo-2026-09-27-report`, the source’s own run: no program held
-  - `E-franciscouzo-2026-09-27-exact-replay`, replayed here, independently re-implemented: `V-upper-bound-promotion`, `V-check-rational-witness-independent` (first-party)
-  - `E-franciscouzo-2026-09-27-interval-replay`, replayed here, independently re-implemented: `V-upper-bound-intervals` (first-party)
+  - `E-franciscouzo-2026-09-27-exact-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-upper-bound-promotion`, `V-check-rational-witness-independent` (first-party)
+  - `E-franciscouzo-2026-09-27-interval-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-upper-bound-intervals` (first-party)
 - **T-057** — confirmed, independently re-implemented
   - `E-n211-de-winter-report`, the source’s own run: no program held
-  - `E-n211-de-winter-exact-replay`, replayed here, independently re-implemented: `V-upper-bound-promotion`, `V-check-rational-witness-independent` (first-party)
-  - `E-n211-de-winter-interval-replay`, replayed here, independently re-implemented: `V-upper-bound-intervals` (first-party)
+  - `E-n211-de-winter-exact-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-upper-bound-promotion`, `V-check-rational-witness-independent` (first-party)
+  - `E-n211-de-winter-interval-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-upper-bound-intervals` (first-party)
 - **T-058** — confirmed, independently re-implemented
-  - `E-wand125-tools-ceiling-certificates`, audited here, independently re-implemented: `V-rectangle-ceiling` (first-party)
+  - `E-wand125-tools-ceiling-certificates`, audited here, independently re-implemented after reading the producer’s code: `V-rectangle-ceiling` (first-party)
   - `E-wand125-tools-ceiling-report`, a published proof: `V-wand125-tools` (external)
 - **T-059** — confirmed, reproduced with the producer’s code
   - `E-wand125-tools-n11-row-report`, the source’s own run: `V-wand125-tools` (external)
   - `E-wand125-tools-n11-row-replay`, replayed here, reproduced with the producer’s code: `V-wand125-tools` (external); `V-check-general-pose-tree-census` (first-party, premises)
 - **T-060** — confirmed, re-implemented, sharing the producer’s components
   - `E-n011-global-optimality-report`, the source’s own run: `V-queuingtheory-n11-verify` (external)
-  - `E-n011-global-optimality-independent`, audited here, re-implemented, sharing the producer’s components: `V-n11-optimality-checkers` (first-party); `V-check-n11-final-composition` (first-party, premises)
+  - `E-n011-global-optimality-independent`, audited here, re-implemented, sharing named components: `V-n11-optimality-checkers` (first-party); `V-check-n11-final-composition` (first-party, premises)
   - `E-n011-lean-formalization-report`, the source’s own run: `V-queuingtheory-n11-lean` (external); `V-audit-n11-lean` (first-party, premises)
 - **T-061** — confirmed, independently re-implemented
   - `E-n011-wang-li-report`, the source’s own run: `V-wang-li-n11-verify`, `V-kleddamag-n11-verify` (external)
   - `E-n011-wang-li-source-replay`, replayed here, reproduced with the producer’s code: `V-wang-li-n11-verify`, `V-kleddamag-n11-verify` (external)
-  - `E-n011-wang-li-native-parent-core`, replayed here, independently re-implemented: `V-sqpack-parent-core-native` (first-party)
+  - `E-n011-wang-li-native-parent-core`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-parent-core-native` (first-party)
 - **T-062** — confirmed, reproduced with the producer’s code
   - `E-n060-evand-mixed-cover-report`, the source’s own run: `V-evand-zm-mixed-py`, `V-evand-zmx2` (external)
   - `E-n060-evand-mixed-cover-zmx2-replay`, replayed here, reproduced with the producer’s code: `V-evand-zmx2` (external); `V-replay-evand-zmx2`, `V-audit-evand-mixed-covers` (first-party, premises)
-  - `E-basic-grid-upper`, replayed here, independently re-implemented: `V-check-basic-bounds` (first-party)
+  - `E-basic-grid-upper`, replayed here, independently re-implemented after reading the producer’s code: `V-check-basic-bounds` (first-party)
 - **T-063** — confirmed, reproduced with the producer’s code
   - `E-n060-evand-mixed-cover-report`, the source’s own run: `V-evand-zm-mixed-py`, `V-evand-zmx2` (external)
   - `E-n060-evand-mixed-cover-zmx2-replay`, replayed here, reproduced with the producer’s code: `V-evand-zmx2` (external); `V-replay-evand-zmx2`, `V-audit-evand-mixed-covers` (first-party, premises)
   - `E-n061-evand-derived-report`, a published proof: no verification code
   - `E-n061-wand125-point-cover-evand-replay-report`, reported by a third party, not replayed here: `V-evand-zeromargin-py`, `V-evand-zmcheck`, `V-evand-zmx2` (external)
   - `E-n061-wand125-point-cover-zmx2-replay`, replayed here, reproduced with the producer’s code: `V-evand-zmx2` (external); `V-replay-evand-zmx2`, `V-audit-evand-mixed-covers` (first-party, premises)
-  - `E-basic-grid-upper`, replayed here, independently re-implemented: `V-check-basic-bounds` (first-party)
+  - `E-basic-grid-upper`, replayed here, independently re-implemented after reading the producer’s code: `V-check-basic-bounds` (first-party)
 - **T-064** — confirmed, independently re-implemented
   - `E-k2m3-evand-family-report`, the source’s own run: `V-evand-qx2-zm-py`, `V-evand-lean` (external)
   - `E-k2m3-evand-valid7-qx2-replay`, replayed here, reproduced with the producer’s code: `V-evand-qx2-zm-py` (external)
   - `E-k2m3-evand-bentz-lean-build`, replayed here, reproduced with the producer’s code: `V-evand-lean` (external)
-  - `E-k2m3-wand125-valid7-independent`, replayed here, independently re-implemented: `V-wand125-valid7-checker` (external); `V-audit-valid7-independent`, `V-probe-valid7-fixes` (first-party, premises)
-  - `E-basic-grid-upper`, replayed here, independently re-implemented: `V-check-basic-bounds` (first-party)
+  - `E-k2m3-wand125-valid7-independent`, replayed here, independently re-implemented after reading the producer’s code: `V-wand125-valid7-checker` (external); `V-audit-valid7-independent`, `V-probe-valid7-fixes` (first-party, premises)
+  - `E-basic-grid-upper`, replayed here, independently re-implemented after reading the producer’s code: `V-check-basic-bounds` (first-party)
 - **T-065** — confirmed, independently re-implemented
-  - `E-n017-kleddamag-rational-upper`, replayed here, independently re-implemented: `V-check-rational-witness-independent` (first-party)
-  - `E-n017-certified-endpoint`, audited here, independently re-implemented: `V-n17-endpoint-checkers` (first-party); `V-audit-n17-endpoint-receipt` (first-party, premises)
+  - `E-n017-kleddamag-rational-upper`, replayed here, independently re-implemented after reading the producer’s code: `V-check-rational-witness-independent` (first-party)
+  - `E-n017-certified-endpoint`, audited here, independently re-implemented after reading the producer’s code: `V-n17-endpoint-checkers` (first-party); `V-audit-n17-endpoint-receipt` (first-party, premises)
 - **T-066** — confirmed, reproduced with the producer’s code
   - `E-n059-wand125-mixed-cover-report`, the source’s own run: `V-evand-zm-mixed-py`, `V-evand-zmx2` (external)
   - `E-n059-wand125-mixed-cover-zmx2-replay`, replayed here, reproduced with the producer’s code: `V-evand-zmx2` (external); `V-replay-evand-zmx2`, `V-audit-evand-mixed-covers` (first-party, premises)
-  - `E-basic-grid-upper`, replayed here, independently re-implemented: `V-check-basic-bounds` (first-party)
+  - `E-basic-grid-upper`, replayed here, independently re-implemented after reading the producer’s code: `V-check-basic-bounds` (first-party)
 - **T-067** — confirmed, reproduced with the producer’s code
   - `E-n077-wand125-mixed-cover-report`, the source’s own run: `V-evand-zm-mixed-py`, `V-evand-zmx2` (external)
   - `E-n077-wand125-mixed-cover-zmx2-replay`, replayed here, reproduced with the producer’s code: `V-evand-zmx2` (external); `V-replay-evand-zmx2`, `V-audit-evand-mixed-covers` (first-party, premises)
-  - `E-basic-grid-upper`, replayed here, independently re-implemented: `V-check-basic-bounds` (first-party)
+  - `E-basic-grid-upper`, replayed here, independently re-implemented after reading the producer’s code: `V-check-basic-bounds` (first-party)
 - **T-068** — confirmed, independently re-implemented
   - `E-wand125-rectangle-2026-10-01-report`, the source’s own run: `V-tokoharu-verify-cpp` (external)
-  - `E-n019-wand125-rect-48175-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n020-wand125-rect-48975-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n026-wand125-rect-55325-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n027-wand125-rect-5635-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n028-wand125-rect-57225-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n029-wand125-rect-57975-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n030-wand125-rect-5875-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n031-wand125-rect-59525-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n038-wand125-rect-6545-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n039-wand125-rect-6635-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n040-wand125-rect-67-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n041-wand125-rect-676-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n042-wand125-rect-6815-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n043-wand125-rect-68875-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n044-wand125-rect-69425-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n053-wand125-rect-76075-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n054-wand125-rect-76725-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n055-wand125-rect-77125-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n056-wand125-rect-77825-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n066-wand125-rect-8385-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n068-wand125-rect-851-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n069-wand125-rect-8585-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n070-wand125-rect-8625-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n074-wand125-rect-88475-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n075-wand125-rect-89-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n076-wand125-rect-8925-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n086-wand125-rect-9365-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n087-wand125-rect-941-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n088-wand125-rect-94775-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n089-wand125-rect-9565-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n090-wand125-rect-95775-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n093-wand125-rect-97225-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n094-wand125-rect-9805-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n095-wand125-rect-98518-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n019-wand125-rect-48175-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n020-wand125-rect-48975-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n026-wand125-rect-55325-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n027-wand125-rect-5635-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n028-wand125-rect-57225-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n029-wand125-rect-57975-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n030-wand125-rect-5875-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n031-wand125-rect-59525-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n038-wand125-rect-6545-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n039-wand125-rect-6635-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n040-wand125-rect-67-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n041-wand125-rect-676-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n042-wand125-rect-6815-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n043-wand125-rect-68875-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n044-wand125-rect-69425-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n053-wand125-rect-76075-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n054-wand125-rect-76725-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n055-wand125-rect-77125-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n056-wand125-rect-77825-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n066-wand125-rect-8385-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n068-wand125-rect-851-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n069-wand125-rect-8585-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n070-wand125-rect-8625-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n074-wand125-rect-88475-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n075-wand125-rect-89-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n076-wand125-rect-8925-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n086-wand125-rect-9365-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n087-wand125-rect-941-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n088-wand125-rect-94775-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n089-wand125-rect-9565-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n090-wand125-rect-95775-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n093-wand125-rect-97225-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n094-wand125-rect-9805-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n095-wand125-rect-98518-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
 - **T-069** — confirmed, reproduced with the producer’s code
   - `E-n037-wand125-mixed-644-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp` (external)
   - `E-n037-wand125-mixed-644-source-replay`, replayed here, reproduced with the producer’s code: `V-wand125-mixed-rotated-verify-cpp` (external); `V-audit-wand125-point-and-mixed` (first-party, premises)
@@ -542,44 +542,45 @@ The programs behind each result, by its cited evidence: who ran each check, how 
   - `E-n083-wand125-linear-935-report`, the source’s own run: `V-wand125-unified-linear-verify-cpp` (external)
   - `E-n083-wand125-linear-935-source-replay`, replayed here, reproduced with the producer’s code: `V-wand125-unified-linear-verify-cpp` (external); `V-audit-wand125-linear` (first-party, premises)
   - `E-n101-wand125-linear-1028-report`, the source’s own run: `V-wand125-unified-linear-verify-cpp` (external)
+  - `E-n101-wand125-linear-1028-source-replay`, replayed here, reproduced with the producer’s code: `V-wand125-unified-linear-verify-cpp` (external); `V-audit-wand125-linear` (first-party, premises)
 - **T-074** — confirmed, reproduced with the producer’s code
   - `E-wand125-rectangle-2026-10-01-source-replay`, replayed here, reproduced with the producer’s code: `V-tokoharu-verify-cpp` (external); `V-audit-wand125-rectangles` (first-party, premises)
 - **T-075** — confirmed, independently re-implemented
   - `E-n083-wand125-mixed-937-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
   - `E-n083-wand125-mixed-937-source-replay`, replayed here, reproduced with the producer’s code: `V-wand125-mixed-rotated-verify-cpp` (external); `V-audit-wand125-point-and-mixed` (first-party, premises)
-  - `E-n083-wand125-mixed-937-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n083-wand125-mixed-937-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n085-wand125-mixed-946-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
   - `E-n085-wand125-mixed-946-source-replay`, replayed here, reproduced with the producer’s code: `V-wand125-mixed-rotated-verify-cpp` (external); `V-audit-wand125-point-and-mixed` (first-party, premises)
-  - `E-n085-wand125-mixed-946-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n085-wand125-mixed-946-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n087-wand125-mixed-948-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
   - `E-n087-wand125-mixed-948-source-replay`, replayed here, reproduced with the producer’s code: `V-wand125-mixed-rotated-verify-cpp` (external); `V-audit-wand125-point-and-mixed` (first-party, premises)
-  - `E-n087-wand125-mixed-948-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n087-wand125-mixed-948-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n091-wand125-mixed-970-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
   - `E-n091-wand125-mixed-970-source-replay`, replayed here, reproduced with the producer’s code: `V-wand125-mixed-rotated-verify-cpp` (external); `V-audit-wand125-point-and-mixed` (first-party, premises)
-  - `E-n091-wand125-mixed-970-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n091-wand125-mixed-970-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n092-wand125-mixed-975-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
   - `E-n092-wand125-mixed-975-source-replay`, replayed here, reproduced with the producer’s code: `V-wand125-mixed-rotated-verify-cpp` (external); `V-audit-wand125-point-and-mixed` (first-party, premises)
-  - `E-n092-wand125-mixed-975-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n092-wand125-mixed-975-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n096-wand125-mixed-996-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
   - `E-n096-wand125-mixed-996-source-replay`, replayed here, reproduced with the producer’s code: `V-wand125-mixed-rotated-verify-cpp` (external); `V-audit-wand125-point-and-mixed` (first-party, premises)
-  - `E-n096-wand125-mixed-996-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n096-wand125-mixed-996-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
 - **T-076** — confirmed, reproduced with the producer’s code
   - `E-n082-wand125-linear-932-report`, the source’s own run: `V-wand125-unified-linear-verify-cpp` (external)
   - `E-n082-wand125-linear-932-source-replay`, replayed here, reproduced with the producer’s code: `V-wand125-unified-linear-verify-cpp` (external); `V-audit-wand125-linear` (first-party, premises)
 - **T-077** — confirmed, independently re-implemented
   - `E-wand125-rectangle-2026-10-02-report`, the source’s own run: `V-tokoharu-verify-cpp` (external)
   - `E-wand125-rectangle-2026-10-02-source-replay`, replayed here, reproduced with the producer’s code: `V-tokoharu-verify-cpp` (external); `V-audit-wand125-rectangles` (first-party, premises)
-  - `E-n020-wand125-rect-49-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n042-wand125-rect-68275-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
-  - `E-n070-wand125-rect-86275-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n020-wand125-rect-49-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n042-wand125-rect-68275-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
+  - `E-n070-wand125-rect-86275-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
 - **T-078** — confirmed, independently re-implemented
   - `E-n012-squarepacker-31360-7901-report`, the source’s own run: `V-evand-angle-net-verify`, `V-squarepacker-indep-check-cpp` (external)
   - `E-n012-squarepacker-31360-7901-source-replay`, replayed here, reproduced with the producer’s code: `V-evand-angle-net-verify`, `V-squarepacker-indep-check-cpp` (external)
-  - `E-n012-squarepacker-31360-7901-native-parent-core`, audited here, independently re-implemented: `V-sqpack-parent-core-native` (first-party)
+  - `E-n012-squarepacker-31360-7901-native-parent-core`, audited here, independently re-implemented after reading the producer’s code: `V-sqpack-parent-core-native` (first-party)
 - **T-079** — confirmed, independently re-implemented
   - `E-n012-levy-15680000-3949423-generator`, audited here, reproduced with the producer’s code: `V-evand-angle-net-verify` (external)
   - `E-n012-levy-15680000-3949423-source-replay`, replayed here, reproduced with the producer’s code: `V-evand-angle-net-verify` (external)
-  - `E-n012-levy-15680000-3949423-native-parent-core`, audited here, independently re-implemented: `V-sqpack-parent-core-native` (first-party)
+  - `E-n012-levy-15680000-3949423-native-parent-core`, audited here, independently re-implemented after reading the producer’s code: `V-sqpack-parent-core-native` (first-party)
   - `E-n012-levy-15680000-3949423-audit`, audited here: `V-audit-s12-reweighted` (first-party, premises)
 - **T-080** — confirmed, reproduced with the producer’s code
   - `E-n101-wand125-linear-1028-report`, the source’s own run: `V-wand125-unified-linear-verify-cpp` (external)
@@ -590,223 +591,223 @@ The programs behind each result, by its cited evidence: who ran each check, how 
   - `E-k2m4-wand125-validtilt9-report`, reported by a third party, not replayed here: `V-wand125-valid7-checker` (external); `V-audit-validtilt9-independent` (first-party, premises)
   - `E-k2m4-evand-lean-report`, the source’s own run: `V-evand-lean` (external)
   - `E-k2m4-evand-bentz4-lean-build`, replayed here, reproduced with the producer’s code: `V-evand-lean` (external)
-  - `E-basic-grid-upper`, replayed here, independently re-implemented: `V-check-basic-bounds` (first-party)
+  - `E-basic-grid-upper`, replayed here, independently re-implemented after reading the producer’s code: `V-check-basic-bounds` (first-party)
 - **T-082** — confirmed, independently re-implemented
   - `E-n051-wand125-mixed-746-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n051-wand125-mixed-746-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n051-wand125-mixed-746-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n052-wand125-mixed-755-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n052-wand125-mixed-755-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n052-wand125-mixed-755-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n055-wand125-mixed-7728-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n055-wand125-mixed-7728-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n055-wand125-mixed-7728-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n058-wand125-mixed-7905-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n058-wand125-mixed-7905-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n058-wand125-mixed-7905-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n069-wand125-mixed-8612-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n069-wand125-mixed-8612-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n069-wand125-mixed-8612-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n070-wand125-mixed-86475-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n070-wand125-mixed-86475-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n070-wand125-mixed-86475-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n071-wand125-mixed-8705-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n071-wand125-mixed-8705-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n071-wand125-mixed-8705-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n073-wand125-mixed-8809-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n073-wand125-mixed-8809-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n073-wand125-mixed-8809-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n074-wand125-mixed-88675-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n074-wand125-mixed-88675-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n074-wand125-mixed-88675-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n075-wand125-mixed-892-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n075-wand125-mixed-892-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n075-wand125-mixed-892-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n076-wand125-mixed-896-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n076-wand125-mixed-896-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n076-wand125-mixed-896-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n086-wand125-mixed-950-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n086-wand125-mixed-950-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n086-wand125-mixed-950-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n087-wand125-mixed-955-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n087-wand125-mixed-955-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n087-wand125-mixed-955-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n088-wand125-mixed-960-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n088-wand125-mixed-960-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n088-wand125-mixed-960-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n089-wand125-mixed-965-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n089-wand125-mixed-965-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n089-wand125-mixed-965-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n090-wand125-mixed-9725-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n090-wand125-mixed-9725-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n090-wand125-mixed-9725-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n091-wand125-mixed-975-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n091-wand125-mixed-975-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n091-wand125-mixed-975-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n092-wand125-mixed-977-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n092-wand125-mixed-977-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n092-wand125-mixed-977-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n093-wand125-mixed-986-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n093-wand125-mixed-986-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n093-wand125-mixed-986-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n094-wand125-mixed-992-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n094-wand125-mixed-992-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n094-wand125-mixed-992-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n095-wand125-mixed-996-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n095-wand125-mixed-996-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n095-wand125-mixed-996-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n096-wand125-mixed-997-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n096-wand125-mixed-997-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n096-wand125-mixed-997-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
 - **T-083** — confirmed, independently re-implemented
   - `E-karakus-strip-lower`, a published proof: no verification code
-  - `E-karakus-strip-measure-interval`, audited here, independently re-implemented: `V-check-karakus-strip-measure` (first-party)
+  - `E-karakus-strip-measure-interval`, audited here, independently re-implemented after reading the producer’s code: `V-check-karakus-strip-measure` (first-party)
 - **T-084** — confirmed, independently re-implemented
   - `E-karakus-strip-lower`, a published proof: no verification code
-  - `E-karakus-strip-measure-interval`, audited here, independently re-implemented: `V-check-karakus-strip-measure` (first-party)
-  - `E-basic-grid-upper`, replayed here, independently re-implemented: `V-check-basic-bounds` (first-party)
+  - `E-karakus-strip-measure-interval`, audited here, independently re-implemented after reading the producer’s code: `V-check-karakus-strip-measure` (first-party)
+  - `E-basic-grid-upper`, replayed here, independently re-implemented after reading the producer’s code: `V-check-basic-bounds` (first-party)
 - **T-085** — confirmed, independently re-implemented
-  - `E-nagamochi-lemma1-counterexample`, replayed here, independently re-implemented: `V-check-nagamochi-lemma1-counterexample` (first-party)
+  - `E-nagamochi-lemma1-counterexample`, replayed here, independently re-implemented after reading the producer’s code: `V-check-nagamochi-lemma1-counterexample` (first-party)
 - **T-086** — confirmed, reproduced with the producer’s code
   - `E-chelokot-square-minus-two-lean`, replayed here, reproduced with the producer’s code: `V-chelokot-lean` (external); `V-replay-chelokot-lean` (first-party, premises)
-  - `E-basic-grid-upper`, replayed here, independently re-implemented: `V-check-basic-bounds` (first-party)
+  - `E-basic-grid-upper`, replayed here, independently re-implemented after reading the producer’s code: `V-check-basic-bounds` (first-party)
 - **T-087** — reviewed
   - `E-basic-slivkova-piercing-lower`, a published proof: no verification code
 - **T-088** — confirmed, independently re-implemented
   - `E-n069-ellsworth-2026-09-report`, the source’s own run: no verification code
-  - `E-n069-ellsworth-2026-09-exact-replay`, replayed here, independently re-implemented: `V-upper-bound-promotion`, `V-check-rational-witness-independent` (first-party)
+  - `E-n069-ellsworth-2026-09-exact-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-upper-bound-promotion`, `V-check-rational-witness-independent` (first-party)
 - **T-089** — confirmed, independently re-implemented
   - `E-n083-chang-2026-09-report`, the source’s own run: no verification code
   - `E-n087-chang-2026-09-report`, the source’s own run: no verification code
-  - `E-n083-chang-2026-09-exact-replay`, replayed here, independently re-implemented: `V-upper-bound-promotion`, `V-check-rational-witness-independent` (first-party)
-  - `E-n087-chang-2026-09-exact-replay`, replayed here, independently re-implemented: `V-upper-bound-promotion`, `V-check-rational-witness-independent` (first-party)
+  - `E-n083-chang-2026-09-exact-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-upper-bound-promotion`, `V-check-rational-witness-independent` (first-party)
+  - `E-n087-chang-2026-09-exact-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-upper-bound-promotion`, `V-check-rational-witness-independent` (first-party)
 - **T-090** — confirmed, independently re-implemented
   - `E-n042-wand125-mixed-68475-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n042-wand125-mixed-68475-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n042-wand125-mixed-68475-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n043-wand125-mixed-69075-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n043-wand125-mixed-69075-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n043-wand125-mixed-69075-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n044-wand125-mixed-69725-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n044-wand125-mixed-69725-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n044-wand125-mixed-69725-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n051-wand125-mixed-747-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n051-wand125-mixed-747-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n051-wand125-mixed-747-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n056-wand125-mixed-78025-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n056-wand125-mixed-78025-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n056-wand125-mixed-78025-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n057-wand125-mixed-78725-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n057-wand125-mixed-78725-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n057-wand125-mixed-78725-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n067-wand125-mixed-8475-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n067-wand125-mixed-8475-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n067-wand125-mixed-8475-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n069-wand125-mixed-862-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n069-wand125-mixed-862-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n069-wand125-mixed-862-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n072-wand125-mixed-876-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n072-wand125-mixed-876-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n072-wand125-mixed-876-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n075-wand125-mixed-894-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n075-wand125-mixed-894-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n075-wand125-mixed-894-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n084-wand125-mixed-94075-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n084-wand125-mixed-94075-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n084-wand125-mixed-94075-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n086-wand125-mixed-9503-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n086-wand125-mixed-9503-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n086-wand125-mixed-9503-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n088-wand125-mixed-96125-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n088-wand125-mixed-96125-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n088-wand125-mixed-96125-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n093-wand125-mixed-988-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n093-wand125-mixed-988-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n093-wand125-mixed-988-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n094-wand125-mixed-994-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n094-wand125-mixed-994-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n094-wand125-mixed-994-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n095-wand125-mixed-9965-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n095-wand125-mixed-9965-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n095-wand125-mixed-9965-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
 - **T-091** — confirmed, independently re-implemented
   - `E-n053-wand125-mixed-76275-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n053-wand125-mixed-76275-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n053-wand125-mixed-76275-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n054-wand125-mixed-7685-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n054-wand125-mixed-7685-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n054-wand125-mixed-7685-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n058-wand125-mixed-7935-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n058-wand125-mixed-7935-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n058-wand125-mixed-7935-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n070-wand125-mixed-86575-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n070-wand125-mixed-86575-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n070-wand125-mixed-86575-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n071-wand125-mixed-8721-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n071-wand125-mixed-8721-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n071-wand125-mixed-8721-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n073-wand125-mixed-8813-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n073-wand125-mixed-8813-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n073-wand125-mixed-8813-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n076-wand125-mixed-8965-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n076-wand125-mixed-8965-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n076-wand125-mixed-8965-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n087-wand125-mixed-958-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n087-wand125-mixed-958-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n087-wand125-mixed-958-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n088-wand125-mixed-962-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n088-wand125-mixed-962-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n088-wand125-mixed-962-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n090-wand125-mixed-973-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n090-wand125-mixed-973-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n090-wand125-mixed-973-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n091-wand125-mixed-97625-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n091-wand125-mixed-97625-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n091-wand125-mixed-97625-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n094-wand125-mixed-995-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n094-wand125-mixed-995-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n094-wand125-mixed-995-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
 - **T-092** — confirmed, independently re-implemented
   - `E-franciscouzo-2026-10-03-report`, the source’s own run: no program held
-  - `E-franciscouzo-2026-10-03-exact-replay`, replayed here, independently re-implemented: `V-upper-bound-promotion`, `V-check-rational-witness-independent` (first-party)
-  - `E-franciscouzo-2026-10-03-interval-replay`, replayed here, independently re-implemented: `V-upper-bound-intervals` (first-party)
+  - `E-franciscouzo-2026-10-03-exact-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-upper-bound-promotion`, `V-check-rational-witness-independent` (first-party)
+  - `E-franciscouzo-2026-10-03-interval-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-upper-bound-intervals` (first-party)
 - **T-093** — confirmed, reproduced with the producer’s code
   - `E-n017-guzhou-r071-report`, the source’s own run: `V-guzhou-n17-verify-cpp`, `V-kleddamag-n17-verify` (external)
   - `E-n017-guzhou-r071-source-replay`, replayed here, reproduced with the producer’s code: `V-guzhou-n17-verify-cpp`, `V-kleddamag-n17-verify` (external); `V-audit-guzhou-r071`, `V-replay-guzhou-r071` (first-party, premises)
 - **T-094** — confirmed, independently re-implemented
   - `E-n067-wand125-mixed-848-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n067-wand125-mixed-848-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n067-wand125-mixed-848-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n084-wand125-mixed-9411-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n084-wand125-mixed-9411-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n084-wand125-mixed-9411-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
 - **T-095** — confirmed, independently re-implemented
   - `E-n012-squarepacker-7943-2000-report`, the source’s own run: `V-evand-angle-net-verify`, `V-squarepacker-indep-check-cpp` (external)
   - `E-n012-squarepacker-7943-2000-source-replay`, replayed here, reproduced with the producer’s code: `V-evand-angle-net-verify`, `V-squarepacker-indep-check-cpp` (external)
-  - `E-n012-squarepacker-7943-2000-native-parent-core`, audited here, independently re-implemented: `V-sqpack-parent-core-native` (first-party)
+  - `E-n012-squarepacker-7943-2000-native-parent-core`, audited here, independently re-implemented after reading the producer’s code: `V-sqpack-parent-core-native` (first-party)
   - `E-n012-squarepacker-7943-2000-audit`, audited here: `V-audit-s12-v11` (first-party, premises)
 - **T-096** — confirmed, reproduced with the producer’s code
   - `E-n018-wand125-mixed-470-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
   - `E-n018-wand125-mixed-470-source-replay`, replayed here, reproduced with the producer’s code: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external); `V-audit-wand125-declared-net` (first-party, premises)
 - **T-097** — confirmed, independently re-implemented
   - `E-n066-wand125-mixed-843-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n066-wand125-mixed-843-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n066-wand125-mixed-843-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
 - **T-098** — confirmed, independently re-implemented
   - `E-evand-exact-optima-2026-10-05-report`, the source’s own run: `V-evand-verify-cert-py`, `V-evand-verify-cert2-py` (external)
-  - `E-evand-exact-optima-2026-10-05-exact-replay`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent` (first-party); `V-evand-exact-certificates` (first-party, premises)
+  - `E-evand-exact-optima-2026-10-05-exact-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent` (first-party); `V-evand-exact-certificates` (first-party, premises)
   - `E-evand-exact-optima-2026-10-05-source-replay`, replayed here, reproduced with the producer’s code: `V-evand-verify-cert-py`, `V-evand-verify-cert2-py` (external); `V-evand-exact-certificates` (first-party, premises)
 - **T-099** — confirmed, independently re-implemented
   - `E-n018-wand125-mixed-4704-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n018-wand125-mixed-4704-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n018-wand125-mixed-4704-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
   - `E-n018-wand125-mixed-4704-source-replay`, replayed here, reproduced with the producer’s code: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external); `V-audit-wand125-declared-net` (first-party, premises)
 - **T-100** — confirmed, independently re-implemented
   - `E-n019-wand125-mixed-48229-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n019-wand125-mixed-48229-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n019-wand125-mixed-48229-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
 - **T-101** — confirmed, independently re-implemented
   - `E-evand-exact-ceilings-2026-10-05-report`, the source’s own run: `V-evand-verify-cert-py`, `V-evand-verify-cert2-py` (external)
-  - `E-evand-exact-ceilings-2026-10-05-exact-replay`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent` (first-party); `V-evand-exact-certificates` (first-party, premises)
+  - `E-evand-exact-ceilings-2026-10-05-exact-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent` (first-party); `V-evand-exact-certificates` (first-party, premises)
   - `E-evand-exact-ceilings-2026-10-05-source-replay`, replayed here, reproduced with the producer’s code: `V-evand-verify-cert-py`, `V-evand-verify-cert2-py` (external); `V-evand-exact-certificates` (first-party, premises)
 - **T-102** — confirmed, re-implemented, sharing the producer’s components
   - `E-n018-wand125-mixed-4705-report`, the source’s own run: `V-wand125-sqverify-proof-net` (external)
-  - `E-n018-wand125-mixed-4705-sqverify-fast-replay`, replayed here, re-implemented, sharing the producer’s components: `V-sqverify-fast` (first-party)
+  - `E-n018-wand125-mixed-4705-sqverify-fast-replay`, replayed here, re-implemented, sharing named components: `V-sqverify-fast` (first-party)
 - **T-103** — confirmed, re-implemented, sharing the producer’s components
   - `E-n019-wand125-mixed-4825-report`, the source’s own run: `V-wand125-sqverify-proof-net` (external)
-  - `E-n019-wand125-mixed-4825-sqverify-fast-replay`, replayed here, re-implemented, sharing the producer’s components: `V-sqverify-fast` (first-party)
+  - `E-n019-wand125-mixed-4825-sqverify-fast-replay`, replayed here, re-implemented, sharing named components: `V-sqverify-fast` (first-party)
 - **T-104** — confirmed, re-implemented, sharing the producer’s components
   - `E-n020-wand125-mixed-4905-report`, the source’s own run: `V-wand125-sqverify-proof-net` (external)
-  - `E-n020-wand125-mixed-4905-sqverify-fast-replay`, replayed here, re-implemented, sharing the producer’s components: `V-sqverify-fast` (first-party)
+  - `E-n020-wand125-mixed-4905-sqverify-fast-replay`, replayed here, re-implemented, sharing named components: `V-sqverify-fast` (first-party)
 - **T-105** — confirmed, re-implemented, sharing the producer’s components
   - `E-n026-wand125-mixed-5545-report`, the source’s own run: `V-wand125-sqverify-proof-net` (external)
-  - `E-n026-wand125-mixed-5545-sqverify-fast-replay`, replayed here, re-implemented, sharing the producer’s components: `V-sqverify-fast` (first-party)
+  - `E-n026-wand125-mixed-5545-sqverify-fast-replay`, replayed here, re-implemented, sharing named components: `V-sqverify-fast` (first-party)
 - **T-106** — confirmed, re-implemented, sharing the producer’s components
   - `E-n027-wand125-mixed-56435-report`, the source’s own run: `V-wand125-sqverify-proof-net` (external)
-  - `E-n027-wand125-mixed-56435-sqverify-fast-replay`, replayed here, re-implemented, sharing the producer’s components: `V-sqverify-fast` (first-party)
+  - `E-n027-wand125-mixed-56435-sqverify-fast-replay`, replayed here, re-implemented, sharing named components: `V-sqverify-fast` (first-party)
 - **T-107** — confirmed, re-implemented, sharing the producer’s components
   - `E-n028-wand125-mixed-5735-report`, the source’s own run: `V-wand125-sqverify-proof-net` (external)
-  - `E-n028-wand125-mixed-5735-sqverify-fast-replay`, replayed here, re-implemented, sharing the producer’s components: `V-sqverify-fast` (first-party)
+  - `E-n028-wand125-mixed-5735-sqverify-fast-replay`, replayed here, re-implemented, sharing named components: `V-sqverify-fast` (first-party)
 - **T-108** — confirmed, independently re-implemented
   - `E-n029-wand125-mixed-581-report`, the source’s own run: `V-wand125-mixed-rotated-verify-cpp`, `V-wand125-verify-mixed-full-proof-py` (external)
-  - `E-n029-wand125-mixed-581-sqverify-fast-replay`, replayed here, independently re-implemented: `V-sqverify-fast` (first-party)
+  - `E-n029-wand125-mixed-581-sqverify-fast-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqverify-fast` (first-party)
 - **T-109** — confirmed, re-implemented, sharing the producer’s components
   - `E-n030-wand125-mixed-58835-report`, the source’s own run: `V-wand125-sqverify-proof-net` (external)
-  - `E-n030-wand125-mixed-58835-sqverify-fast-replay`, replayed here, re-implemented, sharing the producer’s components: `V-sqverify-fast` (first-party)
+  - `E-n030-wand125-mixed-58835-sqverify-fast-replay`, replayed here, re-implemented, sharing named components: `V-sqverify-fast` (first-party)
 - **T-110** — confirmed, re-implemented, sharing the producer’s components
   - `E-n039-wand125-mixed-665-report`, the source’s own run: `V-wand125-sqverify-proof-net` (external)
-  - `E-n039-wand125-mixed-665-sqverify-fast-replay`, replayed here, re-implemented, sharing the producer’s components: `V-sqverify-fast` (first-party)
+  - `E-n039-wand125-mixed-665-sqverify-fast-replay`, replayed here, re-implemented, sharing named components: `V-sqverify-fast` (first-party)
 - **T-111** — confirmed, re-implemented, sharing the producer’s components
   - `E-n041-wand125-mixed-6775-report`, the source’s own run: `V-wand125-sqverify-proof-net` (external)
-  - `E-n041-wand125-mixed-6775-sqverify-fast-replay`, replayed here, re-implemented, sharing the producer’s components: `V-sqverify-fast` (first-party)
+  - `E-n041-wand125-mixed-6775-sqverify-fast-replay`, replayed here, re-implemented, sharing named components: `V-sqverify-fast` (first-party)
 - **T-112** — confirmed, re-implemented, sharing the producer’s components
-  - `E-n011-optimum-uniqueness`, audited here, re-implemented, sharing the producer’s components: `V-n11-optimality-checkers` (first-party); `V-check-n11-final-composition` (first-party, premises)
+  - `E-n011-optimum-uniqueness`, audited here, re-implemented, sharing named components: `V-n11-optimality-checkers` (first-party); `V-check-n11-final-composition` (first-party, premises)
 - **T-113** — confirmed, independently re-implemented
   - `E-squish-ten-packings-2026-10-07-report`, the source’s own run: no program held
-  - `E-squish-ten-packings-2026-10-07-exact-replay`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent` (first-party); `V-squish-upper-bound-packets` (first-party, premises)
+  - `E-squish-ten-packings-2026-10-07-exact-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent` (first-party); `V-squish-upper-bound-packets` (first-party, premises)
 - **T-114** — confirmed, independently re-implemented
   - `E-squish-n153-2026-10-07-report`, the source’s own run: no program held
-  - `E-squish-n153-2026-10-07-exact-replay`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent` (first-party); `V-squish-upper-bound-packets` (first-party, premises)
+  - `E-squish-n153-2026-10-07-exact-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent` (first-party); `V-squish-upper-bound-packets` (first-party, premises)
 - **T-115** — confirmed, independently re-implemented
   - `E-squish-update-2026-10-07-report`, the source’s own run: no program held
-  - `E-squish-update-2026-10-07-exact-replay`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent` (first-party); `V-squish-followup-packets` (first-party, premises)
+  - `E-squish-update-2026-10-07-exact-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent` (first-party); `V-squish-followup-packets` (first-party, premises)
 - **T-116** — confirmed, independently re-implemented
   - `E-squish-second-update-2026-10-07-report`, the source’s own run: no program held
-  - `E-squish-second-update-2026-10-07-exact-replay`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent` (first-party); `V-squish-second-update-confirmation` (first-party, premises)
+  - `E-squish-second-update-2026-10-07-exact-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent` (first-party); `V-squish-second-update-confirmation` (first-party, premises)
 - **T-117** — confirmed, independently re-implemented
   - `E-rehwaldt-couzo-refinements-2026-10-07-report`, the source’s own run: no program held
-  - `E-rehwaldt-couzo-refinements-2026-10-07-exact-replay`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent` (first-party); `V-refinement-custody` (first-party, premises)
+  - `E-rehwaldt-couzo-refinements-2026-10-07-exact-replay`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent` (first-party); `V-refinement-custody` (first-party, premises)
 - **T-118** — confirmed, reproduced with the producer’s code
   - `E-rehwaldt-n68-refinement-2026-10-07-report`, the source’s own run: no program held
   - `E-rehwaldt-n68-refinement-2026-10-07-exact-replay`, replayed here, reproduced with the producer’s code: `V-rehwaldt-n68-verify`, `V-rehwaldt-n68-independent-support-check` (external); `V-refinement-custody` (first-party, premises)
 - **T-119** — confirmed, independently re-implemented
   - `E-evand-399-new-arrangements-report`, the source’s own run: no program held
-  - `E-evand-399-exact-feasibility`, audited here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent` (first-party); `V-evand-arrangement-receipts` (first-party, premises)
+  - `E-evand-399-exact-feasibility`, audited here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent` (first-party); `V-evand-arrangement-receipts` (first-party, premises)
 - **T-120** — recorded
   - `E-evand-exact-form-n102-report`, the source’s own run: no program held
 - **T-121** — recorded
@@ -819,57 +820,57 @@ The programs behind each result, by its cited evidence: who ran each check, how 
   - `E-evand-local-minima-178-report`, the source’s own run: no program held
 - **T-125** — confirmed, independently re-implemented
   - `E-ryxu-432-rational-report`, the source’s own run: no program held
-  - `E-ryxu-432-rational-feasibility`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent` (first-party); `V-ryxu-complete-custody` (first-party, premises)
+  - `E-ryxu-432-rational-feasibility`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent` (first-party); `V-ryxu-complete-custody` (first-party, premises)
 - **T-126** — confirmed, independently re-implemented
   - `E-ryxu-432-radical-n51-report`, the source’s own run: no program held
-  - `E-ryxu-432-radical-n51-feasibility`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-ryxu-undilated-n51-independent` (first-party); `V-ryxu-complete-custody` (first-party, premises)
+  - `E-ryxu-432-radical-n51-feasibility`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-ryxu-undilated-n51-independent` (first-party); `V-ryxu-complete-custody` (first-party, premises)
 - **T-127** — confirmed, independently re-implemented
   - `E-gupta-438-rational-report`, the source’s own run: no program held
-  - `E-gupta-438-exact-feasibility`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent` (first-party); `V-gupta-complete-custody` (first-party, premises)
+  - `E-gupta-438-exact-feasibility`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent` (first-party); `V-gupta-complete-custody` (first-party, premises)
 - **T-128** — confirmed, independently re-implemented
   - `E-couzo-451-rational-report`, the source’s own run: no program held
-  - `E-couzo-451-exact-feasibility`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-exact-certificates`, `V-evand-arrangement-receipts` (first-party, premises)
+  - `E-couzo-451-exact-feasibility`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-exact-certificates`, `V-evand-arrangement-receipts` (first-party, premises)
   - `E-evand-465-record-hunt-report`, the source’s own run: no program held
-  - `E-evand-465-record-hunt-exact-feasibility`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-exact-certificates`, `V-evand-arrangement-receipts` (first-party, premises)
+  - `E-evand-465-record-hunt-exact-feasibility`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-exact-certificates`, `V-evand-arrangement-receipts` (first-party, premises)
 - **T-129** — recorded
   - `E-daniel-375-dated-105-130-report`, the source’s own run: no program held
   - `E-daniel-375-dated-292-report`, the source’s own run: no program held
 - **T-130** — confirmed, independently re-implemented
   - `E-couzo-460-followup-rational-report`, the source’s own run: no program held
-  - `E-couzo-460-followup-exact-feasibility`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-exact-certificates`, `V-evand-arrangement-receipts` (first-party, premises)
+  - `E-couzo-460-followup-exact-feasibility`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-exact-certificates`, `V-evand-arrangement-receipts` (first-party, premises)
 - **T-131** — confirmed, independently re-implemented
   - `E-evand-465-record-hunt-report`, the source’s own run: no program held
-  - `E-evand-465-record-hunt-exact-feasibility`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-exact-certificates`, `V-evand-arrangement-receipts` (first-party, premises)
+  - `E-evand-465-record-hunt-exact-feasibility`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-exact-certificates`, `V-evand-arrangement-receipts` (first-party, premises)
 - **T-132** — recorded
   - `E-wand125-fine-net-n29-582-followup-report`, the source’s own run: `V-wand125-sqverify-proof-net` (external)
 - **T-133** — confirmed, reproduced with the producer’s code
   - `E-n040-guzhou-clipped-corner-report`, the source’s own run: `V-guzhou-n40-finite-py` (external)
   - `E-n040-guzhou-clipped-corner-sqverify-fast-replay`, replayed here, reproduced with the producer’s code: `V-sqverify-fast`, `V-audit-clipped-corner-transfer` (first-party)
-  - `E-n040-guzhou-clipped-corner-finite-audit`, audited here, independently re-implemented: `V-audit-clipped-corner-transfer` (first-party)
+  - `E-n040-guzhou-clipped-corner-finite-audit`, audited here, independently re-implemented after reading the producer’s code: `V-audit-clipped-corner-transfer` (first-party)
 - **T-134** — confirmed, independently re-implemented
   - `E-couzo-476-certificate-report`, the source’s own run: no program held
-  - `E-couzo-476-exact-feasibility`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
+  - `E-couzo-476-exact-feasibility`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
 - **T-135** — confirmed, independently re-implemented
   - `E-fang-484-certificate-report`, the source’s own run: no program held
-  - `E-fang-484-exact-feasibility`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
+  - `E-fang-484-exact-feasibility`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
 - **T-136** — confirmed, independently re-implemented
   - `E-squish-481-certificate-report`, the source’s own run: no program held
-  - `E-squish-481-exact-feasibility`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
+  - `E-squish-481-exact-feasibility`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
 - **T-137** — confirmed, independently re-implemented
   - `E-deleeuw-483-certificate-report`, the source’s own run: no program held
-  - `E-deleeuw-483-exact-feasibility`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
+  - `E-deleeuw-483-exact-feasibility`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
 - **T-138** — confirmed, independently re-implemented
   - `E-mishapolk-470-pose-report`, the source’s own run: no program held
-  - `E-mishapolk-470-exact-feasibility`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
+  - `E-mishapolk-470-exact-feasibility`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
 - **T-139** — confirmed, independently re-implemented
   - `E-evand-trio126-certificate-report`, the source’s own run: no program held
-  - `E-evand-trio126-exact-feasibility`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
+  - `E-evand-trio126-exact-feasibility`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
 - **T-140** — confirmed, independently re-implemented
   - `E-couzo-488-certificate-report`, the source’s own run: no program held
-  - `E-couzo-488-exact-feasibility`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
+  - `E-couzo-488-exact-feasibility`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
 - **T-141** — confirmed, independently re-implemented
   - `E-evand-489-hunt3-report`, the source’s own run: no program held
-  - `E-evand-489-exact-feasibility`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
+  - `E-evand-489-exact-feasibility`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
 - **T-142** — recorded
   - `E-wand125-fine-net-n28-57425-report`, the source’s own run: `V-wand125-sqverify-proof-net` (external)
 - **T-143** — recorded
@@ -879,29 +880,29 @@ The programs behind each result, by its cited evidence: who ran each check, how 
 - **T-145** — confirmed, reproduced with the producer’s code
   - `E-n040-guzhou-continuous-pose-report`, the source’s own run: `V-guzhou-n40-continuous-pose`, `V-guzhou-n40-axis-integer-grid` (external)
   - `E-n040-guzhou-continuous-pose-kernel-replay`, replayed here, reproduced with the producer’s code: `V-guzhou-n40-continuous-pose`, `V-guzhou-n40-axis-integer-grid` (external); `V-audit-continuous-pose` (first-party)
-  - `E-n040-guzhou-continuous-pose-finite-audit`, audited here, independently re-implemented: `V-audit-continuous-pose` (first-party)
-  - `E-n040-guzhou-continuous-pose-crate-axis`, audited here, independently re-implemented: `V-sqverify-fast`, `V-audit-continuous-pose` (first-party)
+  - `E-n040-guzhou-continuous-pose-finite-audit`, audited here, independently re-implemented after reading the producer’s code: `V-audit-continuous-pose` (first-party)
+  - `E-n040-guzhou-continuous-pose-crate-axis`, audited here, independently re-implemented after reading the producer’s code: `V-sqverify-fast`, `V-audit-continuous-pose` (first-party)
 - **T-146** — confirmed, independently re-implemented
   - `E-evand-regularized-certificate-report`, the source’s own run: no program held
-  - `E-evand-regularized-exact-feasibility`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-exact-certificates`, `V-evand-arrangement-receipts`, `V-upper-bound-reports` (first-party, premises)
+  - `E-evand-regularized-exact-feasibility`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-exact-certificates`, `V-evand-arrangement-receipts`, `V-upper-bound-reports` (first-party, premises)
 - **T-147** — confirmed, independently re-implemented
   - `E-pingyou-503-certificate-report`, the source’s own run: no program held
-  - `E-pingyou-503-exact-feasibility`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
+  - `E-pingyou-503-exact-feasibility`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
 - **T-148** — confirmed, independently re-implemented
   - `E-pingyou-504-certificate-report`, the source’s own run: no program held
-  - `E-pingyou-504-exact-feasibility`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
+  - `E-pingyou-504-exact-feasibility`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
 - **T-149** — confirmed, independently re-implemented
   - `E-ostashev-501-certificate-report`, the source’s own run: no program held
-  - `E-ostashev-501-exact-feasibility`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
+  - `E-ostashev-501-exact-feasibility`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
 - **T-150** — confirmed, independently re-implemented
   - `E-barnett-505-certificate-report`, the source’s own run: no program held
-  - `E-barnett-505-exact-feasibility`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
+  - `E-barnett-505-exact-feasibility`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
 - **T-151** — confirmed, independently re-implemented
   - `E-squish-500-certificate-report`, the source’s own run: no program held
-  - `E-squish-500-exact-feasibility`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
+  - `E-squish-500-exact-feasibility`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
 - **T-152** — confirmed, independently re-implemented
   - `E-couzo-506-certificate-report`, the source’s own run: no program held
-  - `E-couzo-506-exact-feasibility`, replayed here, independently re-implemented: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
+  - `E-couzo-506-exact-feasibility`, replayed here, independently re-implemented after reading the producer’s code: `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-check-half-angle-area` (first-party); `V-evand-arrangement-receipts`, `V-upper-bound-reports`, `V-evand-exact-certificates` (first-party, premises)
 - **T-153** — reviewed
   - `E-n017-overbeck-optimality-candidate-report`, the source’s own run: `V-overbeck-n17-check-py`, `V-overbeck-n17-capture-checkers`, `V-overbeck-n17-tree-checkers` (external)
 - **T-154** — reviewed

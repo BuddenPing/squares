@@ -175,32 +175,38 @@ Every program written here that decides, registered from that date, carries an
 
 | Field | What it records |
 | --- | --- |
-| `read` | What its authors read before and while writing it: `mathematics` (the argument as mathematics, in a paper or this record’s own derivation), `proof-text` (the producer’s written proof), `specification` (of the checker, or of what a certificate means), `certificate-format`, `producer-code` (the producer’s own verification code, its checker or its proof-assistant definitions), `producer-output` (stored outputs or receipts, read to compare) and `earlier-review` (another review of the same result) |
+| `read` | What its authors read that bears on what this program decides: `mathematics` (the argument as mathematics, in a paper or this record’s own derivation), `proof-text` (the producer’s written proof), `specification` (of the checker, or of what a certificate means), `certificate-format`, `producer-code` (the producer’s own verification code, its checker or its proof-assistant definitions), `producer-output` (stored outputs or receipts, read to compare) and `earlier-review` (another review of the same result) |
 | `clean_room` | `true` only when the authors never read the producer’s code for what this program decides, and it shares none of that code; a lane that wrote several programs can hold a clean room for one and not another |
 | `shares` | The producer’s components the program reuses, by name; empty when none, and a non-empty list makes the relation `shared-components` |
 | `written_by` | Each person by name, and each AI system by its family (Claude, Codex) with the role, tier and reasoning setting it ran at; the record names the system family, not a model identifier |
 | `overlaps_producer` | Whether that authorship overlaps the producer’s (`none`, `system-family`, `people` or `unknown`), whether the authors worked from a prompt of their own (`separate_prompt`) and in files of their own that copy none of the producer’s code (`separate_code`), and a note naming what is shared |
 
-Every new `independent-implementation` evidence entry carries an `independence` record
-too, with its `coverage`: `full`, or a `sample` that `checked` so many `of` so many of a
-named `unit`, as in 6 of 273 chunk runs.
-It carries the authorship fields itself where its deciding programs do not.
+Every new evidence entry with a `replay` carries an `independence` record with its
+`coverage`: `full`, or a `sample` that `checked` so many `of` so many of a named `unit`,
+as in 6 of 273 chunk runs.
+An independent implementation carries the authorship fields itself where its deciding
+programs do not. `separate_prompt: null` means prompt separation was not recorded.
 The `independence_record` path stays beside it, pointing at the prose: a read log, a
 module statement, or the review that wrote the program.
 
 [`devtools/verifier_registry.py`](packing/devtools/verifier_registry.py) refuses a
 first-party program that decides without the record; a new `independent-implementation`
-entry without its coverage, or without the authorship fields on itself or on every
-deciding program; `clean_room` beside `producer-code` read, a shared component, or code
-not kept separate; an independent entry whose deciding program shares components; and a
-sample whose count is not below its total.
-The programs and entries recorded before 14 October 2026 are exempt by name, in two
-lists that only shrink: an exempt one that gains the record, or stops being what the
-rule covers, has to leave its list.
+entry without the authorship fields on itself or on every deciding program; any new
+replay without coverage; `clean_room` beside `producer-code` read, a shared component,
+or code not kept separate; an independent entry whose deciding program shares
+components; and a sample whose count is zero or is not below its total.
+An entry claiming a clean room must agree with every deciding program that carries a
+record; a shared-components entry must name a shared component.
+Legacy programs, independent entries and replays without coverage are exempt by name in
+fixed lists that only shrink; tests pin their original membership: an exempt one that
+gains the record, or stops being what the rule covers, has to leave its list.
 
 ### The Independence Ladder
 
 The relation to the producer’s code is the level.
+The level is derived for each evidence run, since one program can reproduce its producer
+in one run and act independently in another.
+A transcription of the producer’s definitions shares those definitions.
 Each level rules out a kind of error the one below it cannot, and none rules out an
 error in the mathematics or the specification that every implementation follows.
 
@@ -227,7 +233,9 @@ diversity, in that order:
 1. **The rung** comes from the evidence alone, as the ladders above say.
    `C3` needs one complete replay of every load-bearing part, at any level; a sample, at
    any level, sets no rung, and `devtools.check_results` counts no entry whose coverage
-   is a sample.
+   is a sample. Bound results need evidence of that bound; values need both the lower and
+   upper sides at every count in their scope, taking the weakest derived rung.
+   Full component evidence establishes its component, not the complete bound or value.
 2. **The level** of each part is the furthest from the producer’s code among the
    complete confirming runs that decide it, and the result takes the part closest to it
    ([Which Code Confirmed It](#which-code-confirmed-it)). A sample at a higher level is
@@ -433,12 +441,13 @@ is provisional until the owner confirms it; the proposal and the status of every
 are in
 [the result-status plan](docs/project/specs/done/plan-2026-10-01-result-status.md).
 On 2026-10-13 the owner added the kind *formalization*, a proof-assistant proof of a
-result the record already holds, apart from a simplification, in three remarks:
-“simplification is one thing but formalization is another”, then “let’s go with
-formalization then”, then “simplif[ic]ation should be allowed too but that is
-different”.
-The owner stated no precedence between the two kinds, so where a second proof
-fits both, the owner chooses at registration.
+result the record already holds, apart from a simplification.
+The recorded decision quotes “simplification is one thing but formalization is another”,
+then “let’s go with formalization then”.
+[Review A](https://github.com/jlevy/squares/pull/592#issuecomment-6159185393) relays the
+owner’s third remark as “simplification should be allowed too but that is different”;
+the original human message was not recovered.
+Where a second proof fits both kinds, the owner chooses at registration.
 The decision was made on `T-154`, Fitzharding’s Lean 4 proof of $s(17) = L$, which was
 registered as a simplification that day and moved to the new kind, decided 13 October,
 recorded 14 October ([Result Kinds](#result-kinds)). `T-054` and `T-055`, which no proof

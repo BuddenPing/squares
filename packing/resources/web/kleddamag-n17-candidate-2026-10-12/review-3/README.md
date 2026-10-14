@@ -8,10 +8,16 @@ The review was the third of this candidate, by an AI agent, a Claude model at th
 tbd-strong-max tier, reasoning max, prompted separately from the two earlier review
 lanes and in a session of its own. It ran each program with the project interpreter
 (Python 3.14.7, `python3 -I`) from outside a checkout of the pin, reading the checkout
-as data; the release’s large files were not needed. No program imports anything of the
-source, and only one evaluates its text (below).
+as data; the release’s large files were not needed. No retained program imports or
+evaluates source text. The predicate parser changed at retention, as recorded below.
 
-Nothing here was re-run when the folder was retained on 14 October 2026. The lane kept
+At retention on 14 October 2026, none of the kept copies had been re-run. During PR
+#592 closeout the retained `literal_checks.py` was run at the declared pin under
+Python 3.14.7 with `-I -B`, reading JSON only; its
+[stdout](logs/literal_checks.log) ends `FAILURES: 0`, with all 15,000 product atoms
+matching and exit status 0. It printed 193 passing checks: 192 literal checks and the
+partition check. The earlier review reported 194 literal checks; the retained output
+states the current run’s count. The original lane kept
 the output of two programs; the others’ results are the lines of the review’s section 8
 table, and its sections 1 to 4 say what each establishes.
 
@@ -45,7 +51,7 @@ produced by Codex and Claude.
 | [`root_box.py`](programs/root_box.py) | The enclosure of the root and of $L$, as a module the other checks import | nothing | — |
 | [`seed_packing_check.py`](programs/seed_packing_check.py) | The rational seed at side $R$: 68 wall conditions and 136 pair separations, exactly | `upper-packing-certificate.json` | not kept; section 8: 68 walls at least 0, minimum exactly $\varepsilon$, 14 flush; 136 pairs separated, none touching |
 | [`upper_at_L_check.py`](programs/upper_at_L_check.py) | The construction of `UPPER_FORMULAS.md` at the algebraic root: strict facts by interval arithmetic over `root_box.py`’s enclosure, equalities by reduction modulo a lex Gröbner basis of $(F, G)$ (SymPy) | nothing: the formulas transcribed | [`upper_at_L_check.log`](logs/upper_at_L_check.log), the run in P014’s convention (53 strict and 15 identity walls, 115 strict and 21 touching pairs); the first run’s counts are in the review’s section 2 |
-| [`literal_checks.py`](programs/literal_checks.py) | 194 literal checks at 83 sites of the proof text’s sections 3 to 6 over the class files, and the case partition re-decided on the product atoms of the six case variables by a decision function of the lane’s own | the 98 capture statements’ `classes.json`, `upper-packing-certificate.json`, the design classes `C_L07.json` and `C_L08.json`, `EXACT_ENDPOINT_AND_CASES.json` | not kept; section 8: `FAILURES: 0` |
+| [`literal_checks.py`](programs/literal_checks.py) | 192 printed literal checks at 83 sites of the proof text’s sections 3 to 6 over the class files, and the case partition re-decided on the product atoms of the six case variables by a decision function of the lane’s own | the 98 capture statements’ `classes.json`, `upper-packing-certificate.json`, the design classes `C_L07.json` and `C_L08.json`, `EXACT_ENDPOINT_AND_CASES.json` | [`literal_checks.log`](logs/literal_checks.log), closeout replay: `FAILURES: 0` |
 | [`geom_util.py`](programs/geom_util.py) | Exact convex-polygon helpers for the two programs above and below | — | — |
 | [`admission_check.py`](programs/admission_check.py) | The admission of all eleven roots, seventeen labels each, in the lane’s own chart over its own enclosure of $L$, and the distinct parent profiles | the capture statements’ `classes.json`, the root files under `bigbox/join/`, `SELECTED_ORIGINAL_MAP.json`, the design classes | not kept; section 8: every root admitted, profiles distinct, smallest margin exactly 0 at label 1 |
 | [`handover_check.py`](programs/handover_check.py) | The three hand-overs of the proof text’s section 8 and the windows the stored acceptance reports of `G20S` and `HW` record | `EXPECT_G20S.json`, `EXPECT_HW.json`, `JG_exact_v2.json`, the two stored acceptance reports | not kept; section 8: `FAILURES: 0`, both cuts necessary |
@@ -61,7 +67,9 @@ line with `holds()`, a parser of the one form the thirteen predicates take (clau
 joined by `and`, each a chain of the six case variables and rationals compared by `<`,
 `<=`, `>` or `>=`) that refuses anything else. The change is marked in the file. It was
 tested apart from the program, on 40,000 predicates of that form against direct
-comparison, and the program was not re-run with it; the lane’s copy as it ran has the
+comparison, before the closeout replay recorded above. The exact replaced `eval` line
+was not retained, so its arithmetic semantics and output equivalence are not established.
+The closeout replay establishes the retained parser’s own result, recorded as `passed`; the lane’s copy as it ran has the
 SHA-256 `4109a2c3c00e8e864ff82b9615af5de87bd605e584f232f498ce5f139a7ebbb4`. Every other
 file is byte-identical to the lane’s.
 
@@ -79,7 +87,7 @@ the complete replay its rungs wait on (epistemics.md, Every Run’s Code Is Kept
 | `root_isolation.py`, `root_box.py` | `V-overbeck-review3-root-isolation` | `E-n017-overbeck-endpoint-review3` | full: the statement’s rectangle and $L$ |
 | `upper_at_L_check.py` | `V-overbeck-review3-upper-at-l` | `E-n017-overbeck-upper-construction-review3` | full: 68 walls and 136 pairs, the 36 contacts by ideal membership |
 | `admission_check.py` | `V-overbeck-review3-admission` | `E-n017-overbeck-admission-review3` | full: 11 roots, 17 labels each |
-| `literal_checks.py` | `V-overbeck-review3-literal-checks` | `E-n017-overbeck-literal-checks-review3` | full: the 194 literal checks over the 98 class files, and the case partition |
+| `literal_checks.py` | `V-overbeck-review3-literal-checks` | `E-n017-overbeck-literal-checks-review3` | full: the 192 printed literal checks over the class files, and the case partition |
 | `handover_check.py` | `V-overbeck-review3-handovers` | `E-n017-overbeck-handovers-review3` | full: the three hand-overs |
 | `parallel_row_check.py` | `V-overbeck-review3-parallel-rows` | none: a random floating-point test, which decides nothing | — |
 

@@ -1839,3 +1839,47 @@ def test_results_md_says_whose_packing_each_regularization_is() -> None:
         "at most 0.222; turns up to 22.5\u00b0)."
     ) in section
     assert section.count("  - n = ") == 15
+
+
+@pytest.mark.parametrize("rid", ["T-153", "T-154"])
+def test_full_part_citations_cannot_promote_the_whole_result(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    rid: str,
+) -> None:
+    register = safe_load(check_results.RESULTS.read_text(encoding="utf-8"))
+    record = next(row for row in register["results"] if row["id"] == rid)
+    parts = (
+        [
+            "E-n017-overbeck-gate-review2",
+            "E-n017-overbeck-endpoint-review3",
+            "E-n017-overbeck-upper-construction-review3",
+            "E-n017-overbeck-admission-review3",
+            "E-n017-overbeck-literal-checks-review3",
+            "E-n017-overbeck-handovers-review3",
+        ]
+        if rid == "T-153"
+        else ["E-n017-fitzharding-census-review2", "E-n017-fitzharding-rigidity-dual-review2"]
+    )
+    cited = [*record["evidence"], *parts]
+    ordinary = _changed_result(tmp_path, rid, evidence=cited)
+    monkeypatch.setattr(check_results, "RESULTS", ordinary)
+    assert check_results.main() == 0
+    assert (
+        check_results.derive_verification(
+            [
+                entry
+                for entry in safe_load(check_results.EVIDENCE.read_text(encoding="utf-8"))[
+                    "evidence"
+                ]
+                if entry["id"] in cited
+            ],
+            record=record,
+        )
+        == "V0"
+    )
+    promoted = _changed_result(tmp_path, rid, evidence=cited, verification="V3")
+    monkeypatch.setattr(check_results, "RESULTS", promoted)
+    assert check_results.main() == 1
+    assert f"{rid}: declares V3 but the cited atoms support only V0" in capsys.readouterr().out

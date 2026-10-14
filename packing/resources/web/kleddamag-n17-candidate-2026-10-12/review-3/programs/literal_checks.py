@@ -388,7 +388,8 @@ names = ["x9", "y9", "t9", "tau3", "tau17", "tau15"]
 # the text of EXACT_ENDPOINT_AND_CASES.json, which executes text from the source. The
 # record never executes upstream text, so holds() parses the one form those predicates
 # take -- clauses joined by " and ", each a chain of names and rationals compared by <,
-# <=, > or >= -- and refuses anything else. The output is unchanged.
+# <=, > or >= -- and refuses anything else. Its replay on the declared pin is kept in
+# ../logs/literal_checks.log; equivalence to the lane's unretained eval line is not established.
 _OPS = {"<": lambda a, b: a < b, "<=": lambda a, b: a <= b, ">": lambda a, b: a > b, ">=": lambda a, b: a >= b}
 
 

@@ -1272,7 +1272,7 @@ evidence:
 
   - id: E-wand125-rectangle-source-replay
     claim: lower-bound
-    scope: {n_values: [18, 19, 20, 26, 27, 28, 30, 31, 40, 61, 75, 76, 77, 78]}
+    scope: {n_values: [18, 19, 20, 26, 27, 28, 30, 31, 32, 40, 61, 75, 76, 77, 78]}
     assurance: verified
     method: interval-certified
     performed_by: repository
@@ -1316,11 +1316,11 @@ evidence:
         to the pinned n; r = 0 runs as one unpartitioned process) affect no
         registration.
     limitations: >-
-      The scope lists the counts whose verified lower bound this entry carries: each
+      The scope lists every count whose certificate passed the complete replay: each
       is a count whose own standing certificate passed the complete 201-direction
       replay, or a larger count reached by monotonicity from one. The replay command
       names the replayed certificates. The n32 certificate's complete replay also
-      passed and its receipt is retained, but n32 is outside the scope: Evan Daniel's
+      passed and its receipt is retained, supporting T-045 even though Evan Daniel's
       separately registered s(32) = 6 supersedes 119/20 there. The first-party exact preflight regenerates
       every checker input from its candidate, requires the SHA-256 the upstream run
       recorded, and checks orbit normalization, the exact total mass, the net and
@@ -31790,6 +31790,12 @@ evidence:
       stored rows.
     replay_status: passed
     verifiers: [V-overbeck-n17-capture-checkers]
+    independence:
+      coverage:
+        extent: sample
+        unit: capture rows per checker, no statement whole
+        checked: 34
+        of: 1728000
     limitations: >-
       Run here by lane K3 on 12 October 2026 on a shared 4-core Linux x86_64 container,
       CPython 3.12.3 with numpy 2.0.2, numba 0.60.0 and SymPy 1.14.0, and Node.js v22.22.0:
@@ -31827,6 +31833,27 @@ evidence:
       C_10 row 2321 the row must fail.
     replay_status: passed
     verifiers: [V-k3-n17-capture-row-checker]
+    independence:
+      coverage:
+        extent: sample
+        unit: capture rows, no statement whole
+        checked: 34
+        of: 1728000
+      read: [mathematics, proof-text, specification, certificate-format]
+      clean_room: true
+      shares: []
+      written_by:
+        - kind: ai
+          system: not recorded
+          setting: lane K3; system family, tier and reasoning setting not retained
+      overlaps_producer:
+        extent: unknown
+        separate_prompt: null
+        separate_code: true
+        note: >-
+          The retained module records the read scope and that no producer sweep code
+          was read or imported. K3's system family and prompt separation are not
+          recorded, so authorship diversity is unknown.
     limitations: >-
       Run here by lane K3 on 12 October 2026 under CPython 3.14.7 in pure Fraction and
       integer arithmetic: 34 rows of six statements (C_10, CLASS_PS_L06_T17_ENDm_H4T4, Q_13,
@@ -31868,6 +31895,12 @@ evidence:
       second-execution report once paths and times are dropped.
     replay_status: passed
     verifiers: [V-overbeck-n17-tree-checkers]
+    independence:
+      coverage:
+        extent: sample
+        unit: tree certificates
+        checked: 3
+        of: 13
     limitations: >-
       Run here by lane K3 on 12 October 2026 on the host of
       E-n017-overbeck-capture-sample-replay: three of the 13 trees, JQ (one node), JPG17m_v5
@@ -32050,7 +32083,8 @@ evidence:
     assurance: verified
     method: exact-algebraic
     performed_by: repository
-    relationship_to_generator: independent-implementation
+    relationship_to_generator: shared-components
+    shared_components: [HalfPlaneFast, CaptureRunFast, CaptureTableFast, CaptureSummaryFast]
     origin: replayed-here
     novelty: previously-published
     source_key: '[Fitzharding n17 Lean 2026]'
@@ -32409,9 +32443,10 @@ evidence:
     origin: replayed-here
     novelty: previously-published
     source_key: '[Overbeck n17 candidate 2026]'
-    certificate: docs/project/reviews/review-2026-10-13-overbeck-n17-mathematical-correctness.md
+    certificate: packing/resources/web/kleddamag-n17-candidate-2026-10-12/review-3/logs/literal_checks.log
     replay: >-
-      From packing/, with CLONE as in E-n017-overbeck-jq-tree-review3, run
+      From packing/, with CLONE at 653b9589d0f8a152f01adc56b1d48ba53d49abc3 as in
+      E-n017-overbeck-jq-tree-review3, run
       .venv/bin/python3 -I -B
       resources/web/kleddamag-n17-candidate-2026-10-12/review-3/programs/literal_checks.py
       CLONE. It must end FAILURES: 0, as the review's section 8 records.
@@ -32422,9 +32457,10 @@ evidence:
         extent: full
         unit: >-
           the literal geometric facts of the proof text's sections 3 to 6 over the 98
-          capture class files, 194 checks at 83 sites, and the case partition
-        checked: 194
-        of: 194
+          capture class files and the case partition: 192 printed literal checks at
+          83 sites, plus one partition check on all 15,000 product atoms
+        checked: 193
+        of: 193
     limitations: >-
       Run here on 13 October 2026 by the third review of the candidate, in exact
       rationals: the frame thresholds, bounds, disjointness and bonus equalities, the
@@ -32434,7 +32470,14 @@ evidence:
       partition against the source's thirteen predicates. It decides literal facts and
       not the class-row lemma's rows, which the author's capture checkers decide. The
       retained copy parses the predicates where the lane's evaluated their text (the
-      packet's review-3/README.md) and has not been re-run; the lane kept no output.
+      packet's review-3/README.md); the original lane kept no output.
+      The retained parser was replayed on 14 October 2026 with Python 3.14.7 at that
+      exact pin, reading only JSON data, with the full stdout in review-3/logs/literal_checks.log:
+      193 printed checks passed, including the partition on all 15,000 product atoms,
+      FAILURES: 0, exit 0. This records the current run's 192 literal checks plus the
+      partition check; the earlier review reported 194 literal checks.
+      The original eval line was not retained, so output equivalence to the lane's
+      program remains unestablished.
     source_reviewed: '2026-10-14'
 
   - id: E-n017-overbeck-handovers-review3
@@ -32485,7 +32528,8 @@ evidence:
     replay: >-
       From packing/, with CLONE as in E-n017-overbeck-jq-tree-review3, run bash
       resources/web/kleddamag-n17-candidate-2026-10-12/review-2/run.sh CLONE; its output must
-      equal review-2/RESULTS.txt, in particular geom.py's two Krawczyk boxes inside,
+      agree with the computed result lines of review-2/RESULTS.txt, in particular
+      geom.py's two Krawczyk boxes inside,
       identities.py's 52 base-gap identities in the ideal of F and G, check_rows.py's every
       geometric row implied, and replay.py's final ratios
       159201934153319/200000000000000 on the stored models and 0.792020707575807 on its own
@@ -32502,14 +32546,17 @@ evidence:
         unit: >-
           the normalized 52-row gate of G20S_PHYSICAL (PROOF.md P110): the 152 separating
           options, the 52 base-gap identities, the 52 geometric rows of each of the five
-          stored stopped models, and the chain from B6 through the stop cuts and the five
-          stopped rounds
+          stored stopped models, and the chain from B6 through the five stopped rounds,
+          taking the stop cuts as premises stated by PROOF.md P096
     limitations: >-
       Run here on 13 October 2026 by the second review of the candidate and kept with
       run.sh, which reproduced its output on a checkout of the pin the same day (Python
-      3.14.7, SymPy 1.14.0, mpmath 1.3.0). The gate is valid for every core radius up to
+      3.14.7, SymPy 1.14.0, mpmath 1.3.0). At closeout cmp_file.py was restricted to
+      sibling imports and one certificate argument; the retained output keeps its
+      historical command line. The gate is valid for every core radius up to
       1/5000 by rows and arithmetic of the review's own, using the producer's multipliers
-      only as hints; it rests on the domain hypotheses the seventeen finite rounds supply,
+      only as hints; it takes P096's stop cuts as premises rather than deriving them,
+      and rests on the domain hypotheses the seventeen finite rounds supply,
       which were not re-derived, and on the exactness of mpmath's interval arithmetic and
       SymPy's reduction. Registered on 14 October 2026; before then no evidence entry
       cited these programs.

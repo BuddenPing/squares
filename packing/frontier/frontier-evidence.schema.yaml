@@ -113,7 +113,7 @@ $defs:
           of: {type: integer, minimum: 1}
         allOf:
           - if: {properties: {extent: {const: sample}}}
-            then: {required: [checked, of]}
+            then: {required: [checked, of], properties: {checked: {minimum: 1}}}
       read:
         type: array
         minItems: 1
@@ -148,7 +148,7 @@ $defs:
         required: [extent, separate_prompt, separate_code, note]
         properties:
           extent: {enum: [none, system-family, people, unknown]}
-          separate_prompt: {type: boolean}
+          separate_prompt: {type: [boolean, "null"]}
           separate_code: {type: boolean}
           note: {type: string, minLength: 1}
       note: {type: string, minLength: 1}

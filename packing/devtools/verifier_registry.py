@@ -17,8 +17,9 @@ Since 2026-10-14 a first-party program that decides, and a new independent-imple
 entry, carry a structured `independence` record (epistemics.md, The Independence Record):
 what the program's authors read, whether it is clean-room, the producer's components it
 shares, who wrote it and whether that authorship overlaps the producer's, and, on the
-entry, its coverage. `LADDER` names the levels that record places a program on, and a
-sample confirms nothing whole (`sampled`).
+entry, its coverage. Every new replay states its coverage regardless of relation.
+`LADDER` names each evidence run's level, from its relation and deciding programs'
+records; a sample confirms nothing whole (`sampled`).
 
 This module loads the registry, holds the cross-record rules the JSON Schema cannot state
 (`problems`, run by `devtools.validate_schemas`), and gives the views one reading of an
@@ -246,7 +247,6 @@ UNSTRUCTURED_EVIDENCE = frozenset(
         "E-n017-massaccesi-h052-agreement",
         "E-n017-mira-4613-exact-replay",
         "E-n017-mira-4613-interval-decision",
-        "E-n017-overbeck-capture-independent-sample",
         "E-n017-overbeck-statement-root-independent",
         "E-n018-wand125-mixed-4704-sqverify-fast-replay",
         "E-n019-wand125-mixed-48229-sqverify-fast-replay",
@@ -382,6 +382,326 @@ UNSTRUCTURED_EVIDENCE = frozenset(
 )
 
 
+#: Replays recorded before 2026-10-14 without coverage. Only removal is allowed.
+UNCOVERED_REPLAYS = frozenset(
+    {
+        "E-barnett-505-exact-feasibility",
+        "E-basic-area-lower",
+        "E-basic-grid-upper",
+        "E-bentz13-figure2-audit",
+        "E-bentz46-theorem8-audit",
+        "E-chelokot-square-minus-two-lean",
+        "E-couzo-451-exact-feasibility",
+        "E-couzo-460-followup-exact-feasibility",
+        "E-couzo-476-exact-feasibility",
+        "E-couzo-488-exact-feasibility",
+        "E-couzo-506-exact-feasibility",
+        "E-deleeuw-483-exact-feasibility",
+        "E-evand-399-exact-feasibility",
+        "E-evand-465-record-hunt-exact-feasibility",
+        "E-evand-489-exact-feasibility",
+        "E-evand-exact-ceilings-2026-10-05-exact-replay",
+        "E-evand-exact-ceilings-2026-10-05-source-replay",
+        "E-evand-exact-optima-2026-10-05-exact-replay",
+        "E-evand-exact-optima-2026-10-05-source-replay",
+        "E-evand-regularized-exact-feasibility",
+        "E-evand-trio126-exact-feasibility",
+        "E-fang-484-exact-feasibility",
+        "E-fractional-interval-decision",
+        "E-franciscouzo-2026-09-27-exact-replay",
+        "E-franciscouzo-2026-09-27-interval-replay",
+        "E-franciscouzo-2026-10-03-exact-replay",
+        "E-franciscouzo-2026-10-03-interval-replay",
+        "E-gobel-family-upper",
+        "E-gobel-offcentre-upper",
+        "E-gobel-strip-upper",
+        "E-green17-interval-audit",
+        "E-green17-sixteen-point-lower",
+        "E-gupta-438-exact-feasibility",
+        "E-k2m3-evand-bentz-lean-build",
+        "E-k2m3-evand-valid7-qx2-replay",
+        "E-k2m3-wand125-valid7-independent",
+        "E-k2m4-evand-bentz4-lean-build",
+        "E-karakus-strip-measure-interval",
+        "E-lifted-q2-upper",
+        "E-lifted-q7-upper",
+        "E-mishapolk-470-exact-feasibility",
+        "E-n005-fixed-side-local-rigidity",
+        "E-n005-gobel-upper",
+        "E-n005-second-order-rigidity",
+        "E-n010-gobel-upper",
+        "E-n011-corner-class-96-25-exact-decision",
+        "E-n011-corner-class-96-25-interval-decision",
+        "E-n011-five-dot-full-net",
+        "E-n011-five-dot-independent-union",
+        "E-n011-fractional-certificate",
+        "E-n011-fractional-dilation-limit",
+        "E-n011-fractional-net1440-certificate",
+        "E-n011-fractional-net1440-dilation-limit",
+        "E-n011-fractional-net1440-interval-decision",
+        "E-n011-fractional-net720-certificate",
+        "E-n011-fractional-net720-dilation-limit",
+        "E-n011-global-optimality-independent",
+        "E-n011-h236-rung0-reduction",
+        "E-n011-kleddamag-3875-native-parent-core",
+        "E-n011-kleddamag-3875-source-replay",
+        "E-n011-lean-statement-closure-build",
+        "E-n011-optimum-uniqueness",
+        "E-n011-repaired-lower",
+        "E-n011-threshold-certificate",
+        "E-n011-threshold-interval-decision",
+        "E-n011-threshold-net1440-certificate",
+        "E-n011-threshold-net1440-dilation-limit",
+        "E-n011-threshold-net1440-interval-decision",
+        "E-n011-threshold-net2880-certificate",
+        "E-n011-threshold-net2880-dilation-limit",
+        "E-n011-threshold-net2880-interval-decision",
+        "E-n011-threshold-net720-certificate",
+        "E-n011-threshold-net720-dilation-limit",
+        "E-n011-trump-isolation-radius",
+        "E-n011-trump-local-rigidity",
+        "E-n011-trump-local-theorem-first-clause",
+        "E-n011-trump-upper",
+        "E-n011-wall-owner-containment",
+        "E-n011-wall-owner-footprints",
+        "E-n011-wang-li-native-parent-core",
+        "E-n011-wang-li-source-replay",
+        "E-n012-evand-15680-3951-native-parent-core",
+        "E-n012-evand-15680-3951-source-replay",
+        "E-n012-fractional-certificate",
+        "E-n012-independent-verifier",
+        "E-n012-levy-15680000-3949423-audit",
+        "E-n012-levy-15680000-3949423-generator",
+        "E-n012-levy-15680000-3949423-native-parent-core",
+        "E-n012-levy-15680000-3949423-source-replay",
+        "E-n012-monotonicity-lower",
+        "E-n012-squarepacker-31360-7901-native-parent-core",
+        "E-n012-squarepacker-31360-7901-source-replay",
+        "E-n012-squarepacker-7943-2000-audit",
+        "E-n012-squarepacker-7943-2000-native-parent-core",
+        "E-n012-squarepacker-7943-2000-source-replay",
+        "E-n013-evand-casefree-cover-lean-kernel",
+        "E-n013-evand-casefree-cover-zmx2-replay",
+        "E-n017-anabologyco-weighted-certificate",
+        "E-n017-burns-control-decision",
+        "E-n017-burns-source-replay",
+        "E-n017-catalogue-polynomial-identity",
+        "E-n017-certified-endpoint",
+        "E-n017-fort-point-certificate-replay",
+        "E-n017-fractional-certificate",
+        "E-n017-guzhou-r012-interval-decision",
+        "E-n017-guzhou-r012-source-replay",
+        "E-n017-guzhou-r052-source-replay",
+        "E-n017-guzhou-r067-source-replay",
+        "E-n017-guzhou-r068-source-replay",
+        "E-n017-guzhou-r071-source-replay",
+        "E-n017-kleddamag-461300-99853-source-replay",
+        "E-n017-kleddamag-4640020-source-replay",
+        "E-n017-kleddamag-466001-source-replay",
+        "E-n017-kleddamag-rational-upper",
+        "E-n017-massaccesi-h052-agreement",
+        "E-n017-massaccesi-source-replay",
+        "E-n017-mira-4613-exact-replay",
+        "E-n017-mira-4613-interval-decision",
+        "E-n017-mira-point-certificate-replay",
+        "E-n017-overbeck-candidate-check-py-replay",
+        "E-n017-overbeck-statement-root-independent",
+        "E-n018-fractional-certificate",
+        "E-n018-t028-fractional-certificate",
+        "E-n018-t029-fractional-certificate",
+        "E-n018-t030-fractional-certificate",
+        "E-n018-wand125-mixed-470-source-replay",
+        "E-n018-wand125-mixed-4704-source-replay",
+        "E-n018-wand125-mixed-4704-sqverify-fast-replay",
+        "E-n018-wand125-mixed-4705-sqverify-fast-replay",
+        "E-n019-wand125-mixed-48229-sqverify-fast-replay",
+        "E-n019-wand125-mixed-4825-sqverify-fast-replay",
+        "E-n019-wand125-rect-48175-sqverify-fast-replay",
+        "E-n020-fractional-certificate",
+        "E-n020-fractional-certificate-97-20",
+        "E-n020-wand125-mixed-4905-sqverify-fast-replay",
+        "E-n020-wand125-rect-48975-sqverify-fast-replay",
+        "E-n020-wand125-rect-49-sqverify-fast-replay",
+        "E-n021-evand-5000-1001-source-replay",
+        "E-n021-evand-mixed-cover-zmx2-replay",
+        "E-n021-fractional-certificate-122-25",
+        "E-n021-wand125-point-endpoint-source-replay",
+        "E-n026-wand125-mixed-5545-sqverify-fast-replay",
+        "E-n026-wand125-rect-55325-sqverify-fast-replay",
+        "E-n027-wand125-mixed-56435-sqverify-fast-replay",
+        "E-n027-wand125-rect-5635-sqverify-fast-replay",
+        "E-n028-wand125-mixed-5735-sqverify-fast-replay",
+        "E-n028-wand125-rect-57225-sqverify-fast-replay",
+        "E-n029-interval-certified-upper",
+        "E-n029-kingbird-numerical",
+        "E-n029-orientation-classes",
+        "E-n029-schadt-numerical",
+        "E-n029-schadt-rational-upper",
+        "E-n029-wand125-mixed-581-sqverify-fast-replay",
+        "E-n029-wand125-rect-57975-sqverify-fast-replay",
+        "E-n030-wand125-mixed-58835-sqverify-fast-replay",
+        "E-n030-wand125-rect-5875-sqverify-fast-replay",
+        "E-n031-wand125-rect-59525-sqverify-fast-replay",
+        "E-n032-evand-closed-cover-source-run",
+        "E-n032-evand-closed-cover-zmx2-replay",
+        "E-n032-evand-zmx2-full-sym-replay",
+        "E-n037-wand125-mixed-644-source-replay",
+        "E-n038-wand125-rect-6545-sqverify-fast-replay",
+        "E-n039-wand125-mixed-665-sqverify-fast-replay",
+        "E-n039-wand125-rect-6635-sqverify-fast-replay",
+        "E-n040-first-order-flexibility",
+        "E-n040-gobel-upper",
+        "E-n040-guzhou-clipped-corner-finite-audit",
+        "E-n040-guzhou-clipped-corner-sqverify-fast-replay",
+        "E-n040-guzhou-continuous-pose-crate-axis",
+        "E-n040-guzhou-continuous-pose-finite-audit",
+        "E-n040-guzhou-continuous-pose-kernel-replay",
+        "E-n040-wand125-rect-67-sqverify-fast-replay",
+        "E-n041-wand125-mixed-6775-sqverify-fast-replay",
+        "E-n041-wand125-rect-676-sqverify-fast-replay",
+        "E-n042-wand125-mixed-68475-sqverify-fast-replay",
+        "E-n042-wand125-rect-6815-sqverify-fast-replay",
+        "E-n042-wand125-rect-68275-sqverify-fast-replay",
+        "E-n043-wand125-mixed-69075-sqverify-fast-replay",
+        "E-n043-wand125-rect-68875-sqverify-fast-replay",
+        "E-n044-wand125-mixed-69725-sqverify-fast-replay",
+        "E-n044-wand125-rect-69425-sqverify-fast-replay",
+        "E-n045-evand-mixed-cover-zmx2-replay",
+        "E-n045-wand125-point-cover-source-replay",
+        "E-n050-wand125-mixed-740-source-replay",
+        "E-n051-wand125-mixed-746-sqverify-fast-replay",
+        "E-n051-wand125-mixed-747-sqverify-fast-replay",
+        "E-n052-wand125-mixed-755-sqverify-fast-replay",
+        "E-n053-wand125-mixed-76275-sqverify-fast-replay",
+        "E-n053-wand125-rect-76075-sqverify-fast-replay",
+        "E-n054-wand125-mixed-7685-sqverify-fast-replay",
+        "E-n054-wand125-rect-76725-sqverify-fast-replay",
+        "E-n055-wand125-mixed-7728-sqverify-fast-replay",
+        "E-n055-wand125-rect-77125-sqverify-fast-replay",
+        "E-n056-wand125-mixed-78025-sqverify-fast-replay",
+        "E-n056-wand125-rect-77825-sqverify-fast-replay",
+        "E-n057-wand125-mixed-78725-sqverify-fast-replay",
+        "E-n058-wand125-mixed-7905-sqverify-fast-replay",
+        "E-n058-wand125-mixed-7935-sqverify-fast-replay",
+        "E-n059-wand125-mixed-cover-zmx2-replay",
+        "E-n060-evand-mixed-cover-zmx2-replay",
+        "E-n061-wand125-point-cover-zmx2-replay",
+        "E-n065-wand125-mixed-835-source-replay",
+        "E-n066-wand125-mixed-842-source-replay",
+        "E-n066-wand125-mixed-843-sqverify-fast-replay",
+        "E-n066-wand125-rect-8385-sqverify-fast-replay",
+        "E-n067-wand125-mixed-8475-sqverify-fast-replay",
+        "E-n067-wand125-mixed-848-sqverify-fast-replay",
+        "E-n068-wand125-rect-851-sqverify-fast-replay",
+        "E-n069-ellsworth-2026-09-exact-replay",
+        "E-n069-wand125-mixed-8612-sqverify-fast-replay",
+        "E-n069-wand125-mixed-862-sqverify-fast-replay",
+        "E-n069-wand125-rect-8585-sqverify-fast-replay",
+        "E-n070-wand125-mixed-86475-sqverify-fast-replay",
+        "E-n070-wand125-mixed-86575-sqverify-fast-replay",
+        "E-n070-wand125-rect-8625-sqverify-fast-replay",
+        "E-n070-wand125-rect-86275-sqverify-fast-replay",
+        "E-n071-wand125-mixed-8705-sqverify-fast-replay",
+        "E-n071-wand125-mixed-8721-sqverify-fast-replay",
+        "E-n072-wand125-mixed-876-sqverify-fast-replay",
+        "E-n073-wand125-mixed-8809-sqverify-fast-replay",
+        "E-n073-wand125-mixed-8813-sqverify-fast-replay",
+        "E-n074-wand125-mixed-88675-sqverify-fast-replay",
+        "E-n074-wand125-rect-88475-sqverify-fast-replay",
+        "E-n075-wand125-mixed-892-sqverify-fast-replay",
+        "E-n075-wand125-mixed-894-sqverify-fast-replay",
+        "E-n075-wand125-rect-89-sqverify-fast-replay",
+        "E-n076-wand125-mixed-894-source-replay",
+        "E-n076-wand125-mixed-896-sqverify-fast-replay",
+        "E-n076-wand125-mixed-8965-sqverify-fast-replay",
+        "E-n076-wand125-rect-8925-sqverify-fast-replay",
+        "E-n077-wand125-mixed-cover-zmx2-replay",
+        "E-n082-gobel-l-upper",
+        "E-n082-wand125-linear-932-source-replay",
+        "E-n083-chang-2026-09-exact-replay",
+        "E-n083-wand125-linear-935-source-replay",
+        "E-n083-wand125-mixed-937-source-replay",
+        "E-n083-wand125-mixed-937-sqverify-fast-replay",
+        "E-n084-wand125-mixed-940-source-replay",
+        "E-n084-wand125-mixed-94075-sqverify-fast-replay",
+        "E-n084-wand125-mixed-9411-sqverify-fast-replay",
+        "E-n085-wand125-mixed-942-source-replay",
+        "E-n085-wand125-mixed-946-source-replay",
+        "E-n085-wand125-mixed-946-sqverify-fast-replay",
+        "E-n086-wand125-mixed-950-sqverify-fast-replay",
+        "E-n086-wand125-mixed-9503-sqverify-fast-replay",
+        "E-n086-wand125-rect-9365-sqverify-fast-replay",
+        "E-n087-chang-2026-09-exact-replay",
+        "E-n087-wand125-mixed-948-source-replay",
+        "E-n087-wand125-mixed-948-sqverify-fast-replay",
+        "E-n087-wand125-mixed-955-sqverify-fast-replay",
+        "E-n087-wand125-mixed-958-sqverify-fast-replay",
+        "E-n087-wand125-rect-941-sqverify-fast-replay",
+        "E-n088-wand125-mixed-960-sqverify-fast-replay",
+        "E-n088-wand125-mixed-96125-sqverify-fast-replay",
+        "E-n088-wand125-mixed-962-sqverify-fast-replay",
+        "E-n088-wand125-rect-94775-sqverify-fast-replay",
+        "E-n089-wand125-mixed-965-sqverify-fast-replay",
+        "E-n089-wand125-rect-9565-sqverify-fast-replay",
+        "E-n090-wand125-mixed-960-source-replay",
+        "E-n090-wand125-mixed-9725-sqverify-fast-replay",
+        "E-n090-wand125-mixed-973-sqverify-fast-replay",
+        "E-n090-wand125-rect-95775-sqverify-fast-replay",
+        "E-n091-wand125-mixed-970-source-replay",
+        "E-n091-wand125-mixed-970-sqverify-fast-replay",
+        "E-n091-wand125-mixed-975-sqverify-fast-replay",
+        "E-n091-wand125-mixed-97625-sqverify-fast-replay",
+        "E-n092-wand125-mixed-969-source-replay",
+        "E-n092-wand125-mixed-975-source-replay",
+        "E-n092-wand125-mixed-975-sqverify-fast-replay",
+        "E-n092-wand125-mixed-977-sqverify-fast-replay",
+        "E-n093-wand125-mixed-986-sqverify-fast-replay",
+        "E-n093-wand125-mixed-988-sqverify-fast-replay",
+        "E-n093-wand125-rect-97225-sqverify-fast-replay",
+        "E-n094-wand125-mixed-992-sqverify-fast-replay",
+        "E-n094-wand125-mixed-994-sqverify-fast-replay",
+        "E-n094-wand125-mixed-995-sqverify-fast-replay",
+        "E-n094-wand125-rect-9805-sqverify-fast-replay",
+        "E-n095-wand125-mixed-996-sqverify-fast-replay",
+        "E-n095-wand125-mixed-9965-sqverify-fast-replay",
+        "E-n095-wand125-rect-98518-sqverify-fast-replay",
+        "E-n096-wand125-mixed-996-source-replay",
+        "E-n096-wand125-mixed-996-sqverify-fast-replay",
+        "E-n096-wand125-mixed-997-sqverify-fast-replay",
+        "E-n101-wand125-linear-1028-source-replay",
+        "E-n211-de-winter-exact-replay",
+        "E-n211-de-winter-interval-replay",
+        "E-nagamochi-lemma1-counterexample",
+        "E-ostashev-501-exact-feasibility",
+        "E-perfect-square-tiling-rigid",
+        "E-pingyou-503-exact-feasibility",
+        "E-pingyou-504-exact-feasibility",
+        "E-rehwaldt-couzo-refinements-2026-10-07-exact-replay",
+        "E-rehwaldt-n68-refinement-2026-10-07-exact-replay",
+        "E-ryxu-432-radical-n51-feasibility",
+        "E-ryxu-432-rational-feasibility",
+        "E-side2-center-lower",
+        "E-squish-481-exact-feasibility",
+        "E-squish-500-exact-feasibility",
+        "E-squish-n153-2026-10-07-exact-replay",
+        "E-squish-second-update-2026-10-07-exact-replay",
+        "E-squish-ten-packings-2026-10-07-exact-replay",
+        "E-squish-update-2026-10-07-exact-replay",
+        "E-tokoharu-density-source-replay",
+        "E-translation-escape-not-rigid",
+        "E-wand125-n052-derived-lower",
+        "E-wand125-n068-derived-lower",
+        "E-wand125-point-source-replay",
+        "E-wand125-rectangle-2026-09-28-source-replay",
+        "E-wand125-rectangle-2026-10-01-source-replay",
+        "E-wand125-rectangle-2026-10-02-source-replay",
+        "E-wand125-rectangle-source-replay",
+        "E-wand125-tools-ceiling-certificates",
+        "E-wand125-tools-n11-row-replay",
+    }
+)
+
+
 @dataclass(frozen=True)
 class Verifier:
     """One registry entry, as the views read it."""
@@ -431,15 +751,47 @@ def sampled(entry: Mapping[str, Any]) -> bool:
     return coverage.get("extent") == SAMPLE
 
 
-def ladder_level(record: Mapping[str, Any]) -> str:
-    """The level a program's structured independence record states, as a key of
-    `LADDER`: sharing the producer's components, clean-room, or independently written
-    after reading the producer's code."""
-    if record.get("shares"):
+def ladder_level(entry: Mapping[str, Any], verifiers: Mapping[str, Verifier]) -> str | None:
+    """An evidence run's relation, using only its deciding programs' authorship."""
+    relation = entry.get("relationship_to_generator")
+    if relation in {SAME, GENERATOR}:
+        return "reproduced"
+    if relation == SHARED:
         return "shared"
-    if record.get("clean_room") is True:
+    if relation != INDEPENDENT:
+        return None
+    own = entry.get("independence") or {}
+    records = [
+        verifiers[v].record.get("independence") or own
+        for v in entry.get("verifiers") or []
+        if v in verifiers and verifiers[v].decides
+    ]
+    if own.get("shares") or any(record.get("shares") for record in records):
+        return "shared"
+    if (records and all(record.get("clean_room") is True for record in records)) or (
+        not records and own.get("clean_room") is True
+    ):
         return "clean-room"
     return "after-reading"
+
+
+def ladder_label(entry: Mapping[str, Any], verifiers: Mapping[str, Verifier]) -> str:
+    """The entry's ladder level, or its non-computational relation label."""
+    return LADDER.get(
+        ladder_level(entry, verifiers) or "",
+        SHORT_LABELS.get(str(entry.get("relationship_to_generator")), "-"),
+    )
+
+
+def coverage_line(entry: Mapping[str, Any]) -> str:
+    """Coverage as a readable table cell, including sample counts and the named unit."""
+    coverage = (entry.get("independence") or {}).get("coverage") or {}
+    if not coverage:
+        return "not recorded"
+    extent = str(coverage.get("extent", "not recorded"))
+    if "checked" in coverage and "of" in coverage:
+        extent += f", {coverage['checked']:,} of {coverage['of']:,}"
+    return extent + ": " + " ".join(str(coverage.get("unit", "")).split())
 
 
 def record_problems(owner: str, record: Mapping[str, Any]) -> list[str]:
@@ -470,6 +822,8 @@ def record_problems(owner: str, record: Mapping[str, Any]) -> list[str]:
     coverage = record.get("coverage") or {}
     checked, of = coverage.get("checked"), coverage.get("of")
     if isinstance(checked, int) and isinstance(of, int):
+        if coverage.get("extent") == SAMPLE and checked < 1:
+            problems.append(f"{owner}: a sample checks at least one instance")
         if coverage.get("extent") == SAMPLE and checked >= of:
             problems.append(f"{owner}: a sample checks fewer than all, not {checked} of {of}")
         if coverage.get("extent") == FULL and checked != of:
@@ -566,8 +920,29 @@ def evidence_problems(
                 "authors read: an independence_record, or a deciding program whose "
                 "registry entry carries one"
             )
-        if structured := entry.get("independence"):
+        structured = entry.get("independence") or {}
+        if structured:
             problems.extend(record_problems(eid, structured))
+        needs_coverage = (entry.get("replay") and eid not in UNCOVERED_REPLAYS) or (
+            entry.get("relationship_to_generator") == INDEPENDENT
+            and eid not in UNSTRUCTURED_EVIDENCE
+        )
+        if needs_coverage and "coverage" not in structured:
+            owner = "a replay" if entry.get("replay") else "an independent implementation"
+            problems.append(f"{eid}: {owner} states its coverage in its independence record")
+        deciders = [verifiers[v] for v in named if verifiers[v].decides]
+        records = [verifier.record.get("independence") or {} for verifier in deciders]
+        if structured.get("clean_room") is True and any(
+            record and record.get("clean_room") is not True for record in records
+        ):
+            problems.append(f"{eid}: clean_room contradicts a deciding program's record")
+        if (
+            entry.get("relationship_to_generator") == SHARED
+            and records
+            and all(record and not record.get("shares") for record in records)
+            and not structured.get("shares")
+        ):
+            problems.append(f"{eid}: shared-components names no shared deciding component")
         if (
             entry.get("relationship_to_generator") == INDEPENDENT
             and eid not in UNSTRUCTURED_EVIDENCE
@@ -585,11 +960,6 @@ def structured_independence_problems(
     make the relation shared-components (epistemics.md, The Independence Record)."""
     structured = entry.get("independence") or {}
     problems: list[str] = []
-    if "coverage" not in structured:
-        problems.append(
-            f"{eid}: an independent implementation states its coverage in its independence "
-            "record: full, or a sample of N of M of a named unit"
-        )
     deciders = [verifiers[v] for v in named if verifiers[v].decides]
     carried = [verifier for verifier in deciders if "independence" in verifier.record]
     if "read" not in structured and (not deciders or len(carried) < len(deciders)):
@@ -598,7 +968,11 @@ def structured_independence_problems(
             "what they read: in its own independence record, or in a structured record on "
             "every deciding program"
         )
-    sharing = [verifier.id for verifier in carried if verifier.record["independence"]["shares"]]
+    sharing = [
+        verifier.id
+        for verifier in carried
+        if (verifier.record.get("independence") or {}).get("shares")
+    ]
     if structured.get("shares"):
         sharing.append(eid)
     problems.extend(
@@ -636,7 +1010,16 @@ def problems(evidence: Sequence[Mapping[str, Any]], path: Path = REGISTRY) -> li
         or not verifiers[vid].decides
         or "independence" in verifiers[vid].record
     )
+    uncovered = {
+        str(entry.get("id"))
+        for entry in evidence
+        if entry.get("replay") and not (entry.get("independence") or {}).get("coverage")
+    }
     return [
+        *(
+            f"{eid}: coverage exemption is stale; remove it from UNCOVERED_REPLAYS"
+            for eid in sorted(UNCOVERED_REPLAYS - uncovered)
+        ),
         *registry_problems(verifiers, ids),
         *evidence_problems(evidence, verifiers),
         *(
@@ -681,23 +1064,24 @@ def strongest(entries: Iterable[Mapping[str, Any]]) -> str | None:
 
 
 def independence_line(record: Mapping[str, Any]) -> str:
-    """A program's structured independence record in a sentence, for the views: its level
-    on the ladder, what its authors read, what it shares, who wrote it, and whether that
-    authorship overlaps the producer's."""
-    shares = record["shares"]
+    """A program's read, shared-component and authorship facts for the views.
+
+    Each evidence run's ladder level is derived separately by `ladder_level`.
+    """
+    shares = record.get("shares") or []
     authors = "; ".join(
         str(author.get("name") or author.get("system"))
         + (f" ({author['setting']})" if author.get("setting") else "")
-        for author in record["written_by"]
+        for author in record.get("written_by") or []
     )
-    overlap = record["overlaps_producer"]
+    overlap = record.get("overlaps_producer") or {}
     apart = [
         label
         for label, key in (("prompt", "separate_prompt"), ("code", "separate_code"))
         if overlap.get(key) is True
     ]
     return (
-        f"{LADDER[ladder_level(record)]}; its authors read {', '.join(record['read'])}; "
+        f"its authors read {', '.join(record.get('read') or [])}; "
         + (
             f"it shares {', '.join(shares)}"
             if shares
@@ -705,8 +1089,9 @@ def independence_line(record: Mapping[str, Any]) -> str:
         )
         + f"; written by {authors}"
         + (f", with its own {' and '.join(apart)}" if apart else "")
-        + f"; authorship in common with the producer{APOSTROPHE}s: {overlap['extent']}, "
-        + " ".join(str(overlap["note"]).split())
+        + f"; authorship in common with the producer{APOSTROPHE}s: "
+        + f"{overlap.get('extent', 'not recorded')}, "
+        + " ".join(str(overlap.get("note", "")).split())
     )
 
 
@@ -809,7 +1194,12 @@ def entry_line(entry: Mapping[str, Any], verifiers: Mapping[str, Verifier]) -> s
     programs. A third party's run held only as their report confirms nothing here, so
     its line names no relation, whose labels are the words a confirmation is read in
     (`THIRD_PARTY_REPORT`); `VERIFIERS.md` keeps its code relation in a column of its own."""
-    relation = entry.get("relationship_to_generator")
     beyond = entry.get("origin") in CONFIRMING_ORIGINS
-    how = f", {LABELS[str(relation)]}" if beyond and relation in RANK else ""
-    return f"`{entry['id']}`, {run_label(entry)}{how}: {programs_text(entry, verifiers)}"
+    level = ladder_level(entry, verifiers)
+    how = f", {LADDER[level]}" if beyond and level is not None else ""
+    coverage = (
+        f"; {coverage_line(entry)}" if (entry.get("independence") or {}).get("coverage") else ""
+    )
+    return (
+        f"`{entry['id']}`, {run_label(entry)}{how}{coverage}: {programs_text(entry, verifiers)}"
+    )

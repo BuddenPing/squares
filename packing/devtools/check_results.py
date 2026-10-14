@@ -276,10 +276,30 @@ def formalization_reviews(reviews: list[dict], *, confirming: bool = False) -> i
 
 
 def derive_confirmation(
-    entries: list[dict], reviews: list[dict] | None = None, *, open_review: bool = False
+    entries: list[dict],
+    reviews: list[dict] | None = None,
+    *,
+    open_review: bool = False,
+    record: Mapping[str, Any] | None = None,
 ) -> str:
     """The confirmation rung the confirming-origin evidence and the confirming-side
     reviews support (epistemics.md, Confirmation)."""
+    entries = [entry for entry in entries if not sampled(entry)]
+    if record is not None:
+        return min(
+            (
+                _derive_confirmation(pool, reviews, open_review=open_review)
+                for pool in _claim_pools(record, entries)
+            ),
+            key=_rank,
+        )
+    return _derive_confirmation(entries, reviews, open_review=open_review)
+
+
+def _derive_confirmation(
+    entries: list[dict], reviews: list[dict] | None = None, *, open_review: bool = False
+) -> str:
+    """The rung supported by one complete claim pool."""
     reviews = list(reviews or [])
     ours = [entry for entry in entries if entry.get("origin") in CONFIRMING_ORIGINS]
     rebuilt = [
@@ -339,6 +359,36 @@ _LOWER_CLAIMS = frozenset({"lower-bound", "exact-value"})
 _UPPER_CLAIMS = frozenset({"upper-bound", "exact-value"})
 
 
+def _claim_pools(record: Mapping[str, Any], entries: list[dict]) -> list[list[dict]]:
+    """Evidence for every required bound side at every count, never a component proof.
+
+    Exact-value evidence covers both sides. A whole result takes its weakest side and
+    count; lower evidence at one count cannot complete an upper side at another.
+    Structure and method results retain their own evidence semantics.
+    """
+    kind = record.get("kind")
+    if kind not in BOUND_KINDS | SECOND_PROOF_KINDS:
+        return [entries]
+    claims = (
+        (_LOWER_CLAIMS,)
+        if kind == "lower-bound"
+        else (_UPPER_CLAIMS,)
+        if kind == "upper-bound"
+        else (_LOWER_CLAIMS, _UPPER_CLAIMS)
+    )
+    counts = scope_values(dict(record["scope"]))
+    return [
+        [
+            entry
+            for entry in entries
+            if entry.get("claim") in side
+            and n in scope_values(entry.get("scope") or {"n_values": []})
+        ]
+        for n in sorted(counts)
+        for side in claims
+    ] or [[]]
+
+
 def confirmation_code(
     record: Mapping[str, Any], entries: Sequence[Mapping[str, Any]]
 ) -> str | None:
@@ -352,23 +402,21 @@ def confirmation_code(
     producer's code among the runs that confirm it, and the result takes the part closest
     to it: an optimality result is as independent as the less independent of its halves,
     so the grid replay of an upper half never makes a lower half re-run with the source's
-    own checker read as re-implemented. A bound reads its own runs, and any other kind
-    reads all of them.
+    own checker read as re-implemented. A bound reads its own runs. Values and second
+    proofs require both sides at every count; other kinds read all of their runs.
     """
     runs = confirming_runs(entries)
     machine = [entry for entry in runs if _machine_proof_shaped(dict(entry))]
     pool = machine or runs
     if not pool:
         return None
-    kind = record.get("kind")
-    if kind in {"lower-bound", "upper-bound"}:
-        own = [entry for entry in pool if entry.get("claim") in {kind, "exact-value"}]
-        return strongest(own or pool)
-    lower = strongest(entry for entry in pool if entry.get("claim") in _LOWER_CLAIMS)
-    upper = strongest(entry for entry in pool if entry.get("claim") in _UPPER_CLAIMS)
-    if lower and upper:
-        return min((lower, upper), key=RANK.__getitem__)
-    return strongest(pool)
+    pools = _claim_pools(record, [dict(entry) for entry in pool])
+    relations = [strongest(part) for part in pools]
+    if any(relation is None for relation in relations):
+        return None
+    return min(
+        (relation for relation in relations if relation is not None), key=RANK.__getitem__
+    )
 
 
 #: The word whose kind the prose rule asks for, as a verb or a participle; a novelty label,
@@ -1318,9 +1366,25 @@ def registered_problems(record: dict, last_reviewed: str) -> list[str]:
     return []
 
 
-def derive_verification(entries: list[dict], reviews: list[dict] | None = None) -> str:
+def derive_verification(
+    entries: list[dict],
+    reviews: list[dict] | None = None,
+    *,
+    record: Mapping[str, Any] | None = None,
+) -> str:
     """The verification rung the cited evidence, of any origin, and the retained
     reviews support (epistemics.md, Verification)."""
+    entries = [entry for entry in entries if not sampled(entry)]
+    if record is not None:
+        return min(
+            (_derive_verification(pool, reviews) for pool in _claim_pools(record, entries)),
+            key=_rank,
+        )
+    return _derive_verification(entries, reviews)
+
+
+def _derive_verification(entries: list[dict], reviews: list[dict] | None = None) -> str:
+    """The rung supported by one complete claim pool."""
     reviews = list(reviews or [])
     if any(_formal(entry) for entry in entries) and (
         formalization_reviews(reviews) >= FORMALIZATION_REVIEWS["V"]
@@ -1510,7 +1574,10 @@ def main() -> int:
         # A review with a structural fault earns nothing until it is fixed.
         reviews = [] if review_faults else list(record.get("reviews") or [])
         derived_c = derive_confirmation(
-            cited, reviews, open_review=bool(record.get("open_review")) and not review_faults
+            cited,
+            reviews,
+            open_review=bool(record.get("open_review")) and not review_faults,
+            record=record,
         )
         has_composition = bool(record.get("composition"))
         # A replay, rebuild or review record is also verification evidence, so C never
@@ -1535,7 +1602,7 @@ def main() -> int:
             problems.append(
                 f"{rid}: {declared_v} is declared-only and needs a notes field saying why"
             )
-        derived_v = derive_verification(cited, reviews)
+        derived_v = derive_verification(cited, reviews, record=record)
         relation = verification_relation(declared_v, derived_v)
         if relation == "inflated":
             problems.append(
