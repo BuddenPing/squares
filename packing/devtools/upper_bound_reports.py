@@ -138,8 +138,10 @@ JOB_TIMEOUT = kernel.JOB_TIMEOUT
 MAX_WORKERS = 2
 MAX_SOURCE_BYTES = 1_000_000
 MAX_LITERAL_CHARS = 1024
-#: How a printed side was rounded: up, as the report states, or not stated.
-ROUNDINGS = ("up", "unstated")
+#: How a printed side was rounded: up, as the report states; not stated; or ``binary64``,
+#: a decimal rendering of the IEEE double nearest the side, as #593 prints its sides at 16
+#: places, whose last places a double of that size does not determine (`printed_span`).
+ROUNDINGS = ("up", "unstated", "binary64")
 THIS = "this certificate"
 _PRINTED = re.compile(r"[0-9]+\.[0-9]+")
 _FRACTION = re.compile(r"[1-9][0-9]*/[1-9][0-9]*")
@@ -1010,6 +1012,8 @@ HOUSES: dict[str, Callable[[int], Fraction]] = {
     "[Barnett refinements 2026-10-11]": _import("barnett-refinements-2026-10-11"),
     "[SQUISH fourth request 2026-10-11]": _import("squish-500-fourth-request-2026-10-11"),
     "[Couzo certificates 2026-10-11]": _import("couzo-certificates-2026-10-11"),
+    "[Couzo certificates 2026-10-12]": _import("couzo-certificates-2026-10-12"),
+    "[Couzo certificates 2026-10-13]": _import("couzo-certificates-2026-10-13"),
 }
 
 
@@ -1040,13 +1044,20 @@ def exact_span(value: Fraction) -> Span:
 def printed_span(printed: str, rounding: str) -> Span:
     """A side printed rounded up lies in ``(p - u, p]``, otherwise within ``u`` of ``p``.
 
-    ``u`` is one unit in the last printed place.
+    ``u`` is one unit in the last printed place. A ``binary64`` print renders the double
+    nearest the side, which is within half an ulp of the side, to within half a unit of
+    that double; the side then lies within one ulp of the double ``p`` reads as, plus
+    ``u``. Read as ``unstated``, #593's 16-place prints at 271 and 302 exclude their own
+    certificates' exact sides, which lie 1.2e-15 from them.
     """
     _require(_PRINTED.fullmatch(printed) and rounding in ROUNDINGS, "printed side, rounding")
     value = Fraction(Decimal(printed))
     unit = Fraction(1, 10 ** len(printed.partition(".")[2]))
     if rounding == "up":
         return Span(value - unit, value, open_low=True, open_high=False)
+    if rounding == "binary64":
+        slack = Fraction(math.ulp(float(value))) + unit
+        return Span(value - slack, value + slack, open_low=False, open_high=False)
     return Span(value - unit, value + unit, open_low=False, open_high=False)
 
 
