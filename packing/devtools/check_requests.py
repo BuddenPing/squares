@@ -16,9 +16,9 @@ register together and stores none of it:
 - each result's state: `confirmed` (every mapped entry at `V3` and `C3` or above),
   `refuted`, `defect recorded`, `open` while validation runs, or `queued` for import;
 - **reply due**, entry by entry and field by field, when the derived state has moved past
-  the last reply that stated a rung or status of the entry, or past the last reply that
-  named it, or no reply has named it: a new id, a moved rung, a renumbered id, a defect,
-  or a statement the record marks out of date;
+  the last reply that stated that rung or status of the entry, or past the last reply
+  that named it, or no reply has named it: a new id, a moved rung, a renumbered id, a
+  defect, or a statement the record marks out of date;
 - **closeable**, when every result is confirmed or refuted (a reported defect: recorded)
   and nothing the author asked for is queued.
 
