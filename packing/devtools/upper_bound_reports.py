@@ -1010,6 +1010,10 @@ HOUSES: dict[str, Callable[[int], Fraction]] = {
     "[Barnett refinements 2026-10-11]": _import("barnett-refinements-2026-10-11"),
     "[SQUISH fourth request 2026-10-11]": _import("squish-500-fourth-request-2026-10-11"),
     "[Couzo certificates 2026-10-11]": _import("couzo-certificates-2026-10-11"),
+    "[Mishapolk exact certificates 2026-10-12]": _import(
+        "mishapolk-exact-certificates-2026-10-12"
+    ),
+    "[Mishapolk records 2026-10-14]": _import("mishapolk-records-2026-10-14"),
 }
 
 
