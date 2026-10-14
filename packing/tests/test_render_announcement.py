@@ -66,6 +66,17 @@ def test_a_bound_is_printed_to_as_many_places_as_keep_it_better_than_the_previou
     assert earlier.high < printed <= low.low
 
 
+def test_a_tied_or_trailing_bound_is_printed_at_the_usual_places() -> None:
+    """No number of places makes such a bound better than the previous, so none are added
+    in the attempt (review A, A5)."""
+    tie = exact("17.5355339059327376220042218105242")
+    assert ra.shown(tie, UPPER, tie) == "17.53554"
+    assert ra.shown(exact("10.61"), UPPER, exact("10.5")) == "10.61"
+    assert ra.shown(exact(Fraction(1340000, 199529)), LOWER, exact("7")) == "6.71581"
+    cut = ra.Span.of_stated(Stated(Fraction("10.5"), Fraction(1, 10)))
+    assert ra.shown(cut, UPPER, exact("10.6")) == "10.6"
+
+
 def test_a_margin_is_cut_to_two_significant_figures_never_rounded_up() -> None:
     assert ra.margin_text(Fraction("0.0006598949723517562")) == "6.5e-4"
     assert ra.margin_text(Fraction("0.0102")) == "1.0e-2"
@@ -523,6 +534,42 @@ def test_all_keeps_a_bettered_result_and_says_what_betters_it(
     lines, _ = run(capsys, ["--ids", entry, "--date", "2026-10-11", "--all"])
     assert ", since " in lines[1]
     assert "new best" not in lines[1]
+
+
+def test_all_prints_a_tied_bound_at_five_places_and_says_what_supersedes_a_boundless_one(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """T-156 only equals its case record; T-125 states no bound and holds no case
+    (review A, A5)."""
+    lines, _ = run(
+        capsys, ["--ids", "T-156", "--date", "2026-10-12", "--all", "--min-significance", "1"]
+    )
+    assert lines[1].startswith("s(290) ≤ 17.53554 (verified), since equalled first by ")
+    lines, _ = run(capsys, ["--ids", "T-125", "--date", "2026-10-12", "--all"])
+    assert "(verified), since superseded by " in lines[1]
+
+
+def test_a_since_clause_names_at_most_three_and_counts_the_rest() -> None:
+    assert ra.whom("bettered", ["T-146", "T-150"], 2) == "bettered by T-146 and T-150"
+    cases = [f"the n = {n} case record" for n in (28, 29, 37, 39)]
+    assert ra.whom("bettered", cases, 4) == "bettered at 4 counts by their case records"
+    labels = ["T-128", "T-130", "T-134", "T-136, T-140", *cases]
+    assert ra.whom("bettered", labels, 9) == (
+        "bettered at 9 counts by 5 results and their case records"
+    )
+    assert ra.whom("superseded", ["T-128", "T-130", "T-134", "T-136"]) == (
+        "superseded by 4 results"
+    )
+
+
+def test_all_keeps_a_long_since_clause_postable(capsys: pytest.CaptureFixture[str]) -> None:
+    """T-155 is bettered or equalled first at 59 counts by their case records; its line
+    once listed fourteen of them, 1,587 characters (review A, A5)."""
+    lines, err = run(
+        capsys, ["--ids", "T-155", "--date", "2026-10-12", "--all", "--min-significance", "1"]
+    )
+    assert "case record," not in lines[1]
+    assert "on X" not in err
 
 
 def test_a_regularization_credits_the_finder_of_the_packing_it_regularizes(

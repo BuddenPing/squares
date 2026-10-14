@@ -44,8 +44,9 @@ from the record, and the wording is chosen not to overstate it:
 The results are selected by `--ids`, or by `--since`, the date the register received
 them (`registered`, the field an intake pass sets), and by `--min-significance`, 3 by
 default. A selected bound that is the best known at no count, because it is superseded
-or a later entry betters it everywhere, is left out unless `--all` keeps it; stderr says
-why each result was left out.
+or a later entry betters it everywhere, is left out unless `--all` keeps it, at
+`PLACES` decimals with what betters, equals or supersedes it: up to `SINCE_NAMED` by
+name, else how many. stderr says why each result was left out.
 
 A handle comes only from evidence, in this order, and never from a user name:
 
@@ -164,6 +165,10 @@ SEPARATORS = re.compile(r"(; | after |, | and )")
 ET_AL = " et al."
 #: The most counts a line lists one by one; past it, a line gives how many and the range.
 LISTED_COUNTS = 6
+#: The most results or case records a `since` clause names; past it, it says how many.
+SINCE_NAMED = 3
+#: How a rival that is a case record, with no register entry under it, is labelled.
+CASE_LABEL = re.compile(r"^the n = \d+ case record$")
 #: X's limit on a post, how long it counts any link, and the code point ranges it counts
 #: once (twitter-text, version 3); every other character counts twice.
 POST_LIMIT = 280
@@ -250,15 +255,22 @@ def _decimal(scaled: int, places: int) -> str:
 
 def shown(bound: Span, direction: str, previous: Span | None = None) -> str:
     """The bound as a line prints it: an upper bound rounded up and a lower bound rounded
-    down, so the printed number is a true bound itself, at `PLACES` decimals or more until
-    it is still strictly better than `previous`. Exact where it ends sooner."""
+    down, so the printed number is a true bound itself, at `PLACES` decimals, or more
+    until it is still strictly better than `previous` where it is. A bound that only ties
+    or trails `previous` no number of places makes better, so it is printed at `PLACES`.
+    Exact where it ends sooner."""
     edge = bound.high if direction == UPPER else bound.low
+    target = None
+    if previous is not None and (
+        previous.low > bound.high if direction == UPPER else bound.low > previous.high
+    ):
+        target = previous
     scaled, places = 0, PLACES
-    for places in range(PLACES, MAX_PLACES + 1):
+    for places in range(PLACES, (PLACES if target is None else MAX_PLACES) + 1):
         scale = 10**places
         scaled = _ceil(edge * scale) if direction == UPPER else _floor(edge * scale)
         printed = Fraction(scaled, scale)
-        if previous is None or better(Span(printed, printed), previous, direction):
+        if target is None or better(Span(printed, printed), target, direction):
             break
     return _decimal(scaled, places)
 
@@ -987,6 +999,27 @@ def credited_people(record: Mapping[str, Any], records: Records, *, lineage: boo
     return list(dict.fromkeys(_bare(token) for token in people(found)))
 
 
+def whom(verb: str, labels: Sequence[str], at: int | None = None) -> str:
+    """What a `since` clause says betters, equals or supersedes a result: up to
+    `SINCE_NAMED` labels by name, else how many results and whether case records, at how
+    many counts where `at` says (`bettered at 14 counts by their case records`)."""
+    if len(labels) <= SINCE_NAMED:
+        return f"{verb} by {listed(labels)}"
+    results = sorted(
+        {
+            entry
+            for label in labels
+            if not CASE_LABEL.match(label)
+            for entry in label.split(", ")
+        }
+    )
+    who = (results if len(results) <= SINCE_NAMED else [f"{len(results)} results"]) + (
+        ["their case records"] if any(CASE_LABEL.match(label) for label in labels) else []
+    )
+    where = "" if at is None else f" at {at} {'count' if at == 1 else 'counts'}"
+    return f"{verb}{where} by {listed(who)}"
+
+
 def render_line(
     record: Mapping[str, Any],
     records: Records,
@@ -1013,24 +1046,33 @@ def render_line(
     best = [c for c in assessed if c.best]
     since = ""
     if standing(record, records) == SUPERSEDED:
-        since = f"superseded by {listed(superseding(record, records)) or 'the case records'}"
+        since = whom("superseded", superseding(record, records) or ["the case records"])
     elif assessed and not best:
         bettered = sorted({who for c in assessed for who in c.bettered_by})
         tied = sorted({who for c in assessed for who in c.tied_with} - set(bettered))
         since = " and ".join(
             words
             for words in (
-                f"bettered by {listed(bettered)}" if bettered else "",
-                f"equalled first by {listed(tied)}" if tied else "",
+                whom("bettered", bettered, sum(1 for c in assessed if c.bettered_by))
+                if bettered
+                else "",
+                whom(
+                    "equalled first",
+                    tied,
+                    sum(1 for c in assessed if c.tied_with and not c.bettered_by),
+                )
+                if tied
+                else "",
             )
             if words
         )
     if since and not keep_all:
         at = compress([c.n for c in assessed]) if assessed else "no count it states"
         return Line(entry, "", f"the best known at no count (n = {at}): {since}")
-    group = best or assessed
+    group = assessed if since else best
     if not group:
-        return line(f"{plain(str(record['headline']))} {tag(record)}", [])
+        what = f"{plain(str(record['headline']))} {tag(record)}"
+        return line(f"{what}, since {since}" if since else what, [])
     what = statement(record, group)
     if show_margins and not since and (gap := margins(group)):
         what += f" ({gap})"
