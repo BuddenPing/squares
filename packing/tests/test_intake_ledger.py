@@ -137,6 +137,29 @@ def test_the_start_is_both_lanes_and_the_verified_root_decides() -> None:
     assert ledger.walk(9, start[:1], [claim]).steps[0].verdict == ledger.UNDECIDED
 
 
+def test_each_lane_reads_its_own_polynomial_and_a_root_off_its_print_is_refused() -> None:
+    reported = {"value": "1.41421356237309", "minimal_polynomial": "s^2 - 2 = 0"}
+    verified = {
+        "value": "1.7320508075688772",
+        "exact_form": "root(P, 1.7320508075688772)",
+        "minimal_polynomial": "s^2 - 3 = 0",
+    }
+    texts = ledger.lane_polynomials(reported, verified)
+    assert texts == ("s^2 - 2 = 0", "s^2 - 3 = 0")
+    member = ledger.lane_member(3, "verified", verified, ["T-003"], texts[1])
+    span = ledger.side_of(member).span
+    assert member["model"] == "root"
+    assert span.low**2 < 3 < span.high**2
+    # The reported lane's polynomial has no root inside the verified lane's print.
+    with pytest.raises(ledger.LedgerError, match="outside that print"):
+        ledger.lane_member(3, "verified", verified, ["T-003"], texts[0])
+    # A verified root( form states no polynomial of its own and names the reported
+    # lane's, as n = 11's P_trump11 does; any other verified lane reads none.
+    named = {"value": "1.4142135623730950488", "exact_form": "root(P, 1.4142135623730950488)"}
+    assert ledger.lane_polynomials(reported, named) == ("s^2 - 2 = 0", "s^2 - 2 = 0")
+    assert ledger.lane_polynomials(reported, {"value": "2", "exact_form": "2"})[1] == ""
+
+
 def test_two_lanes_with_one_side_are_one_member() -> None:
     bound = {"value": "7.6903559372884918", "exact_form": "(16+5*sqrt(2))/3"}
     lanes = ledger.merged_lanes(

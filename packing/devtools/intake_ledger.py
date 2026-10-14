@@ -719,14 +719,24 @@ def _evaluate_at(coefficients: Sequence[int], point: Fraction) -> Fraction:
 
 def root_span(coefficients: Sequence[int], near: str) -> Span:
     """A rigorous enclosure of the root of an integer polynomial nearest ``near``: a
-    high-precision root, then rational endpoints where the polynomial changes sign."""
+    high-precision root, then rational endpoints where the polynomial changes sign.
+
+    The enclosure must lie inside ``near`` read as an unstated print, within one unit of
+    its last place; a polynomial whose root there is another number is refused.
+    """
     with mp.workdps(INTERVAL_DIGITS + 30):
         root = mp.findroot(lambda s: mp.polyval(list(coefficients), s), mp.mpf(near))
         centre = _fraction(mp.mpf(root)._mpf_)
+    printed = printed_side(near, "unstated")
     for places in range(INTERVAL_DIGITS + 30, 20, -5):
         epsilon = Fraction(1, 10**places)
         low, high = centre - epsilon, centre + epsilon
         if _evaluate_at(coefficients, low) * _evaluate_at(coefficients, high) < 0:
+            _require(
+                contains(printed, low) and contains(printed, high),
+                f"the polynomial's root nearest {near} is {float(centre)!r}, outside that "
+                "print: the lane's form names another polynomial",
+            )
             return Span(low, high, open_low=False, open_high=False)
     raise LedgerError(f"no sign change of the polynomial around {near}")
 
@@ -922,6 +932,22 @@ def beyond_member(n: int, rows: Mapping[int, Mapping[str, Any]]) -> StartMember:
     )
 
 
+def lane_polynomials(
+    reported: Mapping[str, Any], verified: Mapping[str, Any]
+) -> tuple[str, str]:
+    """The polynomial each case lane is read with: the lane's own ``minimal_polynomial``.
+
+    The verified lane's schema has no such field, so a ``root(`` form there names the
+    reported lane's, the one polynomial a case states (n = 11's ``P_trump11``).
+    `root_span` refuses an enclosure outside the lane's own print, so a form that names
+    some other polynomial is refused rather than read as this one.
+    """
+    stated = str(reported.get("minimal_polynomial") or "")
+    own = str(verified.get("minimal_polynomial") or "")
+    named = str(verified.get("exact_form") or "").startswith("root(")
+    return stated, own or (stated if named else "")
+
+
 def tree_members(counts: Iterable[int]) -> dict[int, list[StartMember]]:
     """Each count's start members, read from the records on the tree: both case lanes and
     any register entry pending adoption that states a smaller bound, or above the horizon
@@ -943,23 +969,21 @@ def tree_members(counts: Iterable[int]) -> dict[int, list[StartMember]]:
         for n in inside:
             case = coverage_check.parse_case(FRONTIER / f"n-{n:03d}.md")
             reported, verified = case["reported_upper_bound"], case["verified_upper_bound"]
-            text = str(
-                reported.get("minimal_polynomial") or verified.get("minimal_polynomial") or ""
-            )
+            reported_text, verified_text = lane_polynomials(reported, verified)
             lanes = merged_lanes(
                 lane_member(
                     n,
                     "reported",
                     reported,
                     view.lane_holders(n, records, "upper", ("reported",)),
-                    text,
+                    reported_text,
                 ),
                 lane_member(
                     n,
                     "verified",
                     verified,
                     view.lane_holders(n, records, "upper", ("verified",)),
-                    text,
+                    verified_text,
                 ),
             )
             members[n] = [*lanes, *pending.get(n, [])]
