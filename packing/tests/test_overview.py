@@ -809,7 +809,8 @@ def test_the_atlas_is_rendered_as_small_triangle_under_its_view_tabs(
     assert block == [
         (
             'data-atlas-view="triangle" data-atlas-size="small" '
-            'data-atlas-scale="row" data-atlas-first="100" data-atlas-grid'
+            'data-atlas-scale="row" data-atlas-drawing="regularized" '
+            'data-atlas-first="100" data-atlas-grid'
         )
     ]
     tabs = overview_sections.atlas_view_tabs()
@@ -985,6 +986,7 @@ def test_the_atlas_offers_three_sizes_under_tabs_beside_the_views(
     controls = (
         '<div class="site-atlas-controls" data-atlas-controls>'
         f"{overview_sections.atlas_view_tabs()}{tabs}{overview_sections.atlas_scale_tabs()}"
+        f"{overview_sections.atlas_drawing_tabs()}"
         f"{overview_sections.atlas_legend()}"
     )
     assert atlas_page.count(controls) == 1
@@ -1047,7 +1049,14 @@ def test_one_tile_a_case_is_drawn_from_its_regularized_view_where_it_has_one() -
         assert bool(reference) == (" data-atlas-row-smaller" in open_tag), n
         assert number == f'<span class="site-atlas-n">{n}</span>', n
         is_regularized = n in regularized
-        assert drawing == frontier.drawing_img(n, regularized=is_regularized, size=400)
+        assert f'src="{frontier.drawing_path(n, regularized=is_regularized)}"' in drawing
+        mode = "Regularized" if is_regularized else "Original"
+        assert f'alt="{mode} packing of {n} unit squares"' in drawing
+        assert 'loading="lazy"' in drawing
+        assert ("data-atlas-original-src=" in drawing) is is_regularized
+        if is_regularized:
+            assert f'data-atlas-original-src="{frontier.drawing_path(n)}"' in drawing
+            assert "Regularized by the Squares Project" in html.unescape(drawing)
         assert "regularized" not in open_tag
         assert "site-atlas-layer-mark" not in number
         assert 'width="400" height="400"' in drawing
@@ -1224,6 +1233,7 @@ def test_the_sizes_scale_a_tile_by_one_token_in_either_view() -> None:
         css,
         ".site-atlas-grid .site-atlas-views[hidden],\n"
         ".site-atlas-grid .site-atlas-sizes[hidden],\n"
+        ".site-atlas-grid .site-atlas-drawings[hidden],\n"
         ".site-atlas-grid .site-atlas-scales[hidden],\n"
         ".site-atlas-grid .site-atlas-legend[hidden]",
     )
@@ -1301,6 +1311,7 @@ def test_the_view_tabs_are_the_section_tabs_strip() -> None:
         css,
         ".site-atlas-grid .site-atlas-views,\n"
         ".site-atlas-grid .site-atlas-sizes,\n"
+        ".site-atlas-grid .site-atlas-drawings,\n"
         ".site-atlas-grid .site-atlas-scales",
     )
     assert "line-height: var(--site-chooser-small-leading);" in _rule(
@@ -1310,6 +1321,7 @@ def test_the_view_tabs_are_the_section_tabs_strip() -> None:
     hidden = (
         ".site-atlas-grid .site-atlas-views[hidden],\n"
         ".site-atlas-grid .site-atlas-sizes[hidden],\n"
+        ".site-atlas-grid .site-atlas-drawings[hidden],\n"
         ".site-atlas-grid .site-atlas-scales[hidden],\n"
         ".site-atlas-grid .site-atlas-legend[hidden]"
     )

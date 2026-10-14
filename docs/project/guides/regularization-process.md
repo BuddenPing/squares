@@ -155,6 +155,9 @@ A drawn view is the count’s default picture, on the site, the atlas and the po
 where it improves on the house drawing under the same rule
 ([policy section 12](../policies/regularization-policy.md#12-the-default-picture)); the
 case page keeps the house drawing as published.
+The homepage and atlas page start with Regularized and offer Original for comparison
+with those same current house packings.
+The chooser does not change which views pass the improvement rule.
 The command writes `atlas/known-best/default-drawings.json` and prints how many views
 are defaults. The posters show the defaults as they stood when they were drawn and may
 trail until the next version or a redraw (`build_known_best_atlas --update-composites`).

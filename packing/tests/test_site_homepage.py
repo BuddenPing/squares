@@ -297,6 +297,7 @@ def test_keyboard_expansion_uses_the_shared_triangle_without_click_time_preparat
         "Atlas layout",
         "Atlas tile size",
         "Atlas drawing scale",
+        "Atlas drawings",
     ]
     assert initial["atlas_legend"]
     for control in initial["control_type"]:

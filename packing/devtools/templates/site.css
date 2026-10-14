@@ -2150,7 +2150,7 @@ html[data-site-atlas-size="large"]
     --site-atlas-scale: 1;
   }
 }
-/* Layout, Size and Scale use the shared small chooser strip. Each line is
+/* Layout, Size, Scale and Drawings use the shared small chooser strip. Each line is
    centered over the tiles, with the compact two-column key centered beneath it;
    on a narrow block the controls wrap beneath one another. */
 .site-atlas-grid .site-atlas-controls {
@@ -2162,11 +2162,13 @@ html[data-site-atlas-size="large"]
 }
 .site-atlas-grid .site-atlas-views,
 .site-atlas-grid .site-atlas-sizes,
+.site-atlas-grid .site-atlas-drawings,
 .site-atlas-grid .site-atlas-scales {
   margin: 0;
 }
 .site-atlas-grid .site-atlas-views[hidden],
 .site-atlas-grid .site-atlas-sizes[hidden],
+.site-atlas-grid .site-atlas-drawings[hidden],
 .site-atlas-grid .site-atlas-scales[hidden],
 .site-atlas-grid .site-atlas-legend[hidden] {
   display: none;

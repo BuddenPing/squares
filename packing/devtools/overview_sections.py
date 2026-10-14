@@ -2803,9 +2803,10 @@ def atlas_regularized() -> tuple[int, ...]:
 
 
 @cache
-def atlas_enclosing_sides() -> dict[int, float]:
+def atlas_enclosing_sides(*, original: bool = False) -> dict[int, float]:
     """Actual enclosing sides of the selected drawings, independent of frontier bounds.
 
+    `original` reads every current house witness for the comparison mode.
     House drawings use their canonical witness; a case drawn from its regularized view
     (`atlas_regularized`) uses its retained derived witness, whose certified side the
     renderer draws. Project the same scalar
@@ -2821,7 +2822,7 @@ def atlas_enclosing_sides() -> dict[int, float]:
     from sqpack.yamlio import load_yaml  # noqa: PLC0415
 
     manifest = json.loads((REPO / "packing/atlas/known-best/manifest.json").read_text())
-    drawn = set(atlas_regularized())
+    drawn = set() if original else set(atlas_regularized())
     views = {entry["n"]: entry for entry in regularized_entries() if entry["n"] in drawn}
     sides: dict[int, float] = {}
     for entry in manifest["atlas"]["entries"]:
@@ -2902,6 +2903,38 @@ def atlas_frame_ink_inset() -> float:
     return (float(frame.attrib["x"]) - left - float(frame.attrib["stroke-width"]) / 2) / extent
 
 
+def _atlas_drawing(n: int, *, regularized: bool, side: float) -> str:
+    """One lazy image, with current-source credit and the approved comparison pair."""
+    from devtools import render_frontier_page as frontier  # noqa: PLC0415
+    from devtools.build_bound_citations import load_case  # noqa: PLC0415
+    from devtools.default_drawings import credit_line  # noqa: PLC0415
+    from devtools.pictured_source import pictured_source_key  # noqa: PLC0415
+
+    upper = load_case(n)["reported_upper_bound"]
+    credit = html.unescape(frontier.credit(upper.get("found_by"), upper.get("found_year")))
+    source = pictured_source_key(n, str(upper.get("source_key") or ""))
+    original_credit = ", ".join(
+        part for part in ("Packing as published", credit, source) if part
+    )
+    mode = "Regularized" if regularized else "Original"
+    title = f"{original_credit}. {credit_line(n)}" if regularized else original_credit
+    choices = ""
+    if regularized:
+        choices = (
+            f' data-atlas-original-src="{frontier.drawing_path(n)}"'
+            f' data-atlas-regularized-src="{frontier.drawing_path(n, regularized=True)}"'
+            f' data-atlas-original-side="{atlas_enclosing_sides(original=True)[n]}"'
+            f' data-atlas-regularized-side="{side}"'
+            f' data-atlas-original-credit="{_esc(original_credit)}"'
+            f' data-atlas-regularized-credit="{_esc(title)}"'
+        )
+    return (
+        f'<img src="{frontier.drawing_path(n, regularized=regularized)}" width="{ATLAS_UNITS}" '
+        f'height="{ATLAS_UNITS}" loading="lazy" decoding="async" '
+        f'alt="{mode} packing of {n} unit squares" title="{_esc(title)}"{choices}>'
+    )
+
+
 def _atlas_cell(
     n: int,
     status: str,
@@ -2918,12 +2951,11 @@ def _atlas_cell(
     suffix for layout and accessibility. Derived drawing provenance stays in the atlas
     index. Case numbers keep ordinary ink.
     """
-    from devtools import render_frontier_page as frontier  # noqa: PLC0415
     from devtools.render_case_pages import case_url  # noqa: PLC0415
 
     row = math.isqrt(n - 1) + 1
     square = " data-atlas-square" if row * row == n else ""
-    side = atlas_enclosing_sides()[n] if side is None else side
+    side = atlas_enclosing_sides(original=not regularized)[n] if side is None else side
     reference = " data-atlas-row-smaller" if side < row else ""
     first_grid = n == grid_from
     grid = " data-atlas-grid-from" if first_grid else ""
@@ -2934,7 +2966,10 @@ def _atlas_cell(
         f"--o:{int(row > 1 and n == (row - 1) ** 2 + 1)};"
         f'--site-atlas-side:{side}"'
     )
-    drawing = frontier.drawing_img(n, regularized=regularized, size=ATLAS_UNITS)
+    drawing = _atlas_drawing(n, regularized=regularized, side=side)
+    needs_reference = bool(reference) or (
+        regularized and atlas_enclosing_sides(original=True)[n] < row
+    )
     meaning = f", first grid packing in row {row}" if first_grid else ""
     name = f"n = {n}, {_esc(status)}{meaning}"
     if recent:
@@ -2943,7 +2978,7 @@ def _atlas_cell(
         f'<a class="site-atlas-cell" id="atlas-n-{n}" href="{case_url(n)}" data-case="{n}" '
         f'data-atlas-n="{n}" data-atlas-side="{side}"{square}{grid}{reference} '
         f'data-status="{_esc(status)}" aria-label="{name}"{position}>'
-        f"{drawing}{atlas_reference_svg() if reference else ''}"
+        f"{drawing}{atlas_reference_svg() if needs_reference else ''}"
         f'<span class="site-atlas-n">{n}</span></a>'
     )
 
@@ -3002,6 +3037,24 @@ def atlas_view_tabs(panel: str = ATLAS_PANEL) -> str:
         classes="site-atlas-views",
         name="Atlas layout",
         extra=f'data-atlas-views data-atlas-panel="{panel}" ',
+        panel=panel,
+    )
+
+
+def atlas_drawing_tabs(panel: str = ATLAS_PANEL) -> str:
+    """A page-local comparison, starting with the policy-selected default drawings."""
+    return _atlas_tablist(
+        (("regularized", "Regularized"), ("original", "Original")),
+        default="regularized",
+        ids="atlas-drawing",
+        data="data-atlas-drawing-tab",
+        classes="site-atlas-drawings",
+        name="Atlas drawings",
+        extra="data-atlas-drawings hidden ",
+        descriptions={
+            "regularized": "Cleaner drawings selected by the regularization policy.",
+            "original": "Current packings as published.",
+        },
         panel=panel,
     )
 
@@ -3161,7 +3214,7 @@ def atlas_grid(*, homepage: bool = False) -> str:
     uses positions supplied by the static markup and stylesheet, so a tile's markup is
     the same in both.
     A perfect square's tile is marked `data-atlas-square`: it ends its row of the
-    triangle, and the triangle numbers it in the text's colour. The
+    triangle, and the triangle numbers it in bold gray. The
     block is rendered at the small size (`data-atlas-size`), under tabs beside the view
     tabs that make every tile smaller or larger (`atlas_size_tabs`), in either view.
     Scale changes only the drawing within each tile: Fixed gives every frame the
@@ -3183,12 +3236,10 @@ def atlas_grid(*, homepage: bool = False) -> str:
 
     A case whose default picture is its regularized view (`atlas_regularized`) is drawn
     from it directly, and every other case from its house rendering: one tile a case.
-    Until 2026-10-04 the house tiles were the default and a third `<template>` held a
-    second tile for each regularized case, which House and Regularized tabs swapped in
-    place; the owner dropped the choice for the regularized drawings alone (think-k8x9),
-    and with it the second set. Since 2026-10-13 a view is the default only where it
-    improves on its house drawing (regularization policy, sections 11 and 12), and the
-    house drawing stays on the case record as published. Layout, Size and Scale strips and
+    Regularized is the initial drawing choice on each page, using only views that
+    improve on their house drawings (regularization policy, sections 11 and 12).
+    Original switches these images to the current house packings as published.
+    The drawing choice stays local to the page. Drawing, Layout, Size and Scale strips and
     the key (`atlas_legend`) share the controls box (`.site-atlas-controls`) above the
     tiles.
     """
@@ -3208,9 +3259,11 @@ def atlas_grid(*, homepage: bool = False) -> str:
     return (
         f'<div class="site-wide site-atlas-grid{home_class}" data-atlas-view="{ATLAS_VIEW}" '
         f'data-atlas-size="{ATLAS_SIZE}" data-atlas-scale="{ATLAS_SCALE}" '
+        'data-atlas-drawing="regularized" '
         f'data-atlas-first="{ATLAS_FIRST}" data-atlas-grid{preview}>'
         '<div class="site-atlas-controls" data-atlas-controls>'
         f"{atlas_view_tabs(panel)}{atlas_size_tabs(panel)}{atlas_scale_tabs(panel)}"
+        f"{atlas_drawing_tabs(panel)}"
         f"{atlas_legend()}</div>"
         f'<div class="site-atlas-cells" id="{panel}" style="{positions}">'
         f"{''.join(rows[:first_rows])}"

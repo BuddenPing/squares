@@ -620,10 +620,15 @@ views, admitted before this rule, and draws none of them by default.
 Where the default is the view, the homepage and atlas tiles, the frontier survey’s
 thumbnail, both posters and the case page draw it, and the case page keeps the house
 drawing one click away as *as published*, with the credit of the source whose packing it
-pictures. The House/Regularized toggle the approved plan names no longer exists: it was
-retired on 4 October 2026 (think-k8x9), when the atlas began to draw one tile a case, so
-the case page’s *As published* disclosure is the one place the house drawing of a
-regularized default is kept.
+pictures.
+The owner’s follow-up on 13 October 2026 adds **Regularized | Original** to the
+homepage and atlas page.
+Each page starts with Regularized, using the defaults above and the house drawing where
+no view passes the improvement rule.
+Original shows the current house packing as published, with its source credit.
+Switching preserves the tiles and their links, and the drawing choice lasts for that
+page only; a new page starts with Regularized.
+Without scripts, the default drawings remain available.
 Where the layer holds a view that is not the default, the case page’s regularization
 note says why it draws the house drawing.
 The house witness stays the record’s witness, and the view changes no side, value, tier

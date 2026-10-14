@@ -664,7 +664,7 @@ def _desktop(browser: Any, address: str) -> Readings:
         atlas.settle(page)
         seen.setdefault("keys", []).append((key, atlas.layout(page)))
     order = []
-    for _ in range(5):
+    for _ in range(6):
         page.keyboard.press("Tab")
         order.append(atlas.layout(page)["focus"])
     seen["tab order"] = order
@@ -1013,7 +1013,7 @@ def test_choosers_and_the_color_legend_share_the_content_center(
         content = reading["controls"]
         center = (content["left"] + content["right"]) / 2
         lines: dict[float, list[dict[str, float]]] = {}
-        assert len(reading["choosers"]) == 3, name
+        assert len(reading["choosers"]) == (3 if name.endswith("False") else 4), name
         for chooser in reading["choosers"]:
             lines.setdefault(round(chooser["top"], 1), []).append(chooser)
         for line in lines.values():
@@ -1055,7 +1055,7 @@ def test_an_explicit_small_address_opens_triangle_under_its_two_tabs(seen: Readi
     assert triangle["panel"] == {
         "id": "atlas-cells",
         "role": "tabpanel",
-        "labelledby": tabs["triangle"]["id"],
+        "labelledby": f"{tabs['triangle']['id']} atlas-drawing-regularized",
     }
     # Atlas choosers use the shared control type, smaller than navigation labels.
     nav_size = triangle["nav_link_font_px"]
@@ -1111,7 +1111,9 @@ def test_the_triangle_sets_complete_rows_at_a_common_right_edge(
         ]
         assert reading == [tile["n"] for tile in row]
     assert _tabs(triangle)["triangle"]["selected"] == "true"
-    assert triangle["panel"]["labelledby"] == _tabs(triangle)["triangle"]["id"]
+    assert triangle["panel"]["labelledby"] == (
+        f"{_tabs(triangle)['triangle']['id']} atlas-drawing-regularized"
+    )
 
 
 def test_toggling_back_puts_every_tile_where_the_grid_had_it(seen: Readings) -> None:
@@ -1171,10 +1173,17 @@ def test_the_arrow_keys_move_between_the_tabs_and_select_the_one_focused(
 
 
 def test_the_tiles_follow_the_tabs_in_the_tab_order_in_case_order(seen: Readings) -> None:
-    """From the view tabs, in the triangle, Tab goes to the size tabs' one stop, Medium,
-    then to n = 1, n = 2 and n = 3: the tiles keep the order of the
+    """Tab visits each chooser's one stop, then n = 1, n = 2 and n = 3.
+    The tiles keep the order of the
     cases whichever way they are set."""
-    assert seen["tab order"] == ["atlas-size-medium", "atlas-scale-row", "1", "2", "3"]
+    assert seen["tab order"] == [
+        "atlas-size-medium",
+        "atlas-scale-row",
+        "atlas-drawing-regularized",
+        "1",
+        "2",
+        "3",
+    ]
 
 
 def test_the_address_names_grid_and_keeps_what_else_it_holds(seen: Readings) -> None:
