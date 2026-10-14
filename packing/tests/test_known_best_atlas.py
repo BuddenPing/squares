@@ -516,7 +516,7 @@ def test_known_best_atlas_covers_every_frontier_case() -> None:
             "layout": "10 by 10, row-major n=1..100",
             "png_high_resolution": {
                 "derived_from": "atlas/known-best/known-best-1-100.svg",
-                "height": 7646,
+                "height": 7852,
                 "path": "atlas/known-best/known-best-1-100@2x.png",
                 "scale": 2,
                 "width": 4300,
@@ -531,7 +531,7 @@ def test_known_best_atlas_covers_every_frontier_case() -> None:
             },
             "png_preview": {
                 "derived_from": "atlas/known-best/known-best-1-100.svg",
-                "height": 3823,
+                "height": 3926,
                 "path": "atlas/known-best/known-best-1-100.png",
                 "scale": 1,
                 "width": 2150,
@@ -542,7 +542,7 @@ def test_known_best_atlas_covers_every_frontier_case() -> None:
             "square_count": 5050,
             "stem": "known-best-1-100",
             "svg": {
-                "height": 3823,
+                "height": 3926,
                 "path": "atlas/known-best/known-best-1-100.svg",
                 "width": 2150,
             },
@@ -933,7 +933,7 @@ def test_known_best_composite_png_is_derived_from_current_svg() -> None:
 
     assert known_best_builder.png_summary_receipt(png) == (
         2150,
-        3823,
+        3926,
         hashlib.sha256(svg_text.encode("utf-8")).hexdigest(),
     )
 
@@ -944,7 +944,7 @@ def test_known_best_composite_high_resolution_png_is_derived_from_current_svg() 
     It exists so the atlas can be attached or downscaled without going back to the
     vector, which means it is the copy most likely to be handed to someone who cannot
     check it. Pinning the exact pixel count matters as much as pinning the receipt:
-    4300 by 7646 is twice 2150 by 3823, and the whole-number scale is what keeps the
+    4300 by 7852 is twice 2150 by 3926, and the whole-number scale is what keeps the
     file small. A fractional scale puts every edge on a fractional pixel boundary, and
     the antialiasing shades the rasteriser then invents cost more bytes than the extra
     pixels do -- a 4096-wide export of this drawing is 11% larger than this one while
@@ -955,7 +955,7 @@ def test_known_best_composite_high_resolution_png_is_derived_from_current_svg() 
 
     assert known_best_builder.png_summary_receipt(png) == (
         4300,
-        7646,
+        7852,
         hashlib.sha256(svg_text.encode("utf-8")).hexdigest(),
     )
 
@@ -1023,7 +1023,8 @@ def test_the_1_100_canvas_is_what_its_specification_computes() -> None:
     """Pin content-derived footer geometry without moving the ten-by-ten drawing grid.
 
     The black definition is 26.125 units; body text is 19 units. The three shared
-    credit paragraphs use ink-measured section gaps and give a 3823-unit page height.
+    credit paragraphs and the regularization credits use ink-measured section gaps and
+    give a 3926-unit page height.
     Literal baselines hold the maintained derivation to the published drawing.
     """
     canvas = known_best_builder.PRIMARY_COMPOSITE
@@ -1033,13 +1034,13 @@ def test_the_1_100_canvas_is_what_its_specification_computes() -> None:
     assert (composite.count, composite.rows, composite.square_count) == (100, 10, 5050)
     assert composite.layout == "10 by 10, row-major n=1..100"
     assert composite.card_units == 1256
-    assert (canvas.width, canvas.height) == (2150, 3823)
+    assert (canvas.width, canvas.height) == (2150, 3926)
     assert canvas.grid_bottom == 3044
     assert float(canvas.legend_baseline) == pytest.approx(3209.53936767578125)
     assert float(canvas.explainer_baseline) == pytest.approx(3092.930419921875)
     assert canvas.citations_baseline == 114
-    assert float(canvas.credit_baseline) == pytest.approx(3765.13165283203125)
-    assert float(canvas.stamp_baseline) == pytest.approx(3793.63165283203125)
+    assert float(canvas.credit_baseline) == pytest.approx(3868.42559814453125)
+    assert float(canvas.stamp_baseline) == pytest.approx(3896.92559814453125)
     assert (composite.svg_name, composite.pdf_name) == (
         "known-best-1-100.svg",
         "square-packings-100-20261008.pdf",
@@ -1285,7 +1286,7 @@ def test_poster_complete_rows_share_a_right_edge_and_leave_room_for_left_informa
     assert canvas.grid_top == 120
     assert known_best_builder.POSTER_INFORMATION_TOP == 120
     primary = known_best_builder.PRIMARY_COMPOSITE
-    assert (primary.width, primary.height, primary.row_pitch) == (2150, 3823, 287)
+    assert (primary.width, primary.height, primary.row_pitch) == (2150, 3926, 287)
     assert primary.card_left(1) == 60
     assert primary.grid_top == 174
     assert Decimal("1.39") <= Decimal(canvas.width) / canvas.height <= Decimal("1.40")
@@ -1708,7 +1709,45 @@ def test_triangle_crop_resolves_complete_records_and_row_major_skips_grid_prefli
     assert (
         known_best_builder.PRIMARY_COMPOSITE.width,
         known_best_builder.PRIMARY_COMPOSITE.height,
-    ) == (2150, 3823)
+    ) == (2150, 3926)
+
+
+def test_composite_tiles_draw_each_case_s_default_picture_and_credit_it() -> None:
+    """Regularization policy, section 12 (the owner, 13 October 2026): a card draws its
+    case's regularized view where `devtools.default_drawings` records the view as the
+    default picture, read as the homepage's regularized drawings read it, and the house
+    witness everywhere else; the card's labels are the record's either way. Each
+    composite counts its regularized cards and gives each generator's credit line once
+    (policy section 7), read from the retained composites so the published drawings are
+    what is held."""
+    from devtools.default_drawings import credit_line, regularized_defaults  # noqa: PLC0415
+
+    defaults = regularized_defaults()
+    for canvas in known_best_builder.resolved_composites():
+        root = ET.fromstring(canvas.svg_path.read_text(encoding="utf-8"))
+        cards = {
+            int(card.attrib["data-n"]): card
+            for card in root.iter(f"{{{SVG['svg']}}}g")
+            if card.attrib.get("data-feature") == "packing-card"
+        }
+        assert list(cards) == list(canvas.spec.numbers)
+        drawn = [n for n in canvas.spec.numbers if n in defaults]
+        assert drawn, canvas.spec.stem
+        for n, card in cards.items():
+            source = card.attrib["data-source-id"]
+            assert source.endswith("-regularized") == (n in defaults), (canvas.spec.stem, n)
+        block = root.find("svg:g/svg:g[@data-feature='regularization-credits']", SVG)
+        assert block is not None, canvas.spec.stem
+        assert json.loads(block.attrib["data-regularized-cases"]) == drawn
+        feature = "svg:text[@data-feature='regularization-credit-line']"
+        lines = ["".join(node.itertext()) for node in block.findall(feature, SVG)]
+        assert lines[0] == known_best_builder.POSTER_REGULARIZATION_LEAD.format(
+            drawn=len(drawn), count=canvas.spec.count
+        )
+        assert " ".join(lines[1:]) == " ".join(dict.fromkeys(credit_line(n) for n in drawn))
+        description = root.find("svg:desc", SVG)
+        assert description is not None
+        assert known_best_builder.POSTER_REGULARIZATION_PROSE in (description.text or "")
 
 
 def test_poster_enlarges_information_type_without_changing_card_geometry() -> None:
@@ -1733,6 +1772,7 @@ def test_poster_enlarges_information_type_without_changing_card_geometry() -> No
         "packing-credit-line": 19,
         "lower-bound-credit-line": 19,
         "optimality-credit-line": 19,
+        "regularization-credit-line": 19,
     }
     block = root.find("svg:g[@data-feature='poster-information']", SVG)
     assert block is not None
@@ -1752,6 +1792,7 @@ def test_poster_enlarges_information_type_without_changing_card_geometry() -> No
         "packing-credit-line",
         "lower-bound-credit-line",
         "optimality-credit-line",
+        "regularization-credit-line",
         "credit",
         "release-stamp",
         "citations",
@@ -1760,7 +1801,9 @@ def test_poster_enlarges_information_type_without_changing_card_geometry() -> No
     body_lines = [
         node for node in information_text if node.attrib.get("data-feature") in body_features
     ]
-    assert len(body_lines) == 15 + sum(
+    regularization = known_best_builder._regularization_lines(canvas)  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+    assert regularization
+    assert len(body_lines) == 15 + len(regularization) + sum(
         len(lines)
         for lines in known_best_builder._print_attribution_lines()  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
     )
@@ -2231,8 +2274,8 @@ def test_primary_composite_routes_contributions_to_cards_and_legend(
     assert lookups == [True]
     assert (root.attrib["width"], root.attrib["height"], root.attrib["viewBox"]) == (
         "2150",
-        "3823",
-        "0 0 2150 3823",
+        "3926",
+        "0 0 2150 3926",
     )
     entries = {entry["n"]: entry for entry in record["entries"]}
     assert [
