@@ -124,9 +124,11 @@ def _certificate(literal: str) -> bytes:
 
 
 def test_a_literal_is_read_up_to_the_ceiling_and_refused_beyond_it() -> None:
+    # At the ceiling the literal is longer than Python's default integer-string limit
+    # (4,300 digits), so the side is compared as a power of ten, not by converting `at`.
     at = "1" + "0" * (reports.MAX_LITERAL_CHARS - 1)
     certificate = reports.parse_certificate(_certificate(at), 1, "pingyou-json")
-    assert certificate.side == int(at)
+    assert certificate.side == 10 ** (reports.MAX_LITERAL_CHARS - 1)
     with pytest.raises(reports.ReportError, match="bounded rational"):
         reports.parse_certificate(_certificate(at + "0"), 1, "pingyou-json")
 

@@ -510,7 +510,25 @@ def _literal(value: object, where: str) -> Fraction:
         or _LITERAL.fullmatch(value) is None
     ):
         raise ReportError(f"{where}: not a bounded rational string")
-    return Fraction(value)
+    negative = value.startswith("-")
+    numerator, _, denominator = value.removeprefix("-").partition("/")
+    magnitude = _integer(numerator)
+    return Fraction(-magnitude if negative else magnitude, _integer(denominator or "1"))
+
+
+#: Python refuses to convert a decimal string of more than 4,300 digits to an integer by
+#: default; a literal under ``MAX_LITERAL_CHARS`` may exceed that, so it is read in chunks.
+_DIGIT_CHUNK = 4000
+
+
+def _integer(digits: str) -> int:
+    """A decimal integer string, read in chunks below Python's integer-string limit, without
+    changing that process-wide limit, which the worker threads share."""
+    value = 0
+    for start in range(0, len(digits), _DIGIT_CHUNK):
+        chunk = digits[start : start + _DIGIT_CHUNK]
+        value = value * 10 ** len(chunk) + int(chunk)
+    return value
 
 
 def _json(raw: bytes) -> Any:
