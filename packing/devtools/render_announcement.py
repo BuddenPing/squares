@@ -33,8 +33,9 @@ from the record, and the wording is chosen not to overstate it:
 - **Credit.** The result's finders: the names before `after` in the register's credit
   line (`result_credit.credit_line`), each by its full name where the bibliography's
   `credited_names` or a contributor profile gives one, and whose packing it refines or
-  regularizes, as its `regularizations` or its headline says. `--lineage` adds the names
-  after `after`. The project's owner (`result_credit.PROJECT_AUTHOR`) is never credited
+  regularizes, as its `regularizations` say, or its headline (`refinements of Ryan Xu's
+  packings`) and, where that names a request rather than a person, the entry its claim
+  names (`refined`). `--lineage` adds the names after `after`. The project's owner (`result_credit.PROJECT_AUTHOR`) is never credited
   or tagged: the announcement is the owner's own post, and `after Levy` is this
   project's lineage, not a finding.
 
@@ -143,9 +144,15 @@ MONTHS = (
 LOGIN = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$")
 #: A `credited_names` key that carries its person's login: `Nate Chaoweeraprasit (itsnaka)`.
 NAMED_LOGIN = re.compile(r"^(.+) \(([A-Za-z0-9-]+)\)$")
-#: A headline's own words for whose packing an entry refines: `refinement of Ryan Xu's
-#: packing`, `refining Ryan Xu's packing`.
-REFINED = re.compile(r"\brefin(?:ement of|ing) ((?:[A-Z][\w.-]*\s)*[A-Z][\w.-]*)'s packing")
+#: A headline's own words for whose packings an entry refines, and whether it says one
+#: or several: `refinement of Ryan Xu's packing`, `refining Ryan Xu's packing`,
+#: `refinements of SQUISH's Mondrian packings`.
+REFINED = re.compile(
+    r"\brefin(?:ements? of|ing) ((?:[A-Z][\w.-]*\s)*[A-Z][\w.-]*)['\u2019]s "
+    r"(?:[\w-]+ ){0,3}(packings?)\b"
+)
+#: A register id, as a claim names another entry.
+RESULT_ID = re.compile(r"\bT-\d{3}\b")
 #: What a line says a bound is, where it is the best on record.
 NEWS = {UPPER: "new best known", LOWER: "new best lower bound"}
 #: The most characters a line holds before its link (the owner, 2026-10-11).
@@ -853,33 +860,78 @@ def regularized(
     return people(dict.fromkeys(names))
 
 
-def refined(record: Mapping[str, Any], sources: Mapping[str, Mapping[str, Any]]) -> str:
-    """Whose packing the entry refines, in its headline's own words (`refinement of Ryan
-    Xu's packing`), where that person is in its credit line; else nothing."""
+class Refinement(NamedTuple):
+    """Whose packings an entry refines: each person as a credit token, with the words its
+    headline names them by where it names them (`Ryan Xu`), and whether it says several."""
+
+    people: tuple[tuple[str, str], ...]
+    plural: bool
+
+
+def refined(
+    record: Mapping[str, Any], records: Records, at: Iterable[int] | None = None
+) -> Refinement | None:
+    """Whose packings the entry refines at the counts `at`, by default all its own, as its
+    headline says: the person it names (`refinement of Ryan Xu's packing`) where its
+    credit line credits them; else, where it names a request or a project (`refinements
+    of SQUISH's Mondrian packings`), the first-credited of the entry its claim names first,
+    at each count, among those whose headline names it too and whose scope holds the count
+    (T-152's claim names T-151's). Only a person this entry's credit line credits is
+    named; where none is, nothing."""
     match = REFINED.search(plain(str(record.get("headline") or "")))
     if match is None:
-        return ""
-    finders, lineage = credit_parts(credit_text(record, sources))
+        return None
+    owner, plural = match.group(1), match.group(2) == "packings"
+    finders, lineage = credit_parts(credit_text(record, records.sources))
     credited = {_bare(token) for token in (*finders, *lineage)}
-    name = match.group(1)
-    return name if name.split()[-1] in credited else ""
+    if owner.split()[-1] in credited:
+        return Refinement(((owner.split()[-1], owner),), plural)
+    entry = str(record["id"])
+    named = [
+        other
+        for other in dict.fromkeys(RESULT_ID.findall(str(record.get("claim") or "")))
+        if other != entry
+        and other in records.results
+        and f"{owner}'s" in plain(str(records.results[other].get("headline") or ""))
+    ]
+    found: list[str] = []
+    for n in sorted(set(at) if at is not None else scope_values(dict(record["scope"]))):
+        source = next(
+            (
+                records.results[other]
+                for other in named
+                if n in scope_values(dict(records.results[other]["scope"]))
+            ),
+            None,
+        )
+        if source is not None:
+            found.extend(primary_names(credit_text(source, records.sources)))
+    people_ = [token for token in people(dict.fromkeys(found)) if _bare(token) in credited]
+    return Refinement(tuple((token, "") for token in people_), plural) if people_ else None
 
 
 def worked_on(
     record: Mapping[str, Any], group: Sequence[Count], records: Records, names: Names
 ) -> str:
     """Whose packing the entry regularizes at the listed counts (`regularizations`), or
-    refines (`refined`), as the record says it: `regularizing Ryan Xu's packing`."""
+    refines (`refined`), as the record says it: `regularizing Ryan Xu's packing`,
+    `refining Nate Chaoweeraprasit's packings`."""
     finders = [names.show(token) for token in regularized(record, group, records)]
     if len(finders) == 1:
         return f"regularizing {finders[0]}'s packing"
     if finders:
         return f"regularizing packings by {listed(finders)}"
-    name = refined(record, records.sources)
-    if not name:
+    refinement = refined(record, records, [c.n for c in group] or None)
+    if refinement is None:
         return ""
-    surname = name.split()[-1]
-    return f"refining {names.show(surname) if surname in names.handles else name}'s packing"
+    shown_ = [
+        names.show(token) if token in names.handles or not written else written
+        for token, written in refinement.people
+    ]
+    several = len(group) > 1 if group else refinement.plural
+    if len(shown_) == 1:
+        return f"refining {shown_[0]}'s {'packings' if several else 'packing'}"
+    return f"refining packings by {listed(shown_)}"
 
 
 def credit_phrase(
@@ -912,8 +964,8 @@ def credited_people(record: Mapping[str, Any], records: Records, *, lineage: boo
         found.extend(
             primary_names(credit_text(records.results[str(item["of"])], records.sources))
         )
-    if name := refined(record, records.sources):
-        found.append(name.split()[-1])
+    if refinement := refined(record, records):
+        found.extend(token for token, _ in refinement.people)
     return list(dict.fromkeys(_bare(token) for token in people(found)))
 
 

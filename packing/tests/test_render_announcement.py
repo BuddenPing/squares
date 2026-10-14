@@ -539,6 +539,34 @@ def test_a_regularization_credits_the_finder_of_the_packing_it_regularizes(
     assert ", regularizing " in lines[1]
 
 
+def test_a_refinement_credits_the_person_its_headline_names_singular_or_plural(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """T-137 refines Ryan Xu's packing and T-150 his packings; both credit him."""
+    lines, _ = run(
+        capsys, ["--ids", "T-137", "--date", "2026-10-11", "--all", "--min-significance", "1"]
+    )
+    assert ", refining Ryan Xu's packing " in lines[1]
+    lines, _ = run(
+        capsys, ["--ids", "T-150", "--date", "2026-10-12", "--min-significance", "1"]
+    )
+    assert ": Robert Barnett, refining Ryan Xu's packings " in lines[1]
+
+
+def test_a_refinement_of_a_requests_packings_credits_the_entry_its_claim_names(
+    capsys: pytest.CaptureFixture[str], records: Records
+) -> None:
+    """T-152 refines "SQUISH's Mondrian packings", which its claim names as T-151's, Nate
+    Chaoweeraprasit's; the line credits him, since T-151's own line no longer names 304 or
+    305 (review B, B1)."""
+    lines, err = run(capsys, ["--ids", "T-152", "--date", "2026-10-12"])
+    assert ": Francisco Couzo, refining Nate Chaoweeraprasit's packings " in lines[1]
+    assert "Chaoweeraprasit" in err.split("printed by name: ", 1)[1]
+    refinement = ra.refined(records.results["T-152"], records)
+    assert refinement is not None
+    assert refinement.people == (("Chaoweeraprasit", ""),)
+
+
 def test_the_frontmatter_reader_reads_only_the_opening_block() -> None:
     text = textwrap.dedent(
         """\
