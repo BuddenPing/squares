@@ -478,6 +478,7 @@ RENDER_INPUTS: tuple[Path, ...] = (
     PACKING / "devtools/default_drawings.py",
     PACKING / "devtools/improvement_rule.py",
     PACKING / "devtools/pictured_source.py",
+    PACKING / "devtools/evand_exact_certificates.py",
     PACKING / "devtools/fonts/atlas-print",
     SITE_CSS,
     PACKING / "devtools/templates/site-math.css",
@@ -741,6 +742,7 @@ def inputs() -> tuple[Path, ...]:
     """
     from devtools import overview_data  # noqa: PLC0415
     from devtools import render_n11_lower_bounds_explainer as explainer  # noqa: PLC0415
+    from devtools.evand_exact_certificates import COMPARISON_RECEIPT  # noqa: PLC0415
     from devtools.render_case_pages import CASES_INPUTS  # noqa: PLC0415
     from devtools.render_frontier_page import FRONTIER_INPUTS  # noqa: PLC0415
 
@@ -751,6 +753,7 @@ def inputs() -> tuple[Path, ...]:
                 BROWSER / "favicon-48.png",
                 BROWSER / "apple-touch-icon.png",
                 *overview_data.INPUTS,
+                COMPARISON_RECEIPT,
                 *FRONTIER_INPUTS,
                 *CASES_INPUTS,
                 *explainer.COMPOSITE_ASSETS,
