@@ -549,6 +549,14 @@ THRESHOLD_PROOF_PUBLISHED = "September 22, 2026"
 #: dates belong to the paper, independently of the site and n = 11 series.
 PACKING_METHODS_HISTORY = (
     PublicationHistoryEntry(
+        version="v0.2.2",
+        first_published="October 14, 2026",
+        result_scope=(
+            "Credit the 12 October adoptions at 154, 175, 232 and 264 in the account of "
+            "the adopted houses."
+        ),
+    ),
+    PublicationHistoryEntry(
         version="v0.2.1",
         first_published="October 10, 2026",
         result_scope=(
@@ -628,6 +636,16 @@ class ReleaseImpactDecision(NamedTuple):
 # No impact is invented retrospectively for the published baseline editions.
 RELEASE_IMPACTS: tuple[ReleaseImpactDecision, ...] = (
     ReleaseImpactDecision(
+        component="paper:square-packing-methods-survey",
+        previous_version="v0.2.1",
+        version="v0.2.2",
+        impact="patch",
+        reason=(
+            "Credit the 12 October adoptions at 154, 175, 232 and 264 in the account of "
+            "the adopted houses."
+        ),
+    ),
+    ReleaseImpactDecision(
         component="site",
         previous_version="v0.6.0",
         version="v0.6.1",
@@ -681,6 +699,63 @@ class ReleaseNoPublicChange(NamedTuple):
 
 
 RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
+    ReleaseNoPublicChange(
+        components=("paper:n11-optimality-review", "paper:n11-threshold-bound-review"),
+        paths=(
+            "packing/devtools/adopt_houses.py",
+            "packing/devtools/check_half_angle_area.py",
+            "packing/devtools/overview_sections.py",
+            "packing/devtools/register_regularized_bounds.py",
+            "packing/devtools/regularized_drawings.py",
+            "packing/devtools/upper_bound_houses.py",
+            "packing/devtools/upper_bound_reports.py",
+            "packing/frontier/results.yaml",
+        ),
+        outputs=(
+            "papers/n11-optimality-review.html",
+            "papers/n11-optimality-review.md",
+            "papers/n11-threshold-bound-review.html",
+            "papers/n11-threshold-bound-review.md",
+        ),
+        reason=(
+            "Rendered from main and from this branch at one link revision, both papers' "
+            "HTML and Markdown are byte-identical, and each PDF prints from that HTML. "
+            "The helpers adopt and draw upper-bound houses and the register gains T-157 "
+            "to T-160, none of which either review cites."
+        ),
+    ),
+    ReleaseNoPublicChange(
+        components=("paper:n11-lower-bounds-explainer",),
+        paths=(
+            "packing/atlas/known-best/bound-citations.json",
+            "packing/atlas/known-best/composite-figure.json",
+            "packing/cases/n11_fractional_certificate/t-018-proof-card.md",
+            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-19-5.md",
+            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-381-100.md",
+            "packing/cases/n11_threshold_certificate/t-025-verifiable-claim-191-50.md",
+            "packing/cases/n11_threshold_certificate/t-026-verifiable-claim-dilation-limit.md",
+            "packing/devtools/adopt_houses.py",
+            "packing/devtools/check_half_angle_area.py",
+            "packing/devtools/overview_sections.py",
+            "packing/devtools/register_regularized_bounds.py",
+            "packing/devtools/regularized_drawings.py",
+            "packing/devtools/upper_bound_houses.py",
+            "packing/devtools/upper_bound_reports.py",
+            "packing/frontier/results.yaml",
+            "packing/src/sqpack/cli/validate.py",
+        ),
+        outputs=(
+            "papers/n11-lower-bounds-explainer.html",
+            "papers/n11-lower-bounds-explainer.md",
+        ),
+        reason=(
+            "Rendered from main and from this branch, the HTML and Markdown differ only in "
+            "the live register count beside T-018, 156 results registered so far and now "
+            "160; the order of an empty style attribute on two math spans varies between "
+            "any two renders. A register count follows the site's data and is not a "
+            "revision of the paper, so the explainer keeps v0.4.6."
+        ),
+    ),
     ReleaseNoPublicChange(
         components=("paper:square-packing-methods-survey",),
         paths=("TUTORIAL.md",),
