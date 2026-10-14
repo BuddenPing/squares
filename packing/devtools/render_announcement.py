@@ -24,9 +24,11 @@ from the record, and the wording is chosen not to overstate it:
   and no other entry states a better bound, or an equal one registered first. That is
   the case's house, or an entry pending adoption that is still below every other. A
   regularization of the entry's own packing (`regularizations`) is the same packing and
-  does not count against it. `--margins` adds how far the bound passes the best one on
-  record before the entry was registered, cut to two significant figures; the previous
-  holder is never named, so a line never credits a bound to the wrong person.
+  does not count against it, as another entry or as the case record it holds; where its
+  side is the smaller, the line elides the entry's number there. `--margins` adds how
+  far the bound passes the best one on record before the entry was registered, cut to
+  two significant figures; the previous holder is never named, so a line never credits a
+  bound to the wrong person.
 - **(verified)** at `V3` and above, and **(reported)** below, which is never called
   verified. The rungs, and which code confirmed the result, are on its row, which the
   line links.
@@ -35,9 +37,9 @@ from the record, and the wording is chosen not to overstate it:
   `credited_names` or a contributor profile gives one, and whose packing it refines or
   regularizes, as its `regularizations` say, or its headline (`refinements of Ryan Xu's
   packings`) and, where that names a request rather than a person, the entry its claim
-  names (`refined`). `--lineage` adds the names after `after`. The project's owner (`result_credit.PROJECT_AUTHOR`) is never credited
-  or tagged: the announcement is the owner's own post, and `after Levy` is this
-  project's lineage, not a finding.
+  names (`refined`). `--lineage` adds the names after `after`. The project's owner
+  (`result_credit.PROJECT_AUTHOR`) is never credited or tagged: the announcement is the
+  owner's own post, and `after Levy` is this project's lineage, not a finding.
 
 The results are selected by `--ids`, or by `--since`, the date the register received
 them (`registered`, the field an intake pass sets), and by `--min-significance`, 3 by
@@ -77,7 +79,7 @@ import re
 import subprocess
 import sys
 from collections.abc import Callable, Iterable, Mapping, Sequence
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from datetime import UTC, date, datetime
 from fractions import Fraction
 from pathlib import Path
@@ -296,6 +298,9 @@ class Count:
     bettered_by: tuple[str, ...] = ()
     tied_with: tuple[str, ...] = ()
     previous: Span | None = None
+    regularized_by: tuple[str, ...] = ()
+    """Regularizations of the entry's own packing whose bound here is strictly better.
+    They take nothing from it, but a line does not print a number they better."""
 
     @property
     def best(self) -> bool:
@@ -391,29 +396,38 @@ def counts(
     records: Records,
     index: Mapping[tuple[int, str], Sequence[tuple[str, Span]]],
 ) -> list[Count]:
-    """Each bound the entry states, held against the case record and every other entry."""
+    """Each bound the entry states, held against the case record and every other entry.
+    A regularization of the entry's own packing (`regularizes`) is no rival, whether as
+    another entry or as the case record it holds."""
     entry, key = str(record["id"]), _key(record)
     assessed: list[Count] = []
     for (n, direction), bound in sorted(own_bounds(record, records).items()):
         rivals: list[Rival] = []
+        regularized: list[str] = []
         case = records.cases.get(n) or {}
         for lane in ("verified", "reported"):
             held = case.get(f"{lane}_{direction}_bound")
-            if not held:
+            if not held or entry in (holders := lane_holders(n, records, direction, [lane])):
                 continue
-            holders = lane_holders(n, records, direction, [lane])
-            if entry in holders:
+            label = ", ".join(sorted(holders)) or f"the n = {n} case record"
+            if holders and all(regularizes(records.results[h], n, entry) for h in holders):
+                if better(Span.of_case(held), bound, direction):
+                    regularized.append(label)
                 continue
             earlier = not holders or any(
                 _key(records.results[holder]) < key for holder in holders
             )
-            label = ", ".join(sorted(holders)) or f"the n = {n} case record"
             rivals.append(Rival(label, Span.of_case(held), earlier))
         for other, stated in index.get((n, direction), ()):
-            if other == entry or regularizes(records.results[other], n, entry):
+            if other == entry:
+                continue
+            if regularizes(records.results[other], n, entry):
+                if better(stated, bound, direction):
+                    regularized.append(other)
                 continue
             rivals.append(Rival(other, stated, _key(records.results[other]) < key))
-        assessed.append(assess(n, direction, bound, rivals))
+        count = assess(n, direction, bound, rivals)
+        assessed.append(replace(count, regularized_by=tuple(dict.fromkeys(regularized))))
     return assessed
 
 
@@ -801,10 +815,14 @@ def margins(group: Sequence[Count]) -> str:
 
 def statement(record: Mapping[str, Any], group: Sequence[Count]) -> str:
     """What the line says is bounded: one bound, one bound at several counts, or the
-    counts alone, their bounds elided (`s(n) ≤ … at n = 108, 127`)."""
+    counts alone, their bounds elided (`s(n) ≤ … at n = 108, 127`). A bound that a
+    regularization of the same packing betters is elided, since a smaller number than
+    the entry's own is on record there."""
     direction = group[0].direction
     relation = RELATIONS[(direction, _strict(record, direction))]
-    values = {shown(c.bound, direction, c.previous) for c in group}
+    values = {
+        ELLIPSIS if c.regularized_by else shown(c.bound, direction, c.previous) for c in group
+    }
     if len(group) == 1:
         return f"s({group[0].n}) {relation} {values.pop()}"
     found = sorted(c.n for c in group)

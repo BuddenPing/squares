@@ -539,6 +539,24 @@ def test_a_regularization_credits_the_finder_of_the_packing_it_regularizes(
     assert ", regularizing " in lines[1]
 
 
+def test_a_case_held_by_a_regularization_of_the_entrys_own_packing_does_not_better_it(
+    records: Records,
+) -> None:
+    """T-146 regularizes T-136's packings at 236, 263, 269, 292, 302 and 303 and holds
+    those cases: neither its own bound nor the case records' count against T-136 there
+    (review B, B2)."""
+    index = ra.rival_bounds(records)
+    found = {c.n: c for c in ra.counts(records.results["T-136"], records, index)}
+    for n in (236, 263, 269, 292, 302, 303):
+        assert ra.regularizes(records.results["T-146"], n, "T-136")
+        assert "T-146" not in found[n].bettered_by, (n, found[n].bettered_by)
+        # T-146's side is the smaller, so the line prints no number of T-136's there.
+        assert found[n].regularized_by == ("T-146",)
+    record = {"id": "T-900", "headline": "s(103) ≤ 10", "claim": ""}
+    count = ra.Count(103, UPPER, exact("10"), regularized_by=("T-901",))
+    assert ra.statement(record, [count]) == "s(103) ≤ …"
+
+
 def test_a_refinement_credits_the_person_its_headline_names_singular_or_plural(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
