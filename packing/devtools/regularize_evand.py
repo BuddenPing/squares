@@ -135,8 +135,10 @@ improvement the record credits where the two differ. `provenance --repo-root TRE
 restates the drawn views' credit by that rule, in each index entry and its view
 together, without the run directories; `--check` writes nothing and fails where it
 would. A receipt records the time it was written (`finished`), which dates the run in
-the layer's index, and a run reclassified on a copy of its directory records no cost of
-its own there (`regularize_axis_components.costed_once`).
+the layer's index, and the directory the run spent its cost in (`run_directory`). A run
+reclassified on a copy of that directory under another name is marked so in its receipt
+(`reclassified.from`), and records no cost of its own in the layer
+(`regularize_axis_components.costed_once`); a cost repeated unmarked is refused.
 
 **The retry ladder** (the no-view study of 12 October 2026; rungs 3 and 5a under the
 owner's overnight instruction of the same day). These are policy-visible behaviours: each
@@ -2681,6 +2683,11 @@ def reclassify(run_dir: Path, counts: Sequence[int] | None = None) -> dict[str, 
     a count is not decided again but sent to review, with no regularization record,
     listed in `reclassified.stale_settings` and printed, to be run again from
     `--from-stage import` (review C of #511, C3).
+
+    Its cost is left as the run that spent it recorded it. Decided on a copy of that
+    run's directory, under another name, the receipt says so: `reclassified.from` is the
+    run's id (`copied_from`), and the copy's run block records no cost of its own in the
+    layer (`run_block`, `regularize_axis_components.costed_once`; #548 review C, C3).
     """
     path = run_dir / "receipt.json"
     receipt = read_json(path)
@@ -2729,14 +2736,36 @@ def reclassify(run_dir: Path, counts: Sequence[int] | None = None) -> dict[str, 
         rows[n] = receipt_row(report)
     ordered = [rows[n] for n in sorted(rows)]
     receipt.update({"counts": ordered, **receipt_lists(ordered)})
+    source = copied_from(run_dir, receipt)
     receipt["reclassified"] = {
         "policy": POLICY,
         "counts": chosen,
         "stale_bounds": stale,
         "stale_settings": unsettled,
+        **({"from": source} if source is not None else {}),
     }
     write_json(path, receipt)
     return receipt
+
+
+def copied_from(run_dir: Path, receipt: Mapping[str, Any]) -> str | None:
+    """The id of the run whose cost `receipt` carries, where that is not the run in
+    `run_dir`: a copy decided again keeps the receipt of the run it was copied from.
+
+    An earlier `reclassify` may already have said so, and a copy of a copy keeps that
+    source. Otherwise the receipt's `run_directory`, where the run spent its cost, is
+    compared with the directory's name, which is the run's id in the layer. A receipt from
+    before it recorded its directory says nothing here; the layer then refuses a run that
+    repeats another's cost unmarked (`regularize_axis_components.repeated_costs`), and
+    `reclassified.from` can be written into the copy's receipt by hand.
+    """
+    held = (receipt.get("reclassified") or {}).get("from")
+    if held:
+        return str(held)
+    ran_in = receipt.get("run_directory")
+    if ran_in and ran_in != run_dir.name:
+        return f"{axis.EVAND_GENERATOR}-{ran_in}"
+    return None
 
 
 # --------------------------------------------------------------------------------------
@@ -2917,6 +2946,10 @@ def run_block(run_dir: Path, run_id: str) -> dict[str, Any]:
     wrote it), never by the file's modification time, which Git does not keep and a copy
     or a restore resets (#548 review B5). A receipt from before the time was recorded
     gives `None`, which `admit_views` fills from the index's own record of the run.
+
+    A run decided again on a copy of another's directory carries the receipt's record of
+    it (`reclassified.from`) as `reclassified_from`, so the layer records that cost once,
+    on the run that spent it (`costed_once`; #548 review C, C3).
     """
     receipt = read_json(run_dir / "receipt.json")
     parameters = receipt.get("parameters") or {}
@@ -2927,6 +2960,7 @@ def run_block(run_dir: Path, run_id: str) -> dict[str, Any]:
         decisions[word] = decisions.get(word, 0) + 1
     recorded = receipt.get("finished")
     finished = str(recorded)[:10] if recorded else None
+    source = (receipt.get("reclassified") or {}).get("from")
     return {
         "id": run_id,
         "generator": axis.EVAND_GENERATOR,
@@ -2935,6 +2969,7 @@ def run_block(run_dir: Path, run_id: str) -> dict[str, Any]:
         "parameters": {key: parameters[key] for key in RUN_PARAMETERS if key in parameters},
         "counts": len(receipt.get("counts") or []),
         "decisions": dict(sorted(decisions.items())),
+        **({"reclassified_from": str(source)} if source and source != run_id else {}),
         "cost": {
             "cpu_seconds": float(cost.get("cpu_seconds") or 0),
             "wall_seconds": float(cost.get("wall_seconds") or 0),
@@ -3148,6 +3183,11 @@ def admit_views(
         raise EvandRunError(f"{LAYER_INDEX_PATH} is not a {axis.ATLAS_CONTRACT} index")
     entries = {int(entry["n"]): entry for entry in index["entries"]}
     dated = dated_runs(runs, index.get("runs") or [])
+    known = {run["id"]: dict(run) for run in index.get("runs") or []}
+    known.update({run["id"]: run for run in dated})
+    repeated = axis.repeated_costs(list(known.values()))
+    if repeated:
+        raise EvandRunError("; ".join(repeated))
     layout = layer_layout(root)
     written: list[int] = []
     kept: list[int] = []
@@ -3181,8 +3221,6 @@ def admit_views(
         )
         written.append(n)
     records = [entries[n] for n in sorted(entries)]
-    known = {run["id"]: dict(run) for run in index.get("runs") or []}
-    known.update({run["id"]: run for run in dated})
     rebuilt = axis.carried_index(
         {
             **index,
@@ -3446,6 +3484,9 @@ def write_receipt(
         "generated_by": GENERATED_BY,
         "policy": POLICY,
         "finished": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        # The directory the run spent `cost` in, whose name is its run id's: a copy
+        # `reclassify` decides again names it as the run it was copied from.
+        "run_directory": run_dir.name,
         "generator": run_generator(ordered),
         "parameters": parameters,
         "counts": ordered,

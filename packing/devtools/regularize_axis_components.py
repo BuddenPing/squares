@@ -2428,33 +2428,39 @@ def costed_once(runs: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
 
     `regularize_evand reclassify` decides a finished run again without re-running a stage,
     on a copy of its directory, and leaves the receipt's cost as it was, so the copy's run
-    block repeats the source run's CPU and wall seconds. A run whose seconds are an
-    earlier-listed run's, both nonzero, is that copy: it keeps its parameters and
-    decisions, names the run it was copied from (`reclassified_from`), and records no cost
-    of its own, so the layer's runs sum each cost once (OR-9).
+    block repeats the source run's CPU and wall seconds. The receipt says which run is the
+    copy (`reclassified.from`), and its run block carries that as `reclassified_from`
+    (`regularize_evand.run_block`). A run so marked, whose source is listed here too,
+    keeps its parameters and decisions and records no cost of its own, so the layer's
+    runs sum each cost once (OR-9). One whose source is not listed keeps its cost, the
+    one record of it, and loses the mark.
+
+    Which run is the copy is read from that record alone, so the result is independent of
+    the order of `runs` (#548 review C, C3). Equal seconds decide nothing here: two runs
+    that repeat a cost unmarked are refused (`repeated_costs`).
     """
-    first: dict[tuple[Any, Any], str] = {}
+    listed = {str(run["id"]) for run in runs}
     kept: list[dict[str, Any]] = []
     for run in runs:
+        source = run.get("reclassified_from")
+        if not source:
+            kept.append(run)
+            continue
+        if source not in listed or source == run["id"]:
+            kept.append(
+                {key: value for key, value in run.items() if key != "reclassified_from"}
+            )
+            continue
         cost = run.get("cost") or {}
-        key = (cost.get("cpu_seconds"), cost.get("wall_seconds"))
-        if run.get("reclassified_from") or not any(key):
-            kept.append(run)
-            continue
-        if key not in first:
-            first[key] = str(run["id"])
-            kept.append(run)
-            continue
         kept.append(
             {
                 **run,
-                "reclassified_from": first[key],
                 "cost": {
                     "cpu_seconds": 0.0,
                     "wall_seconds": 0.0,
                     "workers": cost.get("workers", 1),
                     "note": (
-                        f"reclassified from {first[key]} without re-running a stage; "
+                        f"reclassified from {source} without re-running a stage; "
                         "that run's cost is recorded there"
                     ),
                 },
@@ -2463,14 +2469,62 @@ def costed_once(runs: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
     return kept
 
 
+def repeated_costs(runs: Sequence[Mapping[str, Any]]) -> list[str]:
+    """Each run that records another's nonzero CPU and wall seconds when neither is marked
+    as a reclassified copy of a run that records them (`costed_once`): a copy whose receipt
+    did not say so, or two runs whose costs coincide, which no rule tells apart from a
+    copy. Either way the cost would be summed twice, or one dropped on a guess, so it is
+    refused. The runs that record one cost are taken together, so whether any is refused
+    does not depend on their order; nor does a set whose every run is marked a copy pass,
+    since its cost would then be recorded nowhere."""
+    together: dict[tuple[Any, Any], list[Mapping[str, Any]]] = {}
+    for run in runs:
+        cost = run.get("cost") or {}
+        key = (cost.get("cpu_seconds"), cost.get("wall_seconds"))
+        if any(key):
+            together.setdefault(key, []).append(run)
+    problems: list[str] = []
+    for group in together.values():
+        if len(group) < 2:
+            continue
+        ids = {str(run["id"]) for run in group}
+        spent = [
+            run
+            for run in group
+            if run.get("reclassified_from") not in ids
+            or run.get("reclassified_from") == run["id"]
+        ]
+        if not spent:
+            named = ", ".join(str(run["id"]) for run in group)
+            problems.append(
+                f"index runs {named} record one cost and each is marked as another's "
+                "reclassified copy, so it is recorded on none"
+            )
+        problems.extend(
+            f"index run {run['id']} repeats run {spent[0]['id']}'s cost and neither is "
+            "marked as the other's reclassified copy: write `reclassified.from`, the run it "
+            "was copied from, into the copy's receipt.json"
+            for run in spent[1:]
+        )
+    return problems
+
+
 def _cost_problems(runs: Sequence[dict[str, Any]]) -> list[str]:
-    """Each run's cost is recorded once (`costed_once`)."""
-    once = costed_once(runs)
-    return [
-        f"index run {run['id']} repeats run {once_run['reclassified_from']}'s cost"
-        for run, once_run in zip(runs, once, strict=True)
-        if run != once_run
-    ]
+    """Each run's cost is recorded once (`costed_once`), and no run repeats another's
+    unmarked (`repeated_costs`)."""
+    listed = {str(run["id"]) for run in runs}
+    problems: list[str] = []
+    for run, once_run in zip(runs, costed_once(runs), strict=True):
+        if run == once_run:
+            continue
+        source = run.get("reclassified_from")
+        problems.append(
+            f"index run {run['id']} repeats run {source}'s cost"
+            if source in listed and source != run["id"]
+            else f"index run {run['id']} is marked as reclassified from {source}, which the "
+            "index does not list"
+        )
+    return [*problems, *repeated_costs(runs)]
 
 
 ADMITTING_ROW = 10
