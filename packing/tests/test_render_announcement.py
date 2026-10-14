@@ -572,6 +572,22 @@ def test_all_keeps_a_long_since_clause_postable(capsys: pytest.CaptureFixture[st
     assert "on X" not in err
 
 
+def test_a_line_about_a_few_counts_prints_each_bound_where_the_line_stays_brief(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """T-149's three bounds fit; T-151's seven counts do not and stay elided (review A,
+    A8)."""
+    lines, _ = run(capsys, ["--ids", "T-149", "T-151", "--date", "2026-10-12"])
+    assert lines[1].startswith(
+        "s(155) ≤ 12.95243, s(156) ≤ 12.97918, s(211) ≤ 14.99634, new best known (verified): "
+    )
+    assert lines[2].startswith("s(n) ≤ … at 7 counts, n = 176\u2013272, new best known ")
+    record = {"id": "T-900", "headline": "s(n) ≤ 10", "claim": ""}
+    group = [ra.Count(n, UPPER, exact(f"{n}.5")) for n in (10, 11)]
+    assert ra.statement(record, group) == "s(10) ≤ 10.5, s(11) ≤ 11.5"
+    assert ra.statement(record, group, each=False) == "s(n) ≤ … at n = 10, 11"
+
+
 def test_a_regularization_credits_the_finder_of_the_packing_it_regularizes(
     capsys: pytest.CaptureFixture[str], records: Records
 ) -> None:
@@ -645,6 +661,19 @@ def test_the_frontmatter_reader_reads_only_the_opening_block() -> None:
     )
     assert ra.frontmatter(text) == "a: 1"
     assert ra.frontmatter("no front matter\n") == ""
+
+
+def test_stderr_says_whether_the_announcement_fits_one_post_or_a_thread(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """Review A, A9: the line limit implies one post a line, so the block is checked too."""
+    _, err = run(capsys, ["--ids", "T-147", "--date", "2026-10-12"])
+    assert "the announcement fits one X post" in err
+    _, err = run(
+        capsys, ["--ids", *[f"T-{n}" for n in range(147, 153)], "--date", "2026-10-12"]
+    )
+    assert "over one post's 280; as a thread of one line a post, every line fits" in err
+    assert ra.block_fit(["a", "b"]) == "the announcement fits one X post: 3 of 280 characters"
 
 
 def test_the_header_names_the_day_and_the_count() -> None:

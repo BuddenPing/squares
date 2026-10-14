@@ -17,8 +17,9 @@ from the record, and the wording is chosen not to overstate it:
   printed rounded up and a lower bound rounded down, so the printed number is itself a
   true bound, to as many places as it takes to stay strictly better than the previous
   best. An entry that states no bound but holds its case's bound prints that bound. A
-  line about several counts elides their bounds, and past `LISTED_COUNTS` gives how many
-  and their range.
+  line about several counts prints each bound where they are at most `LISTED_COUNTS`
+  and the line stays within `BRIEF_LIMIT`; otherwise it elides them, and past
+  `LISTED_COUNTS` gives how many counts and their range.
 - **New best known**, or **new best lower bound**: said only at the counts where
   nothing on record is as good: the case record holds this entry's bound or a worse one,
   and no other entry states a better bound, or an equal one registered first. That is
@@ -63,6 +64,10 @@ A handle comes only from evidence, in this order, and never from a user name:
    against the file that states it.
 
 stderr says where each handle came from, and which credited names have none.
+
+The owner announces from it as they choose. Each line is held to `POST_LIMIT` on its
+own, so that a thread of one line a post fits, and stderr says whether the whole
+announcement also fits one post (`block_fit`).
 
 Usage, from `packing/`:
     uv run --frozen --all-extras --group dev python -m devtools.render_announcement \\
@@ -825,19 +830,24 @@ def margins(group: Sequence[Count]) -> str:
     return f"{gap} {way} the previous {best}"
 
 
-def statement(record: Mapping[str, Any], group: Sequence[Count]) -> str:
-    """What the line says is bounded: one bound, one bound at several counts, or the
-    counts alone, their bounds elided (`s(n) ≤ … at n = 108, 127`). A bound that a
+def statement(record: Mapping[str, Any], group: Sequence[Count], *, each: bool = True) -> str:
+    """What the line says is bounded: one bound, one bound at several counts, with `each`
+    each bound at up to `LISTED_COUNTS` counts (`s(155) ≤ 12.95243, s(156) ≤ 12.97918`),
+    or the counts alone, their bounds elided (`s(n) ≤ … at n = 108, 127`). A bound that a
     regularization of the same packing betters is elided, since a smaller number than
     the entry's own is on record there."""
     direction = group[0].direction
     relation = RELATIONS[(direction, _strict(record, direction))]
-    values = {
-        ELLIPSIS if c.regularized_by else shown(c.bound, direction, c.previous) for c in group
+    printed = {
+        c.n: ELLIPSIS if c.regularized_by else shown(c.bound, direction, c.previous)
+        for c in group
     }
+    values = set(printed.values())
     if len(group) == 1:
         return f"s({group[0].n}) {relation} {values.pop()}"
-    found = sorted(c.n for c in group)
+    found = sorted(printed)
+    if each and len(values) > 1 and ELLIPSIS not in values and len(found) <= LISTED_COUNTS:
+        return ", ".join(f"s({n}) {relation} {printed[n]}" for n in found)
     cases = f"n = {compress(found)}"
     if len(found) > LISTED_COUNTS:
         cases = f"{len(found)} counts, n = {found[0]}{EN_DASH}{found[-1]}"
@@ -1073,12 +1083,17 @@ def render_line(
     if not group:
         what = f"{plain(str(record['headline']))} {tag(record)}"
         return line(f"{what}, since {since}" if since else what, [])
-    what = statement(record, group)
-    if show_margins and not since and (gap := margins(group)):
-        what += f" ({gap})"
-    if since:
-        return line(f"{what} {tag(record)}, since {since}", group)
-    return line(f"{what}, {NEWS[group[0].direction]} {tag(record)}", group)
+
+    def stated(*, each: bool) -> Line:
+        what = statement(record, group, each=each)
+        if show_margins and not since and (gap := margins(group)):
+            what += f" ({gap})"
+        if since:
+            return line(f"{what} {tag(record)}, since {since}", group)
+        return line(f"{what}, {NEWS[group[0].direction]} {tag(record)}", group)
+
+    full = stated(each=True)
+    return full if len(before_link(full.text)) <= BRIEF_LIMIT else stated(each=False)
 
 
 # ---------------------------------------------------------------------------------------
@@ -1165,6 +1180,21 @@ def _github(records: Records, credited: Mapping[str, str], fetch: Fetch) -> GitH
             for entry, record in records.results.items()
         },
         fetch=fetch,
+    )
+
+
+def block_fit(lines: Sequence[str]) -> str:
+    """Whether the whole announcement fits one X post, as `posted_length` counts each line
+    and one character each line break, and where it does not, whether each line fits one
+    post of a thread."""
+    length = sum(posted_length(line) for line in lines) + len(lines) - 1
+    if length <= POST_LIMIT:
+        return f"the announcement fits one X post: {length} of {POST_LIMIT} characters"
+    over = [line for line in lines if posted_length(line) > POST_LIMIT]
+    thread = "every line fits" if not over else f"{len(over)} lines do not fit"
+    return (
+        f"the announcement is {length} characters on X, over one post's {POST_LIMIT}; "
+        f"as a thread of one line a post, {thread}"
     )
 
 
@@ -1257,6 +1287,7 @@ def main(argv: Sequence[str] | None = None, *, fetch: Fetch = gh_user) -> int:
             )
         if (length := posted_length(text)) > POST_LIMIT:
             print(f"warning: {entry}'s line is {length} characters on X", file=sys.stderr)
+    print(block_fit(lines), file=sys.stderr)
     for handle in handles.values():
         print(f"@{handle.handle} for {handle.name}: {handle.source}", file=sys.stderr)
     for warning in warnings:
