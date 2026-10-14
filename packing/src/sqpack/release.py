@@ -88,10 +88,9 @@ PUBLICATION_HISTORY = (
         version="v0.6.2",
         first_published="October 14, 2026",
         result_scope=(
-            "Register 24 results from the 14 October intake, none adopting a house: "
-            "smaller exact packings and certificates at 69 counts, lower bounds at 37, "
-            "39, 44 and 145 to 149, wand125's closed form, which raises 154 reported "
-            "lower bounds, Kevin Fang's n^2 - n + 1 theorem and s(76) = 9."
+            "List the October 14 reviews and intake ledger in the synopsis document map, "
+            "refresh its session rollups, and re-anchor result-page bibliography links to "
+            "their entries."
         ),
     ),
     PublicationHistoryEntry(
@@ -651,10 +650,9 @@ RELEASE_IMPACTS: tuple[ReleaseImpactDecision, ...] = (
         version="v0.6.2",
         impact="patch",
         reason=(
-            "Register 24 results from the 14 October intake, none adopting a house: "
-            "smaller exact packings and certificates at 69 counts, lower bounds at 37, "
-            "39, 44 and 145 to 149, wand125's closed form, which raises 154 reported "
-            "lower bounds, Kevin Fang's n^2 - n + 1 theorem and s(76) = 9."
+            "List the October 14 reviews and intake ledger in the synopsis document map, "
+            "refresh its session rollups, and re-anchor result-page bibliography links to "
+            "their entries."
         ),
     ),
     ReleaseImpactDecision(
@@ -721,6 +719,48 @@ class ReleaseNoPublicChange(NamedTuple):
 
 
 RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
+    ReleaseNoPublicChange(
+        components=(
+            "paper:n11-lower-bounds-explainer",
+            "paper:n11-optimality-review",
+            "paper:n11-threshold-bound-review",
+            "paper:square-packing-methods-survey",
+        ),
+        paths=(
+            "packing/cases/n11_fractional_certificate/t-018-proof-card.md",
+            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-19-5.md",
+            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-381-100.md",
+            "packing/cases/n11_threshold_certificate/t-025-verifiable-claim-191-50.md",
+            "packing/cases/n11_threshold_certificate/t-026-verifiable-claim-dilation-limit.md",
+            "packing/devtools/upper_bound_reports.py",
+            "packing/pyproject.toml",
+        ),
+        outputs=(
+            "papers/n11-lower-bounds-explainer.html",
+            "papers/n11-lower-bounds-explainer.md",
+            "papers/n11-lower-bounds-explainer.pdf",
+            "papers/n11-optimality-review.html",
+            "papers/n11-optimality-review.md",
+            "papers/n11-optimality-review.pdf",
+            "papers/n11-threshold-bound-review.html",
+            "papers/n11-threshold-bound-review.md",
+            "papers/n11-threshold-bound-review.pdf",
+            "papers/square-packing-methods-survey.html",
+            "papers/square-packing-methods-survey.md",
+            "papers/square-packing-methods-survey.pdf",
+        ),
+        reason=(
+            "Each paper was rendered with its own command at main's 37e6757ed and at "
+            "c6118ca59. The explainer's 55 files are byte-identical; the optimality, "
+            "threshold-bound and methods papers' HTML, Markdown and PDF are byte-identical "
+            "once the build commit their repository links pin is normalized. The inputs add "
+            "a beyond-horizon-only register plan and four HOUSES readers, reached from the "
+            "papers only through the atlas builder's import closure, and a BasedPyright "
+            "include that no render reads. The site v0.6.2 cut regenerates the claim "
+            "documents at its new link revision; the explainer rendered after that cut is "
+            "byte-identical in all 55 files to its render before it."
+        ),
+    ),
     ReleaseNoPublicChange(
         components=("paper:n11-optimality-review", "paper:n11-threshold-bound-review"),
         paths=(
@@ -1065,7 +1105,7 @@ def validate_release_impacts(
 #: fresh render, so a link naming the build commit would fail their drift check forever. It is
 #: in no version string. It moves when the claim documents are regenerated for an edition. It
 #: must be a commit on `main`; the site's own links name `main` itself (`devtools.repo_links`).
-PUBLICATION_REVISION = "a666b957"
+PUBLICATION_REVISION = "c6118ca5"
 
 
 def data_pathspec() -> tuple[str, ...]:

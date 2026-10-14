@@ -96,6 +96,16 @@ def test_freezing_refuses_a_checkout_whose_bytes_are_not_the_pinned_ones(
         inventory.freeze_headers(tmp_path)
 
 
+def test_freezing_refuses_a_certificate_above_the_byte_ceiling(tmp_path: Path) -> None:
+    # One byte past MAX_CERTIFICATE_BYTES is refused before any digest or header is read.
+    first = inventory.inventory_files()[0]
+    target = tmp_path / first
+    target.parent.mkdir(parents=True)
+    target.write_bytes(b"0" * (inventory.MAX_CERTIFICATE_BYTES + 1))
+    with pytest.raises(ValueError, match="larger than any inventory certificate"):
+        inventory.freeze_headers(tmp_path)
+
+
 def test_the_six_retained_certificates_are_the_frozen_list_s_rows() -> None:
     headers, problems = inventory.frozen_headers()
     assert problems == []
