@@ -909,7 +909,7 @@ def test_not_a_bound_is_not_a_kind(
         ("T-001", "simplification", "a simplification's claim names the registered result"),
         # So does a formalization, and it cites evidence a proof assistant checked.
         ("T-001", "formalization", "a formalization's claim names the registered result"),
-        ("T-001", "formalization", "kind is formalization, and no cited evidence is"),
+        ("T-001", "formalization", "kind is formalization, and no cited evidence of its own"),
         # A second proof a proof assistant checked is a formalization, not a simplification.
         ("T-154", "simplification", "is a formalization"),
     ],
@@ -1028,8 +1028,8 @@ def test_a_formalization_names_a_result_and_cites_a_proof_assistant() -> None:
     assert check_results.kind_problems(record, [built], scopes) == []
     assert check_results.kind_problems(record, [paper], scopes) == [
         (
-            "T-999: kind is formalization, and no cited evidence is `proof-assistant-checked`, "
-            "performed or reported"
+            "T-999: kind is formalization, and no cited evidence of its own is "
+            "`proof-assistant-checked`, performed or reported"
         )
     ]
     assert check_results.kind_problems(record, [reported], {"T-999": {17}, "T-153": {11}}) == [
@@ -1054,6 +1054,36 @@ def test_a_formalization_names_a_result_and_cites_a_proof_assistant() -> None:
         "its headline opens with an exact value" in problem
         for problem in check_results.kind_problems(rigid, [reported], scopes)
     )
+
+
+def test_a_second_proof_is_held_to_its_own_proof_assistant_evidence() -> None:
+    """The proof-assistant rule reads the second proof's own evidence, and not what the
+    result it proves again cites (review A1 on #592). A paper proof of T-060's `s(11)`
+    that cites its own published proof and, for a half it shares, T-060's Lean report
+    is a simplification; declared a formalization, the same record is refused, since a
+    proof assistant's check of T-060 is no check of it. With a Lean build of its own
+    beside T-060's report, it is a formalization."""
+    target, target_cited, scopes = _live_record("T-060")
+    lean = next(entry for entry in target_cited if check_results.proof_assistant_checked(entry))
+    paper = {"id": "E-paper", "claim": "exact-value", "method": "published-proof"}
+    record = {
+        "id": "T-999",
+        "kind": "simplification",
+        "headline": "`s(11) = 3.877…` by a shorter route",
+        "claim": "s(11) = T, T-060's value, proved again on paper by a shorter route.",
+    }
+    scopes = {**scopes, "T-999": {11}}
+    evidence_of = {"T-060": target["evidence"]}
+    assert check_results.kind_problems(record, [paper, lean], scopes, evidence_of) == []
+    formal = {**record, "kind": "formalization"}
+    assert check_results.kind_problems(formal, [paper, lean], scopes, evidence_of) == [
+        (
+            "T-999: kind is formalization, and no cited evidence of its own is "
+            "`proof-assistant-checked`, performed or reported"
+        )
+    ]
+    built = {"id": "E-build", "claim": "exact-value", "method": check_results.FORMAL_METHOD}
+    assert check_results.kind_problems(formal, [paper, lean, built], scopes, evidence_of) == []
 
 
 def test_the_second_proof_kinds_are_registered_kinds() -> None:

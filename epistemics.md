@@ -552,9 +552,11 @@ A headline that opens with a relation on $s(n)$ states its kind: `≥` or `>` is
 bound, `≤` or `<` an upper bound and `=` optimality, and only a simplification or a
 formalization may restate one.
 A bound cites evidence that claims that bound, and optimality cites an exact value or
-both halves. A formalization cites evidence whose method, performed or reported, is
-`proof-assistant-checked`, and a simplification cites none, since where both would fit
-the kind is formalization.
+both halves. A formalization cites evidence of its own whose method, performed or
+reported, is `proof-assistant-checked`. Evidence that the result it proves again cites
+is not its own, though a second proof may cite it for a half the two share: a proof
+assistant’s check of that result is no check of the second proof.
+A simplification cites none, since where both would fit the kind is formalization.
 Uniqueness, rigidity, case exclusion and restricted optimality cite `derived-structure`
 evidence and state no relation on $s(n)$ in their headline.
 Method limit, correction and audit are told apart by review alone.

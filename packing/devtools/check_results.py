@@ -832,7 +832,10 @@ def _evidence_needed(kind: str, claims: set[str]) -> str | None:
 
 
 def kind_problems(
-    record: dict, cited: Iterable[Mapping[str, Any]], scopes: Mapping[str, set[int]]
+    record: dict,
+    cited: Iterable[Mapping[str, Any]],
+    scopes: Mapping[str, set[int]],
+    evidence_of: Mapping[str, Iterable[str]] | None = None,
 ) -> list[str]:
     """What is wrong with a result's `kind`, read against its own record.
 
@@ -846,9 +849,12 @@ def kind_problems(
       nothing about `s(n)` has a headline that writes none.
     - **The cited evidence.** It claims what the kind needs: the bound for a bound, an
       exact value or both halves for optimality, and `derived-structure` for the kinds
-      that say nothing about `s(n)`. A formalization cites evidence a proof assistant
-      checked (`proof_assistant_checked`), and a simplification cites none, since where
-      both would fit the kind is formalization.
+      that say nothing about `s(n)`. A formalization cites evidence of its own that a
+      proof assistant checked (`proof_assistant_checked`). Its own is what the results
+      it proves again do not cite: a second proof may cite their evidence for the half
+      it shares with them, as `T-054` and `T-055` cite the grid's, and a proof assistant's
+      check of the result it proves again is no check of the second proof.
+      `evidence_of` is every result's cited evidence ids.
     - **The results the claim names.** The claim of a simplification or a formalization
       names the registered result it proves again, on a case they share. `scopes` is
       every result's cases.
@@ -870,18 +876,22 @@ def kind_problems(
     if kind in SECOND_PROOF_KINDS:
         cases = scopes.get(rid, set())
         named = {other for other in _RESULT_ID.findall(claim) if other != rid}
-        if not any(cases & scopes.get(other, set()) for other in named):
+        again_of = {other for other in named if cases & scopes.get(other, set())}
+        if not again_of:
             again = "formalizes or proves again" if kind == FORMALIZATION else "proves again"
             problems.append(
                 f"a {kind}'s claim names the registered result it {again}, on a case they share"
             )
+        theirs = {str(ref) for other in again_of for ref in (evidence_of or {}).get(other, ())}
         checked = sorted(
-            str(entry.get("id")) for entry in cited if proof_assistant_checked(entry)
+            str(entry.get("id"))
+            for entry in cited
+            if proof_assistant_checked(entry) and str(entry.get("id")) not in theirs
         )
         if kind == FORMALIZATION and not checked:
             problems.append(
-                f"kind is formalization, and no cited evidence is `{FORMAL_METHOD}`, "
-                "performed or reported"
+                "kind is formalization, and no cited evidence of its own is "
+                f"`{FORMAL_METHOD}`, performed or reported"
             )
         if kind == SIMPLIFICATION and checked:
             problems.append(
@@ -1429,6 +1439,7 @@ def main() -> int:
     if actual_ids != expected_ids:
         problems.append(f"register ids are not contiguous T-001..: {actual_ids}")
     scopes = {record["id"]: scope_values(record["scope"]) for record in results}
+    evidence_of = {record["id"]: record["evidence"] for record in results}
     by_id = {record["id"]: record for record in results}
     dated = {record["id"]: result_date(record) for record in results}
     try:
@@ -1475,7 +1486,7 @@ def main() -> int:
         problems.extend(corrects_problems(record, sources, by_id))
         problems.extend(registered_problems(record, str(register["last_reviewed"])))
         problems.extend(headline_problems(record))
-        problems.extend(kind_problems(record, cited, scopes))
+        problems.extend(kind_problems(record, cited, scopes, evidence_of))
         problems.extend(superseded_by_problems(record, dated, scopes, holding))
         problems.extend(established_problems(record, register["last_reviewed"]))
         problems.extend(activity_problems(record, str(register["last_reviewed"])))
