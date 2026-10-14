@@ -12,7 +12,7 @@ import yaml
 from devtools import intake_comments as comments
 from devtools.check_requests import FOOTER
 
-PASS_2026_10_14 = comments.ROOT / "campaign/issue-intake/upper-bounds-20261014-comments.yaml"
+PASS_2026_10_14 = comments.ROOT / "campaign/issue-intake/upper-bounds-20261014/comments.yaml"
 
 
 def step(report: str, verdict: str, reason: str, against: str, **more: Any) -> dict[str, Any]:
@@ -341,6 +341,9 @@ def test_check_reports_a_changed_or_missing_draft(tmp_path: Path) -> None:
 
 def test_the_2026_10_14_pass_drafts_one_comment_per_result_issue() -> None:
     intake = comments.load(PASS_2026_10_14)
+    # The comments file sits in the intake directory and names no ledger: it reads its own.
+    beside = json.loads((PASS_2026_10_14.parent / "ledger.json").read_text(encoding="utf-8"))
+    assert intake.ledger == beside
     out = comments.drafts(intake)
     assert len(out) == len(intake.comments) + 1
     for comment in intake.comments:

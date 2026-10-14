@@ -1,16 +1,11 @@
 # The report-order verdict comments of the 2026-10-14 upper-bound intake (epic think-abi1,
-# posted under think-prkx), as devtools.intake_comments drafts them from the intake
-# directory's ledger.json. Everything here is this pass's own: the tool holds the rules.
+# posted under think-prkx), as devtools.intake_comments drafts them from the ledger.json
+# beside this file. Everything here is this pass's own: the tool holds the rules.
 #
 # From packing/:
 #   python -m devtools.intake_comments \
-#     campaign/issue-intake/upper-bounds-20261014-comments.yaml --out DIR
-#
-# It lives beside the intake directory rather than in it as comments.yaml, where the
-# runbook puts it, because the directory was being edited by another lane when the tool
-# was written.
+#     campaign/issue-intake/upper-bounds-20261014/comments.yaml --out DIR
 
-ledger: packing/campaign/issue-intake/upper-bounds-20261014/ledger.json
 records_pr: jlevy/squares#602
 
 # How a holder the ledger prints by a bibliography key is named in a comment.

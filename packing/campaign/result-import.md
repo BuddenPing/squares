@@ -715,7 +715,8 @@ What lets an agent post is the `github-workflows` grant, which covers issues.
 Where a [report-order ledger](#several-reports-at-one-count) decided a pass’s counts,
 each result issue gets one comment giving the verdicts at the counts it claims.
 [`devtools.intake_comments`](../devtools/intake_comments.py) drafts them from the
-ledger’s `ledger.json` and a `comments.yaml` in the intake directory, from `packing/`:
+ledger’s `ledger.json` and a `comments.yaml` beside it in the intake directory, from
+`packing/`:
 
 ```bash
 uv run --frozen --all-extras --group dev python -m devtools.intake_comments \
