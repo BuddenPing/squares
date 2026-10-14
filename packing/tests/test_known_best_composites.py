@@ -542,7 +542,9 @@ def test_a_composite_is_drawn_only_from_data_the_pin_names(
     monkeypatch.setattr(atlas, "REPOSITORY_ROOT", repo)
 
     monkeypatch.setattr(atlas, "DATA_REVISION", last)
-    assert atlas.drawable_identity() == atlas.CompositeIdentity(last, "2026-10-01")
+    assert atlas.drawable_identity() == atlas.CompositeIdentity(
+        last, "2026-10-01", atlas.INFOGRAPHIC_VERSION
+    )
 
     monkeypatch.setattr(atlas, "DATA_REVISION", first)
     with pytest.raises(ValueError, match="release_pin --update"):
@@ -558,7 +560,9 @@ def test_a_composite_is_drawn_only_from_data_the_pin_names(
     composite = repo / "packing/atlas/known-best/known-best-1-100.svg"
     composite.parent.mkdir(parents=True)
     composite.write_text("<svg/>\n")
-    assert atlas.drawable_identity() == atlas.CompositeIdentity(last, "2026-10-01")
+    assert atlas.drawable_identity() == atlas.CompositeIdentity(
+        last, "2026-10-01", atlas.INFOGRAPHIC_VERSION
+    )
 
     monkeypatch.setattr(atlas, "REPOSITORY_ROOT", repo.parent)
     with pytest.raises(ValueError, match="stamped with the data commit it shows"):

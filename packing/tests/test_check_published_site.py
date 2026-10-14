@@ -807,7 +807,10 @@ def test_check_shares_fragment_requests_but_keeps_queries_methods_and_failures(
         f'<a href="{resource}#L1">one</a><a href="{resource}#L2">two</a>'.encode()
     )
     urls: list[str] = []
-    assert failures(monkeypatch, fake_site(pages, requested=urls, lost=("README.md",))) == [
+    assert failures(
+        monkeypatch,
+        fake_site(pages, requested=urls, lost=(f"blob/{DEFAULT_BRANCH}/README.md",)),
+    ) == [
         f"link HTTP 404: {resource}",
         f"link HTTP 404: {resource}#L1",
         f"link HTTP 404: {resource}#L2",

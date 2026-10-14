@@ -662,6 +662,21 @@ class ReleaseNoPublicChange(NamedTuple):
 
 RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
     ReleaseNoPublicChange(
+        components=("paper:square-packing-methods-survey",),
+        paths=("TUTORIAL.md",),
+        outputs=(
+            "papers/square-packing-methods-survey.html",
+            "papers/square-packing-methods-survey.md",
+            "papers/square-packing-methods-survey.pdf",
+        ),
+        reason=(
+            "The tutorial's explainer version label changes from v0.4.5 to v0.4.6. "
+            "The methods survey links the tutorial's unchanged anchors without "
+            "incorporating its body; its manuscript, figures, references and edition "
+            "remain unchanged."
+        ),
+    ),
+    ReleaseNoPublicChange(
         components=(
             "paper:n11-threshold-bound-review",
             "paper:n11-optimality-review",

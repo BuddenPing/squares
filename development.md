@@ -1722,17 +1722,18 @@ failure. From `packing/`:
 uv run --frozen --all-extras --group dev python -m devtools.build_known_best_atlas --check-composites
 
 # Prepare a shared patch edition and redraw both posters and all their exports.
-uv run --frozen --all-extras --group dev python -m devtools.cut_release v0.5.1 \
+uv run --frozen --all-extras --group dev python -m devtools.cut_release v0.6.1 \
     --component infographics --impact patch --scope "Refresh the atlas posters."
 ```
 
 `--update-composites` refuses a stale pin and uncommitted data, since the stamp it draws
 has to name the data in the tree.
-A changed redraw also requires a new infographic edition; a byte-identical rebuild may
-retain its edition. `--update` rewrites the data layer alone: witnesses, renderings,
-manifest and frontier links.
-[The plan](docs/project/specs/done/plan-2026-10-01-release-assets-on-demand.md) has the
-measurements behind this and the options that were weighed, and
+Changing published infographic content or exports requires a new edition; an unpublished
+successor can be corrected at its selected edition throughout review.
+A byte-identical rebuild may retain its edition.
+`--update` rewrites the data layer alone: witnesses, renderings, manifest and frontier
+links. [The plan](docs/project/specs/done/plan-2026-10-01-release-assets-on-demand.md)
+has the measurements behind this and the options that were weighed, and
 `python -m devtools.measure_release_assets` repeats them.
 
 ### Dates on generated artifacts
@@ -1765,7 +1766,7 @@ One command prepares the bump and prints what is left.
 From `packing/`, on a clean tree whose pin is current:
 
 ```bash
-uv run --frozen --all-extras --group dev python -m devtools.cut_release v0.6.0 \
+uv run --frozen --all-extras --group dev python -m devtools.cut_release v0.7.0 \
     --component site --impact minor \
     --scope "One sentence on what the edition adds."
 ```
@@ -1823,7 +1824,7 @@ Prepare the article revision, then cut the paper’s own patch or minor successo
 clean tree. For example, a patch to Part I’s current edition:
 
 ```bash
-uv run --frozen --all-extras --group dev python -m devtools.cut_release v0.4.6 \
+uv run --frozen --all-extras --group dev python -m devtools.cut_release v0.4.7 \
     --component paper:n11-lower-bounds-explainer --impact patch \
     --scope "Correct the explanation of the threshold argument."
 ```
