@@ -121,7 +121,8 @@ the source’s log (1919, 1804 and 622), in under 3 CPU seconds each:
 At n = 39 the axis refusal is sound (an exact capture below 1 at a centre inside the
 domain), but the gap is above the census’s `AXIS_ROUNDING` of $10^{-9}$, so the whole-net
 control would end `CONTROL_FAILED`. It is the defect T-142’s control is held for
-(2.15e-9 there), and the owner’s question on jlevy/squares#543 now covers n = 39 too.
+(2.15e-9 there), so the owner’s answer to that question on jlevy/squares#543 decides
+n = 39’s control too.
 These are diagnostics of the directions they ran and are no control receipts.
 
 ## The Price of a Complete Replay
