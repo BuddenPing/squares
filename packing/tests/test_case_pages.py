@@ -472,7 +472,7 @@ def test_case_291_typesets_the_general_bound_and_retains_the_exact_ceiling(
     assert "sqrt(" not in formula[1]
     assert "&gt;=" not in formula[1]
     assert "<msqrt>" in formula[1]
-    # Since T-154 the ceiling is the regularized certificate's exact side, a fraction too
+    # Since T-155 the ceiling is the regularized certificate's exact side, a fraction too
     # long for the bound's panel (`render_case_pages.bound_tex`), which prints its decimal;
     # the record's prose typesets the side itself.
     assert 'id="the-verified-upper-bound-is-a-ceiling"' in record

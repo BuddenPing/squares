@@ -6,7 +6,7 @@ on for a view at the bound or for a view at a witness's side that is exactly the
 where no result attributes the source, and none where no result answers or several do.
 The generated block reads back as the data it was written from, and the register's
 checker holds each item to the register. The last tests read the record itself: which of
-T-154's registered sides Evan Daniel's certificates first stated, and which of its solves
+T-155's registered sides Evan Daniel's certificates first stated, and which of its solves
 the layer draws.
 """
 
@@ -105,7 +105,7 @@ def test_an_exact_side_is_at_the_bound_only_where_the_bound_is_rational() -> Non
 
 
 def test_a_witness_side_exactly_at_the_bound_falls_back_to_the_bound_holder() -> None:
-    """T-154 certified witnesses' own sides exactly: a `same` view there that no result
+    """T-155 certified witnesses' own sides exactly: a `same` view there that no result
     attributes is held by the result the bound rests on, and only when the side is exact."""
     found = entry(7, "same")
     found["side"]["view"] = "33/5"
@@ -133,14 +133,14 @@ def test_a_witness_side_exactly_at_the_bound_falls_back_to_the_bound_holder() ->
 
 
 def test_a_bound_two_results_prove_is_held_by_the_one_that_registered_the_view() -> None:
-    """At 33 counts T-154's view lies exactly at the side of Evan Daniel's earlier
+    """At 33 counts T-155's view lies exactly at the side of Evan Daniel's earlier
     certificate (T-101), and the case cites both: the view drawn at that bound is the one
     whose result registered it, by a `regularizations` item on the drawn side; with no
     such item, or two, the count stays unregistered (PR #549, review B2)."""
     registering = [
         {"id": "T-101", "scope": {"n_values": [6, 7]}, "attribution": {"source_keys": ["[A]"]}},
         {
-            "id": "T-154",
+            "id": "T-155",
             "scope": {"n_values": [6, 7]},
             "regularizations": [{"n": 6, "side": "solved"}, {"n": 7, "side": "same"}],
         },
@@ -152,21 +152,21 @@ def test_a_bound_two_results_prove_is_held_by_the_one_that_registered_the_view()
             found,
             registering,
             source_key="[B]",
-            bound_holders=["T-101", "T-154"],
+            bound_holders=["T-101", "T-155"],
             side_at_bound=at,
         )
 
     # A `bound` view resolves only while its side is the bound (#548 review B1).
-    assert resolve(6, "bound", at=True).of == "T-154"
+    assert resolve(6, "bound", at=True).of == "T-155"
     assert resolve(6, "bound").of is None
-    assert resolve(7, "same", at=True).of == "T-154"
+    assert resolve(7, "same", at=True).of == "T-155"
     # A `bound` drawing where the registering result's item is on the other side, or a
     # count no item names, keeps both holders and so no answer.
     assert resolve(7, "bound", at=True).of is None
     assert "T-101" in resolve(7, "bound", at=True).reason
-    assert drawings.registering_holders(8, ["T-101", "T-154"], registering, side="solved") == [
+    assert drawings.registering_holders(8, ["T-101", "T-155"], registering, side="solved") == [
         "T-101",
-        "T-154",
+        "T-155",
     ]
 
 
@@ -337,7 +337,7 @@ def test_a_drawing_whose_exact_side_is_registered_says_so() -> None:
     method = "Evan Daniel's search/regularize, through devtools.regularize_evand"
     results = [
         {
-            "id": "T-154",
+            "id": "T-155",
             "kind": "upper-bound",
             "regularizations": [
                 {"n": 5, "of": "T-001", "by": "project", "method": method, "side": "solved"}
@@ -345,19 +345,19 @@ def test_a_drawing_whose_exact_side_is_registered_says_so() -> None:
         }
     ]
     bound = {**entry(5, "bound"), "generator": drawings.EVAND_GENERATOR}
-    count = drawings.Drawn(bound, drawings.Resolved("T-154", "x"), [])
-    assert drawings.registering_result(count, results) == "T-154"
+    count = drawings.Drawn(bound, drawings.Resolved("T-155", "x"), [])
+    assert drawings.registering_result(count, results) == "T-155"
     generators = {drawings.EVAND_GENERATOR: {"credit": "Regularized by the Squares Project"}}
-    ours = drawings.project_case_item(count, generators, "T-154")
-    assert ours["registered_in"] == "T-154"
+    ours = drawings.project_case_item(count, generators, "T-155")
+    assert ours["registered_in"] == "T-155"
     assert drawings.case_note([ours]) == (
-        "Regularized by the Squares Project, unmodified. A drawing of T-154's packing at the "
-        "verified upper bound. Its exact side is registered as T-154, the upper bound it "
+        "Regularized by the Squares Project, unmodified. A drawing of T-155's packing at the "
+        "verified upper bound. Its exact side is registered as T-155, the upper bound it "
         "proves; the drawing itself is no further result."
     )
     same = drawings.Drawn(
         {**entry(5, "same"), "generator": drawings.EVAND_GENERATOR},
-        drawings.Resolved("T-154", "x"),
+        drawings.Resolved("T-155", "x"),
         [],
     )
     assert drawings.registering_result(same, results) is None
@@ -402,7 +402,7 @@ REGISTER = """results:
         side: solved
         identity:
           basis: measured
-  - id: T-154
+  - id: T-155
     kind: upper-bound
     regularizations:
       - n: 9
@@ -534,7 +534,7 @@ def test_the_case_field_is_written_in_place_and_removed_whole() -> None:
 
 def test_a_side_an_earlier_certificate_first_stated_proves_no_new_bound() -> None:
     """Where the registering result's item names the earlier result whose certificate
-    first stated its exact side (`first_certified_in`), as T-154's 33 items at the side of
+    first stated its exact side (`first_certified_in`), as T-155's 33 items at the side of
     Evan Daniel's certificates name T-101, the drawn and the undrawn notes credit the
     Squares Project, say the side is registered in the result and was first certified by
     that certificate, naming it, and that it proves no new bound; without the field the
@@ -548,14 +548,14 @@ def test_a_side_an_earlier_certificate_first_stated_proves_no_new_bound() -> Non
         "first_certified_in": "T-101",
         "identity": {"basis": "measured"},
     }
-    results = [{"id": "T-154", "kind": "upper-bound", "regularizations": [record]}]
+    results = [{"id": "T-155", "kind": "upper-bound", "regularizations": [record]}]
     bound = {**entry(5, "bound"), "generator": drawings.EVAND_GENERATOR}
     bound["regularization"] = {**bound["regularization"], "method": EVAND_METHOD}
-    count = drawings.Drawn(bound, drawings.Resolved("T-154", "x"), [])
+    count = drawings.Drawn(bound, drawings.Resolved("T-155", "x"), [])
     registered = drawings.registered_record(count, results)
     assert registered is not None
-    assert registered == ("T-154", record)
-    drawn = drawings.project_case_item(count, GENERATORS, "T-154", "T-101")
+    assert registered == ("T-155", record)
+    drawn = drawings.project_case_item(count, GENERATORS, "T-155", "T-101")
     assert drawn["first_certified_in"] == "T-101"
     assert "first_certified_in" not in drawings.project_case_item(
         count, GENERATORS, None, "T-101"
@@ -563,8 +563,8 @@ def test_a_side_an_earlier_certificate_first_stated_proves_no_new_bound() -> Non
     certificates = {"T-101": "Evan Daniel's certificate"}
     assert drawings.case_note([drawn], certificates) == (
         "Regularized by the Squares Project with Evan Daniel's regularizer, unmodified. A "
-        "drawing of T-154's packing at the verified upper bound. Its exact side is "
-        "registered in T-154, and the same side was first certified by Evan Daniel's "
+        "drawing of T-155's packing at the verified upper bound. Its exact side is "
+        "registered in T-155, and the same side was first certified by Evan Daniel's "
         "certificate (T-101), so it proves no new bound; the drawing itself is no further "
         "result."
     )
@@ -574,12 +574,12 @@ def test_a_side_an_earlier_certificate_first_stated_proves_no_new_bound() -> Non
         "Regularized by the Squares Project with Evan Daniel's regularizer, with none of "
         "the project's modifications established; whether its solve climbed a retry rung "
         "is not recorded. A regularization of T-101's packing solved to its side, not drawn "
-        "here; its exact side is registered in T-154, and the same side was first "
+        "here; its exact side is registered in T-155, and the same side was first "
         "certified by Evan Daniel's certificate (T-101), so it proves no new bound."
     )
     new = {key: value for key, value in undrawn.items() if key != "first_certified_in"}
     assert drawings.case_note([new]).endswith(
-        "its exact side is registered as T-154, the upper bound it proves."
+        "its exact side is registered as T-155, the upper bound it proves."
     )
     register = cast(
         Any,
@@ -606,12 +606,12 @@ def test_the_earlier_certificate_is_named_exactly_where_the_case_bound_rests_on_
     the bound are listed; a later result proving the same bound needs none (PR #585,
     review B1)."""
     holders = {
-        5: ["T-101", "T-154"],
-        6: ["T-101", "T-154"],
-        7: ["T-154"],
-        8: ["T-154"],
-        9: ["T-154", "T-160"],
-        10: ["T-101", "T-154"],
+        5: ["T-101", "T-155"],
+        6: ["T-101", "T-155"],
+        7: ["T-155"],
+        8: ["T-155"],
+        9: ["T-155", "T-160"],
+        10: ["T-101", "T-155"],
     }
     monkeypatch.setattr(drawings, "bound_holders", lambda n, _register: holders[n])
 
@@ -627,7 +627,7 @@ def test_the_earlier_certificate_is_named_exactly_where_the_case_bound_rests_on_
             results=[
                 {"id": "T-101", "attribution": {"published": "2026-10-05"}},
                 {
-                    "id": "T-154",
+                    "id": "T-155",
                     "established": "2026-10-12",
                     "regularizations": [
                         item(5, "T-101"),
@@ -644,17 +644,17 @@ def test_the_earlier_certificate_is_named_exactly_where_the_case_bound_rests_on_
     )
     assert drawings.first_certified_problems(register) == [
         (
-            "T-154's regularization at n = 6: the case's verified upper bound rests on "
+            "T-155's regularization at n = 6: the case's verified upper bound rests on "
             "['T-101'] as well, whose certificate stated the side first; name it as "
             "first_certified_in"
         ),
         (
-            "T-154's regularization at n = 7 names T-101 as first_certified_in, but the "
-            "case's verified upper bound rests on ['T-154']"
+            "T-155's regularization at n = 7 names T-101 as first_certified_in, but the "
+            "case's verified upper bound rests on ['T-155']"
         ),
         (
-            "T-154's regularization at n = 10 names T-160 as first_certified_in, but the "
-            "case's verified upper bound rests on ['T-101', 'T-154']"
+            "T-155's regularization at n = 10 names T-160 as first_certified_in, but the "
+            "case's verified upper bound rests on ['T-101', 'T-155']"
         ),
     ]
 
@@ -692,7 +692,7 @@ def test_a_registered_item_reads_the_rungs_of_the_solve_the_layer_draws(
     (tmp_path / "receipt.json").write_text(json.dumps(receipt), encoding="utf-8")
     results = [
         {
-            "id": "T-154",
+            "id": "T-155",
             "kind": "upper-bound",
             "artifacts": ["receipt.json"],
             "regularizations": [record],
@@ -719,11 +719,11 @@ def test_a_registered_item_reads_the_rungs_of_the_solve_the_layer_draws(
         found["regularization"] = {**found["regularization"], "method": EVAND_METHOD}
         found["run"] = {"id": run, "output": output}
         found["side"] = {"relation": "bound", "view": side}
-        return drawings.Drawn(found, drawings.Resolved("T-154", "x"), [])
+        return drawings.Drawn(found, drawings.Resolved("T-155", "x"), [])
 
     count = drawn()
     solves = drawings.recorded_solves([count], results, runs, repo=tmp_path)
-    assert solves == {("T-154", 5): count.entry}
+    assert solves == {("T-155", 5): count.entry}
     assert drawings.registered_modifications(record, GENERATORS, {}, count.entry) == ([], [])
     assert drawings.registered_modifications(record, GENERATORS, {}) == (
         [],
@@ -747,13 +747,13 @@ def test_a_registered_item_reads_the_rungs_of_the_solve_the_layer_draws(
     }
     copy = drawn("copied")
     found = drawings.recorded_solves([copy], results, [*runs, copied], repo=tmp_path)
-    assert found == {("T-154", 5): copy.entry}
+    assert found == {("T-155", 5): copy.entry}
     alone = drawings.recorded_solves([copy], results, [copied], repo=tmp_path)
     assert alone == {}
     bare = [{**results[0], "artifacts": []}]
     assert drawings.recorded_solves([count], bare, runs, repo=tmp_path) == {}
     text = f"""results:
-  - id: T-154
+  - id: T-155
     kind: upper-bound
     regularizations:
       - n: 5
@@ -774,19 +774,19 @@ def test_a_registered_item_reads_the_rungs_of_the_solve_the_layer_draws(
     assert drawings.registered_problems(written, GENERATORS) != []
 
 
-def test_t154_names_daniels_earlier_certificate_where_its_side_is_his() -> None:
-    """On the record: T-154's items that name `first_certified_in` are exactly the rows of
+def test_t155_names_daniels_earlier_certificate_where_its_side_is_his() -> None:
+    """On the record: T-155's items that name `first_certified_in` are exactly the rows of
     its registration receipt whose side is that of Evan Daniel's earlier certificate
     (`register_regularized_bounds.at_t101_side`), 33 of its 59, each naming T-101; eight
-    are drawn and 25 are not. Their case notes say the side is registered in T-154 and
+    are drawn and 25 are not. Their case notes say the side is registered in T-155 and
     was first certified by Evan Daniel's certificate (T-101), so it proves no new bound;
-    the other 26 say it is the upper bound it proves. The layer draws T-154's own solve
+    the other 26 say it is the upper bound it proves. The layer draws T-155's own solve
     at fourteen counts, whose items read their rungs from the drawn entries; at 87 it
-    draws a later run's view, so T-154's item there keeps the rungs unrecorded (PR #585,
+    draws a later run's view, so T-155's item there keeps the rungs unrecorded (PR #585,
     review B1, B2)."""
     register = drawings.load_register()
-    (t154,) = (result for result in register.results if result["id"] == "T-154")
-    items = {int(item["n"]): item for item in t154["regularizations"]}
+    (t155,) = (result for result in register.results if result["id"] == "T-155")
+    items = {int(item["n"]): item for item in t155["regularizations"]}
     receipt = json.loads(registration.SELECTION.read_text(encoding="utf-8"))
     at_daniel = {int(row["n"]) for row in receipt["rows"] if registration.at_t101_side(row)}
     named = {n for n, item in items.items() if item.get("first_certified_in")}
@@ -804,7 +804,7 @@ def test_t154_names_daniels_earlier_certificate_where_its_side_is_his() -> None:
     )
     assert drawn_named == [83, 87, 107, 171, 198, 230, 234, 293]
     first = (
-        "registered in T-154, and the same side was first certified by Evan Daniel's "
+        "registered in T-155, and the same side was first certified by Evan Daniel's "
         "certificate (T-101), so it proves no new bound"
     )
     for n in items:
@@ -813,14 +813,14 @@ def test_t154_names_daniels_earlier_certificate_where_its_side_is_his() -> None:
             assert first in note, n
             assert "the upper bound it proves" not in note, n
         else:
-            assert "registered as T-154, the upper bound it proves" in note, n
+            assert "registered as T-155, the upper bound it proves" in note, n
             assert "first certified" not in note, n
     solves = drawings.recorded_solves(drawn, register.results, index.get("runs") or [])
     assert sorted(n for _rid, n in solves) == [
         29, 37, 41, 50, 54, 71, 83, 107, 171, 178, 198, 230, 234, 293,
     ]  # fmt: skip
     for n, item in items.items():
-        assert ("modifications_unrecorded" in item) == (("T-154", n) not in solves), n
+        assert ("modifications_unrecorded" in item) == (("T-155", n) not in solves), n
 
 
 def test_the_generated_block_check_fails_on_an_edited_block() -> None:
