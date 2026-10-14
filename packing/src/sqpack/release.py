@@ -745,11 +745,6 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "paper:square-packing-methods-survey",
         ),
         paths=(
-            "packing/cases/n11_fractional_certificate/t-018-proof-card.md",
-            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-19-5.md",
-            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-381-100.md",
-            "packing/cases/n11_threshold_certificate/t-025-verifiable-claim-191-50.md",
-            "packing/cases/n11_threshold_certificate/t-026-verifiable-claim-dilation-limit.md",
             "packing/devtools/probes/measure_atlas_views/layout.js",
             "packing/devtools/probes/measure_atlas_views/widen.js",
             "packing/devtools/news_highlights.py",
@@ -758,8 +753,6 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "packing/devtools/render_overview.py",
             "packing/devtools/site_documents.py",
             "packing/devtools/templates/site-nav.html",
-            "packing/devtools/upper_bound_reports.py",
-            "packing/pyproject.toml",
         ),
         outputs=(
             "papers/n11-lower-bounds-explainer.html",
@@ -786,15 +779,10 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "Navigation, shared arrow motion and publication-link provenance are site "
             "chrome, not independent paper editions. "
             "Atlas measurement probes add report fields and remove the obsolete "
-            "screenshot width override. Exact comparison proves the five regenerated "
-            "claim documents retain the upstream c6118ca5 link revision; mathematical claims, "
-            "embedded certificates and verifiers remain "
-            "identical. The owning paper HTML/Markdown sources and PDF derivation paths "
-            "were reviewed; no byte-identical artifact build is claimed for News. "
-            "Upstream intake changes add a beyond-horizon register plan and HOUSES "
-            "readers through the atlas import closure, plus a BasedPyright include. "
-            "Its independent paper renders were compared against main at 37e6757ed; "
-            "they were identical after normalizing repository-link provenance."
+            "screenshot width override. The owning paper HTML/Markdown sources and PDF "
+            "derivation paths were reviewed; mathematical claims, embedded certificates "
+            "and verifiers are unchanged. No byte-identical artifact build is claimed "
+            "for News."
         ),
     ),
     ReleaseNoPublicChange(
