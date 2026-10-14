@@ -21,8 +21,9 @@ lanes:
   commit: 680123806e979029a25948aa98d9aaf5473ccc33
 - name: pr574
   branch: claude/wizardly-meitner-wqn4x3-intake-1014-pr574
-  commit: f817bf191f4320490b6a3e7031e7bd9464b2cbeb
-  note: not the lane's final head; the commit read on 2026-10-14
+  commit: 56cf868c617975eaada5b0c10dab953cc6fa2e37
+  note: the lane's final head (base b8c930338); its claim records differ from f817bf191, read
+    earlier on 2026-10-14, only in the replayed flags of 21 rational rows
 - name: main
   branch: main
   commit: 450bee031e14a4dc5f61861c2364fe22ff0e36ce
@@ -422,14 +423,14 @@ reports:
     refines:
       packing_of: Frits Göbel
       entry: '[Kingbird],'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 10
     refines:
       packing_of: Frits Göbel
       entry: '[Kingbird],'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 11
@@ -460,35 +461,35 @@ reports:
     refines:
       packing_of: Pertti Hämäläinen
       entry: '[Kingbird],'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 19
     refines:
       packing_of: Robert Wainwright
       entry: '[Kingbird],'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 26
     refines:
       packing_of: Erich Friedman
       entry: '[Kingbird],'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 27
     refines:
       packing_of: Frits Göbel
       entry: '[Kingbird],'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 28
     refines:
       packing_of: the Kingbird catalogue (David Ellsworth), verified by T-101's exact ceiling
       entry: T-101
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 29
@@ -498,7 +499,10 @@ reports:
     exact_from: packing/resources/web/pingyou-numerical-refinements-2026-10-13/claims.json
       (side_exact) at pull/574 head 4c319c24a6217dbbbf05e79ebb7e2dc5be0a2cde
     first_committed: '2026-10-13T00:24:05Z'
-    note: a v2 row the lane does not declare; the side is the pull request's own, not replayed
+    note: a v2 row the lane does not declare; the side is the pull request's own, not replayed;
+      the case record packing/frontier/n-029.md prints its verified value 5.93383346267692918974379895098,
+      5.43e-20 above its own exact form 296691673133846459484473030817600957/5e34, a defect
+      of the record; this ledger compares against the exact form
     refines:
       packing_of: Thomas Schadt
       entry: '[Kingbird]'
@@ -507,63 +511,63 @@ reports:
     refines:
       packing_of: the Kingbird catalogue (David W. Cantrell), verified by T-155's exact ceiling
       entry: T-155
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 38
     refines:
       packing_of: Frits Göbel
       entry: '[Kingbird],'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 39
     refines:
       packing_of: the Kingbird catalogue (Thomas Schadt), verified by T-101's exact ceiling
       entry: T-101
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 40
     refines:
       packing_of: Frits Göbel
       entry: '[Kingbird],'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 41
     refines:
       packing_of: the Kingbird catalogue (Thomas Schadt), verified by T-155's exact ceiling
       entry: T-155
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 50
     refines:
       packing_of: the Kingbird catalogue (Thomas Schadt), verified by T-155's exact ceiling
       entry: T-155
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 51
     refines:
       packing_of: Ryan Xu (ry-xu)
       entry: T-126
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 52
     refines:
       packing_of: Frits Göbel
       entry: '[Kingbird],'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 53
     refines:
       packing_of: David W. Cantrell
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 54
@@ -576,42 +580,42 @@ reports:
     refines:
       packing_of: the Kingbird catalogue (Thomas Schadt), verified by T-101's exact ceiling
       entry: T-101
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 65
     refines:
       packing_of: Frits Göbel
       entry: '[Kingbird],'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 66
     refines:
       packing_of: Evert Stenlund
       entry: '[Kingbird],'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 67
     refines:
       packing_of: Evert Stenlund
       entry: '[Kingbird],'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 68
     refines:
       packing_of: Francisco Couzo
       entry: T-118
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 69
     refines:
       packing_of: the Kingbird catalogue (Maurizio Morandi), verified by T-101's exact ceiling
       entry: T-101
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 70
@@ -623,105 +627,105 @@ reports:
     refines:
       packing_of: the Kingbird catalogue (Thomas Schadt), verified by T-155's exact ceiling
       entry: T-155
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 82
     refines:
       packing_of: Frits Göbel
       entry: '[Kingbird],'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 83
     refines:
       packing_of: the Kingbird catalogue (Károly Hajba), verified by T-101's exact ceiling
       entry: T-101
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 84
     refines:
       packing_of: Ryan Xu (ry-xu)
       entry: T-130
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 85
     refines:
       packing_of: Erich Friedman
       entry: '[Kingbird],'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 86
     refines:
       packing_of: Ryan Xu (ry-xu)
       entry: T-130
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 87
     refines:
       packing_of: the Kingbird catalogue (David Ellsworth), verified by T-101's exact ceiling
       entry: T-101
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 88
     refines:
       packing_of: Nate Chaoweeraprasit (itsnaka)
       entry: T-127
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 89
     refines:
       packing_of: Evert Stenlund
       entry: '[Kingbird],'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 101
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 102
     refines:
       packing_of: Ryan Xu (ry-xu)
       entry: T-146
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 103
     refines:
       packing_of: Ryan Xu (ry-xu)
       entry: T-146
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 104
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 105
     refines:
       packing_of: Ryan Xu (ry-xu)
       entry: T-130
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 106
     refines:
       packing_of: Francisco Couzo
       entry: T-098
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 107
@@ -734,70 +738,70 @@ reports:
     refines:
       packing_of: Ryan Xu (ry-xu)
       entry: T-128
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 109
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 110
     refines:
       packing_of: Francisco Couzo
       entry: T-098
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 122
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 123
     refines:
       packing_of: Ryan Xu (ry-xu)
       entry: T-146
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 124
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 125
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 126
     refines:
       packing_of: Ryan Xu (ry-xu)
       entry: T-139
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 127
     refines:
       packing_of: Ryan Xu (ry-xu)
       entry: T-128
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 128
     refines:
       packing_of: the Kingbird catalogue (David Ellsworth), verified by T-155's exact ceiling
       entry: T-155
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 129
@@ -812,28 +816,28 @@ reports:
     refines:
       packing_of: Nate Chaoweeraprasit (itsnaka)
       entry: T-127
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 131
     refines:
       packing_of: Nate Chaoweeraprasit (itsnaka)
       entry: T-136
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 132
     refines:
       packing_of: Evan Daniel
       entry: T-141
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 145
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 146
@@ -848,42 +852,42 @@ reports:
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 148
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 149
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 150
     refines:
       packing_of: David Ellsworth
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 151
     refines:
       packing_of: David Ellsworth
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 152
     refines:
       packing_of: Francisco Couzo
       entry: T-098
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 153
@@ -893,13 +897,13 @@ reports:
     refines:
       packing_of: PingYou Ltd
       entry: T-148
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         PingYou''s own constructions attained exactly, below T-148''s ceiling; think-9v2k'
   - n: 155
     refines:
       packing_of: Daniil Ostashev
       entry: T-149
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 156
@@ -914,35 +918,35 @@ reports:
     refines:
       packing_of: Károly Hajba
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 171
     refines:
       packing_of: the Kingbird catalogue (David Ellsworth), verified by T-101's exact ceiling
       entry: T-101
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 172
     refines:
       packing_of: Francisco Couzo
       entry: T-098
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 173
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 174
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 175
@@ -967,7 +971,7 @@ reports:
     refines:
       packing_of: Francisco Couzo
       entry: T-098
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 178
@@ -980,77 +984,77 @@ reports:
     refines:
       packing_of: Nate Chaoweeraprasit (itsnaka)
       entry: T-127
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 180
     refines:
       packing_of: Nate Chaoweeraprasit (itsnaka)
       entry: T-128
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 181
     refines:
       packing_of: Nate Chaoweeraprasit (itsnaka)
       entry: T-151
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 182
     refines:
       packing_of: Francisco Couzo
       entry: T-098
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 197
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 198
     refines:
       packing_of: the Kingbird catalogue (), verified by T-101's exact ceiling
       entry: T-101
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 199
     refines:
       packing_of: Nate Chaoweeraprasit (itsnaka)
       entry: T-127
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 200
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 201
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 202
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 203
     refines:
       packing_of: David Ellsworth
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 204
@@ -1065,90 +1069,90 @@ reports:
     refines:
       packing_of: the Kingbird catalogue (David Ellsworth), verified by T-101's exact ceiling
       entry: T-101
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 206
     refines:
       packing_of: Francisco Couzo
       entry: T-098
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 207
     refines:
       packing_of: PingYou Ltd
       entry: T-147
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         PingYou''s own constructions attained exactly, below T-147''s ceiling; think-9v2k'
   - n: 208
     refines:
       packing_of: Nate Chaoweeraprasit (itsnaka)
       entry: T-127
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 209
     refines:
       packing_of: Nate Chaoweeraprasit (itsnaka)
       entry: T-140
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 210
     refines:
       packing_of: Francisco Couzo
       entry: T-098
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 211
     refines:
       packing_of: Daniil Ostashev
       entry: T-149
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 226
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 227
     refines:
       packing_of: David Ellsworth
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 228
     refines:
       packing_of: Francisco Couzo
       entry: T-128
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 229
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 230
     refines:
       packing_of: the Kingbird catalogue (David Ellsworth), verified by T-101's exact ceiling
       entry: T-101
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 231
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 232
@@ -1165,14 +1169,14 @@ reports:
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 234
     refines:
       packing_of: David Ellsworth
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 235
@@ -1180,14 +1184,14 @@ reports:
       packing_of: the Kingbird catalogue (David Ellsworth, David W. Cantrell), verified by
         T-155's exact ceiling
       entry: T-155
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 236
     refines:
       packing_of: Nate Chaoweeraprasit (itsnaka)
       entry: T-146
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 237
@@ -1202,56 +1206,56 @@ reports:
     refines:
       packing_of: Nate Chaoweeraprasit (itsnaka)
       entry: T-151
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 239
     refines:
       packing_of: Nate Chaoweeraprasit (itsnaka)
       entry: T-151
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 240
     refines:
       packing_of: Francisco Couzo
       entry: T-098
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 241
     refines:
       packing_of: Francisco Couzo
       entry: T-098
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 257
     refines:
       packing_of: David Ellsworth
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 258
     refines:
       packing_of: Nate Chaoweeraprasit (itsnaka)
       entry: T-146
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 259
     refines:
       packing_of: Nate Chaoweeraprasit (itsnaka)
       entry: T-136
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 260
     refines:
       packing_of: David Ellsworth
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 261
@@ -1266,14 +1270,14 @@ reports:
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 263
     refines:
       packing_of: Nate Chaoweeraprasit (itsnaka)
       entry: T-146
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 264
@@ -1290,42 +1294,42 @@ reports:
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 266
     refines:
       packing_of: Evan Daniel
       entry: T-119
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 267
     refines:
       packing_of: Ryan Xu (ry-xu)
       entry: T-134
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 268
     refines:
       packing_of: Francisco Couzo
       entry: T-098
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 269
     refines:
       packing_of: Nate Chaoweeraprasit (itsnaka)
       entry: T-146
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 270
     refines:
       packing_of: Nate Chaoweeraprasit (itsnaka)
       entry: T-151
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 271
@@ -1340,98 +1344,98 @@ reports:
     refines:
       packing_of: Nate Chaoweeraprasit (itsnaka)
       entry: T-151
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 273
     refines:
       packing_of: Francisco Couzo
       entry: T-098
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 290
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 291
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 292
     refines:
       packing_of: Nate Chaoweeraprasit (itsnaka)
       entry: T-146
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 293
     refines:
       packing_of: the Kingbird catalogue (David Ellsworth), verified by T-101's exact ceiling
       entry: T-101
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 294
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 295
     refines:
       packing_of: Ryan Xu (ry-xu)
       entry: T-146
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 296
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 297
     refines:
       packing_of: Francisco Couzo
       entry: T-098
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 298
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 299
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 300
     refines:
       packing_of: the Kingbird catalogue (David Ellsworth), verified by T-155's exact ceiling
       entry: T-155
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 301
     refines:
       packing_of: Francisco Couzo
       entry: T-098
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 302
@@ -1456,35 +1460,35 @@ reports:
     refines:
       packing_of: Nate Chaoweeraprasit (itsnaka)
       entry: T-152
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 305
     refines:
       packing_of: Nate Chaoweeraprasit (itsnaka)
       entry: T-152
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 306
     refines:
       packing_of: Francisco Couzo
       entry: T-128
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 307
     refines:
       packing_of: Nate Chaoweeraprasit (itsnaka)
       entry: T-136
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
   - n: 308
     refines:
       packing_of: Kevin Fang
       entry: T-141
-      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
+      source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@56cf868c617975eaada5b0c10dab953cc6fa2e37:
         at 73 counts the margin is padding below a certificate of the same packing (the case''s,
         as frozen in its claims.json); think-9v2k'
 - report: '#575'

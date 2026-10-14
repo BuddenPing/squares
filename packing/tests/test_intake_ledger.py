@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import json
 from fractions import Fraction
 from pathlib import Path
 from typing import Any, cast
@@ -317,6 +318,53 @@ def test_render_reads_the_frozen_starts_and_never_the_tree(
     (tmp_path / ledger.STARTS).write_text(yaml.safe_dump(stale), encoding="utf-8")
     with pytest.raises(ledger.LedgerError, match="read at"):
         ledger.rendered(tmp_path)
+
+
+def test_gather_keeps_the_frozen_starts_and_reads_the_tree_only_to_refresh_them(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    read_at_main = "f" * 40
+    sources = {
+        "format": ledger.SOURCES_FORMAT,
+        "read_at_main": read_at_main,
+        "read_on": "2026-10-14",
+        "rule": "the owner's rule",
+        "lanes": [],
+        "reports": [
+            {
+                "report": "owner/repo@abc1234",
+                "url": "https://github.com/owner/repo/tree/abc1234",
+                "reported_at": CLAIM_TIME,
+                "holders": "A",
+                "claims": [{"n": 100, "printed": "10.4", "rounding": "up", "exact": "52/5"}],
+            }
+        ],
+    }
+    (tmp_path / ledger.SOURCES).write_text(yaml.safe_dump(sources), encoding="utf-8")
+    snapshot = {"format": ledger.SNAPSHOT_FORMAT, "items": []}
+    (tmp_path / ledger.SNAPSHOT).write_text(json.dumps(snapshot), encoding="utf-8")
+    member = ledger.lane_member(
+        100, "reported", {"value": "10.5", "exact_form": "21/2"}, ["T-1"]
+    )
+    frozen = yaml.safe_dump(ledger.starts_document(read_at_main, {100: [member]}))
+    (tmp_path / ledger.STARTS).write_text(frozen, encoding="utf-8")
+
+    def refuse(*_: object) -> None:
+        raise AssertionError("gather read the tree")
+
+    monkeypatch.setattr(ledger, "tree_members", refuse)
+    monkeypatch.setattr(ledger, "frontier_differs", refuse)
+    assert ledger.gather(tmp_path, snapshot=True) == []
+    assert (tmp_path / ledger.STARTS).read_text(encoding="utf-8") == frozen
+    assert [report["report"] for report in ledger.load_ledger(tmp_path)["reports"]] == [
+        "owner/repo@abc1234"
+    ]
+    with pytest.raises(AssertionError, match="read the tree"):
+        ledger.gather(tmp_path, snapshot=True, refresh_starts=True)
+    sources["reports"][0]["claims"][0]["n"] = 101
+    (tmp_path / ledger.SOURCES).write_text(yaml.safe_dump(sources), encoding="utf-8")
+    with pytest.raises(ledger.LedgerError, match=r"no start at n = \[101\]"):
+        ledger.gather(tmp_path, snapshot=True)
 
 
 def test_a_lane_row_no_report_takes_is_refused() -> None:

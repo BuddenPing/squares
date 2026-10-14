@@ -25,7 +25,7 @@ Exact sides marked as a lane's come from these commits' `acquisition/claims.json
 | couzo | `claude/wizardly-meitner-wqn4x3-intake-1014-couzo` | `f8ecf2173fa69c32729e1251cdeb96a6c3007f74` |  |
 | mishapolk | `claude/wizardly-meitner-wqn4x3-intake-1014-mishapolk` | `d4c198d0da8fe619bef0bccf18a8e6e32520c0f3` |  |
 | pingyou | `claude/wizardly-meitner-wqn4x3-intake-1014-pingyou` | `680123806e979029a25948aa98d9aaf5473ccc33` |  |
-| pr574 | `claude/wizardly-meitner-wqn4x3-intake-1014-pr574` | `f817bf191f4320490b6a3e7031e7bd9464b2cbeb` | not the lane's final head; the commit read on 2026-10-14 |
+| pr574 | `claude/wizardly-meitner-wqn4x3-intake-1014-pr574` | `56cf868c617975eaada5b0c10dab953cc6fa2e37` | the lane's final head (base b8c930338); its claim records differ from f817bf191, read earlier on 2026-10-14, only in the replayed flags of 21 rational rows |
 | main | `main` | `450bee031e14a4dc5f61861c2364fe22ff0e36ce` | the fang-certs lane's packet as merged; Fang's exact sides at 380 to 382 |
 | ostashev | `claude/wizardly-meitner-wqn4x3-intake-1014-ostashev` | `8d396177be2f7e5067a1d41d1edff12075f6d7af` |  |
 
@@ -359,7 +359,8 @@ From `ledger.yaml`; a note that several claims share is one row.
 | #570 | 379 | the certificate #570 names (SHA-256 ac463682...) is in no reachable commit of the source |
 | #573 | 108, 127, 131, 154, 175, 180, 236, 237, 263, 267, 302, 303, 306 | printed in https://github.com/Mishapolk/square-packing-records/blob/336bdf5efab4784e54e0ac32edf3ed12f9c8af7e/README.md |
 | PR #574 | 5, 10, 18, 19, 26, 27, 38, 40, 51, 52, 65-67, 82, 85, 89, 101, 104, 109, 122, 124, 125, 145, 147-150, 170, 173, 174, 197, 200-203, 226, 227, 229, 231, 233, 234, 257, 260, 262, 265, 290, 291, 294, 296, 298, 299 | algebraic side of degree 2; the print is the lane's |
-| PR #574 | 11, 17, 29 | a v2 row the lane does not declare; the side is the pull request's own, not replayed |
+| PR #574 | 11, 17 | a v2 row the lane does not declare; the side is the pull request's own, not replayed |
+| PR #574 | 29 | a v2 row the lane does not declare; the side is the pull request's own, not replayed; the case record packing/frontier/n-029.md prints its verified value 5.93383346267692918974379895098, 5.43e-20 above its own exact form 296691673133846459484473030817600957/5e34, a defect of the record; this ledger compares against the exact form |
 | PR #574 | 53 | algebraic side of degree 8; the print is the lane's |
 | PR #574 | 54, 107, 151, 178 | algebraic side of degree 4; the print is the lane's |
 | PR #574 | 70, 207 | algebraic side of degree 5; the print is the lane's |

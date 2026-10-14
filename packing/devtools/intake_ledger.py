@@ -50,14 +50,16 @@ the rendered ``ledger.json`` and ``README.md``.
 
 From ``packing/``, with the project interpreter::
 
-    python -m devtools.intake_ledger gather [DIR] [--snapshot]
+    python -m devtools.intake_ledger gather [DIR] [--snapshot] [--refresh-starts]
     python -m devtools.intake_ledger render [DIR] [--write | --check]
     python -m devtools.intake_ledger check [DIR] [--tree]
 
 ``gather`` reads GitHub through ``gh`` (``--snapshot`` reuses ``github-issues.json``) and
 the lanes' records with ``git show COMMIT:PATH``; it may need the network and runs in no
-validation tier. ``render`` and ``check`` are offline; ``render --check`` fails when
-either rendered file would change.
+validation tier. It keeps a ``starts.yaml`` already frozen at ``read_at_main`` and reads
+the starts from the checkout only when there is none or ``--refresh-starts`` asks.
+``render`` and ``check`` are offline; ``render --check`` fails when either rendered file
+would change.
 """
 
 from __future__ import annotations
@@ -2285,18 +2287,29 @@ def _later(claim: Claim, reported_at: str) -> Claim:
     return claim
 
 
-def gather(directory: Path, *, snapshot: bool = False, api: Fetch = _gh_api) -> list[str]:
-    """Write ``github-issues.json``, ``ledger.yaml`` and ``starts.yaml``; return the
-    cross-check warnings, which ``ledger.yaml`` keeps too.
+def gather(
+    directory: Path,
+    *,
+    snapshot: bool = False,
+    refresh_starts: bool = False,
+    api: Fetch = _gh_api,
+) -> list[str]:
+    """Write ``github-issues.json`` and ``ledger.yaml``, and ``starts.yaml`` when there is
+    none or ``refresh_starts`` asks; return the cross-check warnings, which ``ledger.yaml``
+    keeps too.
 
-    The starts are read from the checkout's records, which must be ``read_at_main``'s, so
-    the frozen starts are the ones the ledger says it was decided against.
+    A ``starts.yaml`` already frozen at ``read_at_main`` is kept as it is, so that reading a
+    lane again never moves a start, and a ledger with a count it holds no start for is
+    refused. Writing the starts reads the checkout's records, which must then be
+    ``read_at_main``'s, so the frozen starts are the ones the ledger says it was decided
+    against.
     """
     sources = load_yaml(directory / SOURCES)
     _require(sources.get("format") == SOURCES_FORMAT, f"{SOURCES} format")
     read_at_main = str(sources["read_at_main"])
+    keep = (directory / STARTS).is_file() and not refresh_starts
     _require(
-        not frontier_differs(read_at_main),
+        keep or not frontier_differs(read_at_main),
         f"packing/frontier/ differs from read_at_main {read_at_main[:12]}: gather the starts "
         "from a checkout of it, or move read_at_main",
     )
@@ -2356,12 +2369,22 @@ def gather(directory: Path, *, snapshot: bool = False, api: Fetch = _gh_api) -> 
     ledger["cross_check"] = warnings
     found = problems(ledger)
     _require(not found, "; ".join(found))
-    starts = starts_document(read_at_main, tree_members(counts_of(ledger)))
-    texts = (
+    texts = [
         (SNAPSHOT, json_text({"format": SNAPSHOT_FORMAT, "items": github})),
         (LEDGER, yaml.safe_dump(ledger, sort_keys=False, allow_unicode=True, width=88)),
-        (STARTS, yaml.safe_dump(starts, sort_keys=False, allow_unicode=True, width=88)),
-    )
+    ]
+    if keep:
+        missing = sorted(set(counts_of(ledger)) - set(load_starts(directory, read_at_main)))
+        _require(
+            not missing,
+            f"{STARTS} has no start at n = {missing}: gather --refresh-starts from a checkout "
+            f"of read_at_main {read_at_main[:12]}",
+        )
+    else:
+        starts = starts_document(read_at_main, tree_members(counts_of(ledger)))
+        texts.append(
+            (STARTS, yaml.safe_dump(starts, sort_keys=False, allow_unicode=True, width=88))
+        )
     for name, text in texts:
         with atomic_output_file(directory / name) as temporary:
             Path(temporary).write_text(text, encoding="utf-8")
@@ -2466,6 +2489,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         command.add_argument("directory", type=Path, nargs="?", default=DEFAULT_DIRECTORY)
         if name == "gather":
             command.add_argument("--snapshot", action="store_true")
+            command.add_argument(
+                "--refresh-starts",
+                action="store_true",
+                help=f"read the starts from the checkout again, replacing {STARTS}",
+            )
         if name == "check":
             command.add_argument(
                 "--tree",
@@ -2481,10 +2509,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     directory = cast("Path", args.directory).resolve()
     if args.action == "gather":
-        warnings = gather(directory, snapshot=args.snapshot)
+        kept = (directory / STARTS).is_file() and not args.refresh_starts
+        warnings = gather(directory, snapshot=args.snapshot, refresh_starts=args.refresh_starts)
         for warning in warnings:
             print(f"WARN  {warning}")
-        print(f"wrote {SNAPSHOT}, {LEDGER} and {STARTS}; {len(warnings)} cross-check warnings")
+        wrote = (
+            f"wrote {SNAPSHOT} and {LEDGER}, kept {STARTS}"
+            if kept
+            else f"wrote {SNAPSHOT}, {LEDGER} and {STARTS}"
+        )
+        print(f"{wrote}; {len(warnings)} cross-check warnings")
         return 0
     if args.action == "check":
         ledger = load_ledger(directory)
