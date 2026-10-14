@@ -186,8 +186,10 @@ manually maintained source.
 Publish the complete history at `news.html`, with News as the second navigation item.
 Use the usual uppercase sans-serif H1 and sans-serif operational text, with one
 hairline-bordered card per entry.
-Dates use the paper heading’s sans-base date role; entry headings reuse the compact
-small-caps label role.
+Each card places the paper heading’s sans-base date above an ordinary H3 in the theme’s
+text foreground, followed by smaller Results-style topic chips and the article.
+Homepage News and the archive share the component and CSS roles; topic chips retain
+shared fills, corners and leading at 85% of the note-size chip scale.
 Each card contains its actual article once, with about ten lines visible after the
 enhancement loads. Click or tap the card or its small shared arrow button in the footer
 to expand or contract it inline; Enter and Space activate the button.
@@ -200,10 +202,19 @@ Entry and legacy date fragments reveal the corresponding card.
 Topic chips reuse the Results chips with separate subject metadata: lower bounds, upper
 bounds, optimality, engineering, verification and documentation.
 They classify the article’s subject without changing proof or verification status.
+A result kind without an accurate topic mapping omits that subject tag while preserving
+its real kind, claim, credit and evidence.
 The homepage highlights the three newest S5 results from the authoritative results
 register, followed by the shared “All news →” action.
 These highlights reuse result claims, credit and evidence without inventing changelog
 launch entries for older results.
+Explanations combines the former Papers and Visualize navigation entries.
+Its existing section-tab design links Papers (`papers.html`), Film (`visualize.html`)
+and Workbench (`workbench/`); all three retain their URLs and share the active
+Explanations entry. The landing page’s H1 is Explanations.
+The homepage browser title and sharing title are The Squares Project, from the existing
+project-name constant.
+
 About retains one short News link at its former changelog section; hidden legacy anchors
 forward old entry and date bookmarks without duplicating the feed.
 Entry links retain `#changelog-entry-<id>` in both reader views; date headings retain

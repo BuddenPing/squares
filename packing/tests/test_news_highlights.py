@@ -8,7 +8,13 @@ from dataclasses import replace
 
 import pytest
 
-from devtools import news_highlights, overview_data, overview_sections, render_changelog
+from devtools import (
+    check_results,
+    news_highlights,
+    overview_data,
+    overview_sections,
+    render_changelog,
+)
 from tests import site_renders
 
 
@@ -22,7 +28,10 @@ def _candidate(
 ) -> overview_data.Result:
     record = copy.deepcopy(original.record)
     record["id"] = result_id
-    record["attribution"]["published"] = day
+    if record.get("attribution"):
+        record["attribution"]["published"] = day
+    else:
+        record["established"] = day
     record["significance"]["score"] = score
     return replace(original, record=record)
 
@@ -134,3 +143,42 @@ def test_news_reads_no_launch_history_and_mutates_no_result_record(
     monkeypatch.setattr(render_changelog, "load", no_history)
     assert news_highlights.render(overview)
     assert overview == before
+
+
+@pytest.mark.parametrize("kind", check_results.KINDS)
+def test_every_accepted_result_kind_renders_without_inventing_a_topic(
+    overview: overview_data.Overview, kind: str
+) -> None:
+    candidate = _candidate(overview.results[0], "T-999", "2026-10-14")
+    candidate.record["kind"] = kind
+    rendered = news_highlights.render(replace(overview, results=[candidate]))
+    topics = re.findall(r'data-news-topic="([^"]+)"', rendered)
+    expected = {
+        "lower-bound": "lower-bound",
+        "upper-bound": "upper-bound",
+        "optimality": "optimality",
+        "formalization": "optimality",
+        "simplification": "optimality",
+    }
+    assert topics == ([expected[kind]] if kind in expected else [])
+    assert overview_sections.status_chips(candidate) in rendered
+    assert overview_sections.credit_cell(candidate.credit) in rendered
+    assert overview_data.prose_html(candidate.record["claim"], between="</p><p>") in rendered
+
+
+def test_a_real_rigidity_result_can_enter_the_s5_news_without_changing_its_claim(
+    overview: overview_data.Overview,
+) -> None:
+    original = next(result for result in overview.results if result.id == "T-012")
+    candidate = _candidate(original, original.id, "2026-10-14")
+    assert candidate.record["kind"] == "rigidity"
+    example = replace(overview, results=[candidate, *overview.results])
+    assert news_highlights.highlights(example)[0] is candidate
+    rendered = news_highlights.render(example)
+    article = rendered.split('data-news-entry="T-012">', 1)[1].split("</article>", 1)[0]
+    assert "data-news-topic" not in article
+    assert overview_sections.status_chips(candidate) in article
+    assert overview_sections.credit_cell(original.credit) in article
+    assert overview_data.prose_html(original.record["claim"], between="</p><p>") in article
+    with pytest.raises(ValueError, match="unknown News topic"):
+        render_changelog.news_topics(["rigidity"])

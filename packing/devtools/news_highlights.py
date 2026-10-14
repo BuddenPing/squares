@@ -7,6 +7,18 @@ from devtools.overview_data import Overview, Result, prose_html, tex_bounds
 
 LIMIT = 3
 
+# Topics describe subjects, independently of the register's result-kind vocabulary.
+# The two second-proof kinds retain the optimality subject used by the current feed.
+# Other kinds can concern narrower structural or methodological claims; omit a topic
+# rather than recasting them as an unrestricted bound or an evidence assessment.
+TOPIC_BY_KIND = {
+    "lower-bound": "lower-bound",
+    "upper-bound": "upper-bound",
+    "optimality": "optimality",
+    "formalization": "optimality",
+    "simplification": "optimality",
+}
+
 
 def highlights(overview: Overview) -> tuple[Result, ...]:
     """Keep the register's displayed-date and ID order, without an age cutoff."""
@@ -21,7 +33,7 @@ def _article(result: Result) -> str:
     claim = prose_html(result.record["claim"], between="</p><p>")
     rationale = prose_html(result.record["significance"]["rationale"], between="</p><p>")
     kind = result.record["kind"]
-    topic = "optimality" if kind in {"formalization", "simplification"} else kind
+    topic = TOPIC_BY_KIND.get(kind)
     qualifier = (
         '<p class="site-result-meta">Reported result: this project has not verified '
         "the complete claim.</p>"
@@ -30,8 +42,8 @@ def _article(result: Result) -> str:
     )
     return (
         f'<article class="site-news-item" data-news-entry="{result.id}">'
-        f"{render_changelog.news_topics([topic])}"
         f"<h3>{tex_bounds(result.summary)}</h3>"
+        f"{render_changelog.news_topics([topic] if topic else [])}"
         f'<p class="site-result-status">{overview_sections.status_chips(result)}</p>'
         f'<p class="site-result-meta">{overview_sections.date_cell(result)} · '
         f"{overview_sections.credit_cell(result.credit)}</p>"

@@ -153,7 +153,7 @@ def paper_files(page: str) -> tuple[str, str]:
 OPTIMALITY_PAPER_MARKDOWN, _OPTIMALITY_PAPER_PDF = paper_files(OPTIMALITY_PAPER)
 OPTIMALITY_PAPER_FILES = paper_files(OPTIMALITY_PAPER)
 #: The bar's current entry on a paper's page, a level below the root.
-PAPERS_CURRENT = '<a data-page="papers" aria-current="page" href="../papers.html">'
+PAPERS_CURRENT = '<a data-page="explanations" aria-current="page" href="../papers.html">'
 
 #: Every file the deploy serves with the lower-bounds explainer, by path under the site's
 #: root: its Markdown and PDF beside it, and the atlas's files at the root.

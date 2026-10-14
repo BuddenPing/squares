@@ -4,6 +4,8 @@
   if (!(atlas instanceof HTMLElement)) {
     throw new Error("the measured Atlas is missing");
   }
+  // This synthetic control must take effect synchronously, even under reduced motion.
+  atlas.style.transition = "none";
   atlas.style.setProperty("--site-wide", "140rem");
   // Other wide-track rules can grow past that token; enforce the restored cap itself.
   atlas.style.maxWidth = "140rem";

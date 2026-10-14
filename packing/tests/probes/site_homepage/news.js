@@ -6,7 +6,28 @@
     throw new Error("News content and its shared heading must be present");
   }
   const headingStyle = getComputedStyle(heading);
+  /** @param {Element} element */
+  const typography = (element) => {
+    const style = getComputedStyle(element);
+    return {
+      family: style.fontFamily,
+      size: style.fontSize,
+      weight: style.fontWeight,
+      leading: style.lineHeight,
+      color: style.color,
+      spacing: style.letterSpacing,
+      transform: style.textTransform,
+    };
+  };
+  // Measure the page's ordinary H3 role outside News, without copying its CSS.
+  const reference = document.createElement("h3");
+  reference.textContent = "Reference heading";
+  news.parentElement?.append(reference);
+  const referenceH3 = typography(reference);
+  reference.remove();
   return {
+    reference_h3: referenceH3,
+    text_color: getComputedStyle(news).color,
     family: getComputedStyle(news).fontFamily,
     heading: { family: headingStyle.fontFamily, transform: headingStyle.textTransform },
     entries: [...news.querySelectorAll("[data-news-entry]")].map((item) =>
@@ -19,6 +40,9 @@
       const prose = day.querySelector(".site-news-item p");
       const title = day.querySelector(".site-news-item h3");
       const date = day.querySelector("time");
+      const topics = day.querySelector(".site-news-topics");
+      const titleBox = title?.getBoundingClientRect();
+      const topicBox = topics?.getBoundingClientRect();
       const button = day.querySelector(".site-news-expand");
       const arrow = button?.querySelector("[data-arrow]");
       return {
@@ -40,6 +64,12 @@
         arrow_transition: arrow ? getComputedStyle(arrow).transitionProperty : null,
         date_transform: date ? getComputedStyle(date).textTransform : null,
         title_transform: title ? getComputedStyle(title).textTransform : null,
+        title_style: title ? typography(title) : null,
+        topic_styles: [...(topics?.querySelectorAll(".site-chip") ?? [])].map(typography),
+        date_before_title:
+          !!date && !!titleBox && date.getBoundingClientRect().bottom <= titleBox.top,
+        title_before_topics: !topicBox || (!!titleBox && titleBox.bottom <= topicBox.top),
+        topics_after_title: !topics || topics.previousElementSibling === title,
         date_size: date ? Number.parseFloat(getComputedStyle(date).fontSize) : 0,
         title_size: title ? Number.parseFloat(getComputedStyle(title).fontSize) : 0,
         border: Number.parseFloat(style.borderTopWidth),

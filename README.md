@@ -14,8 +14,7 @@ All of it is generated from the record in this repository.
 [Atlas](https://jlevy.github.io/squares/atlas.html) ·
 [Results](https://jlevy.github.io/squares/results.html) ·
 [Frontier Survey](https://jlevy.github.io/squares/atlas.html#the-frontier-survey) ·
-[Papers](https://jlevy.github.io/squares/papers.html) ·
-[Visualize](https://jlevy.github.io/squares/visualize.html) ·
+[Explanations](https://jlevy.github.io/squares/papers.html) ·
 [About](https://jlevy.github.io/squares/about.html)
 
 [![The best known packings of n = 1 to 324 unit squares, one row for each perfect square, from the atlas on The Squares Project website](docs/images/atlas-triangle-1-324.png)](https://jlevy.github.io/squares/)

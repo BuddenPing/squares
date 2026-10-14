@@ -1,8 +1,11 @@
 <div class="site-hero">
 
-# Papers
+# Explanations
 
 </div>
+
+Papers, films and the interactive Workbench explain the packing problem from different
+angles. The tabs above open each collection.
 
 The $n = 11$ series:
 

@@ -175,8 +175,8 @@ ATLAS_DESCRIPTION = (
     "squares, with drawings, case records and the complete Frontier Survey."
 )
 PAPERS_DESCRIPTION = (
-    "Square packing from first principles, how record packings are found and verified, "
-    "and a three-part n = 11 series on lower bounds and optimality."
+    "Tutorials, papers and PDFs on square packing, with films and an interactive "
+    "workbench for exploring the problem and its proofs."
 )
 VISUALIZE_DESCRIPTION = (
     "The best packings known of n unit squares, n = 1 to 324, built one square at a "
@@ -200,9 +200,10 @@ def film_release_date() -> str:
     return f"{day.day} {day:%B}"
 
 
-#: The Visualize section's tabs, each its own page: its key, where it is served from the
-#: site's root, and its label. The film is the section's first tab and the bar's target.
+#: The Explanations section reuses the existing papers, film and workbench addresses.
+#: Each tab names its key, its address from the site root, and its label.
 VISUALIZE_TABS: tuple[tuple[str, str, str], ...] = (
+    ("papers", "papers.html", "Papers"),
     ("film", "visualize.html", "Film"),
     ("workbench", "workbench/", "Workbench"),
 )
@@ -827,6 +828,8 @@ def nav_html(current: str, *, root: str = "") -> str:
     """The navigation bar, with the current page marked."""
     nav = SITE_NAV.read_text(encoding="utf-8")
     nav = nav.replace("{{ROOT}}", root)
+    # Existing paper renderers and film callers share the Explanations destination.
+    current = {"papers": "explanations", "visualize": "explanations"}.get(current, current)
     marker = f'data-page="{current}"'
     if marker not in nav:
         raise SystemExit(f"site-nav.html has no entry for {current!r}")
@@ -899,7 +902,7 @@ def nav_shell(current: str, *, root: str, tabs: str = "") -> NavShell:
 
 
 def visualize_tabs(current: str, *, root: str = "") -> str:
-    """The Visualize section's tab bar, with the current tab marked.
+    """The Explanations section's tab bar, with the current tab marked.
 
     Each tab is a real link to its own page, so the bar needs no script and a tab can be
     opened, bookmarked and shared. Its look is `.site-tabs` in `site-nav.css`, the one
@@ -908,13 +911,13 @@ def visualize_tabs(current: str, *, root: str = "") -> str:
     the bar, not the slot, carries the rule on a page that has them.
     """
     if current not in {key for key, _, _ in VISUALIZE_TABS}:
-        raise SystemExit(f"the Visualize section has no tab {current!r}")
+        raise SystemExit(f"the Explanations section has no tab {current!r}")
     links = "".join(
         f'<a data-tab="{key}"{' aria-current="page"' if key == current else ""} '
         f'href="{root}{href}">{html.escape(label)}</a>'
         for key, href, label in VISUALIZE_TABS
     )
-    return f'<nav class="site-tabs" aria-label="Visualize">{links}</nav>'
+    return f'<nav class="site-tabs" aria-label="Explanations">{links}</nav>'
 
 
 #: The icon's size in a tab, in CSS pixels: whole pixels, so its one-pixel frame
@@ -1285,7 +1288,7 @@ def overview_page() -> Page:
         markdown,
         name="index.html",
         current="overview",
-        title="Square Packing: Bounds, Results and Best Packings",
+        title=PROJECT_NAME,
         description=OVERVIEW_DESCRIPTION,
         toc=False,
         rewrite_body=_case_links,
@@ -1436,10 +1439,11 @@ def papers_page() -> Page:
     return kpress_page(
         markdown,
         name="papers.html",
-        current="papers",
-        title="Papers",
+        current="explanations",
+        title="Explanations",
         description=PAPERS_DESCRIPTION,
         toc=False,
+        tabs=visualize_tabs("papers"),
     )
 
 
@@ -1531,7 +1535,7 @@ def visualize_page() -> Page:
     return kpress_page(
         markdown,
         name="visualize.html",
-        current="visualize",
+        current="explanations",
         title="Visualize",
         description=VISUALIZE_DESCRIPTION,
         toc=False,

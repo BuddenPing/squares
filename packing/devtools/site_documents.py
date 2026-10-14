@@ -1,6 +1,6 @@
 """The reader documents as site pages, with every link made to work off GitHub.
 
-The tutorial is one of the papers the navigation's Papers entry leads to (`papers.html`)
+The tutorial is one of the papers the navigation's Explanations entry leads to (`papers.html`)
 and marks current; the README, `epistemics.md`, the synopsis and the two reference
 documents are pages the navigation does not list, reached from the overview's cards,
 whose popovers frame them. Each is written to be read on GitHub, where a relative link
@@ -129,7 +129,7 @@ def _document(path: str, name: str, title: str, description: str) -> SiteDocumen
 
 
 DOCUMENTS: tuple[SiteDocument, ...] = (
-    # A paper, so the bar's Papers entry is current on it, as on the explainer.
+    # A paper, so the bar's Explanations entry is current on it, as on the explainer.
     SiteDocument(
         TUTORIAL,
         "tutorial.html",

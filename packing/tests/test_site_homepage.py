@@ -17,7 +17,13 @@ from urllib.parse import parse_qs, urlsplit
 
 import pytest
 
-from devtools import overview_sections, render_changelog, render_overview, site_assets
+from devtools import (
+    news_highlights,
+    overview_sections,
+    render_changelog,
+    render_overview,
+    site_assets,
+)
 from devtools.render_n11_lower_bounds_explainer import COMPOSITE_ASSETS
 from sqpack.probes import probe
 from tests import site_browser, site_renders
@@ -697,7 +703,13 @@ def test_homepage_order_chrome_and_single_card_rows_keep_the_shared_design(
         "more-resources",
     ]
     assert len(home["section_title_styles"]) == 8
-    assert home["lower_headings"] == 2
+    selected = news_highlights.highlights(site_renders.overview())
+    assert [heading["entry"] for heading in home["news_headings"]] == [
+        result.id for result in selected
+    ]
+    assert len(home["news_headings"]) == 3
+    assert all(heading["title"] for heading in home["news_headings"])
+    assert home["other_lower_headings"] == []
     assert all(style == home["main_title_style"] for style in home["section_title_styles"])
     assert home["recent_title"] == "Recent Major Results"
     assert home["media"] == {
@@ -899,15 +911,23 @@ def test_news_cards_expand_only_on_press_and_legacy_bookmarks_forward(
         assert len(news["days"]) == len(document["entries"])
         assert news["heading"]["transform"] == "uppercase"
         assert news["family"] == news["heading"]["family"]
-        assert news["overflow"] == 0
-        for day in news["days"]:
-            assert day["border"] == 1
-            assert 0 <= day["left"] < day["right"] <= width
-            assert day["family"] == news["family"]
-            assert day["body_family"] == news["family"]
-            assert day["date_transform"] == "none"
-            assert day["title_transform"] == "uppercase"
-            assert day["title_size"] < day["date_size"]
+        assert preview["reference_h3"] == news["reference_h3"]
+        for surface in (preview, news):
+            assert surface["overflow"] == 0
+            for day in surface["days"]:
+                assert day["border"] == 1
+                assert 0 <= day["left"] < day["right"] <= width
+                assert day["family"] == surface["family"]
+                assert day["body_family"] == surface["family"]
+                assert day["date_transform"] == "none"
+                assert day["title_style"] == surface["reference_h3"]
+                assert day["title_style"]["color"] == surface["text_color"]
+                assert day["date_before_title"]
+                assert day["title_before_topics"]
+                assert day["topics_after_title"]
+                for topic in day["topic_styles"]:
+                    assert float(topic["size"].removesuffix("px")) < day["title_size"]
+                    assert topic["family"] == day["title_style"]["family"]
         card = page.locator("[data-news-day].is-collapsed").first
         card_id = card.get_attribute("id")
         assert card_id is not None

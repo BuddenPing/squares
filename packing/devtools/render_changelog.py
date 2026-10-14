@@ -733,7 +733,7 @@ def render_news(document: Document, *, limit: int | None = None) -> str:
             seen_dates.add(entry["date"])
         article.append(
             f'<article class="site-news-item" data-news-entry="{entry["id"]}">'
-            f"{news_topics(entry.get('topics', []))}<h3>{title}</h3>"
+            f"<h3>{title}</h3>{news_topics(entry.get('topics', []))}"
         )
         article.extend(
             _prose(field, destination="site")
