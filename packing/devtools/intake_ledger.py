@@ -55,11 +55,15 @@ From ``packing/``, with the project interpreter::
     python -m devtools.intake_ledger check [DIR] [--tree]
 
 ``gather`` reads GitHub through ``gh`` (``--snapshot`` reuses ``github-issues.json``) and
-the lanes' records with ``git show COMMIT:PATH``; it may need the network and runs in no
+each lane's claim record by path: the packet's ``acquisition/`` record where the checkout
+holds it, else the copy retained under ``lane-claims/<lane>/<packet>/`` in the intake
+directory, whose README gives each copy's branch, commit and path. A lane's commit is
+provenance only; nothing reads it. ``gather`` may need the network and runs in no
 validation tier. It keeps a ``starts.yaml`` already frozen at ``read_at_main`` and reads
-the starts from the checkout only when there is none or ``--refresh-starts`` asks.
-``render`` and ``check`` are offline; ``render --check`` fails when either rendered file
-would change.
+the starts from the checkout only when there is none or ``--refresh-starts`` asks, which
+is run from a checkout of ``read_at_main`` (``check --tree`` reports where the checkout's
+records give other starts). ``render`` and ``check`` are offline; ``render --check``
+fails when either rendered file would change.
 """
 
 from __future__ import annotations
@@ -99,6 +103,8 @@ SOURCES = "sources.yaml"
 SNAPSHOT = "github-issues.json"
 LEDGER = "ledger.yaml"
 STARTS = "starts.yaml"
+#: Where the lanes' claim records the checkout does not hold are retained (`lane_record`).
+LANE_CLAIMS = "lane-claims"
 VERDICTS = "ledger.json"
 README = "README.md"
 LEDGER_FORMAT = "intake-ledger-v1"
@@ -215,7 +221,8 @@ class Claim(TypedDict):
 
 
 class Lane(TypedDict):
-    """A lane's branch and the commit whose frozen claim records the ledger read."""
+    """A lane's branch and the commit its frozen claim records were taken at, as
+    provenance: the records are read by path (`lane_record`), never at the commit."""
 
     name: str
     branch: str
@@ -1705,8 +1712,11 @@ def readme(ledger: Ledger, verdicts: Mapping[str, Any]) -> str:
         "## Lane Records Read",
         "",
         (
-            "Exact sides marked as a lane's come from these commits' `acquisition/claims.json` "
-            "(and `algebraic-claims.json`) files."
+            "Exact sides marked as a lane's come from its `acquisition/claims.json` (and "
+            "`algebraic-claims.json`) records, read by path from the checkout or, for a "
+            "packet the tree does not hold, from the copy in "
+            "[lane-claims/](lane-claims/README.md). Each commit is where the lane froze "
+            "them, given as provenance; nothing reads it."
         ),
         "",
         "| Lane | Branch | Commit | Note |",
@@ -2141,20 +2151,23 @@ def github_item(source: Mapping[str, Any], api: Fetch) -> dict[str, Any]:
     }
 
 
-def git_show(commit: str, path: str) -> Any:
-    try:
-        shown_ = subprocess.run(
-            ("git", "-C", str(REPO), "show", f"{commit}:{path}"),
-            capture_output=True,
-            text=True,
-            check=True,
-        )
-    except subprocess.CalledProcessError as error:
-        raise LedgerError(
-            f"git show {commit[:12]}:{path} failed; fetch the lane's branch first: "
-            f"{error.stderr.strip()[:200]}"
-        ) from error
-    return json.loads(shown_.stdout)
+def record_path(mapping: Mapping[str, Any]) -> str:
+    """A lane record's repository-relative path in its packet."""
+    return f"packing/resources/web/{mapping['packet']}/acquisition/{mapping['record']}"
+
+
+def lane_record(directory: Path, mapping: Mapping[str, Any]) -> Any:
+    """A lane's claim record, by path: the packet's in the checkout where it is there, else
+    the copy retained under ``directory``'s `LANE_CLAIMS`. No commit is read (OR-18)."""
+    on_tree = REPO / record_path(mapping)
+    retained = directory / LANE_CLAIMS / mapping["lane"] / mapping["packet"] / mapping["record"]
+    path = on_tree if on_tree.is_file() else retained
+    _require(
+        path.is_file(),
+        f"{record_path(mapping)} is in neither the checkout nor {LANE_CLAIMS}/: retain a "
+        "copy with its provenance in that directory's README",
+    )
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def _lane_claim(
@@ -2202,20 +2215,23 @@ def record_key(mapping: Mapping[str, Any]) -> str:
 
 
 def lane_claims(
+    directory: Path,
     mapping: Mapping[str, Any],
     lanes: Mapping[str, Mapping[str, Any]],
     url: str,
     rounding: str,
+    *,
     taken: dict[str, set[int]] | None = None,
 ) -> list[Claim]:
     """The claims one lane record gives a report: its rows printed in it, or those named.
 
     ``taken`` collects every row of every record read, and the rows some report took, so
-    ``gather`` can refuse a row no report claims (`unclaimed_rows`).
+    ``gather`` can refuse a row no report claims (`unclaimed_rows`). The lane's branch and
+    commit are written beside each claim as provenance.
     """
     lane = lanes[mapping["lane"]]
-    path = f"packing/resources/web/{mapping['packet']}/acquisition/{mapping['record']}"
-    record = git_show(lane["commit"], path)
+    path = record_path(mapping)
+    record = lane_record(directory, mapping)
     where = f"{path} at {lane['branch']}@{lane['commit']}"
     wanted = {int(n) for n in mapping.get("counts") or []}
     rows = [row for row in record["results"] if _selected(row, mapping, wanted, url)]
@@ -2244,16 +2260,6 @@ def unclaimed_rows(taken: Mapping[str, set[int]]) -> list[str]:
         )
         if rows - taken.get(key, set())
     ]
-
-
-def frontier_differs(read_at_main: str) -> bool:
-    """Whether the checkout's ``packing/frontier/`` differs from ``read_at_main``'s."""
-    compared = subprocess.run(
-        ("git", "-C", str(REPO), "diff", "--quiet", read_at_main, "--", "packing/frontier"),
-        check=False,
-    )
-    _require(compared.returncode in (0, 1), f"git cannot compare with {read_at_main}")
-    return compared.returncode == 1
 
 
 def _selected(
@@ -2300,19 +2306,14 @@ def gather(
 
     A ``starts.yaml`` already frozen at ``read_at_main`` is kept as it is, so that reading a
     lane again never moves a start, and a ledger with a count it holds no start for is
-    refused. Writing the starts reads the checkout's records, which must then be
-    ``read_at_main``'s, so the frozen starts are the ones the ledger says it was decided
-    against.
+    refused. Writing the starts reads the checkout's records, so it is run from a checkout
+    of ``read_at_main``; nothing here resolves that commit (OR-18), and ``check --tree``
+    reports where the checkout's records give other starts.
     """
     sources = load_yaml(directory / SOURCES)
     _require(sources.get("format") == SOURCES_FORMAT, f"{SOURCES} format")
     read_at_main = str(sources["read_at_main"])
     keep = (directory / STARTS).is_file() and not refresh_starts
-    _require(
-        keep or not frontier_differs(read_at_main),
-        f"packing/frontier/ differs from read_at_main {read_at_main[:12]}: gather the starts "
-        "from a checkout of it, or move read_at_main",
-    )
     lanes = {lane["name"]: lane for lane in sources["lanes"]}
     if snapshot:
         github = json.loads((directory / SNAPSHOT).read_text(encoding="utf-8"))["items"]
@@ -2335,7 +2336,7 @@ def gather(
         from_lanes = [
             claim
             for mapping in source.get("lanes", [])
-            for claim in lane_claims(mapping, lanes, url, rounding, taken)
+            for claim in lane_claims(directory, mapping, lanes, url, rounding, taken=taken)
         ]
         claims = _merge(source.get("claims", []), from_lanes)
         if kind == "pull-request":
@@ -2365,7 +2366,7 @@ def gather(
         "key_reason_candidates": sources.get("key_reason_candidates", []),
         "other_items": sources.get("other_items", []),
     }
-    warnings = cross_check(ledger, sources, lanes)
+    warnings = cross_check(directory, ledger, sources)
     ledger["cross_check"] = warnings
     found = problems(ledger)
     _require(not found, "; ".join(found))
@@ -2420,9 +2421,7 @@ def _pending_owner(
     return None
 
 
-def cross_check(
-    ledger: Ledger, sources: Mapping[str, Any], lanes: Mapping[str, Mapping[str, Any]]
-) -> list[str]:
+def cross_check(directory: Path, ledger: Ledger, sources: Mapping[str, Any]) -> list[str]:
     """Where a lane read another report's side in a way this ledger's claim contradicts."""
     claims = {
         (report["report"], claim["n"]): claim
@@ -2437,9 +2436,7 @@ def cross_check(
             if key in seen:
                 continue
             seen.add(key)
-            lane = lanes[mapping["lane"]]
-            path = f"packing/resources/web/{mapping['packet']}/acquisition/{mapping['record']}"
-            for row in git_show(lane["commit"], path)["results"]:
+            for row in lane_record(directory, mapping)["results"]:
                 n = int(row["n"])
                 for pending in row.get("pending", []):
                     owner = _pending_owner(pending, n, claims, ledger["reports"])

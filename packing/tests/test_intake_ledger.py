@@ -353,7 +353,6 @@ def test_gather_keeps_the_frozen_starts_and_reads_the_tree_only_to_refresh_them(
         raise AssertionError("gather read the tree")
 
     monkeypatch.setattr(ledger, "tree_members", refuse)
-    monkeypatch.setattr(ledger, "frontier_differs", refuse)
     assert ledger.gather(tmp_path, snapshot=True) == []
     assert (tmp_path / ledger.STARTS).read_text(encoding="utf-8") == frozen
     assert [report["report"] for report in ledger.load_ledger(tmp_path)["reports"]] == [
@@ -365,6 +364,61 @@ def test_gather_keeps_the_frozen_starts_and_reads_the_tree_only_to_refresh_them(
     (tmp_path / ledger.SOURCES).write_text(yaml.safe_dump(sources), encoding="utf-8")
     with pytest.raises(ledger.LedgerError, match=r"no start at n = \[101\]"):
         ledger.gather(tmp_path, snapshot=True)
+
+
+def test_gather_reads_a_lane_record_by_path_and_never_a_commit(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # OR-18: the lane's commit is provenance. A packet the checkout lacks is read from the
+    # copy under lane-claims/, and no git command runs.
+    read_at_main = "f" * 40
+    mapping = {"lane": "lane", "packet": "absent-packet-2026-10-14", "record": "claims.json"}
+    sources = {
+        "format": ledger.SOURCES_FORMAT,
+        "read_at_main": read_at_main,
+        "read_on": "2026-10-14",
+        "rule": "the owner's rule",
+        "lanes": [{"name": "lane", "branch": "a-branch", "commit": "a" * 40}],
+        "reports": [
+            {
+                "report": "owner/repo@abc1234",
+                "url": "https://github.com/owner/repo/tree/abc1234",
+                "reported_at": CLAIM_TIME,
+                "holders": "A",
+                "lanes": [{**mapping, "all": True}],
+            }
+        ],
+    }
+    (tmp_path / ledger.SOURCES).write_text(yaml.safe_dump(sources), encoding="utf-8")
+    snapshot = {"format": ledger.SNAPSHOT_FORMAT, "items": []}
+    (tmp_path / ledger.SNAPSHOT).write_text(json.dumps(snapshot), encoding="utf-8")
+    member = ledger.lane_member(
+        100, "reported", {"value": "10.5", "exact_form": "21/2"}, ["T-1"]
+    )
+    starts = ledger.starts_document(read_at_main, {100: [member]})
+    (tmp_path / ledger.STARTS).write_text(yaml.safe_dump(starts), encoding="utf-8")
+    row = {
+        "n": 100,
+        "offered_side": "10.4",
+        "exact_side": "52/5",
+        "first_committed": "2026-10-11T00:00:00Z",
+    }
+
+    def refuse(*_: object, **__: object) -> None:
+        raise AssertionError("gather ran a command")
+
+    monkeypatch.setattr(ledger.subprocess, "run", refuse)
+    with pytest.raises(ledger.LedgerError, match="in neither the checkout nor lane-claims"):
+        ledger.gather(tmp_path, snapshot=True)
+    copy_ = tmp_path / ledger.LANE_CLAIMS / "lane" / mapping["packet"] / "claims.json"
+    copy_.parent.mkdir(parents=True)
+    copy_.write_text(json.dumps({"results": [row]}), encoding="utf-8")
+    assert ledger.gather(tmp_path, snapshot=True) == []
+    claim = ledger.load_ledger(tmp_path)["reports"][0]["claims"][0]
+    assert (claim.get("exact"), claim.get("exact_from")) == (
+        "52/5",
+        f"{ledger.record_path(mapping)} at a-branch@{'a' * 40}",
+    )
 
 
 def test_a_lane_row_no_report_takes_is_refused() -> None:
