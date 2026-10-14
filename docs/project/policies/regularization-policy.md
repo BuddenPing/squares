@@ -308,6 +308,7 @@ So it runs on request with a receipt, and the gates hold the decisions it produc
 | --- | --- | --- |
 | `regularized atlas views match their index` | The index against the manifest, the witnesses and the views, by digest; with the layer’s contract, also the generator, method, side relation, identity and review-record fields | Records tier, every pull request |
 | `regularized atlas drawings match their index` | Every drawing re-rendered from its retained view | Records tier, every pull request |
+| `default pictures improve on their house drawings` | Every drawn view measured against its house drawing again, each count’s default picture decided under the improvement rule ([section 11](#11-the-improvement-rule)) and held to `default-drawings.json` | Records tier, every pull request |
 | `results rungs are earned and the view agrees` | `devtools.check_results` on each register result’s `regularizations` items, and on `regularized_drawings` and every case record’s `regularization` note against the layer’s index | Records tier, every pull request |
 | `regularized atlas views re-derive exactly` | Every `regularize_axis_components/2` view re-derived byte for byte | Deferred: the `regularized-views` job, under its 450 s ceiling |
 | Re-decision of vendored-generator views | Every retained view decided again over $\mathbb{Q}$ on the maintained routes, its identity and shades re-measured and its digests held | Deferred, once its cost is measured inside a ceiling; selected per invocation while it is above one |

@@ -69,6 +69,8 @@ resources/web/ ──────┼──► composite-figure.json ──► th
 derived here ────────┘         (every claim, with its provenance)
 
 witnesses/known-best/*.yaml ──► square geometry, and only geometry
+default-drawings.json ────────► which cards draw a regularized view instead
+regularized/*.yaml.gz ────────► that view's geometry (render_regularized_atlas)
 src/sqpack/render/color.py ───► hue from angle class, shade from contact count
 src/sqpack/render/style.py ───► the twenty base hues
 ```
@@ -400,7 +402,8 @@ scale while keeping the annotation clearance consistent.
 The canvas includes 120-unit outside clearance for markers and top/bottom margins.
 All informational text occupies the upper-left block at $x = 204..2804$, starting at
 $y = 120$: title, all badge meanings and counts, hue and shade keys, explanation,
-construction, lower-bound and optimality-proof credits and closing project details.
+construction, lower-bound and optimality-proof credits, regularization credits and
+closing project details.
 The renderer derives the block’s bottom from the final line’s retained-font ink extent.
 The 2600-unit block uses 144-unit title type, 66-unit type for the two-line definition,
 and 48-unit type for every subsequent legend, credit and closing line, all in the same
@@ -444,7 +447,19 @@ Line balancing preserves that order and omits final periods and bracketed citati
 The widest of the three balanced construction-credit lines sets the common width for all
 three credit paragraphs; complete names and role prefixes remain indivisible.
 
-Both diagrams use the same full-corpus $n = 1..324$ acknowledgments.
+A fourth paragraph credits the regularized cards, those drawn from a case’s regularized
+view because it is the case’s default picture (the regularization policy’s section 12,
+as `default-drawings.json` records it): a lead line counting them against the depicted
+range, “Regularized drawings (79 of 324) where they improve on the packings as
+published”, then each generator’s credit line as the policy’s section 7 gives it, once,
+in the order the cards first draw it.
+Each sentence takes the fewest lines the 2600-unit block holds, so a credit line reads
+whole; the paragraph’s group lists the regularized cases in `data-regularized-cases`,
+and each such card’s `data-source-id` ends in `-regularized`. Its labels and badges are
+the record’s, as every card’s are.
+
+Both diagrams use the same full-corpus $n = 1..324$ acknowledgments for the first three
+paragraphs; the regularization paragraph counts the depicted range’s cards.
 SVG metadata states that credit scope separately from the depicted range and retains the
 complete source citations, original statuses, contribution roles and case associations.
 The curated input is `credit-attributions.json`; `devtools.atlas_credit_attributions`
@@ -482,10 +497,10 @@ The packing drawings and card captions retain their original scale.
 | --- | --- | --- |
 | Cases | `n = 1..100` | `n = 1..324` |
 | Arrangement | 10 by 10, row-major | 18 complete right-aligned rows |
-| Canvas | 2150 × 3823 units | 7497 × 5361 units |
+| Canvas | 2150 × 3926 units | 7497 × 5361 units |
 | Squares drawn | 5,050 | 52,650 |
 | Rasters | 1x, 2x, link-preview card | 1x |
-| PDF page | 22.40 × 39.82 in | 78.09 × 55.84 in |
+| PDF page | 22.40 × 40.90 in | 78.09 × 55.84 in |
 
 The remaining fields are the decisions a figure of another size has to make: which
 rasters it publishes, whether it publishes a link-preview crop, and what it may leave

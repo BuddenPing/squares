@@ -25,21 +25,22 @@ A pull request may change a count’s drawing only to a view that
   layer still draws seven views above $U$, at 18, 26, 66, 85, 110, 241 and 297, each an
   exception question 13 names; a pass may replace them, never add to them);
 - row 10 of the decision table admits;
-- is worse than today’s drawing on none of the seven measures below, and is better on
-  one or draws the packing at a smaller side (question 14).
+- improves on today’s drawing under the policy’s
+  [improvement rule](../policies/regularization-policy.md#11-the-improvement-rule)
+  (question 14): worse on none of its goals and better on at least one.
 
+The rule is stated once, in the policy, and `devtools.improvement_rule` reads it from
+there; this guide does not restate it.
+Its goals are the seven measures below, the side, and exactness.
 The seven measures are the drawing’s light, uneven and near-axis squares, its distinct
 angle classes and its hues, fewer being better, as `devtools.census_drawing_regularity`
 counts them from the house renderer’s colouring; and its house and stage totals of full
 shared sides, more being better.
 Classes and hues catch a square turned a hair off its group: at n = 236 two squares
 0.000537 degrees off drew seven hues where today’s drawing has six, while the other five
-measures tied.
-
-A change that improves no measure and leaves the side unchanged is not made.
-The one exception replaces a drawing that is not exactly verified, a numerically checked
-witness, with an exactly verified view at a side no larger than $U$ and worse on no
-measure.
+measures tied. Exactness is the gain of a view that replaces a numerically checked
+witness; a view that ties today’s drawing on every goal is no improvement, and the
+change is not made.
 
 Where more than one view of a count passes, the first in this order is drawn: Evan
 Daniel’s, then grid-slack’s by rising straightening threshold.
@@ -144,6 +145,20 @@ These redraw the views, regenerate `results.yaml`’s `regularized_drawings` and
 record’s `regularization` note, and regenerate `frontier/RESULTS.md`. Update the layer’s
 counts in the atlas README’s regularized-views section by hand.
 
+Then decide each count’s default picture again:
+
+```bash
+python -m devtools.default_drawings --update
+```
+
+A drawn view is the count’s default picture, on the site, the atlas and the posters,
+where it improves on the house drawing under the same rule
+([policy section 12](../policies/regularization-policy.md#12-the-default-picture)); the
+case page keeps the house drawing as published.
+The command writes `atlas/known-best/default-drawings.json` and prints how many views
+are defaults. The posters show the defaults as they stood when they were drawn and may
+trail until the next version or a redraw (`build_known_best_atlas --update-composites`).
+
 The note says who regularized the drawing and that a pure regularization, one that
 proves no new bound, is not a result (the policy’s section 9, question 16): by the
 Squares Project, with the generator’s credit line, the side relation, the registered
@@ -187,12 +202,15 @@ packing-validate --records
 python -m devtools.regularize_axis_components --verify-atlas
 python -m pytest tests/test_regularize_evand.py tests/test_regularize_grid_slack.py \
   tests/test_regularize_select.py tests/test_regularized_drawings.py \
-  tests/test_render_regularized_atlas.py
+  tests/test_render_regularized_atlas.py tests/test_improvement_rule.py \
+  tests/test_default_drawings.py
 python -m devtools.release_pin --check
 ```
 
 `--records` holds the index to the views and witnesses by digest, re-renders the
-drawings and checks the register.
+drawings, checks the register, and measures every drawn view against its house drawing
+again (`default pictures improve on their house drawings`), listing the counts that keep
+the house picture and why.
 `--verify-atlas` decides every drawn view again on both exact routes and takes several
 minutes at four workers; CI runs it in the deferred `regularized-views` job.
 `test_regularize_select.py` holds every drawn view’s side to $U$, except at the counts
