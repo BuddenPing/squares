@@ -1324,6 +1324,11 @@ deliveries:
   merged_at: '2026-10-14T22:01:42Z'
   base_ref: main
   merge_commit: 9b32da04d8ca7e4972ea7db51dce3605810ea250
+- number: 597
+  title: 'fix(check_requests): hold each stated field to the last reply that stated it'
+  merged_at: '2026-10-14T12:16:17Z'
+  base_ref: main
+  merge_commit: 37e6757ed4c51a1d93f2f999814c2a5efbe2a223
 stacks:
 - id: 498
   pull_requests:
@@ -1401,7 +1406,10 @@ coverage:
   - 601
   - 605
   - 602
+  - 597
   omissions:
+  - pull_request: 597
+    reason: Reply-tracker correction; no result, bound, admission or public artifact change.
   - pull_request: 579
     reason: Internal work reconciliation, tracker cleanup and agent-ownership procedures; no independent
       public result or publication.
