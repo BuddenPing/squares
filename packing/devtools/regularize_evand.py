@@ -136,8 +136,10 @@ improvement the record credits where the two differ. `provenance --repo-root TRE
 restates the drawn views' credit by that rule, in each index entry and its view
 together, without the run directories; `--check` writes nothing and fails where it
 would. A receipt records the time it was written (`finished`), which dates the run in
-the layer's index, and a run reclassified on a copy of its directory records no cost of
-its own there (`regularize_axis_components.costed_once`).
+the layer's index, and the directory the run spent its cost in (`run_directory`). A run
+reclassified on a copy of that directory under another name is marked so in its receipt
+(`reclassified.from`), and records no cost of its own in the layer
+(`regularize_axis_components.costed_once`); a cost repeated unmarked is refused.
 
 **The retry ladder** (the no-view study of 12 October 2026; rungs 3 and 5a under the
 owner's overnight instruction of the same day). These are policy-visible behaviours: each
@@ -206,7 +208,7 @@ import subprocess
 import sys
 import tempfile
 import time
-from collections.abc import Collection, Iterable, Iterator, Mapping, Sequence
+from collections.abc import Callable, Collection, Iterable, Iterator, Mapping, Sequence
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass, field, replace
@@ -2671,7 +2673,7 @@ def refresh_bound(report: dict[str, Any], n: int) -> dict[str, Any] | None:
     distance to it; the change, or `None` where the record still holds the same bound.
 
     A run stores the verified upper bound it compared with. When a register result moves
-    that bound afterwards (T-154 took 59 ceilings to the exact sides of row-3 views), the
+    that bound afterwards (T-155 took 59 ceilings to the exact sides of row-3 views), the
     run's decisions are stale until `U` is read again: `upper_bound` reads the exact form
     where it is rational, so a bound printed at the same decimal with a new exact form is a
     new `U`.
@@ -2719,6 +2721,11 @@ def reclassify(
     a count is not decided again but sent to review, with no regularization record,
     listed in `reclassified.stale_settings` and printed, to be run again from
     `--from-stage import` (review C of #511, C3).
+
+    Its cost is left as the run that spent it recorded it. Decided on a copy of that
+    run's directory, under another name, the receipt says so: `reclassified.from` is the
+    run's id (`copied_from`), and the copy's run block records no cost of its own in the
+    layer (`run_block`, `regularize_axis_components.costed_once`; #548 review C, C3).
     """
     path = run_dir / "receipt.json"
     receipt = read_json(path)
@@ -2770,16 +2777,38 @@ def reclassify(
         rows[n] = receipt_row(report)
     ordered = [rows[n] for n in sorted(rows)]
     receipt.update({"counts": ordered, **receipt_lists(ordered)})
+    source = copied_from(run_dir, receipt)
     receipt["reclassified"] = {
         "policy": POLICY,
         "counts": chosen,
         "stale_bounds": stale,
         "stale_settings": unsettled,
+        **({"from": source} if source is not None else {}),
     }
     if refresh_bounds:
         receipt["reclassified"]["refreshed_bounds"] = refreshed
     write_json(path, receipt)
     return receipt
+
+
+def copied_from(run_dir: Path, receipt: Mapping[str, Any]) -> str | None:
+    """The id of the run whose cost `receipt` carries, where that is not the run in
+    `run_dir`: a copy decided again keeps the receipt of the run it was copied from.
+
+    An earlier `reclassify` may already have said so, and a copy of a copy keeps that
+    source. Otherwise the receipt's `run_directory`, where the run spent its cost, is
+    compared with the directory's name, which is the run's id in the layer. A receipt from
+    before it recorded its directory says nothing here; the layer then refuses a run that
+    repeats another's cost unmarked (`regularize_axis_components.repeated_costs`), and
+    `reclassified.from` can be written into the copy's receipt by hand.
+    """
+    held = (receipt.get("reclassified") or {}).get("from")
+    if held:
+        return str(held)
+    ran_in = receipt.get("run_directory")
+    if ran_in and ran_in != run_dir.name:
+        return f"{axis.EVAND_GENERATOR}-{ran_in}"
+    return None
 
 
 # --------------------------------------------------------------------------------------
@@ -2960,6 +2989,10 @@ def run_block(run_dir: Path, run_id: str) -> dict[str, Any]:
     wrote it), never by the file's modification time, which Git does not keep and a copy
     or a restore resets (#548 review B5). A receipt from before the time was recorded
     gives `None`, which `admit_views` fills from the index's own record of the run.
+
+    A run decided again on a copy of another's directory carries the receipt's record of
+    it (`reclassified.from`) as `reclassified_from`, so the layer records that cost once,
+    on the run that spent it (`costed_once`; #548 review C, C3).
     """
     receipt = read_json(run_dir / "receipt.json")
     parameters = receipt.get("parameters") or {}
@@ -2980,6 +3013,7 @@ def run_block(run_dir: Path, run_id: str) -> dict[str, Any]:
     # measured. A run's own sentence (`RUN_MEASURED_BY`) is the default and says nothing.
     if (note := cost.get("measured_by")) and note != RUN_MEASURED_BY:
         measured["note"] = str(note)
+    source = (receipt.get("reclassified") or {}).get("from")
     return {
         "id": run_id,
         "generator": axis.EVAND_GENERATOR,
@@ -2988,6 +3022,7 @@ def run_block(run_dir: Path, run_id: str) -> dict[str, Any]:
         "parameters": {key: parameters[key] for key in RUN_PARAMETERS if key in parameters},
         "counts": len(receipt.get("counts") or []),
         "decisions": dict(sorted(decisions.items())),
+        **({"reclassified_from": str(source)} if source and source != run_id else {}),
         "cost": measured,
     }
 
@@ -3107,23 +3142,55 @@ def view_refusal(
     `exact_verify` and the independent checker must both accept it; for the solved view,
     converted from a certificate, the half-angle route must decide it as the report
     recorded; and its exact side, its relation to the witness's side and the bound the
-    report stored, and its id must be the ones its report decided on.
+    report stored, and its id must be the ones its report decided on (`decided_refusal`).
     """
     block = (report.get("outputs") or {})[chosen]
+    _routes, refusal = decided_refusal(
+        name,
+        witness,
+        recorded=block.get("routes") or {},
+        decided={
+            "side": block.get("side_exact"),
+            "relation": block.get("relation"),
+            "id": block.get("id"),
+        },
+        relation=lambda side: report_relation(report, side),
+        half_angle=chosen == "solved",
+    )
+    return refusal
+
+
+def decided_refusal(
+    name: str,
+    witness: Mapping[str, Any],
+    *,
+    recorded: Mapping[str, Any],
+    decided: Mapping[str, Any],
+    relation: Callable[[Fraction], str] | None = None,
+    half_angle: bool = False,
+) -> tuple[dict[str, bool], str | None]:
+    """A view's witness decided as it is now, and why it is not the view its run decided,
+    or None: what `view_refusal` holds a driver view to, and the grid-slack generator's
+    admission its own (`regularize_grid_slack.admitted`, #548 review C, C1).
+
+    The routes are run on the witness: `exact_verify` and the independent checker, and
+    with `half_angle` the half-angle route. Both exact routes must accept it, and each
+    route must decide it as the run `recorded` (by route name). Each field the run
+    `decided` must be the witness's own: `side`, its exact side as a literal; `id`; and
+    `relation`, which `relation` reads from that side. The verdicts come back with the
+    refusal, so a caller records what was decided on these bytes, not what its run says.
+    """
     side, placements, corners = view_geometry(witness)
     result, _report = exact_verify(witness)
     now = {
         "exact_verify": bool(result["verification_passed"]),
         "independent": bool(independent.check_squares(corners, side)["verification_passed"]),
     }
-    if chosen == "solved":
+    if half_angle:
         now["half_angle"] = bool(area.decide_placed(side, placements).passed)
-    recorded = block.get("routes") or {}
-    stated = {
-        "side": (literal(side), block.get("side_exact")),
-        "relation": (report_relation(report, side), block.get("relation")),
-        "id": (witness.get("id"), block.get("id")),
-    }
+    own: dict[str, Any] = {"side": literal(side), "id": witness.get("id")}
+    if relation is not None:
+        own["relation"] = relation(side)
     failed = [route for route in ("exact_verify", "independent") if not now[route]]
     differ = [route for route, passed in now.items() if bool(recorded.get(route)) != passed]
     problems = [
@@ -3134,12 +3201,12 @@ def view_refusal(
             else []
         ),
         *(
-            f"{name}'s {field} is {found}, not the {decided} its report decided"
-            for field, (found, decided) in stated.items()
-            if found != decided
+            f"{name}'s {field} is {own[field]}, not the {value} its report decided"
+            for field, value in decided.items()
+            if own[field] != value
         ),
     ]
-    return "; ".join(problems) or None
+    return now, "; ".join(problems) or None
 
 
 def admit_views(
@@ -3165,6 +3232,11 @@ def admit_views(
         raise EvandRunError(f"{LAYER_INDEX_PATH} is not a {axis.ATLAS_CONTRACT} index")
     entries = {int(entry["n"]): entry for entry in index["entries"]}
     dated = dated_runs(runs, index.get("runs") or [])
+    known = {run["id"]: dict(run) for run in index.get("runs") or []}
+    known.update({run["id"]: run for run in dated})
+    repeated = axis.repeated_costs(list(known.values()))
+    if repeated:
+        raise EvandRunError("; ".join(repeated))
     layout = layer_layout(root)
     written: list[int] = []
     kept: list[int] = []
@@ -3198,8 +3270,6 @@ def admit_views(
         )
         written.append(n)
     records = [entries[n] for n in sorted(entries)]
-    known = {run["id"]: dict(run) for run in index.get("runs") or []}
-    known.update({run["id"]: run for run in dated})
     rebuilt = axis.carried_index(
         {
             **index,
@@ -3218,17 +3288,33 @@ def dated_runs(
 ) -> list[dict[str, Any]]:
     """Each run block with its finish date: its receipt's, or, for a receipt from before
     the driver recorded one, the date the index already holds for the run. A run neither
-    dates is refused before anything is written."""
+    dates is refused before anything is written.
+
+    In the same way, a run whose receipt does not mark it a reclassified copy keeps the
+    mark the index already holds for it (`reclassified_from`, #548 review C, C3): a
+    receipt from before `reclassify` recorded its source says nothing either way, and the
+    run the index records as a copy stays one."""
     held = {str(run["id"]): run.get("finished") for run in committed}
+    marked = {
+        str(run["id"]): run["reclassified_from"]
+        for run in committed
+        if run.get("reclassified_from")
+    }
     found: list[dict[str, Any]] = []
     for run in runs:
         dated = dict(run)
+        if not dated.get("reclassified_from") and str(dated["id"]) in marked:
+            cost = dated.pop("cost", None)
+            dated["reclassified_from"] = marked[str(dated["id"])]
+            if cost is not None:
+                dated["cost"] = cost  # after the mark, where `run_block` puts it
         if dated.get("finished") is None:
             if not held.get(str(dated["id"])):
                 message = (
                     f"{dated['id']}: its receipt records no finish time (a run from before "
-                    "the driver wrote one), and the index holds no date for it: add "
-                    "`finished`, the UTC time the run ended, to its receipt.json"
+                    "its generator wrote one), and the index holds no date for it: add "
+                    "`finished`, the UTC time the run ended, to its receipt.json, or for a "
+                    "grid-slack run to one of its reports"
                 )
                 raise EvandRunError(message)
             dated["finished"] = held[str(dated["id"])]
@@ -3377,7 +3463,12 @@ def write_layer_with_grid(
     exclude: Collection[int] = (),
 ) -> dict[str, Any]:
     """Admit finished runs' views and, at `grid_counts`, the grid-slack run's view instead
-    (`devtools.regularize_grid_slack.admitted_views`), in one write of the layer."""
+    (`devtools.regularize_grid_slack.admitted_views`), in one write of the layer.
+
+    Every view is decided again as it is now before it is written, on both exact routes
+    (`decided_refusal`), with its side and id held to its report's: the driver's by
+    `layer_refusal`, the grid run's by `regularize_grid_slack.admitted`, which refuses
+    the whole write when one is not the view its report decided (#548 review C, C1)."""
     grid = importlib.import_module("devtools.regularize_grid_slack")
     admitted, runs, refused = evand_candidates(run_dirs)
     chosen = set(grid_counts)
@@ -3457,6 +3548,9 @@ def write_receipt(
         "generated_by": GENERATED_BY,
         "policy": POLICY,
         "finished": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        # The directory the run spent `cost` in, whose name is its run id's: a copy
+        # `reclassify` decides again names it as the run it was copied from.
+        "run_directory": run_dir.name,
         "generator": run_generator(ordered),
         "parameters": parameters,
         "counts": ordered,

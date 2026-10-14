@@ -55,6 +55,7 @@ from devtools.regularize_axis_components import (
     main,
     promotion_dilations,
     regularize,
+    repeated_costs,
     slide_limit,
     stage_contacts,
     stage_count_of,
@@ -952,20 +953,17 @@ def test_a_reclassified_copy_of_a_run_records_no_cost_of_its_own(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """#548 review B5: a run decided again on a copy of its directory keeps the source
-    run's cost in its receipt; the index records that cost once."""
+    run's cost in its receipt; the index records that cost once. Review C, C3: the copy is
+    the run its receipt marks (`reclassified_from`), whatever the order of the runs, and
+    equal seconds decide nothing: a cost repeated unmarked is refused."""
+    full = {"cpu_seconds": 49301.63, "wall_seconds": 13812.25, "workers": 4}
     runs = [
-        {
-            "id": "full",
-            "cost": {"cpu_seconds": 49301.63, "wall_seconds": 13812.25, "workers": 4},
-        },
+        {"id": "full", "cost": dict(full)},
         {
             "id": "same2",
             "cost": {"cpu_seconds": 3062.97, "wall_seconds": 3355.87, "workers": 2},
         },
-        {
-            "id": "refreshed-full",
-            "cost": {"cpu_seconds": 49301.63, "wall_seconds": 13812.25, "workers": 4},
-        },
+        {"id": "refreshed-full", "reclassified_from": "full", "cost": dict(full)},
         {"id": "fixture", "cost": {"cpu_seconds": 0, "wall_seconds": 0, "workers": 1}},
         {"id": "fixture-2", "cost": {"cpu_seconds": 0, "wall_seconds": 0, "workers": 1}},
     ]
@@ -980,6 +978,22 @@ def test_a_reclassified_copy_of_a_run_records_no_cost_of_its_own(
         "recorded there",
     }
     assert costed_once(once) == once
+    assert repeated_costs(runs) == []
+    # The copy listed first, as when a source run is admitted after its copy: the same
+    # run is the copy, and the source keeps its cost.
+    assert costed_once(runs[::-1]) == once[::-1]
+    assert repeated_costs(runs[::-1]) == []
+    # A copy whose source the index does not list is the one record of that cost.
+    (alone,) = costed_once([runs[2]])
+    assert alone == {"id": "refreshed-full", "cost": full}
+    # Unmarked, equal seconds are refused in either order rather than guessed at.
+    unmarked = [runs[0], {"id": "refreshed-full", "cost": dict(full)}]
+    assert costed_once(unmarked) == unmarked
+    for order in (unmarked, unmarked[::-1]):
+        (problem,) = repeated_costs(order)
+        assert "neither is marked as the other's reclassified copy" in problem
+    looped = [{**runs[0], "reclassified_from": "refreshed-full"}, runs[2]]
+    assert "is recorded on none" in repeated_costs(looped)[0]
 
     monkeypatch.setenv("PACK_JOBS", "1")
     layout = scratch_atlas(tmp_path)
@@ -988,6 +1002,13 @@ def test_a_reclassified_copy_of_a_run_records_no_cost_of_its_own(
     index = json.loads(layout.index.read_text())
     (run,) = index["runs"]
     run["cost"] = {"cpu_seconds": 2.5, "wall_seconds": 9.0, "workers": 1}
-    index["runs"].append({**run, "id": "fixture-copy"})
+    index["runs"].append({**run, "id": "fixture-copy", "reclassified_from": "fixture-run"})
     layout.index.write_text(json.dumps(index), encoding="utf-8")
     assert "index run fixture-copy repeats run fixture-run's cost" in check_atlas(layout)
+    index["runs"][-1] = {**run, "id": "fixture-copy"}
+    layout.index.write_text(json.dumps(index), encoding="utf-8")
+    assert (
+        "index run fixture-copy repeats run fixture-run's cost and neither is marked as the "
+        "other's reclassified copy: write `reclassified.from`, the run it was copied from, "
+        "into the copy's receipt.json"
+    ) in check_atlas(layout)
