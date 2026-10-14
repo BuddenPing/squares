@@ -33,6 +33,7 @@ from devtools.verifier_registry import (
     REGISTRY,
     SHORT_LABELS,
     Verifier,
+    independence_line,
     load,
     run_label,
 )
@@ -137,6 +138,8 @@ def program_section(
         lines.append("- Versions run: this repository's commits, which Git holds")
     if independence := record.get("independence_record"):
         lines.append(f"- What its authors read and used: {_link(str(independence))}")
+    if structured := record.get("independence"):
+        lines.append(f"- Independence: {independence_line(structured)}")
     if note := record.get("note"):
         lines.append(f"- Note: {' '.join(str(note).split())}")
     lines.append("")

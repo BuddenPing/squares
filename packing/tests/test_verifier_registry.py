@@ -149,10 +149,43 @@ def test_a_premise_check_never_decides_alone() -> None:
     assert "names no program that decides" in problem
 
 
+def authorship(**changes: Any) -> dict[str, Any]:
+    """A complete structured record of who wrote a program and what they read."""
+    record: dict[str, Any] = {
+        "read": ["mathematics", "certificate-format"],
+        "clean_room": True,
+        "shares": [],
+        "written_by": [
+            {
+                "kind": "ai",
+                "system": "Claude (Anthropic)",
+                "setting": "a review lane at the tbd-strong-max tier, reasoning max",
+            }
+        ],
+        "overlaps_producer": {
+            "extent": "system-family",
+            "separate_prompt": True,
+            "separate_code": True,
+            "note": "The producer also used Claude.",
+        },
+    }
+    record.update(changes)
+    return record
+
+
+def structured(extent: str = "full", **changes: Any) -> dict[str, Any]:
+    """An evidence entry's structured record: its coverage and its authorship."""
+    coverage: dict[str, Any] = {"extent": extent, "unit": "rows of the certificate"}
+    if extent == "sample":
+        coverage.update(checked=6, of=273)
+    return {"coverage": coverage, **authorship(**changes)}
+
+
 def test_a_new_independent_implementation_names_what_its_authors_read() -> None:
     entry = replay_entry(
         relationship_to_generator="independent-implementation",
         verifiers=["V-sqpack-verify"],
+        independence=structured(),
     )
     (problem,) = verifier_registry.evidence_problems([entry], VERIFIERS)
     assert "record of what its authors read" in problem
@@ -162,8 +195,172 @@ def test_a_new_independent_implementation_names_what_its_authors_read() -> None:
     named = replay_entry(
         relationship_to_generator="independent-implementation",
         verifiers=["V-check-rational-witness-independent"],
+        independence=structured(),
     )
     assert verifier_registry.evidence_problems([named], VERIFIERS) == []
+
+
+# --- The structured independence record --------------------------------------------------
+
+
+def independent(**changes: Any) -> dict[str, Any]:
+    """A new independent-implementation replay whose path record is in place."""
+    return replay_entry(
+        relationship_to_generator="independent-implementation",
+        verifiers=["V-check-rational-witness-independent"],
+        **changes,
+    )
+
+
+def test_a_new_independent_implementation_states_its_coverage_and_authorship() -> None:
+    bare = independent()
+    problems = verifier_registry.evidence_problems([bare], VERIFIERS)
+    assert len(problems) == 2
+    assert "states its coverage" in problems[0]
+    assert "who wrote its deciding code" in problems[1]
+    # Coverage is the entry's own; the authorship may be its own instead of its program's.
+    covered = independent(independence={"coverage": structured()["coverage"]})
+    (problem,) = verifier_registry.evidence_problems([covered], VERIFIERS)
+    assert "who wrote its deciding code" in problem
+    assert (
+        verifier_registry.evidence_problems([independent(independence=structured())], VERIFIERS)
+        == []
+    )
+    assert schema_errors(independent(independence=structured())) == []
+
+
+def test_the_schema_holds_the_record_whole() -> None:
+    assert schema_errors(independent(independence={"read": ["mathematics"]}))
+    partial = structured()
+    del partial["written_by"]
+    assert schema_errors(independent(independence=partial)), "authorship comes whole"
+    sample = structured("sample")
+    del sample["coverage"]["of"]
+    assert schema_errors(independent(independence=sample)), "a sample says of how many"
+    named = structured()
+    named["written_by"] = [{"kind": "ai", "setting": "max"}]
+    assert schema_errors(independent(independence=named)), "an AI author names its system"
+
+
+def test_clean_room_means_the_producers_code_was_neither_read_nor_shared() -> None:
+    read = structured(read=["specification", "producer-code"])
+    (problem,) = verifier_registry.record_problems("E-x", read)
+    assert "read the producer" in problem
+    shared = structured(shares=["the certificate loader"])
+    shared["overlaps_producer"] = {**shared["overlaps_producer"], "separate_code": False}
+    problems = verifier_registry.record_problems("E-x", shared)
+    assert [problem.split(": ", 1)[1] for problem in problems] == [
+        "its independence record says clean_room, but it shares the producer\u2019s components",
+        "its independence record says clean_room, but not separate_code",
+    ]
+    apart = structured(clean_room=False, shares=["the parser"])
+    (problem,) = verifier_registry.record_problems("E-x", apart)
+    assert "separate_code" in problem
+
+
+def test_an_independent_implementation_shares_nothing_of_the_producers_code() -> None:
+    entry = independent(independence=structured(clean_room=False, shares=["the parser"]))
+    entry["independence"]["overlaps_producer"]["separate_code"] = False
+    problems = verifier_registry.evidence_problems([entry], VERIFIERS)
+    assert any("makes the relation shared-components" in problem for problem in problems)
+
+
+def test_a_sample_counts_fewer_than_all_and_full_counts_all() -> None:
+    assert verifier_registry.record_problems("E-x", structured("sample")) == []
+    whole = structured("sample")
+    whole["coverage"]["checked"] = 273
+    (problem,) = verifier_registry.record_problems("E-x", whole)
+    assert "fewer than all" in problem
+    short = structured()
+    short["coverage"].update(checked=6, of=273)
+    (problem,) = verifier_registry.record_problems("E-x", short)
+    assert "checks all" in problem
+
+
+def test_a_new_first_party_program_that_decides_carries_the_record() -> None:
+    document = safe_load((FRONTIER / "verifiers.yaml").read_text(encoding="utf-8"))
+    row = {
+        "id": "V-test-new-checker",
+        "program": "check.py",
+        "author": "Squares Project (Levy)",
+        "provenance": "first-party",
+        "language": ["Python"],
+        "methods": ["exact-algebraic"],
+        "role": "decides",
+        "source": ["packing/devtools/verifier_registry.py"],
+        "summary": "A test program.",
+    }
+    verifiers = {
+        **VERIFIERS,
+        row["id"]: verifier_registry.Verifier(
+            id=row["id"],
+            program=row["program"],
+            author=row["author"],
+            provenance=row["provenance"],
+            role=row["role"],
+            record=row,
+        ),
+    }
+    ids = [entry["id"] for entry in document["verifiers"]] + [row["id"]]
+    (problem,) = verifier_registry.registry_problems(verifiers, ids)
+    assert "V-test-new-checker is a first-party program that decides" in problem
+    row["independence"] = authorship()
+    assert verifier_registry.registry_problems(verifiers, ids) == []
+    # A premise check need not carry it.
+    row.pop("independence")
+    premises = verifier_registry.Verifier(
+        id=row["id"],
+        program=row["program"],
+        author=row["author"],
+        provenance=row["provenance"],
+        role="premises",
+        record={**row, "role": "premises"},
+    )
+    assert verifier_registry.registry_problems({**VERIFIERS, row["id"]: premises}, ids) == []
+
+
+def test_the_structured_exemptions_only_shrink() -> None:
+    evidence = list(EVIDENCE.values())
+    exempt = min(verifier_registry.UNSTRUCTURED_EVIDENCE)
+    given = [
+        {**entry, "independence": structured()} if entry["id"] == exempt else entry
+        for entry in evidence
+    ]
+    stale = [
+        problem for problem in verifier_registry.problems(given) if "UNSTRUCTURED" in problem
+    ]
+    expected = (
+        f"{exempt}: exempt from the structured independence record, but no longer an "
+        "independent-implementation entry without one; remove it from UNSTRUCTURED_EVIDENCE"
+    )
+    assert stale == [expected]
+    assert all(
+        VERIFIERS[vid].provenance == verifier_registry.FIRST_PARTY and VERIFIERS[vid].decides
+        for vid in verifier_registry.UNSTRUCTURED_PROGRAMS
+    )
+
+
+def test_a_sample_derives_no_rung_and_confirms_nothing_whole() -> None:
+    sample = independent(independence=structured("sample"))
+    assert check_results.derive_verification([sample]) == "V0"
+    assert check_results.derive_confirmation([sample]) == "C0"
+    assert verifier_registry.confirming_runs([sample]) == []
+    whole = independent(independence=structured())
+    assert check_results.derive_verification([whole]) == "V3"
+    assert check_results.derive_confirmation([whole]) == "C3"
+    assert verifier_registry.confirming_runs([whole]) == [whole]
+
+
+def test_a_record_reads_as_a_level_of_the_ladder() -> None:
+    assert verifier_registry.ladder_level(authorship()) == "clean-room"
+    assert (
+        verifier_registry.ladder_level(authorship(clean_room=False, read=["producer-code"]))
+        == "after-reading"
+    )
+    assert verifier_registry.ladder_level(authorship(shares=["the parser"])) == "shared"
+    line = verifier_registry.independence_line(authorship())
+    assert line.startswith("independently re-implemented, clean-room; its authors read")
+    assert "with its own prompt and code" in line
 
 
 def test_the_grandfathered_entries_are_exempt_and_only_while_they_need_it() -> None:

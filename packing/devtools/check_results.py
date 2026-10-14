@@ -63,7 +63,7 @@ from devtools.result_status import (
     status,
 )
 from devtools.rung_prose import REGISTER_FIELDS, Standing, label_problems
-from devtools.verifier_registry import RANK, confirming_runs, strongest
+from devtools.verifier_registry import RANK, confirming_runs, sampled, strongest
 from sqpack.assurance import EXTERNAL_ORIGINS, PROOF_METHODS
 from sqpack.yamlio import safe_load
 
@@ -193,12 +193,15 @@ def _rank(rung: str) -> int:
 
 def _machine_proof_shaped(entry: dict) -> bool:
     """A certificate that replays: exact, interval or kernel-checked, with a replay
-    command and a passing status. Rung 3's machine evidence on either axis."""
+    command and a passing status. Rung 3's machine evidence on either axis. A run whose
+    independence record states a sample is not: it decides the instances it ran and
+    nothing about the others (epistemics.md, The Independence Ladder)."""
     return (
         (entry.get("method") in MACHINE_METHODS or entry.get("method") == FORMAL_METHOD)
         and bool(entry.get("certificate"))
         and bool(entry.get("replay"))
         and entry.get("replay_status") == "passed"
+        and not sampled(entry)
     )
 
 
@@ -293,7 +296,10 @@ def derive_confirmation(
         return "C4"
     if machine:
         return "C3"
-    if any(entry.get("replay") and entry.get("replay_status") == "passed" for entry in ours):
+    if any(
+        entry.get("replay") and entry.get("replay_status") == "passed" and not sampled(entry)
+        for entry in ours
+    ):
         return "C2"
     if any(
         entry.get("origin") in EXTERNAL_ORIGINS

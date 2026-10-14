@@ -134,9 +134,12 @@ with the preflight listed among its programs.
 A new `independent-implementation` entry names the record of what its authors read and
 used, its own `independence_record` or a deciding program’s in the registry; a
 clean-room record, one that says the authors never read the producer’s code, is the
-strongest. The 32 such entries recorded before 2 October 2026 without one are exempt by
+strongest. The 30 such entries recorded before 2 October 2026 without one are exempt by
 name in [`devtools/verifier_registry.py`](packing/devtools/verifier_registry.py), a list
-that only shrinks.
+that only shrinks. Since 14 October 2026 the record is also structured
+([The Independence Record](#the-independence-record)), and
+[the ladder](#the-independence-ladder) says what each degree of independence can and
+cannot rule out.
 
 How a result was confirmed is the third attribute beside its rung, and the register
 prints it as the mark after the status: *confirmed, reproduced with the producer’s
@@ -157,6 +160,101 @@ re-implemented. The checker refuses a sentence of a register `claim`, `compositi
 replies are held to it in review
 ([the result-import process, stage 4](packing/campaign/result-import.md#stage-4-validate)),
 because their prose also uses the word for things that are not results.
+
+### The Independence Record
+
+The owner, on 14 October 2026: “I’d like to make sure the validation we do that’s
+independent is documented, and the degree to which it’s independent is also documented.
+Was this the same code, or is this all independently validated with our own code?
+Level of confidence in the confirmation should be a matter of process that we document.”
+So how independent a confirmation is, and how much of the claim it covered, are fields,
+not a sentence in a review.
+
+Every program written here that decides, registered from that date, carries an
+`independence` record in [`verifiers.yaml`](packing/frontier/verifiers.yaml):
+
+| Field | What it records |
+| --- | --- |
+| `read` | What its authors read before and while writing it: `mathematics` (the argument as mathematics, in a paper or this record’s own derivation), `proof-text` (the producer’s written proof), `specification` (of the checker, or of what a certificate means), `certificate-format`, `producer-code` (the producer’s own verification code, its checker or its proof-assistant definitions), `producer-output` (stored outputs or receipts, read to compare) and `earlier-review` (another review of the same result) |
+| `clean_room` | `true` only when the authors never read the producer’s code and the program shares none of it |
+| `shares` | The producer’s components the program reuses, by name; empty when none, and a non-empty list makes the relation `shared-components` |
+| `written_by` | Each person by name, and each AI system by its family (Claude, Codex) with the role, tier and reasoning setting it ran at; the record names the system family, not a model identifier |
+| `overlaps_producer` | Whether that authorship overlaps the producer’s (`none`, `system-family`, `people` or `unknown`), whether the authors worked from a prompt of their own (`separate_prompt`) and in files of their own that copy none of the producer’s code (`separate_code`), and a note naming what is shared |
+
+Every new `independent-implementation` evidence entry carries an `independence` record
+too, with its `coverage`: `full`, or a `sample` that `checked` so many `of` so many of a
+named `unit`, as in 6 of 273 chunk runs.
+It carries the authorship fields itself where its deciding programs do not.
+The `independence_record` path stays beside it, pointing at the prose: a read log, a
+module statement, or the review that wrote the program.
+
+[`devtools/verifier_registry.py`](packing/devtools/verifier_registry.py) refuses a
+first-party program that decides without the record; a new `independent-implementation`
+entry without its coverage, or without the authorship fields on itself or on every
+deciding program; `clean_room` beside `producer-code` read, a shared component, or code
+not kept separate; an independent entry whose deciding program shares components; and a
+sample whose count is not below its total.
+The programs and entries recorded before 14 October 2026 are exempt by name, in two
+lists that only shrink: an exempt one that gains the record, or stops being what the
+rule covers, has to leave its list.
+
+### The Independence Ladder
+
+The relation to the producer’s code is the level.
+Each level rules out a kind of error the one below it cannot, and none rules out an
+error in the mathematics or the specification that every implementation follows.
+
+| Level | Relation | What it can rule out | What it cannot rule out |
+| --- | --- | --- | --- |
+| Reproduced with the producer’s code | `same-implementation`, `generator` | That the stored result was never produced, was produced from other inputs than those recorded, or does not reproduce: a lost, corrupted or altered output, or a dependence on the producer’s machine | Any error in the producer’s code: the same code makes the same mistake again |
+| Re-implemented, sharing named components | `shared-components` | Errors in the parts written again | Errors in the shared components (a parser that misreads the certificate, an arithmetic kernel) |
+| Independently re-implemented after reading the producer’s code | `independent-implementation`, `clean_room: false` | Errors of the producer’s implementation that a second one does not copy: an index slip, a dropped case, a rounding error, a check left out | A misreading the authors took from the producer’s code: the same convention, the same decoding, the same omitted case |
+| Independently re-implemented, clean-room | `independent-implementation`, `clean_room: true` | The producer’s reading of the specification as well, since the second reading is made without the first | An error in the mathematics or the specification itself, or in a format both read the same way |
+
+Two attributes stand beside the level, and neither is a level:
+
+- **Coverage.** A run is `full`, or a sample of so many of a named unit.
+  A sample decides the instances it ran and nothing about the others: it can find an
+  error, and it cannot show that the rest has none.
+- **Authoring diversity.** Who wrote the confirming code, and whether that overlaps the
+  producer’s. Two programs written by sessions of one AI system family can share a
+  misreading that neither the level nor the coverage reveals, even with separate prompts
+  and separate code.
+
+A result’s stated confidence follows from the rung, the level, the coverage and the
+diversity, in that order:
+
+1. **The rung** comes from the evidence alone, as the ladders above say.
+   `C3` needs one complete replay of every load-bearing part, at any level; a sample, at
+   any level, sets no rung, and `devtools.check_results` counts no entry whose coverage
+   is a sample.
+2. **The level** of each part is the furthest from the producer’s code among the
+   complete confirming runs that decide it, and the result takes the part closest to it
+   ([Which Code Confirmed It](#which-code-confirmed-it)). A sample at a higher level is
+   stated beside the part, never as its level.
+3. **Coverage** is stated for every part that only samples have reached: *sampled, 6 of
+   273 chunk runs, independently re-implemented*. A sample is never called confirmed.
+4. **Diversity** is stated after the level wherever the authorship overlaps the
+   producer’s: *independently re-implemented after reading the producer’s code, by a
+   Claude agent, a system family the producer also used*.
+
+So two results at the same rung can carry different confidence, and the record says
+which: `C3` reproduced with the producer’s code, beside an independent sample of one
+step, is not `C3` independently re-implemented in full.
+
+### Every Run’s Code Is Kept
+
+Any review or lane that runs code on a result keeps that code in the repository and
+registers it, or states in the review that the run decides nothing.
+Kept means in the result’s packet, or in `devtools` when it is a tool, with a README
+that says what each program does, what it read, how to run it and what it printed.
+Registered means a program in [`verifiers.yaml`](packing/frontier/verifiers.yaml) with
+its `independence` record, and, for each thing a run decides or samples, an evidence
+entry with its coverage, cited where it derives no rung it does not support: a sample,
+or a run that decides one part, is cited by the case record and not by the result.
+A program kept but cited by no evidence entry says so in its README.
+[The result-import process, stage 4](packing/campaign/result-import.md#stage-4-validate)
+applies this to the mathematical review at intake.
 
 ## Review Records
 
@@ -643,7 +741,8 @@ The checker:
 
 - resolves evidence references and artifact, control, and review-document paths;
 - derives the structural `V` and `C` rungs described above, from the cited evidence and
-  the retained `reviews`;
+  the retained `reviews`, counting no entry whose
+  [independence record](#the-independence-record) states a sample;
 - refuses unsupported promotion, unexplained understatement, and a `C` above `V`;
 - requires every review in `reviews` to be a non-superseded review in
   [`document-map.yaml`](docs/project/document-map.yaml) with the fields of
