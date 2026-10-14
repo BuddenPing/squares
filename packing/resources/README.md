@@ -1039,6 +1039,15 @@ T-135 records the n = 308 side at V3/C3, verified and not selected: the case ado
 issue #489’s smaller side (T-141). The n = 343 and 344 sides lie beyond the case corpus
 and are verified beyond-horizon rows.
 
+**[Fang direct certificates 2026-10-13]**: Kevin Fang’s exact rational certificates for
+n = 380, 381, 382, 421, 422, 463, 464, 507, 508, 553, 601, 651, 758 and 814, first
+committed in `e646c47` and `c284cd0` with no issue and pinned at
+`078789a4cfd36f915f1bfbe76d742413d79b2965`, retained as the source wrote them;
+[packet](web/fang-direct-certificates-2026-10-13/README.md).
+Both project exact routes accept the 3 replayed certificates, at 380, 381 and 382, and
+refuse all 6 controls; the other eleven wait for an owner’s replay budget.
+All fourteen sides lie beyond the case corpus, for the record’s beyond-horizon rows.
+
 **[SQUISH third request 2026-10-09]**: Nate Chaoweeraprasit’s exact rational
 certificates for n = 131, 153, 154, 207, 209, 232, 236, 237, 259, 263, 269, 270, 292,
 302, 303, 305 and 307, pinned at `d45669b48cc97ad3aa17a6c847a8d06630f66eac`, kept as
