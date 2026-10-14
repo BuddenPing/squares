@@ -1574,6 +1574,12 @@ def test_a_copy_reclassified_under_another_name_is_marked_by_its_receipt(
     ]
     (problem,) = axis.repeated_costs(runs)
     assert "neither is marked as the other's reclassified copy" in problem
+    # A run the index already records as the copy keeps that mark, as an undated run
+    # keeps the index's date, so re-admitting it from such a receipt changes nothing.
+    held = [{**runs[0], "reclassified_from": "evand-regularize-run"}]
+    (kept,) = drive.dated_runs([runs[0]], held)
+    assert kept["reclassified_from"] == "evand-regularize-run"
+    assert axis.repeated_costs([kept, runs[1]]) == []
 
 
 def test_reclassify_sends_a_report_mislabelled_before_b1_to_review(

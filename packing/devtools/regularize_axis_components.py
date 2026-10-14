@@ -2452,6 +2452,9 @@ def costed_once(runs: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
             )
             continue
         cost = run.get("cost") or {}
+        if not cost.get("cpu_seconds") and not cost.get("wall_seconds"):
+            kept.append(run)  # already recorded as a copy: kept exactly as it is
+            continue
         kept.append(
             {
                 **run,

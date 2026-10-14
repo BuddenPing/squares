@@ -3239,11 +3239,26 @@ def dated_runs(
 ) -> list[dict[str, Any]]:
     """Each run block with its finish date: its receipt's, or, for a receipt from before
     the driver recorded one, the date the index already holds for the run. A run neither
-    dates is refused before anything is written."""
+    dates is refused before anything is written.
+
+    In the same way, a run whose receipt does not mark it a reclassified copy keeps the
+    mark the index already holds for it (`reclassified_from`, #548 review C, C3): a
+    receipt from before `reclassify` recorded its source says nothing either way, and the
+    run the index records as a copy stays one."""
     held = {str(run["id"]): run.get("finished") for run in committed}
+    marked = {
+        str(run["id"]): run["reclassified_from"]
+        for run in committed
+        if run.get("reclassified_from")
+    }
     found: list[dict[str, Any]] = []
     for run in runs:
         dated = dict(run)
+        if not dated.get("reclassified_from") and str(dated["id"]) in marked:
+            cost = dated.pop("cost", None)
+            dated["reclassified_from"] = marked[str(dated["id"])]
+            if cost is not None:
+                dated["cost"] = cost  # after the mark, where `run_block` puts it
         if dated.get("finished") is None:
             if not held.get(str(dated["id"])):
                 message = (
