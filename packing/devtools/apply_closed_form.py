@@ -299,12 +299,31 @@ def apply_text(plan: Plan, text: str) -> str:
     # The Markdown formatter rewraps the paragraph; the same words are the same paragraph.
     if mine and " ".join(parts[mine[0]].split()) == written:
         written = parts[mine[0]]
-    parts = [part for index, part in enumerate(parts) if index not in mine]
+    else:
+        written = _formatted(written)
+    # The prose the generator writes for the lane this replaces (Green's DS7 value at 173,
+    # 261 and 294) describes a bound the lane no longer holds; the generator drops it with
+    # the lane, so the record does too (review C2 of #602).
+    replaced = f"The reported lower-bound expression for $s({plan.n})$ is"
+    parts = [
+        part
+        for index, part in enumerate(parts)
+        if index not in mine and not part.startswith(replaced)
+    ]
     place = 0
     while place < len(parts) and parts[place].startswith(LEADS):
         place += 1
     parts.insert(place, written)
     return f"---\n{front}---\n{title}\n\n" + "\n\n".join(parts)
+
+
+def _formatted(text: str) -> str:
+    """A new paragraph wrapped as the register's Markdown formatter wraps it, in process,
+    as `generate_frontier_case` formats a record, so a generated record carries it as the
+    committed one does (review C2 of #602)."""
+    from flowmark import reformat_text  # noqa: PLC0415
+
+    return reformat_text(text, semantic=True, cleanups=True, smartquotes=True).rstrip("\n")
 
 
 def stale(frontier: Path = FRONTIER) -> list[str]:

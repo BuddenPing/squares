@@ -2361,6 +2361,9 @@ def adopt_upper_bound_packet(n: int, text: str) -> str:
     adopted = importlib.import_module("devtools.register_regularized_bounds").apply_case(
         n, adopted
     )
+    # Then Hiroaki Hosono's closed form (T-180) raises the reported lower bound where
+    # `devtools.apply_closed_form` plans it (review C2 of #602).
+    adopted = importlib.import_module("devtools.apply_closed_form").replay(n, adopted)
     if adopted == text:
         return text
     # The intake moves the verified upper bound's evidence, so the record's
@@ -2665,8 +2668,13 @@ def redraft(
         )
     from devtools.source_supersession import adopt_selected_report  # noqa: PLC0415
 
+    closed_form = importlib.import_module("devtools.apply_closed_form")
     try:
-        return adopt_selected_report(n, existing, adopt_upper_bound_packet(n, generated))
+        # A house adoption composes the record from the existing one, so the closed form,
+        # the last layer, is replayed after it too (review C2 of #602).
+        return closed_form.replay(
+            n, adopt_selected_report(n, existing, adopt_upper_bound_packet(n, generated))
+        )
     except ValueError as error:
         raise GenerationError(str(error)) from error
 

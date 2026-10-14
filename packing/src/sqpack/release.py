@@ -800,7 +800,7 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "papers/n11-threshold-bound-review.md",
         ),
         reason=(
-            "Rendered from main at 37e6757e and from this branch at one link revision, "
+            "Rendered from main at 2319afaa and from this branch at one link revision, "
             "both papers' HTML before the browser's math pass and their Markdown are "
             "byte-identical; the math pass and the PDF take that same HTML. The register "
             "gains T-161 to T-184, the importer reads longer literals, and the site gains "
@@ -827,7 +827,7 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "papers/n11-lower-bounds-explainer.md",
         ),
         reason=(
-            "Rendered from main at 37e6757e and from this branch, the HTML before the "
+            "Rendered from main at 2319afaa and from this branch, the HTML before the "
             "browser's math pass and the Markdown differ only in the live register count "
             "beside T-018, 160 results registered so far and now 184. The claim documents "
             "change only the revision their links pin. A register count follows the site's "
@@ -873,7 +873,7 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "papers/square-packing-methods-survey.md",
         ),
         reason=(
-            "Rendered from main at 37e6757e and from this branch at one link revision, the "
+            "Rendered from main at 2319afaa and from this branch at one link revision, the "
             "HTML before the browser's math pass and the Markdown are byte-identical; the "
             "PDF prints from that HTML. Each case record gains the closed form's reported "
             "lower bound, its evidence and resource, a later source_reviewed date and a "
