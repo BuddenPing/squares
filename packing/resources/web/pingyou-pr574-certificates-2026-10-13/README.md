@@ -223,8 +223,9 @@ ceiling, and every row was equal to the retained one: N129, N156, N175, N176, N2
 and N271 (21 minutes 43 seconds); N105, N172, N199, N297, N306 and N308 (69 minutes 29
 seconds); N146, N232, N238, N240, N241, N259, N267, N272, N295 and N307 (61 minutes 47
 seconds); N102, N204, N209, N210, N236, N239, N263, N264, N268 to N270, N273 and N303 to
-N305 (58 minutes 5 seconds). The other counts’ rows are admitted and were not decided
-again.
+N305 (58 minutes 5 seconds); and the other 26, N68, N84, N86, N88, N103, N108, N110,
+N123, N126, N127, N130 to N132, N155, N179 to N182, N206, N208, N211, N228, N237, N266,
+N292 and N301 (41 minutes 38 seconds). All 192 jobs have now been decided twice.
 
 **Algebraic, on one route.** `devtools.algebraic_witness_reports` decided N70, N153, N207
 and N302 on `sqpack`’s exact witness verifier over each witness’s field, with the same two
@@ -234,7 +235,7 @@ every square and pair decided by exact signs in the field, and the eight control
 refused. All four touch the box and touch between squares exactly. The receipts are
 `receipts/algebraic-route1-nNNN.json.xz`.
 `check --replay` decided the nine jobs of N70, N153 and N207 again in 12 minutes 57
-seconds, with the same outcomes; N302’s were not decided again.
+seconds, and N302’s three in 5 minutes 2 seconds, with the same outcomes.
 
 ## What Is Not Established
 
