@@ -93,6 +93,15 @@ PUBLICATION_HISTORY = (
         ),
     ),
     PublicationHistoryEntry(
+        version="v0.6.2",
+        first_published="October 14, 2026",
+        result_scope=(
+            "List the October 14 reviews and intake ledger in the synopsis document map, "
+            "refresh its session rollups, and re-anchor result-page bibliography links to "
+            "their entries."
+        ),
+    ),
+    PublicationHistoryEntry(
         version="v0.6.1",
         first_published="October 14, 2026",
         result_scope=(
@@ -645,12 +654,23 @@ class ReleaseImpactDecision(NamedTuple):
 RELEASE_IMPACTS: tuple[ReleaseImpactDecision, ...] = (
     ReleaseImpactDecision(
         component="site",
-        previous_version="v0.6.1",
+        previous_version="v0.6.2",
         version="v0.7.0",
         impact="minor",
         reason=(
             "Add a dedicated News page and homepage preview of the project history, "
             "and let the Atlas use the full available page width."
+        ),
+    ),
+    ReleaseImpactDecision(
+        component="site",
+        previous_version="v0.6.1",
+        version="v0.6.2",
+        impact="patch",
+        reason=(
+            "List the October 14 reviews and intake ledger in the synopsis document map, "
+            "refresh its session rollups, and re-anchor result-page bibliography links to "
+            "their entries."
         ),
     ),
     ReleaseImpactDecision(
@@ -733,10 +753,13 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "packing/devtools/probes/measure_atlas_views/layout.js",
             "packing/devtools/probes/measure_atlas_views/widen.js",
             "packing/devtools/news_highlights.py",
+            "packing/devtools/overview_sections.py",
             "packing/devtools/render_changelog.py",
             "packing/devtools/render_overview.py",
             "packing/devtools/site_documents.py",
             "packing/devtools/templates/site-nav.html",
+            "packing/devtools/upper_bound_reports.py",
+            "packing/pyproject.toml",
         ),
         outputs=(
             "papers/n11-lower-bounds-explainer.html",
@@ -755,16 +778,23 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
         reason=(
             "Reviewed the four paper renderers, manuscripts, paper styles and fronts "
             "against main: no paper content or paper-owned typesetting rules change. "
-            "Shared navigation adds News; CHANGELOG aliases move to News, and the new "
+            "Shared navigation adds News and groups Explanations; CHANGELOG aliases move "
+            "to News, and the new "
             "article-card and result-highlight renderers are used by site pages only. "
+            "The optional paper-card subset separates the existing tutorial card from "
+            "the other unchanged reading cards on Explanations; its default stays the same. "
             "Navigation, shared arrow motion and publication-link provenance are site "
             "chrome, not independent paper editions. "
             "Atlas measurement probes add report fields and remove the obsolete "
             "screenshot width override. Exact comparison proves the five regenerated "
-            "claim documents change only GitHub blob-link revisions, 93822bfe to "
-            "37e6757e; mathematical claims, embedded certificates and verifiers remain "
+            "claim documents retain the upstream c6118ca5 link revision; mathematical claims, "
+            "embedded certificates and verifiers remain "
             "identical. The owning paper HTML/Markdown sources and PDF derivation paths "
-            "were reviewed; no byte-identical artifact build is claimed."
+            "were reviewed; no byte-identical artifact build is claimed for News. "
+            "Upstream intake changes add a beyond-horizon register plan and HOUSES "
+            "readers through the atlas import closure, plus a BasedPyright include. "
+            "Its independent paper renders were compared against main at 37e6757ed; "
+            "they were identical after normalizing repository-link provenance."
         ),
     ),
     ReleaseNoPublicChange(
@@ -1013,7 +1043,7 @@ def validate_release_impacts(
 #: fresh render, so a link naming the build commit would fail their drift check forever. It is
 #: in no version string. It moves when the claim documents are regenerated for an edition. It
 #: must be a commit on `main`; the site's own links name `main` itself (`devtools.repo_links`).
-PUBLICATION_REVISION = "37e6757e"
+PUBLICATION_REVISION = "c6118ca5"
 
 
 def data_pathspec() -> tuple[str, ...]:

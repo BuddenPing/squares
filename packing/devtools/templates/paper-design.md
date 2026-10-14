@@ -741,7 +741,12 @@ it.
   Their order comes from `site-nav.html` and is also the keyboard order.
   Links wrap naturally on narrow screens.
   Explanations leads to `papers.html` and is current on the papers, tutorial, film and
-  Workbench. These pages keep their existing addresses.
+  Workbench. The landing page starts with a prominent Tutorial section of its own,
+  followed by Papers, PDFs and Visuals.
+  The existing tutorial card appears only in its top section; the paper cards keep their
+  shared content. Visuals contains the film and the two-choice Film/Workbench switch.
+  The film does not autoplay there.
+  These pages keep their existing addresses.
   The workbench is an application rather than a KPress page, so its build
   (`workbench_tools.build_site`) takes the bar, its stylesheet, the theme bootstrap and
   the gear’s script from `render_overview.nav_shell`, in a shell that gives it the page
@@ -750,19 +755,21 @@ it.
   itself has no dark mode yet.
 
 - **Section tabs.** A section that spans pages carries one small tab bar under the
-  navigation bar. Explanations uses **Papers** (`papers.html`, its landing page),
-  **Film** (`visualize.html`) and **Workbench** (`workbench/`). Each tab is a real link
-  to its own page, so the bar needs no script, and a tab can be opened, bookmarked and
-  shared; every existing `workbench/` address lands on the Workbench tab.
-  The bar is a centred strip with square corners and the cards’ thin border, a hairline
-  between tabs, in the bar’s sans at the links’ own size (`--site-nav-font-size`) and
-  medium weight: a tab is gray, takes the nav items’ wash and accent on hover, and the
-  current tab is filled with a 16% accent tint over the page background in the page’s
-  own text colour. It is `.site-tabs`, rendered by `render_overview.visualize_tabs`, and
-  defined in `site-nav.css` rather than `site.css` because the workbench carries only
-  the bar’s stylesheet.
-  On the Papers and Film pages it opens the document; on the workbench it sits in the
-  application shell under the bar, above the application.
+  navigation bar where the destination is a dedicated visual page.
+  The shared Visuals switch has **Film** (`papers.html#visuals`) and **Workbench**
+  (`workbench/`). On Explanations, it sits in the Visuals section after Tutorial, Papers
+  and PDFs; it is not a page-wide Papers tab.
+  Each tab is a real link to its own page, so the bar needs no script, and a tab can be
+  opened, bookmarked and shared; every existing `workbench/` address lands on the
+  Workbench tab. The bar is a centred strip with square corners and the cards’ thin
+  border, a hairline between tabs, in the bar’s sans at the links’ own size
+  (`--site-nav-font-size`) and medium weight: a tab is gray, takes the nav items’ wash
+  and accent on hover, and the current tab is filled with a 16% accent tint over the
+  page background in the page’s own text colour.
+  It is `.site-tabs`, rendered by `render_overview.visualize_tabs`, and defined in
+  `site-nav.css` rather than `site.css` because the workbench carries only the bar’s
+  stylesheet. On the legacy Film page it opens the document; on the workbench it sits in
+  the application shell under the bar, above the application.
   The same strip also switches a view in place: there it is a `tablist` of buttons
   (`role="tab"`), each stripped of a button’s own chrome and taking the strip’s type,
   the selected one filled as the current page’s link is.
