@@ -8,7 +8,7 @@
   "witness_prefix": "W-couzo-586-n",
   "claim_limitations": "Complete b85dee2 rational centre/half-angle certificate converted exactly from the retained source. Finite construction feasibility only; no KKT, local minimum, rigidity, novelty, priority or global optimality claim.",
   "read_on": "2026-10-14",
-  "read_at_main": "aeef99ef0ef27ace054434094118a6ac355da384",
+  "read_at_main": "e1f14898d549b71eb59cdbf8490380e25b23bbf9",
   "certificates": [
     {"n": 154, "path": "certificates/n154.cert", "format": "evand-cert", "offered": "12.921206577133", "first_committed": "2026-10-13T17:30:53Z"},
     {"n": 176, "path": "certificates/n176.cert", "format": "evand-cert", "offered": "13.807637226803", "first_committed": "2026-10-12T21:31:43Z", "printed_in": "https://github.com/franciscouzo/square-packing/blob/b85dee2b964e7f7fb9f765227e60c44cdcd3aa4d/certificates/README.md"},
@@ -25,17 +25,16 @@
     {"n": 381, "path": "certificates/n381.cert", "format": "evand-cert", "offered": "19.974977397657", "first_committed": "2026-10-13T13:53:57Z", "printed_in": "https://github.com/jlevy/squares/issues/583"},
     {"n": 382, "path": "certificates/n382.cert", "format": "evand-cert", "offered": "19.987713157610", "first_committed": "2026-10-13T17:30:53Z"}
   ],
-  "requested": [154, 211, 241, 302, 339, 379, 380, 381, 382],
+  "requested": [154, 176, 211, 241, 302, 339, 344, 375, 376, 378, 379, 380, 381, 382],
   "replayed": [154, 176, 211, 241, 302, 339, 344, 375, 376, 378, 379, 380, 381, 382],
   "houses": [
-    {"n": 154, "reader": "[SQUISH third request 2026-10-09]", "source_key": "[SQUISH third request 2026-10-09]", "holders": "Nate Chaoweeraprasit (itsnaka)", "result": "T-136", "reported_value": "12.9230702023011408", "verified_value": "12.9230702023011408", "evidence": ["E-squish-481-exact-feasibility"]},
+    {"n": 154, "reader": "[Daniel n154 2026-10-12]", "source_key": "[Daniel n154 2026-10-12]", "holders": "Evan Daniel", "result": "T-160", "reported_value": "12.9225664019340596", "verified_value": "12.9225664019340596", "evidence": ["E-evand-552-exact-feasibility"]},
     {"n": 176, "reader": "[SQUISH fourth request 2026-10-11]", "source_key": "[SQUISH fourth request 2026-10-11]", "holders": "Nate Chaoweeraprasit (itsnaka)", "result": "T-151", "reported_value": "13.8128562532770564", "verified_value": "13.8128562532770564", "evidence": ["E-squish-500-exact-feasibility"]},
     {"n": 211, "reader": "[Ostashev records 2026-10-11]", "source_key": "[Ostashev records 2026-10-11]", "holders": "Daniil Ostashev", "result": "T-149", "reported_value": "14.9963367213363157", "verified_value": "14.9963367213363157", "evidence": ["E-ostashev-501-exact-feasibility"]},
     {"n": 241, "reader": "[evand exact optima 2026-10-05]", "source_key": "[evand exact optima 2026-10-05]", "holders": "Francisco Couzo, improved by Evan Daniel", "result": "T-098", "reported_value": "15.988132439524990848590591447359", "verified_value": "15.988132439524990848590591447359", "evidence": ["E-evand-exact-optima-2026-10-05-exact-replay", "E-evand-exact-optima-2026-10-05-source-replay"]},
     {"n": 302, "reader": "[Daniel regularized lists 2026-10-10]", "source_key": "[Daniel regularized lists 2026-10-10]", "holders": "Nate Chaoweeraprasit (itsnaka), improved by Evan Daniel", "result": "T-146", "reported_value": "17.8720298490811800", "verified_value": "17.8720298490811800", "evidence": ["E-evand-regularized-exact-feasibility"]}
   ],
   "pending": [
-    {"n": 154, "report": "#552", "url": "https://github.com/jlevy/squares/issues/552", "holders": "Evan Daniel", "printed": "12.922566401934059503377267965457", "rounding": "up"},
     {"n": 154, "report": "#583", "url": "https://github.com/jlevy/squares/issues/583", "holders": "Francisco Couzo (and #570, the same certificate)", "printed": "12.922499814643", "rounding": "up"},
     {"n": 154, "report": "#593", "url": "https://github.com/jlevy/squares/issues/593", "holders": "Mishapolk", "printed": "12.9224998146423982", "rounding": "binary64"},
     {"n": 176, "report": "#561", "url": "https://github.com/jlevy/squares/issues/561", "holders": "Francisco Couzo", "reader": "[Couzo certificates 2026-10-12]"},

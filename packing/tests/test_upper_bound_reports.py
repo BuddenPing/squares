@@ -832,8 +832,13 @@ def test_the_561_claims_name_each_smaller_or_undecided_report() -> None:
 
 def test_the_586_claims_are_smallest_at_every_requested_count_but_the_two_ties() -> None:
     rows = _rows(COUZO_586)
-    requested = [n for n, row in rows.items() if row["requested"]]
-    assert requested == [154, 211, 241, 302, 339, 379, 380, 381, 382]
+    # The issues name nine; the ledger of 14 October records the other five as reports of
+    # their own, publications of 93570ef, 4596670 and b85dee2, so the records lane added
+    # them to the requested counts (their printed_in stays the certificates README).
+    named = [154, 211, 241, 302, 339, 379, 380, 381, 382]
+    published = [176, 344, 375, 376, 378]
+    assert [n for n, row in rows.items() if row["requested"]] == sorted(named + published)
+    requested = named
     assert [rows[n]["printed_in"] for n in (302, 381)] == [
         "https://github.com/jlevy/squares/issues/583"
     ] * 2
@@ -857,8 +862,8 @@ def test_the_586_claims_are_smallest_at_every_requested_count_but_the_two_ties()
         "TheSnakeFang/squarepack-certs@078789a": "below",
     }
     # The five no issue names are each below #561's certificate at the count, read exactly.
-    unnamed = [n for n, row in rows.items() if not row["requested"]]
-    assert unnamed == [176, 344, 375, 376, 378]
+    unnamed = [n for n in rows if rows[n]["printed_in"].endswith("/certificates/README.md")]
+    assert unnamed == published
     for n in unnamed:
         (earlier,) = [other for other in rows[n]["pending"] if other["report"] == "#561"]
         assert earlier["relation"] == "below"
@@ -868,7 +873,7 @@ def test_the_586_claims_are_smallest_at_every_requested_count_but_the_two_ties()
     assert rows[176]["undecided_among"] == ["#574", "#593"]
     assert rows[375]["smallest"] == "#584"
     claims = coverage_check.load_claims(_packet(COUZO_586) / reports.BEYOND)
-    assert sorted(claims) == [339, 379, 380, 381, 382]
+    assert sorted(claims) == [339, 344, 375, 376, 378, 379, 380, 381, 382]
     assert reports.house_side("[Couzo certificates 2026-10-13]", 381) == Fraction(
         19974977397656713743580918961689, 10**30
     )
