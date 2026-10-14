@@ -176,7 +176,7 @@ Every program written here that decides, registered from that date, carries an
 | Field | What it records |
 | --- | --- |
 | `read` | What its authors read before and while writing it: `mathematics` (the argument as mathematics, in a paper or this record’s own derivation), `proof-text` (the producer’s written proof), `specification` (of the checker, or of what a certificate means), `certificate-format`, `producer-code` (the producer’s own verification code, its checker or its proof-assistant definitions), `producer-output` (stored outputs or receipts, read to compare) and `earlier-review` (another review of the same result) |
-| `clean_room` | `true` only when the authors never read the producer’s code and the program shares none of it |
+| `clean_room` | `true` only when the authors never read the producer’s code for what this program decides, and it shares none of that code; a lane that wrote several programs can hold a clean room for one and not another |
 | `shares` | The producer’s components the program reuses, by name; empty when none, and a non-empty list makes the relation `shared-components` |
 | `written_by` | Each person by name, and each AI system by its family (Claude, Codex) with the role, tier and reasoning setting it ran at; the record names the system family, not a model identifier |
 | `overlaps_producer` | Whether that authorship overlaps the producer’s (`none`, `system-family`, `people` or `unknown`), whether the authors worked from a prompt of their own (`separate_prompt`) and in files of their own that copy none of the producer’s code (`separate_code`), and a note naming what is shared |
@@ -245,7 +245,8 @@ step, is not `C3` independently re-implemented in full.
 ### Every Run’s Code Is Kept
 
 Any review or lane that runs code on a result keeps that code in the repository and
-registers it, or states in the review that the run decides nothing.
+registers it, or states, in the review or in the README that keeps the code, that the
+run decides nothing.
 Kept means in the result’s packet, or in `devtools` when it is a tool, with a README
 that says what each program does, what it read, how to run it and what it printed.
 Registered means a program in [`verifiers.yaml`](packing/frontier/verifiers.yaml) with

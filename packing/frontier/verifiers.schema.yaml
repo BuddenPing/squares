@@ -138,8 +138,9 @@ $defs:
       clean_room:
         type: boolean
         description: >-
-          true only when the authors never read the producer's code and the program
-          shares none of it.
+          true only when the authors never read the producer's code for what this
+          program decides, and the program shares none of it. A lane that wrote several
+          programs can hold a clean room for one and not for another.
       shares:
         type: array
         uniqueItems: true
