@@ -1157,6 +1157,7 @@ ROOT_DOCUMENTS = (
     REPO / "README.md",
     REPO / "SYNOPSIS.md",
     REPO / "TUTORIAL.md",
+    REPO / "TUTORIAL-ADVANCED.md",
     REPO / "conventions.md",
     REPO / "development.md",
     REPO / "defects.md",
