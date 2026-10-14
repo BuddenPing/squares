@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import functools
 import gzip
+import hashlib
 import json
 import os
 import shutil
@@ -65,6 +66,10 @@ PINGYOU_1012 = (
 #: certificates no issue names: Couzo's releases of 12 and 13 October.
 COUZO_561 = "couzo-certificates-2026-10-12"
 COUZO_586 = "couzo-certificates-2026-10-13"
+#: Issues #573 and #593: Mishapolk's 19 certificates at 336bdf5 and 73 at 46f638c, kept as
+#: derived facts; #593's sides are admitted at its census's exact fractions.
+MISHAPOLK_573 = "mishapolk-exact-certificates-2026-10-12"
+MISHAPOLK_593 = "mishapolk-records-2026-10-14"
 #: How a declaration cites a beyond-horizon row of the source register.
 COVERAGE_URL = "packing/frontier/source-coverage.yaml"
 EVERY = (
@@ -81,6 +86,8 @@ EVERY = (
     *PINGYOU_1012,
     COUZO_561,
     COUZO_586,
+    MISHAPOLK_573,
+    MISHAPOLK_593,
 )
 
 
@@ -1125,6 +1132,8 @@ def test_the_register_plan_states_each_bound_as_check_standing_reads_it(name: st
         **dict.fromkeys(PINGYOU_1012, "2026-10-12"),
         COUZO_561: "2026-10-12",
         COUZO_586: "2026-10-13",
+        MISHAPOLK_573: "2026-10-12",
+        MISHAPOLK_593: "2026-10-14",
     }
     assert result["attribution"]["published"] == published.get(name, "2026-10-10")
     evidence = plan["evidence.yaml"]
@@ -1473,3 +1482,78 @@ def test_each_ostashev_side_is_its_labelled_optimum_dilated_by_1e60() -> None:
             line.split()[-1] for line in text.splitlines() if line.startswith("# claimed_s:")
         ]
         assert certificate.side == Fraction(claimed) * (1 + Fraction(1, 10**60))
+
+
+# --------------------------------------------------------------------------- 14 October packets
+
+#: Issue #593's 16-place prints at four counts: binary64 values, not rounded-up sides.
+ISSUE_593_PRINTS = {
+    129: "11.8700138504044652",
+    207: "14.8809603715580003",
+    237: "15.9027050578663669",
+    308: "17.9982698795262550",
+}
+
+
+def _manifest(name: str) -> dict[str, str]:
+    """A packet's upstream manifest: the SHA-256 of each pinned or retained path."""
+    path = _packet(name) / reports.acquire_source.MANIFEST
+    rows = (line.split(None, 1) for line in path.read_text(encoding="utf-8").splitlines())
+    return {where.removeprefix("./"): digest for digest, where in rows}
+
+
+def test_the_593_prints_are_refused_and_each_census_fraction_is_admitted() -> None:
+    packet = _packet(MISHAPOLK_593)
+    declaration = reports.load_declaration(packet)
+    certificates = reports.read_facts(packet)
+    assert [row["n"] for row in declaration["certificates"]] == list(certificates)
+    # 51's case ceiling is Ryan Xu's radical side, which no house reader states.
+    assert 51 not in certificates
+    assert len(certificates) == 72
+    for row in declaration["certificates"]:
+        assert certificates[row["n"]].side == Fraction(row["offered"])
+        assert row.get("printed_in", "").endswith("/certificates/census.json")
+    for n, printed in ISSUE_593_PRINTS.items():
+        with pytest.raises(reports.ReportError, match="does not round up"):
+            reports.admit(certificates[n], printed)
+
+
+def test_the_593_release_is_smallest_only_at_237_and_ties_couzo_at_211_and_241() -> None:
+    rows = _rows(MISHAPOLK_593)
+    relations: dict[str, int] = {}
+    for row in rows.values():
+        relation = row["case"]["relation"]
+        relations[relation] = relations.get(relation, 0) + 1
+    assert relations == {"above": 15, "equal": 40, "below": 17}
+    assert [n for n, row in rows.items() if row["smallest"] == reports.THIS] == [237]
+    for n in (211, 241):
+        assert rows[n]["undecided_among"] == [reports.THIS, "#586 (Couzo)"]
+    # At 129, 176, 204, 303 and 304 Ostashev's earlier sides are below by under 1e-30.
+    for n in (129, 176, 204, 303, 304):
+        (ostashev,) = [item for item in rows[n]["pending"] if "Ostashev" in item["report"]]
+        assert ostashev["relation"] == "above"
+        assert 0 < -Fraction(ostashev["difference"]) < Fraction(1, 10**30)
+
+
+def test_thirteen_593_files_are_certificates_already_retained_from_others() -> None:
+    mine = _manifest(MISHAPOLK_593)
+    couzo = {**_manifest(COUZO), **_manifest(COUZO_488), **_manifest(COUZO_506)}
+    for n in (105, 108, 127, 209, 267, 305, 306):
+        assert mine[f"certificates/n{n}.cert"] == couzo[f"certificates/n{n}.cert"]
+    certificates = _packet(REGULARIZED) / "source/search/regularize/lists/certs"
+    for n in (70, 102, 123, 269, 292, 295):
+        raw = gzip.decompress((certificates / f"n-{n:03d}.cert.gz").read_bytes())
+        assert mine[f"certificates/n{n}.cert"] == hashlib.sha256(raw).hexdigest()
+
+
+def test_the_573_release_is_nowhere_smallest_and_shares_four_files_with_593() -> None:
+    rows = _rows(MISHAPOLK_573)
+    assert [n for n, row in rows.items() if row["requested"]] == [103, 153, 207, 209, 258, 270]
+    assert all(row["smallest"] != reports.THIS for row in rows.values())
+    below = [n for n, row in rows.items() if row["case"]["relation"] == "below"]
+    assert below == [153, 154, 175, 207]
+    early, late = _manifest(MISHAPOLK_573), _manifest(MISHAPOLK_593)
+    for n in (103, 153, 207, 258):
+        assert early[f"certificates/square-{n}.cert"] == late[f"certificates/n{n}.cert"]
+    for n in (209, 270):
+        assert early[f"certificates/square-{n}.cert"] != late[f"certificates/n{n}.cert"]
