@@ -2671,7 +2671,7 @@ def refresh_bound(report: dict[str, Any], n: int) -> dict[str, Any] | None:
     distance to it; the change, or `None` where the record still holds the same bound.
 
     A run stores the verified upper bound it compared with. When a register result moves
-    that bound afterwards (T-154 took 59 ceilings to the exact sides of row-3 views), the
+    that bound afterwards (T-155 took 59 ceilings to the exact sides of row-3 views), the
     run's decisions are stale until `U` is read again: `upper_bound` reads the exact form
     where it is rational, so a bound printed at the same decimal with a new exact form is a
     new `U`.

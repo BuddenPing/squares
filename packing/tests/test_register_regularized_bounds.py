@@ -1,4 +1,4 @@
-"""The regularized views registered as verified upper bounds (T-154).
+"""The regularized views registered as verified upper bounds (T-155).
 
 `devtools.register_regularized_bounds` retains each view whose exact side lies below its
 case's verified upper bound, decides it on both maintained exact routes, makes three
@@ -222,10 +222,10 @@ def test_prose_calls_a_side_exact_only_where_its_decimal_is_the_side() -> None:
             assert not re.search(rf"{shown}\$?, exactly", text), n
             assert not re.search(rf"exact side, {shown}", text), n
             assert not re.search(
-                rf"{shown}\$?, the verified upper bound \(T-154\), the exact", text
+                rf"{shown}\$?, the verified upper bound \(T-155\), the exact", text
             ), n
             assert f"{row['side_text']}$ (rounded up at 36 places)" in text, n
-            assert "the verified upper bound (T-154) rounded up at 36 places" in text, n
+            assert "the verified upper bound (T-155) rounded up at 36 places" in text, n
         else:
             assert "rounded up at 36 places" not in text, n
             if not row["agrees_with_report"]:

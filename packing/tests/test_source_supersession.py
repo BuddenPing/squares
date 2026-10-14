@@ -97,7 +97,7 @@ def _later_lane(exact_form: str, value: str) -> dict[str, object]:
 
 def test_the_t101_layer_leaves_a_lane_any_later_layer_holds_below_it() -> None:
     """Neither earlier layer names a later one: a lane an unnamed later layer holds at
-    T-154's exact side is left alone, and one above the layer's own bound is not (A2)."""
+    T-155's exact side is left alone, and one above the layer's own bound is not (A2)."""
     from devtools import apply_exact_ceilings as t101  # noqa: PLC0415
     from devtools import register_regularized_bounds as registered  # noqa: PLC0415
 
