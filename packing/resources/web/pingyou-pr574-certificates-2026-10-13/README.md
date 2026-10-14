@@ -188,55 +188,61 @@ certificate has the digest of #593’s.
 
 ## The Replay
 
-The full batch was priced above three hours on one worker, so the counts where the
-certificate is below every report, by the exact sides above, were replayed first.
+The full batch was priced above three hours on one worker. The counts where the
+certificate is below every report, by the exact sides above, were replayed first; then,
+with the owner’s budget, every count that the intake ledger of 14 October 2026
+(`packing/campaign/issue-intake/upper-bounds-20261014/ledger.json` on the ledger branch)
+records as a PR #574 refinement: 64 rational and 4 algebraic counts.
 
 **Rational, on both maintained routes.** `devtools.upper_bound_reports` decides each
 fact through the two-route kernel of `devtools.evand_arrangement_reports`: `sqpack`’s
 exact witness verifier and the independent rational corner checker, each deciding every
 wall and every pair over Q. A positive job, a duplicate-square control and an
 outside-container control ran for each count in its own child process, one at a time,
-from a resumable driver that runs `decide-job` with no per-job deadline, from 08:11 to
-10:13 UTC with other lanes on the machine. The session’s two-hour ceiling on a background
-task stopped the driver during the last job of N269, which was then decided alone, and
-`certify --finished` assembled the receipts of the 39 counts whose three jobs had all
-finished, one file per count under `receipts/exact-certification-nNNN.json.xz`:
-N68, N84, N86, N88, N102, N103, N105, N108, N110, N123, N126, N127, N129 to N132, N155,
-N156, N175, N176, N179, N180, N206, N209, N232, N236, N238, N258, N259, N261, N264,
-N266 to N269, N271, N292, N303 and N305.
+from a resumable driver that runs `decide-job` with no per-job deadline, in runs kept
+inside the session’s two-hour ceiling on a background task, with other lanes on the
+machine; `certify --finished` assembled one receipt per count,
+`receipts/exact-certification-nNNN.json.xz`. The 64 counts:
 
-The 117 jobs made 4,555,860 pair decisions in 4,836.27 route CPU seconds and 6,992.23 job
-wall seconds, the longest 203.51 seconds. All 39 positives pass both routes and both
-routes refuse all 78 controls. The certificates are exact contact solutions: in every
-positive a square touches the box, a least wall clearance of exactly 0, and at 38 counts
+- 08:11–10:13 UTC, 39 counts: N68, N84, N86, N88, N102, N103, N105, N108, N110, N123,
+  N126, N127, N129 to N132, N155, N156, N175, N176, N179, N180, N206, N209, N232, N236,
+  N238, N258, N259, N261, N264, N266 to N269, N271, N292, N303 and N305;
+- 11:29–12:34, 14 counts: N172, N181, N182, N199, N204, N208, N210, N211, N228, N237,
+  N273, N295, N301 and N304;
+- 12:35–13:30, 8 counts: N146, N239, N240, N241, N263, N270, N272 and N307;
+- 14:30–15:19, 3 counts: N297, N306 and N308.
+
+The 192 jobs made 9,164,850 pair decisions in 14,497.02 route CPU seconds and 16,968.51
+job wall seconds, the longest 509.89 seconds. All 64 positives pass both routes and both
+routes refuse all 128 controls. The certificates are exact contact solutions: in every
+positive a square touches the box, a least wall clearance of exactly 0, and at 63 counts
 two squares touch, a least pair gap of exactly 0; at N261 the least gap is 4.84e-89. The
 two routes find the same least clearance and gap at every count.
-`check --replay` decided the 21 jobs of N129, N156, N175, N176, N258, N261 and N271 again
-in 21 minutes 43 seconds, equal to the retained rows, and admitted all 117; the other 32
-counts’ rows are admitted, not decided again, which is priced at about 1.5 hours.
+`check --replay` decided the jobs of these counts again, each run inside the same
+ceiling, and every row was equal to the retained one: N129, N156, N175, N176, N258, N261
+and N271 (21 minutes 43 seconds); N105, N172, N199, N297, N306 and N308 (69 minutes 29
+seconds). The other counts’ rows are admitted and were not decided again.
 
-**Algebraic, on one route.** `devtools.algebraic_witness_reports` decided N70, N153 and
-N207 on `sqpack`’s exact witness verifier over each witness’s field, with the same two
-controls, each job in its own child process: 9 jobs, 106,092 pair decisions, 699.13 route
-CPU seconds and 787.03 job wall seconds, the longest 166.45. The three positives pass,
-every square and pair decided by exact signs in the field, and the six controls are
-refused. All three touch the box and touch between squares exactly. The receipts are
+**Algebraic, on one route.** `devtools.algebraic_witness_reports` decided N70, N153, N207
+and N302 on `sqpack`’s exact witness verifier over each witness’s field, with the same two
+controls, each job in its own child process: 12 jobs, 242,445 pair decisions, 1,001.0 route
+CPU seconds and 1,094.42 job wall seconds, the longest 166.45. The four positives pass,
+every square and pair decided by exact signs in the field, and the eight controls are
+refused. All four touch the box and touch between squares exactly. The receipts are
 `receipts/algebraic-route1-nNNN.json.xz`.
-`check --replay` decided all nine jobs again in 12 minutes 57 seconds, with the same
-outcomes.
+`check --replay` decided the nine jobs of N70, N153 and N207 again in 12 minutes 57
+seconds, with the same outcomes; N302’s were not decided again.
 
 ## What Is Not Established
 
-- **The other 21 counts below every report** (N146, N172, N181, N182, N199, N204, N208,
-  N210, N228, N239, N240, N263, N270, N272, N273, N295, N297, N301 and N306 to N308)
-  and **the other 25 declared rational counts** were not replayed. Fitted to the 117
-  jobs above, a pair decision costs about 4.27e-6 L^0.93 seconds of wall time on the
-  shared machine, L the certificates’ median literal length, which prices them at about
-  2.8 and 0.8 hours, the longest job about 316 seconds (N308). `certify` continues from
-  the finished jobs once `replayed` names them.
-- **The other 57 algebraic counts** were not replayed. At the measured rates, about
-  2.3 ms a pair over Q(√2), 6 to 8 ms in the degree-5 and degree-7 fields, and 305
-  seconds for N53’s degree-8 positive, they are priced at about 2.2 hours on the one route.
+- **The 21 declared rational counts the ledger does not record** were not replayed: N28,
+  N37, N39, N41, N50, N55, N69, N71, N83, N87, N106, N128, N152, N171, N177, N198, N205,
+  N230, N235, N293 and N300. At the rates of the 192 jobs they are priced at under an
+  hour; `certify` continues from the finished jobs once `replayed` names them.
+- **The other 56 algebraic counts** were not replayed. At the measured rates, about
+  2.3 ms a pair over Q(√2), 6 to 8 ms in the degree-5 and degree-7 fields, 2.2 ms in N302’s
+  cubic one and 305 seconds for N53’s degree-8 positive, they are priced at about 2.1
+  hours on the one route.
 - **A second route over a number field** does not exist here. The independent corner
   checker reads rational corners only. Run as a diagnostic on `sqpack.field` values, its
   geometry accepted N5, N10 and N40 unchanged, in 0.02 to 1.05 seconds; as a recorded
