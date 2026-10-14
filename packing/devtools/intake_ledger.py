@@ -492,11 +492,11 @@ def problems(ledger: Mapping[str, Any]) -> list[str]:
             found.append(f"{label}: no claims")
         for claim in claims:
             where = f"{label} n={claim.get('n')}"
-            own = _problems_of_claim(where, claim, when)
-            found.extend(own)
-            if own:
+            found.extend(_problems_of_claim(where, claim, when))
+            n = claim.get("n")
+            if not _is_count(n):
                 continue
-            key = (label, int(claim["n"]))
+            key = (label, n)
             if key in claimed:
                 found.append(f"{where}: the claim is listed twice")
             claimed.add(key)
