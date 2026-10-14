@@ -7,7 +7,6 @@ Long exact sides are abbreviated. From `packing/`, with the project interpreter:
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 import yaml
@@ -17,19 +16,14 @@ REPO = Path(__file__).resolve().parents[5]
 SOURCES = REPO / "packing/campaign/issue-intake/upper-bounds-20261014/sources.yaml"
 
 
-def emit(*parts: object) -> None:
-    """One line of the program's report on standard output."""
-    sys.stdout.write(" ".join(str(part) for part in parts) + "\n")
-
-
 def main() -> None:
     sources = yaml.safe_load(SOURCES.read_text(encoding="utf-8"))
-    emit("exceptions:", sources.get("exceptions"))
-    emit("other_items:", [item["issue"] for item in sources.get("other_items", [])])
+    print("exceptions:", sources.get("exceptions"))
+    print("other_items:", [item["issue"] for item in sources.get("other_items", [])])
     for report in sources["reports"]:
-        emit("==", {key: report[key] for key in report if key not in ("claims", "lanes")})
+        print("==", {key: report[key] for key in report if key not in ("claims", "lanes")})
         for mapping in report.get("lanes", []):
-            emit("   lane:", mapping)
+            print("   lane:", mapping)
         for claim in report.get("claims", []):
             short = {
                 key: value[:24] + "..."
@@ -37,7 +31,7 @@ def main() -> None:
                 else value
                 for key, value in claim.items()
             }
-            emit("   claim:", short)
+            print("   claim:", short)
 
 
 if __name__ == "__main__":

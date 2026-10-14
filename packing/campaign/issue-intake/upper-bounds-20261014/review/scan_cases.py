@@ -13,7 +13,6 @@ From `packing/`, with the project interpreter::
 
 from __future__ import annotations
 
-import sys
 from decimal import Decimal
 from fractions import Fraction
 from pathlib import Path
@@ -27,11 +26,6 @@ PACKING = REPO / "packing"
 FRONTIER = PACKING / "frontier"
 LEDGER = PACKING / "campaign/issue-intake/upper-bounds-20261014/ledger.yaml"
 HORIZON = 324
-
-
-def emit(*parts: object) -> None:
-    """One line of the program's report on standard output."""
-    sys.stdout.write(" ".join(str(part) for part in parts) + "\n")
 
 
 def case(n: int) -> dict[str, Any]:
@@ -59,12 +53,12 @@ def main() -> None:
             mark += " FORMS-DIFFER"
         if mark:
             flagged.append(n)
-        emit(
+        print(
             f"n={n:3d} reported={reported_value} ({reported.get('source_key')}; "
             f"form={reported_form}) | verified={verified_value} (form={verified_form}; "
             f"evidence={verified.get('evidence')}){mark}"
         )
-    emit("flagged:", flagged)
+    print("flagged:", flagged)
 
 
 if __name__ == "__main__":

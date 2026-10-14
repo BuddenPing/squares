@@ -47,11 +47,6 @@ SOURCES = {
 }
 
 
-def emit(*parts: object) -> None:
-    """One line of the program's report on standard output."""
-    sys.stdout.write(" ".join(str(part) for part in parts) + "\n")
-
-
 def verdict_rows(output: Path) -> list[tuple[Any, ...]]:
     """`recompute.py`'s verdict rows: (n, report, ledger, mine, agree[, note])."""
     rows = []
@@ -187,10 +182,10 @@ def main() -> None:
         else Path(__file__).with_name("recompute-output.txt")
     )
     for line in verdict_table(verdict_rows(output)):
-        emit(line)
-    emit()
+        print(line)
+    print()
     for line in provenance_sample(pinned):
-        emit(line)
+        print(line)
 
 
 if __name__ == "__main__":

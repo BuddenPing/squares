@@ -6,11 +6,11 @@ recomputed the ledger’s verdicts with these programs.
 The reviewer wrote them against `packing/devtools/intake_ledger.py` and this directory
 on branch `claude/serene-hopper-xxh80m` at commit 7f3181aa4, and changed nothing in the
 repository. They were copied here in the fix round that answered the review.
-The copy changes what the lint floor requires (formatting, names, `emit` in place of
-`print`), reads repository data by repository path instead of from a scratch copy of
-`main`, and ports two programs: `bug_demos.py` to the module’s current interface, since
-the `lowered` it exercised is gone, and `tables.py` to print its two tables instead of
-writing files.
+The copy changes what the lint floor requires (formatting and names), reads repository
+data by repository path instead of from a scratch copy of `main`, takes `PINNED` as
+`recompute.py`’s argument in `main` rather than at import, and ports two programs:
+`bug_demos.py` to the module’s current interface, since the `lowered` it exercised is
+gone, and `tables.py` to print its two tables instead of writing files.
 
 Run every program from `packing/` with the project interpreter, `.venv/bin/python3`.
 
@@ -21,7 +21,7 @@ Run every program from `packing/` with the project interpreter, `.venv/bin/pytho
 | `recompute.py PINNED` | each lane’s `claims.json` and `algebraic-claims.json`; `packing/frontier/` (the cases, `results.yaml`, `source-coverage.yaml`); `PINNED/github/` for report times; `PINNED/upstream/` certificate headers; then `ledger.json` and `ledger.yaml` for the comparison | the 306-step verdict comparison with its disagreements; the sensitivity of the verdicts to the verified lane; the special comparisons at 11, 17, 29 and 51; #593’s binary64 prints against the exact sides; the provenance audit of the 280 lane-backed claims; the 26 transcribed claims against the reviewer’s own sources; a seeded sample of 15 claims | `recompute-output.txt` (the run the review cites) and `recompute-rerun.txt` (this round’s ledger) |
 | `scan_cases.py` | `packing/frontier/n-NNN.md` at every in-horizon count the ledger claims at | both upper lanes of each case, flagged where the verified lane is below the reported one (none) or the exact forms differ (61 counts) | none: it reproduces the review’s `cases-scan.txt` byte for byte at `main` 450bee031 |
 | `compare_geometry.py A B` | two rational centre-basis Witness/v2 facts, `.yaml` or `.yaml.gz`, by repository path | one line: the best of the box’s 8 symmetries, the largest centre displacement, and how many squares lie within 1e-6, 1e-3 and 0.1 (a measurement; it decides nothing) | `compare_geometry-output.txt`, #573 at 153 and 207 against PingYou Ltd’s T-148 and T-147 |
-| `bug_demos.py` | `devtools.intake_ledger` | the two walk defects the review reproduced, as the module now handles them | `bug_demos-output.txt`, what the reviewer’s own program printed at 7f3181aa4 |
+| `bug_demos.py` | `devtools.intake_ledger` | the two walk defects the review reproduced, as the module now handles them | `bug_demos-output.txt`, what this program prints against the module (the review’s M4 says what the reviewer’s own program printed) |
 | `dump_sources.py` | this directory’s `sources.yaml` | report coordinates, lane mappings and transcribed claims | none: `sources.yaml` was regenerated in this round, so the review’s `sources-structure.txt` describes an older file |
 | `tables.py PINNED [OUTPUT]` | `recompute.py`’s verdict rows (by default `recompute-output.txt`), `ledger.yaml`, the lane rows behind the sample, `PINNED/github/issue-593.json` | the per-count verdict table and the 15-claim provenance sample | none: both tables are in the review, and this prints them unchanged from `recompute-output.txt` |
 

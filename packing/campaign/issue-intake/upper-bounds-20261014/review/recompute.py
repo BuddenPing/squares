@@ -47,9 +47,6 @@ from mpmath.libmp import to_rational
 #: The repository root: this file is packing/campaign/issue-intake/<directory>/review/.
 REPO = Path(__file__).resolve().parents[5]
 PACKING = REPO / "packing"
-#: The pinned bytes the review assembled that `main` does not carry: lane claim records at
-#: their branch commits, GitHub reads, certificate headers at pinned upstream commits.
-SCR = Path(sys.argv[1])
 PACKETS = PACKING / "resources/web"
 LEDGER_DIR = PACKING / "campaign/issue-intake/upper-bounds-20261014"
 FRONTIER = PACKING / "frontier"
@@ -59,15 +56,10 @@ IV: Any = mp.iv
 IV.dps = 90
 
 
-def emit(*parts: object) -> None:
-    """One line of the program's report on standard output."""
-    sys.stdout.write(" ".join(str(part) for part in parts) + "\n")
-
-
-def lane_record(lane: str, packet: str, record: str) -> dict[str, Any]:
+def lane_record(scr: Path, lane: str, packet: str, record: str) -> dict[str, Any]:
     """A lane's claim record: the packet on `main` where it is there, else the pinned bytes."""
     on_main = PACKETS / packet / "acquisition" / record
-    path = on_main if on_main.is_file() else SCR / "lanes" / lane / packet / record
+    path = on_main if on_main.is_file() else scr / "lanes" / lane / packet / record
     return json.loads(path.read_text(encoding="utf-8"))
 
 
@@ -417,55 +409,18 @@ def starts(counts: list[int]) -> dict[int, list[Side]]:
 # ------------------------------------------------------------------ reports and claims
 
 
-def gh_issue(n: int) -> dict[str, Any]:
-    return json.loads((SCR / "github" / f"issue-{n}.json").read_text(encoding="utf-8"))
+def gh_issue(scr: Path, n: int) -> dict[str, Any]:
+    return json.loads((scr / "github" / f"issue-{n}.json").read_text(encoding="utf-8"))
 
 
-def comment_time(issue: int, comment_id: int) -> str:
-    for c in gh_issue(issue)["comments"]:
+def comment_time(scr: Path, issue: int, comment_id: int) -> str:
+    for c in gh_issue(scr, issue)["comments"]:
         if c["url"].endswith(f"#issuecomment-{comment_id}") or str(c.get("id", "")).endswith(
             str(comment_id)
         ):
             return c["createdAt"]
     raise KeyError(comment_id)
 
-
-PR = json.loads((SCR / "github/pr-574.json").read_text(encoding="utf-8"))
-PR_COMMITS = {c["committedDate"] for c in PR["commits"]}
-
-REPORT_TIMES: dict[str, str] = {}
-for n in (
-    528,
-    529,
-    552,
-    561,
-    562,
-    564,
-    566,
-    567,
-    568,
-    569,
-    570,
-    573,
-    575,
-    582,
-    583,
-    584,
-    586,
-    589,
-    593,
-    596,
-):
-    REPORT_TIMES[f"#{n}"] = gh_issue(n)["createdAt"]
-REPORT_TIMES["#504 comment 6133737268"] = comment_time(504, 6133737268)
-REPORT_TIMES["#503 comment 6133755143"] = comment_time(503, 6133755143)
-REPORT_TIMES["PR #574"] = PR["createdAt"]
-# publications: the committer date of the named commit, as fetched from GitHub (see the review)
-REPORT_TIMES["TheSnakeFang/squarepack-certs@e646c47"] = "2026-10-12T19:06:24Z"
-REPORT_TIMES["TheSnakeFang/squarepack-certs@c284cd0"] = "2026-10-13T00:05:31Z"
-REPORT_TIMES["franciscouzo/square-packing@93570ef"] = "2026-10-12T21:31:43Z"
-REPORT_TIMES["franciscouzo/square-packing@4596670"] = "2026-10-13T13:53:57Z"
-REPORT_TIMES["franciscouzo/square-packing@b85dee2"] = "2026-10-13T17:30:53Z"
 
 # edits that added or replaced a claim: (report, n) -> GraphQL editedAt, with the comment
 # time beside it
@@ -518,12 +473,12 @@ LANES = {
 TIME_FIX = {"2026-10-13T00:29:11Z": "2026-10-13T01:29:11Z"}
 
 
-def cert_side(name: str) -> Fraction:
+def cert_side(scr: Path, name: str) -> Fraction:
     """The side line of a fetched upstream certificate.
 
     It is `n S` in the evand format and `s S` in sqcert.
     """
-    for line in (SCR / "upstream" / name).read_text(encoding="utf-8").splitlines():
+    for line in (scr / "upstream" / name).read_text(encoding="utf-8").splitlines():
         parts = line.split()
         if len(parts) == 2 and parts[0] == "s":
             return Fraction(parts[1])
@@ -532,175 +487,225 @@ def cert_side(name: str) -> Fraction:
     raise ValueError(name)
 
 
-PR_HEAD = {
-    row["n"]: row
-    for row in json.loads(
-        (SCR / "upstream/pr574-head-numerical-claims.json").read_text(encoding="utf-8")
-    )["rows"]
-}
-
-# (report, n, span, display value, first_committed, where read)
+#: What `read_pinned` reads from the PINNED directory `main` is given: PR #574 and its
+#: commits' times, each report's time, the pull request's head rows, and the transcribed
+#: claims (report, n, span, display value, first_committed, where read).
+PR: dict[str, Any] = {}
+PR_COMMITS: set[str] = set()
+REPORT_TIMES: dict[str, str] = {}
+PR_HEAD: dict[int, dict[str, Any]] = {}
 TRANSCRIBED: list[tuple[str, int, Span, Fraction, str, str]] = []
-for n, fc in (
-    (155, "2026-10-11T13:21:30Z"),
-    (156, "2026-10-11T13:21:30Z"),
-    (175, "2026-10-12T03:05:21Z"),
-    (211, "2026-10-11T13:21:30Z"),
-    (232, "2026-10-12T03:05:21Z"),
-    (264, "2026-10-12T03:05:21Z"),
-):
-    s = cert_side(f"dostashev-a8db6ff-n0{n}.sqcert")
+
+
+def read_pinned(scr: Path) -> None:
+    """Fill the reads above from ``scr``; `main` calls it once, before anything else."""
+    PR.update(json.loads((scr / "github/pr-574.json").read_text(encoding="utf-8")))
+    PR_COMMITS.update(c["committedDate"] for c in PR["commits"])
+
+    for n in (
+        528,
+        529,
+        552,
+        561,
+        562,
+        564,
+        566,
+        567,
+        568,
+        569,
+        570,
+        573,
+        575,
+        582,
+        583,
+        584,
+        586,
+        589,
+        593,
+        596,
+    ):
+        REPORT_TIMES[f"#{n}"] = gh_issue(scr, n)["createdAt"]
+    REPORT_TIMES["#504 comment 6133737268"] = comment_time(scr, 504, 6133737268)
+    REPORT_TIMES["#503 comment 6133755143"] = comment_time(scr, 503, 6133755143)
+    REPORT_TIMES["PR #574"] = PR["createdAt"]
+    # publications: the committer date of the named commit, as fetched from GitHub (see
+    # the review)
+    REPORT_TIMES["TheSnakeFang/squarepack-certs@e646c47"] = "2026-10-12T19:06:24Z"
+    REPORT_TIMES["TheSnakeFang/squarepack-certs@c284cd0"] = "2026-10-13T00:05:31Z"
+    REPORT_TIMES["franciscouzo/square-packing@93570ef"] = "2026-10-12T21:31:43Z"
+    REPORT_TIMES["franciscouzo/square-packing@4596670"] = "2026-10-13T13:53:57Z"
+    REPORT_TIMES["franciscouzo/square-packing@b85dee2"] = "2026-10-13T17:30:53Z"
+
+    PR_HEAD.update(
+        {
+            row["n"]: row
+            for row in json.loads(
+                (scr / "upstream/pr574-head-numerical-claims.json").read_text(encoding="utf-8")
+            )["rows"]
+        }
+    )
+
+    # (report, n, span, display value, first_committed, where read)
+    for n, fc in (
+        (155, "2026-10-11T13:21:30Z"),
+        (156, "2026-10-11T13:21:30Z"),
+        (175, "2026-10-12T03:05:21Z"),
+        (211, "2026-10-11T13:21:30Z"),
+        (232, "2026-10-12T03:05:21Z"),
+        (264, "2026-10-12T03:05:21Z"),
+    ):
+        s = cert_side(scr, f"dostashev-a8db6ff-n0{n}.sqcert")
+        TRANSCRIBED.append(
+            (
+                "#528",
+                n,
+                point(s),
+                s,
+                fc,
+                (
+                    f"records/n0{n}.sqcert s line at dostashev/square-packing@a8db6ff "
+                    "(issue #528 names the commit)"
+                ),
+            )
+        )
     TRANSCRIBED.append(
         (
-            "#528",
-            n,
-            point(s),
-            s,
-            fc,
-            (
-                f"records/n0{n}.sqcert s line at dostashev/square-packing@a8db6ff (issue #528 "
-                "names the commit)"
-            ),
+            "#529",
+            102,
+            print_span("10.605828696455852", "unstated"),
+            decimal("10.605828696455852"),
+            "2026-10-12T04:23:19Z",
+            "issue #529: 'n = 102, s = 10.605828696455852' (decimal poses, no exact side)",
         )
     )
-TRANSCRIBED.append(
-    (
-        "#529",
-        102,
-        print_span("10.605828696455852", "unstated"),
-        decimal("10.605828696455852"),
-        "2026-10-12T04:23:19Z",
-        "issue #529: 'n = 102, s = 10.605828696455852' (decimal poses, no exact side)",
-    )
-)
-s552 = Fraction(12922566401934059503377267965457, 10**30)
-TRANSCRIBED.append(
-    (
-        "#552",
-        154,
-        point(s552),
-        s552,
-        "2026-10-12T13:58:36Z",
-        "issue #552: S' = 12922566401934059503377267965457 / 10^30",
-    )
-)
-s154 = cert_side("franciscouzo_square-packing@4596670-n154.cert")
-TRANSCRIBED.append(
-    (
-        "#570",
-        154,
-        point(s154),
-        s154,
-        "",
-        (
-            "certificates/n154.cert at franciscouzo/square-packing@4596670, SHA-256 "
-            "5335cb3b... as #570 states"
-        ),
-    )
-)
-TRANSCRIBED.append(
-    (
-        "#570",
-        379,
-        print_span("19.953542593650", "up"),
-        decimal("19.953542593650"),
-        "",
-        (
-            "issue #570 table, 'rounded upward to 12 decimal places'; the pinned 1b31bc9 "
-            "is not served"
-        ),
-    )
-)
-for n in (154, 211, 241, 339, 379, 380, 382):
-    s = cert_side(f"franciscouzo_square-packing@4596670-n{n}.cert")
+    s552 = Fraction(12922566401934059503377267965457, 10**30)
     TRANSCRIBED.append(
         (
-            "#583",
-            n,
-            point(s),
-            s,
+            "#552",
+            154,
+            point(s552),
+            s552,
+            "2026-10-12T13:58:36Z",
+            "issue #552: S' = 12922566401934059503377267965457 / 10^30",
+        )
+    )
+    s154 = cert_side(scr, "franciscouzo_square-packing@4596670-n154.cert")
+    TRANSCRIBED.append(
+        (
+            "#570",
+            154,
+            point(s154),
+            s154,
             "",
             (
-                f"certificates/n{n}.cert header at franciscouzo/square-packing@4596670 (the "
-                "pin #583 names)"
+                "certificates/n154.cert at franciscouzo/square-packing@4596670, SHA-256 "
+                "5335cb3b... as #570 states"
             ),
         )
     )
-s582 = Fraction(19985624661051481, 10**15)
-TRANSCRIBED.append(
-    ("#582", 381, point(s582), s582, "", "issue #582: 19985624661051481/1000000000000000")
-)
-TRANSCRIBED.append(
-    (
-        "#589",
-        381,
-        point(s582),
-        s582,
-        "",
-        "issue #589: the same certificate as #582 (SHA-256 03650573...)",
-    )
-)
-for n, name in (
-    (380, "TheSnakeFang_squarepack-certs@e646c47-n0380.cert"),
-    (381, "TheSnakeFang_squarepack-certs@e646c47-n0381.cert"),
-):
-    s = cert_side(name)
     TRANSCRIBED.append(
         (
-            "TheSnakeFang/squarepack-certs@e646c47",
-            n,
-            point(s),
-            s,
-            "2026-10-12T19:06:24Z",
-            f"n0{n}/n0{n}.cert header at e646c47",
-        )
-    )
-s = cert_side("TheSnakeFang_squarepack-certs@c284cd0-n0382.cert")
-TRANSCRIBED.append(
-    (
-        "TheSnakeFang/squarepack-certs@c284cd0",
-        382,
-        point(s),
-        s,
-        "2026-10-13T00:05:31Z",
-        "n0382/n0382.cert header at c284cd0",
-    )
-)
-for n in (11, 17, 29):
-    s = Fraction(PR_HEAD[n]["side_exact"])
-    TRANSCRIBED.append(
-        (
-            "PR #574",
-            n,
-            point(s),
-            s,
-            "2026-10-13T00:24:05Z",
+            "#570",
+            379,
+            print_span("19.953542593650", "up"),
+            decimal("19.953542593650"),
+            "",
             (
-                f"side_exact of row n={n} in the pull request's numerical claims.json at its "
-                "head 4c319c24a"
+                "issue #570 table, 'rounded upward to 12 decimal places'; the pinned 1b31bc9 "
+                "is not served"
             ),
         )
     )
-s593_51 = cert_side("mishapolk-46f638c-n51.cert")
-TRANSCRIBED.append(
-    (
-        "#593",
-        51,
-        point(s593_51),
-        s593_51,
-        "2026-10-13T21:38:13Z",
-        (
-            "certificates/n51.cert header at Mishapolk/square-packing-records@46f638c (SHA-256 "
-            "e066f65f..., as the lane README states)"
-        ),
+    for n in (154, 211, 241, 339, 379, 380, 382):
+        s = cert_side(scr, f"franciscouzo_square-packing@4596670-n{n}.cert")
+        TRANSCRIBED.append(
+            (
+                "#583",
+                n,
+                point(s),
+                s,
+                "",
+                (
+                    f"certificates/n{n}.cert header at franciscouzo/square-packing@4596670 "
+                    "(the pin #583 names)"
+                ),
+            )
+        )
+    s582 = Fraction(19985624661051481, 10**15)
+    TRANSCRIBED.append(
+        ("#582", 381, point(s582), s582, "", "issue #582: 19985624661051481/1000000000000000")
     )
-)
+    TRANSCRIBED.append(
+        (
+            "#589",
+            381,
+            point(s582),
+            s582,
+            "",
+            "issue #589: the same certificate as #582 (SHA-256 03650573...)",
+        )
+    )
+    for n, name in (
+        (380, "TheSnakeFang_squarepack-certs@e646c47-n0380.cert"),
+        (381, "TheSnakeFang_squarepack-certs@e646c47-n0381.cert"),
+    ):
+        s = cert_side(scr, name)
+        TRANSCRIBED.append(
+            (
+                "TheSnakeFang/squarepack-certs@e646c47",
+                n,
+                point(s),
+                s,
+                "2026-10-12T19:06:24Z",
+                f"n0{n}/n0{n}.cert header at e646c47",
+            )
+        )
+    s = cert_side(scr, "TheSnakeFang_squarepack-certs@c284cd0-n0382.cert")
+    TRANSCRIBED.append(
+        (
+            "TheSnakeFang/squarepack-certs@c284cd0",
+            382,
+            point(s),
+            s,
+            "2026-10-13T00:05:31Z",
+            "n0382/n0382.cert header at c284cd0",
+        )
+    )
+    for n in (11, 17, 29):
+        s = Fraction(PR_HEAD[n]["side_exact"])
+        TRANSCRIBED.append(
+            (
+                "PR #574",
+                n,
+                point(s),
+                s,
+                "2026-10-13T00:24:05Z",
+                (
+                    f"side_exact of row n={n} in the pull request's numerical claims.json "
+                    "at its head 4c319c24a"
+                ),
+            )
+        )
+    s593_51 = cert_side(scr, "mishapolk-46f638c-n51.cert")
+    TRANSCRIBED.append(
+        (
+            "#593",
+            51,
+            point(s593_51),
+            s593_51,
+            "2026-10-13T21:38:13Z",
+            (
+                "certificates/n51.cert header at Mishapolk/square-packing-records@46f638c "
+                "(SHA-256 e066f65f..., as the lane README states)"
+            ),
+        )
+    )
 
 
-def claims() -> dict[int, list[Side]]:
+def claims(scr: Path) -> dict[int, list[Side]]:
     by_count: dict[int, list[Side]] = {}
     for (lane, packet, record), owner in LANES.items():
-        data = lane_record(lane, packet, record)
+        data = lane_record(scr, lane, packet, record)
         for row in data["results"]:
             n = int(row["n"])
             report = owner(row)
@@ -772,13 +777,16 @@ def walk(start: list[Side], entries: list[Side]) -> tuple[list[Step], list[Side]
 
 
 def main() -> None:
+    scr = Path(sys.argv[1])
+    read_pinned(scr)
+    s593_51 = cert_side(scr, "mishapolk-46f638c-n51.cert")
     ledger_json = json.loads((LEDGER_DIR / "ledger.json").read_text(encoding="utf-8"))
     ledger_counts = {c["n"]: c for c in ledger_json["counts"]}
     counts = sorted(ledger_counts)
-    by_count = claims()
+    by_count = claims(scr)
     start = starts(counts)
     missing = sorted(set(by_count) ^ set(counts))
-    emit(
+    print(
         f"counts in ledger: {len(counts)}; counts I built: {len(by_count)}; symmetric "
         f"difference: {missing}"
     )
@@ -843,22 +851,22 @@ def main() -> None:
             (n, s.side.label, "ABSENT", s.verdict, False, "claim the ledger does not list")
             for s in extra
         )
-    emit(
+    print(
         f"\nsteps compared: {agree + disagree}; agree: {agree}; disagree: {disagree}; of the "
         f"agreements {len(consistent_equal)} are equal-by-lane vs undecided-by-interval "
         "(listed as consistent)"
     )
-    emit("\n## Disagreements")
+    print("\n## Disagreements")
     for d in disagreements:
-        emit(" ", d)
+        print(" ", d)
 
-    emit("\n## Verdict table (n, report, ledger, mine, agree, note)")
+    print("\n## Verdict table (n, report, ledger, mine, agree, note)")
     for r in rows:
-        emit(" ", r)
+        print(" ", r)
 
     # ---- sensitivity: reported lane only (the ledger's start), the lane's uncorrected time,
     # the comment times
-    emit("\n## Sensitivity")
+    print("\n## Sensitivity")
     changed = []
     for n in counts:
         if n > HORIZON:
@@ -890,10 +898,10 @@ def main() -> None:
                         "both lanes: " + y.verdict,
                     )
                 )
-    emit(" verdicts that change when the verified lane joins the start:", changed or "none")
+    print(" verdicts that change when the verified lane joins the start:", changed or "none")
 
     # ---- the special comparisons
-    emit("\n## Special comparisons")
+    print("\n## Special comparisons")
     c11 = case(11)
     root = polynomial_root_interval(
         str(c11["reported_upper_bound"]["minimal_polynomial"]),
@@ -913,7 +921,7 @@ def main() -> None:
     sign_at_pr = (value_at_11(pr11) > 0) - (value_at_11(pr11) < 0)
     sign_right = (value_at_11(root.high) > 0) - (value_at_11(root.high) < 0)
     side_of_root = "above" if sign_at_pr == sign_right else "below"
-    emit(
+    print(
         f" n=11: root(P_trump11) enclosed with width {float(root.high - root.low):.1e}; PR "
         f"#574 exact side - root.high = {float(pr11 - root.high):.3e}; exact sign test: "
         f"P(side) has the sign of P(root+eps) -> the side is {side_of_root} the root; "
@@ -924,33 +932,33 @@ def main() -> None:
         eps = Fraction(1, 10**k)
         lo, hi = pr11 - eps, pr11 + eps
         if value_at_11(lo) * value_at_11(hi) < 0:
-            emit(
+            print(
                 f"       the root lies within 1e-{k} of the PR's side (sign change across "
                 f"[side-1e-{k}, side+1e-{k}])"
             )
             break
     else:
-        emit(
+        print(
             "       the root is not within 1e-300 of the PR's side on either side? (no sign "
             "change found)"
         )
-    emit(
+    print(
         f"       PR #574 40-place print: {PR_HEAD[11]['safe_upper_bound_40_decimals']} ; root "
         f"to 45 places: {mp.nstr(mp.mpf(root.low.numerator) / root.low.denominator, 46)}"
     )
     cf51 = closed_form_interval("(16+5*sqrt(2))/3")
     assert cf51 is not None
-    emit(
+    print(
         " n=51: (16+5*sqrt(2))/3 in "
         f"[{mp.nstr(mp.mpf(cf51.low.numerator) / cf51.low.denominator, 40)}, ...] ; #593 "
         f"exact side {s593_51} - closed form = {float(s593_51 - cf51.high):.3e} -> "
         f"{rel(point(s593_51), cf51)}"
     )
-    emit(f"       ratio S/closed - 1 = {float(s593_51 / cf51.high - 1):.3e}")
+    print(f"       ratio S/closed - 1 = {float(s593_51 / cf51.high - 1):.3e}")
     c17 = case(17)
     v17 = Fraction(str(c17["verified_upper_bound"]["exact_form"]))
     pr17 = Fraction(PR_HEAD[17]["side_exact"])
-    emit(
+    print(
         f" n=17: PR #574 exact - verified exact = {float(pr17 - v17):.3e} -> "
         f"{rel(point(pr17), point(v17))}; vs reported print "
         f"{c17['reported_upper_bound']['value']} +-1e-14 -> "
@@ -959,7 +967,7 @@ def main() -> None:
     c29 = case(29)
     v29 = Fraction(str(c29["verified_upper_bound"]["exact_form"]))
     pr29 = Fraction(PR_HEAD[29]["side_exact"])
-    emit(
+    print(
         f" n=29: PR #574 exact - verified exact form = {float(pr29 - v29):.3e} -> "
         f"{rel(point(pr29), point(v29))}; verified value print "
         f"{c29['verified_upper_bound']['value']} - exact form = "
@@ -967,14 +975,14 @@ def main() -> None:
     )
 
     # ---- binary64 prints of #593 against the exact sides
-    emit("\n## #593 prints (16 places, binary64) against the exact sides from the lane")
-    issue593 = gh_issue(593)["body"]
+    print("\n## #593 prints (16 places, binary64) against the exact sides from the lane")
+    issue593 = gh_issue(scr, 593)["body"]
     prints = {
         int(m.group(1)): m.group(2)
         for m in re.finditer(r"\|\s*\*\*(\d+)\*\*\s*\|\s*(\d+\.\d+)\s*\|", issue593)
     }
     data = json.loads(
-        (SCR / "lanes/mishapolk/mishapolk-records-2026-10-14/claims.json").read_text(
+        (scr / "lanes/mishapolk/mishapolk-records-2026-10-14/claims.json").read_text(
             encoding="utf-8"
         )
     )
@@ -995,23 +1003,23 @@ def main() -> None:
         worst_wide = max(worst_wide, float(d / wide))
         if d > tight:
             outside_tight.append((n, p, float(d), float(tight)))
-    emit(
+    print(
         f" {len(prints)} prints parsed from the issue; max |exact-print|/(ulp/2+u/2) = "
         f"{worst_tight:.3f}; max |exact-print|/(ulp+u) = {worst_wide:.3f}; prints outside the "
         f"tight span: {outside_tight or 'none'}"
     )
     p51 = prints[51]
-    emit(
+    print(
         f" n=51 print {p51}: exact - print = {float(s593_51 - decimal(p51)):.3e}; ulp = "
         f"{math.ulp(float(decimal(p51))):.3e}"
     )
 
     # ---- provenance audit of every lane-backed claim in ledger.yaml
-    emit("\n## Provenance audit of ledger.yaml claims against the lane rows and my time table")
+    print("\n## Provenance audit of ledger.yaml claims against the lane rows and my time table")
     ledger_yaml = yaml.safe_load((LEDGER_DIR / "ledger.yaml").read_text(encoding="utf-8"))
     lane_rows: dict[tuple[str, int, str], dict[str, Any]] = {}
     for (lane, packet, record), owner in LANES.items():
-        data = lane_record(lane, packet, record)
+        data = lane_record(scr, lane, packet, record)
         for row in data["results"]:
             lane_rows[(owner(row), int(row["n"]), record)] = row
     problems = []
@@ -1077,11 +1085,11 @@ def main() -> None:
             actual = cl.get("reported_at", report["reported_at"])
             if actual != expected_time:
                 problems.append(f"{where}: reported_at {actual} vs expected {expected_time}")
-    emit(f" lane-backed claims checked: {checked}; problems: {len(problems)}")
+    print(f" lane-backed claims checked: {checked}; problems: {len(problems)}")
     for p in problems:
-        emit("  ", p)
+        print("  ", p)
     # transcribed claims against my own transcription
-    emit("\n## Transcribed claims against my own sources")
+    print("\n## Transcribed claims against my own sources")
     mine_t = {(r, n): (span, where) for r, n, span, _v, _fc, where in TRANSCRIBED}
     for report in ledger_yaml["reports"]:
         for cl in report["claims"]:
@@ -1105,17 +1113,17 @@ def main() -> None:
                     float(span.low),
                     float(span.high),
                 )
-                emit(
+                print(
                     f"  {report['report']} n={cl['n']}: ledger {shown} | mine {where[:70]} | "
                     f"{'SAME' if same else 'DIFFERENT: ' + repr(ends)}"
                 )
 
     # ---- the random provenance sample
-    emit("\n## Random sample of 15 claims (seed 20261014) for the provenance table")
+    print("\n## Random sample of 15 claims (seed 20261014) for the provenance table")
     times = {r["report"]: r["reported_at"] for r in ledger_yaml["reports"]}
     random.seed(20261014)
     for report, cl in random.sample(all_claims, 15):
-        emit(
+        print(
             f"  {report} n={cl['n']}: printed={cl['printed']} rounding={cl['rounding']} "
             f"exact={'yes (' + cl['exact'][:20] + '...)' if 'exact' in cl else 'no'} "
             f"exact_from={str(cl.get('exact_from', ''))[:90]} "

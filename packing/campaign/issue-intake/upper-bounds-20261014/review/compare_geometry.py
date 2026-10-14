@@ -32,11 +32,6 @@ REPO = Path(__file__).resolve().parents[5]
 Point = tuple[Fraction, Fraction]
 
 
-def emit(*parts: object) -> None:
-    """One line of the program's report on standard output."""
-    sys.stdout.write(" ".join(str(part) for part in parts) + "\n")
-
-
 def load(path: Path) -> tuple[Fraction, list[Point]]:
     raw = path.read_bytes()
     text = gzip.decompress(raw).decode("utf-8") if path.suffix == ".gz" else raw.decode("utf-8")
@@ -105,4 +100,4 @@ def compare(first: Path, second: Path) -> str:
 
 
 if __name__ == "__main__":
-    emit(compare(REPO / sys.argv[1], REPO / sys.argv[2]))
+    print(compare(REPO / sys.argv[1], REPO / sys.argv[2]))
