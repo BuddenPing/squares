@@ -48,6 +48,7 @@
     "packing/tests/test_angle_near_axis_control.py": 0.521,
     "packing/tests/test_angle_source_control.py": 0.014,
     "packing/tests/test_angle_tile_certificate.py": 0.163,
+    "packing/tests/test_apply_closed_form.py": 0.348,
     "packing/tests/test_artifact_dates.py": 4.346,
     "packing/tests/test_assemble_site.py": 0.019,
     "packing/tests/test_assembly_coverage.py": 0.146,
@@ -683,7 +684,9 @@
     "packing/tests/test_upper_bound_intervals.py": 6.698,
     "packing/tests/test_upper_bound_packets.py": 14.1,
     "packing/tests/test_upper_bound_reports_562_575_584_596.py": 1.525,
+    "packing/tests/test_upper_bound_reports_574.py": 59.095,
     "packing/tests/test_upper_bound_reports_fang_direct.py": 2.594,
+    "packing/tests/test_upper_bound_reports_pingyou_1012.py": 10.588,
     "packing/tests/test_validation_cli.py": 27.688,
     "packing/tests/test_validation_report.py": 0.125,
     "packing/tests/test_validation_timing.py": 1.27,
@@ -827,6 +830,22 @@
           "report": "packing/devtools/suite-file-cost-admissions/wand125-closed-form-and-decide-undecided-2026-10-14.json",
           "provenance": {},
           "tests": 31
+        }
+      ]
+    },
+    {
+      "method": "successful-unsharded-unfiltered-whole-module-local-reports",
+      "aggregation": "per-file-geometric-mean",
+      "files": [
+        "packing/tests/test_apply_closed_form.py",
+        "packing/tests/test_upper_bound_reports_574.py",
+        "packing/tests/test_upper_bound_reports_pingyou_1012.py"
+      ],
+      "reports": [
+        {
+          "report": "packing/devtools/suite-file-cost-admissions/records-1014-2026-10-14.json",
+          "provenance": {},
+          "tests": 65
         }
       ]
     }
