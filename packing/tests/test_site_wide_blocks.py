@@ -62,6 +62,7 @@ PAGES = (
     "papers.html",
     "visualize.html",
     "tutorial.html",
+    "tutorial-advanced.html",
 )
 WIDTHS = (*CLIP_WIDTHS, 390)
 #: The rule the wide track had: its room measured from the window, a rem a side.

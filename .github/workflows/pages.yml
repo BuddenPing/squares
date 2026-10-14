@@ -163,6 +163,7 @@ name: Certificate page
       - packing/resources/bibliography.yaml
       - epistemics.md
       - TUTORIAL.md
+      - TUTORIAL-ADVANCED.md
       - README.md
       - SYNOPSIS.md
       - conventions.md

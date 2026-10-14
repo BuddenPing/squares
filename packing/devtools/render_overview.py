@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render the site's own pages: the overview, the frontier atlas and the tutorial.
+"""Render the site's own pages: the overview, the frontier atlas and the tutorials.
 
 The published site used to have one top-level page, the n = 11 explainer. This renderer
 adds the front door and the pages around it, as the plan in
@@ -27,7 +27,7 @@ adds the front door and the pages around it, as the plan in
 - a forwarder at each address a page used to have (`MOVED_PAGES`), the papers' old
   addresses among them, so an old link still arrives, query and fragment kept
   (`forwarder_pages`);
-- `tutorial.html`, the tutorial rendered as a page;
+- `tutorial.html` and `tutorial-advanced.html`, the two tutorials as reader pages;
 - a forwarder at each address a page used to have (`MOVED_PAGES`), so an old link still
   arrives, query and fragment kept (`forwarder_pages`);
 - `visualize.html`, the Visualize section's first tab: the n = 1 to 324 film at full
@@ -419,6 +419,7 @@ SITE_PAGES: tuple[str, ...] = (
     "papers.html",
     *(paper_path(paper.slug) for paper in PAPERS),
     "tutorial.html",
+    "tutorial-advanced.html",
     "visualize.html",
     "workbench/index.html",
     *DOCUMENT_PAGES,
@@ -524,6 +525,7 @@ RENDER_INPUTS: tuple[Path, ...] = (
     PACKING / "atlas" / "known-best" / "regularized" / "index.json",
     PACKING / "atlas" / "known-best" / "regularized" / "rendering",
     REPO / repo_links.TUTORIAL,
+    REPO / repo_links.TUTORIAL_ADVANCED,
     REPO / repo_links.README,
     REPO / repo_links.SYNOPSIS,
     REPO / repo_links.CONVENTIONS,
@@ -1423,13 +1425,15 @@ def papers_page() -> Page:
     series are the cards' own addresses, filled from the one constant each."""
     from devtools import overview_sections  # noqa: PLC0415
 
-    tutorial = next(
-        paper for paper in overview_sections.PAPERS if paper.href == "tutorial.html"
+    tutorials = tuple(
+        paper
+        for paper in overview_sections.PAPERS
+        if paper.href in {"tutorial.html", "tutorial-advanced.html"}
     )
     values = {
-        "TUTORIAL_CARD": overview_sections.paper_cards(papers=(tutorial,)),
+        "TUTORIAL_CARDS": overview_sections.paper_cards(papers=tutorials),
         "PAPER_CARDS": overview_sections.paper_cards(
-            papers=tuple(paper for paper in overview_sections.PAPERS if paper != tutorial)
+            papers=tuple(paper for paper in overview_sections.PAPERS if paper not in tutorials)
         ),
         "VISUAL_TABS": visualize_tabs("film"),
         "FILM": film_markdown(inline=True),
@@ -1581,6 +1585,7 @@ PAGES: dict[str, Callable[[], Page]] = {
     RESULTS_PAGE: results_page,
     "papers.html": papers_page,
     "tutorial.html": tutorial_page,
+    "tutorial-advanced.html": _document_page("tutorial-advanced.html"),
     "visualize.html": visualize_page,
     **{name: _document_page(name) for name in DOCUMENT_PAGES},
 }

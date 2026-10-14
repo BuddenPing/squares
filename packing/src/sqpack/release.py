@@ -745,6 +745,7 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "paper:square-packing-methods-survey",
         ),
         paths=(
+            "TUTORIAL.md",
             "packing/cases/n11_fractional_certificate/t-018-proof-card.md",
             "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-19-5.md",
             "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-381-100.md",
@@ -752,8 +753,17 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "packing/cases/n11_threshold_certificate/t-026-verifiable-claim-dilation-limit.md",
             "packing/devtools/news_highlights.py",
             "packing/devtools/overview_sections.py",
+            "packing/devtools/probes/measure_atlas_views/layout.js",
+            "packing/devtools/probes/measure_atlas_views/widen.js",
             "packing/devtools/render_changelog.py",
             "packing/devtools/render_overview.py",
+            "packing/devtools/repo_links.py",
+            "packing/devtools/run_negative_controls.py",
+            "packing/devtools/site_documents.py",
+            "packing/devtools/site_topics.py",
+            "packing/devtools/site_urls.py",
+            "packing/devtools/templates/site-nav.html",
+            "packing/src/sqpack/cli/validate.py",
         ),
         outputs=(
             "papers/n11-lower-bounds-explainer.html",
@@ -770,12 +780,14 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "papers/square-packing-methods-survey.pdf",
         ),
         reason=(
-            "The four independent paper producers do not call the significance meter "
-            "or the News rating/filter renderers. Their mathematical content, figures "
-            "and paper-owned styles are unchanged; shared site chrome owns the boxed "
-            "meter, centered disclosure controls and News filtering. The five regenerated "
-            "claim documents differ only in repository source-link provenance, from "
-            "c6118ca5 to 52b992d3. No byte-identical PDF rebuild is claimed."
+            "The four standalone paper manuscripts, mathematical figures and paper-owned "
+            "styles are unchanged. The split tutorials publish through the reader-document "
+            "pipeline; existing links retain their legacy section landings. Shared import "
+            "and page inventories include those reader sources conservatively. News, "
+            "topic labels, significance meters, article disclosures, reading-card discovery "
+            "and navigation are site chrome. The five regenerated claim documents differ "
+            "only in repository source-link provenance from c6118ca5 to 52b992d3. No "
+            "byte-identical PDF rebuild is claimed."
         ),
     ),
     ReleaseNoPublicChange(

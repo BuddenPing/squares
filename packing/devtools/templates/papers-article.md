@@ -7,8 +7,9 @@
 ## Tutorial
 
 Start with the basic ideas, definitions and examples in the first-principles tutorial.
+Continue with the advanced tutorial for the methods behind the search and proofs.
 
-{{TUTORIAL_CARD}}
+{{TUTORIAL_CARDS}}
 
 ## Papers
 
