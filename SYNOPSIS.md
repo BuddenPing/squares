@@ -617,6 +617,7 @@ case or experiment separately.
 
 | Document or collection | Role | Authority | Lifecycle | Current replacement |
 | --- | --- | --- | --- | --- |
+| [Adversarial Review: Fitzharding’s Lean Proof That `s(17) = L`](docs/project/reviews/review-2026-10-13-fitzharding-n17-lean.md) | dated review record | record | retained | — |
 | [Review: Verification Gaps in the Drawn Packings and the Upper-Bound Register](docs/project/reviews/review-2026-10-13-verification-gaps.md) | dated review record | record | retained | — |
 | [Overbeck’s Candidate Proof of s(17) = L: Second Adversarial Review](docs/project/reviews/review-2026-10-13-overbeck-n17-candidate-second.md) | dated review record | record | retained | — |
 | [Mathematical Review: Kleddamag’s Candidate Proof That `s(17) = L`](docs/project/reviews/review-2026-10-12-kleddamag-n17-candidate.md) | dated review record | record | retained | — |
@@ -6234,8 +6235,8 @@ in separate tables: their units differ, and the same work can appear in both.
 | Rollups | count | turns | tool calls | errors | one-off code | wall |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | claimed by a session | 297 | 76,355 | 42,099 | 885 | 6,096 | 646.8 h |
-| claimed by none | 142 | 41,616 | 24,072 | 830 | 2,366 | 190.78 h |
-| **measured** | **439** | **117,971** | **66,171** | **1,715** | **8,462** | **837.58 h** |
+| claimed by none | 152 | 45,223 | 25,993 | 857 | 2,503 | 213.84 h |
+| **measured** | **449** | **121,578** | **68,092** | **1,742** | **8,599** | **860.64 h** |
 
 | Session | Phases | Rollups | Turns | Tool calls | Errors | Wall |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
