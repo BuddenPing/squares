@@ -749,13 +749,6 @@ def closed_form_span(form: str) -> Span | None:
         return Span(_fraction(low), _fraction(high), open_low=False, open_high=False)
 
 
-def rational_form(text: str) -> Fraction | None:
-    """An exact form that is a rational, such as ``53/7`` or ``7 + (4/7)``; None for a
-    closed form with a root, or anything else that is not rational arithmetic."""
-    span = closed_form_span(text) if text and "sqrt" not in text else None
-    return span.low if span is not None and span.low == span.high else None
-
-
 _MONOMIAL = re.compile(r"([+-]?)([0-9]*)(s(?:\^\{?([0-9]+)\}?)?)?")
 
 
@@ -2676,7 +2669,7 @@ def _disagreement(
         lane = f"exactly {pending['exact_side']}"
     else:
         theirs = printed_side(
-            str(pending.get("printed")), _lane_rounding(str(pending.get("rounding")))
+            str(pending.get("printed")), lane_rounding(str(pending.get("rounding")))
         )
         lane = f"{pending.get('printed')} ({pending.get('rounding')})"
     if below(ours, theirs) or below(theirs, ours):
@@ -2686,8 +2679,10 @@ def _disagreement(
     return []
 
 
-def _lane_rounding(rounding: str) -> str:
-    return rounding if rounding in ROUNDINGS else "unstated"
+def lane_rounding(rounding: str) -> str:
+    """A lane's printed rounding, refused unless it is one of `ROUNDINGS`."""
+    _require(rounding in ROUNDINGS, f"a lane reads a print with unknown rounding {rounding!r}")
+    return rounding
 
 
 # --------------------------------------------------------------------------- command

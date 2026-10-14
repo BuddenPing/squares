@@ -210,8 +210,6 @@ def test_an_exception_is_applied_and_shown() -> None:
 
 
 def test_a_closed_form_of_integers_is_a_rational_record() -> None:
-    assert ledger.rational_form("7 + (4/7)") == Fraction(53, 7)
-    assert ledger.rational_form("2 + (1/2)sqrt(2)") is None
     assert ledger.record_side(
         50, {"value": "7.57142857142857", "exact_form": "7 + (4/7)"}, []
     ).exact
@@ -585,6 +583,12 @@ def test_gather_keeps_the_frozen_starts_and_reads_the_tree_only_to_refresh_them(
     (tmp_path / ledger.SOURCES).write_text(yaml.safe_dump(sources), encoding="utf-8")
     with pytest.raises(ledger.LedgerError, match=r"no start at n = \[101\]"):
         ledger.gather(tmp_path, snapshot=True)
+
+
+def test_a_lane_print_of_unknown_rounding_is_refused() -> None:
+    assert ledger.lane_rounding("binary64") == "binary64"
+    with pytest.raises(ledger.LedgerError, match="unknown rounding 'None'"):
+        ledger.lane_rounding("None")
 
 
 def test_gather_reads_a_lane_record_by_path_and_never_a_commit(
