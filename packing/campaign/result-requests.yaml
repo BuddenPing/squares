@@ -5257,7 +5257,7 @@ issues:
       claim: A refined certificate for the same n207 construction, 1.485e-09 below the earlier one.
       source: https://github.com/jlevy/squares/issues/503#issuecomment-6133755143
       register:
-      - T-166
+      - T-167
       evidence:
       - E-pingyou-503-refinement-report
     beads:
@@ -5385,7 +5385,7 @@ issues:
       claim: A refined certificate for the same n153 construction, 1.0e-14 below the earlier one.
       source: https://github.com/jlevy/squares/issues/504#issuecomment-6133737268
       register:
-      - T-165
+      - T-166
       evidence:
       - E-pingyou-504-refinement-report
     beads:
@@ -7036,8 +7036,8 @@ issues:
       and exact contact solver. Imported on 14 October 2026 in the couzo-certificates-2026-10-12 packet
       and replayed on both maintained exact routes with their controls. Registered as T-161 at V0/C0 at
       the four in-horizon counts, each below its case''s ceiling, with the five beyond-horizon sides as
-      source-register rows. Francisco Couzo''s later certificate is smaller at 176 (T-164), Mishapolk''s
-      at 237 (T-183), and PR 574 (T-173) tightens 156, 237 and 271. OpenAI Codex assistance disclosed.'
+      source-register rows. Francisco Couzo''s later certificate is smaller at 176 (T-165), Mishapolk''s
+      at 237 (T-183), and PR 574 (T-174) tightens 156, 237 and 271. OpenAI Codex assistance disclosed.'
     read_through: '2026-10-14T07:35:02Z'
     results:
     - key: four-in-horizon
@@ -7079,7 +7079,7 @@ issues:
       a cut-out of the s(302) house''s rectangle at 129 and two compositions of new rectangle packings at
       204 and 303. Imported on 14 October 2026 in the dostashev-compositions-2026-10-12 packet, replayed
       on both maintained exact routes with their controls, and registered as T-162 at V0/C0, each side the
-      smallest known at its count when reported; PR 574 (T-173) tightens all three by about 1e-19. AI assistance
+      smallest known at its count when reported; PR 574 (T-174) tightens all three by about 1e-19. AI assistance
       disclosed.'
     read_through: '2026-10-14T09:18:12Z'
     results:
@@ -7101,6 +7101,8 @@ issues:
       kind: acknowledgement
       reported:
       - result: three-certificates
+      outdated:
+      - each side is the smallest we know of; PR 574 (T-174) is smaller at all three counts, by about 1e-19
     close_when: The import and its disposition are on main, the owner has posted the resulting state with
       each recorded count's id, and the review and replay that would confirm each V0 entry are owned by
       its bead; optimality is outside this request.
@@ -7114,7 +7116,7 @@ issues:
     summary: PingYou Ltd reports an exact rational certificate at 302, four boundary patches of Ryan Xu's
       packing of 70 with two upright banks, refined in the update of 12 October. Imported on 14 October
       2026 as derived exact facts in the pingyou-n302-certificate-2026-10-12 packet, replayed on both maintained
-      exact routes, and registered as T-163 at V0/C0, 1.75e-03 below the case's ceiling; Francisco Couzo's
+      exact routes, and registered as T-164 at V0/C0, 1.75e-03 below the case's ceiling; Francisco Couzo's
       issue 583 (T-181) is smaller.
     read_through: '2026-10-14T07:05:00Z'
     results:
@@ -7122,7 +7124,7 @@ issues:
       claim: s(302) <= 17.870275382734, by an exact rational certificate and its corners Witness/v2.
       source: body
       register:
-      - T-163
+      - T-164
       evidence:
       - E-pingyou-564-certificate-report
     beads:
@@ -7147,15 +7149,15 @@ issues:
     triage: done
     summary: PingYou Ltd reports a further exact refinement of Ryan Xu's packing of 146 after Robert Barnett's
       (T-150). Imported on 14 October 2026 as derived exact facts, replayed on both maintained exact routes
-      with its controls, and registered as T-167 at V0/C0, a regularization of the packing it tightens;
-      PR 574 (T-173) tightens it again.
+      with its controls, and registered as T-168 at V0/C0, a regularization of the packing it tightens;
+      PR 574 (T-174) tightens it again.
     read_through: '2026-10-14T07:05:04Z'
     results:
     - key: n146-refinement
       claim: s(146) <= 12.5837822039508342919134679370511513667729, by an exact rational certificate.
       source: body
       register:
-      - T-167
+      - T-168
       evidence:
       - E-pingyou-566-certificate-report
     beads:
@@ -7180,15 +7182,15 @@ issues:
     triage: done
     summary: PingYou Ltd reports a further exact refinement of Ryan Xu's packing of 261 after Robert Barnett's
       (T-150). Imported on 14 October 2026 as derived exact facts, replayed on both maintained exact routes
-      with its controls, and registered as T-168 at V0/C0, a regularization of the packing it tightens;
-      PR 574 (T-173) tightens it again.
+      with its controls, and registered as T-169 at V0/C0, a regularization of the packing it tightens;
+      PR 574 (T-174) tightens it again.
     read_through: '2026-10-14T07:05:05Z'
     results:
     - key: n261-refinement
       claim: s(261) <= 16.6787798753429098149372205115301919485639, by an exact rational certificate.
       source: body
       register:
-      - T-168
+      - T-169
       evidence:
       - E-pingyou-567-certificate-report
     beads:
@@ -7213,15 +7215,15 @@ issues:
     triage: done
     summary: PingYou Ltd reports an exact contact refinement of Francisco Couzo's packing of 105 (T-130).
       Imported on 14 October 2026 as derived exact facts, replayed on both maintained exact routes with
-      its controls, and registered as T-169 at V0/C0, a regularization of the packing it tightens; PR 574
-      (T-173) tightens it again.
+      its controls, and registered as T-170 at V0/C0, a regularization of the packing it tightens; PR 574
+      (T-174) tightens it again.
     read_through: '2026-10-14T07:05:07Z'
     results:
     - key: n105-refinement
       claim: s(105) <= 10.7893037837481588309268366600396176597363, by an exact rational certificate.
       source: body
       register:
-      - T-169
+      - T-170
       evidence:
       - E-pingyou-568-certificate-report
     beads:
@@ -7234,6 +7236,10 @@ issues:
       kind: acknowledgement
       reported:
       - result: n105-refinement
+      outdated:
+      - a review will say how the record treats such a difference before anything is registered; the per-count
+        ledger of 14 October registers it (T-170) as a regularization of the packing it tightens, and its
+        review comes next
     close_when: The import and its disposition are on main, the owner has posted the resulting state with
       each recorded count's id, and the review and replay that would confirm each V0 entry are owned by
       its bead; optimality is outside this request.
@@ -7246,7 +7252,7 @@ issues:
     triage: done
     summary: PingYou Ltd reports an exact contact refinement of SQUISH's packing of 272 (T-151). Imported
       on 14 October 2026 as derived exact facts, replayed on both maintained exact routes with its controls,
-      and registered as T-170 at V0/C0, a regularization of the packing it tightens; PR 574 (T-173) tightens
+      and registered as T-171 at V0/C0, a regularization of the packing it tightens; PR 574 (T-174) tightens
       it again.
     read_through: '2026-10-14T07:05:08Z'
     results:
@@ -7254,7 +7260,7 @@ issues:
       claim: s(272) <= 16.9655864748376706357560070334220455696299, by an exact rational certificate.
       source: body
       register:
-      - T-170
+      - T-171
       evidence:
       - E-pingyou-569-certificate-report
     beads:
@@ -7280,7 +7286,7 @@ issues:
     summary: Francisco Couzo reports s(154) and s(379), continuing Evan Daniel's arrangement at 154. The
       commit the issue names is no longer served; its 154 certificate is byte for byte the one issue 583
       pins, retained in the couzo-issue583-2026-10-13 packet, replayed on both maintained exact routes and
-      registered as T-171 at V0/C0, 6.66e-05 below T-160; issue 586 (T-182) is smaller. The 379 is in no
+      registered as T-172 at V0/C0, 6.66e-05 below T-160; issue 586 (T-182) is smaller. The 379 is in no
       reachable commit and has no row.
     read_through: '2026-10-14T07:35:03Z'
     results:
@@ -7288,7 +7294,7 @@ issues:
       claim: s(154) <= 12.922499814643, by an exact rational certificate named by its digest.
       source: body
       register:
-      - T-171
+      - T-172
       evidence:
       - E-couzo-583-certificate-report
     - key: n379
@@ -7319,20 +7325,20 @@ issues:
     state: open
     kind: result-report
     triage: done
-    summary: 'Mishapolk reports exact rational certificates at 103, 153, 207, 209, 258 and 270 among 19
-      in Mishapolk/square-packing-records. Imported on 14 October 2026 in the mishapolk-exact-certificates-2026-10-12
+    summary: 'Mykhailo Polkovskyi (Mishapolk) reports exact rational certificates at 103, 153, 207, 209,
+      258 and 270 among 19 in Mishapolk/square-packing-records. Imported on 14 October 2026 in the mishapolk-exact-certificates-2026-10-12
       packet; 153, 154, 175 and 207 replayed on both maintained exact routes. The per-count ledger records
-      it at 153 and 207, where it arrived before PR 574: registered as T-172 at V0/C0. At 153 and 207 the
+      it at 153 and 207, where it arrived before PR 574: registered as T-173 at V0/C0. At 153 and 207 the
       packings measure as PingYou Ltd''s (T-148, T-147), and whether to credit them as new arrangements
-      is the owner''s decision. Gemini assistance disclosed. The author has not yet said which of two full
-      names the record should carry.'
+      is the owner''s decision. Gemini assistance disclosed. On issue 593 he asks to be credited as Mykhailo
+      Polkovskyi.'
     read_through: '2026-10-14T08:07:21Z'
     results:
     - key: n153-n207
       claim: s(153) <= 12.87001385040448 and s(207) <= 14.880960371558, by exact rational certificates.
       source: body
       register:
-      - T-172
+      - T-173
       evidence:
       - E-mishapolk-573-certificate-report
     - key: n103-n209-n258-n270
@@ -7354,7 +7360,7 @@ issues:
       outdated:
       - another open report is smaller at every count, so this report will not be registered for now; the
         per-count ledger of 14 October takes the reports in the order they reached this repository and records
-        this one at 153 and 207 (T-172), where it came before PR 574
+        this one at 153 and 207 (T-173), where it came before PR 574
     close_when: The import and its disposition are on main, the owner has posted the resulting state with
       each recorded count's id, and the review and replay that would confirm each V0 entry are owned by
       its bead; optimality is outside this request. The author has said which name the record should carry.
@@ -7369,8 +7375,8 @@ issues:
     summary: Daniil Ostashev reports exact rational certificates at 176, 211, 241 and 304 in dostashev/square-packing,
       packings whose two tilted bands merge into one at 176, 211 and 241. Imported on 14 October 2026 in
       the dostashev-merged-bands-2026-10-13 packet, replayed on both maintained exact routes, and registered
-      as T-174 at V0/C0 at 211, 241 and 304; at 176 PR 574's earlier certificate states the same packing
-      (T-173), and the ledger does not record this one there. Francisco Couzo's issues 583 and 586 are smaller
+      as T-175 at V0/C0 at 211, 241 and 304; at 176 PR 574's earlier certificate states the same packing
+      (T-174), and the ledger does not record this one there. Francisco Couzo's issues 583 and 586 are smaller
       at 211 and 241. AI assistance disclosed.
     read_through: '2026-10-14T09:18:14Z'
     results:
@@ -7379,13 +7385,13 @@ issues:
         rational certificates.
       source: body
       register:
-      - T-174
+      - T-175
       evidence:
       - E-ostashev-575-certificate-report
     - key: n176
       claim: s(176) <= 13.795872318437, by an exact rational certificate.
       source: body
-      not_registered: PR 574's earlier certificate states the same packing at 176 (T-173); by the per-count
+      not_registered: PR 574's earlier certificate states the same packing at 176 (T-174); by the per-count
         ledger's rule this later report is not recorded there. Retained in the packet.
       queued: false
     beads:
@@ -7401,7 +7407,7 @@ issues:
       - result: n176
       outdated:
       - at 176 the side is the smallest known and registration comes next; the per-count ledger of 14 October
-        does not record it there, where PR 574's earlier certificate states the same packing (T-173)
+        does not record it there, where PR 574's earlier certificate states the same packing (T-174)
     close_when: The import and its disposition are on main, the owner has posted the resulting state with
       each recorded count's id, and the review and replay that would confirm each V0 entry are owned by
       its bead; optimality is outside this request.
@@ -7446,7 +7452,7 @@ issues:
     summary: Francisco Couzo reports exact rational certificates at 154, 211, 241 and 302 and at 339, 379,
       380, 381 and 382 beyond the corpus. Imported on 14 October 2026 in the couzo-issue583-2026-10-13 packet,
       at the commit the issue pins, and replayed on both maintained exact routes. Registered as T-181 at
-      V0/C0 at 211, 241 and 302; its 154 is issue 570's certificate, which T-171 registers; the five beyond-horizon
+      V0/C0 at 211, 241 and 302; its 154 is issue 570's certificate, which T-172 registers; the five beyond-horizon
       sides are source-register rows. Issue 586 (T-182) tightens 211 and 241 and replaces 154 and the rows
       at 339, 379, 380 and 382.
     read_through: '2026-10-14T07:35:05Z'
@@ -7463,7 +7469,7 @@ issues:
       claim: s(154) <= 12.922499814643, the certificate issue 570 names.
       source: body
       register:
-      - T-171
+      - T-172
       evidence:
       - E-couzo-583-certificate-report
     - key: five-beyond-horizon
@@ -7530,7 +7536,7 @@ issues:
       of issue 583's at 211 and 241, at b85dee2. Imported on 14 October 2026 in the couzo-certificates-2026-10-13
       packet and replayed on both maintained exact routes. Registered as T-182 at V0/C0 at 154, 211 and
       241, the latter two regularizations of T-181's; the beyond-horizon sides are rows. The same commit's
-      176 is registered as T-164 and its 344, 375, 376 and 378 are rows, by the per-count ledger. The owner's
+      176 is registered as T-165 and its 344, 375, 376 and 378 are rows, by the per-count ledger. The owner's
       reply of 14 October covers issues 561, 570, 583 and 586.
     read_through: '2026-10-14T07:35:01Z'
     results:
@@ -7551,7 +7557,7 @@ issues:
       claim: The same commit holds certificates at 176, 344, 375, 376 and 378 that no issue names.
       source: source
       register:
-      - T-164
+      - T-165
       evidence:
       - E-couzo-583-586-certificate-report
     beads:
@@ -7568,11 +7574,35 @@ issues:
       - result: unnamed-b85dee2
       outdated:
       - only the certificates the issues name will be registered unless the author asks otherwise; the per-count
-        ledger of 14 October records the commit's 176 (T-164) and its 344, 375, 376 and 378 as rows, each
+        ledger of 14 October records the commit's 176 (T-165) and its 344, 375, 376 and 378 as rows, each
         a report of its own
     close_when: The import and its disposition are on main, the owner has posted the resulting state with
       each recorded count's id, and the review and replay that would confirm each V0 entry are owned by
       its bead; optimality is outside this request.
+  - number: 589
+    title: 'n381 new best packing: registration request'
+    author: mstrmg
+    opened: '2026-10-13'
+    state: closed
+    closed: '2026-10-13'
+    kind: result-report
+    triage: done
+    summary: 'Miles Gray (mstrmg) reports a certificate at 381, beyond the case corpus, and closed the issue
+      20 seconds after opening it; the certificate is the same file as issue 582''s (SHA-256 03650573...).
+      Not imported, for the reason issue 582 gives: earlier reports at 381 are smaller.'
+    read_through: '2026-10-13T20:59:50Z'
+    results:
+    - key: n381
+      claim: s(381) <= 19.985624661052, the certificate of issue 582.
+      source: body
+      not_registered: The same certificate as issue 582, closed by its author; Kevin Fang's and Francisco
+        Couzo's certificates at 381 are smaller.
+      queued: false
+    beads:
+    - think-ts16
+    answer_bead: think-ts16
+    replies: []
+    close_when: Closed by its author; issue 582 carries the claim.
   - number: 593
     title: '73 new upper bounds across N=51..308: registration request'
     author: Mishapolk
@@ -7580,13 +7610,14 @@ issues:
     state: open
     kind: result-report
     triage: done
-    summary: Mishapolk reports 73 exact certificates across 51 to 308. Imported on 14 October 2026 in the
-      mishapolk-records-2026-10-14 packet, each at the exact fraction of the release's census; 211, 237
-      and 241 replayed on both maintained exact routes. Registered as T-183 at V0/C0 at 237, the smallest
-      known side there. At 211 and 241 the sides equal issue 586's, which reached this repository first,
-      and the ledger records no tie; elsewhere the side equals or trails an earlier report. Gemini assistance
-      disclosed. The author has not yet said which of two full names the record should carry.
-    read_through: '2026-10-14T08:07:20Z'
+    summary: Mykhailo Polkovskyi (Mishapolk) reports 73 exact certificates across 51 to 308. Imported on
+      14 October 2026 in the mishapolk-records-2026-10-14 packet, each at the exact fraction of the release's
+      census; 211, 237 and 241 replayed on both maintained exact routes. Registered as T-183 at V0/C0 at
+      237, the smallest known side there. At 211 and 241 the sides equal issue 586's, which reached this
+      repository first, and the ledger records no tie; elsewhere the side equals or trails an earlier report.
+      Gemini assistance disclosed. On 14 October he asks to be credited as Mykhailo Polkovskyi, and at 211
+      and 241 as joint holder by his earlier commit, 8bb41af, which is the owner's decision.
+    read_through: '2026-10-14T15:38:18Z'
     results:
     - key: n237
       claim: s(237) <= 15.902705057867, by an exact rational certificate.
@@ -7621,6 +7652,8 @@ issues:
       outdated:
       - 211 and 241 will be registered as ties beside 237; the per-count ledger of 14 October records no
         tie, and issue 586 reached this repository first, so this issue is recorded at 237 only (T-183)
+      - 'at 156 and 271 it is not yet decided whether PR 574 or issue 561 is smallest; the exact sides decide
+        it: PR 574 (T-174) is smaller than issue 561 there, by 1.30e-19 and 1.69e-19'
     close_when: The import and its disposition are on main, the owner has posted the resulting state with
       each recorded count's id, and the review and replay that would confirm each V0 entry are owned by
       its bead; optimality is outside this request. The author has said which name the record should carry.
@@ -7737,3 +7770,34 @@ issues:
     close_when: The import and its disposition are on main, the owner has posted the resulting state with
       each recorded count's id, and the review and replay that would confirm each V0 entry are owned by
       its bead; optimality is outside this request.
+  - number: 603
+    title: 's(n² − n + 1) < n for every n ≥ 15, and the F(n) excess (Kevin Fang): tracking an unreported
+      result'
+    author: jlevy
+    opened: '2026-10-14'
+    state: open
+    kind: result-report
+    triage: done
+    summary: The project opened this issue to track Kevin Fang's theorem, which reached the project through
+      his watched repository TheSnakeFang/squarepack-certs rather than an issue, as the owner asks for results
+      at S4 and above. Triage done; the result maps to T-163, dated by Theorem 1's first commit on 12 October,
+      at V2/C1 on the review of 14 October, with the four finite bounds in the case corpus replayed on both
+      maintained exact routes.
+    read_through: '2026-10-14T17:03:44Z'
+    results:
+    - key: excess-theorem
+      claim: 's(n^2 - n + 1) < n for every n >= 15, and s(n^2 - n + F(n)) < n with F(n) = 1 + max{p + 2q
+        : 16p + 21q <= n - 15}.'
+      source: body
+      register:
+      - T-163
+      evidence:
+      - E-fang-excess-theorem-report
+      - E-fang-excess-theorem-exact-feasibility
+    beads:
+    - think-0esw
+    answer_bead: think-0esw
+    replies: []
+    close_when: The import and its disposition are on main, the owner has posted the resulting state with
+      the entry's id, and the review and replay that would raise its rungs are owned by its bead; optimality
+      is outside this request.

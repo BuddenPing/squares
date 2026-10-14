@@ -20022,33 +20022,47 @@ results:
       5.00e-21 and every pair by at least 9.99e-21.
 
       At n = 156 the certificate is below the case's ceiling (Daniil Ostashev, T-149) by
-      6.76e-06; above #574 (PingYou Ltd (BuddenPing)) by 1.30e-19; undecided #593
-      (Mishapolk); no report is decidably smallest of #574 and #593. At n = 176 the
-      certificate is below the case's ceiling (Nate Chaoweeraprasit (itsnaka), T-151) by
-      5.22e-03; above #574 (PingYou Ltd (BuddenPing)) by 1.18e-02; above #575 (Daniil
-      Ostashev) by 1.18e-02; above #593 (Mishapolk) by 1.18e-02; no report is decidably
-      smallest of #574 and #593. At n = 237 the certificate is below the case's ceiling
-      (Nate Chaoweeraprasit (itsnaka), improved by Francisco Couzo, T-140) by 1.83e-06;
-      above #574 (PingYou Ltd (BuddenPing)) by 1.59e-19; above #593 (Mishapolk) by 2.43e-04;
-      smallest: #593.
+      6.76e-06; above #574 (PingYou Ltd (BuddenPing)) by 1.30e-19; equal #593 (Mykhailo
+      Polkovskyi (Mishapolk)); smallest: #574.
+
+      At n = 176 the certificate is below the case's ceiling (Nate Chaoweeraprasit
+      (itsnaka), T-151) by 5.22e-03; above #574 (PingYou Ltd (BuddenPing)) by 1.18e-02;
+      above #575 (Daniil Ostashev) by 1.18e-02; above #593 (Mykhailo Polkovskyi (Mishapolk))
+      by 1.18e-02; below #562 (Daniil Ostashev) by 1.03e-03; above #586 (Francisco Couzo) by
+      2.54e-10; smallest: #574.
+
+      At n = 237 the certificate is below the case's ceiling (Nate Chaoweeraprasit
+      (itsnaka), improved by Francisco Couzo, T-140) by 1.83e-06; above #574 (PingYou Ltd
+      (BuddenPing)) by 1.59e-19; above #593 (Mykhailo Polkovskyi (Mishapolk)) by 2.43e-04;
+      below #573 (Mykhailo Polkovskyi (Mishapolk)) by 1.83e-06; smallest: #593.
 
       At n = 271 the certificate is below the case's ceiling (Nate Chaoweeraprasit
       (itsnaka), T-151) by 1.24e-04; above #574 (PingYou Ltd (BuddenPing)) by 1.69e-19;
-      undecided #593 (Mishapolk); no report is decidably smallest of #574 and #593. At n =
-      338 the certificate is beyond the horizon, with no case record, and 9.37e-02 below the
-      grid; below couzo-certificates-2026-10-11 (Francisco Couzo) by 1.04e-04; smallest:
-      this certificate. At n = 344 the certificate is beyond the horizon, with no case
-      record, and 6.26e-03 below the grid; below couzo-certificates-2026-10-11 (Francisco
-      Couzo) by 6.11e-04; smallest: this certificate.
+      equal #593 (Mykhailo Polkovskyi (Mishapolk)); smallest: #574.
+
+      At n = 338 the certificate is beyond the horizon, with no case record, and 9.37e-02
+      below the grid; below couzo-certificates-2026-10-11 (Francisco Couzo) by 1.04e-04;
+      smallest: this certificate.
+
+      At n = 344 the certificate is beyond the horizon, with no case record, and 6.26e-03
+      below the grid; below couzo-certificates-2026-10-11 (Francisco Couzo) by 6.11e-04;
+      above couzo-certificates-2026-10-13 (Francisco Couzo) by 1.72e-05; smallest:
+      couzo-certificates-2026-10-13.
 
       At n = 375 the certificate is beyond the horizon, with no case record, and 9.84e-02
       below the grid; below couzo-certificates-2026-10-11 (Francisco Couzo) by 4.72e-03;
-      above #584 (Evan Daniel) by 1.92e-02; smallest: #584. At n = 376 the certificate is
-      beyond the horizon, with no case record, and 9.51e-02 below the grid; below
-      couzo-certificates-2026-10-11 (Francisco Couzo) by 5.33e-03; smallest: this
-      certificate. At n = 378 the certificate is beyond the horizon, with no case record,
-      and 5.75e-02 below the grid; below couzo-certificates-2026-10-11 (Francisco Couzo) by
-      5.62e-06; smallest: this certificate.
+      above evand-compositions-2026-10-13 (Evan Daniel) by 1.92e-02; smallest:
+      evand-compositions-2026-10-13.
+
+      At n = 376 the certificate is beyond the horizon, with no case record, and 9.51e-02
+      below the grid; below couzo-certificates-2026-10-11 (Francisco Couzo) by 5.33e-03;
+      above couzo-certificates-2026-10-13 (Francisco Couzo) by 8.82e-04; smallest:
+      couzo-certificates-2026-10-13.
+
+      At n = 378 the certificate is beyond the horizon, with no case record, and 5.75e-02
+      below the grid; below couzo-certificates-2026-10-11 (Francisco Couzo) by 5.62e-06;
+      above couzo-certificates-2026-10-13 (Francisco Couzo) by 1.65e-05; smallest:
+      couzo-certificates-2026-10-13.
 
       The source's own checkers were not run here. The two maintained routes, the sqpack
       rational witness verifier and the independent rational corner checker, share
@@ -20067,7 +20081,7 @@ results:
       couzo-certificates-2026-10-11 row).
     next_rung: >-
       Independently review the retained replay, then weigh adoption against the later
-      entries at each count: T-164 is smaller at 176 and T-183 at 237, and PR 574 (T-173)
+      entries at each count: T-165 is smaller at 176 and T-183 at 237, and PR 574 (T-174)
       tightens these certificates at 156, 237 and 271 by about 1e-19. Then record
       source-specific adoption and confirming evidence. Final exact-head CI remains
       required.
@@ -20151,13 +20165,19 @@ results:
       seconds. Every positive clears every wall by at least 5.00e-21 and every pair by at
       least 4.99e-21.
 
-      At n = 129 the certificate is below the case's ceiling (ry-xu, improved by Evan
-      Daniel, T-146) by 2.02e-03; below #593 (Mishapolk) by 8.55e-16; smallest: this
-      certificate. At n = 204 the certificate is below the case's ceiling (the Kingbird
-      catalogue, verified by Evan Daniel's exact ceiling, T-101) by 1.42e-02; below #593
-      (Mishapolk) by 5.34e-16; smallest: this certificate. At n = 303 the certificate is
-      below the case's ceiling (Nate Chaoweeraprasit, improved by Evan Daniel, T-146) by
-      3.11e-03; below #593 (Mishapolk) by 1.12e-15; smallest: this certificate.
+      At n = 129 the certificate is below the case's ceiling (Ryan Xu, improved by Evan
+      Daniel, T-146) by 2.02e-03; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 3.61e-31;
+      above PR #574 (PingYou Ltd (BuddenPing)) by 1.18e-19; smallest: PR #574.
+
+      At n = 204 the certificate is below the case's ceiling (the Kingbird catalogue,
+      verified by Evan Daniel's exact ceiling, T-101) by 1.42e-02; below #593 (Mykhailo
+      Polkovskyi (Mishapolk)) by 3.52e-32; above PR #574 (PingYou Ltd (BuddenPing)) by
+      1.46e-19; smallest: PR #574.
+
+      At n = 303 the certificate is below the case's ceiling (Nate Chaoweeraprasit, improved
+      by Evan Daniel, T-146) by 3.11e-03; below #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      2.64e-31; below #573 (Mykhailo Polkovskyi (Mishapolk)) by 3.11e-03; above PR #574
+      (PingYou Ltd (BuddenPing)) by 1.79e-19; smallest: PR #574.
 
       The issue also states a certificate at 176, under 'Not requested'; the ledger does not
       record it there, since issue 561's certificate (T-161), reported 15 minutes earlier,
@@ -20176,10 +20196,146 @@ results:
     next_rung: >-
       Independently review the retained replay, then weigh adoption: each side is below its
       case's ceiling and below every earlier report, by 2.02e-03 at 129 (T-146), 1.42e-02 at
-      204 (T-101 and T-155) and 3.11e-03 at 303 (T-146), and PR 574 (T-173) tightens all
+      204 (T-101 and T-155) and 3.11e-03 at 303 (T-146), and PR 574 (T-174) tightens all
       three by about 1e-19. Then record source-specific adoption and confirming evidence.
       Final exact-head CI remains required.
   - id: T-163
+    kind: upper-bound
+    registered: '2026-10-14'
+    headline: >-
+      s(n² − n + 1) < n for every n ≥ 15, and n² − n + F(n) squares below side n, from Kevin
+      Fang
+    claim: >-
+      Kevin Fang states two theorems of a note, draft v0.6 of 13 October 2026, which is not
+      in his repository: Theorem 1, s(n^2 - n + 1) < n for every integer n >= 15; and
+      Theorem 2, s(n^2 - n + F(n)) < n with F(n) = 1 + max{p + 2q : 16p + 21q <= n - 15}.
+      The proof glues a squeezable 17 x 16 rectangle of 257 squares, or a 22 x 21 rectangle
+      of 443 that adds two, onto a square packing (Lemma 3, tools/glue.py) and inducts on n
+      from finitely many certificates; the construction gives side n - 1/20000 at every n >=
+      15.
+
+      Inside the case corpus the theorem's inventory certifies s(211) <= 14.99995, s(241) <=
+      15.99995, s(273) <= 16.99995 and s(307) <= 17.99995, the counts n^2 - n + F(n) for n =
+      15 to 18. Each is above its case's bound (T-149, T-098, T-098, T-136), so these four
+      finite bounds are superseded; nothing supersedes the theorem itself, which no other
+      result implies at any n.
+
+      The 14 October review re-derived both theorems from the retained material and decided
+      every finite piece the chains use, and rebuilt all 76 inventory certificates byte for
+      byte; both maintained exact routes decided the six retained ones, at 211, 241, 273,
+      307, 308 and 932, with their controls. The note itself has not been read.
+
+      Credit the theorem and its certificates to Kevin Fang
+      (https://github.com/TheSnakeFang/squarepack-certs). The gluing lemma is Arslanov,
+      Mustafin and Shangitbayev's decomposition (Electronic Journal of Combinatorics 28(4),
+      P4.22, 2021); the base packings are Joost de Winter's 211, David Ellsworth's and Tej
+      Stead's 241 and 273, the AMS21 and Ellsworth packings of m^2 - m squares, and the
+      author's own; the rectangles grow from Ellsworth's, Stead's and Francisco Couzo's
+      packings; the certificate format and the pieces' certificates are Evan Daniel's. The
+      search, the verifier and the bundle were written and run with Claude (Anthropic),
+      directed and reviewed by the author.
+    scope: {n_values: [211, 241, 273, 307]}
+    verification: V2
+    confirmation: C1
+    significance:
+      score: 4
+      rationale: >-
+        A bound family for every n >= 15 with an explicit construction: the deficiency bound
+        c*(k) <= k - 1 - F(k) improves Arslanov, Mustafin and Shangitbayev's k - 1 at every
+        k >= 15 and Ryu's at 15 <= k <= 78 and at k = 86; it settles no case n <= 324, and
+        its four in-corpus finite bounds trail the cases.
+      scored: '2026-10-14'
+      by: >-
+        the 14 October review
+        (docs/project/reviews/review-2026-10-14-fang-excess-theorem-and-direct-certificates.md),
+        confirming the draft of think-0esw
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Fang excess theorem 2026-10-13]']
+      published: '2026-10-12'
+    evidence:
+      - E-fang-excess-theorem-report
+      - E-fang-excess-theorem-exact-feasibility
+    artifacts:
+      - packing/resources/web/fang-excess-theorem-2026-10-13/README.md
+      - packing/resources/web/fang-excess-theorem-2026-10-13/acquisition/claims.json
+      - packing/resources/web/fang-excess-theorem-2026-10-13/source/theorem/n015_F1.cert
+      - packing/resources/web/fang-excess-theorem-2026-10-13/source/theorem/n016_F1.cert
+      - packing/resources/web/fang-excess-theorem-2026-10-13/source/theorem/n017_F1.cert
+      - packing/resources/web/fang-excess-theorem-2026-10-13/source/theorem/n018_F1.cert
+      - >-
+        packing/resources/web/fang-excess-theorem-2026-10-13/receipts/exact-certification.json.xz
+      - packing/resources/web/fang-excess-theorem-2026-10-13/source/tools/glue.py
+      - >-
+        packing/resources/web/fang-excess-theorem-2026-10-13/receipts/inventory-and-deficiency.json
+      - packing/cases/asymptotic/fang_excess_inventory.py
+      - >-
+        docs/project/reviews/review-2026-10-14-fang-excess-theorem-and-direct-certificates.md
+      - packing/devtools/upper_bound_reports.py
+    controls: [packing/tests/test_upper_bound_reports.py]
+    notes: >-
+      V2 because the theorem rests on the 14 October review's reading of its proof, which no
+      evidence entry records as a proof audit; the four finite bounds have the two-route
+      replay. The report is dated by the first commit of the theorem it states, Theorem 1's,
+      on 12 October 2026 (19:16Z), between issues 562 and 564; Theorem 2 took its present
+      form on 13 October. Issue 603, which the project opened on 14 October to track this
+      result, as the owner asks for results at S4 and above, holds its intake, review and
+      validation.
+
+      A separate complete repository replay is retained for n = 211, 241, 273, 307, 308 and
+      932: 6 positives and 12 duplicate-square and outside-container controls passed their
+      required outcomes on both routes, 3697788 pair decisions; summed over the 18 jobs, the
+      receipt records 1278.59 route CPU seconds and 1733.86 job wall seconds, the longest
+      job 485.37 seconds. Every positive clears every wall by at least 8.06e-07 and every
+      pair by at least 1.61e-06.
+
+      The four in-corpus bounds trail their cases, by 3.61e-03 at 211 (T-149), 1.18e-02 at
+      241 and 1.60e-02 at 273 (T-098) and 1.91e-02 at 307 (T-136), so check_standing marks
+      them superseded; at 932, beyond the corpus, the inventory's certificate is the only
+      report below the grid and is tracked as a beyond-horizon row. The other 70 inventory
+      certificates are above the record's rows or alone below the grid beyond the retained
+      set, and stay in the packet.
+
+      The review's findings MR-1 to MR-7 concern digests, prose, licences (MR-4: five
+      inventory certificates contain Evan Daniel's certificate of Joost de Winter's
+      unlicensed 211 packing) and a stronger statement the author may make (MR-7: side n -
+      1/20000 at every n >= 15); none changes the mathematics.
+
+      The deficiency bound c*(k) <= k - 1 - F(k) is listed in asymptotic-waste-bounds.yaml's
+      deficiency_upper_bounds.
+    next_rung: >-
+      C4 needs a second accepted adversarial review by a distinct reviewer and a retained
+      human oversight record; the note, draft v0.6, is asked of the author, and its own text
+      has not been read. The 70 inventory certificates pinned by digest wait for a
+      hosted-data release or a W7 route; they move no rung of this entry.
+    composition: >-
+      Compound. The finite bounds at 211, 241, 273 and 307 rest on the two-route replay of
+      the retained certificates (E-fang-excess-theorem-exact-feasibility). The theorem for
+      every n >= 15 rests on Lemma 3, the scaling lemma and the induction, which no machine
+      replays, and on the 14 October review's reading of them, which sets the minimum: C1.
+      The entry declares V2, the minimum over its parts: no evidence entry records that
+      reading as a proof audit. The review reads the proof as recoverable from the public
+      repository, which would support V3, and the import plan read it as not publicly
+      recoverable; the owner decides between the two readings.
+    reviews:
+      - path: >-
+          docs/project/reviews/review-2026-10-14-fang-excess-theorem-and-direct-certificates.md
+        kind: adversarial
+        reviewer: >-
+          AI agent (Claude, strong tier, max reasoning), the mathematical review lane of the
+          think-0esw import at stage 4, in a worktree and session of its own
+        reviewer_kind: ai
+        relation: project
+        date: '2026-10-14'
+        scope: >-
+          Theorems 1 and 2 re-derived from the retained README, tools/glue.py and the
+          theorem inventory: Lemma 3, the scaling to a strict certificate, the pieces and
+          the uniform squeeze, the chains and their counts, the coverage of every n >= 15;
+          the 76 inventory certificates rebuilt and decided; the deficiency comparison; the
+          direct certificates at 380, 381 and 382.
+        verdict: accepted
+        covers: [T-163]
+  - id: T-164
     kind: upper-bound
     registered: '2026-10-14'
     headline: >-
@@ -20243,9 +20399,11 @@ results:
       (itsnaka), improved by Evan Daniel, T-146) by 1.75e-03; below T-098 (#375) (Francisco
       Couzo, improved by Evan Daniel) by 1.57e-02; below T-116 (#422) (Nate Chaoweeraprasit)
       by 1.10e-02; below T-136 (#481) (Nate Chaoweeraprasit) by 1.75e-03; below T-138 (#470)
-      (Mishapolk) by 1.10e-02; above #583 (Francisco Couzo) by 2.62e-04; above #593
-      (Mishapolk (Mykhailo Polkovskyi)) by 1.79e-10; above PR #574 (PingYou Ltd) by
-      1.79e-10; smallest: #583.
+      (Mykhailo Polkovskyi (Mishapolk)) by 1.10e-02; above #583 (Francisco Couzo) by
+      2.62e-04; above #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.79e-10; above PR #574
+      (PingYou Ltd) by 1.79e-10; below #573 (Mykhailo Polkovskyi (Mishapolk)) by 1.75e-03;
+      above #586 (Francisco Couzo) by 2.62e-04; no report is smallest, since #583 and #586
+      are one exact side.
 
       The source's own checkers were not run here. The two maintained routes, the sqpack
       rational witness verifier and the independent rational corner checker, share
@@ -20259,9 +20417,9 @@ results:
     next_rung: >-
       Independently review the retained replay, then weigh adoption at 302: the certificate
       is 1.75e-03 below the ceiling T-146 holds, and Francisco Couzo's issue 583 (T-181),
-      which continues this arrangement, is 2.62e-04 smaller; PR 574 (T-173) states an
+      which continues this arrangement, is 2.62e-04 smaller; PR 574 (T-174) states an
       algebraic side of this packing. Final exact-head CI remains required.
-  - id: T-164
+  - id: T-165
     kind: upper-bound
     registered: '2026-10-14'
     headline: A tighter certificate at 176 from Francisco Couzo, published with no issue
@@ -20320,7 +20478,8 @@ results:
       At n = 176 the certificate is below the case's ceiling (Nate Chaoweeraprasit
       (itsnaka), T-151) by 5.22e-03; below #561 (Francisco Couzo) by 2.54e-10; above #574
       (PingYou Ltd (BuddenPing)) by 1.18e-02; above #575 (Daniil Ostashev) by 1.18e-02;
-      above #593 (Mishapolk) by 1.18e-02; no report is decidably smallest of #574 and #593.
+      above #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.18e-02; below #562 (Daniil Ostashev)
+      by 1.03e-03; smallest: #574.
 
       The same packet retains the certificates of issues 583 and 586 (T-181, T-182) and four
       more beyond the corpus that no issue names; the ledger records those as beyond-horizon
@@ -20336,10 +20495,10 @@ results:
       order they reached this repository and records one only where it is decidably below
       every earlier report at the count, records it at 176 (2.54e-10 below T-161).
     next_rung: >-
-      Independently review the retained replay, then weigh adoption at 176: PR 574 (T-173)
+      Independently review the retained replay, then weigh adoption at 176: PR 574 (T-174)
       states Daniil Ostashev's issue-575 packing 1.18e-02 smaller. Final exact-head CI
       remains required.
-  - id: T-165
+  - id: T-166
     kind: upper-bound
     registered: '2026-10-14'
     headline: A tighter rational realization of PingYou Ltd's packing of 153 squares
@@ -20398,13 +20557,12 @@ results:
 
       At n = 153 the certificate is below the case's ceiling (PingYou Ltd, T-148) by
       1.00e-14; below T-101 (#375) (the Kingbird catalogue, verified by Evan Daniel's exact
-      ceiling) by 1.17e-02; below T-125 (#432) (ry-xu) by 1.13e-02; below T-127 (#438) (Nate
-      Chaoweeraprasit (itsnaka), improved by Siddharth Gupta) by 9.67e-03; below T-136
+      ceiling) by 1.17e-02; below T-125 (#432) (Ryan Xu) by 1.13e-02; below T-127 (#438)
+      (Nate Chaoweeraprasit (itsnaka), improved by Siddharth Gupta) by 9.67e-03; below T-136
       (#481) (Nate Chaoweeraprasit) by 2.02e-03; below T-146 (regularized lists) (Evan
-      Daniel, regularizing Nate Chaoweeraprasit's packing) by 2.02e-03; above #573
-      (Mishapolk) by 2.03e-12; above #593 (Mishapolk (Mykhailo Polkovskyi)) by 2.55e-12;
-      above PR #574 (PingYou Ltd) by 2.57e-12; no report is decidably smallest of #573 and
-      PR #574.
+      Daniel, regularizing Nate Chaoweeraprasit's packing) by 2.02e-03; above #573 (Mykhailo
+      Polkovskyi (Mishapolk)) by 2.55e-12; above #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      2.55e-12; above PR #574 (PingYou Ltd) by 2.57e-12; smallest: PR #574.
 
       The source's own checkers were not run here. The two maintained routes, the sqpack
       rational witness verifier and the independent rational corner checker, share
@@ -20416,9 +20574,9 @@ results:
       order they reached this repository and records one only where it is decidably below
       every earlier report at the count, records it at 153 (1.00e-14 below T-148).
     next_rung: >-
-      Independently review the retained replay, then weigh adoption at 153: Mishapolk's
-      issue 573 (T-172) is 2.55e-12 smaller and PR 574 (T-173) smaller still. Final
-      exact-head CI remains required.
+      Independently review the retained replay, then weigh adoption at 153: Mykhailo
+      Polkovskyi's issue 573 (T-173) is 2.55e-12 smaller and PR 574 (T-174) smaller still.
+      Final exact-head CI remains required.
     regularizations:
       - n: 153
         of: T-148
@@ -20428,7 +20586,7 @@ results:
         side: solved
         identity:
           basis: source-claim
-  - id: T-166
+  - id: T-167
     kind: upper-bound
     registered: '2026-10-14'
     headline: A tighter rational realization of PingYou Ltd's packing of 207 squares
@@ -20489,9 +20647,9 @@ results:
       1.49e-09; below T-098 (#375) (Francisco Couzo, improved by Evan Daniel) by 1.30e-02;
       below T-116 (#422) (Nate Chaoweeraprasit) by 7.03e-03; below T-127 (#438) (Nate
       Chaoweeraprasit (itsnaka), improved by Siddharth Gupta) by 7.03e-03; below T-136
-      (#481) (Nate Chaoweeraprasit) by 4.55e-03; above #573 (Mishapolk) by 5.56e-13; above
-      #593 (Mishapolk (Mykhailo Polkovskyi)) by 5.56e-13; above PR #574 (PingYou Ltd) by
-      2.98e-12; smallest: PR #574.
+      (#481) (Nate Chaoweeraprasit) by 4.55e-03; above #573 (Mykhailo Polkovskyi
+      (Mishapolk)) by 5.56e-13; above #593 (Mykhailo Polkovskyi (Mishapolk)) by 5.56e-13;
+      above PR #574 (PingYou Ltd) by 2.98e-12; smallest: PR #574.
 
       The source's own checkers were not run here. The two maintained routes, the sqpack
       rational witness verifier and the independent rational corner checker, share
@@ -20503,9 +20661,9 @@ results:
       order they reached this repository and records one only where it is decidably below
       every earlier report at the count, records it at 207 (1.49e-09 below T-147).
     next_rung: >-
-      Independently review the retained replay, then weigh adoption at 207: Mishapolk's
-      issue 573 (T-172) is 5.56e-13 smaller and PR 574 (T-173) smaller still. Final
-      exact-head CI remains required.
+      Independently review the retained replay, then weigh adoption at 207: Mykhailo
+      Polkovskyi's issue 573 (T-173) is 5.56e-13 smaller and PR 574 (T-174) smaller still.
+      Final exact-head CI remains required.
     regularizations:
       - n: 207
         of: T-147
@@ -20515,7 +20673,7 @@ results:
         side: solved
         identity:
           basis: source-claim
-  - id: T-167
+  - id: T-168
     kind: upper-bound
     registered: '2026-10-14'
     headline: >-
@@ -20570,12 +20728,11 @@ results:
       CPU seconds and 48.92 job wall seconds, the longest job 16.69 seconds. Every positive
       clears every wall by at least 5.00e-81 and every pair by at least 9.99e-81.
 
-      At n = 146 the certificate is below the case's ceiling (ry-xu, improved by Robert
+      At n = 146 the certificate is below the case's ceiling (Ryan Xu, improved by Robert
       Barnett, T-150) by 2.12e-13; below T-101 (#375) (the Kingbird catalogue, verified by
-      Evan Daniel's exact ceiling) by 1.71e-02; below T-125 (#432) (ry-xu) by 7.36e-08;
-      below T-146 (no issue) (Evan Daniel) by 7.35e-08; below #593 (Mishapolk (Mykhailo
-      Polkovskyi)) by 2.11e-13; undecided PR #574 (PingYou Ltd); no report is decidably
-      smallest of this certificate and PR #574.
+      Evan Daniel's exact ceiling) by 1.71e-02; below T-125 (#432) (Ryan Xu) by 7.36e-08;
+      below T-146 (no issue) (Evan Daniel) by 7.35e-08; below #593 (Mykhailo Polkovskyi
+      (Mishapolk)) by 2.12e-13; above PR #574 (PingYou Ltd) by 1.26e-79; smallest: PR #574.
 
       The source's own checkers were not run here. The two maintained routes, the sqpack
       rational witness verifier and the independent rational corner checker, share
@@ -20587,7 +20744,7 @@ results:
       order they reached this repository and records one only where it is decidably below
       every earlier report at the count, records it at 146 (2.12e-13 below T-150).
     next_rung: >-
-      Independently review the retained replay, then weigh adoption at 146: PR 574 (T-173)
+      Independently review the retained replay, then weigh adoption at 146: PR 574 (T-174)
       tightens it again, by 1.26e-79. Final exact-head CI remains required.
     regularizations:
       - n: 146
@@ -20599,7 +20756,7 @@ results:
         side: solved
         identity:
           basis: source-claim
-  - id: T-168
+  - id: T-169
     kind: upper-bound
     registered: '2026-10-14'
     headline: >-
@@ -20656,10 +20813,10 @@ results:
       every positive squares touch the box, a least wall clearance of exactly 0, and every
       pair clears by at least 0.
 
-      At n = 261 the certificate is below the case's ceiling (ry-xu, improved by Robert
+      At n = 261 the certificate is below the case's ceiling (Ryan Xu, improved by Robert
       Barnett, T-150) by 2.98e-13; below T-101 (#375) (the Kingbird catalogue, verified by
-      Evan Daniel's exact ceiling) by 4.15e-03; below T-125 (#432) (ry-xu) by 7.38e-11;
-      below #593 (Mishapolk (Mykhailo Polkovskyi)) by 2.97e-13; above PR #574 (PingYou Ltd)
+      Evan Daniel's exact ceiling) by 4.15e-03; below T-125 (#432) (Ryan Xu) by 7.38e-11;
+      below #593 (Mykhailo Polkovskyi (Mishapolk)) by 2.98e-13; above PR #574 (PingYou Ltd)
       by 1.99e-21; smallest: PR #574.
 
       The source's own checkers were not run here. The two maintained routes, the sqpack
@@ -20672,7 +20829,7 @@ results:
       order they reached this repository and records one only where it is decidably below
       every earlier report at the count, records it at 261 (2.98e-13 below T-150).
     next_rung: >-
-      Independently review the retained replay, then weigh adoption at 261: PR 574 (T-173)
+      Independently review the retained replay, then weigh adoption at 261: PR 574 (T-174)
       tightens it again, by 1.99e-21. Final exact-head CI remains required.
     regularizations:
       - n: 261
@@ -20684,10 +20841,12 @@ results:
         side: solved
         identity:
           basis: source-claim
-  - id: T-169
+  - id: T-170
     kind: upper-bound
     registered: '2026-10-14'
-    headline: An exact contact refinement of Francisco Couzo's packing of 105 squares
+    headline: >-
+      An exact contact refinement of Ryan Xu's packing of 105 squares, after Francisco
+      Couzo's
     claim: >-
       One complete rational source certificate reports a finite upper-bound improvement at
       the exact side it states: s(105) <=
@@ -20740,12 +20899,12 @@ results:
       CPU seconds and 29.39 job wall seconds, the longest job 11.04 seconds. Every positive
       clears every wall by at least 5.00e-81 and every pair by at least 9.99e-81.
 
-      At n = 105 the certificate is below the case's ceiling (ry-xu, improved by Francisco
+      At n = 105 the certificate is below the case's ceiling (Ryan Xu, improved by Francisco
       Couzo, T-130) by 1.08e-19; below T-117 (#425) (Francisco Couzo, improved by Seth
-      Rehwaldt) by 1.68e-02; below T-125 (#432) (ry-xu) by 1.37e-03; below T-128 (#451)
-      (Francisco Couzo) by 1.31e-03; below T-138 (#470) (Mishapolk) by 2.84e-12; above #593
-      (Mishapolk (Mykhailo Polkovskyi)) by 6.31e-16; undecided PR #574 (PingYou Ltd);
-      smallest: #593.
+      Rehwaldt) by 1.68e-02; below T-125 (#432) (Ryan Xu) by 1.37e-03; below T-128 (#451)
+      (Francisco Couzo) by 1.31e-03; below T-138 (#470) (Mykhailo Polkovskyi (Mishapolk)) by
+      2.84e-12; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.08e-19; above PR #574
+      (PingYou Ltd) by 1.08e-79; smallest: PR #574.
 
       The source's own checkers were not run here. The two maintained routes, the sqpack
       rational witness verifier and the independent rational corner checker, share
@@ -20757,7 +20916,7 @@ results:
       order they reached this repository and records one only where it is decidably below
       every earlier report at the count, records it at 105 (1.08e-19 below T-130).
     next_rung: >-
-      Independently review the retained replay, then weigh adoption at 105: PR 574 (T-173)
+      Independently review the retained replay, then weigh adoption at 105: PR 574 (T-174)
       tightens it again, by 1.08e-79. Final exact-head CI remains required.
     regularizations:
       - n: 105
@@ -20767,7 +20926,7 @@ results:
         side: solved
         identity:
           basis: source-claim
-  - id: T-170
+  - id: T-171
     kind: upper-bound
     registered: '2026-10-14'
     headline: An exact contact refinement of SQUISH's packing of 272 squares
@@ -20827,8 +20986,8 @@ results:
       At n = 272 the certificate is below the case's ceiling (Nate Chaoweeraprasit
       (itsnaka), T-151) by 5.26e-16; below T-098 (#375) (Francisco Couzo, improved by Evan
       Daniel) by 2.58e-03; below T-119 (#399) (Evan Daniel) by 2.52e-03; below #593
-      (Mishapolk (Mykhailo Polkovskyi)) by 8.64e-16; undecided PR #574 (PingYou Ltd); no
-      report is decidably smallest of this certificate and PR #574.
+      (Mykhailo Polkovskyi (Mishapolk)) by 5.26e-16; above PR #574 (PingYou Ltd) by
+      1.70e-99; smallest: PR #574.
 
       The source's own checkers were not run here. The two maintained routes, the sqpack
       rational witness verifier and the independent rational corner checker, share
@@ -20840,7 +20999,7 @@ results:
       order they reached this repository and records one only where it is decidably below
       every earlier report at the count, records it at 272 (5.26e-16 below T-151).
     next_rung: >-
-      Independently review the retained replay, then weigh adoption at 272: PR 574 (T-173)
+      Independently review the retained replay, then weigh adoption at 272: PR 574 (T-174)
       tightens it again, by 1.70e-99. Final exact-head CI remains required.
     regularizations:
       - n: 272
@@ -20850,7 +21009,7 @@ results:
         side: solved
         identity:
           basis: source-claim
-  - id: T-171
+  - id: T-172
     kind: upper-bound
     registered: '2026-10-14'
     headline: >-
@@ -20910,8 +21069,9 @@ results:
       every pair by at least 9.99e-21.
 
       At n = 154 the certificate is below the case's ceiling (Evan Daniel, T-160) by
-      6.66e-05; above #586 (Francisco Couzo) by 1.29e-03; undecided #593 (Mishapolk);
-      smallest: #586.
+      6.66e-05; above #586 (Francisco Couzo) by 1.29e-03; equal #593 (Mykhailo Polkovskyi
+      (Mishapolk)); below #573 (Mykhailo Polkovskyi (Mishapolk)) by 6.66e-05; smallest:
+      #586.
 
       The same packet retains issue 583's six other certificates, which T-181 registers.
 
@@ -20927,11 +21087,12 @@ results:
     next_rung: >-
       Independently review the retained replay, then weigh adoption at 154: issue 586
       (T-182) is 1.29e-03 smaller. Final exact-head CI remains required.
-  - id: T-172
+  - id: T-173
     kind: upper-bound
     registered: '2026-10-14'
     headline: >-
-      Mishapolk's packings of 153 and 207 squares, each below the earlier refinements there
+      Mykhailo Polkovskyi's packings of 153 and 207 squares, each below the earlier
+      refinements there
     claim: >-
       Two complete rational source certificates report finite upper-bound improvements at
       the exact sides they state: s(153) <= 12.87001385040448 and s(207) <= 14.880960371558.
@@ -20944,13 +21105,14 @@ results:
       issue requests in exact rational arithmetic. Those statements are the author's; no
       source program ran here.
 
-      Credit Mishapolk with the certificates. The issue calls 153 and 207 new arrangements
-      from basin hopping with tilted boundary corridors. Measured here against PingYou Ltd's
-      packings (T-148, T-147), 51 of the 153 squares coincide to 1e-6 and 147 lie within
-      0.1, and all 207 lie within 2.8e-4, 200 within 1e-6: the same contact topology at 207
-      by measurement; whether to credit them as new arrangements is the owner's decision. It
-      discloses that Gemini was used for the search implementation, verification
-      orchestration and issue preparation, directed by the author.
+      Credit Mykhailo Polkovskyi (Mishapolk), as he asks on issue 593, with the
+      certificates. The issue calls 153 and 207 new arrangements from basin hopping with
+      tilted boundary corridors. Measured here against PingYou Ltd's packings (T-148,
+      T-147), 51 of the 153 squares coincide to 1e-6 and 147 lie within 0.1, and all 207 lie
+      within 2.8e-4, 200 within 1e-6: the same contact topology at 207 by measurement;
+      whether to credit them as new arrangements is the owner's decision. It discloses that
+      Gemini was used for the search implementation, verification orchestration and issue
+      preparation, directed by the author.
     scope: {n_values: [153, 207]}
     verification: V0
     confirmation: C0
@@ -20992,7 +21154,8 @@ results:
       square packing 2026]) by 1.13e-02; below T-127 (#438) (Gupta after Chaoweeraprasit,
       Daniel) by 9.67e-03; below T-136 (#481) (Chaoweeraprasit after Couzo, Xu, Goebel,
       Schadt, Ellsworth, Hajba, Levy) by 2.02e-03; below T-146 (no issue) (Daniel after Xu,
-      Chaoweeraprasit, Mishapolk, Levy) by 2.02e-03; smallest: PR #574 (PingYou).
+      Chaoweeraprasit, Mishapolk, Levy) by 2.02e-03; equal #593 (Mykhailo Polkovskyi
+      (Mishapolk)); smallest: PR #574 (PingYou).
 
       At n = 207 the certificate is below the case's ceiling (PingYou Ltd, T-147) by
       1.49e-09; below #503 refinement (PingYou) (PingYou Ltd (BuddenPing)) by 5.56e-13;
@@ -21001,11 +21164,12 @@ results:
       (#422) (Chaoweeraprasit after Ellsworth, Couzo and SQUISH) by 7.03e-03; below T-127
       (#438) (Gupta after Chaoweeraprasit, Daniel) by 7.03e-03; below T-136 (#481)
       (Chaoweeraprasit after Couzo, Xu, Goebel, Schadt, Ellsworth, Hajba, Levy) by 4.55e-03;
-      smallest: PR #574 (PingYou).
+      equal #593 (Mykhailo Polkovskyi (Mishapolk)); smallest: PR #574 (PingYou).
 
-      The same commit holds 17 further certificates the issue does not name, at n = 103,
-      108, 127, 131, 154, 175, 180, 209, 236, 237, 258, 263, 267, 270, 302, 303 and 306; the
-      packet's claim record compares each with its case, and each is an import of its own.
+      The same commit holds 17 further certificates that this entry does not record, at n =
+      103, 108, 127, 131, 154, 175, 180, 209, 236, 237, 258, 263, 267, 270, 302, 303 and
+      306; the packet's claim record compares each with its case, and each is an import of
+      its own.
 
       The source's own checkers were not run here. The two maintained routes, the sqpack
       rational witness verifier and the independent rational corner checker, share
@@ -21015,16 +21179,17 @@ results:
 
       The per-count ledger of 14 October (jlevy/squares#601), which takes the reports in the
       order they reached this repository and records one only where it is decidably below
-      every earlier report at the count, records it at 153 (2.55e-12 below T-165) and 207
-      (5.56e-13 below T-166).
+      every earlier report at the count, records it at 153 (2.55e-12 below T-166) and 207
+      (5.56e-13 below T-167).
     next_rung: >-
       Independently review the retained replay; then the owner decides the credit at 153 and
-      207 against T-148 and T-147, and adoption against PR 574 (T-173), which states smaller
+      207 against T-148 and T-147, and adoption against PR 574 (T-174), which states smaller
       sides at both. Final exact-head CI remains required.
-  - id: T-173
+  - id: T-174
     kind: upper-bound
     registered: '2026-10-14'
-    headline: Tighter certificates of others' packings at 68 counts from PingYou Ltd
+    headline: >-
+      Tighter certificates at 68 counts from PingYou Ltd, of others' packings and its own
     claim: >-
       PingYou Ltd's pull request 574 reports finite upper-bound improvements at 68 counts:
       sixty-four complete rational source certificates, at 68, 84, 86, 88, 102, 103, 105,
@@ -21051,11 +21216,10 @@ results:
       exact certificates with 917,302 pairs, and that the native verifier accepts their
       native witnesses. Those statements are the author's; no source program ran here.
 
-      Here both maintained exact routes decided 39 of the rational certificates with their
-      two controls each, and sqpack's exact witness verifier decided the algebraic ones at
-      70, 153 and 207 over their fields; the other 25 rational counts and 302 are not
-      replayed, and no second route over a number field exists here. The selected standing
-      cases are unchanged pending independent review and record review.
+      Here both maintained exact routes decided all 64 rational certificates with their two
+      controls each, and sqpack's exact witness verifier decided the four algebraic ones
+      over their fields; no second route over a number field exists here. The selected
+      standing cases are unchanged pending independent review and record review.
 
       Credit PingYou Ltd (https://github.com/BuddenPing/square-packing-certificates) with
       the certificate refinements, as the submission asks: smaller padding, an exact
@@ -21064,8 +21228,9 @@ results:
       preceding refiners it starts from, among them Erich Friedman's and David Ellsworth's
       catalogue constructions as Evan Daniel's exact certificates and regularized lists
       state them, Ryan Xu, Robert Barnett, Francisco Couzo, Daniil Ostashev, Nate
-      Chaoweeraprasit (SQUISH), Siddharth Gupta, Kevin Fang and Mishapolk, and it says that
-      padding reduction does not transfer authorship of an existing packing.
+      Chaoweeraprasit (SQUISH), Siddharth Gupta, Kevin Fang and Mykhailo Polkovskyi
+      (Mishapolk), and it says that padding reduction does not transfer authorship of an
+      existing packing.
 
       Each count but 176 is a regularization of the registered packing whose certificate it
       tightens; at 176 it states Daniil Ostashev's packing of issue 575, which the record
@@ -21101,418 +21266,390 @@ results:
       - packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md
       - packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/claims.json
       - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n068.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n084.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n086.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n088.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n102.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n103.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n105.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n108.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n110.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n123.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n126.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n127.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n129.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n130.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n131.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n132.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n155.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n156.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n175.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n176.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n179.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n180.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n206.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n209.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n232.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n236.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n238.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n258.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n259.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n261.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n264.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n266.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n267.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n268.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n269.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n271.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n292.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n303.json.xz
-      - >-
-        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n305.json.xz
-      - >-
         packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
       - packing/devtools/algebraic_witness_reports.py
       - packing/devtools/upper_bound_reports.py
+      - >-
+        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/algebraic-route1-n070.json.xz
+      - >-
+        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/algebraic-route1-n153.json.xz
+      - >-
+        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/algebraic-route1-n207.json.xz
+      - >-
+        packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/algebraic-route1-n302.json.xz
     controls: [packing/tests/test_upper_bound_reports.py]
     notes: >-
       A separate complete repository replay is retained for n = 68, 84, 86, 88, 102, 103,
-      105, 108, 110, 123, 126, 127, 129, 130, 131, 132, 155, 156, 175, 176, 179, 180, 206,
-      209, 232, 236, 238, 258, 259, 261, 264, 266, 267, 268, 269, 271, 292, 303 and 305: 39
-      positives and 78 duplicate-square and outside-container controls passed their required
-      outcomes on both routes, 4555860 pair decisions; summed over the 117 jobs, the receipt
-      records 4836.27 route CPU seconds and 6992.23 job wall seconds, the longest job 203.51
-      seconds. In every positive squares touch the box, a least wall clearance of exactly 0,
-      and every pair clears by at least 0.
+      105, 108, 110, 123, 126, 127, 129, 130, 131, 132, 146, 155, 156, 172, 175, 176, 179,
+      180, 181, 182, 199, 204, 206, 208, 209, 210, 211, 228, 232, 236, 237, 238, 239, 240,
+      241, 258, 259, 261, 263, 264, 266, 267, 268, 269, 270, 271, 272, 273, 292, 295, 297,
+      301, 303, 304, 305, 306, 307 and 308: 64 positives and 128 duplicate-square and
+      outside-container controls passed their required outcomes on both routes, 9164850 pair
+      decisions; summed over the 192 jobs, the receipt records 14497.02 route CPU seconds
+      and 16968.51 job wall seconds, the longest job 509.89 seconds. In every positive
+      squares touch the box, a least wall clearance of exactly 0, and every pair clears by
+      at least 0.
+
+      The rational receipts, one a count, are the packet's
+      receipts/exact-certification-nNNN.json.xz; they stay out of this entry's artifacts so
+      that the workers' snapshot stays under its cap.
 
       At n = 68 the certificate is below the case's ceiling (Francisco Couzo, improved by
-      Seth Rehwaldt, T-118) by 4.58e-61; undecided #593 (Mishapolk (Mykhailo Polkovskyi));
-      no report is decidably smallest of this certificate and #593. At n = 84 the
-      certificate is below the case's ceiling (ry-xu, improved by Francisco Couzo, T-130) by
-      9.70e-20; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); below T-138 (register)
-      (Exact witnesses at Mishapolk's printed ceilings, the smallest known at 103 and 258
-      when registered) by 2.08e-12; no report is decidably smallest of this certificate and
-      #593.
+      Seth Rehwaldt, T-118) by 4.58e-61; below #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      8.80e-20; smallest: this certificate.
 
-      At n = 86 the certificate is below the case's ceiling (ry-xu, improved by Francisco
-      Couzo, T-130) by 9.82e-20; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); below
-      T-138 (register) (Exact witnesses at Mishapolk's printed ceilings, the smallest known
-      at 103 and 258 when registered) by 2.26e-12; no report is decidably smallest of this
-      certificate and #593. At n = 88 the certificate is below the case's ceiling (Nate
-      Chaoweeraprasit (itsnaka), improved by Siddharth Gupta, T-127) by 9.88e-20; undecided
-      #593 (Mishapolk (Mykhailo Polkovskyi)); no report is decidably smallest of this
-      certificate and #593.
+      At n = 84 the certificate is below the case's ceiling (Ryan Xu, improved by Francisco
+      Couzo, T-130) by 9.70e-20; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 9.70e-20;
+      below T-138 (register) (Exact witnesses at Mishapolk's printed ceilings, the smallest
+      known at 103 and 258 when registered) by 2.08e-12; smallest: this certificate.
 
-      At n = 102 the certificate is below the case's ceiling (ry-xu, improved by Evan
-      Daniel, T-146) by 1.06e-19; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); below
-      T-120 (register) (Reported s(102) ≤ alpha_102 with a degree-8 exact side form) by
-      1.35e-03; no report is decidably smallest of this certificate and #593. At n = 103 the
-      certificate is below the case's ceiling (ry-xu, improved by Mishapolk, Evan Daniel,
-      T-146) by 1.07e-19; undecided #573 (Mishapolk (Mykhailo Polkovskyi)); below #593
-      (Mishapolk (Mykhailo Polkovskyi)) by 4.29e-14; below T-138 (register) (Exact witnesses
-      at Mishapolk's printed ceilings, the smallest known at 103 and 258 when registered) by
-      6.94e-13; no report is decidably smallest of this certificate and #573.
+      At n = 86 the certificate is below the case's ceiling (Ryan Xu, improved by Francisco
+      Couzo, T-130) by 9.82e-20; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 9.82e-20;
+      below T-138 (register) (Exact witnesses at Mishapolk's printed ceilings, the smallest
+      known at 103 and 258 when registered) by 2.26e-12; smallest: this certificate.
 
-      At n = 105 the certificate is below the case's ceiling (ry-xu, improved by Francisco
-      Couzo, T-130) by 1.08e-19; undecided #568 (PingYou Ltd (BuddenPing)); undecided #593
-      (Mishapolk (Mykhailo Polkovskyi)); below T-128 (register) (Eight complete rational
-      refinements from Francisco Couzo) by 1.31e-03; below T-129 (register) (Three dated
-      Daniel certificate reports with historical source custody) by 1.68e-02; below T-138
-      (register) (Exact witnesses at Mishapolk's printed ceilings, the smallest known at 103
-      and 258 when registered) by 2.84e-12; no report is decidably smallest of this
-      certificate, #568 and #593.
+      At n = 88 the certificate is below the case's ceiling (Nate Chaoweeraprasit (itsnaka),
+      improved by Siddharth Gupta, T-127) by 9.88e-20; below #593 (Mykhailo Polkovskyi
+      (Mishapolk)) by 9.88e-20; smallest: this certificate.
 
-      At n = 108 the certificate is below the case's ceiling (ry-xu, improved by Francisco
-      Couzo, T-128) by 1.09e-19; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); below
-      T-138 (register) (Exact witnesses at Mishapolk's printed ceilings, the smallest known
-      at 103 and 258 when registered) by 3.64e-12; no report is decidably smallest of this
-      certificate and #593. At n = 110 the certificate is below the case's ceiling
-      (Francisco Couzo, improved by Evan Daniel, T-098) by 1.10e-19; undecided #593
-      (Mishapolk (Mykhailo Polkovskyi)); no report is decidably smallest of this certificate
-      and #593.
+      At n = 102 the certificate is below the case's ceiling (Ryan Xu, improved by Evan
+      Daniel, T-146) by 1.06e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.06e-19;
+      below T-120 (register) (Reported s(102) ≤ alpha_102 with a degree-8 exact side form)
+      by 1.35e-03; smallest: this certificate.
 
-      At n = 123 the certificate is below the case's ceiling (ry-xu, improved by Evan
-      Daniel, T-146) by 1.16e-19; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); no
-      report is decidably smallest of this certificate and #593. At n = 126 the certificate
-      is below the case's ceiling (ry-xu, improved by Evan Daniel, T-139) by 1.17e-19;
-      undecided #593 (Mishapolk (Mykhailo Polkovskyi)); no report is decidably smallest of
-      this certificate and #593. At n = 127 the certificate is below the case's ceiling
-      (ry-xu, improved by Francisco Couzo, T-128) by 1.18e-19; undecided #593 (Mishapolk
-      (Mykhailo Polkovskyi)); below T-138 (register) (Exact witnesses at Mishapolk's printed
-      ceilings, the smallest known at 103 and 258 when registered) by 8.20e-13; no report is
-      decidably smallest of this certificate and #593.
+      At n = 103 the certificate is below the case's ceiling (Ryan Xu, improved by Mykhailo
+      Polkovskyi, Evan Daniel, T-146) by 1.07e-19; below #573 (Mykhailo Polkovskyi
+      (Mishapolk)) by 4.36e-14; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 4.36e-14;
+      below T-138 (register) (Exact witnesses at Mishapolk's printed ceilings, the smallest
+      known at 103 and 258 when registered) by 6.94e-13; smallest: this certificate.
 
-      At n = 129 the certificate is below the case's ceiling (ry-xu, improved by Evan
-      Daniel, T-146) by 2.02e-03; below #562 (Daniil Ostashev) by 1.18e-19; undecided #593
-      (Mishapolk (Mykhailo Polkovskyi)); no report is decidably smallest of this certificate
-      and #593. At n = 130 the certificate is below the case's ceiling (Nate Chaoweeraprasit
-      (itsnaka), improved by Siddharth Gupta, T-127) by 1.19e-19; undecided #593 (Mishapolk
-      (Mykhailo Polkovskyi)); below T-129 (register) (Three dated Daniel certificate reports
-      with historical source custody) by 6.70e-03; no report is decidably smallest of this
-      certificate and #593.
+      At n = 105 the certificate is below the case's ceiling (Ryan Xu, improved by Francisco
+      Couzo, T-130) by 1.08e-19; below #568 (PingYou Ltd (BuddenPing)) by 1.08e-79; below
+      #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.08e-19; below T-128 (register) (Eight
+      complete rational refinements from Francisco Couzo) by 1.31e-03; below T-129
+      (register) (Three dated Daniel certificate reports with historical source custody) by
+      1.68e-02; below T-138 (register) (Exact witnesses at Mishapolk's printed ceilings, the
+      smallest known at 103 and 258 when registered) by 2.84e-12; smallest: this
+      certificate.
+
+      At n = 108 the certificate is below the case's ceiling (Ryan Xu, improved by Francisco
+      Couzo, T-128) by 1.09e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.09e-19;
+      below T-138 (register) (Exact witnesses at Mishapolk's printed ceilings, the smallest
+      known at 103 and 258 when registered) by 3.64e-12; below #573 (Mykhailo Polkovskyi
+      (Mishapolk)) by 3.64e-12; smallest: this certificate.
+
+      At n = 110 the certificate is below the case's ceiling (Francisco Couzo, improved by
+      Evan Daniel, T-098) by 1.10e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      1.10e-19; smallest: this certificate.
+
+      At n = 123 the certificate is below the case's ceiling (Ryan Xu, improved by Evan
+      Daniel, T-146) by 1.16e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.16e-19;
+      smallest: this certificate.
+
+      At n = 126 the certificate is below the case's ceiling (Ryan Xu, improved by Evan
+      Daniel, T-139) by 1.17e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.17e-19;
+      smallest: this certificate.
+
+      At n = 127 the certificate is below the case's ceiling (Ryan Xu, improved by Francisco
+      Couzo, T-128) by 1.18e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.18e-19;
+      below T-138 (register) (Exact witnesses at Mishapolk's printed ceilings, the smallest
+      known at 103 and 258 when registered) by 8.20e-13; below #573 (Mykhailo Polkovskyi
+      (Mishapolk)) by 3.82e-12; smallest: this certificate.
+
+      At n = 129 the certificate is below the case's ceiling (Ryan Xu, improved by Evan
+      Daniel, T-146) by 2.02e-03; below #562 (Daniil Ostashev) by 1.18e-19; below #593
+      (Mykhailo Polkovskyi (Mishapolk)) by 1.18e-19; smallest: this certificate.
+
+      At n = 130 the certificate is below the case's ceiling (Nate Chaoweeraprasit
+      (itsnaka), improved by Siddharth Gupta, T-127) by 1.19e-19; below #593 (Mykhailo
+      Polkovskyi (Mishapolk)) by 1.19e-19; below T-129 (register) (Three dated Daniel
+      certificate reports with historical source custody) by 6.70e-03; smallest: this
+      certificate.
 
       At n = 131 the certificate is below the case's ceiling (Nate Chaoweeraprasit
-      (itsnaka), T-136) by 1.09e-31; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); below
-      T-128 (register) (Eight complete rational refinements from Francisco Couzo) by
-      1.45e-03; below T-138 (register) (Exact witnesses at Mishapolk's printed ceilings, the
-      smallest known at 103 and 258 when registered) by 1.45e-03; no report is decidably
-      smallest of this certificate and #593.
+      (itsnaka), T-136) by 1.09e-31; below #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      1.19e-19; below T-128 (register) (Eight complete rational refinements from Francisco
+      Couzo) by 1.45e-03; below T-138 (register) (Exact witnesses at Mishapolk's printed
+      ceilings, the smallest known at 103 and 258 when registered) by 1.45e-03; below #573
+      (Mykhailo Polkovskyi (Mishapolk)) by 1.45e-03; smallest: this certificate.
 
       At n = 132 the certificate is below the case's ceiling (Evan Daniel, T-141) by
-      1.20e-19; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); below T-131 (register)
-      (s(132) ≤ 11.987099332245063… from Evan Daniel's record hunt) by 1.42e-03; below T-134
-      (register) (Six exact rational certificates from Francisco Couzo) by 1.27e-03; below
-      T-138 (register) (Exact witnesses at Mishapolk's printed ceilings, the smallest known
-      at 103 and 258 when registered) by 1.28e-03; below T-140 (register) (Six more exact
-      rational certificates from Francisco Couzo) by 1.27e-03; no report is decidably
-      smallest of this certificate and #593.
+      1.20e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.20e-19; below T-131
+      (register) (s(132) ≤ 11.987099332245063… from Evan Daniel's record hunt) by 1.42e-03;
+      below T-134 (register) (Six exact rational certificates from Francisco Couzo) by
+      1.27e-03; below T-138 (register) (Exact witnesses at Mishapolk's printed ceilings, the
+      smallest known at 103 and 258 when registered) by 1.28e-03; below T-140 (register)
+      (Six more exact rational certificates from Francisco Couzo) by 1.27e-03; smallest:
+      this certificate.
 
-      At n = 146 the certificate is below the case's ceiling (ry-xu, improved by Robert
-      Barnett, T-150) by 2.12e-13; undecided #566 (PingYou Ltd (BuddenPing)); below #593
-      (Mishapolk (Mykhailo Polkovskyi)) by 2.11e-13; below T-146 (register) (Exact rational
-      certificates at fifteen counts from Evan Daniel's regularized record lists) by
-      7.35e-08; no report is decidably smallest of this certificate and #566. At n = 155 the
-      certificate is below the case's ceiling (Daniil Ostashev, T-149) by 1.30e-19;
-      undecided #593 (Mishapolk (Mykhailo Polkovskyi)); below T-128 (register) (Eight
-      complete rational refinements from Francisco Couzo) by 7.35e-05; no report is
-      decidably smallest of this certificate and #593.
+      At n = 146 the certificate is below the case's ceiling (Ryan Xu, improved by Robert
+      Barnett, T-150) by 2.12e-13; below #566 (PingYou Ltd (BuddenPing)) by 1.26e-79; below
+      #593 (Mykhailo Polkovskyi (Mishapolk)) by 2.12e-13; below T-146 (register) (Exact
+      rational certificates at fifteen counts from Evan Daniel's regularized record lists)
+      by 7.35e-08; smallest: this certificate.
+
+      At n = 155 the certificate is below the case's ceiling (Daniil Ostashev, T-149) by
+      1.30e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.30e-19; below T-128
+      (register) (Eight complete rational refinements from Francisco Couzo) by 7.35e-05;
+      smallest: this certificate.
 
       At n = 156 the certificate is below the case's ceiling (Daniil Ostashev, T-149) by
-      6.76e-06; undecided #561 (Francisco Couzo); undecided #593 (Mishapolk (Mykhailo
-      Polkovskyi)); no report is decidably smallest of this certificate, #561 and #593. At n
-      = 172 the certificate is below the case's ceiling (Francisco Couzo, improved by Evan
-      Daniel, T-098) by 1.36e-19; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); no
-      report is decidably smallest of this certificate and #593.
+      6.76e-06; below #561 (Francisco Couzo) by 1.30e-19; below #593 (Mykhailo Polkovskyi
+      (Mishapolk)) by 1.30e-19; smallest: this certificate.
 
-      At n = 175 the certificate is below the case's ceiling (ry-xu, improved by Francisco
-      Couzo, T-140) by 2.95e-03; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); below
-      T-130 (register) (Five follow-up rational refinements from Francisco Couzo) by
-      2.98e-03; below T-138 (register) (Exact witnesses at Mishapolk's printed ceilings, the
-      smallest known at 103 and 258 when registered) by 2.98e-03; no report is decidably
-      smallest of this certificate and #593. At n = 176 the certificate is below the case's
-      ceiling (Nate Chaoweeraprasit (itsnaka), T-151) by 1.70e-02; below #561 (Francisco
-      Couzo) by 1.18e-02; below #575 (Daniil Ostashev) by 1.38e-19; undecided #593
-      (Mishapolk (Mykhailo Polkovskyi)); no report is decidably smallest of this certificate
-      and #593.
+      At n = 172 the certificate is below the case's ceiling (Francisco Couzo, improved by
+      Evan Daniel, T-098) by 1.36e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      1.36e-19; smallest: this certificate.
+
+      At n = 175 the certificate is below the case's ceiling (Daniil Ostashev, T-158) by
+      1.38e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.38e-19; below T-130
+      (register) (Five follow-up rational refinements from Francisco Couzo) by 2.98e-03;
+      below T-138 (register) (Exact witnesses at Mishapolk's printed ceilings, the smallest
+      known at 103 and 258 when registered) by 2.98e-03; below #573 (Mykhailo Polkovskyi
+      (Mishapolk)) by 1.40e-12; smallest: this certificate.
+
+      At n = 176 the certificate is below the case's ceiling (Nate Chaoweeraprasit
+      (itsnaka), T-151) by 1.70e-02; below #561 (Francisco Couzo) by 1.18e-02; below #575
+      (Daniil Ostashev) by 1.38e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      1.38e-19; below #562 (Daniil Ostashev) by 1.28e-02; below #586 (Francisco Couzo) by
+      1.18e-02; smallest: this certificate.
 
       At n = 179 the certificate is below the case's ceiling (Nate Chaoweeraprasit
-      (itsnaka), improved by Siddharth Gupta, T-127) by 1.39e-19; undecided #593 (Mishapolk
-      (Mykhailo Polkovskyi)); no report is decidably smallest of this certificate and #593.
+      (itsnaka), improved by Siddharth Gupta, T-127) by 1.39e-19; below #593 (Mykhailo
+      Polkovskyi (Mishapolk)) by 1.39e-19; smallest: this certificate.
+
       At n = 180 the certificate is below the case's ceiling (Nate Chaoweeraprasit
-      (itsnaka), improved by Siddharth Gupta, Francisco Couzo, T-128) by 1.39e-19; undecided
-      #593 (Mishapolk (Mykhailo Polkovskyi)); below T-138 (register) (Exact witnesses at
-      Mishapolk's printed ceilings, the smallest known at 103 and 258 when registered) by
-      4.17e-12; no report is decidably smallest of this certificate and #593.
+      (itsnaka), improved by Siddharth Gupta, Francisco Couzo, T-128) by 1.39e-19; below
+      #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.39e-19; below T-138 (register) (Exact
+      witnesses at Mishapolk's printed ceilings, the smallest known at 103 and 258 when
+      registered) by 4.17e-12; below #573 (Mykhailo Polkovskyi (Mishapolk)) by 5.17e-12;
+      smallest: this certificate.
 
       At n = 181 the certificate is below the case's ceiling (Nate Chaoweeraprasit
-      (itsnaka), T-151) by 1.30e-31; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); no
-      report is decidably smallest of this certificate and #593. At n = 182 the certificate
-      is below the case's ceiling (Francisco Couzo, improved by Evan Daniel, T-098) by
-      1.40e-19; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); no report is decidably
-      smallest of this certificate and #593. At n = 199 the certificate is below the case's
-      ceiling (Nate Chaoweeraprasit (itsnaka), improved by Siddharth Gupta, T-127) by
-      1.46e-19; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); no report is decidably
-      smallest of this certificate and #593.
+      (itsnaka), T-151) by 1.30e-31; below #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      1.00e-21; smallest: this certificate.
+
+      At n = 182 the certificate is below the case's ceiling (Francisco Couzo, improved by
+      Evan Daniel, T-098) by 1.40e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      1.40e-19; smallest: this certificate.
+
+      At n = 199 the certificate is below the case's ceiling (Nate Chaoweeraprasit
+      (itsnaka), improved by Siddharth Gupta, T-127) by 1.46e-19; below #593 (Mykhailo
+      Polkovskyi (Mishapolk)) by 1.46e-19; smallest: this certificate.
 
       At n = 204 the certificate is below the case's ceiling (the Kingbird catalogue (),
       verified by T-101's exact ceiling, T-101) by 1.42e-02; below #562 (Daniil Ostashev) by
-      1.46e-19; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); below T-155 (register)
-      (Exact regularized sides at 59 counts, 5.4e-20 to 9.9e-15 below the ceilings they
-      replace) by 1.42e-02; no report is decidably smallest of this certificate and #593. At
-      n = 206 the certificate is below the case's ceiling (Francisco Couzo, improved by Evan
-      Daniel, T-098) by 1.49e-19; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); no
-      report is decidably smallest of this certificate and #593.
+      1.46e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.46e-19; below T-155
+      (register) (Exact regularized sides at 59 counts, 5.4e-20 to 9.9e-15 below the
+      ceilings they replace) by 1.42e-02; smallest: this certificate.
+
+      At n = 206 the certificate is below the case's ceiling (Francisco Couzo, improved by
+      Evan Daniel, T-098) by 1.49e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      1.49e-19; smallest: this certificate.
 
       At n = 208 the certificate is below the case's ceiling (Nate Chaoweeraprasit
-      (itsnaka), improved by Siddharth Gupta, T-127) by 1.49e-19; undecided #593 (Mishapolk
-      (Mykhailo Polkovskyi)); below T-092 (register) (Smaller packings again at seven counts
-      from n = 208 to 306, each certified two independent ways) by 2.02e-03; no report is
-      decidably smallest of this certificate and #593.
+      (itsnaka), improved by Siddharth Gupta, T-127) by 1.49e-19; below #593 (Mykhailo
+      Polkovskyi (Mishapolk)) by 1.49e-19; below T-092 (register) (Smaller packings again at
+      seven counts from n = 208 to 306, each certified two independent ways) by 2.02e-03;
+      smallest: this certificate.
 
       At n = 209 the certificate is below the case's ceiling (Nate Chaoweeraprasit
-      (itsnaka), improved by Francisco Couzo, T-140) by 1.49e-19; below #573 (Mishapolk
-      (Mykhailo Polkovskyi)) by 1.55e-12; undecided #593 (Mishapolk (Mykhailo Polkovskyi));
-      below T-092 (register) (Smaller packings again at seven counts from n = 208 to 306,
-      each certified two independent ways) by 7.72e-03; below T-136 (register) (Seventeen
-      exact rational packings from SQUISH's third request) by 4.28e-07; no report is
-      decidably smallest of this certificate and #593. At n = 210 the certificate is below
-      the case's ceiling (Francisco Couzo, improved by Evan Daniel, T-098) by 1.50e-19;
-      undecided #593 (Mishapolk (Mykhailo Polkovskyi)); no report is decidably smallest of
-      this certificate and #593.
+      (itsnaka), improved by Francisco Couzo, T-140) by 1.49e-19; below #573 (Mykhailo
+      Polkovskyi (Mishapolk)) by 1.55e-12; below #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      1.49e-19; below T-092 (register) (Smaller packings again at seven counts from n = 208
+      to 306, each certified two independent ways) by 7.72e-03; below T-136 (register)
+      (Seventeen exact rational packings from SQUISH's third request) by 4.28e-07; smallest:
+      this certificate.
+
+      At n = 210 the certificate is below the case's ceiling (Francisco Couzo, improved by
+      Evan Daniel, T-098) by 1.50e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      1.50e-19; smallest: this certificate.
 
       At n = 211 the certificate is below the case's ceiling (Daniil Ostashev, T-149) by
       1.49e-19; above #575 (Daniil Ostashev) by 2.64e-03; above #583 (Francisco Couzo) by
-      2.78e-03; above #593 (Mishapolk (Mykhailo Polkovskyi)) by 2.78e-03; below T-057
+      2.78e-03; above #593 (Mykhailo Polkovskyi (Mishapolk)) by 2.78e-03; below T-057
       (register) (s(211) ≤ 14.99796070496771500150 < 15, the first packing of 211 squares
-      below the grid on record) by 1.62e-03; no report is decidably smallest of #583 and
-      #593. At n = 228 the certificate is below the case's ceiling (Francisco Couzo, T-128)
-      by 1.56e-19; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); below T-092 (register)
-      (Smaller packings again at seven counts from n = 208 to 306, each certified two
-      independent ways) by 9.79e-07; no report is decidably smallest of this certificate and
-      #593.
+      below the grid on record) by 1.62e-03; above #586 (Francisco Couzo) by 2.78e-03; no
+      report is smallest, since #593 and #586 are one exact side.
 
-      At n = 232 the certificate is below the case's ceiling (Nate Chaoweeraprasit
-      (itsnaka), T-136) by 3.25e-03; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); no
-      report is decidably smallest of this certificate and #593. At n = 236 the certificate
-      is below the case's ceiling (Nate Chaoweeraprasit (itsnaka), improved by Evan Daniel,
-      T-146) by 1.59e-19; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); below T-136
-      (register) (Seventeen exact rational packings from SQUISH's third request) by
-      3.29e-16; no report is decidably smallest of this certificate and #593.
+      At n = 228 the certificate is below the case's ceiling (Francisco Couzo, T-128) by
+      1.56e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.56e-19; below T-092
+      (register) (Smaller packings again at seven counts from n = 208 to 306, each certified
+      two independent ways) by 9.79e-07; smallest: this certificate.
+
+      At n = 232 the certificate is below the case's ceiling (Daniil Ostashev, T-158) by
+      1.58e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.58e-19; smallest: this
+      certificate.
+
+      At n = 236 the certificate is below the case's ceiling (Nate Chaoweeraprasit
+      (itsnaka), improved by Evan Daniel, T-146) by 1.59e-19; below #593 (Mykhailo
+      Polkovskyi (Mishapolk)) by 3.29e-16; below T-136 (register) (Seventeen exact rational
+      packings from SQUISH's third request) by 3.29e-16; below #573 (Mykhailo Polkovskyi
+      (Mishapolk)) by 1.73e-12; smallest: this certificate.
 
       At n = 237 the certificate is below the case's ceiling (Nate Chaoweeraprasit
-      (itsnaka), improved by Francisco Couzo, T-140) by 1.83e-06; undecided #561 (Francisco
-      Couzo); above #593 (Mishapolk (Mykhailo Polkovskyi)) by 2.43e-04; below T-134
-      (register) (Six exact rational certificates from Francisco Couzo) by 7.23e-04; below
-      T-136 (register) (Seventeen exact rational packings from SQUISH's third request) by
-      4.14e-05; smallest: #593. At n = 238 the certificate is below the case's ceiling (Nate
-      Chaoweeraprasit (itsnaka), T-151) by 1.49e-31; undecided #593 (Mishapolk (Mykhailo
-      Polkovskyi)); no report is decidably smallest of this certificate and #593.
+      (itsnaka), improved by Francisco Couzo, T-140) by 1.83e-06; below #561 (Francisco
+      Couzo) by 1.59e-19; above #593 (Mykhailo Polkovskyi (Mishapolk)) by 2.43e-04; below
+      T-134 (register) (Six exact rational certificates from Francisco Couzo) by 7.23e-04;
+      below T-136 (register) (Seventeen exact rational packings from SQUISH's third request)
+      by 4.14e-05; below #573 (Mykhailo Polkovskyi (Mishapolk)) by 1.83e-06; smallest: #593.
+
+      At n = 238 the certificate is below the case's ceiling (Nate Chaoweeraprasit
+      (itsnaka), T-151) by 1.49e-31; below #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      1.59e-19; smallest: this certificate.
 
       At n = 239 the certificate is below the case's ceiling (Nate Chaoweeraprasit
-      (itsnaka), T-151) by 1.49e-31; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); no
-      report is decidably smallest of this certificate and #593. At n = 240 the certificate
-      is below the case's ceiling (Francisco Couzo, improved by Evan Daniel, T-098) by
-      1.60e-19; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); no report is decidably
-      smallest of this certificate and #593. At n = 241 the certificate is below the case's
-      ceiling (Francisco Couzo, improved by Evan Daniel, T-098) by 1.60e-19; above #575
-      (Daniil Ostashev) by 9.98e-04; above #583 (Francisco Couzo) by 1.02e-03; above #593
-      (Mishapolk (Mykhailo Polkovskyi)) by 1.02e-03; no report is decidably smallest of #583
-      and #593.
+      (itsnaka), T-151) by 1.49e-31; below #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      1.59e-19; smallest: this certificate.
+
+      At n = 240 the certificate is below the case's ceiling (Francisco Couzo, improved by
+      Evan Daniel, T-098) by 1.60e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      1.60e-19; smallest: this certificate.
+
+      At n = 241 the certificate is below the case's ceiling (Francisco Couzo, improved by
+      Evan Daniel, T-098) by 1.60e-19; above #575 (Daniil Ostashev) by 9.98e-04; above #583
+      (Francisco Couzo) by 1.02e-03; above #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      1.02e-03; above #586 (Francisco Couzo) by 1.02e-03; no report is smallest, since #593
+      and #586 are one exact side.
 
       At n = 258 the certificate is below the case's ceiling (Nate Chaoweeraprasit
-      (itsnaka), improved by Mishapolk, Evan Daniel, T-146) by 1.66e-19; below #573
-      (Mishapolk (Mykhailo Polkovskyi)) by 4.21e-12; below #593 (Mishapolk (Mykhailo
-      Polkovskyi)) by 3.38e-12; below T-138 (register) (Exact witnesses at Mishapolk's
+      (itsnaka), improved by Mykhailo Polkovskyi, Evan Daniel, T-146) by 1.66e-19; below
+      #573 (Mykhailo Polkovskyi (Mishapolk)) by 3.38e-12; below #593 (Mykhailo Polkovskyi
+      (Mishapolk)) by 3.38e-12; below T-138 (register) (Exact witnesses at Mishapolk's
       printed ceilings, the smallest known at 103 and 258 when registered) by 4.21e-12;
-      smallest: this certificate. At n = 259 the certificate is below the case's ceiling
-      (Nate Chaoweeraprasit (itsnaka), T-136) by 1.56e-31; undecided #593 (Mishapolk
-      (Mykhailo Polkovskyi)); no report is decidably smallest of this certificate and #593.
+      smallest: this certificate.
 
-      At n = 261 the certificate is below the case's ceiling (ry-xu, improved by Robert
+      At n = 259 the certificate is below the case's ceiling (Nate Chaoweeraprasit
+      (itsnaka), T-136) by 1.56e-31; below #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      1.66e-19; smallest: this certificate.
+
+      At n = 261 the certificate is below the case's ceiling (Ryan Xu, improved by Robert
       Barnett, T-150) by 2.98e-13; below #567 (PingYou Ltd (BuddenPing)) by 1.99e-21; below
-      #593 (Mishapolk (Mykhailo Polkovskyi)) by 2.97e-13; smallest: this certificate.
+      #593 (Mykhailo Polkovskyi (Mishapolk)) by 2.98e-13; smallest: this certificate.
 
       At n = 263 the certificate is below the case's ceiling (Nate Chaoweeraprasit
-      (itsnaka), improved by Evan Daniel, T-146) by 1.67e-19; undecided #593 (Mishapolk
-      (Mykhailo Polkovskyi)); below T-092 (register) (Smaller packings again at seven counts
-      from n = 208 to 306, each certified two independent ways) by 9.10e-03; below T-134
-      (register) (Six exact rational certificates from Francisco Couzo) by 7.25e-03; below
-      T-136 (register) (Seventeen exact rational packings from SQUISH's third request) by
-      5.05e-13; no report is decidably smallest of this certificate and #593.
+      (itsnaka), improved by Evan Daniel, T-146) by 1.67e-19; below #593 (Mykhailo
+      Polkovskyi (Mishapolk)) by 1.67e-19; below T-092 (register) (Smaller packings again at
+      seven counts from n = 208 to 306, each certified two independent ways) by 9.10e-03;
+      below T-134 (register) (Six exact rational certificates from Francisco Couzo) by
+      7.25e-03; below T-136 (register) (Seventeen exact rational packings from SQUISH's
+      third request) by 5.05e-13; below #573 (Mykhailo Polkovskyi (Mishapolk)) by 7.25e-03;
+      smallest: this certificate.
 
-      At n = 264 the certificate is below the case's ceiling (the Kingbird catalogue (),
-      verified by T-101's exact ceiling, T-101) by 3.44e-03; undecided #593 (Mishapolk
-      (Mykhailo Polkovskyi)); below T-155 (register) (Exact regularized sides at 59 counts,
-      5.4e-20 to 9.9e-15 below the ceilings they replace) by 3.44e-03; no report is
-      decidably smallest of this certificate and #593. At n = 266 the certificate is below
-      the case's ceiling (Evan Daniel, T-119) by 1.68e-19; undecided #593 (Mishapolk
-      (Mykhailo Polkovskyi)); no report is decidably smallest of this certificate and #593.
+      At n = 264 the certificate is below the case's ceiling (Daniil Ostashev, T-158) by
+      1.68e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.68e-19; below T-155
+      (register) (Exact regularized sides at 59 counts, 5.4e-20 to 9.9e-15 below the
+      ceilings they replace) by 3.44e-03; smallest: this certificate.
 
-      At n = 267 the certificate is below the case's ceiling (ry-xu, improved by Francisco
-      Couzo, T-134) by 1.68e-19; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); below
-      T-138 (register) (Exact witnesses at Mishapolk's printed ceilings, the smallest known
-      at 103 and 258 when registered) by 1.33e-05; no report is decidably smallest of this
-      certificate and #593. At n = 268 the certificate is below the case's ceiling
-      (Francisco Couzo, improved by Evan Daniel, T-098) by 1.69e-19; undecided #593
-      (Mishapolk (Mykhailo Polkovskyi)); no report is decidably smallest of this certificate
-      and #593.
+      At n = 266 the certificate is below the case's ceiling (Evan Daniel, T-119) by
+      1.68e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.68e-19; smallest: this
+      certificate.
+
+      At n = 267 the certificate is below the case's ceiling (Ryan Xu, improved by Francisco
+      Couzo, T-134) by 1.68e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.68e-19;
+      below T-138 (register) (Exact witnesses at Mishapolk's printed ceilings, the smallest
+      known at 103 and 258 when registered) by 1.33e-05; below #573 (Mykhailo Polkovskyi
+      (Mishapolk)) by 1.74e-12; smallest: this certificate.
+
+      At n = 268 the certificate is below the case's ceiling (Francisco Couzo, improved by
+      Evan Daniel, T-098) by 1.69e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      1.69e-19; smallest: this certificate.
 
       At n = 269 the certificate is below the case's ceiling (Nate Chaoweeraprasit
-      (itsnaka), improved by Evan Daniel, T-146) by 1.69e-19; undecided #593 (Mishapolk
-      (Mykhailo Polkovskyi)); below T-136 (register) (Seventeen exact rational packings from
-      SQUISH's third request) by 6.73e-16; no report is decidably smallest of this
-      certificate and #593.
+      (itsnaka), improved by Evan Daniel, T-146) by 1.69e-19; below #593 (Mykhailo
+      Polkovskyi (Mishapolk)) by 1.69e-19; below T-136 (register) (Seventeen exact rational
+      packings from SQUISH's third request) by 6.73e-16; smallest: this certificate.
 
       At n = 270 the certificate is below the case's ceiling (Nate Chaoweeraprasit
-      (itsnaka), T-151) by 1.59e-31; below #573 (Mishapolk (Mykhailo Polkovskyi)) by
-      1.58e-03; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); below T-130 (register)
-      (Five follow-up rational refinements from Francisco Couzo) by 8.53e-03; below T-134
-      (register) (Six exact rational certificates from Francisco Couzo) by 8.52e-03; below
-      T-136 (register) (Seventeen exact rational packings from SQUISH's third request) by
-      1.58e-03; below T-138 (register) (Exact witnesses at Mishapolk's printed ceilings, the
-      smallest known at 103 and 258 when registered) by 8.53e-03; below T-140 (register)
-      (Six more exact rational certificates from Francisco Couzo) by 1.58e-03; no report is
-      decidably smallest of this certificate and #593.
+      (itsnaka), T-151) by 1.59e-31; below #573 (Mykhailo Polkovskyi (Mishapolk)) by
+      1.58e-03; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.00e-21; below T-130
+      (register) (Five follow-up rational refinements from Francisco Couzo) by 8.53e-03;
+      below T-134 (register) (Six exact rational certificates from Francisco Couzo) by
+      8.52e-03; below T-136 (register) (Seventeen exact rational packings from SQUISH's
+      third request) by 1.58e-03; below T-138 (register) (Exact witnesses at Mishapolk's
+      printed ceilings, the smallest known at 103 and 258 when registered) by 8.53e-03;
+      below T-140 (register) (Six more exact rational certificates from Francisco Couzo) by
+      1.58e-03; smallest: this certificate.
 
       At n = 271 the certificate is below the case's ceiling (Nate Chaoweeraprasit
-      (itsnaka), T-151) by 1.24e-04; undecided #561 (Francisco Couzo); undecided #593
-      (Mishapolk (Mykhailo Polkovskyi)); no report is decidably smallest of this
-      certificate, #561 and #593. At n = 272 the certificate is below the case's ceiling
-      (Nate Chaoweeraprasit (itsnaka), T-151) by 5.26e-16; undecided #569 (PingYou Ltd
-      (BuddenPing)); undecided #593 (Mishapolk (Mykhailo Polkovskyi)); below T-092
-      (register) (Smaller packings again at seven counts from n = 208 to 306, each certified
-      two independent ways) by 2.58e-03; no report is decidably smallest of this
-      certificate, #569 and #593.
+      (itsnaka), T-151) by 1.24e-04; below #561 (Francisco Couzo) by 1.69e-19; below #593
+      (Mykhailo Polkovskyi (Mishapolk)) by 1.69e-19; smallest: this certificate.
+
+      At n = 272 the certificate is below the case's ceiling (Nate Chaoweeraprasit
+      (itsnaka), T-151) by 5.26e-16; below #569 (PingYou Ltd (BuddenPing)) by 1.70e-99;
+      below #593 (Mykhailo Polkovskyi (Mishapolk)) by 5.26e-16; below T-092 (register)
+      (Smaller packings again at seven counts from n = 208 to 306, each certified two
+      independent ways) by 2.58e-03; smallest: this certificate.
 
       At n = 273 the certificate is below the case's ceiling (Francisco Couzo, improved by
-      Evan Daniel, T-098) by 1.70e-19; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); no
-      report is decidably smallest of this certificate and #593. At n = 292 the certificate
-      is below the case's ceiling (Nate Chaoweeraprasit (itsnaka), improved by Evan Daniel,
-      T-146) by 1.76e-19; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); below T-129
-      (register) (Three dated Daniel certificate reports with historical source custody) by
-      5.87e-03; below T-136 (register) (Seventeen exact rational packings from SQUISH's
-      third request) by 2.03e-13; no report is decidably smallest of this certificate and
-      #593.
+      Evan Daniel, T-098) by 1.70e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      1.70e-19; smallest: this certificate.
 
-      At n = 295 the certificate is below the case's ceiling (ry-xu, improved by Evan
-      Daniel, T-146) by 1.77e-19; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); no
-      report is decidably smallest of this certificate and #593. At n = 297 the certificate
-      is below the case's ceiling (Francisco Couzo, improved by Evan Daniel, T-098) by
-      1.77e-19; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); no report is decidably
-      smallest of this certificate and #593. At n = 301 the certificate is below the case's
-      ceiling (Francisco Couzo, improved by Evan Daniel, T-098) by 1.78e-19; undecided #593
-      (Mishapolk (Mykhailo Polkovskyi)); no report is decidably smallest of this certificate
-      and #593.
+      At n = 292 the certificate is below the case's ceiling (Nate Chaoweeraprasit
+      (itsnaka), improved by Evan Daniel, T-146) by 1.76e-19; below #593 (Mykhailo
+      Polkovskyi (Mishapolk)) by 1.76e-19; below T-129 (register) (Three dated Daniel
+      certificate reports with historical source custody) by 5.87e-03; below T-136
+      (register) (Seventeen exact rational packings from SQUISH's third request) by
+      2.03e-13; smallest: this certificate.
+
+      At n = 295 the certificate is below the case's ceiling (Ryan Xu, improved by Evan
+      Daniel, T-146) by 1.77e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.77e-19;
+      smallest: this certificate.
+
+      At n = 297 the certificate is below the case's ceiling (Francisco Couzo, improved by
+      Evan Daniel, T-098) by 1.77e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      1.77e-19; smallest: this certificate.
+
+      At n = 301 the certificate is below the case's ceiling (Francisco Couzo, improved by
+      Evan Daniel, T-098) by 1.78e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      1.78e-19; smallest: this certificate.
 
       At n = 303 the certificate is below the case's ceiling (Nate Chaoweeraprasit
       (itsnaka), improved by Evan Daniel, T-146) by 3.11e-03; below #562 (Daniil Ostashev)
-      by 1.79e-19; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); below T-092 (register)
-      (Smaller packings again at seven counts from n = 208 to 306, each certified two
-      independent ways) by 1.44e-02; below T-134 (register) (Six exact rational certificates
-      from Francisco Couzo) by 7.49e-03; below T-136 (register) (Seventeen exact rational
-      packings from SQUISH's third request) by 3.11e-03; below T-138 (register) (Exact
-      witnesses at Mishapolk's printed ceilings, the smallest known at 103 and 258 when
-      registered) by 1.04e-02; no report is decidably smallest of this certificate and #593.
+      by 1.79e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.79e-19; below T-092
+      (register) (Smaller packings again at seven counts from n = 208 to 306, each certified
+      two independent ways) by 1.44e-02; below T-134 (register) (Six exact rational
+      certificates from Francisco Couzo) by 7.49e-03; below T-136 (register) (Seventeen
+      exact rational packings from SQUISH's third request) by 3.11e-03; below T-138
+      (register) (Exact witnesses at Mishapolk's printed ceilings, the smallest known at 103
+      and 258 when registered) by 1.04e-02; below #573 (Mykhailo Polkovskyi (Mishapolk)) by
+      3.11e-03; smallest: this certificate.
 
       At n = 304 the certificate is below the case's ceiling (Nate Chaoweeraprasit
       (itsnaka), improved by Francisco Couzo, T-152) by 1.79e-19; above #575 (Daniil
-      Ostashev) by 1.38e-04; above #593 (Mishapolk (Mykhailo Polkovskyi)) by 1.38e-04; below
+      Ostashev) by 1.38e-04; above #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.38e-04; below
       T-151 (register) (Nine exact rational packings from SQUISH's fourth request) by
-      9.11e-05; no report is decidably smallest of #575 and #593.
+      9.11e-05; smallest: #575.
 
       At n = 305 the certificate is below the case's ceiling (Nate Chaoweeraprasit
-      (itsnaka), improved by Francisco Couzo, T-152) by 1.80e-19; undecided #593 (Mishapolk
-      (Mykhailo Polkovskyi)); below T-136 (register) (Seventeen exact rational packings from
-      SQUISH's third request) by 7.30e-04; below T-140 (register) (Six more exact rational
-      certificates from Francisco Couzo) by 6.73e-04; below T-151 (register) (Nine exact
-      rational packings from SQUISH's fourth request) by 7.84e-05; no report is decidably
-      smallest of this certificate and #593.
+      (itsnaka), improved by Francisco Couzo, T-152) by 1.80e-19; below #593 (Mykhailo
+      Polkovskyi (Mishapolk)) by 1.80e-19; below T-136 (register) (Seventeen exact rational
+      packings from SQUISH's third request) by 7.30e-04; below T-140 (register) (Six more
+      exact rational certificates from Francisco Couzo) by 6.73e-04; below T-151 (register)
+      (Nine exact rational packings from SQUISH's fourth request) by 7.84e-05; smallest:
+      this certificate.
 
       At n = 306 the certificate is below the case's ceiling (Francisco Couzo, T-128) by
-      1.80e-19; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); below T-092 (register)
-      (Smaller packings again at seven counts from n = 208 to 306, each certified two
-      independent ways) by 4.42e-06; below T-138 (register) (Exact witnesses at Mishapolk's
-      printed ceilings, the smallest known at 103 and 258 when registered) by 5.57e-12; no
-      report is decidably smallest of this certificate and #593. At n = 307 the certificate
-      is below the case's ceiling (Nate Chaoweeraprasit (itsnaka), T-136) by 1.70e-31;
-      undecided #593 (Mishapolk (Mykhailo Polkovskyi)); no report is decidably smallest of
-      this certificate and #593.
+      1.80e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.80e-19; below T-092
+      (register) (Smaller packings again at seven counts from n = 208 to 306, each certified
+      two independent ways) by 4.42e-06; below T-138 (register) (Exact witnesses at
+      Mishapolk's printed ceilings, the smallest known at 103 and 258 when registered) by
+      5.57e-12; below #573 (Mykhailo Polkovskyi (Mishapolk)) by 6.57e-12; smallest: this
+      certificate.
+
+      At n = 307 the certificate is below the case's ceiling (Nate Chaoweeraprasit
+      (itsnaka), T-136) by 1.70e-31; below #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      1.80e-19; smallest: this certificate.
 
       At n = 308 the certificate is below the case's ceiling (Kevin Fang, improved by Evan
-      Daniel, T-141) by 1.80e-19; undecided #593 (Mishapolk (Mykhailo Polkovskyi)); below
-      T-135 (register) (A packing of 308 squares below the grid, from Kevin Fang) by
-      1.04e-03; no report is decidably smallest of this certificate and #593.
+      Daniel, T-141) by 1.80e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.80e-19;
+      below T-135 (register) (A packing of 308 squares below the grid, from Kevin Fang) by
+      1.04e-03; smallest: this certificate.
 
-      The same pull request states rational certificates at 21 more counts and algebraic
-      ones at 56 more, which the ledger does not record; they stay in the packet.
+      The same pull request states certificates at 80 more counts, which the ledger does not
+      record (59 not below an earlier report, 21 undecided): rational ones at 21 and
+      algebraic ones at 56, which stay in the packet, and rows of its v2 release at 11, 17
+      and 29 that neither of the packet's declarations states.
 
       The source's own checkers were not run here. The two maintained routes, the sqpack
       rational witness verifier and the independent rational corner checker, share
@@ -21520,19 +21657,20 @@ results:
       separating-axis method. No two independent methods, human oversight or optimality is
       claimed.
 
-      The algebraic certificates at 70, 153 and 207 were decided on sqpack's exact witness
-      verifier over each field, with both controls refused, in 9 jobs and 787.03 job wall
-      seconds, and check --replay decided all nine again
-      (receipts/algebraic-route1-nNNN.json.xz).
+      The algebraic certificates at 70, 153, 207 and 302 were decided on sqpack's exact
+      witness verifier over each field, with both controls refused, in 12 jobs and 242445
+      pair decisions, 1001.0 route CPU seconds; no second route over a number field exists
+      here.
 
-      Seven of the 39 rational counts (129, 156, 175, 176, 258, 261, 271) were decided again
-      by check --replay; the other 32 counts' rows are admitted, not decided again.
+      Twenty-three of the 64 rational counts (105, 129, 146, 156, 172, 175, 176, 199, 232,
+      238, 240, 241, 258, 259, 261, 267, 271, 272, 295, 297, 306, 307 and 308) and the
+      algebraic 70, 153 and 207 were decided again by check --replay, every row equal to the
+      retained one; the other counts' rows are admitted, not decided again.
     next_rung: >-
-      Finish the two-route replay of the 25 rational counts and a second route at the
-      algebraic ones, then independently review the replay and weigh adoption at each count
-      against the later entries: issue 573 (T-172) at 153 and 207 is not below it, and at
-      211, 241 and 304 the later issues 575, 583 and 586 (T-174, T-181, T-182) are smaller.
-      Final exact-head CI remains required.
+      Add a second route at the algebraic counts, then independently review the replay and
+      weigh adoption at each count against the later entries: issue 573 (T-173) at 153 and
+      207 is not below it, and at 211, 241 and 304 the later issues 575, 583 and 586 (T-175,
+      T-181, T-182) are smaller. Final exact-head CI remains required.
     regularizations:
       - n: 68
         of: T-118
@@ -21688,7 +21826,7 @@ results:
         identity:
           basis: source-claim
       - n: 146
-        of: T-167
+        of: T-168
         by: '[PingYou PR 574 certificates 2026-10-13]'
         method: >-
           certificate refinement: smaller padding, an exact common-centre crop or an exact
@@ -21940,7 +22078,7 @@ results:
         identity:
           basis: source-claim
       - n: 261
-        of: T-168
+        of: T-169
         by: '[PingYou PR 574 certificates 2026-10-13]'
         method: >-
           certificate refinement: smaller padding, an exact common-centre crop or an exact
@@ -22075,7 +22213,7 @@ results:
         identity:
           basis: source-claim
       - n: 302
-        of: T-163
+        of: T-164
         by: '[PingYou PR 574 certificates 2026-10-13]'
         method: >-
           certificate refinement: smaller padding, an exact common-centre crop or an exact
@@ -22139,26 +22277,16 @@ results:
           basis: source-claim
     unfinished_confirmations:
       - what: >-
-          a two-route replay of the 25 recorded rational counts not yet decided here (146,
-          172, 181, 182, 199, 204, 208, 210, 211, 228, 237, 239, 240, 241, 263, 270, 272,
-          273, 295, 297, 301, 304, 306, 307 and 308), with their controls, and a review of
-          the retained replay
+          an independent review of the retained two-route replay of the 64 rational counts
+          and the one-route replay of the four algebraic ones
         rung: C3
         link: think-9v2k
-        estimated_cost:
-          cpu_hours: 3.6
-          basis: >-
-            The packet README's fit to the 117 jobs replayed here, about 4.27e-6 L^0.93
-            seconds a pair decision with L the median literal length: about 2.8 hours of
-            one-worker wall for the counts below every report and 0.8 for the rest, on the
-            shared host, which bounds the CPU time
-          priced: '2026-10-14'
       - what: >-
           a second exact route over the number fields of the algebraic certificates at 70,
-          153 and 207, and any route at 302, which no route here has decided
+          153, 207 and 302
         rung: C3
         link: think-9v2k
-  - id: T-174
+  - id: T-175
     kind: upper-bound
     registered: '2026-10-14'
     headline: >-
@@ -22245,16 +22373,24 @@ results:
 
       At n = 211 the certificate is below the case's ceiling (Daniil Ostashev, T-149) by
       2.64e-03; above #583 (Francisco Couzo) by 1.35e-04; above #586 (Francisco Couzo) by
-      1.35e-04; above #593 (Mishapolk) by 1.35e-04; no report is decidably smallest of #586
-      and #593. At n = 241 the certificate is below the case's ceiling (Francisco Couzo,
-      improved by Evan Daniel, T-098) by 9.98e-04; above #583 (Francisco Couzo) by 1.72e-05;
-      above #586 (Francisco Couzo) by 1.72e-05; above #593 (Mishapolk) by 1.72e-05; no
-      report is decidably smallest of #586 and #593. At n = 304 the certificate is below the
-      case's ceiling (Nate Chaoweeraprasit, improved by Francisco Couzo, T-152) by 1.38e-04;
-      above #593 (Mishapolk) by 3.66e-16; smallest: #593.
+      1.35e-04; above #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.35e-04; below PR #574
+      (PingYou Ltd (BuddenPing)) by 2.64e-03; no report is smallest, since #586 and #593 are
+      one exact side.
 
-      The same commit holds 1 further certificate the issue does not name, at n = 176; the
-      packet's claim record compares it with its case, and it is an import of its own.
+      At n = 241 the certificate is below the case's ceiling (Francisco Couzo, improved by
+      Evan Daniel, T-098) by 9.98e-04; above #583 (Francisco Couzo) by 1.72e-05; above #586
+      (Francisco Couzo) by 1.72e-05; above #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      1.72e-05; below PR #574 (PingYou Ltd (BuddenPing)) by 9.98e-04; no report is smallest,
+      since #586 and #593 are one exact side.
+
+      At n = 304 the certificate is below the case's ceiling (Nate Chaoweeraprasit, improved
+      by Francisco Couzo, T-152) by 1.38e-04; below #593 (Mykhailo Polkovskyi (Mishapolk))
+      by 8.85e-31; below PR #574 (PingYou Ltd (BuddenPing)) by 1.38e-04; smallest: this
+      certificate.
+
+      The same commit holds one further certificate that this entry does not record, at n =
+      176, which the issue names; the packet's claim record compares it with its case, and
+      it is an import of its own.
 
       The source's own checkers were not run here. The two maintained routes, the sqpack
       rational witness verifier and the independent rational corner checker, share
@@ -22264,15 +22400,15 @@ results:
 
       The per-count ledger of 14 October (jlevy/squares#601), which takes the reports in the
       order they reached this repository and records one only where it is decidably below
-      every earlier report at the count, records it at 211 (2.64e-03 below T-173), 241
-      (9.98e-04 below T-173) and 304 (1.38e-04 below T-173).
+      every earlier report at the count, records it at 211 (2.64e-03 below T-174), 241
+      (9.98e-04 below T-174) and 304 (1.38e-04 below T-174).
     next_rung: >-
       Independently review the retained replay, then weigh adoption: at 211 and 241
       Francisco Couzo's issues 583 and 586 (T-181, T-182), which continue these packings,
       are smaller, and at 304 this certificate is the smallest recorded. The certificate at
-      176, which the ledger does not record (PR 574, T-173, states this packing first),
+      176, which the ledger does not record (PR 574, T-174, states this packing first),
       stays in the packet. Final exact-head CI remains required.
-  - id: T-175
+  - id: T-176
     kind: lower-bound
     registered: '2026-10-14'
     headline: >-
@@ -22406,11 +22542,11 @@ results:
           measured (finding F-1).
         verdict: accepted
         covers:
-          - T-175
           - T-176
           - T-177
+          - T-178
           - T-179
-  - id: T-176
+  - id: T-177
     kind: lower-bound
     registered: '2026-10-14'
     headline: >-
@@ -22541,11 +22677,11 @@ results:
           measured (finding F-1).
         verdict: accepted
         covers:
-          - T-175
           - T-176
           - T-177
+          - T-178
           - T-179
-  - id: T-177
+  - id: T-178
     kind: lower-bound
     registered: '2026-10-14'
     headline: >-
@@ -22675,137 +22811,10 @@ results:
           measured (finding F-1).
         verdict: accepted
         covers:
-          - T-175
           - T-176
           - T-177
+          - T-178
           - T-179
-  - id: T-178
-    kind: upper-bound
-    registered: '2026-10-14'
-    headline: >-
-      s(n² − n + 1) < n for every n ≥ 15, and n² − n + F(n) squares below side n, from Kevin
-      Fang
-    claim: >-
-      Kevin Fang states two theorems of a note, draft v0.6 of 13 October 2026, which is not
-      in his repository: Theorem 1, s(n^2 - n + 1) < n for every integer n >= 15; and
-      Theorem 2, s(n^2 - n + F(n)) < n with F(n) = 1 + max{p + 2q : 16p + 21q <= n - 15}.
-      The proof glues a squeezable 17 x 16 rectangle of 257 squares, or a 22 x 21 rectangle
-      of 443 that adds two, onto a square packing (Lemma 3, tools/glue.py) and inducts on n
-      from finitely many certificates; the construction gives side n - 1/20000 at every n >=
-      15.
-
-      Inside the case corpus the theorem's inventory certifies s(211) <= 14.99995, s(241) <=
-      15.99995, s(273) <= 16.99995 and s(307) <= 17.99995, the counts n^2 - n + F(n) for n =
-      15 to 18. Each is above its case's bound (T-149, T-098, T-098, T-136), so these four
-      finite bounds are superseded; nothing supersedes the theorem itself, which no other
-      result implies at any n.
-
-      The 14 October review re-derived both theorems from the retained material and decided
-      every finite piece the chains use, and rebuilt all 76 inventory certificates byte for
-      byte; both maintained exact routes decided the six retained ones, at 211, 241, 273,
-      307, 308 and 932, with their controls. The note itself has not been read.
-
-      Credit the theorem and its certificates to Kevin Fang
-      (https://github.com/TheSnakeFang/squarepack-certs). The gluing lemma is Arslanov,
-      Mustafin and Shangitbayev's decomposition (Electronic Journal of Combinatorics 28(4),
-      P4.22, 2021); the base packings are Joost de Winter's 211, David Ellsworth's and Tej
-      Stead's 241 and 273, the AMS21 and Ellsworth packings of m^2 - m squares, and the
-      author's own; the rectangles grow from Ellsworth's, Stead's and Francisco Couzo's
-      packings; the certificate format and the pieces' certificates are Evan Daniel's. The
-      search, the verifier and the bundle were written and run with Claude (Anthropic),
-      directed and reviewed by the author.
-    scope: {n_values: [211, 241, 273, 307]}
-    verification: V3
-    confirmation: C1
-    significance:
-      score: 4
-      rationale: >-
-        A bound family for every n >= 15 with an explicit construction: the deficiency bound
-        c*(k) <= k - 1 - F(k) improves Arslanov, Mustafin and Shangitbayev's k - 1 at every
-        k and Ryu's at 15 <= k <= 78; it settles no case n <= 324, and its four in-corpus
-        finite bounds trail the cases.
-      scored: '2026-10-14'
-      by: >-
-        the 14 October review
-        (docs/project/reviews/review-2026-10-14-fang-excess-theorem-and-direct-certificates.md),
-        confirming the draft of think-0esw
-    novelty: previously-published
-    attribution:
-      source_keys: ['[Fang excess theorem 2026-10-13]']
-      published: '2026-10-13'
-    evidence:
-      - E-fang-excess-theorem-report
-      - E-fang-excess-theorem-exact-feasibility
-    artifacts:
-      - packing/resources/web/fang-excess-theorem-2026-10-13/README.md
-      - packing/resources/web/fang-excess-theorem-2026-10-13/acquisition/claims.json
-      - packing/resources/web/fang-excess-theorem-2026-10-13/source/theorem/n015_F1.cert
-      - packing/resources/web/fang-excess-theorem-2026-10-13/source/theorem/n016_F1.cert
-      - packing/resources/web/fang-excess-theorem-2026-10-13/source/theorem/n017_F1.cert
-      - packing/resources/web/fang-excess-theorem-2026-10-13/source/theorem/n018_F1.cert
-      - >-
-        packing/resources/web/fang-excess-theorem-2026-10-13/receipts/exact-certification.json.xz
-      - packing/resources/web/fang-excess-theorem-2026-10-13/source/tools/glue.py
-      - >-
-        packing/resources/web/fang-excess-theorem-2026-10-13/receipts/inventory-and-deficiency.json
-      - packing/cases/asymptotic/fang_excess_inventory.py
-      - >-
-        docs/project/reviews/review-2026-10-14-fang-excess-theorem-and-direct-certificates.md
-      - packing/devtools/upper_bound_reports.py
-    controls: [packing/tests/test_upper_bound_reports.py]
-    notes: >-
-      A separate complete repository replay is retained for n = 211, 241, 273, 307, 308 and
-      932: 6 positives and 12 duplicate-square and outside-container controls passed their
-      required outcomes on both routes, 3697788 pair decisions; summed over the 18 jobs, the
-      receipt records 1278.59 route CPU seconds and 1733.86 job wall seconds, the longest
-      job 485.37 seconds. Every positive clears every wall by at least 8.06e-07 and every
-      pair by at least 1.61e-06.
-
-      The four in-corpus bounds trail their cases, by 3.61e-03 at 211 (T-149), 1.18e-02 at
-      241 and 1.60e-02 at 273 (T-098) and 1.91e-02 at 307 (T-136), so check_standing marks
-      them superseded; at 932, beyond the corpus, the inventory's certificate is the only
-      report below the grid and is tracked as a beyond-horizon row. The other 70 inventory
-      certificates are above the record's rows or alone below the grid beyond the retained
-      set, and stay in the packet.
-
-      The review's findings MR-1 to MR-7 concern digests, prose, licences (MR-4: five
-      inventory certificates contain Evan Daniel's certificate of Joost de Winter's
-      unlicensed 211 packing) and a stronger statement the author may make (MR-7: side n -
-      1/20000 at every n >= 15); none changes the mathematics.
-
-      The deficiency bound c*(k) <= k - 1 - F(k) is listed in asymptotic-waste-bounds.yaml's
-      deficiency_upper_bounds.
-    next_rung: >-
-      C4 needs a second accepted adversarial review by a distinct reviewer and a retained
-      human oversight record; the note, draft v0.6, is asked of the author, and its own text
-      has not been read. The 70 inventory certificates pinned by digest wait for a
-      hosted-data release or a W7 route; they move no rung of this entry.
-    composition: >-
-      Compound. The finite bounds at 211, 241, 273 and 307 rest on the two-route replay of
-      the retained certificates (E-fang-excess-theorem-exact-feasibility). The theorem for
-      every n >= 15 rests on Lemma 3, the scaling lemma and the induction, which no machine
-      replays, and on the 14 October review's reading of them, which sets the minimum: C1.
-      V3 is that review's audit of a proof recoverable from the public repository; the
-      import plan read the proof as not publicly recoverable, which would declare a lower
-      rung, and the owner decides between the two readings.
-    reviews:
-      - path: >-
-          docs/project/reviews/review-2026-10-14-fang-excess-theorem-and-direct-certificates.md
-        kind: adversarial
-        reviewer: >-
-          AI agent (Claude, strong tier, max reasoning), the mathematical review lane of the
-          think-0esw import at stage 4, in a worktree and session of its own
-        reviewer_kind: ai
-        relation: project
-        date: '2026-10-14'
-        scope: >-
-          Theorems 1 and 2 re-derived from the retained README, tools/glue.py and the
-          theorem inventory: Lemma 3, the scaling to a strict certificate, the pieces and
-          the uniform squeeze, the chains and their counts, the coverage of every n >= 15;
-          the 76 inventory certificates rebuilt and decided; the deficiency comparison; the
-          direct certificates at 380, 381 and 382.
-        verdict: accepted
-        covers: [T-178]
   - id: T-179
     kind: lower-bound
     registered: '2026-10-14'
@@ -22937,21 +22946,22 @@ results:
           measured (finding F-1).
         verdict: accepted
         covers:
-          - T-175
           - T-176
           - T-177
+          - T-178
           - T-179
   - id: T-180
     kind: lower-bound
     registered: '2026-10-14'
     headline: Closed-form lower bound `s(N) ≥ a(N)` for every non-square `N ≥ 49`, reported
     claim: >-
-      For every non-square integer N >= 49, with k = floor(sqrt(N)), wand125 reports s(N) >=
-      a(N) = k + sup{delta in (0, 1] : (k + delta)^2 - 4 S*(delta) < N}, where S*(delta) is
-      the largest of 34 certified savings alpha_i delta + beta_i, exact rationals, over the
-      intervals of delta that contain it. In closed form a(N) is the largest of min(2
-      alpha_i + sqrt(4 alpha_i^2 + N + 4 beta_i - 4 alpha_i k), k + d1_i) over the intervals
-      whose root exceeds k + d0_i: one square root on each interval.
+      For every non-square integer N >= 49, with k = floor(sqrt(N)), Hiroaki Hosono
+      (wand125) reports s(N) >= a(N) = k + sup{delta in (0, 1] : (k + delta)^2 - 4 S*(delta)
+      < N}, where S*(delta) is the largest of 34 certified savings alpha_i delta + beta_i,
+      exact rationals, over the intervals of delta that contain it. In closed form a(N) is
+      the largest of min(2 alpha_i + sqrt(4 alpha_i^2 + N + 4 beta_i - 4 alpha_i k), k +
+      d1_i) over the intervals whose root exceeds k + d0_i: one square root on each
+      interval.
 
       The certificate is a measure on the container of side k + delta: Lebesgue measure in
       the middle and, for each interval, a family of line segments along the walls and in
@@ -22979,7 +22989,10 @@ results:
 
       wand125,
       [square-packing](https://github.com/wand125/square-packing/tree/9a28a84bd55dc124bfa2919bb6c4fb504dda3149/problems/closed-form),
-      13 October 2026. The commit that adds it names Claude as co-author.
+      13 October 2026, credited to Hiroaki Hosono (wand125) as issue 600 asks. Issue 600
+      states: 'The search, the certificates, the checkers and this text were produced with
+      AI assistance (Claude and Codex), under the direction of and reviewed by Hiroaki
+      Hosono (wand125).' The commit that adds it names Claude as co-author.
 
       The case records take a(n) in the reported lane at 154 of the 156 counts, rounded down
       at 12 places. At 125 and 148 an earlier report is stronger and pending adoption,
@@ -23203,33 +23216,41 @@ results:
 
       At n = 211 the certificate is below the case's ceiling (Daniil Ostashev, T-149) by
       2.78e-03; below #574 (PingYou Ltd (BuddenPing)) by 2.78e-03; below #575 (Daniil
-      Ostashev) by 1.35e-04; above #586 (Francisco Couzo) by 1.49e-10; above #593
-      (Mishapolk) by 1.49e-10; no report is decidably smallest of #586 and #593. At n = 241
-      the certificate is below the case's ceiling (Francisco Couzo, improved by Evan Daniel,
-      T-098) by 1.02e-03; below #574 (PingYou Ltd (BuddenPing)) by 1.02e-03; below #575
-      (Daniil Ostashev) by 1.72e-05; above #586 (Francisco Couzo) by 1.88e-11; above #593
-      (Mishapolk) by 1.88e-11; no report is decidably smallest of #586 and #593.
+      Ostashev) by 1.35e-04; above #586 (Francisco Couzo) by 1.49e-10; above #593 (Mykhailo
+      Polkovskyi (Mishapolk)) by 1.49e-10; no report is smallest, since #586 and #593 are
+      one exact side.
+
+      At n = 241 the certificate is below the case's ceiling (Francisco Couzo, improved by
+      Evan Daniel, T-098) by 1.02e-03; below #574 (PingYou Ltd (BuddenPing)) by 1.02e-03;
+      below #575 (Daniil Ostashev) by 1.72e-05; above #586 (Francisco Couzo) by 1.88e-11;
+      above #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.88e-11; no report is smallest, since
+      #586 and #593 are one exact side.
 
       At n = 339 the certificate is beyond the horizon, with no case record, and 7.26e-02
       below the grid; below couzo-certificates-2026-10-11 (Francisco Couzo) by 2.05e-03;
-      above #584 (Evan Daniel) by 4.85e-04; above #586 (Francisco Couzo) by 2.06e-03;
-      smallest: #586. At n = 379 the certificate is beyond the horizon, with no case record,
-      and 4.65e-02 below the grid; below couzo-certificates-2026-10-11 (Francisco Couzo) by
-      4.12e-05; below #570 (Francisco Couzo) by 1.11e-05; above #586 (Francisco Couzo) by
-      1.69e-07; smallest: #586.
+      above #584 (Evan Daniel) by 4.85e-04; above couzo-certificates-2026-10-13 (Francisco
+      Couzo) by 2.06e-03; smallest: couzo-certificates-2026-10-13.
+
+      At n = 379 the certificate is beyond the horizon, with no case record, and 4.65e-02
+      below the grid; below couzo-certificates-2026-10-11 (Francisco Couzo) by 4.12e-05;
+      below #570 (Francisco Couzo) by 1.11e-05; above couzo-certificates-2026-10-13
+      (Francisco Couzo) by 1.69e-07; smallest: couzo-certificates-2026-10-13.
 
       At n = 380 the certificate is beyond the horizon, with no case record, and 2.64e-02
       below the grid; below couzo-certificates-2026-10-11 (Francisco Couzo) by 1.39e-02;
-      below fang-direct-certificates-2026-10-13 (Kevin Fang) by 3.22e-03; above #586
-      (Francisco Couzo) by 1.19e-02; smallest: #586. At n = 382 the certificate is beyond
-      the horizon, with no case record, and 1.14e-02 below the grid; below
-      fang-direct-certificates-2026-10-13 (Kevin Fang) by 8.79e-04; above #586 (Francisco
-      Couzo) by 8.87e-04; smallest: #586.
+      below Kevin Fang's publication of 12 October (Kevin Fang) by 3.22e-03; above
+      couzo-certificates-2026-10-13 (Francisco Couzo) by 1.19e-02; smallest:
+      couzo-certificates-2026-10-13.
 
-      The certificate at 154 is issue 570's, byte for byte, and T-171 registers it; the
+      At n = 382 the certificate is beyond the horizon, with no case record, and 1.14e-02
+      below the grid; below Kevin Fang's publication of 13 October (Kevin Fang) by 8.79e-04;
+      above couzo-certificates-2026-10-13 (Francisco Couzo) by 8.87e-04; smallest:
+      couzo-certificates-2026-10-13.
+
+      The certificate at 154 is issue 570's, byte for byte, and T-172 registers it; the
       ledger does not record issue 583 there. At 302 and 381 the certificates are those the
       couzo-certificates-2026-10-13 packet retains and replays, below the case's ceiling at
-      302 (T-146) by 1.75e-03.
+      302 (T-146) by 2.02e-03.
 
       The source's own checkers were not run here. The two maintained routes, the sqpack
       rational witness verifier and the independent rational corner checker, share
@@ -23239,10 +23260,11 @@ results:
 
       The per-count ledger of 14 October (jlevy/squares#601), which takes the reports in the
       order they reached this repository and records one only where it is decidably below
-      every earlier report at the count, records it at 211 (1.35e-04 below T-174), 241
-      (1.72e-05 below T-174), 302 (at least 2.62e-04 below T-173), 339 (at least 2.05e-03
-      below the couzo-certificates-2026-10-11 row), 379 (at least 1.11e-05 below T-171), 380
-      (3.22e-03 below Kevin Fang's publication of 12 October), 381 (1.99e-03 below Kevin
+      every earlier report at the count, records it at 211 (1.35e-04 below T-175), 241
+      (1.72e-05 below T-175), 302 (at least 2.62e-04 below T-174), 339 (at least 2.05e-03
+      below the couzo-certificates-2026-10-11 row), 379 (at least 1.11e-05 below issue 570's
+      printed side, which T-172 does not register and the source register has no row for),
+      380 (3.22e-03 below Kevin Fang's publication of 12 October), 381 (1.99e-03 below Kevin
       Fang's publication of 12 October) and 382 (8.79e-04 below Kevin Fang's publication of
       13 October).
     next_rung: >-
@@ -23330,29 +23352,35 @@ results:
 
       At n = 154 the certificate is below the case's ceiling (Evan Daniel, T-160) by
       1.36e-03; below #583 (Francisco Couzo (and #570, the same certificate)) by 1.29e-03;
-      below #593 (Mishapolk) by 1.29e-03; smallest: this certificate. At n = 211 the
-      certificate is below the case's ceiling (Daniil Ostashev, T-149) by 2.78e-03; below
-      #574 (PingYou Ltd (BuddenPing)) by 2.78e-03; below #575 (Daniil Ostashev) by 1.35e-04;
-      below #583 (Francisco Couzo) by 1.49e-10; undecided #593 (Mishapolk); no report is
-      decidably smallest of this certificate and #593.
+      below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.29e-03; below #573 (Mykhailo
+      Polkovskyi (Mishapolk)) by 1.36e-03; smallest: this certificate.
+
+      At n = 211 the certificate is below the case's ceiling (Daniil Ostashev, T-149) by
+      2.78e-03; below #574 (PingYou Ltd (BuddenPing)) by 2.78e-03; below #575 (Daniil
+      Ostashev) by 1.35e-04; below #583 (Francisco Couzo) by 1.49e-10; equal #593 (Mykhailo
+      Polkovskyi (Mishapolk)); no report is smallest, since this certificate and #593 are
+      one exact side.
 
       At n = 241 the certificate is below the case's ceiling (Francisco Couzo, improved by
       Evan Daniel, T-098) by 1.02e-03; below #574 (PingYou Ltd (BuddenPing)) by 1.02e-03;
       below #575 (Daniil Ostashev) by 1.72e-05; below #583 (Francisco Couzo) by 1.88e-11;
-      undecided #593 (Mishapolk); no report is decidably smallest of this certificate and
-      #593. At n = 339 the certificate is beyond the horizon, with no case record, and
-      7.47e-02 below the grid; below couzo-certificates-2026-10-11 (Francisco Couzo) by
-      4.11e-03; below #583 (Francisco Couzo) by 2.06e-03; below #584 (Evan Daniel) by
-      1.58e-03; smallest: this certificate.
+      equal #593 (Mykhailo Polkovskyi (Mishapolk)); no report is smallest, since this
+      certificate and #593 are one exact side.
+
+      At n = 339 the certificate is beyond the horizon, with no case record, and 7.47e-02
+      below the grid; below couzo-certificates-2026-10-11 (Francisco Couzo) by 4.11e-03;
+      below #583 (Francisco Couzo) by 2.06e-03; below #584 (Evan Daniel) by 1.58e-03;
+      smallest: this certificate.
 
       At n = 379 the certificate is beyond the horizon, with no case record, and 4.65e-02
       below the grid; below couzo-certificates-2026-10-11 (Francisco Couzo) by 4.13e-05;
       below #570 (Francisco Couzo) by 1.12e-05; below #583 (Francisco Couzo) by 1.69e-07;
-      smallest: this certificate. At n = 380 the certificate is beyond the horizon, with no
-      case record, and 3.84e-02 below the grid; below couzo-certificates-2026-10-11
-      (Francisco Couzo) by 2.58e-02; below #583 (Francisco Couzo) by 1.19e-02; below
-      fang-direct-certificates-2026-10-13 (Kevin Fang) by 1.52e-02; smallest: this
-      certificate.
+      smallest: this certificate.
+
+      At n = 380 the certificate is beyond the horizon, with no case record, and 3.84e-02
+      below the grid; below couzo-certificates-2026-10-11 (Francisco Couzo) by 2.58e-02;
+      below #583 (Francisco Couzo) by 1.19e-02; below fang-direct-certificates-2026-10-13
+      (Kevin Fang) by 1.52e-02; smallest: this certificate.
 
       At n = 382 the certificate is beyond the horizon, with no case record, and 1.23e-02
       below the grid; below #583 (Francisco Couzo) by 8.87e-04; below
@@ -23361,7 +23389,7 @@ results:
 
       The same commit holds issue 583's certificates at 302 and 381 (T-181) and five no
       issue names, at 176, 344, 375, 376 and 378, which the ledger records as reports of
-      their own (T-164 and beyond-horizon rows).
+      their own (T-165 and beyond-horizon rows).
 
       The source's own checkers were not run here. The two maintained routes, the sqpack
       rational witness verifier and the independent rational corner checker, share
@@ -23371,13 +23399,14 @@ results:
 
       The per-count ledger of 14 October (jlevy/squares#601), which takes the reports in the
       order they reached this repository and records one only where it is decidably below
-      every earlier report at the count, records it at 154 (1.29e-03 below T-171), 211
+      every earlier report at the count, records it at 154 (1.29e-03 below T-172), 211
       (1.49e-10 below T-181), 241 (1.88e-11 below T-181), 339 (1.58e-03 below #584), 379
       (1.69e-07 below T-181), 380 (1.19e-02 below T-181) and 382 (8.87e-04 below T-181).
     next_rung: >-
       Independently review the retained replay, then weigh adoption: this certificate is the
-      smallest recorded at 154, 211 and 241, where Mishapolk's issue 593 states the same
-      exact sides later. Final exact-head CI remains required.
+      smallest recorded at 154, 211 and 241, where Mykhailo Polkovskyi's issue 593 states
+      the same exact sides later at 211 and 241 and restates issue 570's side at 154,
+      1.29e-03 above this one. Final exact-head CI remains required.
     regularizations:
       - n: 211
         of: T-181
@@ -23400,7 +23429,8 @@ results:
   - id: T-183
     kind: upper-bound
     registered: '2026-10-14'
-    headline: Mishapolk's certificate for 237 squares, the smallest known side there
+    headline: >-
+      Mykhailo Polkovskyi's certificate for 237 squares, the smallest known side there
     claim: >-
       One complete rational source certificate reports a finite upper-bound improvement at
       the exact side it states: s(237) <= 15.902705057866366799436476453482.
@@ -23413,10 +23443,11 @@ results:
       certificates with zero tolerance in 219 runs taking 43.9 seconds. Those statements are
       the author's; no source program ran here.
 
-      Credit Mishapolk (the issue gives Mykhailo Polkovskyi and Mikhail Polk) with the
-      certificate at 237, which the issue's lineage column assigns to a refinement of
-      Francisco Couzo's packing (#561, itself a continuation of Nate Chaoweeraprasit's
-      SQUISH packing).
+      Credit Mykhailo Polkovskyi (Mishapolk), as he asks on the issue, with the certificate
+      at 237. The issue's lineage column, headed 'Lineage / Baseline Holder', names
+      Francisco Couzo's issue 561 (itself a continuation of Nate Chaoweeraprasit's SQUISH
+      packing) as the baseline at 237; it does not call the 237 a refinement, as it does at
+      146 and 261, and no measurement here compares the two packings.
 
       The issue claims all 73 as beating or tying every standing and pending record;
       measured here, 13 of the files are byte for byte certificates by Evan Daniel (70, 102,
@@ -23466,15 +23497,16 @@ results:
       Ellsworth) by 9.71e-04; below T-127 (#438) (Gupta after Chaoweeraprasit, Daniel) by
       9.71e-04; below T-134 (#476) (Couzo after Mishapolk, Chaoweeraprasit, Gupta, Xu,
       Daniel, Ellsworth, Levy) by 9.66e-04; below T-136 (#481) (Chaoweeraprasit after Couzo,
-      Xu, Goebel, Schadt, Ellsworth, Hajba, Levy) by 2.84e-04; smallest: this certificate.
+      Xu, Goebel, Schadt, Ellsworth, Hajba, Levy) by 2.84e-04; below #573 (Mykhailo
+      Polkovskyi (Mishapolk)) by 2.45e-04; smallest: this certificate.
 
-      The same commit holds 71 further certificates the issue does not name, at n = 68, 70,
-      84, 86, 88, 102, 103, 105, 106, 108, 110, 123, 126, 127, 129, 130, 131, 132, 146, 152,
-      153, 154, 155, 156, 172, 175, 176, 177, 179, 180, 181, 182, 199, 204, 206, 207, 208,
-      209, 210, 211, 228, 232, 236, 238, 239, 240, 241, 258, 259, 261, 263, 264, 266, 267,
-      268, 269, 270, 271, 272, 273, 292, 295, 297, 301, 302, 303, 304, 305, 306, 307 and
-      308; the packet's claim record compares each with its case, and each is an import of
-      its own.
+      The same commit holds 71 further certificates that this entry does not record, at n =
+      68, 70, 84, 86, 88, 102, 103, 105, 106, 108, 110, 123, 126, 127, 129, 130, 131, 132,
+      146, 152, 153, 154, 155, 156, 172, 175, 176, 177, 179, 180, 181, 182, 199, 204, 206,
+      207, 208, 209, 210, 211, 228, 232, 236, 238, 239, 240, 241, 258, 259, 261, 263, 264,
+      266, 267, 268, 269, 270, 271, 272, 273, 292, 295, 297, 301, 302, 303, 304, 305, 306,
+      307 and 308; the packet's claim record compares each with its case, and each is an
+      import of its own.
 
       The source's own checkers were not run here. The two maintained routes, the sqpack
       rational witness verifier and the independent rational corner checker, share
@@ -23484,12 +23516,12 @@ results:
 
       The per-count ledger of 14 October (jlevy/squares#601), which takes the reports in the
       order they reached this repository and records one only where it is decidably below
-      every earlier report at the count, records it at 237 (2.43e-04 below T-173).
+      every earlier report at the count, records it at 237 (2.43e-04 below T-174).
     next_rung: >-
       Independently review the retained replay, then weigh adoption at 237, where the side
       is below the case ceiling (T-140) by 2.45e-04 and below every earlier report. The
       other 72 certificates the issue reports are not recorded by the ledger and stay in the
-      packet. Settle the credit name. Final exact-head CI remains required.
+      packet. Final exact-head CI remains required.
   - id: T-184
     kind: optimality
     registered: '2026-10-14'

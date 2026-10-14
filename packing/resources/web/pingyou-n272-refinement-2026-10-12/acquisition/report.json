@@ -20,8 +20,8 @@
   "pending": [
     {"n": 272, "report": "T-098 (#375)", "url": "https://github.com/jlevy/squares/issues/375", "holders": "Francisco Couzo, improved by Evan Daniel", "result": "T-098", "reader": "[evand exact optima 2026-10-05]"},
     {"n": 272, "report": "T-119 (#399)", "url": "https://github.com/jlevy/squares/issues/399", "holders": "Evan Daniel", "result": "T-119", "reader": "[Daniel new arrangements 2026-10-07]"},
-    {"n": 272, "report": "#593", "url": "https://github.com/jlevy/squares/issues/593", "holders": "Mishapolk (Mykhailo Polkovskyi)", "printed": "16.9655864748376715", "rounding": "unstated"},
-    {"n": 272, "report": "PR #574", "url": "https://github.com/jlevy/squares/pull/574", "holders": "PingYou Ltd", "printed": "16.9655864748376706357560070334220455696299", "rounding": "up"}
+    {"n": 272, "report": "#593", "url": "https://github.com/jlevy/squares/issues/593", "holders": "Mykhailo Polkovskyi (Mishapolk)", "reader": "[Mishapolk records 2026-10-14]"},
+    {"n": 272, "report": "PR #574", "url": "https://github.com/jlevy/squares/pull/574", "holders": "PingYou Ltd", "reader": "[PingYou PR 574 certificates 2026-10-13]"}
   ],
   "register": {
     "title": "PingYou Ltd's n272 contact refinement at 260aaf5, issue569",

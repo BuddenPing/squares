@@ -22,9 +22,9 @@
     {"n": 207, "report": "T-116 (#422)", "url": "https://github.com/jlevy/squares/issues/422", "holders": "Nate Chaoweeraprasit", "result": "T-116", "reader": "[SQUISH second update 2026-10-07]"},
     {"n": 207, "report": "T-127 (#438)", "url": "https://github.com/jlevy/squares/issues/438", "holders": "Nate Chaoweeraprasit (itsnaka), improved by Siddharth Gupta", "result": "T-127", "reader": "[Gupta rational refinements 2026-10-08]"},
     {"n": 207, "report": "T-136 (#481)", "url": "https://github.com/jlevy/squares/issues/481", "holders": "Nate Chaoweeraprasit", "result": "T-136", "reader": "[SQUISH third request 2026-10-09]"},
-    {"n": 207, "report": "#573", "url": "https://github.com/jlevy/squares/issues/573", "holders": "Mishapolk", "printed": "14.880960371558", "rounding": "up"},
-    {"n": 207, "report": "#593", "url": "https://github.com/jlevy/squares/issues/593", "holders": "Mishapolk (Mykhailo Polkovskyi)", "printed": "14.8809603715580003", "rounding": "unstated"},
-    {"n": 207, "report": "PR #574", "url": "https://github.com/jlevy/squares/pull/574", "holders": "PingYou Ltd", "printed": "14.88096037155557959469669157492336415899451456818029930847400016655138", "rounding": "unstated"}
+    {"n": 207, "report": "#573", "url": "https://github.com/jlevy/squares/issues/573", "holders": "Mykhailo Polkovskyi (Mishapolk)", "reader": "[Mishapolk exact certificates 2026-10-12]"},
+    {"n": 207, "report": "#593", "url": "https://github.com/jlevy/squares/issues/593", "holders": "Mykhailo Polkovskyi (Mishapolk)", "reader": "[Mishapolk records 2026-10-14]"},
+    {"n": 207, "report": "PR #574", "url": "https://github.com/jlevy/squares/pull/574", "holders": "PingYou Ltd", "printed": "14.8809603715555795946966915749233641589945", "rounding": "unstated"}
   ],
   "register": {
     "title": "PingYou Ltd's refined n207 certificate at 1041863, issue503",

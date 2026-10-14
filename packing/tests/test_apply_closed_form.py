@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import dataclasses
 from decimal import Decimal
 from fractions import Fraction
+
+import pytest
 
 from devtools import apply_closed_form as tool
 from sqpack.yamlio import safe_load
@@ -42,6 +45,72 @@ def test_a_stronger_pending_report_keeps_its_count() -> None:
     assert _case(148)["reported_lower_bound"]["source_key"] != tool.SOURCE_KEY
     assert tool.stronger(148, Decimal("12.2277")) == "T-179"
     assert tool.stronger(149, Decimal("12.2804")) is None
+
+
+#: A record the tool has not written, at 149: its reported bound, its verified upper
+#: bound, one evidence id and one resource, and a body paragraph.
+SYNTHETIC = """---
+packing:
+  n: 149
+  source_reviewed: '2026-10-01'
+  reported_lower_bound:
+    value: '{held}'
+    kind: nagamochi
+  verified_upper_bound:
+    value: '{upper}'
+    exact_form: '{upper}'
+  evidence:
+  - E-nagamochi-lower
+  resources:
+  - key: '[Nagamochi 2005]'
+    role: lower-bound-proof
+---
+# `s(149)` — open
+
+A paragraph the case already has.
+"""
+
+
+def _plan(n: int = 149) -> tool.Plan:
+    return next(plan for plan in tool.plans() if plan.n == n)
+
+
+def _record(held: str | None = None, upper: str = "12.71") -> str:
+    return SYNTHETIC.format(held=held or _plan().held["value"], upper=upper)
+
+
+def test_a_record_is_written_once_and_a_second_run_changes_nothing() -> None:
+    plan = _plan()
+    once = tool.apply_text(plan, _record())
+    assert tool.apply_text(plan, once) == once
+    packing = safe_load(once.split("---\n")[1])["packing"]
+    assert packing["reported_lower_bound"]["source_key"] == tool.SOURCE_KEY
+    assert packing["evidence"] == ["E-nagamochi-lower", tool.REPORT]
+    assert [item["key"] for item in packing["resources"]] == [
+        "[Nagamochi 2005]",
+        tool.SOURCE_KEY,
+    ]
+    assert packing["source_reviewed"] == tool.INTAKE
+    assert once.split("\n\n")[1].startswith(tool.OPENING)
+
+
+def test_a_record_whose_reported_bound_has_moved_is_refused() -> None:
+    with pytest.raises(ValueError, match="not the"):
+        tool.apply_text(_plan(), _record(held="12.2250"))
+
+
+def test_no_lane_is_raised_where_a_n_is_not_above_the_bound() -> None:
+    plan = _plan()
+    assert tool.raises(plan.a30, plan.held)
+    assert not tool.raises(plan.a30, {"value": str(plan.a30)})
+    above = dataclasses.replace(plan, held={**plan.held, "value": "12.29"})
+    with pytest.raises(ValueError, match="not above"):
+        tool.apply_text(above, _record(held="12.29"))
+
+
+def test_a_record_whose_verified_upper_bound_is_not_above_a_n_is_refused() -> None:
+    with pytest.raises(ValueError, match="verified upper bound"):
+        tool.apply_text(_plan(), _record(upper="12.28"))
 
 
 def test_a_proved_count_is_left_to_its_generator() -> None:

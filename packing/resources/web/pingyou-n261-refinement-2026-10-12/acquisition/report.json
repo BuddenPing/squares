@@ -15,13 +15,13 @@
   "requested": [261],
   "replayed": [261],
   "houses": [
-    {"n": 261, "reader": "[Barnett refinements 2026-10-11]", "source_key": "[Barnett refinements 2026-10-11]", "holders": "ry-xu, improved by Robert Barnett", "result": "T-150", "reported_value": "16.6787798753432078", "verified_value": "16.6787798753432078", "evidence": ["E-barnett-505-exact-feasibility"]}
+    {"n": 261, "reader": "[Barnett refinements 2026-10-11]", "source_key": "[Barnett refinements 2026-10-11]", "holders": "Ryan Xu, improved by Robert Barnett", "result": "T-150", "reported_value": "16.6787798753432078", "verified_value": "16.6787798753432078", "evidence": ["E-barnett-505-exact-feasibility"]}
   ],
   "pending": [
     {"n": 261, "report": "T-101 (#375)", "url": "https://github.com/jlevy/squares/issues/375", "holders": "the Kingbird catalogue, verified by Evan Daniel's exact ceiling", "result": "T-101", "reader": "[evand exact optima 2026-10-05]"},
-    {"n": 261, "report": "T-125 (#432)", "url": "https://github.com/jlevy/squares/issues/432", "holders": "ry-xu", "result": "T-125", "reader": "[ry-xu square packing 2026]"},
-    {"n": 261, "report": "#593", "url": "https://github.com/jlevy/squares/issues/593", "holders": "Mishapolk (Mykhailo Polkovskyi)", "printed": "16.6787798753432064", "rounding": "unstated"},
-    {"n": 261, "report": "PR #574", "url": "https://github.com/jlevy/squares/pull/574", "holders": "PingYou Ltd", "printed": "16.67877987534290981493522894955687214451016932272043904390384940483363", "rounding": "unstated"}
+    {"n": 261, "report": "T-125 (#432)", "url": "https://github.com/jlevy/squares/issues/432", "holders": "Ryan Xu", "result": "T-125", "reader": "[ry-xu square packing 2026]"},
+    {"n": 261, "report": "#593", "url": "https://github.com/jlevy/squares/issues/593", "holders": "Mykhailo Polkovskyi (Mishapolk)", "reader": "[Mishapolk records 2026-10-14]"},
+    {"n": 261, "report": "PR #574", "url": "https://github.com/jlevy/squares/pull/574", "holders": "PingYou Ltd", "reader": "[PingYou PR 574 certificates 2026-10-13]"}
   ],
   "register": {
     "title": "PingYou Ltd's n261 refinement at e70342d, issue567",

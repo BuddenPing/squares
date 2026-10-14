@@ -2830,7 +2830,7 @@
       "n": 84,
       "reader": "[Couzo follow-up refinements 2026-10-08]",
       "source_key": "[Couzo follow-up refinements 2026-10-08]",
-      "holders": "ry-xu, improved by Francisco Couzo",
+      "holders": "Ryan Xu, improved by Francisco Couzo",
       "result": "T-130",
       "reported_value": "9.6979347990149214",
       "verified_value": "9.6979347990149214",
@@ -2842,7 +2842,7 @@
       "n": 86,
       "reader": "[Couzo follow-up refinements 2026-10-08]",
       "source_key": "[Couzo follow-up refinements 2026-10-08]",
-      "holders": "ry-xu, improved by Francisco Couzo",
+      "holders": "Ryan Xu, improved by Francisco Couzo",
       "result": "T-130",
       "reported_value": "9.8205354074967423",
       "verified_value": "9.8205354074967423",
@@ -2881,7 +2881,7 @@
       "n": 102,
       "reader": "[Daniel regularized lists 2026-10-10]",
       "source_key": "[Daniel regularized lists 2026-10-10]",
-      "holders": "ry-xu, improved by Evan Daniel",
+      "holders": "Ryan Xu, improved by Evan Daniel",
       "result": "T-146",
       "reported_value": "10.6058286964315784",
       "verified_value": "10.6058286964315784",
@@ -2893,7 +2893,7 @@
       "n": 103,
       "reader": "[Daniel regularized lists 2026-10-10]",
       "source_key": "[Daniel regularized lists 2026-10-10]",
-      "holders": "ry-xu, improved by Mishapolk, Evan Daniel",
+      "holders": "Ryan Xu, improved by Mykhailo Polkovskyi, Evan Daniel",
       "result": "T-146",
       "reported_value": "10.6792320473613065",
       "verified_value": "10.6792320473613065",
@@ -2905,7 +2905,7 @@
       "n": 105,
       "reader": "[Couzo follow-up refinements 2026-10-08]",
       "source_key": "[Couzo follow-up refinements 2026-10-08]",
-      "holders": "ry-xu, improved by Francisco Couzo",
+      "holders": "Ryan Xu, improved by Francisco Couzo",
       "result": "T-130",
       "reported_value": "10.7893037837481589",
       "verified_value": "10.7893037837481589",
@@ -2930,7 +2930,7 @@
       "n": 108,
       "reader": "[Couzo exact refinements 2026-10-08]",
       "source_key": "[Couzo exact refinements 2026-10-08]",
-      "holders": "ry-xu, improved by Francisco Couzo",
+      "holders": "Ryan Xu, improved by Francisco Couzo",
       "result": "T-128",
       "reported_value": "10.9048210123203565",
       "verified_value": "10.9048210123203565",
@@ -2955,7 +2955,7 @@
       "n": 123,
       "reader": "[Daniel regularized lists 2026-10-10]",
       "source_key": "[Daniel regularized lists 2026-10-10]",
-      "holders": "ry-xu, improved by Evan Daniel",
+      "holders": "Ryan Xu, improved by Evan Daniel",
       "result": "T-146",
       "reported_value": "11.5913781454976982",
       "verified_value": "11.5913781454976982",
@@ -2967,7 +2967,7 @@
       "n": 126,
       "reader": "[Daniel trio126 2026-10-09]",
       "source_key": "[Daniel trio126 2026-10-09]",
-      "holders": "ry-xu, improved by Evan Daniel",
+      "holders": "Ryan Xu, improved by Evan Daniel",
       "result": "T-139",
       "reported_value": "11.7426406871192852",
       "verified_value": "11.7426406871192852",
@@ -2979,7 +2979,7 @@
       "n": 127,
       "reader": "[Couzo exact refinements 2026-10-08]",
       "source_key": "[Couzo exact refinements 2026-10-08]",
-      "holders": "ry-xu, improved by Francisco Couzo",
+      "holders": "Ryan Xu, improved by Francisco Couzo",
       "result": "T-128",
       "reported_value": "11.8108787875891799",
       "verified_value": "11.8108787875891799",
@@ -3004,7 +3004,7 @@
       "n": 129,
       "reader": "[Daniel regularized lists 2026-10-10]",
       "source_key": "[Daniel regularized lists 2026-10-10]",
-      "holders": "ry-xu, improved by Evan Daniel",
+      "holders": "Ryan Xu, improved by Evan Daniel",
       "result": "T-146",
       "reported_value": "11.8720298490811800",
       "verified_value": "11.8720298490811800",
@@ -3052,7 +3052,7 @@
       "n": 146,
       "reader": "[Barnett refinements 2026-10-11]",
       "source_key": "[Barnett refinements 2026-10-11]",
-      "holders": "ry-xu, improved by Robert Barnett",
+      "holders": "Ryan Xu, improved by Robert Barnett",
       "result": "T-150",
       "reported_value": "12.5837822039510463",
       "verified_value": "12.5837822039510463",
@@ -3127,14 +3127,14 @@
     },
     {
       "n": 175,
-      "reader": "[Couzo certificates 2026-10-10]",
-      "source_key": "[Couzo certificates 2026-10-10]",
-      "holders": "ry-xu, improved by Francisco Couzo",
-      "result": "T-140",
-      "reported_value": "13.7671207246923133",
-      "verified_value": "13.7671207246923133",
+      "reader": "[Ostashev records 2026-10-12]",
+      "source_key": "[Ostashev records 2026-10-12]",
+      "holders": "Daniil Ostashev",
+      "result": "T-158",
+      "reported_value": "13.7641743174865967",
+      "verified_value": "13.7641743174865967",
       "evidence": [
-        "E-couzo-488-exact-feasibility"
+        "E-ostashev-528-exact-feasibility"
       ]
     },
     {
@@ -3359,14 +3359,14 @@
     },
     {
       "n": 232,
-      "reader": "[SQUISH third request 2026-10-09]",
-      "source_key": "[SQUISH third request 2026-10-09]",
-      "holders": "Nate Chaoweeraprasit (itsnaka)",
-      "result": "T-136",
-      "reported_value": "15.7674283499418417",
-      "verified_value": "15.7674283499418417",
+      "reader": "[Ostashev records 2026-10-12]",
+      "source_key": "[Ostashev records 2026-10-12]",
+      "holders": "Daniil Ostashev",
+      "result": "T-158",
+      "reported_value": "15.7641743174865967",
+      "verified_value": "15.7641743174865967",
       "evidence": [
-        "E-squish-481-exact-feasibility"
+        "E-ostashev-528-exact-feasibility"
       ]
     },
     {
@@ -3460,7 +3460,7 @@
       "n": 258,
       "reader": "[Daniel regularized lists 2026-10-10]",
       "source_key": "[Daniel regularized lists 2026-10-10]",
-      "holders": "Nate Chaoweeraprasit (itsnaka), improved by Mishapolk, Evan Daniel",
+      "holders": "Nate Chaoweeraprasit (itsnaka), improved by Mykhailo Polkovskyi, Evan Daniel",
       "result": "T-146",
       "reported_value": "16.5634480021337894",
       "verified_value": "16.5634480021337894",
@@ -3484,7 +3484,7 @@
       "n": 261,
       "reader": "[Barnett refinements 2026-10-11]",
       "source_key": "[Barnett refinements 2026-10-11]",
-      "holders": "ry-xu, improved by Robert Barnett",
+      "holders": "Ryan Xu, improved by Robert Barnett",
       "result": "T-150",
       "reported_value": "16.6787798753432078",
       "verified_value": "16.6787798753432078",
@@ -3506,18 +3506,15 @@
     },
     {
       "n": 264,
-      "reader": "[evand exact optima 2026-10-05]",
-      "source_key": "[Kingbird]",
-      "holders": "the Kingbird catalogue (), verified by T-101's exact ceiling",
-      "result": "T-101",
-      "reported_value": "16.77817459305202",
-      "verified_value": "16.77817459305203",
+      "reader": "[Ostashev records 2026-10-12]",
+      "source_key": "[Ostashev records 2026-10-12]",
+      "holders": "Daniil Ostashev",
+      "result": "T-158",
+      "reported_value": "16.7747351323878329",
+      "verified_value": "16.7747351323878329",
       "evidence": [
-        "E-evand-exact-ceilings-2026-10-05-exact-replay",
-        "E-evand-exact-ceilings-2026-10-05-source-replay",
-        "E-regularized-bounds-2026-10-12-exact-decision"
-      ],
-      "reported_rounding": "unstated"
+        "E-ostashev-528-exact-feasibility"
+      ]
     },
     {
       "n": 266,
@@ -3535,7 +3532,7 @@
       "n": 267,
       "reader": "[Couzo exact certificates 2026-10-09]",
       "source_key": "[Couzo exact certificates 2026-10-09]",
-      "holders": "ry-xu, improved by Francisco Couzo",
+      "holders": "Ryan Xu, improved by Francisco Couzo",
       "result": "T-134",
       "reported_value": "16.8388152699482623",
       "verified_value": "16.8388152699482623",
@@ -3648,7 +3645,7 @@
       "n": 295,
       "reader": "[Daniel regularized lists 2026-10-10]",
       "source_key": "[Daniel regularized lists 2026-10-10]",
-      "holders": "ry-xu, improved by Evan Daniel",
+      "holders": "Ryan Xu, improved by Evan Daniel",
       "result": "T-146",
       "reported_value": "17.7042327907360304",
       "verified_value": "17.7042327907360304",
@@ -3797,9 +3794,8 @@
       "n": 68,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "8.7987952372182843",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 69,
@@ -3839,9 +3835,8 @@
       "n": 84,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "9.6979347990149218",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 84,
@@ -3855,9 +3850,8 @@
       "n": 86,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "9.8205354074967417",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 86,
@@ -3888,17 +3882,15 @@
       "n": 88,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "9.8824510304812474",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 102,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "10.6058286964315780",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 102,
@@ -3913,17 +3905,15 @@
       "n": 103,
       "report": "#573",
       "url": "https://github.com/jlevy/squares/issues/573",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "10.679232047362",
-      "rounding": "up"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk exact certificates 2026-10-12]"
     },
     {
       "n": 103,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "10.6792320473613493",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 103,
@@ -3938,16 +3928,14 @@
       "report": "#568",
       "url": "https://github.com/jlevy/squares/issues/568",
       "holders": "PingYou Ltd (BuddenPing)",
-      "printed": "10.7893037837481588309268366600396176597363",
-      "rounding": "up"
+      "reader": "[PingYou n105 refinement 2026-10-12]"
     },
     {
       "n": 105,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "10.7893037837481582",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 105,
@@ -3978,9 +3966,8 @@
       "n": 106,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "10.8229080441328467",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 106,
@@ -3995,9 +3982,8 @@
       "n": 108,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "10.9048210123203564",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 108,
@@ -4008,36 +3994,39 @@
       "reader": "[Mishapolk decimal poses 2026-10-09]"
     },
     {
+      "n": 108,
+      "report": "#573",
+      "url": "https://github.com/jlevy/squares/issues/573",
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk exact certificates 2026-10-12]"
+    },
+    {
       "n": 110,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "10.9967833966315922",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 123,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "11.5913781454976981",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 126,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "11.7426406871192857",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 127,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "11.8108787875891803",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 127,
@@ -4048,28 +4037,32 @@
       "reader": "[Mishapolk decimal poses 2026-10-09]"
     },
     {
+      "n": 127,
+      "report": "#573",
+      "url": "https://github.com/jlevy/squares/issues/573",
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk exact certificates 2026-10-12]"
+    },
+    {
       "n": 129,
       "report": "#562",
       "url": "https://github.com/jlevy/squares/issues/562",
       "holders": "Daniil Ostashev",
-      "printed": "11.87001385040446434457885353928463864242",
-      "rounding": "up"
+      "reader": "[Ostashev compositions 2026-10-12]"
     },
     {
       "n": 129,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "11.8700138504044652",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 130,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "11.9044830325157864",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 130,
@@ -4084,9 +4077,8 @@
       "n": 131,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "11.9496595880358605",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 131,
@@ -4105,12 +4097,18 @@
       "reader": "[Mishapolk decimal poses 2026-10-09]"
     },
     {
+      "n": 131,
+      "report": "#573",
+      "url": "https://github.com/jlevy/squares/issues/573",
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk exact certificates 2026-10-12]"
+    },
+    {
       "n": 132,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "11.9856801988458095",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 132,
@@ -4149,16 +4147,14 @@
       "report": "#566",
       "url": "https://github.com/jlevy/squares/issues/566",
       "holders": "PingYou Ltd (BuddenPing)",
-      "printed": "12.5837822039508342919134679370511513667729",
-      "rounding": "up"
+      "reader": "[PingYou n146 refinement 2026-10-12]"
     },
     {
       "n": 146,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "12.5837822039510456",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 146,
@@ -4172,9 +4168,8 @@
       "n": 152,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "12.8307188009766104",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 152,
@@ -4189,9 +4184,8 @@
       "n": 155,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "12.9524254069584561",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 155,
@@ -4206,16 +4200,14 @@
       "report": "#561",
       "url": "https://github.com/jlevy/squares/issues/561",
       "holders": "Francisco Couzo",
-      "printed": "12.979165853835",
-      "rounding": "up"
+      "reader": "[Couzo certificates 2026-10-12]"
     },
     {
       "n": 156,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "12.9791658538342762",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 171,
@@ -4229,17 +4221,15 @@
       "n": 172,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "13.6189889568993987",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 175,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "13.7641743174865958",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 175,
@@ -4258,36 +4248,53 @@
       "reader": "[Mishapolk decimal poses 2026-10-09]"
     },
     {
+      "n": 175,
+      "report": "#573",
+      "url": "https://github.com/jlevy/squares/issues/573",
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk exact certificates 2026-10-12]"
+    },
+    {
       "n": 176,
       "report": "#561",
       "url": "https://github.com/jlevy/squares/issues/561",
       "holders": "Francisco Couzo",
-      "printed": "13.807637227056",
-      "rounding": "up"
+      "reader": "[Couzo certificates 2026-10-12]"
     },
     {
       "n": 176,
       "report": "#575",
       "url": "https://github.com/jlevy/squares/issues/575",
       "holders": "Daniil Ostashev",
-      "printed": "13.79587231843640726331185405391207744387",
-      "rounding": "up"
+      "reader": "[Ostashev merged bands 2026-10-13]"
     },
     {
       "n": 176,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "13.7958723184364072",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
+    },
+    {
+      "n": 176,
+      "report": "#562",
+      "url": "https://github.com/jlevy/squares/issues/562",
+      "holders": "Daniil Ostashev",
+      "reader": "[Ostashev compositions 2026-10-12]"
+    },
+    {
+      "n": 176,
+      "report": "#586",
+      "url": "https://github.com/jlevy/squares/issues/586",
+      "holders": "Francisco Couzo",
+      "reader": "[Couzo certificates 2026-10-13]"
     },
     {
       "n": 177,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "13.8229797341694489",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 177,
@@ -4302,17 +4309,15 @@
       "n": 179,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "13.8837954905108987",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 180,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "13.9169935224778314",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 180,
@@ -4323,20 +4328,25 @@
       "reader": "[Mishapolk decimal poses 2026-10-09]"
     },
     {
+      "n": 180,
+      "report": "#573",
+      "url": "https://github.com/jlevy/squares/issues/573",
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk exact certificates 2026-10-12]"
+    },
+    {
       "n": 181,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "13.9508195310229244",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 182,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "13.9740907131214396",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 198,
@@ -4350,25 +4360,22 @@
       "n": 199,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "14.6175721735928068",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 204,
       "report": "#562",
       "url": "https://github.com/jlevy/squares/issues/562",
       "holders": "Daniil Ostashev",
-      "printed": "14.80866323438695656647099008094596479529",
-      "rounding": "up"
+      "reader": "[Ostashev compositions 2026-10-12]"
     },
     {
       "n": 204,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "14.8086632343869571",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 204,
@@ -4390,17 +4397,15 @@
       "n": 206,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "14.8601586633919034",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 208,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "14.9245187720293568",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 208,
@@ -4415,17 +4420,15 @@
       "n": 209,
       "report": "#573",
       "url": "https://github.com/jlevy/squares/issues/573",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "14.946223226448",
-      "rounding": "up"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk exact certificates 2026-10-12]"
     },
     {
       "n": 209,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "14.9462232264464507",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 209,
@@ -4448,33 +4451,29 @@
       "n": 210,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "14.9730011165876249",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 211,
       "report": "#575",
       "url": "https://github.com/jlevy/squares/issues/575",
       "holders": "Daniil Ostashev",
-      "printed": "14.99369418658324657063591818176125142354",
-      "rounding": "up"
+      "reader": "[Ostashev merged bands 2026-10-13]"
     },
     {
       "n": 211,
       "report": "#583",
       "url": "https://github.com/jlevy/squares/issues/583",
       "holders": "Francisco Couzo",
-      "printed": "14.993558913975",
-      "rounding": "up"
+      "reader": "[Couzo issue-583 certificates 2026-10-13]"
     },
     {
       "n": 211,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "14.9935589139740060",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 211,
@@ -4486,12 +4485,18 @@
       "rounding": "unstated"
     },
     {
+      "n": 211,
+      "report": "#586",
+      "url": "https://github.com/jlevy/squares/issues/586",
+      "holders": "Francisco Couzo",
+      "reader": "[Couzo certificates 2026-10-13]"
+    },
+    {
       "n": 228,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "15.6046014757296749",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 228,
@@ -4514,17 +4519,15 @@
       "n": 232,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "15.7641743174865958",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 236,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "15.8639557471592685",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 236,
@@ -4535,20 +4538,25 @@
       "reader": "[SQUISH third request 2026-10-09]"
     },
     {
+      "n": 236,
+      "report": "#573",
+      "url": "https://github.com/jlevy/squares/issues/573",
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk exact certificates 2026-10-12]"
+    },
+    {
       "n": 237,
       "report": "#561",
       "url": "https://github.com/jlevy/squares/issues/561",
       "holders": "Francisco Couzo",
-      "printed": "15.902947773659",
-      "rounding": "up"
+      "reader": "[Couzo certificates 2026-10-12]"
     },
     {
       "n": 237,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "15.9027050578663669",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 237,
@@ -4567,68 +4575,74 @@
       "reader": "[SQUISH third request 2026-10-09]"
     },
     {
+      "n": 237,
+      "report": "#573",
+      "url": "https://github.com/jlevy/squares/issues/573",
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk exact certificates 2026-10-12]"
+    },
+    {
       "n": 238,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "15.9241067853214950",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 239,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "15.9484433273005006",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 240,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "15.9696853375307803",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 241,
       "report": "#575",
       "url": "https://github.com/jlevy/squares/issues/575",
       "holders": "Daniil Ostashev",
-      "printed": "15.98713424905084041461665739745571396866",
-      "rounding": "up"
+      "reader": "[Ostashev merged bands 2026-10-13]"
     },
     {
       "n": 241,
       "report": "#583",
       "url": "https://github.com/jlevy/squares/issues/583",
       "holders": "Francisco Couzo",
-      "printed": "15.987117095151",
-      "rounding": "up"
+      "reader": "[Couzo issue-583 certificates 2026-10-13]"
     },
     {
       "n": 241,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "15.9871170951502393",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
+    },
+    {
+      "n": 241,
+      "report": "#586",
+      "url": "https://github.com/jlevy/squares/issues/586",
+      "holders": "Francisco Couzo",
+      "reader": "[Couzo certificates 2026-10-13]"
     },
     {
       "n": 258,
       "report": "#573",
       "url": "https://github.com/jlevy/squares/issues/573",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "16.563448002138",
-      "rounding": "up"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk exact certificates 2026-10-12]"
     },
     {
       "n": 258,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "16.5634480021371715",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 258,
@@ -4642,33 +4656,29 @@
       "n": 259,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "16.5913781454976998",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 261,
       "report": "#567",
       "url": "https://github.com/jlevy/squares/issues/567",
       "holders": "PingYou Ltd (BuddenPing)",
-      "printed": "16.6787798753429098149372205115301919485639",
-      "rounding": "up"
+      "reader": "[PingYou n261 refinement 2026-10-12]"
     },
     {
       "n": 261,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "16.6787798753432064",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 263,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "16.7331660078993814",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 263,
@@ -4696,12 +4706,18 @@
       "reader": "[SQUISH third request 2026-10-09]"
     },
     {
+      "n": 263,
+      "report": "#573",
+      "url": "https://github.com/jlevy/squares/issues/573",
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk exact certificates 2026-10-12]"
+    },
+    {
       "n": 264,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "16.7747351323878320",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 264,
@@ -4715,17 +4731,15 @@
       "n": 266,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "16.8230287507564746",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 267,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "16.8388152699482632",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 267,
@@ -4736,20 +4750,25 @@
       "reader": "[Mishapolk decimal poses 2026-10-09]"
     },
     {
+      "n": 267,
+      "report": "#573",
+      "url": "https://github.com/jlevy/squares/issues/573",
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk exact certificates 2026-10-12]"
+    },
+    {
       "n": 268,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "16.8788148210067632",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 269,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "16.9015135821891320",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 269,
@@ -4763,17 +4782,15 @@
       "n": 270,
       "report": "#573",
       "url": "https://github.com/jlevy/squares/issues/573",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "16.929775353544",
-      "rounding": "up"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk exact certificates 2026-10-12]"
     },
     {
       "n": 270,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "16.9281969933290171",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 270,
@@ -4820,32 +4837,28 @@
       "report": "#561",
       "url": "https://github.com/jlevy/squares/issues/561",
       "holders": "Francisco Couzo",
-      "printed": "16.948992356452",
-      "rounding": "up"
+      "reader": "[Couzo certificates 2026-10-12]"
     },
     {
       "n": 271,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "16.9489923564512068",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 272,
       "report": "#569",
       "url": "https://github.com/jlevy/squares/issues/569",
       "holders": "PingYou Ltd (BuddenPing)",
-      "printed": "16.9655864748376706357560070334220455696299",
-      "rounding": "up"
+      "reader": "[PingYou n272 refinement 2026-10-12]"
     },
     {
       "n": 272,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "16.9655864748376715",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 272,
@@ -4860,17 +4873,15 @@
       "n": 273,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "16.9839259626504031",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 292,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "17.5913781454976998",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 292,
@@ -4901,41 +4912,36 @@
       "n": 295,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "17.7042327907360288",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 297,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "17.7404172875438029",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 301,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "17.8466671928434906",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 303,
       "report": "#562",
       "url": "https://github.com/jlevy/squares/issues/562",
       "holders": "Daniil Ostashev",
-      "printed": "17.90995829106990798159574108139873608005",
-      "rounding": "up"
+      "reader": "[Ostashev compositions 2026-10-12]"
     },
     {
       "n": 303,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "17.9099582910699091",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 303,
@@ -4971,20 +4977,25 @@
       "reader": "[Mishapolk decimal poses 2026-10-09]"
     },
     {
+      "n": 303,
+      "report": "#573",
+      "url": "https://github.com/jlevy/squares/issues/573",
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk exact certificates 2026-10-12]"
+    },
+    {
       "n": 304,
       "report": "#575",
       "url": "https://github.com/jlevy/squares/issues/575",
       "holders": "Daniil Ostashev",
-      "printed": "17.92942775807517496566632613898911486244",
-      "rounding": "up"
+      "reader": "[Ostashev merged bands 2026-10-13]"
     },
     {
       "n": 304,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "17.9294277580751746",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 304,
@@ -4998,9 +5009,8 @@
       "n": 305,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "17.9504664821377133",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 305,
@@ -5030,9 +5040,8 @@
       "n": 306,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "17.9634337174914265",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 306,
@@ -5052,20 +5061,25 @@
       "reader": "[Mishapolk decimal poses 2026-10-09]"
     },
     {
+      "n": 306,
+      "report": "#573",
+      "url": "https://github.com/jlevy/squares/issues/573",
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk exact certificates 2026-10-12]"
+    },
+    {
       "n": 307,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "17.9808627840546897",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 308,
       "report": "#593",
       "url": "https://github.com/jlevy/squares/issues/593",
-      "holders": "Mishapolk (Mykhailo Polkovskyi)",
-      "printed": "17.9982698795262550",
-      "rounding": "binary64"
+      "holders": "Mykhailo Polkovskyi (Mishapolk)",
+      "reader": "[Mishapolk records 2026-10-14]"
     },
     {
       "n": 308,

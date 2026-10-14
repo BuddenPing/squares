@@ -15,14 +15,14 @@
   "requested": [146],
   "replayed": [146],
   "houses": [
-    {"n": 146, "reader": "[Barnett refinements 2026-10-11]", "source_key": "[Barnett refinements 2026-10-11]", "holders": "ry-xu, improved by Robert Barnett", "result": "T-150", "reported_value": "12.5837822039510463", "verified_value": "12.5837822039510463", "evidence": ["E-barnett-505-exact-feasibility"]}
+    {"n": 146, "reader": "[Barnett refinements 2026-10-11]", "source_key": "[Barnett refinements 2026-10-11]", "holders": "Ryan Xu, improved by Robert Barnett", "result": "T-150", "reported_value": "12.5837822039510463", "verified_value": "12.5837822039510463", "evidence": ["E-barnett-505-exact-feasibility"]}
   ],
   "pending": [
     {"n": 146, "report": "T-101 (#375)", "url": "https://github.com/jlevy/squares/issues/375", "holders": "the Kingbird catalogue, verified by Evan Daniel's exact ceiling", "result": "T-101", "reader": "[evand exact optima 2026-10-05]"},
-    {"n": 146, "report": "T-125 (#432)", "url": "https://github.com/jlevy/squares/issues/432", "holders": "ry-xu", "result": "T-125", "reader": "[ry-xu square packing 2026]"},
+    {"n": 146, "report": "T-125 (#432)", "url": "https://github.com/jlevy/squares/issues/432", "holders": "Ryan Xu", "result": "T-125", "reader": "[ry-xu square packing 2026]"},
     {"n": 146, "report": "T-146 (no issue)", "url": "https://github.com/evand/square-packing/tree/ea1a2f23678a13bd1d252f9f4c95ca5dd2ffd2b7/search/regularize/lists", "holders": "Evan Daniel", "result": "T-146", "reader": "[Daniel regularized lists 2026-10-10]"},
-    {"n": 146, "report": "#593", "url": "https://github.com/jlevy/squares/issues/593", "holders": "Mishapolk (Mykhailo Polkovskyi)", "printed": "12.5837822039510456", "rounding": "unstated"},
-    {"n": 146, "report": "PR #574", "url": "https://github.com/jlevy/squares/pull/574", "holders": "PingYou Ltd", "printed": "12.58378220395083429191346793705115136677288617306781128303885385076117", "rounding": "unstated"}
+    {"n": 146, "report": "#593", "url": "https://github.com/jlevy/squares/issues/593", "holders": "Mykhailo Polkovskyi (Mishapolk)", "reader": "[Mishapolk records 2026-10-14]"},
+    {"n": 146, "report": "PR #574", "url": "https://github.com/jlevy/squares/pull/574", "holders": "PingYou Ltd", "reader": "[PingYou PR 574 certificates 2026-10-13]"}
   ],
   "register": {
     "title": "PingYou Ltd's n146 refinement at 820b9ff, issue566",

@@ -15,15 +15,15 @@
   "requested": [105],
   "replayed": [105],
   "houses": [
-    {"n": 105, "reader": "[Couzo follow-up refinements 2026-10-08]", "source_key": "[Couzo follow-up refinements 2026-10-08]", "holders": "ry-xu, improved by Francisco Couzo", "result": "T-130", "reported_value": "10.7893037837481589", "verified_value": "10.7893037837481589", "evidence": ["E-couzo-460-followup-exact-feasibility"]}
+    {"n": 105, "reader": "[Couzo follow-up refinements 2026-10-08]", "source_key": "[Couzo follow-up refinements 2026-10-08]", "holders": "Ryan Xu, improved by Francisco Couzo", "result": "T-130", "reported_value": "10.7893037837481589", "verified_value": "10.7893037837481589", "evidence": ["E-couzo-460-followup-exact-feasibility"]}
   ],
   "pending": [
     {"n": 105, "report": "T-117 (#425)", "url": "https://github.com/jlevy/squares/issues/425", "holders": "Francisco Couzo, improved by Seth Rehwaldt", "result": "T-117", "reader": "[Rehwaldt Couzo refinements 2026-10-07]"},
-    {"n": 105, "report": "T-125 (#432)", "url": "https://github.com/jlevy/squares/issues/432", "holders": "ry-xu", "result": "T-125", "reader": "[ry-xu square packing 2026]"},
+    {"n": 105, "report": "T-125 (#432)", "url": "https://github.com/jlevy/squares/issues/432", "holders": "Ryan Xu", "result": "T-125", "reader": "[ry-xu square packing 2026]"},
     {"n": 105, "report": "T-128 (#451)", "url": "https://github.com/jlevy/squares/issues/451", "holders": "Francisco Couzo", "result": "T-128", "reader": "[Couzo exact refinements 2026-10-08]"},
-    {"n": 105, "report": "T-138 (#470)", "url": "https://github.com/jlevy/squares/issues/470", "holders": "Mishapolk", "result": "T-138", "reader": "[Mishapolk decimal poses 2026-10-09]"},
-    {"n": 105, "report": "#593", "url": "https://github.com/jlevy/squares/issues/593", "holders": "Mishapolk (Mykhailo Polkovskyi)", "printed": "10.7893037837481582", "rounding": "unstated"},
-    {"n": 105, "report": "PR #574", "url": "https://github.com/jlevy/squares/pull/574", "holders": "PingYou Ltd", "printed": "10.7893037837481588309268366600396176597363", "rounding": "up"}
+    {"n": 105, "report": "T-138 (#470)", "url": "https://github.com/jlevy/squares/issues/470", "holders": "Mykhailo Polkovskyi (Mishapolk)", "result": "T-138", "reader": "[Mishapolk decimal poses 2026-10-09]"},
+    {"n": 105, "report": "#593", "url": "https://github.com/jlevy/squares/issues/593", "holders": "Mykhailo Polkovskyi (Mishapolk)", "reader": "[Mishapolk records 2026-10-14]"},
+    {"n": 105, "report": "PR #574", "url": "https://github.com/jlevy/squares/pull/574", "holders": "PingYou Ltd", "reader": "[PingYou PR 574 certificates 2026-10-13]"}
   ],
   "register": {
     "title": "PingYou Ltd's n105 contact refinement at 260aaf5, issue568",

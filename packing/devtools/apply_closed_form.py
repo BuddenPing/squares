@@ -3,13 +3,14 @@
 # apostrophes.
 """Carry wand125's closed-form lower bound into the case records' reported lane.
 
-wand125's closed form (T-180, `[wand125 closed form 2026-10-14]`) states `s(N) >= a(N)`
-for every non-square `N >= 49`. The packet's own exact evaluation
+Hiroaki Hosono's (wand125's) closed form (T-180, `[wand125 closed form 2026-10-14]`)
+states `s(N) >= a(N)` for every non-square `N >= 49`. The packet's own exact evaluation
 (`resources/web/wand125-closed-form-2026-10-14/evaluation/outputs/bounds.json`) gives
 `a(n)` rounded down at 30 places at every count from 49 to 324 and compares it with each
 bound the case records held when it ran. This tool writes the comparison's consequence:
 
-- **The reported lane** at every count where `a(n)` is above the case's reported lower
+- **The reported lane** at every count where `a(n)`, rounded down at 30 places, is above
+  the case's reported lower bound, decided here exactly, and below its verified upper
   bound, except where a registered report that is still pending adoption is stronger
   (`STRONGER`): wand125's `563/50` at 122 to 126 (T-144) and `306/25` at 145 to 149
   (T-179), which by the per-count ledger's rule keep 125 and 148. The block takes `a(n)`
@@ -22,7 +23,8 @@ Each written case also takes the closed form's resource, `source_reviewed` no ea
 than the intake, and one paragraph under its title, found again by its opening words, so
 a second run rewrites nothing. A case whose reported lower bound is no longer the one
 the evaluation compared with, and is not the closed form's, is refused rather than
-overwritten. The verified lane is untouched until a replay.
+overwritten, as is one whose verified upper bound is not above `a(n)`. The verified lane
+is untouched until a replay.
 
 Usage, from `packing/`:
 
@@ -73,8 +75,16 @@ STRONGER: tuple[tuple[str, Fraction, range], ...] = (
     ("T-144", Fraction(563, 50), range(122, 127)),
     ("T-179", Fraction(306, 25), range(145, 150)),
 )
-#: How the paragraph opens; a second run finds its own paragraph by these words.
-OPENING = "**wand125’s closed form, 14 October 2026.**"
+#: How the paragraph opens; a second run finds its own paragraph by these words, or by
+#: the opening it had before the source's credit was carried (review A4 of #602).
+OPENING = "**Hiroaki Hosono’s closed form, 14 October 2026.**"
+OPENINGS = (OPENING, "**wand125’s closed form, 14 October 2026.**")
+#: How the source states its AI assistance (issue 600).
+ASSISTANCE = (
+    "The source states that its search, certificates, checkers and text were produced with "
+    "AI assistance (Claude and Codex), under the direction of and reviewed by Hiroaki "
+    "Hosono."
+)
 #: The dated paragraphs another writer keeps directly under the title, which this one
 #: follows: `register_regularized_bounds` writes its own first on every application.
 LEADS = ("**Exact regularized certificate,",)
@@ -111,6 +121,22 @@ def _exact30(a30: Decimal) -> str:
         return f"{int(places.scaleb(30))}/1{'0' * 30}"
 
 
+def raises(a30: Decimal, held: Mapping[str, Any]) -> bool:
+    """`a(n)` rounded down at 30 places is above the bound held, exactly."""
+    return Fraction(_exact30(a30)) > Fraction(Decimal(str(held["value"])))
+
+
+def _upper(payload: Mapping[str, Any]) -> Fraction | None:
+    """The case's verified upper bound, exactly where its exact form is a rational."""
+    field: Mapping[str, Any] = payload.get("verified_upper_bound") or {}
+    if not field:
+        return None
+    try:
+        return Fraction(str(field.get("exact_form")).replace(" ", ""))
+    except ValueError:
+        return Fraction(Decimal(str(field["value"])))
+
+
 def stronger(n: int, a30: Decimal) -> str | None:
     for entry, bound, counts in STRONGER:
         if n in counts and Fraction(a30) < bound:
@@ -123,17 +149,20 @@ def _ours(field: Mapping[str, Any] | None) -> bool:
 
 
 def plans(frontier: Path = FRONTIER) -> list[Plan]:
-    """Every count whose reported lane the closed form raises."""
+    """Every count whose reported lane the closed form raises.
+
+    The evaluation gives `a(n)` and the bound each case held when it ran; whether `a(n)` is
+    above that bound is decided here, exactly, not read from the evaluation's relation.
+    """
     rows = json.loads(BOUNDS.read_text(encoding="utf-8"))["rows"]
     found: list[Plan] = []
     for row in rows:
         n = int(row["n"])
         held = row.get("reported_lower_bound") or {}
-        relation = held.get("relation")
-        if relation != ">" or not (frontier / f"n-{n:03d}.md").exists():
+        if not held or not (frontier / f"n-{n:03d}.md").exists():
             continue
         a30 = Decimal(row["a_floor_30"])
-        if stronger(n, a30) is not None:
+        if not raises(a30, held) or stronger(n, a30) is not None:
             continue
         found.append(Plan(n, int(row["k"]), int(row["interval"]), a30, held))
     return found
@@ -148,8 +177,8 @@ def reported_field(plan: Plan) -> dict[str, Any]:
         "proved_year": 2026,
         "source_key": SOURCE_KEY,
         "note": (
-            "wand125's closed form (13 October 2026, T-180): s(N) >= a(N) for every "
-            "non-square N >= 49, from a measure of line segments on 34 intervals of the "
+            "Hiroaki Hosono's closed form (wand125, 13 October 2026, T-180): s(N) >= a(N) for "
+            "every non-square N >= 49, from a measure of line segments on 34 intervals of the "
             f"fractional part. At n = {plan.n}, k = {plan.k} and interval {plan.interval} "
             f"give a({plan.n}) = {plan.a30}..., here rounded down at 12 and 30 places. The "
             "source replayed its certificate with its own checker; no replay has run here."
@@ -171,10 +200,9 @@ def paragraph(plan: Plan) -> str:
         "is unchanged."
     )
     return (
-        f"{OPENING} wand125’s closed form (13 October 2026, T-180) states "
-        "$s(N) \\ge a(N)$ for every non-square $N \\ge 49$, from a measure of line segments "
-        f"on 34 intervals of the fractional part. {what} The source states that the work was "
-        "done with AI assistance; the commit that adds it names Claude as co-author."
+        f"{OPENING} Hiroaki Hosono’s closed form (wand125, 13 October 2026, T-180) "
+        "states $s(N) \\ge a(N)$ for every non-square $N \\ge 49$, from a measure of line "
+        f"segments on 34 intervals of the fractional part. {what} {ASSISTANCE}"
     )
 
 
@@ -224,11 +252,20 @@ def apply_text(plan: Plan, text: str) -> str:
     _, front, body = text.split("---\n", 2)
     payload: dict[str, Any] = safe_load(front)["packing"]
     current: Mapping[str, Any] = payload.get("reported_lower_bound") or {}
-    if not _ours(current) and str(current.get("value")) != str(plan.held["value"]):
-        raise ValueError(
-            f"n = {plan.n}: the reported lower bound is {current.get('value')!r}, "
-            f"not the {plan.held['value']!r} the evaluation compared with"
-        )
+    if not _ours(current):
+        if str(current.get("value")) != str(plan.held["value"]):
+            raise ValueError(
+                f"n = {plan.n}: the reported lower bound is {current.get('value')!r}, "
+                f"not the {plan.held['value']!r} the evaluation compared with"
+            )
+        if not raises(plan.a30, current):
+            raise ValueError(
+                f"n = {plan.n}: a(n) rounded down is not above the reported lower bound "
+                f"{current.get('value')!r}"
+            )
+    upper = _upper(payload)
+    if upper is not None and Fraction(plan.a30) >= upper:
+        raise ValueError(f"n = {plan.n}: a(n) is not below the verified upper bound")
     front = _replace_block(
         front, "reported_lower_bound", _block("reported_lower_bound", reported_field(plan))
     )
@@ -255,7 +292,7 @@ def apply_text(plan: Plan, text: str) -> str:
     )
     title, _, rest = body.partition("\n\n")
     parts = rest.split("\n\n")
-    mine = [index for index, part in enumerate(parts) if part.startswith(OPENING)]
+    mine = [index for index, part in enumerate(parts) if part.startswith(OPENINGS)]
     if len(mine) > 1:
         raise ValueError(f"n = {plan.n} holds {len(mine)} closed-form paragraphs")
     written = paragraph(plan)

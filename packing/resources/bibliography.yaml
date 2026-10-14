@@ -2277,11 +2277,11 @@ sources:
       Lean wrapper and the replay, and drafted the write-up. MIT licence. Retained whole in
       web/bengreff-s76-certificate-2026-10-14/. Dated by that revision, 2026-10-14 UTC.
   - key: '[wand125 closed form 2026-10-14]'
-    authors: [wand125]
+    authors: [Hosono]
     year: 2026
     venue: GitHub
     dated: '2026-10-14'
-    credit: wand125
+    credit: Hosono
     lineage: independent
     note: >-
       wand125/square-packing problems/closed-form (closed-form-v1), added in eb0fd1938fcabf9b81b638f9d6b6db7f80b8985a
@@ -2294,8 +2294,11 @@ sources:
       s(n^2 - 2) = s(n^2 - 3) = n for n >= 8 without Nagamochi's lemma, values it says are not new. The
       folder README credits Hiroaki Hosono (wand125) and names no method it builds on; it cites
       Nagamochi 2005, Karakus 2026, Evan Daniel's Valid7 and jlevy/squares#295 for comparison and for the
-      discussion of Nagamochi's gap. The commit names Claude Opus 5.5 as co-author; the folder's prose
-      says nothing about AI assistance. MIT for problems/closed-form/. Dated by the pin.
+      discussion of Nagamochi's gap. The commit names Claude as co-author; the folder's prose says
+      nothing about AI assistance, and issue 600, which asks to credit Hiroaki Hosono (wand125), states
+      that the search, the certificates, the checkers and the text were produced with AI assistance
+      (Claude and Codex), under his direction and review. MIT for problems/closed-form/. Dated by the
+      pin.
   - key: '[Couzo certificates 2026-10-12]'
     authors: [Couzo]
     year: 2026
@@ -2468,13 +2471,13 @@ sources:
       project lineage is not independent. The certificates are retained as factual data; the
       unlicensed prose is hash-pinned. No optimizer, local or global claim.
   - key: '[Mishapolk exact certificates 2026-10-12]'
-    authors: [Mishapolk]
+    authors: [Polkovskyi]
     year: 2026
     venue: GitHub
     dated: '2026-10-12'
     lineage: credits-project
-    credit: Mishapolk after Xu, Chaoweeraprasit, Levy
-    short_credit: Mishapolk after Xu et al.
+    credit: Polkovskyi after Xu, Chaoweeraprasit, Levy
+    short_credit: Polkovskyi after Xu et al.
     note: >-
       Nineteen complete exact certificates at 336bdf5efab4784e54e0ac32edf3ed12f9c8af7e in
       Evan Daniel's format, six of them requested in issue 573 (103, 153, 207, 209, 258,
@@ -2520,13 +2523,13 @@ sources:
       assistance stated: AI agents wrote and ran the search and verification code. No local
       or global optimality is registered.
   - key: '[Mishapolk records 2026-10-14]'
-    authors: [Mishapolk]
+    authors: [Polkovskyi]
     year: 2026
     venue: GitHub
     dated: '2026-10-14'
     lineage: credits-project
-    credit: Mishapolk after Friedman, Daniel, Xu, Chaoweeraprasit, Barnett, Couzo, Ostashev, Ellsworth, Fang, Levy
-    short_credit: Mishapolk after Friedman et al.
+    credit: Polkovskyi after Friedman, Daniel, Xu, Chaoweeraprasit, Barnett, Couzo, Ostashev, Ellsworth, Fang, Levy
+    short_credit: Polkovskyi after Friedman et al.
     note: >-
       Seventy-three complete exact certificates at 46f638ce0537beeb1bad24242c6a3d357eecd9ee
       in Evan Daniel's format, issue 593, each admitted at the exact side_fraction of the
@@ -2573,11 +2576,11 @@ sources:
       descent statements are the author's numerical evidence; no local or global optimality
       claim.
   - key: '[wand125 cfcheck 2026-10-14]'
-    authors: [wand125]
+    authors: [Hosono]
     year: 2026
     venue: GitHub
     dated: '2026-10-14'
-    credit: wand125
+    credit: Hosono
     lineage: independent
     note: >-
       wand125/square-packing problems/closed-form/indep-checker at 746e2c5ac7a7f534996dd50a5e1fd9f1d8836a8d
@@ -2589,7 +2592,7 @@ sources:
       refusal; the other 32 intervals are not checked with it. Cargo.toml names Hiroaki Hosono (wand125)
       as author and neither README names a method it builds on or cites this project; the README says it
       was written with AI assistance (OpenAI Codex) and reviewed by the author, the commit names Claude
-      Opus 5.5 as co-author, and issue #600 names Claude and Codex for the search, the certificates and
+      as co-author, and issue #600 names Claude and Codex for the search, the certificates and
       both checkers. MIT. Dated by the pin.
 credited_names:
   Benjamin Greff: Greff

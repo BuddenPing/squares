@@ -21,7 +21,7 @@ import zipfile
 from collections.abc import Callable
 from fractions import Fraction
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import pytest
 import yaml
@@ -227,10 +227,89 @@ def test_an_asset_that_is_not_the_one_the_manifest_pins_is_refused(
 ) -> None:
     packet, upstream, assets = archived
     (assets / ASSET).write_bytes(_zip({MEMBER: CERTIFICATE.replace(b'"3"', b'"4"')}))
-    with pytest.raises(reports.ReportError, match=r"not the asset the manifest pins|bytes"):
+    with pytest.raises(reports.ReportError, match="not the asset the manifest pins"):
         reports.derive(packet, upstream, check=True, assets=assets)
     with pytest.raises(reports.ReportError, match="needs --assets"):
         reports.derive(packet, upstream, check=True)
+
+
+def _padded(member: bytes, size: int) -> bytes:
+    """An asset of exactly ``size`` bytes holding ``member`` unchanged, compressed, beside a
+    stored padding member, so only the asset's own digest tells it from the pinned one."""
+    for pad in range(size):
+        stream = io.BytesIO()
+        with zipfile.ZipFile(stream, "w") as archive:
+            stamp = (2026, 10, 10, 0, 0, 0)
+            archive.writestr(
+                zipfile.ZipInfo(MEMBER, date_time=stamp), member, zipfile.ZIP_DEFLATED
+            )
+            archive.writestr(zipfile.ZipInfo("pad.bin", date_time=stamp), b"0" * pad)
+        if len(stream.getvalue()) == size:
+            return stream.getvalue()
+    raise AssertionError("no padding reaches the pinned size")
+
+
+def test_an_asset_of_the_pinned_size_with_the_same_member_is_refused_by_its_digest(
+    archived: tuple[Path, Path, Path],
+) -> None:
+    """Only the asset-level digest refuses this one: its member has the declared bytes."""
+    packet, upstream, assets = archived
+    pinned = (assets / ASSET).read_bytes()
+    (assets / ASSET).write_bytes(_padded(CERTIFICATE, len(pinned)))
+    with pytest.raises(reports.ReportError, match="not the asset the manifest pins"):
+        reports.derive(packet, upstream, check=True, assets=assets)
+
+
+def _store(tmp_path: Path, asset: bytes) -> reports.ReleaseAssets:
+    """Release assets with ``asset`` already admitted under the synthetic manifest."""
+    store = reports.ReleaseAssets(tmp_path, tmp_path, tmp_path)
+    store.admitted[MANIFEST, ASSET] = asset
+    return store
+
+
+def _flagged(asset: bytes, offset_local: int, offset_central: int, value: bytes) -> bytes:
+    """``asset`` with a two-byte field of its one member set in both of its headers."""
+    data = bytearray(asset)
+    local, central = data.index(b"PK\x03\x04"), data.index(b"PK\x01\x02")
+    data[local + offset_local : local + offset_local + 2] = value
+    data[central + offset_central : central + offset_central + 2] = value
+    return bytes(data)
+
+
+def _corrupt_deflated() -> bytes:
+    stream = io.BytesIO()
+    with zipfile.ZipFile(stream, "w") as archive:
+        info = zipfile.ZipInfo(MEMBER, date_time=(2026, 10, 10, 0, 0, 0))
+        archive.writestr(info, CERTIFICATE, zipfile.ZIP_DEFLATED)
+    data = bytearray(stream.getvalue())
+    start = data.index(b"PK\x03\x04") + 30 + len(MEMBER)
+    data[start : start + 8] = b"\xff" * 8
+    return bytes(data)
+
+
+@pytest.mark.parametrize(
+    "asset",
+    [
+        # Encrypted (general-purpose flag bit 0), an unsupported method (1, shrink), and a
+        # deflate stream that does not inflate: each a refusal, not a traceback.
+        _flagged(_zip({MEMBER: CERTIFICATE}), 6, 8, b"\x01\x00"),
+        _flagged(_zip({MEMBER: CERTIFICATE}), 8, 10, b"\x01\x00"),
+        _corrupt_deflated(),
+    ],
+    ids=["encrypted", "unsupported-method", "corrupt-stream"],
+)
+def test_a_member_that_does_not_read_is_refused(tmp_path: Path, asset: bytes) -> None:
+    with pytest.raises(reports.ReportError, match=f"no member {MEMBER}"):
+        _store(tmp_path, asset).member(cast("reports.ArchiveMember", _spec()))
+
+
+def test_a_member_past_the_byte_ceiling_is_refused_before_it_is_read(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    store = _store(tmp_path, _zip({MEMBER: CERTIFICATE}))
+    monkeypatch.setattr(reports, "MAX_SOURCE_BYTES", len(CERTIFICATE) - 1)
+    with pytest.raises(reports.ReportError, match="exceeds its ceiling"):
+        store.member(cast("reports.ArchiveMember", _spec()))
 
 
 @pytest.mark.parametrize(
@@ -327,11 +406,21 @@ def test_every_574_certificate_is_admitted_at_its_printed_side() -> None:
             assert legacy.ceiling_decimal(side, 40) == row["offered"]
 
 
-def test_each_574_side_is_below_its_case_and_smallest_by_print_only_at_258_and_261() -> None:
+def test_each_574_side_is_below_its_case_and_smallest_but_at_211_237_241_and_304() -> None:
+    """Read at the exact sides this record retains for the other reports (review A1 of
+    #602), the certificate is decidably smallest at 60 of the 64 rational counts the ledger
+    records; the 21 it does not record stay undecided against the reported lane or a
+    pending register entry's printed side."""
     rows = _claims()
     assert all(row["case"]["relation"] == "below" for row in rows.values())
-    assert sorted(n for n, row in rows.items() if row["smallest"] == reports.THIS) == [258, 261]
-    # Where another report's printed side is decidably smaller: #575, #583 and #593.
+    smallest = sorted(n for n, row in rows.items() if row["smallest"] == reports.THIS)
+    assert len(smallest) == 60
+    assert not {211, 237, 241, 304} & set(smallest)
+    assert {n: row["tied"] for n, row in rows.items() if row.get("tied")} == {
+        211: ["#593", "#586"],
+        241: ["#593", "#586"],
+    }
+    # Where another report is decidably smaller: #575, #583, #586 and #593.
     above = {
         n for n, row in rows.items() if any(p["relation"] == "above" for p in row["pending"])
     }
@@ -397,9 +486,56 @@ def test_a_field_witness_passes_the_route_and_both_controls_are_refused() -> Non
     for control in algebraic.JOBS:
         row = algebraic.decide(witness, control)
         algebraic.validate_job(row, witness, control)
-    flipped = {**algebraic.decide(witness, "positive"), "control": "duplicate-square-overlap"}
+    # A positive verdict relabelled as the control, its job id too, is still not a refusal.
+    positive = algebraic.decide(witness, "positive")
+    flipped = {
+        **positive,
+        "control": "duplicate-square-overlap",
+        algebraic.ROUTE: {
+            **positive[algebraic.ROUTE],
+            "id": f"{witness['id']}-duplicate-square-overlap",
+        },
+    }
     with pytest.raises(algebraic.ReportError, match="not refused"):
         algebraic.validate_job(flipped, witness, "duplicate-square-overlap")
+
+
+def test_a_stored_algebraic_row_is_held_to_its_own_witness() -> None:
+    """A row naming another job, stating another side or deciding fewer pairs is refused
+    (review B4 of #602)."""
+    packet = reports.packet_path(PR574)
+    witness = algebraic.read_facts(packet, {70})[70]
+    rows = kernel.read_xz(algebraic.receipt_path(packet, 70))["cases"]
+    side = algebraic.side_of(witness)
+    for row, control in zip(rows, algebraic.JOBS, strict=True):
+        algebraic.validate_job(row, witness, control, side=side)
+    positive = rows[0]
+    verdict = positive[algebraic.ROUTE]
+
+    def changed(**fields: Any) -> dict[str, Any]:
+        return {**positive, algebraic.ROUTE: {**verdict, **fields}}
+
+    printed = verdict["side"]
+    moved = printed[:4] + str((int(printed[4]) + 1) % 10) + printed[5:]
+    for row, message in (
+        (changed(id="W-pingyou-574-alg-n153-positive"), "not this witness's job"),
+        (changed(side=moved), "side is not this witness's"),
+        (changed(pairs_tested=verdict["pairs_tested"] - 1), "every pair decided"),
+    ):
+        with pytest.raises(algebraic.ReportError, match=message):
+            algebraic.validate_job(row, witness, "positive", side=side)
+
+
+def test_an_algebraic_declaration_holds_first_committed_to_a_utc_time(
+    private: Callable[[str], Path],
+) -> None:
+    packet = private(PR574)
+    path = packet / algebraic.DECLARATION
+    declaration = _json(path)
+    declaration["witnesses"][0]["first_committed"] = "2026-10-13"
+    _write_json(path, declaration)
+    with pytest.raises(algebraic.ReportError, match="UTC time"):
+        algebraic.load_declaration(packet)
 
 
 def test_the_574_algebraic_receipts_admit_every_roster_job() -> None:

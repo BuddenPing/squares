@@ -79,6 +79,9 @@ ROUTE = "exact_verify"
 DIGITS = (60, 120, 240)
 DISPLAY_PLACES = 40
 _FRACTION = re.compile(r"[1-9][0-9]*/[1-9][0-9]*")
+_RATIONAL_SIDE = re.compile(r"[0-9]+(?:/[1-9][0-9]*)?")
+_DECIMAL_SIDE = re.compile(r"[0-9]+\.[0-9]+")
+_UTC = re.compile(r"\d{4}-\d\d-\d\dT\d\d:\d\d(:\d\d)?Z")
 
 
 class ReportError(reports.ReportError):
@@ -169,6 +172,10 @@ def load_declaration(packet: Path) -> Declaration:
             f"{where}: an algebraic fact is facts/alg-n-NNN.yaml",
         )
         _require(type(row["degree"]) is int and row["degree"] >= 2, f"{where}: degree >= 2")
+        _require(
+            _UTC.fullmatch(row["first_committed"]) is not None,
+            f"{where}: first_committed is a UTC time, YYYY-MM-DDTHH:MM[:SS]Z",
+        )
     for item in declaration["pending"]:
         where = f"n={item['n']} {item['report']}"
         _require(item["n"] in counts, f"{where}: a pending report at an undeclared count")
@@ -447,10 +454,15 @@ def compare(packet: Path) -> dict[str, Any]:
         n = row["n"]
         side = side_of(witnesses[n])
         facts = regularized.case_facts(n)
-        verified = regularized.verified_bound(facts)
         case_text = (regularized.FRONTIER / f"n-{n:03d}.md").read_text(encoding="utf-8")
         front = load_yaml(case_text.split("---\n", 2)[1])["packing"]["reported_upper_bound"]
-        reported_form = _closed(front.get("exact_form"))
+        try:
+            verified = regularized.verified_bound(facts)
+            reported_form = _closed(front.get("exact_form"))
+        except ValueError as error:
+            raise ReportError(
+                f"n={n}: the case's bounds do not read exactly: {error}"
+            ) from error
         others = []
         for item in declaration["pending"]:
             if item["n"] != n:
@@ -580,8 +592,27 @@ def decide(witness: dict[str, Any], control: str) -> dict[str, Any]:
     }
 
 
-def validate_job(row: Any, witness: dict[str, Any], control: str) -> None:
-    """A job row is its count's, and has the outcome its control requires."""
+def side_agrees(printed: object, side: Any) -> bool:
+    """A verdict's side is this side: exactly where it is a rational, and otherwise a
+    decimal of certain digits whose one-unit span the side's enclosures do not leave."""
+    if type(printed) is not str:
+        return False
+    if _RATIONAL_SIDE.fullmatch(printed):
+        return not isinstance(side, FieldElement) and Fraction(printed) == side
+    if not _DECIMAL_SIDE.fullmatch(printed):
+        return False
+    return against(side, reports.printed_span(printed, "unstated")) not in {"below", "above"}
+
+
+def validate_job(
+    row: Any, witness: dict[str, Any], control: str, *, side: Any | None = None
+) -> None:
+    """A job row is its count's and this witness's, and has the outcome its control requires.
+
+    The verdict must name the job `job_witness` builds from this witness and state this
+    witness's side (`side_agrees`), so a receipt that decided another witness of the same
+    count is refused. ``side`` is the witness's exact side, when the caller has it.
+    """
     n = witness["n"]
     _require(type(row) is dict, f"n={n} {control}: wrong row")
     fields = cast("dict[str, Any]", row)
@@ -590,6 +621,14 @@ def validate_job(row: Any, witness: dict[str, Any], control: str) -> None:
     )
     _require(type(fields.get(ROUTE)) is dict, f"n={n} {control}: no route verdict")
     verdict = cast("dict[str, Any]", fields[ROUTE])
+    _require(
+        verdict.get("id") == f"{witness['id']}-{control}",
+        f"n={n} {control}: the verdict is not this witness's job",
+    )
+    _require(
+        side_agrees(verdict.get("side"), side_of(witness) if side is None else side),
+        f"n={n} {control}: the verdict's side is not this witness's",
+    )
     passed = verdict.get("verification_passed")
     if control == "positive":
         _require(
@@ -638,9 +677,10 @@ def certify(packet: Path, directory: Path, numbers: list[int] | None = None) -> 
     directory.mkdir(parents=True, exist_ok=True)
     for n in roster:
         witness = read_facts(packet, {n})[n]
+        side = side_of(witness)
         rows = [run_job(packet, n, control, directory) for control in JOBS]
         for row, control in zip(rows, JOBS, strict=True):
-            validate_job(row, witness, control)
+            validate_job(row, witness, control, side=side)
         kernel.save_xz(
             receipt_path(packet, n),
             {"format": declaration["receipt_format"], "routes": [ROUTE], "cases": rows},
@@ -673,6 +713,7 @@ def check(
     positives = {}
     for n in roster:
         witness = read_facts(packet, {n})[n]
+        side = side_of(witness)
         record = kernel.read_xz(receipt_path(packet, n))
         _require(
             record.get("format") == declaration["receipt_format"]
@@ -681,7 +722,7 @@ def check(
             f"n={n}: not this packet's receipt",
         )
         for row, control in zip(record["cases"], JOBS, strict=True):
-            validate_job(row, witness, control)
+            validate_job(row, witness, control, side=side)
             if replay:
                 again = decide(witness, control)
                 _require(again[ROUTE] == row[ROUTE], f"n={n} {control}: the replay differs")

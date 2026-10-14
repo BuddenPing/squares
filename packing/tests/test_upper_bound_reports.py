@@ -810,22 +810,29 @@ def test_the_561_claims_name_each_smaller_or_undecided_report() -> None:
     # Ostashev's #575 and Mishapolk's #593 are 1.18e-2 smaller at 176, and #593 2.43e-4
     # smaller at 237. At 156 and 271 #593 states this certificate's own exact side, and
     # PingYou's #574 states it with its side about one part in 1e20 smaller, as it states
-    # #575's at 176: below the side it tightens, and undecided against #593's prints.
+    # #575's at 176; read at the exact sides this record retains, #574 is smallest at all
+    # three (review A1 of #602).
     assert rows[237]["smallest"] == "#593"
     for n in (156, 176, 271):
-        assert rows[n]["undecided_among"] == ["#574", "#593"]
+        assert rows[n]["smallest"] == "#574"
         (pingyou,) = [other for other in rows[n]["pending"] if other["report"] == "#574"]
         assert pingyou["relation"] == "above"
+    for n in (156, 271):
+        (mishapolk,) = [other for other in rows[n]["pending"] if other["report"] == "#593"]
+        assert mishapolk["relation"] == "equal"
     for n in (156, 237, 271):
         side = Fraction(rows[n]["exact_side"])
         (pingyou,) = [other for other in rows[n]["pending"] if other["report"] == "#574"]
-        reduction = (side - Fraction(pingyou["printed"])) / side
+        reduction = (side - Fraction(pingyou["exact_side"])) / side
         assert Fraction(99, 10**22) < reduction < Fraction(101, 10**22)
-    # Beyond the corpus each is below the row tracked from #506, and #584 is below at 375.
+    # Beyond the corpus each is below the row tracked from #506; issue 586's rows and #584's
+    # at 375, the source register's current ones, are below it except at 338.
     for n in (338, 344, 375, 376, 378):
         tracked = [other for other in rows[n]["pending"] if other["url"] == COVERAGE_URL]
-        assert [other["relation"] for other in tracked] == ["below"]
-    assert rows[375]["smallest"] == "#584"
+        assert [other["relation"] for other in tracked] == (
+            ["below"] if n == 338 else ["below", "above"]
+        )
+    assert rows[375]["smallest"] == "evand-compositions-2026-10-13"
     claims = coverage_check.load_claims(_packet(COUZO_561) / reports.BEYOND)
     assert sorted(claims) == [338, 344, 375, 376, 378]
 
@@ -845,7 +852,7 @@ def test_the_586_claims_are_smallest_at_every_requested_count_but_the_two_ties()
     smallest = {n: rows[n].get("smallest") for n in requested}
     assert smallest == {**dict.fromkeys(requested, reports.THIS), 211: None, 241: None}
     for n in (211, 241):
-        assert rows[n]["undecided_among"] == [reports.THIS, "#593"]
+        assert rows[n]["tied"] == [reports.THIS, "#593"]
     # #586 replaces #583 below its print at every count it names again, and #570's 154 is
     # #583's certificate.
     for n in (154, 211, 241, 339, 379, 380, 382):
@@ -859,7 +866,7 @@ def test_the_586_claims_are_smallest_at_every_requested_count_but_the_two_ties()
     assert {other["report"]: other["relation"] for other in rows[381]["pending"]} == {
         "couzo-certificates-2026-10-11": "below",
         "#582": "below",
-        "TheSnakeFang/squarepack-certs@078789a": "below",
+        "fang-direct-certificates-2026-10-13": "below",
     }
     # The five no issue names are each below #561's certificate at the count, read exactly.
     unnamed = [n for n in rows if rows[n]["printed_in"].endswith("/certificates/README.md")]
@@ -870,8 +877,8 @@ def test_the_586_claims_are_smallest_at_every_requested_count_but_the_two_ties()
         assert Fraction(earlier["exact_side"]) == reports.house_side(
             "[Couzo certificates 2026-10-12]", n
         )
-    assert rows[176]["undecided_among"] == ["#574", "#593"]
-    assert rows[375]["smallest"] == "#584"
+    assert rows[176]["smallest"] == "#574"
+    assert rows[375]["smallest"] == "evand-compositions-2026-10-13"
     claims = coverage_check.load_claims(_packet(COUZO_586) / reports.BEYOND)
     assert sorted(claims) == [339, 344, 375, 376, 378, 379, 380, 381, 382]
     assert reports.house_side("[Couzo certificates 2026-10-13]", 381) == Fraction(
@@ -1135,6 +1142,19 @@ def test_the_driver_refuses_duplicate_keys_and_incomplete_rows(
 
 
 # --------------------------------------------------------------------------- register plan
+
+
+def test_every_import_reader_is_the_packet_whose_source_key_names_it() -> None:
+    """A reader under the wrong key would fail only when a later packet used it (B9)."""
+    readers = {
+        key: reader
+        for key, reader in reports.HOUSES.items()
+        if isinstance(reader, functools.partial) and reader.func is reports.import_side
+    }
+    assert len(readers) >= 35
+    for key, reader in readers.items():
+        packet = reports.packet_path(reader.args[0])
+        assert reports.load_declaration(packet)["source_key"] == key
 
 
 @pytest.mark.parametrize("name", [name for name in EVERY if name not in BEYOND_ONLY])
@@ -1565,10 +1585,12 @@ def test_the_593_release_is_smallest_only_at_237_and_ties_couzo_at_211_and_241()
     for row in rows.values():
         relation = row["case"]["relation"]
         relations[relation] = relations.get(relation, 0) + 1
-    assert relations == {"above": 15, "equal": 40, "below": 17}
+    # Three cases moved below these sides since the read: 175, 232 and 264 hold Daniil
+    # Ostashev's issue-528 houses (T-158).
+    assert relations == {"above": 18, "equal": 40, "below": 14}
     assert [n for n, row in rows.items() if row["smallest"] == reports.THIS] == [237]
     for n in (211, 241):
-        assert rows[n]["undecided_among"] == [reports.THIS, "#586 (Couzo)"]
+        assert rows[n]["tied"] == [reports.THIS, "#586 (Couzo)"]
     # At 129, 176, 204, 303 and 304 Ostashev's earlier sides are below by under 1e-30.
     for n in (129, 176, 204, 303, 304):
         (ostashev,) = [item for item in rows[n]["pending"] if "Ostashev" in item["report"]]
@@ -1591,8 +1613,10 @@ def test_the_573_release_is_nowhere_smallest_and_shares_four_files_with_593() ->
     rows = _rows(MISHAPOLK_573)
     assert [n for n, row in rows.items() if row["requested"]] == [103, 153, 207, 209, 258, 270]
     assert all(row["smallest"] != reports.THIS for row in rows.values())
+    # At 154 and 175 the cases have since taken Evan Daniel's and Daniil Ostashev's houses
+    # (T-160, T-158), which are smaller.
     below = [n for n, row in rows.items() if row["case"]["relation"] == "below"]
-    assert below == [153, 154, 175, 207]
+    assert below == [153, 207]
     early, late = _manifest(MISHAPOLK_573), _manifest(MISHAPOLK_593)
     for n in (103, 153, 207, 258):
         assert early[f"certificates/square-{n}.cert"] == late[f"certificates/n{n}.cert"]

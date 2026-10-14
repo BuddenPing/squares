@@ -19,13 +19,13 @@
   ],
   "pending": [
     {"n": 153, "report": "T-101 (#375)", "url": "https://github.com/jlevy/squares/issues/375", "holders": "the Kingbird catalogue, verified by Evan Daniel's exact ceiling", "result": "T-101", "reader": "[evand exact optima 2026-10-05]"},
-    {"n": 153, "report": "T-125 (#432)", "url": "https://github.com/jlevy/squares/issues/432", "holders": "ry-xu", "result": "T-125", "reader": "[ry-xu square packing 2026]"},
+    {"n": 153, "report": "T-125 (#432)", "url": "https://github.com/jlevy/squares/issues/432", "holders": "Ryan Xu", "result": "T-125", "reader": "[ry-xu square packing 2026]"},
     {"n": 153, "report": "T-127 (#438)", "url": "https://github.com/jlevy/squares/issues/438", "holders": "Nate Chaoweeraprasit (itsnaka), improved by Siddharth Gupta", "result": "T-127", "reader": "[Gupta rational refinements 2026-10-08]"},
     {"n": 153, "report": "T-136 (#481)", "url": "https://github.com/jlevy/squares/issues/481", "holders": "Nate Chaoweeraprasit", "result": "T-136", "reader": "[SQUISH third request 2026-10-09]"},
     {"n": 153, "report": "T-146 (regularized lists)", "url": "https://github.com/evand/square-packing/tree/ea1a2f23678a13bd1d252f9f4c95ca5dd2ffd2b7/search/regularize/lists", "holders": "Evan Daniel, regularizing Nate Chaoweeraprasit's packing", "result": "T-146", "reader": "[Daniel regularized lists 2026-10-10]"},
-    {"n": 153, "report": "#573", "url": "https://github.com/jlevy/squares/issues/573", "holders": "Mishapolk", "printed": "12.870013850405", "rounding": "up"},
-    {"n": 153, "report": "#593", "url": "https://github.com/jlevy/squares/issues/593", "holders": "Mishapolk (Mykhailo Polkovskyi)", "printed": "12.8700138504044794", "rounding": "unstated"},
-    {"n": 153, "report": "PR #574", "url": "https://github.com/jlevy/squares/pull/574", "holders": "PingYou Ltd", "printed": "12.87001385040446434446015340078059", "rounding": "unstated"}
+    {"n": 153, "report": "#573", "url": "https://github.com/jlevy/squares/issues/573", "holders": "Mykhailo Polkovskyi (Mishapolk)", "reader": "[Mishapolk exact certificates 2026-10-12]"},
+    {"n": 153, "report": "#593", "url": "https://github.com/jlevy/squares/issues/593", "holders": "Mykhailo Polkovskyi (Mishapolk)", "reader": "[Mishapolk records 2026-10-14]"},
+    {"n": 153, "report": "PR #574", "url": "https://github.com/jlevy/squares/pull/574", "holders": "PingYou Ltd", "printed": "12.8700138504044643444601534007805939989658", "rounding": "unstated"}
   ],
   "register": {
     "title": "PingYou Ltd's refined n153 certificate at 431186b, issue504",

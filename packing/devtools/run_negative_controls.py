@@ -1101,7 +1101,7 @@ COPY_SEPARATELY = (
     ROOT / "resources/web/wand125-linear-n122-2026-10-10/receipts/linear-premises.json",
     ROOT
     / "resources/web/wand125-linear-n122-2026-10-10/receipts/linear-sample-diagnostic.json",
-    # The 14 October intake's wand125 lower bounds (T-175 to T-177 and T-179) cite these,
+    # The 14 October intake's wand125 lower bounds (T-176 to T-178 and T-179) cite these,
     # as their register plans list them: 143,089 bytes in all.
     *(
         ROOT / "resources/web/wand125-fine-net-n37-n39-n44-2026-10-13" / name
@@ -1408,11 +1408,13 @@ def root_files() -> tuple[Path, ...]:
 #
 # 2026-10-14, the records of the 14 October intake (T-161 to T-184): their artifacts
 # rescued 8,950,701 bytes and took the snapshot to 228,704,672, 2,212,256 over the cap.
-# T-173, PR #574's 68 counts, listed each count's fact file, 3,684,559 bytes; its
+# T-174, PR #574's 68 counts, listed each count's fact file, 3,684,559 bytes; its
 # evidence names the facts directory and its claims record and receipts stay artifacts,
-# so the facts left its list. With this comment counted the snapshot measures
-# 225,015,055 bytes, 1,477,361 under the cap; the next intake of this size needs the
-# owner's decision on the cap or think-b6ir's narrower copy-back.
+# so the facts left its list. When the #574 lane's last replays came in (review B6 of
+# #602), all 64 rational receipts, 2,383,524 bytes, left it as well, its notes naming
+# their directory. With this comment counted the snapshot measures 224,357,130 bytes,
+# 2,135,286 under the cap; the next intake of this size needs the owner's decision on
+# the cap or think-b6ir's narrower copy-back.
 SNAPSHOT_MAX_BYTES = 216 * 1024 * 1024
 DEFAULT_CONTROL_TIMEOUT_SECONDS = 120.0
 TERMINATION_GRACE_SECONDS = 1.0

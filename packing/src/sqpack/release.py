@@ -813,9 +813,10 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
         reason=(
             "Rendered from main at 37e6757e and from this branch at one link revision, the "
             "HTML before the browser's math pass and the Markdown are byte-identical; the "
-            "PDF prints from that HTML. The case records change only their reported lower "
-            "bounds and evidence lists, and no house moves, so the survey's account of the "
-            "adopted houses is unchanged and it keeps v0.2.2."
+            "PDF prints from that HTML. Each case record gains the closed form's reported "
+            "lower bound, its evidence and resource, a later source_reviewed date and a "
+            "dated paragraph; no house moves, so the survey's account of the adopted houses "
+            "is unchanged and it keeps v0.2.2."
         ),
     ),
     ReleaseNoPublicChange(

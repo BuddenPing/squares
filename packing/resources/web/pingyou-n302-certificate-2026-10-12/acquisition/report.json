@@ -21,10 +21,12 @@
     {"n": 302, "report": "T-098 (#375)", "url": "https://github.com/jlevy/squares/issues/375", "holders": "Francisco Couzo, improved by Evan Daniel", "result": "T-098", "reader": "[evand exact optima 2026-10-05]"},
     {"n": 302, "report": "T-116 (#422)", "url": "https://github.com/jlevy/squares/issues/422", "holders": "Nate Chaoweeraprasit", "result": "T-116", "reader": "[SQUISH second update 2026-10-07]"},
     {"n": 302, "report": "T-136 (#481)", "url": "https://github.com/jlevy/squares/issues/481", "holders": "Nate Chaoweeraprasit", "result": "T-136", "reader": "[SQUISH third request 2026-10-09]"},
-    {"n": 302, "report": "T-138 (#470)", "url": "https://github.com/jlevy/squares/issues/470", "holders": "Mishapolk", "result": "T-138", "reader": "[Mishapolk decimal poses 2026-10-09]"},
-    {"n": 302, "report": "#583", "url": "https://github.com/jlevy/squares/issues/583", "holders": "Francisco Couzo", "printed": "17.870013850405", "rounding": "up"},
-    {"n": 302, "report": "#593", "url": "https://github.com/jlevy/squares/issues/593", "holders": "Mishapolk (Mykhailo Polkovskyi)", "printed": "17.8702753825550609", "rounding": "unstated"},
-    {"n": 302, "report": "PR #574", "url": "https://github.com/jlevy/squares/pull/574", "holders": "PingYou Ltd", "printed": "17.87027538255505966957269257339824", "rounding": "unstated"}
+    {"n": 302, "report": "T-138 (#470)", "url": "https://github.com/jlevy/squares/issues/470", "holders": "Mykhailo Polkovskyi (Mishapolk)", "result": "T-138", "reader": "[Mishapolk decimal poses 2026-10-09]"},
+    {"n": 302, "report": "#583", "url": "https://github.com/jlevy/squares/issues/583", "holders": "Francisco Couzo", "reader": "[Couzo certificates 2026-10-13]"},
+    {"n": 302, "report": "#593", "url": "https://github.com/jlevy/squares/issues/593", "holders": "Mykhailo Polkovskyi (Mishapolk)", "reader": "[Mishapolk records 2026-10-14]"},
+    {"n": 302, "report": "PR #574", "url": "https://github.com/jlevy/squares/pull/574", "holders": "PingYou Ltd", "printed": "17.8702753825550596695726925733982414085506", "rounding": "unstated"},
+    {"n": 302, "report": "#573", "url": "https://github.com/jlevy/squares/issues/573", "holders": "Mykhailo Polkovskyi (Mishapolk)", "reader": "[Mishapolk exact certificates 2026-10-12]"},
+    {"n": 302, "report": "#586", "url": "https://github.com/jlevy/squares/issues/586", "holders": "Francisco Couzo", "reader": "[Couzo certificates 2026-10-13]"}
   ],
   "register": {
     "title": "PingYou Ltd's n302 certificate at 5a86ac3, issue564",

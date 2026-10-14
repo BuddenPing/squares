@@ -371,7 +371,7 @@ deficiency_upper_bounds:
       Ryu's O(sqrt k) and smaller-exponent rows are smaller from k = 88; this row is the
       smaller one only in the window the corollary names.
     note: >-
-      Kevin Fang, TheSnakeFang/squarepack-certs at 078789a, no issue, registered as T-178.
+      Kevin Fang, TheSnakeFang/squarepack-certs at 078789a, no issue, registered as T-163.
       The finite bounds at 211, 241, 273, 307 and 308 were replayed here on both maintained
       exact routes (E-fang-excess-theorem-exact-feasibility); the induction and Lemma 3 were
       read in the review of 14 October

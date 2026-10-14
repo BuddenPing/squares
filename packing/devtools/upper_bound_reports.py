@@ -79,6 +79,7 @@ import subprocess
 import sys
 import tempfile
 import zipfile
+import zlib
 from collections.abc import Callable, Collection, Mapping
 from concurrent.futures import ThreadPoolExecutor
 from decimal import Decimal
@@ -153,6 +154,12 @@ MAX_SOURCE_BYTES = 6_000_000
 #: that witness has corner literals of 2,522 characters, and PR #574's n146 witness has
 #: rotation literals of 6,023 characters.
 MAX_LITERAL_CHARS = kernel.MAX_RATIONAL_CHARS
+#: The longest integer part a literal may have: Python's default limit on converting
+#: between integers and decimal strings, which every writer downstream shares (the
+#: kernel's `to_witness` and `_rational`, and any printed side), so a literal past it is
+#: refused when it is read rather than failing where it is written. The longest integer
+#: part any retained packet states, in PR #574's n146 receipt, has 3,011 digits.
+MAX_INTEGER_DIGITS = kernel.MAX_INTEGER_DIGITS
 #: How a printed side was rounded: up, as the report states; not stated; or ``binary64``,
 #: a decimal rendering of the IEEE double nearest the side, as #593 prints its sides at 16
 #: places, whose last places a double of that size does not determine (`printed_span`).
@@ -510,25 +517,11 @@ def _literal(value: object, where: str) -> Fraction:
         or _LITERAL.fullmatch(value) is None
     ):
         raise ReportError(f"{where}: not a bounded rational string")
-    negative = value.startswith("-")
-    numerator, _, denominator = value.removeprefix("-").partition("/")
-    magnitude = _integer(numerator)
-    return Fraction(-magnitude if negative else magnitude, _integer(denominator or "1"))
-
-
-#: Python refuses to convert a decimal string of more than 4,300 digits to an integer by
-#: default; a literal under ``MAX_LITERAL_CHARS`` may exceed that, so it is read in chunks.
-_DIGIT_CHUNK = 4000
-
-
-def _integer(digits: str) -> int:
-    """A decimal integer string, read in chunks below Python's integer-string limit, without
-    changing that process-wide limit, which the worker threads share."""
-    value = 0
-    for start in range(0, len(digits), _DIGIT_CHUNK):
-        chunk = digits[start : start + _DIGIT_CHUNK]
-        value = value * 10 ** len(chunk) + int(chunk)
-    return value
+    _require(
+        kernel.integer_parts_bounded(value),
+        f"{where}: an integer part longer than {MAX_INTEGER_DIGITS} digits",
+    )
+    return Fraction(value)
 
 
 def _json(raw: bytes) -> Any:
@@ -905,7 +898,9 @@ def _dilation_options(options: Mapping[str, str]) -> tuple[Fraction, int]:
     )
     value, places = options[DILATION], options[HALF_ANGLE_PLACES]
     _require(
-        len(value) <= MAX_LITERAL_CHARS and _POSITIVE.fullmatch(value),
+        len(value) <= MAX_LITERAL_CHARS
+        and _POSITIVE.fullmatch(value)
+        and kernel.integer_parts_bounded(value),
         f"{DILATION} is no positive integer or p/q: {value[:80]!r}",
     )
     dilation = Fraction(value)
@@ -1230,9 +1225,15 @@ def _import_sides(packet: Path) -> dict[int, Fraction]:
     return {n: certificate.side for n, certificate in read_facts(packet).items()}
 
 
+def import_side(name: str, n: int) -> Fraction:
+    """One exact side of the import packet named ``name``, its directory name."""
+    return _import_sides(packet_path(name))[n]
+
+
 def _import(name: str) -> Callable[[int], Fraction]:
-    """The reader of one import packet's exact sides, by the packet's directory name."""
-    return lambda n: _import_sides(packet_path(name))[n]
+    """The reader of one import packet's exact sides, by the packet's directory name; the
+    packet is the reader's ``args[0]``."""
+    return functools.partial(import_side, name)
 
 
 def _evand_optima(n: int) -> Fraction:
@@ -1298,6 +1299,9 @@ HOUSES: dict[str, Callable[[int], Fraction]] = {
     "[Calle n102 2026-10-12]": _import("riocalle-n102-2026-10-12"),
     "[Daniel n154 2026-10-12]": _import("evand-n154-2026-10-12"),
     "[Couzo issue-583 certificates 2026-10-13]": _import("couzo-issue583-2026-10-13"),
+    "[PingYou PR 574 certificates 2026-10-13]": _import(
+        "pingyou-pr574-certificates-2026-10-13"
+    ),
     # T-155: the side of the retained view of Evan Daniel's regularizer at each count.
     "[Daniel regularizer 2026-10-11]": regularized.view_side,
 }
@@ -1714,7 +1718,14 @@ class ReleaseAssets:
                     info.file_size <= MAX_SOURCE_BYTES, f"{spec['member']}: exceeds its ceiling"
                 )
                 data = archive.read(info)
-        except (KeyError, zipfile.BadZipFile) as error:
+        except (
+            KeyError,
+            zipfile.BadZipFile,
+            RuntimeError,
+            NotImplementedError,
+            EOFError,
+            zlib.error,
+        ) as error:
             raise ReportError(
                 f"{spec['asset']}: no member {spec['member']}: {error}"
             ) from error

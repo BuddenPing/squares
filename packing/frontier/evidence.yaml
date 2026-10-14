@@ -33874,18 +33874,19 @@ evidence:
     limitations: >-
       This atom records the source author's report of 85 exact rational certificates at
       4c319c2. A separate complete repository replay is retained for n = 68, 84, 86, 88,
-      102, 103, 105, 108, 110, 123, 126, 127, 129, 130, 131, 132, 155, 156, 175, 176, 179,
-      180, 206, 209, 232, 236, 238, 258, 259, 261, 264, 266, 267, 268, 269, 271, 292, 303
-      and 305: 39 positives and 78 duplicate-square and outside-container controls passed
-      their required outcomes on both routes, 4555860 pair decisions; summed over the 117
-      jobs, the receipt records 4836.27 route CPU seconds and 6992.23 job wall seconds, the
-      longest job 203.51 seconds. In every positive squares touch the box, a least wall
-      clearance of exactly 0, and every pair clears by at least 0. Independent review and
-      confirmation remain pending. The source's own checkers were not run here. The two
-      maintained routes, the sqpack rational witness verifier and the independent rational
-      corner checker, share certificate parsing, half-angle conversion, Fraction arithmetic
-      and the separating-axis method. No two independent methods, human oversight or
-      optimality is claimed.
+      102, 103, 105, 108, 110, 123, 126, 127, 129, 130, 131, 132, 146, 155, 156, 172, 175,
+      176, 179, 180, 181, 182, 199, 204, 206, 208, 209, 210, 211, 228, 232, 236, 237, 238,
+      239, 240, 241, 258, 259, 261, 263, 264, 266, 267, 268, 269, 270, 271, 272, 273, 292,
+      295, 297, 301, 303, 304, 305, 306, 307 and 308: 64 positives and 128 duplicate-square
+      and outside-container controls passed their required outcomes on both routes, 9164850
+      pair decisions; summed over the 192 jobs, the receipt records 14497.02 route CPU
+      seconds and 16968.51 job wall seconds, the longest job 509.89 seconds. In every
+      positive squares touch the box, a least wall clearance of exactly 0, and every pair
+      clears by at least 0. Independent review and confirmation remain pending. The source's
+      own checkers were not run here. The two maintained routes, the sqpack rational witness
+      verifier and the independent rational corner checker, share certificate parsing,
+      half-angle conversion, Fraction arithmetic and the separating-axis method. No two
+      independent methods, human oversight or optimality is claimed.
   - id: E-ostashev-575-certificate-report
     claim: upper-bound
     scope: {n_values: [176, 211, 241, 304]}

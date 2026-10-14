@@ -13566,6 +13566,44 @@ urls:
     kind: upper-bound
     scope:
       n_values:
+      - 211
+      - 241
+      - 273
+      - 307
+    established: null
+    attribution:
+      source_keys:
+      - '[Fang excess theorem 2026-10-13]'
+      published: '2026-10-12'
+    builds_on: null
+    evidence:
+    - E-fang-excess-theorem-report
+    - E-fang-excess-theorem-exact-feasibility
+    artifacts:
+    - packing/resources/web/fang-excess-theorem-2026-10-13/README.md
+    - packing/resources/web/fang-excess-theorem-2026-10-13/acquisition/claims.json
+    - packing/resources/web/fang-excess-theorem-2026-10-13/source/theorem/n015_F1.cert
+    - packing/resources/web/fang-excess-theorem-2026-10-13/source/theorem/n016_F1.cert
+    - packing/resources/web/fang-excess-theorem-2026-10-13/source/theorem/n017_F1.cert
+    - packing/resources/web/fang-excess-theorem-2026-10-13/source/theorem/n018_F1.cert
+    - packing/resources/web/fang-excess-theorem-2026-10-13/receipts/exact-certification.json.xz
+    - packing/resources/web/fang-excess-theorem-2026-10-13/source/tools/glue.py
+    - packing/resources/web/fang-excess-theorem-2026-10-13/receipts/inventory-and-deficiency.json
+    - packing/cases/asymptotic/fang_excess_inventory.py
+    - docs/project/reviews/review-2026-10-14-fang-excess-theorem-and-direct-certificates.md
+    - packing/devtools/upper_bound_reports.py
+- path: result/t-164.html
+  canonical: result/t-164.html
+  kind: result
+  generator: devtools.render_overview:result_fragments
+  producer: overview
+  first_published: '2026-10-14'
+  lastmod: '2026-10-14'
+  status: live
+  identity:
+    kind: upper-bound
+    scope:
+      n_values:
       - 302
     established: null
     attribution:
@@ -13581,8 +13619,8 @@ urls:
     - packing/resources/web/pingyou-n302-certificate-2026-10-12/facts/n-302.yaml.gz
     - packing/resources/web/pingyou-n302-certificate-2026-10-12/receipts/exact-certification.json.xz
     - packing/devtools/upper_bound_reports.py
-- path: result/t-164.html
-  canonical: result/t-164.html
+- path: result/t-165.html
+  canonical: result/t-165.html
   kind: result
   generator: devtools.render_overview:result_fragments
   producer: overview
@@ -13608,8 +13646,8 @@ urls:
     - packing/resources/web/couzo-certificates-2026-10-13/source/certificates/n176.cert
     - packing/resources/web/couzo-certificates-2026-10-13/receipts/exact-certification.json.xz
     - packing/devtools/upper_bound_reports.py
-- path: result/t-165.html
-  canonical: result/t-165.html
+- path: result/t-166.html
+  canonical: result/t-166.html
   kind: result
   generator: devtools.render_overview:result_fragments
   producer: overview
@@ -13635,8 +13673,8 @@ urls:
     - packing/resources/web/pingyou-n153-refinement-2026-10-12/facts/n-153.yaml.gz
     - packing/resources/web/pingyou-n153-refinement-2026-10-12/receipts/exact-certification.json.xz
     - packing/devtools/upper_bound_reports.py
-- path: result/t-166.html
-  canonical: result/t-166.html
+- path: result/t-167.html
+  canonical: result/t-167.html
   kind: result
   generator: devtools.render_overview:result_fragments
   producer: overview
@@ -13662,8 +13700,8 @@ urls:
     - packing/resources/web/pingyou-n207-refinement-2026-10-12/facts/n-207.yaml.gz
     - packing/resources/web/pingyou-n207-refinement-2026-10-12/receipts/exact-certification.json.xz
     - packing/devtools/upper_bound_reports.py
-- path: result/t-167.html
-  canonical: result/t-167.html
+- path: result/t-168.html
+  canonical: result/t-168.html
   kind: result
   generator: devtools.render_overview:result_fragments
   producer: overview
@@ -13689,8 +13727,8 @@ urls:
     - packing/resources/web/pingyou-n146-refinement-2026-10-12/facts/n-146.yaml.gz
     - packing/resources/web/pingyou-n146-refinement-2026-10-12/receipts/exact-certification.json.xz
     - packing/devtools/upper_bound_reports.py
-- path: result/t-168.html
-  canonical: result/t-168.html
+- path: result/t-169.html
+  canonical: result/t-169.html
   kind: result
   generator: devtools.render_overview:result_fragments
   producer: overview
@@ -13716,8 +13754,8 @@ urls:
     - packing/resources/web/pingyou-n261-refinement-2026-10-12/facts/n-261.yaml.gz
     - packing/resources/web/pingyou-n261-refinement-2026-10-12/receipts/exact-certification.json.xz
     - packing/devtools/upper_bound_reports.py
-- path: result/t-169.html
-  canonical: result/t-169.html
+- path: result/t-170.html
+  canonical: result/t-170.html
   kind: result
   generator: devtools.render_overview:result_fragments
   producer: overview
@@ -13743,8 +13781,8 @@ urls:
     - packing/resources/web/pingyou-n105-refinement-2026-10-12/facts/n-105.yaml.gz
     - packing/resources/web/pingyou-n105-refinement-2026-10-12/receipts/exact-certification.json.xz
     - packing/devtools/upper_bound_reports.py
-- path: result/t-170.html
-  canonical: result/t-170.html
+- path: result/t-171.html
+  canonical: result/t-171.html
   kind: result
   generator: devtools.render_overview:result_fragments
   producer: overview
@@ -13770,8 +13808,8 @@ urls:
     - packing/resources/web/pingyou-n272-refinement-2026-10-12/facts/n-272.yaml.gz
     - packing/resources/web/pingyou-n272-refinement-2026-10-12/receipts/exact-certification.json.xz
     - packing/devtools/upper_bound_reports.py
-- path: result/t-171.html
-  canonical: result/t-171.html
+- path: result/t-172.html
+  canonical: result/t-172.html
   kind: result
   generator: devtools.render_overview:result_fragments
   producer: overview
@@ -13797,8 +13835,8 @@ urls:
     - packing/resources/web/couzo-issue583-2026-10-13/source/certificates/n154.cert
     - packing/resources/web/couzo-issue583-2026-10-13/receipts/exact-certification.json.xz
     - packing/devtools/upper_bound_reports.py
-- path: result/t-172.html
-  canonical: result/t-172.html
+- path: result/t-173.html
+  canonical: result/t-173.html
   kind: result
   generator: devtools.render_overview:result_fragments
   producer: overview
@@ -13826,8 +13864,8 @@ urls:
     - packing/resources/web/mishapolk-exact-certificates-2026-10-12/facts/n-207.yaml.gz
     - packing/resources/web/mishapolk-exact-certificates-2026-10-12/receipts/exact-certification.json.xz
     - packing/devtools/upper_bound_reports.py
-- path: result/t-173.html
-  canonical: result/t-173.html
+- path: result/t-174.html
+  canonical: result/t-174.html
   kind: result
   generator: devtools.render_overview:result_fragments
   producer: overview
@@ -13917,50 +13955,15 @@ urls:
     artifacts:
     - packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md
     - packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/claims.json
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n068.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n084.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n086.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n088.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n102.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n103.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n105.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n108.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n110.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n123.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n126.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n127.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n129.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n130.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n131.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n132.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n155.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n156.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n175.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n176.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n179.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n180.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n206.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n209.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n232.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n236.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n238.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n258.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n259.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n261.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n264.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n266.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n267.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n268.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n269.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n271.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n292.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n303.json.xz
-    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/exact-certification-n305.json.xz
     - packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
     - packing/devtools/algebraic_witness_reports.py
     - packing/devtools/upper_bound_reports.py
-- path: result/t-174.html
-  canonical: result/t-174.html
+    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/algebraic-route1-n070.json.xz
+    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/algebraic-route1-n153.json.xz
+    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/algebraic-route1-n207.json.xz
+    - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/algebraic-route1-n302.json.xz
+- path: result/t-175.html
+  canonical: result/t-175.html
   kind: result
   generator: devtools.render_overview:result_fragments
   producer: overview
@@ -13990,8 +13993,8 @@ urls:
     - packing/resources/web/dostashev-merged-bands-2026-10-13/source/records/n0304.sqcert
     - packing/resources/web/dostashev-merged-bands-2026-10-13/receipts/exact-certification.json.xz
     - packing/devtools/upper_bound_reports.py
-- path: result/t-175.html
-  canonical: result/t-175.html
+- path: result/t-176.html
+  canonical: result/t-176.html
   kind: result
   generator: devtools.render_overview:result_fragments
   producer: overview
@@ -14020,8 +14023,8 @@ urls:
     - packing/resources/web/wand125-fine-net-n37-n39-n44-2026-10-13/receipts/control-sample-n39.json
     - packing/devtools/fine_net_followup.py
     - packing/devtools/audit_wand125_declared_net.py
-- path: result/t-176.html
-  canonical: result/t-176.html
+- path: result/t-177.html
+  canonical: result/t-177.html
   kind: result
   generator: devtools.render_overview:result_fragments
   producer: overview
@@ -14050,8 +14053,8 @@ urls:
     - packing/resources/web/wand125-fine-net-n37-n39-n44-2026-10-13/receipts/control-sample-n44.json
     - packing/devtools/fine_net_followup.py
     - packing/devtools/audit_wand125_declared_net.py
-- path: result/t-177.html
-  canonical: result/t-177.html
+- path: result/t-178.html
+  canonical: result/t-178.html
   kind: result
   generator: devtools.render_overview:result_fragments
   producer: overview
@@ -14080,44 +14083,6 @@ urls:
     - packing/resources/web/wand125-fine-net-n37-n39-n44-2026-10-13/receipts/control-sample-n37.json
     - packing/devtools/fine_net_followup.py
     - packing/devtools/audit_wand125_declared_net.py
-- path: result/t-178.html
-  canonical: result/t-178.html
-  kind: result
-  generator: devtools.render_overview:result_fragments
-  producer: overview
-  first_published: '2026-10-14'
-  lastmod: '2026-10-14'
-  status: live
-  identity:
-    kind: upper-bound
-    scope:
-      n_values:
-      - 211
-      - 241
-      - 273
-      - 307
-    established: null
-    attribution:
-      source_keys:
-      - '[Fang excess theorem 2026-10-13]'
-      published: '2026-10-13'
-    builds_on: null
-    evidence:
-    - E-fang-excess-theorem-report
-    - E-fang-excess-theorem-exact-feasibility
-    artifacts:
-    - packing/resources/web/fang-excess-theorem-2026-10-13/README.md
-    - packing/resources/web/fang-excess-theorem-2026-10-13/acquisition/claims.json
-    - packing/resources/web/fang-excess-theorem-2026-10-13/source/theorem/n015_F1.cert
-    - packing/resources/web/fang-excess-theorem-2026-10-13/source/theorem/n016_F1.cert
-    - packing/resources/web/fang-excess-theorem-2026-10-13/source/theorem/n017_F1.cert
-    - packing/resources/web/fang-excess-theorem-2026-10-13/source/theorem/n018_F1.cert
-    - packing/resources/web/fang-excess-theorem-2026-10-13/receipts/exact-certification.json.xz
-    - packing/resources/web/fang-excess-theorem-2026-10-13/source/tools/glue.py
-    - packing/resources/web/fang-excess-theorem-2026-10-13/receipts/inventory-and-deficiency.json
-    - packing/cases/asymptotic/fang_excess_inventory.py
-    - docs/project/reviews/review-2026-10-14-fang-excess-theorem-and-direct-certificates.md
-    - packing/devtools/upper_bound_reports.py
 - path: result/t-179.html
   canonical: result/t-179.html
   kind: result

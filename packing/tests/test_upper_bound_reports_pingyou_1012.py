@@ -43,14 +43,16 @@ STATED = {
 }
 #: What each count's frozen comparison names smallest: this certificate, another report,
 #: or the reports whose prints do not order them.
+#: Read at the exact sides this record retains for each later report (review A1 of #602):
+#: at 302 issues 583 and 586 state one certificate, and PR 574 refines every other count.
 SMALLEST: dict[str, dict[str, Any]] = {
-    N302: {"smallest": "#583"},
-    N153: {"smallest": None, "undecided_among": ["#573", "PR #574"]},
+    N302: {"smallest": None, "tied": ["#583", "#586"]},
+    N153: {"smallest": "PR #574"},
     N207: {"smallest": "PR #574"},
-    N146: {"smallest": None, "undecided_among": [reports.THIS, "PR #574"]},
+    N146: {"smallest": "PR #574"},
     N261: {"smallest": "PR #574"},
-    N105: {"smallest": "#593"},
-    N272: {"smallest": None, "undecided_among": [reports.THIS, "PR #574"]},
+    N105: {"smallest": "PR #574"},
+    N272: {"smallest": "PR #574"},
 }
 
 
@@ -123,14 +125,22 @@ def _certificate(literal: str) -> bytes:
     return json.dumps({"n": 1, "s_exact": literal, "squares": [["1/2", "1/2", "0"]]}).encode()
 
 
-def test_a_literal_is_read_up_to_the_ceiling_and_refused_beyond_it() -> None:
-    # At the ceiling the literal is longer than Python's default integer-string limit
-    # (4,300 digits), so the side is compared as a power of ten, not by converting `at`.
-    at = "1" + "0" * (reports.MAX_LITERAL_CHARS - 1)
-    certificate = reports.parse_certificate(_certificate(at), 1, "pingyou-json")
-    assert certificate.side == 10 ** (reports.MAX_LITERAL_CHARS - 1)
-    with pytest.raises(reports.ReportError, match="bounded rational"):
+def test_a_literal_is_read_up_to_the_integer_limit_and_refused_beyond_it() -> None:
+    # Each integer part may run to Python's integer-string limit, which every writer
+    # downstream shares; one digit more is refused as it is read, never as a traceback
+    # where it is written (review B5 of #602).
+    at = "1" + "0" * (reports.MAX_INTEGER_DIGITS - 1)
+    certificate = reports.parse_certificate(_certificate(f"{at}/{at[:-1]}"), 1, "pingyou-json")
+    assert certificate.side == 10
+    with pytest.raises(reports.ReportError, match="integer part longer"):
         reports.parse_certificate(_certificate(at + "0"), 1, "pingyou-json")
+    with pytest.raises(reports.ReportError, match="bounded rational"):
+        reports.parse_certificate(
+            _certificate("1" * (reports.MAX_LITERAL_CHARS + 1)), 1, "pingyou-json"
+        )
+    with pytest.raises(kernel.ReportError, match="invalid exact diagnostic"):
+        kernel._rational(at + "0")  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+    assert kernel.to_witness(certificate)["side"] == "10"
 
 
 def test_the_n272_receipt_states_a_pair_gap_longer_than_the_old_ceiling() -> None:
