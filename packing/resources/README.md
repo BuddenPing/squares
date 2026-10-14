@@ -1039,6 +1039,20 @@ T-135 records the n = 308 side at V3/C3, verified and not selected: the case ado
 issue #489’s smaller side (T-141). The n = 343 and 344 sides lie beyond the case corpus
 and are verified beyond-horizon rows.
 
+**[Fang excess theorem 2026-10-13]**: Kevin Fang’s Theorems 1 and 2,
+$s(n^2 - n + 1) < n$ for every $n \ge 15$ and $s(n^2 - n + F(n)) < n$ with
+$F(n) = 1 + \max\{p + 2q : 16p + 21q \le n - 15\}$, as the README at
+`078789a4cfd36f915f1bfbe76d742413d79b2965` states them for the note draft v0.6, which is
+not in the repository, with the six squeezable rectangles, the gluing program, Evan
+Daniel’s pieces and the tables of the theorem inventory, retained as the source wrote
+them; of the inventory’s 76 exact certificates at side $n - 1/20000$ for $n = 15..64$,
+six are retained and 70, 16 MB, are pinned by digest with their headers frozen in the
+packet; [packet](web/fang-excess-theorem-2026-10-13/README.md).
+Every header and table of the release holds exactly, and both project exact routes
+accept the six retained certificates and refuse their twelve controls; the other 70 wait
+for a hosted-data release and a W7 route, and the rectangles in both dimensions for a W7
+route. Bead `think-0esw` owns its stage 3 entries.
+
 **[SQUISH third request 2026-10-09]**: Nate Chaoweeraprasit’s exact rational
 certificates for n = 131, 153, 154, 207, 209, 232, 236, 237, 259, 263, 269, 270, 292,
 302, 303, 305 and 307, pinned at `d45669b48cc97ad3aa17a6c847a8d06630f66eac`, kept as

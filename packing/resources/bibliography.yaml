@@ -1701,6 +1701,25 @@ sources:
       and 307 squares; Daniel's certificate format and SQUISH's JSON layout. MIT verifier
       and CC0 certificates retained; Claude assistance disclosed. No exact form, local or
       global optimality claim.
+  - key: '[Fang excess theorem 2026-10-13]'
+    authors: [Fang]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-13'
+    lineage: independent
+    credit: Fang after Arslanov, Mustafin, Shangitbayev, Ellsworth, Stead, de Winter, Daniel, Couzo
+    short_credit: Fang after Arslanov et al.
+    note: >-
+      Theorems 1 and 2 of the note "Packing n^2 - n + 1 unit squares in a square of side
+      less than n, for every n >= 15" (draft v0.6, 2026-10-13, not in the repository), as
+      the README at 078789a4cfd36f915f1bfbe76d742413d79b2965 states them: s(n^2 - n + 1) < n
+      for every n >= 15, and s(n^2 - n + F(n)) < n with F(n) = 1 + max{p + 2q : 16p + 21q
+      <= n - 15}, by gluing squeezable 17 x 16 and 22 x 21 rectangles (Lemma 3,
+      tools/glue.py) in the decomposition of Arslanov, Mustafin and Shangitbayev. Retained
+      with six rectangles, Daniel's pieces and the theorem inventory's tables; of its 76
+      certificates at side n - 1/20000 (50 F(n), 26 best-excess) six are retained and 70
+      pinned by digest. No issue. MIT code; CC0 certificates outside theorem/, which
+      names no licence; Claude assistance disclosed. No optimality claim.
   - key: '[SQUISH third request 2026-10-09]'
     authors: [Chaoweeraprasit]
     year: 2026
