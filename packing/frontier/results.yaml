@@ -18752,7 +18752,10 @@ results:
 
       The id is T-155 because T-151 and T-152 were registered on main by jlevy/squares#553,
       T-153 by jlevy/squares#560 and T-154, Fitzharding's Lean proof that s(17) = L, by
-      jlevy/squares#588; a renumbering at merge follows the register's rule.
+      jlevy/squares#588; a renumbering at merge follows the register's rule. Reviews,
+      dispositions and pull-request text written before 14 October 2026, among them the
+      dated verification-gaps review of 13 October, call this batch "T-154"; they are not
+      edited, and their "T-154" is this entry, T-155.
 
       Of the views as drawings, the run's reclassification after registration admits 16,
       sends 3 to review (39, 204 and 299) and refuses 3 (53, 151 and 298), where a house or
