@@ -2473,7 +2473,7 @@ sources:
     venue: GitHub
     dated: '2026-10-12'
     lineage: credits-project
-    credit: Mishapolk after Xu, Chaoweeraprasit
+    credit: Mishapolk after Xu, Chaoweeraprasit, Levy
     short_credit: Mishapolk after Xu et al.
     note: >-
       Nineteen complete exact certificates at 336bdf5efab4784e54e0ac32edf3ed12f9c8af7e in
@@ -2525,8 +2525,8 @@ sources:
     venue: GitHub
     dated: '2026-10-14'
     lineage: credits-project
-    credit: Mishapolk after Couzo, Ostashev, Daniel et al.
-    short_credit: Mishapolk after Couzo et al.
+    credit: Mishapolk after Friedman, Daniel, Xu, Chaoweeraprasit, Barnett, Couzo, Ostashev, Ellsworth, Fang, Levy
+    short_credit: Mishapolk after Friedman et al.
     note: >-
       Seventy-three complete exact certificates at 46f638ce0537beeb1bad24242c6a3d357eecd9ee
       in Evan Daniel's format, issue 593, each admitted at the exact side_fraction of the

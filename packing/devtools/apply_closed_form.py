@@ -125,12 +125,6 @@ def stronger(n: int, a30: Decimal) -> str | None:
     return None
 
 
-def _front(n: int, frontier: Path) -> tuple[str, dict[str, Any], str]:
-    text = (frontier / f"n-{n:03d}.md").read_text(encoding="utf-8")
-    _, front, body = text.split("---\n", 2)
-    return front, safe_load(front)["packing"], body
-
-
 def _ours(field: Mapping[str, Any] | None) -> bool:
     return bool(field) and REPORT in (field.get("evidence") or [])
 
@@ -200,9 +194,18 @@ def paragraph(plan: Plan) -> str:
     )
 
 
+#: The line width the case records' writers dump their front matter at
+#: (`register_refinement_reports.dump`), so that a writer that re-renders a record this
+#: tool wrote leaves its block as it is.
+WIDTH = 96
+
+
 def _block(name: str, value: Mapping[str, Any]) -> str:
-    dumped = yaml.safe_dump({name: dict(value)}, allow_unicode=True, sort_keys=False, width=100)
-    return "".join("  " + line + "\n" for line in dumped.splitlines())
+    """The block as a whole front matter's dump writes it, under `packing:`."""
+    dumped = yaml.safe_dump(
+        {"packing": {name: dict(value)}}, allow_unicode=True, sort_keys=False, width=WIDTH
+    )
+    return "".join(line + "\n" for line in dumped.splitlines()[1:])
 
 
 def _replace_block(front: str, name: str, block: str) -> str:
@@ -222,7 +225,20 @@ def _append_list(front: str, name: str, items: Sequence[str]) -> str:
 
 def apply_case(plan: Plan, frontier: Path = FRONTIER) -> str:
     """The case record with this plan written into it."""
-    front, payload, body = _front(plan.n, frontier)
+    return apply_text(plan, (frontier / f"n-{plan.n:03d}.md").read_text(encoding="utf-8"))
+
+
+def replay(n: int, text: str) -> str:
+    """A record as this tool leaves it, for a writer's replay that runs before it: the
+    record unchanged where the closed form has no plan at `n`."""
+    plan = next((plan for plan in plans() if plan.n == n), None)
+    return text if plan is None else apply_text(plan, text)
+
+
+def apply_text(plan: Plan, text: str) -> str:
+    """The record `text` with this plan written into it."""
+    _, front, body = text.split("---\n", 2)
+    payload: dict[str, Any] = safe_load(front)["packing"]
     current: Mapping[str, Any] = payload.get("reported_lower_bound") or {}
     if plan.raise_reported:
         if not _ours(current) and str(current.get("value")) != str(plan.held["value"]):
@@ -239,9 +255,14 @@ def apply_case(plan: Plan, frontier: Path = FRONTIER) -> str:
     )
     keys = {resource.get("key") for resource in payload.get("resources") or []}
     if SOURCE_KEY not in keys:
-        dumped = yaml.safe_dump([RESOURCE], allow_unicode=True, sort_keys=False, width=100)
+        dumped = yaml.safe_dump(
+            {"packing": {"resources": [RESOURCE]}},
+            allow_unicode=True,
+            sort_keys=False,
+            width=WIDTH,
+        )
         front = _append_list(
-            front, "resources", ["".join("  " + line + "\n" for line in dumped.splitlines())]
+            front, "resources", ["".join(line + "\n" for line in dumped.splitlines()[2:])]
         )
     reviewed = max(str(payload.get("source_reviewed") or ""), INTAKE)
     front = re.sub(

@@ -1405,6 +1405,14 @@ def root_files() -> tuple[Path, ...]:
 # 3a5a91a90). Nothing copied changes; three portable workers are bounded at 648 MiB.
 # With this change's comments and tests counted, the snapshot measures 210,101,768
 # bytes, 16,390,648 under the raised cap.
+#
+# 2026-10-14, the records of the 14 October intake (T-161 to T-184): their artifacts
+# rescued 8,950,701 bytes and took the snapshot to 228,704,672, 2,212,256 over the cap.
+# T-173, PR #574's 68 counts, listed each count's fact file, 3,684,559 bytes; its
+# evidence names the facts directory and its claims record and receipts stay artifacts,
+# so the facts left its list. With this comment counted the snapshot measures
+# 225,015,055 bytes, 1,477,361 under the cap; the next intake of this size needs the
+# owner's decision on the cap or think-b6ir's narrower copy-back.
 SNAPSHOT_MAX_BYTES = 216 * 1024 * 1024
 DEFAULT_CONTROL_TIMEOUT_SECONDS = 120.0
 TERMINATION_GRACE_SECONDS = 1.0
