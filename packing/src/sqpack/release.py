@@ -751,7 +751,7 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
         ),
         reason=(
             "Each paper was rendered with its own command at main's 37e6757ed and at "
-            "d97e42f62. The explainer's 55 files are byte-identical; the optimality, "
+            "c6118ca59. The explainer's 55 files are byte-identical; the optimality, "
             "threshold-bound and methods papers' HTML, Markdown and PDF are byte-identical "
             "once the build commit their repository links pin is normalized. The inputs add "
             "a beyond-horizon-only register plan and four HOUSES readers, reached from the "
@@ -1007,7 +1007,7 @@ def validate_release_impacts(
 #: fresh render, so a link naming the build commit would fail their drift check forever. It is
 #: in no version string. It moves when the claim documents are regenerated for an edition. It
 #: must be a commit on `main`; the site's own links name `main` itself (`devtools.repo_links`).
-PUBLICATION_REVISION = "d97e42f6"
+PUBLICATION_REVISION = "c6118ca5"
 
 
 def data_pathspec() -> tuple[str, ...]:

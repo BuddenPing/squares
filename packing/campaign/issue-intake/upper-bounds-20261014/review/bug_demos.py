@@ -1,9 +1,9 @@
 """The two walk defects the review of 2026-10-14 reproduced, run against today's module.
 
-1. Two pending register bounds that overlap each other: at 7f3181aa4 `lowered` returned
+1. Two pending register bounds that overlap each other: at 1dc253e5e `lowered` returned
    the unlowered record and a claim above both bounds was recorded. The start is now the
    minimal set (`intake_ledger.minimal`), and the claim is not recorded.
-2. A frozen lane relation read in one order only: at 7f3181aa4 `compare(record, claim)`
+2. A frozen lane relation read in one order only: at 1dc253e5e `compare(record, claim)`
    ignored a relation that `compare(claim, record)` used, so a record a claim is decidably
    below stayed in the standing set. `compare` now reads it in both orders.
 

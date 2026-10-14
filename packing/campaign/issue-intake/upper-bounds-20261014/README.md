@@ -26,7 +26,7 @@ Exact sides marked as a lane's come from its `acquisition/claims.json` (and `alg
 | mishapolk | `claude/wizardly-meitner-wqn4x3-intake-1014-mishapolk` | `d4c198d0da8fe619bef0bccf18a8e6e32520c0f3` |  |
 | pingyou | `claude/wizardly-meitner-wqn4x3-intake-1014-pingyou` | `680123806e979029a25948aa98d9aaf5473ccc33` |  |
 | pr574 | `claude/wizardly-meitner-wqn4x3-intake-1014-pr574` | `56cf868c617975eaada5b0c10dab953cc6fa2e37` | the lane's final head (base b8c930338); its claim records differ from f817bf191, read earlier on 2026-10-14, only in the replayed flags of 21 rational rows |
-| main | `main` | `450bee031e14a4dc5f61861c2364fe22ff0e36ce` | the fang-certs lane's packet as merged; Fang's exact sides at 380 to 382 |
+| main | `main` | `7c672f5be85ea26003b7e210c65ced6aa3dec9f5` | the fang-certs lane's packet as merged; Fang's exact sides at 380 to 382 |
 | ostashev | `claude/wizardly-meitner-wqn4x3-intake-1014-ostashev` | `8d396177be2f7e5067a1d41d1edff12075f6d7af` |  |
 
 ## Per Report

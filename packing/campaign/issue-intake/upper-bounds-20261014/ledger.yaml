@@ -22,7 +22,7 @@ lanes:
     earlier on 2026-10-14, only in the replayed flags of 21 rational rows
 - name: main
   branch: main
-  commit: 450bee031e14a4dc5f61861c2364fe22ff0e36ce
+  commit: 7c672f5be85ea26003b7e210c65ced6aa3dec9f5
   note: the fang-certs lane's packet as merged; Fang's exact sides at 380 to 382
 - name: ostashev
   branch: claude/wizardly-meitner-wqn4x3-intake-1014-ostashev
@@ -4328,7 +4328,7 @@ reports:
     rounding: up
     exact: 1102997094976695021048786866207114120794307672281712078143966862895587101/55213970774324510460005687954914031282828270928685798549291030582132736
     exact_from: packing/resources/web/fang-direct-certificates-2026-10-13/acquisition/claims.json
-      at main@450bee031e14a4dc5f61861c2364fe22ff0e36ce
+      at main@7c672f5be85ea26003b7e210c65ced6aa3dec9f5
     first_committed: '2026-10-12T19:06:24Z'
     note: printed in https://github.com/TheSnakeFang/squarepack-certs/blob/078789a4cfd36f915f1bfbe76d742413d79b2965/README.md
     new_packing:
@@ -4338,7 +4338,7 @@ reports:
     rounding: up
     exact: 17234497240723668942314557127864871189472035564122930362827769318543721/862718293348820475141548404758626698746797696721330057918371520839680
     exact_from: packing/resources/web/fang-direct-certificates-2026-10-13/acquisition/claims.json
-      at main@450bee031e14a4dc5f61861c2364fe22ff0e36ce
+      at main@7c672f5be85ea26003b7e210c65ced6aa3dec9f5
     first_committed: '2026-10-12T19:06:24Z'
     note: printed in https://github.com/TheSnakeFang/squarepack-certs/blob/078789a4cfd36f915f1bfbe76d742413d79b2965/README.md
     new_packing:
@@ -4356,7 +4356,7 @@ reports:
     rounding: up
     exact: 269457653704352009538801091757719713332271894027604544062655799750885/13479973333575319909990991250831751289361739009640320293602072723456
     exact_from: packing/resources/web/fang-direct-certificates-2026-10-13/acquisition/claims.json
-      at main@450bee031e14a4dc5f61861c2364fe22ff0e36ce
+      at main@7c672f5be85ea26003b7e210c65ced6aa3dec9f5
     first_committed: '2026-10-13T00:05:31Z'
     note: printed in https://github.com/TheSnakeFang/squarepack-certs/blob/078789a4cfd36f915f1bfbe76d742413d79b2965/README.md
     new_packing:

@@ -32,7 +32,7 @@ lanes:
     earlier on 2026-10-14, only in the replayed flags of 21 rational rows
 - name: main
   branch: main
-  commit: 450bee031e14a4dc5f61861c2364fe22ff0e36ce
+  commit: 7c672f5be85ea26003b7e210c65ced6aa3dec9f5
   note: the fang-certs lane's packet as merged; Fang's exact sides at 380 to 382
 - name: ostashev
   branch: claude/wizardly-meitner-wqn4x3-intake-1014-ostashev

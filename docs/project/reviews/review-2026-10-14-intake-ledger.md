@@ -6,7 +6,7 @@ Mathematical and correctness review for coordinator session squares-43.
 Under review: `packing/devtools/intake_ledger.py`, `packing/tests/test_intake_ledger.py`
 and `packing/campaign/issue-intake/upper-bounds-20261014/` (sources.yaml,
 github-issues.json, ledger.yaml, ledger.json, README.md) at branch
-`claude/serene-hopper-xxh80m`, commit 7f3181aa4, read against `main` f73e9de13 (the
+`claude/serene-hopper-xxh80m`, commit 1dc253e5e, read against `main` f73e9de13 (the
 merge base; the branch changes nothing under `packing/frontier/`, so the tree the ledger
 reads its starts from equals that commit).
 The working tree was left as found.
@@ -650,12 +650,12 @@ of the seed (as #573’s 207 does of T-147) is a refinement whatever the author 
 ## Tree state at hand-off
 
 The checkout moved under this review: the reflog shows commits and merges by another
-session from 10:05Z (b7b313b89, db404882c, 37bb323c8, afb1f5b82), and at hand-off HEAD
-is afb1f5b82 with a merge of 0b3eb2dfa in progress (`.git/MERGE_HEAD`; `UU` conflicts in
+session from 10:05Z (b55524607, cb1ece1e9, c5ed6c3a6, 9f1aa645c), and at hand-off HEAD
+is 9f1aa645c with a merge of a87dec6ef in progress (`.git/MERGE_HEAD`; `UU` conflicts in
 `packing/resources/README.md` and `packing/resources/bibliography.yaml`). This review
 ran only read-only git commands (`show`, `cat-file`, `ls-tree`, `diff --stat`, `log`,
 `merge-base`, `branch`, `rev-parse`, `status`, `reflog`) and wrote only under its
-scratch directory. The reviewed files are identical between 7f3181aa4 and HEAD and
+scratch directory. The reviewed files are identical between 1dc253e5e and HEAD and
 unmodified in the working tree, and `packing/frontier/` at HEAD still equals main
 f73e9de13, so every statement above stands at both commits.
 
@@ -690,7 +690,7 @@ Fixed:
   It refuses to write one while `packing/frontier/` differs from that commit.
   `render` and `render --check` read only the snapshot and refuse one keyed to another
   commit. `check --tree` reports the counts where today’s tree would give another start,
-  and gates nothing; at 450bee031 it reports 0.
+  and gates nothing; at 7c672f5be it reports 0.
 - **M4.** `lowered` is gone.
   The start keeps every member that nothing else in it is decidably below (`minimal`).
   The case from `bug_demos.py` is a test.
@@ -712,7 +712,7 @@ jlevy/squares#598 at bd2ae5869, registers it as T-159, an S2 entry that moves no
 the rule’s verdict stays “not recorded, above T-146 by 2.43e-11”); and Fang’s exact
 sides at 380, 381 and 382 come from
 `packing/resources/web/fang-direct-certificates-2026-10-13/acquisition/claims.json` at
-`main` 450bee031.
+`main` 7c672f5be.
 
 Left as notes: m2 (the `binary64` span is an empirical envelope, not a bound), m3
 (claims added by an edit are dated by the announcing comment), m6 (#562’s 176) and m9
