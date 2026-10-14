@@ -595,6 +595,43 @@ repositories:
       centres and quaternions. Three-dimensional cube packing is outside this record, which is
       squares in a square. Nothing to import.
 
+  # The closing sweep of the 2026-10-11 pass found two heads past every pin and read; read on
+  # 2026-10-12 (think-58lu).
+  - url: https://github.com/RobertBarnettProjects/square-packing-research
+    read_through: 52cf1cc7ba006731ef76818267216c87bb63281e
+    read_on: '2026-10-12'
+    note: >-
+      Three commits of 11 October (14:28 to 14:44 UTC) past 2573ff5, #505's pin and the
+      barnett-refinements-2026-10-11 packet's. fa1322a adds six certificates of 10 October under
+      certificates/refinements-2026-10-10/, at 70, 103, 123, 129, 146 and 295, with
+      results/threshold-2026-10-10.json and a .gitattributes, and records the #505 submission in
+      results/review-2026-10-11.json; 9947091 adds diagrams of 146 and 261 under images/; 52cf1cc
+      moves those six, the five historical certificates (70, 103, 123, 237, 295, byte for byte)
+      and both dated result files under superseded/, with its README and archive-index.json.
+      certificates/n146.cert and n261.cert are unchanged. Each of the six states its exact side
+      in its header, and each file's SHA-256 is the one the threshold file gives; read here
+      exactly, the sides are above T-146's at 70, 103, 123, 129 and 295, by 1.31e-13 to
+      1.24e-12, and above T-150's at 146 by 4.89e-10. The author marks all of them superseded.
+      Nothing to import.
+  - url: https://github.com/wand125/square-packing
+    read_through: f30cc2cf345a3a3f6af778925f354d9ec979868b
+    read_on: '2026-10-12'
+    bead: think-xzob
+    note: >-
+      One commit of 12 October (01:00 UTC) past the 04fbef0 read: f30cc2c adds
+      tools/sqverify_continuous/, this repository's sqverify-fast with a continuous-angle mode
+      (v3, source_sha256 1266a8b9...), MIT code and CC BY 4.0 upstream documents. It decides a
+      rectangle density's capture at every angle and centre, so s(n) > L/B without a net, and its
+      n = 40 examples verify T-145's 1340000/199529 and #485's 3359/500 with refused controls:
+      the continuous-angle replay wand125 described in his review of #485. Its PROVENANCE.md
+      limits the independence: its author read Guzhou0806's continuous_pose.cpp, T-145's kernel,
+      while reviewing #485 before writing it, the two share an outline (a branch and bound over
+      (u, v, tan(theta/2)), concave-section lower bounds, translation derivatives and an
+      axis-aligned patch near t = 0), and "So this is independent code, but not an independent
+      method". That bears on any C-rung use. No packet retains it; think-xzob owns evaluating it
+      as a route for T-145 and the 6.718 claim. INDEX.json and two lines each of tools/README.md
+      and tools/THIRD_PARTY_NOTICES.md index it. Nothing else to import.
+
   # The intake pass of 2026-10-14 (think-abi1; survey think-fxs7).
   - url: https://github.com/ofitzharding/sq17-lean
     read_through: d9653fd3c0a86633eac921793dfcae43379792b9
@@ -606,25 +643,14 @@ repositories:
       uses eleven of wand125's #472 subpatterns and Overbeck's endpoint seed data through the
       exp-237 root certificate, and was developed independently of Overbeck's candidate. No Lean
       source, data or receipt changed. Nothing to import.
-  - url: https://github.com/RobertBarnettProjects/square-packing-research
-    read_through: 52cf1cc7ba006731ef76818267216c87bb63281e
-    read_on: '2026-10-14'
-    note: >-
-      Three commits of 11 October (UTC) past the barnett-refinements-2026-10-11 packet's 2573ff5.
-      fa1322a retains six certificates the author labels superseded,
-      certificates/refinements-2026-10-10/n070, n103, n123, n129, n146 and n295, each above the
-      record at its count (by 1.3e-13 to 4.9e-10; 146 is above T-150), with
-      results/threshold-2026-10-10.json and #505's publication metadata; 9947091 adds diagrams of
-      the n146 and n261 packings; 52cf1cc moves the superseded files into superseded/ with an
-      archive index, their bytes unchanged. Nothing to import.
   - url: https://github.com/wand125/square-packing
     read_through: 9a28a84bd55dc124bfa2919bb6c4fb504dda3149
     read_on: '2026-10-14'
     bead: think-xzob
     note: >-
-      The 22 commits of 12 to 14 October (UTC) from f30cc2c to 9a28a84 past the 04fbef0 read.
-      f30cc2c and d4a1981 add tools/sqverify_continuous (v3, then v4 with --resume), the
-      continuous-angle route for the two n = 40 lower bounds, which think-xzob owns (#533).
+      The 21 commits of 12 to 14 October (UTC) from d4a1981 to 9a28a84 past the f30cc2c read.
+      d4a1981 makes tools/sqverify_continuous v4, with --resume, the continuous-angle route for
+      the two n = 40 lower bounds, which think-xzob owns (#533).
       dfb2cf8, 9f24185, 7a42c16 and 22f06b3 add the mixed certificates s(39) >= 533/80, s(44) >=
       2799/400, s(37) >= 2599/400 and s(145) >= 306/25, which the
       wand125-fine-net-n37-n39-n44-2026-10-13 and wand125-linear-n145-2026-10-13 packets retain
