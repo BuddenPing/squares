@@ -103,13 +103,19 @@ VIEW_FILES = {
     "solved": "view-solved.yaml",
     "same_above_bound": "view-same.yaml",
 }
-RULE = (
-    "adoptable: both exact routes accept the view, its side is at most U and at most "
-    "today's drawn side, row 10 admits it, it is the view its run draws, and it improves "
-    f"on today's drawing under the policy's improvement rule ({improvement_rule.SECTION}): "
-    f"{improvement_rule.statement()} Chosen: the first adoptable view (Evan Daniel's, then "
-    "grid-slack by rising threshold) that no other adoptable view dominates"
-)
+def rule() -> str:
+    """The rule the selection reports: adoptability, with the policy's improvement rule
+    read from the policy when it is asked for, never at import, so a broken marker is the
+    named problem of the check that reads it (`improvement_rule.problems`) rather than an
+    import error of every module that imports this one."""
+    return (
+        "adoptable: both exact routes accept the view, its side is at most U and at most "
+        "today's drawn side, row 10 admits it, it is the view its run draws, and it "
+        "improves on today's drawing under the policy's improvement rule "
+        f"({improvement_rule.SECTION}): {improvement_rule.statement()} Chosen: the first "
+        "adoptable view (Evan Daniel's, then grid-slack by rising threshold) that no other "
+        "adoptable view dominates"
+    )
 
 
 @dataclass(frozen=True)
@@ -653,7 +659,7 @@ def select(
         "format": FORMAT,
         "generated_by": GENERATOR,
         "policy": driver.POLICY,
-        "rule": RULE,
+        "rule": rule(),
         "tree": str(tree),
         "runs": {
             "evand": [str(run.resolve()) for run in evand_runs],

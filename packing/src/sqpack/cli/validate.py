@@ -3682,7 +3682,7 @@ def _default_drawings(context: Context) -> str:
     # its house drawing, measured again on the improvement rule's goals and decided under the
     # policy's sections 11 and 12, then compared with the retained record the site and
     # the posters draw from. A regularized default that the rule refuses, a stale record,
-    # or a policy statement that stops naming a goal the code judges fails it; the counts
+    # or a policy goal list that differs from the goals the code judges fails it; the counts
     # that keep the house picture are listed and fail nothing.
     output = _module(context, "devtools.default_drawings", "--check")
     _require_text(output, "default drawings check passed")

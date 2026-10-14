@@ -6,28 +6,32 @@ making some improvement wrt our regularity or heuristic goals", and "that should
 codified in our regularization standards doc". So the rule is written once, in section 11
 of the regularization policy (`POLICY`), between the two markers below, and everything
 that applies it reads it from there: question 14 of the policy points to it,
-`devtools.regularize_select` prints it in its `RULE`, and `devtools.default_drawings`
-prints it with its check. Nothing else restates it.
+`devtools.regularize_select` prints it in its rule (`regularize_select.rule`), and
+`devtools.default_drawings` prints it with its check. Nothing else restates it.
 
-What the statement says, `judge` decides. Its goals are
+The marked statement is two sentences of rule and a list of its goals, one line each,
+`- <goal>: <direction>`. The sentences say what `judge` decides: a view improves on a
+drawing when it is worse on none of the goals and better on at least one; ties on the
+others are fine, and a tie on every goal is no improvement. They are printed, not parsed.
+The goal list is parsed exactly (`stated_goals`) and compared both ways with what the code
+judges (`problems`), name by name (`GOAL_NAMES`) and direction by direction
+(`DIRECTIONS`): a goal the policy adds that the code does not judge, a goal the code
+judges that the policy drops, a line that does not parse, and a direction that differs
+from the code's each fail the check. The goals are
 
 - **regularity**, the seven measures (`MEASURES`): five from the house renderer's
-  colouring of a drawing (`census_drawing_regularity.regularity`), fewer being better --
-  light, uneven and near-axis squares, distinct angle classes and hues -- and the house
-  and stage totals of full shared sides (`regularize_evand.contact_partners`), more being
-  better. `compare` reads them, as the selection always has;
+  colouring of a drawing (`census_drawing_regularity.regularity`), fewer being better
+  (`FEWER_IS_BETTER`, which `compare` reads) -- light, uneven and near-axis squares,
+  distinct angle classes and hues -- and the house and stage totals of full shared sides
+  (`regularize_evand.contact_partners`), more being better;
 - **the side**: a smaller exact side is better and a larger one worse;
 - **exactness**: an exactly verified view is better than a numerically checked witness.
   Every view the layer draws is exactly verified, so exactness is never worse.
-
-A view improves on a drawing when it is worse on none of these and better on at least one;
-ties on the others are fine, and a tie on every one is no improvement. `GOAL_WORDS` names
-the words the statement uses for each goal, so a goal added here and not to the policy,
-or taken out of the policy and not here, fails `problems`.
 """
 
 from __future__ import annotations
 
+import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from functools import cache
@@ -52,46 +56,113 @@ FEWER_IS_BETTER = frozenset(DRAWING_MEASURES)
 SIDE = "side"
 EXACTNESS = "exactness"
 GOALS = (*MEASURES, SIDE, EXACTNESS)
-#: The words the statement uses for each goal.
-GOAL_WORDS = {
-    "light_axis": "light",
-    "uneven_axis": "uneven",
-    "near_axis": "near-axis",
+#: Each goal's name in the policy's list.
+GOAL_NAMES = {
+    "light_axis": "light squares",
+    "uneven_axis": "uneven squares",
+    "near_axis": "near-axis squares",
     "classes": "angle classes",
     "hues": "hues",
-    "house_total": "house",
-    "stage_total": "stage",
-    SIDE: "smaller exact side",
-    EXACTNESS: "exactly verified",
+    "house_total": "house total of full shared sides",
+    "stage_total": "stage total of full shared sides",
+    SIDE: "exact side",
+    EXACTNESS: "exactness",
 }
+FEWER = "fewer is better"
+MORE = "more is better"
+SMALLER = "smaller is better"
+EXACT = "exactly verified is better than numerically checked"
+#: Each goal's direction as the code judges it: the measures' from `FEWER_IS_BETTER`,
+#: which `compare` reads, and the side's and exactness's from `judge`.
+DIRECTIONS = {
+    **{key: FEWER if key in FEWER_IS_BETTER else MORE for key in MEASURES},
+    SIDE: SMALLER,
+    EXACTNESS: EXACT,
+}
+_GOAL_LINE = re.compile(r"- (?P<name>[^:]+): (?P<direction>.+)")
 
 
-@cache
-def statement(policy: Path = POLICY) -> str:
-    """The rule as the policy states it, on one line: the text between the markers."""
+def _marked(policy: Path) -> str:
+    """The text between the markers, refused unless it is there once and not empty."""
     text = policy.read_text(encoding="utf-8")
     if text.count(BEGIN) != 1 or text.count(END) != 1:
         raise ValueError(f"{POLICY_DOCUMENT} must state the improvement rule once, marked")
     start, end = text.index(BEGIN) + len(BEGIN), text.index(END)
     if end < start:
         raise ValueError(f"{POLICY_DOCUMENT} closes the improvement rule before opening it")
-    words = " ".join(text[start:end].split())
-    if not words:
+    marked = text[start:end].strip()
+    if not marked:
         raise ValueError(f"{POLICY_DOCUMENT} marks an empty improvement rule")
-    return words
+    return marked
+
+
+def _parts(policy: Path) -> tuple[str, list[str]]:
+    """The marked statement's sentences, on one line, and its goal lines, each joined
+    with any lines a formatter wrapped it onto."""
+    sentences: list[str] = []
+    goals: list[str] = []
+    for line in _marked(policy).splitlines():
+        if line.startswith("- "):
+            goals.append(line.strip())
+        elif line.startswith(" ") and goals and line.strip():
+            goals[-1] = f"{goals[-1]} {line.strip()}"
+        elif line.strip():
+            sentences.append(line.strip())
+    return " ".join(" ".join(sentences).split()), [" ".join(goal.split()) for goal in goals]
+
+
+@cache
+def statement(policy: Path = POLICY) -> str:
+    """The rule as the policy states it, on one line: its sentences, then its goals."""
+    sentences, goals = _parts(policy)
+    listed = "; ".join(goal.removeprefix("- ") for goal in goals)
+    return f"{sentences} The goals: {listed}." if goals else sentences
+
+
+def stated_goals(policy: Path = POLICY) -> tuple[dict[str, str], list[str]]:
+    """The policy's goals, each name with its stated direction, and every goal line that
+    does not parse or names a goal twice."""
+    found: dict[str, str] = {}
+    unread: list[str] = []
+    for line in _parts(policy)[1]:
+        match = _GOAL_LINE.fullmatch(line)
+        if match is None or match["name"] in found:
+            unread.append(line)
+            continue
+        found[match["name"]] = match["direction"].rstrip(".;")
+    return found, unread
 
 
 def problems(policy: Path = POLICY) -> list[str]:
-    """What keeps the statement from being the rule `judge` applies."""
+    """Every way the policy's goals and the code's differ: a goal on one side only, a
+    direction stated otherwise than the code judges it, or a goal line that does not
+    parse."""
     try:
-        words = statement(policy)
+        statement(policy)
+        stated, unread = stated_goals(policy)
     except (OSError, ValueError) as error:
         return [str(error)]
-    return [
-        f"the improvement rule in {POLICY_DOCUMENT} does not name the goal {goal} ({phrase!r})"
-        for goal, phrase in GOAL_WORDS.items()
-        if phrase not in words
-    ]
+    where = f"the improvement rule in {POLICY_DOCUMENT}"
+    judged = {GOAL_NAMES[key]: DIRECTIONS[key] for key in GOALS}
+    found = [f"{where} has a goal line that does not parse: {line!r}" for line in unread]
+    found.extend(
+        f"{where} names the goal {name!r}, which the code does not judge"
+        for name in stated
+        if name not in judged
+    )
+    found.extend(
+        f"{where} does not name the goal {name!r} ({direction})"
+        for name, direction in judged.items()
+        if name not in stated
+    )
+    found.extend(
+        f"{where} states {name!r} as {stated[name]!r}; the code judges {direction!r}"
+        for name, direction in judged.items()
+        if name in stated and stated[name] != direction
+    )
+    if not stated and not unread:
+        found.append(f"{where} lists no goals")
+    return found
 
 
 def compare(

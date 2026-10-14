@@ -545,19 +545,31 @@ whether a drawn view is a count’s default picture in place of its house drawin
 A view improves on a drawing when it is worse than the drawing on none of the goals and
 better on at least one.
 Ties on the other goals are fine, and a tie on every goal is no improvement.
-The goals are regularity, measured by the house renderer’s colouring as light, uneven
-and near-axis squares, distinct angle classes and hues, fewer being better, and by the
-house and stage totals of full shared sides, more being better; the side, where a
-smaller exact side is better and a larger one worse; and exactness, where an exactly
-verified view is better than a numerically checked witness.
+
+- light squares: fewer is better
+- uneven squares: fewer is better
+- near-axis squares: fewer is better
+- angle classes: fewer is better
+- hues: fewer is better
+- house total of full shared sides: more is better
+- stage total of full shared sides: more is better
+- exact side: smaller is better
+- exactness: exactly verified is better than numerically checked
 
 <!-- END RULE: improvement -->
 
-The marked text is the rule’s one statement.
-`devtools.improvement_rule` reads it from this file and decides it, and its readers take
-it from there: `devtools.regularize_select` prints it in the rule it reports, and
-`devtools.default_drawings` prints it with its check, which also fails when the
-statement stops naming a goal the code judges.
+The marked text is the rule’s one statement: two sentences and its goals, one line each,
+with the direction in which each is better.
+The first five goals are regularity as the house renderer’s colouring shows it, counted
+by `devtools.census_drawing_regularity`; the house and stage totals are the full shared
+sides of `regularize_evand.contact_partners`; the exact side is a larger one worse; and
+exactness is an exactly verified view against a numerically checked witness.
+`devtools.improvement_rule` reads the statement from this file and decides it, and its
+readers take it from there: `devtools.regularize_select` prints it in the rule it
+reports, and `devtools.default_drawings` prints it with its check.
+That check parses the goal lines and compares them with the goals and directions the
+code judges, both ways, so a goal added or dropped here, or a direction changed, fails
+it until the code agrees.
 Every view the layer draws is exactly verified, so exactness is never worse.
 A change to the rule is an owner decision recorded here, made to the statement and to
 the code together.

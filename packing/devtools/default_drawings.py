@@ -32,10 +32,10 @@ drawing on every goal: there the picture is the same, and the house is the recor
 `--update` writes `atlas/known-best/default-drawings.json`: one entry a drawn view, with
 its default, the reason, both drawings' measures and the goals the view is better and
 worse on. `--check` measures every view again and fails when the record is not what the
-data gives, when a regularized default breaks the rule, or when the policy's statement
-stops naming a goal the rule judges. It lists, failing nothing, each count that keeps the
-house picture and why: "no gain", "above U, not in the exceptions", a goal it is worse on,
-or an exact route's refusal. It costs about 20 cpu-seconds for the 90 views of
+data gives, when a regularized default breaks the rule, or when the policy's goals or
+their directions differ from the ones the code judges (`improvement_rule.problems`). It
+lists, failing nothing, each count that keeps the house picture and why: "no gain",
+"above U, not in the exceptions", a goal it is worse on, or an exact route's refusal. It costs about 20 cpu-seconds for the 90 views of
 13 October 2026: 5.5 seconds of wall at four workers on a quiet host, and 24 to 34
 seconds in the records tier on a host other work was loading.
 
