@@ -68,8 +68,13 @@ after (the census's `witness_shades` on both files), the residual regressions, t
 verification and the side difference. A record whose view would change no square is
 `unchanged` and keeps no file; a record the tool cannot regularize is `refused`, with its
 reason. `--check-atlas` is cheap: it compares the index with the manifest, the witnesses
-and the retained views by digest and re-verifies nothing. `--verify-atlas` re-derives every
-record and requires the index and the views to come out identical.
+and the retained views by digest and re-verifies nothing; it also holds every drawn view's
+exact side to the witness's own side `s_W` and to its case record's verified upper bound
+`U`, decided exactly (`regularize_evand.verified_bound`), with the views above `U` named in
+`ABOVE_U`.
+`--verify-atlas` re-derives every record and requires the index and the views to come out
+identical, and decides every other generator's view again, its square count, identity and
+shades measured again.
 
 The index's SHA-256 values are cache keys, not integrity claims (development.md, "Hashes
 and Repository-Owned Artifacts"). The source's says whether a view was derived from the
@@ -100,7 +105,7 @@ import json
 import math
 import tempfile
 import time
-from collections.abc import Collection, Sequence
+from collections.abc import Collection, Mapping, Sequence
 from concurrent.futures import Future, ProcessPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from fractions import Fraction
@@ -141,6 +146,7 @@ WITNESS_SCHEMA = WITNESSES / "witness.schema.yaml"
 FORBIDDEN_OUTPUT_ROOTS = (WITNESSES, ROOT / "atlas")
 MANIFEST = ROOT / "atlas/known-best/manifest.json"
 ATLAS_DIR = ROOT / "atlas/known-best/regularized"
+FRONTIER = ROOT / "frontier"
 
 ATLAS_CONTRACT = "packing.squares:RegularizedAtlasIndex/v2"
 """The layer's index contract. v2 (12 October 2026, think-k35c) names each entry's
@@ -1557,6 +1563,9 @@ class AtlasLayout:
     directory: Path
     certificates: Path
     """Searched for `*/n-NNN-rational.yaml.gz`, the retained rational certificates."""
+    frontier: Path | None = None
+    """The case records, whose verified upper bounds `U` every drawn view's side is held to;
+    None in a scratch tree that keeps none, where the check holds no side to `U`."""
 
     @property
     def index(self) -> Path:
@@ -1573,7 +1582,7 @@ class AtlasLayout:
         return WITNESS_SCHEMA.relative_to(self.directory.resolve(), walk_up=True).as_posix()
 
 
-ATLAS = AtlasLayout(ROOT, REPO, MANIFEST, ATLAS_DIR, WITNESSES)
+ATLAS = AtlasLayout(ROOT, REPO, MANIFEST, ATLAS_DIR, WITNESSES, FRONTIER)
 
 
 def digest(data: bytes) -> str:
@@ -1738,24 +1747,31 @@ def atlas_record(
         "passed": passed,
     }
     record["regularization"] = axis_regularization(
-        n, witness, report, measured_in=layout.relative(layout.index)
+        n,
+        witness,
+        report,
+        side=Fraction(str(view["side"])),
+        measured_in=layout.relative(layout.index),
     )
     return record, text if passed else None, time.perf_counter() - started
 
 
 def axis_regularization(
-    n: int, witness: dict[str, Any], report: dict[str, Any], *, measured_in: str
+    n: int, witness: dict[str, Any], report: dict[str, Any], *, side: Fraction, measured_in: str
 ) -> dict[str, Any]:
     """This tool's view of a record as the register's `regularizations` item would state
     it (`results.schema.yaml`), with `of_witness` standing in for `of` until the frontier
     record resolves the source witness to the registered result that holds its packing.
 
     The view keeps the frame's side, so it is `same` unless a dilated frame was asked
-    for; the identity is `square_identity`'s, measured here and retained in the index
-    (`measured_in`). It records no `changes`: the register counts there the free squares
-    a regularizer turns, and the squares this tool straightens are any within the snap
-    tolerance of the axes, load-bearing or not, so their largest turn is the identity's
-    `max_turn_deg` instead.
+    for. `same` is decided as the other generators decide it, against `s_W`
+    (`witness_side`, policy section 2), never against the printed decimal: a decimal
+    witness's `s_W` is its 36-digit promotion's side, which lies a rounding above the
+    decimal at 106, 110, 152, 172 and 301 (#548 review B2). The identity is
+    `square_identity`'s, measured here and retained in the index (`measured_in`). It
+    records no `changes`: the register counts there the free squares a regularizer turns,
+    and the squares this tool straightens are any within the snap tolerance of the axes,
+    load-bearing or not, so their largest turn is the identity's `max_turn_deg` instead.
     """
     identity = report["identity"]
     record: dict[str, Any] = {
@@ -1763,7 +1779,7 @@ def axis_regularization(
         "of_witness": witness["id"],
         "by": PROJECT_REGULARIZER,
         "method": ALGORITHM,
-        "side": "same" if report["exact_frame"]["side_minus_reported"] == "0" else "solved",
+        "side": "same" if side == witness_side(witness) else "solved",
     }
     record["identity"] = {
         "basis": "measured",
@@ -1908,7 +1924,7 @@ def carried_index(
             for key, value in (committed.get("generators") or {}).items()
             if key in used
         },
-        runs=[run for run in committed.get("runs") or [] if run["id"] in runs],
+        runs=costed_once([run for run in committed.get("runs") or [] if run["id"] in runs]),
     )
 
 
@@ -2069,8 +2085,9 @@ def _totals_line(totals: dict[str, Any]) -> str:
 
 def check_atlas(layout: AtlasLayout, *, smallest_dilation: bool = False) -> list[str]:
     """The cheap check: the index against the manifest, the witnesses and the retained
-    views, by digest, and each other generator's view against its entry by reading it.
-    It re-derives and re-verifies nothing."""
+    views, by digest, and each other generator's view against its entry by reading it;
+    every drawn view's side against `s_W` and against its case record's `U`
+    (`_bound_problems`). It re-derives and re-verifies nothing."""
     index = _committed_index(layout)
     if index is None:
         return [f"{layout.relative(layout.index)} is missing; run --update-atlas"]
@@ -2090,16 +2107,19 @@ def check_atlas(layout: AtlasLayout, *, smallest_dilation: bool = False) -> list
     if index.get("totals") != _normalized(atlas_totals(records)):
         problems.append("index totals do not sum its entries")
     problems.extend(_generator_problems(index, records))
+    problems.extend(_cost_problems(index.get("runs") or []))
     by_n = {record["n"]: record for record in records}
     entries = manifest_entries(layout)
     if sorted(by_n) != sorted(entry["n"] for entry in entries) or len(by_n) != len(records):
         problems.append("index entries are not exactly the manifest's n, once each")
     kept: set[str] = set()
+    sides: dict[int, Fraction] = {}
     for entry in entries:
         record = by_n.get(entry["n"])
         if record is None:
             continue
-        problems.extend(_check_record(layout, entry, record, kept))
+        problems.extend(_check_record(layout, entry, record, kept, sides))
+    problems.extend(_bound_problems(layout, by_n, sides))
     problems.extend(
         f"unexpected file {layout.relative(path)}"
         for path in sorted(layout.directory.iterdir())
@@ -2136,7 +2156,11 @@ def _generator_problems(index: dict[str, Any], records: Sequence[dict[str, Any]]
 
 
 def _check_record(
-    layout: AtlasLayout, entry: dict[str, Any], record: dict[str, Any], kept: set[str]
+    layout: AtlasLayout,
+    entry: dict[str, Any],
+    record: dict[str, Any],
+    kept: set[str],
+    sides: dict[int, Fraction],
 ) -> list[str]:
     n = entry["n"]
     source = layout.packing / entry["witness"]["path"]
@@ -2167,9 +2191,13 @@ def _check_record(
             )
         if not record["exact_verification"]["passed"]:
             problems.append(f"n={n}: recorded exact verification did not pass")
-        problems.extend(_regularization_problems(n, record))
+        decoded = text.decode("utf-8")
+        side = view_side(decoded)
+        sides[n] = side
+        own = witness_side(load_yaml(source.read_text(encoding="utf-8"))["witness"])
+        problems.extend(_regularization_problems(n, record, side=side, own=own))
         if drawn_elsewhere(record):
-            problems.extend(_drawn_view_problems(layout, record, text.decode("utf-8")))
+            problems.extend(_drawn_view_problems(record, decoded, own=own))
     elif status in {"unchanged", "refused"}:
         if drawn_elsewhere(record):
             problems.append(f"n={n}: {status} by {generator}, which records only views")
@@ -2180,13 +2208,23 @@ def _check_record(
     return problems
 
 
-def _regularization_problems(n: int, record: dict[str, Any]) -> list[str]:
+def _regularization_problems(
+    n: int, record: dict[str, Any], *, side: Fraction, own: Fraction | None
+) -> list[str]:
     """A drawn view's regularization, in the register's terms, is of this record's
-    witness, by this project, and names the generator that made it."""
+    witness, by this project, and names the generator that made it; its `side` is `same`
+    exactly when the view's side `s_V` is the witness's own `s_W` (#548 review B2), for
+    every generator's view."""
     item = record.get("regularization")
     if not isinstance(item, dict):
         return [f"n={n}: a drawn view carries no regularization record"]
     problems: list[str] = []
+    expected = "same" if own is not None and side == own else "solved"
+    if item.get("side") != expected:
+        problems.append(
+            f"n={n}: the regularization's side is {item.get('side')!r}, and the view is "
+            f"{'at' if expected == 'same' else 'not at'} the witness's own side s_W"
+        )
     if item.get("n") != n or item.get("of_witness") != record["source"]["id"]:
         problems.append(f"n={n}: the regularization is not of this record's witness")
     if item.get("by") != PROJECT_REGULARIZER:
@@ -2207,7 +2245,9 @@ METHOD_MARKS = {
 """What each generator's regularization `method` names, so a record says who made it."""
 
 
-def _drawn_view_problems(layout: AtlasLayout, record: dict[str, Any], text: str) -> list[str]:
+def _drawn_view_problems(
+    record: dict[str, Any], text: str, *, own: Fraction | None
+) -> list[str]:
     """What another generator's admitted view says against its entry, read from the view.
 
     The view is the count's own Witness/v2 document labelled a regularized view of the
@@ -2242,8 +2282,6 @@ def _drawn_view_problems(layout: AtlasLayout, record: dict[str, Any], text: str)
     side = record["side"]
     if str(view.get("side")) != side["view"]:
         problems.append(f"n={n}: the view's side is not its entry's")
-    witness = load_yaml((layout.repo / record["source"]["witness"]).read_text(encoding="utf-8"))
-    own = witness_side(witness["witness"])
     if (side["relation"] == "same") != (Fraction(side["view"]) == own):
         problems.append(f"n={n}: the side relation {side['relation']!r} is not the view's")
     if (side["relation"] == "same") != (record["regularization"]["side"] == "same"):
@@ -2270,6 +2308,157 @@ def witness_side(witness: dict[str, Any]) -> Fraction | None:
         )
         return Fraction(side)
     return None
+
+
+def view_side(text: str) -> Fraction:
+    """A view's exact side `s_V`, read from the document's head, before its squares."""
+    head = text.split("\n  squares:\n", 1)[0]
+    found = (load_yaml(head).get("witness") or {}).get("side")
+    if found is None:
+        found = load_yaml(text)["witness"]["side"]
+    return Fraction(str(found))
+
+
+def case_bound(frontier: Path, n: int) -> dict[str, Any] | None:
+    """The case record's verified upper bound `U` (its `value` and `exact_form`), or None
+    where the record states none or there is no record."""
+    path = frontier / f"n-{n:03d}.md"
+    if not path.is_file():
+        return None
+    front = load_yaml(path.read_text(encoding="utf-8").split("---\n", 2)[1])
+    return (front.get("packing") or {}).get("verified_upper_bound") or None
+
+
+ABOVE_U: dict[int, str] = {
+    18: "Evan Daniel's view, 3.7e-31 above a closed-form optimum no rational side reaches "
+    "(question 4's status quo); the owner keeps it (13 October 2026)",
+    26: "Evan Daniel's view, 5.5e-30 above a closed-form optimum no rational side reaches "
+    "(question 4's status quo); the owner keeps it (13 October 2026)",
+    66: "Evan Daniel's view, 1.2e-30 above a closed-form optimum no rational side reaches "
+    "(question 4's status quo); the owner keeps it (13 October 2026)",
+    85: "Evan Daniel's view, 9.1e-31 above a closed-form optimum no rational side reaches "
+    "(question 4's status quo); the owner keeps it (13 October 2026)",
+    110: "the axis tool's view at Couzo's decimal side s_W, 2.8e-12 above Evan Daniel's "
+    "exact optimum; the view at U draws fewer shared sides, and the owner keeps it "
+    "(13 October 2026, think-jnso)",
+    241: "the grid-slack view at Couzo's decimal side s_W, 1.3e-11 above Evan Daniel's "
+    "exact optimum; the view at U draws fewer shared sides, and the owner keeps it "
+    "(13 October 2026, think-jnso)",
+    297: "the grid-slack view at Couzo's decimal side s_W, 4.5e-12 above Evan Daniel's "
+    "exact optimum; the view at U goes to the owner at row 7, who keeps this one "
+    "(13 October 2026)",
+}
+"""Every count the layer draws above its case's verified upper bound `U`, and why it stays
+(think-du42; the owner, 13 October 2026: a valid view is exactly verified "with equal or
+smaller side"): the exceptions policy section 9, question 13 names (#580 review B2), the
+selection layer having redrawn 87, 106, 152, 172, 182, 206, 268 and 301 at `U`. The list
+is measured, not chosen: `--check-atlas` fails on a view above `U` at a count not named
+here, and on a count named here once its view is no longer above `U`, so it can only
+shrink on purpose; `tests/test_regularize_select.py` holds the committed layer to it."""
+
+
+def _bound_problems(
+    layout: AtlasLayout, records: Mapping[int, dict[str, Any]], sides: Mapping[int, Fraction]
+) -> list[str]:
+    """Every drawn view's exact side `s_V` against its case record's `U` (#548 review B1),
+    decided exactly as the driver holds `U` (`regularize_evand.verified_bound`: a closed
+    form as the one root of its minimal polynomial in a rational interval, never a rounded
+    value): a view below `U` is a new result, registered before it is drawn (policy
+    section 4, row 3); a `bound` view is exactly at `U`; another generator's entry records
+    `s_V - U` as the driver prints it; and a view above `U` is one `ABOVE_U` names."""
+    if layout.frontier is None:
+        return []
+    from devtools import regularize_evand as driver  # noqa: PLC0415 - it imports this module
+
+    problems: list[str] = []
+    above: set[int] = set()
+    for n, side in sorted(sides.items()):
+        record = records[n]
+        bound = case_bound(layout.frontier, n) or {}
+        held = driver.verified_bound(
+            {"verified_upper_bound": bound.get("value"), "exact_form": bound.get("exact_form")}
+        )
+        if held is None:
+            problems.append(f"n={n}: its case record states no verified upper bound U")
+            continue
+        sign = held.compare(side)
+        if sign is None:
+            problems.append(f"n={n}: U's exact form is not read exactly: {held.unread}")
+            continue
+        gap = f"{held.difference(side):.3e}"
+        if sign < 0:
+            problems.append(
+                f"n={n}: the view is {gap} from U, below it: a new result, registered "
+                "before it is drawn (row 3)"
+            )
+        if sign > 0:
+            above.add(n)
+            if n not in ABOVE_U:
+                problems.append(
+                    f"n={n}: the view is {gap} above U, at a count ABOVE_U does not name"
+                )
+        if not drawn_elsewhere(record):
+            continue
+        if record["side"]["relation"] == "bound" and sign != 0:
+            problems.append(f"n={n}: the relation is 'bound', but the view is {gap} from U")
+        found = record["side"].get("view_minus_verified_upper_bound")
+        if found != gap:
+            problems.append(f"n={n}: view_minus_verified_upper_bound is {found!r}, not {gap!r}")
+    problems.extend(
+        f"n={n}: ABOVE_U names it, but no view is drawn above U there; take it off the list"
+        for n in sorted(set(ABOVE_U) - above)
+    )
+    return problems
+
+
+def costed_once(runs: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
+    """The runs with each cost recorded once (#548 review B5).
+
+    `regularize_evand reclassify` decides a finished run again without re-running a stage,
+    on a copy of its directory, and leaves the receipt's cost as it was, so the copy's run
+    block repeats the source run's CPU and wall seconds. A run whose seconds are an
+    earlier-listed run's, both nonzero, is that copy: it keeps its parameters and
+    decisions, names the run it was copied from (`reclassified_from`), and records no cost
+    of its own, so the layer's runs sum each cost once (OR-9).
+    """
+    first: dict[tuple[Any, Any], str] = {}
+    kept: list[dict[str, Any]] = []
+    for run in runs:
+        cost = run.get("cost") or {}
+        key = (cost.get("cpu_seconds"), cost.get("wall_seconds"))
+        if run.get("reclassified_from") or not any(key):
+            kept.append(run)
+            continue
+        if key not in first:
+            first[key] = str(run["id"])
+            kept.append(run)
+            continue
+        kept.append(
+            {
+                **run,
+                "reclassified_from": first[key],
+                "cost": {
+                    "cpu_seconds": 0.0,
+                    "wall_seconds": 0.0,
+                    "workers": cost.get("workers", 1),
+                    "note": (
+                        f"reclassified from {first[key]} without re-running a stage; "
+                        "that run's cost is recorded there"
+                    ),
+                },
+            }
+        )
+    return kept
+
+
+def _cost_problems(runs: Sequence[dict[str, Any]]) -> list[str]:
+    """Each run's cost is recorded once (`costed_once`)."""
+    once = costed_once(runs)
+    return [
+        f"index run {run['id']} repeats run {once_run['reclassified_from']}'s cost"
+        for run, once_run in zip(runs, once, strict=True)
+        if run != once_run
+    ]
 
 
 ADMITTING_ROW = 10
@@ -2408,12 +2597,37 @@ def view_corners(view: dict[str, Any]) -> tuple[Fraction, list[Corners]]:
     return Fraction(str(view["side"])), squares
 
 
+IDENTITY_FIELDS = ("one_to_one", "moved", "max_move", "max_turn_deg")
+"""The identity measurements a regularization records, as `decide_drawn_view` re-measures
+them."""
+
+
+def measured_identity(witness: dict[str, Any], view: dict[str, Any]) -> dict[str, Any]:
+    """Obligation 3's identity of another generator's view against its source witness, as
+    both of them measure it at admission (`regularize_evand.identity`: the half-angle
+    route's `arrangement_gap` against the witness's frame) and record it in the register's
+    terms (`IDENTITY_FIELDS`)."""
+    from devtools import regularize_evand as driver  # noqa: PLC0415 - it imports this module
+
+    frame = driver.source_frame(witness)
+    side, placements, _corners = driver.view_geometry(view)
+    reference = frame.side if frame.side is not None else Fraction(frame.side_text)
+    found = driver.identity((side, placements), (reference, frame.placements), (), "witness")
+    measured: dict[str, Any] = {"one_to_one": bool(found.get("one_to_one"))}
+    for key, kind in (("moved", int), ("max_move", float), ("max_turn_deg", float)):
+        if found.get(key) is not None:
+            measured[key] = kind(found[key])
+    return measured
+
+
 def decide_drawn_view(
     record: dict[str, Any], layout: AtlasLayout
 ) -> tuple[int, list[str], float]:
     """One other generator's view decided again over Q on both maintained routes, the
-    repository's separating-axis verifier and the independent checker, and its house and
-    stage shades measured again by the census, against its entry. Runs in a worker."""
+    repository's separating-axis verifier and the independent checker, with n squares; its
+    identity against the source witness measured again (`measured_identity`) and held to
+    the regularization's at the precision recorded; and its house and stage shades
+    measured again by the census, against its entry. Runs in a worker."""
     started = time.perf_counter()
     n = record["n"]
     path = layout.repo / record["view"]["path"]
@@ -2421,6 +2635,16 @@ def decide_drawn_view(
     view = load_yaml(text)["witness"]
     side, squares = view_corners(view)
     problems: list[str] = []
+    if len(squares) != n:
+        problems.append(f"n={n}: the drawn view holds {len(squares)} squares")
+    source = load_yaml((layout.repo / record["source"]["witness"]).read_text(encoding="utf-8"))
+    recorded = record["regularization"]["identity"]
+    measured = measured_identity(source["witness"], view)
+    if measured != {key: recorded.get(key) for key in IDENTITY_FIELDS if key in measured}:
+        problems.append(
+            f"n={n}: the drawn view's identity measures {measured}, its entry records "
+            f"{ {key: recorded.get(key) for key in IDENTITY_FIELDS} }"
+        )
     if not verify_packing(squares, side, sign=rational_sign, bucket=True).valid:
         problems.append(f"n={n}: the repository verifier refuses the drawn view")
     if not independent.check_squares(squares, side)["verification_passed"]:

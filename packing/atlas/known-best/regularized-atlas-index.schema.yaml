@@ -102,6 +102,12 @@ $defs:
       decisions:
         type: object
         additionalProperties: {type: integer, minimum: 0}
+      reclassified_from:
+        description: >-
+          The run this one decided again on a copy of its directory without re-running a
+          stage: its cost is recorded there, and this run's is zero.
+        type: string
+        pattern: '^[a-z0-9-]+$'
       cost:
         type: object
         additionalProperties: false
@@ -298,6 +304,13 @@ $defs:
           regressions: {type: integer, minimum: 0}
           level: {type: [integer, 'null']}
           groups: {type: array, items: {type: integer}}
+          source_note:
+            description: >-
+              Said where a grid-slack run's report records no exact side of the witness it
+              read: the view is held to the admitting checkout's witness by the
+              measurements made again at admission.
+            type: string
+            minLength: 1
       regularization: {$ref: '#/$defs/regularization'}
       reference: {$ref: '#/$defs/axis_record'}
   histograms:

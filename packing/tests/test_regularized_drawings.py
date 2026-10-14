@@ -53,9 +53,15 @@ def entry(n: int, relation: str | None = None) -> dict[str, Any]:
 
 
 def test_the_packing_is_the_result_holding_it_at_the_side_drawn() -> None:
-    def resolve(n: int, key: str | None, relation: str | None = None, holders=()) -> Any:
+    def resolve(
+        n: int, key: str | None, relation: str | None = None, holders=(), *, at_u: bool = True
+    ) -> Any:
         return drawings.packing_result(
-            entry(n, relation), RESULTS, source_key=key, bound_holders=list(holders)
+            entry(n, relation),
+            RESULTS,
+            source_key=key,
+            bound_holders=list(holders),
+            side_at_bound=at_u,
         )
 
     assert resolve(5, "[A]").of == "T-001"
@@ -65,6 +71,29 @@ def test_the_packing_is_the_result_holding_it_at_the_side_drawn() -> None:
     assert "several" in resolve(6, "[A]").reason
     assert resolve(6, "[A]", "bound", ["T-002"]).of == "T-002"
     assert resolve(6, "[A]", "bound", []).of is None
+    # A later result that lowers U leaves a `bound` view at a side no result holds: it is
+    # not credited to whoever holds the bound now (#548 review B1).
+    moved = resolve(6, "[A]", "bound", ["T-002"], at_u=False)
+    assert moved.of is None
+    assert "no longer the verified upper bound" in moved.reason
+
+
+def test_an_axis_view_is_at_the_side_its_regularization_states() -> None:
+    axis_view = entry(5)
+    assert drawings.relation(axis_view) == "same"
+    solved = {**axis_view, "regularization": {**axis_view["regularization"], "side": "solved"}}
+    assert drawings.relation(solved) == "solved"
+    found = drawings.packing_result(solved, RESULTS, source_key="[A]", bound_holders=[])
+    assert found.of is None
+    assert "row 4" in found.reason
+
+
+def test_an_exact_side_is_at_the_bound_only_where_the_bound_is_rational() -> None:
+    drawn = {**entry(6, "bound"), "side": {"relation": "bound", "view": "1449/250"}}
+    assert drawings.at_bound(drawn, {"value": "5.796", "exact_form": None})
+    assert drawings.at_bound(drawn, {"value": "5.80", "exact_form": "1449/250"})
+    assert not drawings.at_bound(drawn, {"value": "5.797", "exact_form": None})
+    assert not drawings.at_bound(drawn, {"value": "5.79", "exact_form": "3 + 2 sqrt(2)"})
 
 
 def test_a_witness_side_exactly_at_the_bound_falls_back_to_the_bound_holder() -> None:
@@ -119,12 +148,14 @@ def test_a_bound_two_results_prove_is_held_by_the_one_that_registered_the_view()
             side_at_bound=at,
         )
 
-    assert resolve(6, "bound").of == "T-154"
+    # A `bound` view resolves only while its side is the bound (#548 review B1).
+    assert resolve(6, "bound", at=True).of == "T-154"
+    assert resolve(6, "bound").of is None
     assert resolve(7, "same", at=True).of == "T-154"
     # A `bound` drawing where the registering result's item is on the other side, or a
     # count no item names, keeps both holders and so no answer.
-    assert resolve(7, "bound").of is None
-    assert "T-101" in resolve(7, "bound").reason
+    assert resolve(7, "bound", at=True).of is None
+    assert "T-101" in resolve(7, "bound", at=True).reason
     assert drawings.registering_holders(8, ["T-101", "T-154"], registering, side="solved") == [
         "T-101",
         "T-154",
@@ -173,3 +204,27 @@ def test_the_checker_holds_each_item_to_the_register() -> None:
         "regularized drawing at n = 9: identity.moved, 10, is more squares than n = 9",
         "regularized drawing at n = 5 is both an item and unregistered",
     ]
+
+
+def test_the_generated_block_check_fails_on_an_edited_block() -> None:
+    """`problems` holds the committed block to what the layer's index generates, so an
+    edit to it fails the records tier rather than passing until the next regeneration
+    (#548 review B6)."""
+    text = drawings.RESULTS.read_text(encoding="utf-8")
+    index = drawings.index_document()
+    assert drawings.problems(text, index) == []
+    head, block = drawings.split(text)
+    named = safe_load(block)[drawings.KEY]["items"]
+    first, second = named[0], named[1]
+
+    edited = block.replace(f"      of: {first['of']}\n", "      of: T-999\n", 1)
+    assert edited != block
+    (problem,) = drawings.problems(head + edited, index)
+    assert problem.startswith(f"results.yaml's {drawings.KEY} differs")
+
+    renumbered = block.replace(f"    - n: {second['n']}\n", "    - n: 999\n", 1)
+    (problem,) = drawings.problems(head + renumbered, index)
+    assert f"items for [{second['n']}] missing, [999] extra" in problem
+
+    (problem,) = drawings.problems(head, index)
+    assert "missing" in problem
