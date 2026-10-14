@@ -14,7 +14,7 @@ import pytest
 import yaml
 from kpress.format.markdown import parse_markdown
 
-from devtools import import_changelog, render_changelog
+from devtools import import_changelog, render_changelog, render_overview
 from devtools.repo_links import repo_url
 
 
@@ -95,8 +95,10 @@ def test_shared_renderer_orders_links_math_and_anchors() -> None:
         assert text.index("2026-10-14") < text.index("2026-10-13") < text.index("2026-10-12")
         assert 'id="foundations"' in text
         assert "https://github.com/jlevy/squares/pull/497" in text
-        assert "$n = 304$" in text
-        assert "  - Pinned source" in text
+    assert "$n = 304$" in github
+    assert "  - Pinned source" in github
+    assert "<math" in site
+    assert "Pinned source" in site
     assert "[Evidence](packing/frontier/results.yaml)" in github
     assert (
         "[Evidence](https://github.com/jlevy/squares/blob/main/packing/frontier/results.yaml)"
@@ -154,7 +156,9 @@ def test_markdown_rejects_html_and_unsafe_links_preserves_code() -> None:
     data = document()
     data["entries"][0]["summary"] = "`<b>` and `[policy](README.md)` are code."
     render_changelog.validate(data)
-    assert "`[policy](README.md)`" in render_changelog.render_markdown(data, destination="site")
+    assert "<code>[policy](README.md)</code>" in render_changelog.render_markdown(
+        data, destination="site"
+    )
 
 
 def test_kpress_preserves_math_and_unique_stable_ids() -> None:
@@ -169,6 +173,81 @@ def test_kpress_preserves_math_and_unique_stable_ids() -> None:
     assert "<math" in tree.html
     assert "<ul>" in tree.html
     assert '<h4 id="foundations">Foundations</h4>' in tree.html
+
+
+def test_math_generated_markup_and_urls_are_rejected_through_full_about(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    payloads = [
+        r"$\text{</mtext></math><script>forbidden</script>}$",
+        r"$\href{javascript:alert(1)}{X}$",
+        r"$\href{http://example.com/proof}{X}$",
+        r"$\href{mailto:person@example.com}{X}$",
+        r'$\text{<img src="https://example.com/a.png" onerror="forbidden">}$',
+    ]
+    for field in ("summary", "details"):
+        for payload in payloads:
+            data = document()
+            data["entries"][0][field] = payload
+            monkeypatch.setattr(render_changelog, "load", lambda data=data: data)
+            with pytest.raises(ValueError, match=r"unsafe|sanitized|raw HTML"):
+                render_overview.about_page()
+            with pytest.raises(ValueError, match=r"unsafe|sanitized|raw HTML"):
+                render_changelog.validate(data)
+            with pytest.raises(ValueError, match=r"unsafe|sanitized|raw HTML"):
+                render_changelog.render_markdown(data)
+
+
+def test_normal_math_and_safe_math_links_survive_full_about(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    data = document()
+    data["entries"][0]["summary"] = (
+        r"A **bound** is $\left(\frac{x}{2}\right)^2$; "
+        r"$\href{https://example.com/proof(1)}{X}$ is its reference."
+    )
+    data["entries"][0]["details"] = (
+        "- Matrix:\n\n" + r"$$\begin{pmatrix}1&2\\3&4\end{pmatrix}$$"
+    )
+    monkeypatch.setattr(render_changelog, "load", lambda: data)
+    about = render_overview.about_page().html
+    assert "<math" in about
+    assert "<mfrac>" in about
+    assert "<mtable" in about
+    assert "<strong>bound</strong>" in about
+    assert 'href="https://example.com/proof%281%29"' in about
+    assert data["entries"][0]["summary"] in render_changelog.render_markdown(data)
+
+
+def test_reference_labels_are_local_to_each_summary_and_details() -> None:
+    data = document()
+    data["entries"][0]["summary"] = "First [source].\n\n[source]: https://example.com/first"
+    data["entries"][0]["details"] = (
+        "Details [source][].\n\n[source]: https://example.com/details"
+    )
+    data["entries"][1]["summary"] = (
+        "Second [**source**][source].\n\n[source]: https://example.com/second"
+    )
+    data["entries"][1]["details"] = (
+        r"`[source]` and $\text{[source]}$ remain code and math."
+        "\n\n[source]: https://example.com/unused"
+    )
+    github = render_changelog.render_markdown(data)
+    assert "`[source]`" in github
+    assert r"$\text{[source]}$" in github
+    for destination in ("github", "site"):
+        tree = parse_markdown(
+            render_changelog.render_markdown(data, destination=destination), title="Changelog"
+        )
+        links = {
+            (html.unescape(href), label)
+            for href, label in re.findall(
+                r'<a\b[^>]*href="([^"]+)"[^>]*>(.*?)</a>', tree.html, re.DOTALL
+            )
+        }
+        assert ("https://example.com/first", "source") in links
+        assert ("https://example.com/details", "source") in links
+        assert ("https://example.com/second", "<strong>source</strong>") in links
 
 
 def test_structured_links_reject_decoded_markup_and_unsafe_authorities() -> None:

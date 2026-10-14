@@ -565,7 +565,11 @@ def changelog_checks(text: str) -> list[tuple[bool, str]]:
             *(f"{document['repository']}/pull/{number}" for number in entry["pull_requests"]),
             *(artifact["target"] for artifact in entry.get("artifacts", [])),
         ]
-        if missing := [target for target in targets if target not in links]:
+        if missing := [
+            target
+            for target in targets
+            if render_changelog.serialized_target(target, destination="site") not in links
+        ]:
             problems.append(f"{entry['id']}: missing launch/PR links {missing}")
     line = (
         f"about.html: changelog: {'; '.join(problems[:5])}"

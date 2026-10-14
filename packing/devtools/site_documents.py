@@ -291,6 +291,12 @@ def rewrite_link(url: str, *, tag: str, context: LinkContext, report: LinkReport
     document = _BY_SOURCE.get(path)
     if path in context.aliases:
         link = context.aliases[path]
+        if path == repo_links.CHANGELOG:
+            landing, _, default_anchor = link.partition("#")
+            chosen_anchor = anchor or default_anchor
+            link = landing + (f"#{chosen_anchor}" if chosen_anchor else "")
+            if chosen_anchor:
+                report.anchors.append((landing, unquote(chosen_anchor), url))
     elif document is not None:
         if anchor:
             report.anchors.append((document.name, unquote(anchor), url))
@@ -442,6 +448,12 @@ def render_document(
 def unresolved(pages: dict[str, Page], report: LinkReport) -> list[str]:
     """Every link the render could not resolve, missing files and anchors together."""
     ids = {name: element_ids(page.html) for name, page in pages.items()}
+    # Reader documents are also rendered on their own. About is a record landing,
+    # so validate its anchors against the actual page even in that partial build.
+    if "about.html" not in ids and any(
+        name == "about.html" for name, _anchor, _url in report.anchors
+    ):
+        ids["about.html"] = element_ids(render_overview.about_page().html)
     problems = [f"no such path in the tree: {url}" for url in report.missing]
     problems += [
         f"no heading #{anchor} in {name}: {url}"

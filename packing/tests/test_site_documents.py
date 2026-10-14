@@ -158,6 +158,31 @@ def _record_context(base: str = "") -> LinkContext:
 
 
 @pytest.mark.parametrize(
+    ("url", "anchor"),
+    [
+        ("CHANGELOG.md", "changelog"),
+        ("CHANGELOG.md#regularization-foundations", "regularization-foundations"),
+        ("CHANGELOG.md#missing-entry", "missing-entry"),
+    ],
+)
+def test_changelog_alias_preserves_and_checks_the_about_landing(url: str, anchor: str) -> None:
+    report = LinkReport()
+    rewritten = rewrite_link(url, tag="a", context=_record_context(), report=report)
+    assert rewritten == f"about.html#{anchor}"
+    assert report.anchors == [("about.html", anchor, url)]
+    assert not report.missing
+    page = render_overview.Page(
+        "about.html",
+        '<article><h2 id="changelog">Changelog</h2>'
+        '<h4 id="regularization-foundations">Regularization</h4></article>',
+    )
+    problems = unresolved({"about.html": page}, report)
+    assert problems == (
+        [f"no heading #{anchor} in about.html: {url}"] if anchor == "missing-entry" else []
+    )
+
+
+@pytest.mark.parametrize(
     ("link", "base", "expected"),
     [
         # A result's id, plain or as code, is its row in the results table.

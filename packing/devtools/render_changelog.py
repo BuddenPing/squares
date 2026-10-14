@@ -14,14 +14,20 @@ import sys
 from collections.abc import Sequence
 from datetime import date, datetime
 from functools import cache
+from html.parser import HTMLParser
 from ipaddress import IPv6Address
 from pathlib import Path, PurePosixPath
-from typing import Any, Literal
+from typing import Any, Literal, override
 from urllib.parse import SplitResult, quote, unquote, urlsplit
 
 import yaml
 from jsonschema_rs import Draft202012Validator
+from kpress.format.markdown import parse_markdown
+from kpress.format.model import DocumentTree
 from markdown_it import MarkdownIt
+from markdown_it.common.normalize_url import normalizeLink
+from markdown_it.rules_inline import StateInline
+from markdown_it.rules_inline.link import link as inline_link
 from markdown_it.token import Token
 from mdit_py_plugins.attrs import attrs_block_plugin, attrs_plugin
 from mdit_py_plugins.dollarmath import dollarmath_plugin
@@ -46,14 +52,6 @@ FOOTER = (
     "<!-- This document follows common-doc-guidelines.md.\n"
     "See github.com/jlevy/practical-prose and review guidelines before editing.\n-->"
 )
-_CODE = re.compile(r"(`+)(.*?)(?<!`)\1(?!`)", re.DOTALL)
-_FENCE = re.compile(
-    r"^([ \t]*)(`{3,}|~{3,})[^\n]*\n.*?^\1\2[^\n]*(?:\n|$)", re.MULTILINE | re.DOTALL
-)
-_INLINE_LINK = re.compile(r"(\]\([ \t]*)(<?)([^\s<>]+?)(>?)(?=[ \t]*(?:[\"']|\)))")
-_REFERENCE = re.compile(
-    r"(^[ \t]{0,3}\[[^]\n]+\]:[ \t]*)(<?)([^\s<>]+)(>?)(?=[ \t]*(?:[\"']|$))", re.MULTILINE
-)
 
 
 @cache
@@ -62,7 +60,9 @@ def _validator() -> Draft202012Validator:
 
 
 def _markdown() -> MarkdownIt:
-    parser = MarkdownIt("commonmark", {"html": True})
+    parser = MarkdownIt(
+        "commonmark", {"html": True, "store_labels": True, "inline_definitions": True}
+    )
 
     # The default parser leaves unsafe links as plain text. Parse them so authoring
     # fails visibly instead of silently changing how a purported link is displayed.
@@ -137,11 +137,139 @@ def _https_authority(parts: SplitResult, target: str) -> None:
         raise ValueError(f"unsafe HTTPS authority: {target}")
 
 
+class _RenderedURLs(HTMLParser):
+    """Apply the changelog URL policy to safe HTML, including generated MathML links."""
+
+    def __init__(self, destination: Destination) -> None:
+        super().__init__(convert_charrefs=False)
+        self.destination: Destination = destination
+        self.parts: list[str] = []
+
+    def _start(self, tag: str, attrs: list[tuple[str, str | None]], closing: str) -> None:
+        serialized = []
+        for name, value in attrs:
+            safe_value = (
+                serialized_target(value, destination=self.destination)
+                if name in {"href", "src", "xlink:href"} and value
+                else value
+            )
+            serialized.append(
+                name
+                if safe_value is None
+                else f'{name}="{html.escape(safe_value, quote=True)}"'
+            )
+        suffix = " " + " ".join(serialized) if serialized else ""
+        self.parts.append(f"<{tag}{suffix}{closing}>")
+
+    @override
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        self._start(tag, attrs, "")
+
+    @override
+    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        self._start(tag, attrs, "/")
+
+    @override
+    def handle_endtag(self, tag: str) -> None:
+        self.parts.append(f"</{tag}>")
+
+    @override
+    def handle_data(self, data: str) -> None:
+        self.parts.append(data)
+
+    @override
+    def handle_entityref(self, name: str) -> None:
+        self.parts.append(f"&{name};")
+
+    @override
+    def handle_charref(self, name: str) -> None:
+        self.parts.append(f"&#{name};")
+
+    @override
+    def handle_comment(self, data: str) -> None:
+        self.parts.append(f"<!--{data}-->")
+
+
+@cache
+def _sanitized_prose(text: str) -> DocumentTree:
+    tree = parse_markdown(text, title="Changelog prose", trust_mode="sanitized")
+    for diagnostic in tree.diagnostics:
+        if diagnostic.type == "html_sanitized_tag" or (
+            diagnostic.type == "html_sanitized_attribute"
+            and re.search(
+                r"attribute '(?:on[^']*|href|src|xlink:href|style|srcdoc|action|"
+                r"formaction|background|ping|poster)'",
+                diagnostic.message,
+            )
+        ):
+            raise ValueError(f"unsafe generated prose: {diagnostic.message}")
+    # Generic normalization warnings and benign MathML presentation attributes (for
+    # example `fence`) are not active content. The sanitized output remains authoritative.
+    return tree
+
+
+def _inline_references(text: str, tokens: list[Token], env: dict[str, Any]) -> str:
+    """Resolve each field's definitions before unrelated fields share one document."""
+    if not env.get("references"):
+        return text
+    lines = text.splitlines(keepends=True)
+    blocks: dict[str, str] = {}
+    ranges = [
+        token
+        for token in tokens
+        if token.map and token.type in {"definition", "math_block", "math_block_label"}
+    ]
+    for token in sorted(
+        ranges, key=lambda token: token.map[0] if token.map else -1, reverse=True
+    ):
+        assert token.map is not None
+        start, end = token.map
+        if token.type == "definition":
+            lines[start:end] = ["\n"]
+        else:
+            marker = f"\x00MATH{start}\x00"
+            blocks[marker] = "".join(lines[start:end])
+            lines[start:end] = [marker]
+    source = "".join(lines)
+    parser = _markdown()
+    replacements: list[tuple[int, int, str]] = []
+
+    def reference_link(state: StateInline, silent: bool) -> bool:  # noqa: FBT001 -- parser callback signature
+        start = state.pos
+        if state.src[start] != "[":
+            return inline_link(state, silent)
+        label_end = state.md.helpers.parseLinkLabel(state, start, disableNested=True)
+        count = len(state.tokens)
+        accepted = inline_link(state, silent)
+        if accepted and not silent and label_end >= 0:
+            link_token = next(
+                (token for token in state.tokens[count:] if token.type == "link_open"), None
+            )
+            if link_token is not None and link_token.meta.get("label"):
+                label = state.src[start + 1 : label_end]
+                target = serialized_target(
+                    str(link_token.attrGet("href")), destination="github"
+                )
+                title = link_token.attrGet("title")
+                quoted = f' "{html.escape(str(title), quote=True)}"' if title else ""
+                replacements.append((start, state.pos, f"[{label}]({target}{quoted})"))
+        return accepted
+
+    parser.inline.ruler.at("link", reference_link)
+    parser.inline.parse(source, parser, env, [])
+    for start, end, replacement in sorted(replacements, reverse=True):
+        source = source[:start] + replacement + source[end:]
+    for marker, block in blocks.items():
+        source = source.replace(marker, block)
+    return source.strip()
+
+
 def _prose(text: str, *, destination: Destination = "github") -> str:
     if not text.strip():
         raise ValueError("blank changelog prose")
     env: dict[str, Any] = {}
-    tokens = _walk(_markdown().parse(text, env))
+    parsed = _markdown().parse(text, env)
+    tokens = _walk(parsed)
     for token in tokens:
         if set(token.attrs) - {"href", "title", "start"}:
             raise ValueError("Markdown HTML attributes are not allowed in changelog prose")
@@ -151,40 +279,15 @@ def _prose(text: str, *, destination: Destination = "github") -> str:
             raise ValueError("changelog prose accepts paragraphs, inline code, math, and lists")
         if token.type == "link_open":
             _target(str(token.attrGet("href")), destination=destination)
-    for reference in env.get("references", {}).values():
+    for reference in [*env.get("references", {}).values(), *env.get("duplicate_refs", [])]:
         _target(reference["href"], destination=destination)
+    tree = _sanitized_prose(text)
+    rendered = _RenderedURLs(destination)
+    rendered.feed(tree.html)
+    rendered.close()
     if destination == "github":
-        return text.strip()
-    # Protect code spans before rewriting source link destinations. The Markdown
-    # parser above is the safety boundary; these substitutions only change addresses
-    # and leave math, emphasis, indentation and authored wording intact.
-    protected: list[str] = []
-
-    def hide(match: re.Match[str]) -> str:
-        protected.append(match.group(0))
-        return f"\x00CODE{len(protected) - 1}\x00"
-
-    rewritten = _CODE.sub(hide, _FENCE.sub(hide, text))
-
-    def link(match: re.Match[str]) -> str:
-        target = match.group(3)
-        # A URL's closing parenthesis can also be the Markdown delimiter. Resolve
-        # only the balanced destination, then leave the delimiters in the source.
-        suffix = ""
-        while target.endswith(")") and target.count(")") > target.count("("):
-            target, suffix = target[:-1], ")" + suffix
-        return (
-            match.group(1)
-            + match.group(2)
-            + _target(target, destination=destination)
-            + suffix
-            + match.group(4)
-        )
-
-    rewritten = _REFERENCE.sub(link, _INLINE_LINK.sub(link, rewritten))
-    for index, code in enumerate(protected):
-        rewritten = rewritten.replace(f"\x00CODE{index}\x00", code)
-    return rewritten.strip()
+        return _inline_references(text, parsed, env).strip()
+    return "".join(rendered.parts).strip()
 
 
 def _day(value: str, label: str) -> None:
@@ -410,11 +513,16 @@ def _text(value: str) -> str:
     return re.sub(r"([\\`*_{}\[\]#!|])", r"\\\1", escaped)
 
 
-def _markdown_link(label: str, target: str, *, destination: Destination) -> str:
-    """Keep URL delimiters inside one link before trusted Markdown reaches kpress."""
+def serialized_target(target: str, *, destination: Destination = "site") -> str:
+    """The canonical URL written to a rendered link, shared with publication audits."""
     resolved = _target(target, destination=destination)
     encoded = quote(resolved, safe=":/?#@!$&*+,;=%-._~[]")
-    return f"[{_text(label)}]({encoded})"
+    return normalizeLink(encoded)
+
+
+def _markdown_link(label: str, target: str, *, destination: Destination) -> str:
+    """Keep URL delimiters inside one link before trusted Markdown reaches kpress."""
+    return f"[{_text(label)}]({serialized_target(target, destination=destination)})"
 
 
 def _component_label(component: str) -> str:

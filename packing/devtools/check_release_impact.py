@@ -116,28 +116,142 @@ def _assignments(content: bytes | None) -> dict[str, ast.expr]:
     return fields
 
 
+# Published metadata has explicit owners; unknown declarations remain conservative
+# candidates through the executable-AST comparison below, rather than disappearing.
+_PUBLISHED_RELEASE_FIELDS: dict[str, tuple[str, ...]] = {
+    "site": (
+        "PUBLICATION_HISTORY",
+        "PUBLICATION_VERSION",
+        "PUBLICATION_STATUS",
+        "PUBLICATION_EDITION",
+        "PUBLICATION_STAMP",
+        "PUBLICATION_DATE",
+        "FIRST_PUBLISHED",
+    ),
+    "infographics": ("INFOGRAPHIC_HISTORY", "INFOGRAPHIC_VERSION", "INFOGRAPHIC_EDITION"),
+    "paper:n11-lower-bounds-explainer": (
+        "EXPLAINER_HISTORY",
+        "EXPLAINER_VERSION",
+        "EXPLAINER_REVISED",
+        "EXPLAINER_FIRST_PUBLISHED",
+    ),
+    "paper:n11-optimality-review": (
+        "OPTIMALITY_REVIEW_HISTORY",
+        "OPTIMALITY_REVIEW_VERSION",
+        "OPTIMALITY_REVIEW_STATUS",
+        "OPTIMALITY_REVIEW_EDITION",
+        "OPTIMALITY_REVIEW_REVISED",
+        "OPTIMALITY_PROOF_PUBLISHED",
+    ),
+    "paper:n11-threshold-bound-review": (
+        "THRESHOLD_REVIEW_HISTORY",
+        "THRESHOLD_REVIEW_VERSION",
+        "THRESHOLD_REVIEW_STATUS",
+        "THRESHOLD_REVIEW_EDITION",
+        "THRESHOLD_REVIEW_REVISED",
+        "THRESHOLD_PROOF_PUBLISHED",
+    ),
+    "paper:square-packing-methods-survey": (
+        "PACKING_METHODS_HISTORY",
+        "PACKING_METHODS_VERSION",
+        "PACKING_METHODS_EDITION",
+        "PACKING_METHODS_FIRST_PUBLISHED",
+        "PACKING_METHODS_REVISED",
+    ),
+}
+_PIN_FIELDS = {"DATA_REVISION", "PUBLICATION_REVISION"}
+_BOOKKEEPING_RECORDS = {
+    "RELEASE_IMPACTS": "ReleaseImpactDecision",
+    "RELEASE_NO_PUBLIC_CHANGES": "ReleaseNoPublicChange",
+}
+
+
 def _visible_release_fields(fields: Mapping[str, ast.expr], component: str) -> dict[str, str]:
-    history = release.COMPONENT_HISTORY_NAMES[component]
-    prefix = history.removesuffix("HISTORY")
-    names = {
-        history,
-        *(
-            prefix + suffix
-            for suffix in ("VERSION", "STATUS", "EDITION", "REVISED", "FIRST_PUBLISHED")
-        ),
-    }
-    if component == "site":
-        names.add("PUBLICATION_DATE")
-        # Edition expressions carry the implementation of the data suffix. The
-        # authoritative version, draft state, dates and history own the public identity.
-        names.discard("PUBLICATION_EDITION")
-    if component == "infographics":
-        names.discard("INFOGRAPHIC_EDITION")
     return {
         name: ast.dump(fields[name], include_attributes=False)
-        for name in names
+        for name in _PUBLISHED_RELEASE_FIELDS.get(component, ())
         if name in fields
     }
+
+
+def _assignment_names(node: ast.stmt) -> set[str]:
+    targets = (
+        node.targets
+        if isinstance(node, ast.Assign)
+        else ([node.target] if isinstance(node, ast.AnnAssign) else [])
+    )
+    if targets and all(isinstance(target, ast.Name) for target in targets):
+        return {target.id for target in targets if isinstance(target, ast.Name)}
+    return set()
+
+
+def _literal_record_sequence(value: ast.expr, constructor: str) -> bool:
+    if not isinstance(value, (ast.Tuple, ast.List)):
+        return False
+    for record in value.elts:
+        if (
+            not isinstance(record, ast.Call)
+            or not isinstance(record.func, ast.Name)
+            or record.func.id != constructor
+            or any(keyword.arg is None for keyword in record.keywords)
+        ):
+            return False
+        try:
+            for item in [*record.args, *(keyword.value for keyword in record.keywords)]:
+                ast.literal_eval(item)
+        except ValueError, TypeError:
+            return False
+    return True
+
+
+def _bookkeeping_assignment(node: ast.stmt, names: set[str]) -> bool:
+    if len(names) != 1 or not isinstance(node, (ast.Assign, ast.AnnAssign)):
+        return False
+    name = next(iter(names))
+    value = node.value
+    if value is None:
+        return False
+    if name in _PIN_FIELDS:
+        return (
+            isinstance(value, ast.Constant)
+            and isinstance(value.value, str)
+            and (
+                not isinstance(node, ast.AnnAssign)
+                or ast.dump(node.annotation) == "Name(id='str', ctx=Load())"
+            )
+        )
+    constructor = _BOOKKEEPING_RECORDS.get(name)
+    if constructor is None or not _literal_record_sequence(value, constructor):
+        return False
+    if isinstance(node, ast.AnnAssign):
+        annotation = ast.dump(node.annotation, include_attributes=False)
+        expected = ast.dump(ast.parse(f"tuple[{constructor}, ...]", mode="eval").body)
+        if annotation not in {"Name(id='tuple', ctx=Load())", expected}:
+            return False
+    return True
+
+
+def _release_executable_ast(content: bytes | None) -> object:
+    """Retain every other executable node; never execute previous release source.
+
+    Named published assignments are compared by owner. Only literal pins and the
+    recognized literal disposition records are bookkeeping. Imports, helpers, class
+    implementations, unknown fields and executable bookkeeping values stay visible.
+    """
+    if content is None:
+        return None
+    tree = ast.parse(content, filename=RELEASE_PATH)
+    published = {name for names in _PUBLISHED_RELEASE_FIELDS.values() for name in names}
+    tree.body = [
+        node
+        for node in tree.body
+        if not (
+            ((names := _assignment_names(node)) and names <= published)
+            or _bookkeeping_assignment(node, names)
+        )
+    ]
+    tree = _WithoutDocstrings().visit(tree)
+    return ast.dump(tree, include_attributes=False)
 
 
 def producer_inputs() -> dict[str, tuple[str, ...]]:
@@ -212,6 +326,10 @@ def candidate_paths(repo: Path, base: str) -> dict[str, tuple[str, ...]]:
                 if _visible_release_fields(before, component)
                 != _visible_release_fields(after, component)
             }
+            if _release_executable_ast(old) != _release_executable_ast(current):
+                # The infographic producer need not be in the live site import graph.
+                # Any unclassified release implementation change needs every owner's review.
+                owners.update(inputs)
         elif path in infographic_outputs:
             owners = {"infographics"} if old != current else set()
         elif _semantic_bytes(path, old) == _semantic_bytes(path, current):

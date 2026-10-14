@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+import shlex
 import subprocess
 from pathlib import Path
 
@@ -94,8 +96,33 @@ class Repository:
         self.git("update-ref", "refs/remotes/origin/main", self.base)
 
     def git(self, *args: str) -> str:
+        environment = {
+            key: value for key, value in os.environ.items() if not key.startswith("GIT_")
+        }
+        environment.update(
+            {
+                "GIT_CONFIG_NOSYSTEM": "1",
+                "GIT_CONFIG_SYSTEM": os.devnull,
+                "GIT_CONFIG_GLOBAL": os.devnull,
+                "GIT_CONFIG_COUNT": "0",
+            }
+        )
         return subprocess.run(
-            ["git", *args], cwd=self.root, capture_output=True, text=True, check=True
+            [
+                "git",
+                "-c",
+                f"core.hooksPath={os.devnull}",
+                "-c",
+                "commit.gpgsign=false",
+                "-c",
+                "core.fsmonitor=false",
+                *args,
+            ],
+            cwd=self.root,
+            env=environment,
+            capture_output=True,
+            text=True,
+            check=True,
         ).stdout.strip()
 
     def write(self, path: str, text: str) -> None:
@@ -332,3 +359,79 @@ def test_no_change_review_requires_outputs_owned_by_each_claimed_component(
     report = repo.inspect()
     assert PAPER not in report.exempt_components
     assert any("recognized examined outputs" in error for error in report.errors)
+
+
+@pytest.mark.parametrize(
+    ("field", "owner"),
+    [
+        ("OPTIMALITY_PROOF_PUBLISHED", OTHER),
+        ("THRESHOLD_PROOF_PUBLISHED", "paper:n11-threshold-bound-review"),
+        ("PUBLICATION_EDITION", "site"),
+        ("INFOGRAPHIC_EDITION", "infographics"),
+    ],
+)
+def test_every_published_release_date_and_edition_expression_selects_its_owner(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    field: str,
+    owner: str,
+) -> None:
+    repo = Repository(tmp_path, monkeypatch)
+    repo.write_release(suffix=f"{field} = 'A changed published value'\n")
+    report = repo.inspect()
+    assert report.candidate_paths == {owner: (gate.RELEASE_PATH,)}
+    assert any(owner in error for error in report.errors)
+
+
+def test_release_edition_implementation_changes_select_every_owner_including_infographics(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    repo = Repository(tmp_path, monkeypatch)
+    repo.write_release(suffix='def edition_at(revision):\n    return "Edition " + revision\n')
+    report = repo.inspect()
+    assert set(report.candidate_paths) == {"site", "infographics", *PAPERS}
+    assert all(paths == (gate.RELEASE_PATH,) for paths in report.candidate_paths.values())
+    assert len(report.errors) == len(report.candidate_paths)
+
+
+def test_disposable_git_fixtures_ignore_inherited_repository_and_hook_configuration(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    sentinel = Repository(tmp_path / "sentinel", monkeypatch)
+    sentinel.write("sentinel-only.txt", "Preserve this repository.\n")
+    sentinel_head = sentinel.commit("sentinel state")
+    marker = tmp_path / "inherited-hook-ran"
+    hooks = tmp_path / "inherited-hooks"
+    hooks.mkdir()
+    hook = hooks / "pre-commit"
+    hook.write_text("#!/bin/sh\nprintf ran > " + shlex.quote(str(marker)) + "\n")
+    hook.chmod(0o755)
+    configuration = tmp_path / "inherited-git-config"
+    sentinel.git("config", "--file", str(configuration), "core.hooksPath", str(hooks))
+    monkeypatch.setenv("GIT_DIR", str(sentinel.root / ".git"))
+    monkeypatch.setenv("GIT_WORK_TREE", str(sentinel.root))
+    monkeypatch.setenv("GIT_INDEX_FILE", str(sentinel.root / ".git/index"))
+    monkeypatch.setenv("GIT_OBJECT_DIRECTORY", str(sentinel.root / ".git/objects"))
+    monkeypatch.setenv("GIT_CONFIG_GLOBAL", str(configuration))
+    monkeypatch.setenv("GIT_CONFIG_SYSTEM", str(configuration))
+    monkeypatch.setenv("GIT_CONFIG_COUNT", "1")
+    monkeypatch.setenv("GIT_CONFIG_KEY_0", "core.hooksPath")
+    monkeypatch.setenv("GIT_CONFIG_VALUE_0", str(hooks))
+    monkeypatch.setenv("GIT_TEMPLATE_DIR", str(hooks))
+    before = {
+        path.relative_to(sentinel.root).as_posix(): path.read_bytes()
+        for path in sentinel.root.rglob("*")
+        if path.is_file()
+    }
+    isolated = Repository(tmp_path / "isolated", monkeypatch)
+    assert (isolated.root / ".git").is_dir()
+    assert isolated.git("rev-parse", "HEAD") == isolated.base
+    assert sentinel.git("rev-parse", "HEAD") == sentinel_head
+    assert not marker.exists()
+    after = {
+        path.relative_to(sentinel.root).as_posix(): path.read_bytes()
+        for path in sentinel.root.rglob("*")
+        if path.is_file()
+    }
+    assert after == before

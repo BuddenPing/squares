@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import re
 from fnmatch import fnmatchcase
 
@@ -69,3 +70,18 @@ def test_publication_audit_refuses_a_missing_launch_link(
     )
     damaged = about.replace(target, "https://example.com/missing")
     assert not all(passed for passed, _line in check_published_site.changelog_checks(damaged))
+
+
+def test_publication_audit_accepts_the_renderers_encoded_artifact_destinations(
+    views: tuple[dict, str, str], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    document = copy.deepcopy(views[0])
+    artifact = next(
+        artifact for entry in document["entries"] for artifact in entry.get("artifacts", [])
+    )
+    artifact["target"] += "#proof(1)"
+    render_changelog.validate(document)
+    monkeypatch.setattr(render_changelog, "load", lambda: document)
+    about = render_overview.about_page().html
+    assert "#proof%281%29" in about
+    assert all(passed for passed, _line in check_published_site.changelog_checks(about))

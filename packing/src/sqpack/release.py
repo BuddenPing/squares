@@ -641,6 +641,7 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "packing/devtools/site_documents.py",
             "packing/devtools/validate_schemas.py",
             "packing/src/sqpack/cli/validate.py",
+            "packing/src/sqpack/release.py",
         ),
         outputs=(
             "papers/n11-lower-bounds-explainer.html",
@@ -660,7 +661,9 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "These shared helpers change About assembly, repository links, the "
             "Results legend, schema and closeout checks, and infographic export "
             "transactions. None changes the four papers' manuscripts, figures, "
-            "typography, front matter or content editions. Deployment citation "
+            "typography, front matter or content editions. The component resolver "
+            "retains their own histories, statuses and dates while the site's "
+            "history advances independently. Deployment citation "
             "provenance is independent of a paper revision."
         ),
     ),
