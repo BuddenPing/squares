@@ -129,6 +129,8 @@ def test_a_count_a_later_house_holds_keeps_the_view_as_history() -> None:
     view: the record's verified upper bound is the house's, this layer leaves the record as
     it is, and the view's dated paragraph and section say it held until that day."""
     assert [n for n in registered.committed() if registered.readopted(n)] == [264]
+    assert registered.readopted_by(264, "T-155")
+    assert not registered.readopted_by(264, "T-156")
     row = registered.committed()[264]
     assert Fraction(registered.case_front(264)["verified_upper_bound"]["exact_form"]) < (
         Fraction(row["side"])

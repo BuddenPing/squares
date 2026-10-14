@@ -1126,6 +1126,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         stages = [s for s in args.stages.split(",") if s]
         if not set(stages) <= set(REPLAY_STAGES) or not 1 <= args.workers <= 8:
             parser.error(f"--stages from {','.join(REPLAY_STAGES)}; --workers from 1 to 8")
+        # Refused before the hours of the build and slab stages, not after them.
+        if "crate" in stages and args.crate_binary is None:
+            parser.error("--crate-binary is required for the crate stage")
         out = args.out.resolve()
         crate = args.crate_binary.resolve() if args.crate_binary else None
         run_replay(out, args.workers, [s for s in stages if s in STAGES], crate, REPLAY)

@@ -1408,10 +1408,11 @@ def run_slabs(
     """The 43 slabs, each ``continuous PL PH 1000000 4999 5000 30000000`` in the
     directory holding the pose input, on at most ``workers`` processes.
 
-    Each slab's row is written to ``out/slab-rows/`` as it finishes, and a row already
-    there from an earlier run in the same directory is kept, with its own timing, when it
-    names this binary, this input and these arguments, so that a run stopped from
-    outside loses only the slabs in flight."""
+    Each slab's row is written to ``out/slab-rows/`` as it finishes, atomically, and a row
+    already there from an earlier run in the same directory is kept, with its own timing,
+    when it names this binary, this input and these arguments and the kernel exited 0, so
+    that a run stopped from outside loses only the slabs in flight. A slab that was killed
+    or failed, or a row that does not read as JSON, is run again."""
     binary = layout.binary("pose")
     binary_sha = sha256(binary.read_bytes())
     rows_dir = layout.out / "slab-rows"
@@ -1422,12 +1423,16 @@ def run_slabs(
         args = slab_args(lo, hi, claim)
         path = rows_dir / f"slab-{index:03d}.json"
         if path.is_file():
-            kept: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))
-            if (kept.get("binary_sha256"), kept.get("input_sha256"), kept.get("argv")) == (
-                binary_sha,
-                inputs["pose"],
-                ["continuous", *args],
-            ):
+            try:
+                kept: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))
+            except json.JSONDecodeError:
+                kept = {}
+            if (
+                kept.get("binary_sha256"),
+                kept.get("input_sha256"),
+                kept.get("argv"),
+                kept.get("exit_code"),
+            ) == (binary_sha, inputs["pose"], ["continuous", *args], 0):
                 print(f"slab {index}: kept from an earlier run, exit {kept['exit_code']}")
                 return kept
         record = spawn([str(binary), *args], layout.pose, layout.logs / f"slab-{index:03d}")
@@ -1441,7 +1446,9 @@ def run_slabs(
             "input_sha256": inputs["pose"],
             **record,
         }
-        write_json(path, row)
+        partial = path.with_name(f"{path.name}.partial")
+        write_json(partial, row)
+        partial.replace(path)
         return row
 
     with ThreadPoolExecutor(max_workers=workers) as pool:

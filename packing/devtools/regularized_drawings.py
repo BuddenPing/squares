@@ -1368,7 +1368,7 @@ def first_certified_problems(register: Register) -> list[str]:
     on the adopted house alone, below the item's side, and the item still names who first
     stated that side, as T-155's does at n = 264, where issue 528's packing (T-158) was
     adopted (`register_regularized_bounds.readopted`)."""
-    from devtools import upper_bound_houses as houses  # noqa: PLC0415
+    from devtools import register_regularized_bounds as registration  # noqa: PLC0415
     from devtools.check_results import result_date  # noqa: PLC0415
 
     dated = {str(result["id"]): result_date(result) for result in register.results}
@@ -1389,7 +1389,7 @@ def first_certified_problems(register: Register) -> list[str]:
             named = record.get(FIRST_CERTIFIED)
             earlier = [other for other in holders if other != rid and no_later(other, rid)]
             name = f"{rid}'s regularization at n = {n}"
-            if rid not in holders and holders == [houses.ADOPTED.get(n)]:
+            if rid not in holders and registration.readopted_by(n, rid):
                 continue
             if named is not None and (rid not in holders or str(named) not in earlier):
                 found.append(

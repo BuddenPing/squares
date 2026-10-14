@@ -1242,7 +1242,21 @@ def readopted(n: int) -> bool:
     """
     from devtools import upper_bound_houses as houses  # noqa: PLC0415
 
-    return n in houses.ADOPTED
+    batch = batch_of(n)
+    house = houses.ADOPTED.get(n)
+    return (
+        batch is not None
+        and house is not None
+        and house != batch.result
+        and houses.adopted_on(n) >= batch.registered
+    )
+
+
+def readopted_by(n: int, result: str) -> bool:
+    """Whether `result` is the batch that registers `n` and a later house holds the count
+    (`readopted`): its regularization at `n` is history there."""
+    batch = batch_of(n)
+    return batch is not None and batch.result == result and readopted(n)
 
 
 def holder(n: int) -> tuple[Batch, dict[str, Any]]:
@@ -1300,7 +1314,7 @@ def problems(batch: Batch = FIRST) -> list[str]:
         if at_t101_side(row) and row["earlier_verified"]["evidence"] != list(t101_replays()):
             found.append(f"n={n}: the side is T-101's, but the record held another ceiling")
         found.extend(least_view_problems(n, row))
-        if batch.kind == GRID_KIND:
+        if batch.kind == GRID_KIND and not readopted(n):
             found.extend(witness_problems(n, row, batch))
         implied = row.get("implied_by")
         if implied is not None and not (

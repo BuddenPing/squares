@@ -21,7 +21,6 @@ import pytest
 
 from devtools import register_regularized_bounds as registration
 from devtools import regularized_drawings as drawings
-from devtools import upper_bound_houses as houses
 from devtools.check_results import regularized_drawings_problems
 from sqpack.yamlio import safe_load
 
@@ -628,7 +627,7 @@ def test_the_earlier_certificate_is_named_exactly_where_the_case_bound_rests_on_
         11: ["T-170"],
     }
     monkeypatch.setattr(drawings, "bound_holders", lambda n, _register: holders[n])
-    monkeypatch.setitem(houses.ADOPTED, 11, "T-170")
+    monkeypatch.setattr(registration, "readopted_by", lambda n, rid: (n, rid) == (11, "T-155"))
 
     def item(n: int, first: str | None = None) -> dict[str, Any]:
         found: dict[str, Any] = {"n": n, "of": "T-101", "by": "project", "side": "solved"}
@@ -814,10 +813,13 @@ def test_t155_names_daniels_earlier_certificate_where_its_side_is_his() -> None:
     index = drawings.index_document()
     drawn = drawings.drawn_counts(index)
     fields = drawings.case_fields(index, drawn=drawn)
+    # At 264 the drawing is of the house a later adoption put there (T-158), not of
+    # T-155's packing, whose item there is history (`registration.readopted`).
     drawn_named = sorted(
         n
         for n in named
-        if any("view" in found for found in fields[n]["items"] if found["by"] == "project")
+        if not registration.readopted(n)
+        and any("view" in found for found in fields[n]["items"] if found["by"] == "project")
     )
     assert drawn_named == [83, 87, 107, 171, 198, 230, 234, 293]
     first = (

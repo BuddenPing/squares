@@ -313,3 +313,22 @@ def test_a_stopped_slab_stage_keeps_its_finished_rows(
     other = audit.run_slabs(layout, {**inputs, "pose": "2" * 64}, 1, claim)
     assert other[0]["input_sha256"] == "2" * 64
     assert "kept" not in capsys.readouterr().out
+
+
+def test_a_killed_slab_or_a_torn_row_is_run_again(tmp_path: Path) -> None:
+    """A row whose kernel did not exit 0, or that does not read as JSON, is not kept."""
+    layout = audit.Layout(tmp_path)
+    layout.build.mkdir()
+    layout.pose.mkdir()
+    layout.logs.mkdir()
+    _fake_kernel(layout.binary("pose"))
+    claim = dataclasses.replace(CLAIM, endpoints=(1, 500, 10000))
+    inputs = {"pose": "0" * 64, "axis": "1" * 64}
+    first = audit.run_slabs(layout, inputs, 1, claim)
+    killed = tmp_path / "slab-rows/slab-000.json"
+    killed.write_text(json.dumps({**first[0], "exit_code": -9}), encoding="utf-8")
+    (tmp_path / "slab-rows/slab-001.json").write_text('{"index": 1, "argv"', encoding="utf-8")
+    again = audit.run_slabs(layout, inputs, 1, claim)
+    assert [row["exit_code"] for row in again] == [0, 0]
+    assert json.loads(killed.read_text(encoding="utf-8"))["exit_code"] == 0
+    assert not list((tmp_path / "slab-rows").glob("*.partial"))
