@@ -159,10 +159,10 @@ The command writes `atlas/known-best/default-drawings.json` and prints how many 
 are defaults. The posters show the defaults as they stood when they were drawn and may
 trail until the next version or a redraw (`build_known_best_atlas --update-composites`).
 
-The note says who regularized the drawing and that a pure regularization, one that
-proves no new bound, is not a result (the policy’s section 9, question 16): by the
-Squares Project, with the generator’s credit line, the side relation, the registered
-result that holds the packing and the view.
+The note says who regularized the drawing and that a pure regularization, one whose side
+is not below $U$ and which so proves no new bound, is not a result (the policy’s section
+9, question 16): by the Squares Project, with the generator’s credit line, the side
+relation, the registered result that holds the packing and the view.
 Where the drawn regularization’s exact side is itself registered as an upper bound, the
 note names that result instead; where a result registers this project’s regularization
 of a count the layer does not draw by that method, the note credits it and names the
@@ -180,6 +180,13 @@ as the entry’s `run.rungs_from`, and adds its receipt’s block to the index�
 ```bash
 python -m devtools.regularize_evand rungs --run-dir $RUNS/evand --repo-root ..
 ```
+
+The new run is named by its directory, `evand-regularize-<run directory>`, so give it a
+directory no earlier run used.
+Where a supplying run’s id already names another run,
+`rename-run --from ID --to ID --note TEXT --repo-root ..` gives it a distinct one and
+records why on its block (`id_note`), as the fresh run of the #518 counts was renamed
+`evand-regularize-adopt518-v2-rerun-2026-10-13`.
 
 ### 6. Commit, Then Re-pin
 
@@ -243,21 +250,31 @@ section 5 describes and which does not exist yet.
 
 ## Register Candidates
 
-A view whose side is below $U$ proves a new upper bound (row 3). The selection lists it
-under register candidates and never admits it.
+A view whose side is below $U$ is registered as a result (row 3), however it was made.
+Its bound is new only where no earlier certificate already stated that side exactly, as
+one had at the 33 counts where the record carried Evan Daniel’s side rounded up, and no
+larger count’s verified upper bound is at or below it; otherwise the result says which
+result already proves the bound (the policy’s section 9, question 16). The selection
+lists it under register candidates and never admits it.
 Register such views as one batch result through the
 [import runbook’s](../../../packing/campaign/result-import.md#stage-3-record) record and
-validate stages, with a `regularizations` item for each count, as `T-154` registered 59
-counts through `devtools.register_regularized_bounds`. A grid-slack view is registered
-the same way as a batch of its own, as `T-155` registered $n = 290$ with
-`select --batch grid-slack --run-dir RUN ... --n N ...`, then `decide` and `controls`
-with the same `--batch`. Read the next count’s ceiling as well as the view’s own:
-$s(n) \le s(n + 1)$, so where the next count’s verified upper bound is at or below the
-view’s side, the bound is not new.
-`T-155`’s was not, since `T-154`’s certificate at $n = 291$ is at the same side; the
+validate stages, with a `regularizations` item for each count, as `T-155` registered 59
+counts through `devtools.register_regularized_bounds`. Where an earlier result’s
+certificate states the same side, the item names it as `first_certified_in`, as 33 of
+`T-155`’s name `T-101`, and the case note then says the side proves no new bound;
+`python -m devtools.regularized_drawings --check` fails an item that should name one and
+does not. A grid-slack view is registered the same way as a batch of its own, as `T-156`
+registered $n = 290$ with `select --batch grid-slack --run-dir RUN ... --n N ...`, then
+`decide` and `controls` with the same `--batch`. Read the next count’s ceiling as well
+as the view’s own: $s(n) \le s(n + 1)$, so where the next count’s verified upper bound
+is at or below the view’s side, the bound is not new.
+`T-156`’s was not, since `T-155`’s certificate at $n = 291$ is at the same side; the
 selection records such a ceiling (`implied_by`), and the result says its bound follows
 by monotonicity, as `T-002` says of a lower bound, and is kept as the certificate of the
 count’s own packing.
+The selection refuses a view whose side lies above the next count’s ceiling: that
+ceiling already proves more than the view, and the count’s bound is registered by
+monotonicity instead.
 Once the register moves $U$ to the view’s side, the view is at the bound:
 `reclassify --refresh-bounds` decides a driver run’s view again, the selection decides a
 grid-slack view against the new $U$, and the next selection can draw either.

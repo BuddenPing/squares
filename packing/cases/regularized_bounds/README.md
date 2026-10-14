@@ -1,17 +1,19 @@
 # Regularized Views Registered as Verified Upper Bounds
 
-This directory holds the certificates of T-154: the exact views of the regularization
+This directory holds the certificates of T-155: the exact views of the regularization
 run of 11 and 12 October 2026 whose sides lie below their cases’ verified upper bounds,
 registered as results under the
 [regularization policy](../../../docs/project/policies/regularization-policy.md) (row 3,
 “register first”, and the owner’s answer to its question 3 of 12 October 2026,
 “regularize and correct always”). Under `grid-slack-2026-10-13/` it holds the second
-batch, T-155, the grid-slack view of $n = 290$ ([below](#the-grid-slack-batch)),
-registered under the owner’s rule of 13 October 2026 that any new upper bound is
-recorded as a result.
-Its bound was not new: T-154’s certificate at $n = 291$ is at the same side and already
-implied it by monotonicity, and T-155 is kept as the certificate of $n = 290$’s own
-packing at that side.
+batch, T-156, the grid-slack view of $n = 290$ ([below](#the-grid-slack-batch)). Under
+the policy’s question 16, as the owner answered it on 13 October 2026, a side below the
+verified upper bound is registered as a result however it was made, and is a new upper
+bound only where no earlier certificate stated that side exactly, as Evan Daniel’s had
+at 33 of T-155’s counts, and no larger count’s verified upper bound is at or below it.
+T-156’s bound was not new: T-155’s certificate at $n = 291$ is at the same side and
+already implied it by monotonicity, and T-156 is kept as the certificate of $n = 290$’s
+own packing at that side.
 [`devtools.register_regularized_bounds`](../../devtools/register_regularized_bounds.py)
 wrote everything here and holds it to the case records.
 
@@ -23,7 +25,7 @@ wrote everything here and holds it to the case records.
 | `selection.json` | One row per count: the view, its exact side and display, the bound the record held before and the margin, the printed side and closed form, the drawing decision, the identity measured on the retained view against the witness, and the regularization in the register’s terms; a grid-slack row also records the next count’s ceiling where it already implies the bound |
 | `exact-decision.json` | Each retained view decided over $\mathbb{Q}$ by both maintained exact routes |
 | `negative-controls.json` | Three mutants of each view, decided by both routes |
-| `grid-slack-2026-10-13/` | The second batch (T-155), with the same four kinds of file |
+| `grid-slack-2026-10-13/` | The second batch (T-156), with the same four kinds of file |
 
 ## How the Views Were Chosen
 
@@ -203,11 +205,15 @@ registered; the regularized layer decides the drawing on its own.
 
 The owner wrote on 13 October 2026: “Any new upper bounds should also be recorded as
 results. Pure regularization should not be considered a new result, but it is a credited
-part of the frontier record” (the policy’s section 9, question 16). A view of
-[`devtools.regularize_grid_slack`](../../devtools/regularize_grid_slack.py), this
-project’s port of Evan Daniel’s coincidence placement, is such a bound where its side
-lies below the case’s verified upper bound $U$, and is registered as T-155, a batch of
-its own.
+part of the frontier record” (the policy’s section 9, question 16). The policy reads it
+so: a side below the case’s verified upper bound $U$ is registered as a result however
+it was made, and it is a new upper bound only where no larger count’s verified upper
+bound is at or below it; otherwise the result says that its bound follows by
+monotonicity and names the result that proves it.
+A view of [`devtools.regularize_grid_slack`](../../devtools/regularize_grid_slack.py),
+this project’s port of Evan Daniel’s coincidence placement, whose side lies below $U$ is
+registered so, as a batch of its own; T-156 registered the first, and its bound was not
+new (below).
 
 **The view.** The grid-slack run of 13 October 2026 at 5 degrees, recorded in the
 regularized layer’s index as `grid-slack-deg5-1013-a`, made a view of $n = 290$ at the
@@ -227,13 +233,13 @@ byte for byte.
 
 **A bound already implied.** $s(290) \le s(291)$, since deleting a square from a packing
 of 291 leaves a packing of 290 in the same square.
-T-154 registered $n = 291$ on 12 October 2026 at exactly this side, so from that day its
-certificate proved the bound T-155 registers, while $n = 290$’s verified upper bound
+T-155 registered $n = 291$ on 12 October 2026 at exactly this side, so from that day its
+certificate proved the bound T-156 registers, while $n = 290$’s verified upper bound
 still lay above the next count’s. Review B of jlevy/squares#587 found this, deleting
-square 139 from T-154’s certificate, the square the $n = 290$ witness lacks, and
+square 139 from T-155’s certificate, the square the $n = 290$ witness lacks, and
 deciding the rest valid on both exact routes.
-The owner decided on 13 October 2026 to keep T-155 and say so: its bound follows from
-T-154 by monotonicity, and the grid-slack view is a certificate of $n = 290$’s own
+The owner decided on 13 October 2026 to keep T-156 and say so: its bound follows from
+T-155 by monotonicity, and the grid-slack view is a certificate of $n = 290$’s own
 packing, the catalogue’s, at that side.
 The selection row records the next count’s ceiling where it implies the bound
 (`implied_by`), and the case record says both.
@@ -247,8 +253,10 @@ first batch keys them by output (`row_three_sides`, `outputs_at_row_3`), and rec
 witness’s own side as read from the witness (`witness_side`), which `--check` reads
 again. It refuses a view of another generator, one not derived from the checkout’s
 witness, one not at that witness’s own side or labelled other than the same-side view,
-two runs of one name, and a count the owner holds or another batch registers, and it
-writes the view and the selection only once every refusal has run.
+one whose side lies above the next count’s verified upper bound, which already proves
+more than the view and whose count is registered by monotonicity instead, two runs of
+one name, and a count the owner holds or another batch registers, and it writes the view
+and the selection only once every refusal has run.
 
 **Decision.** Both maintained routes accepted the view on 13 October 2026, 41,905 pair
 decisions each, in 14.9 CPU seconds for the two; it touches a wall and a neighbour
@@ -270,7 +278,7 @@ The packings are the ones the Kingbird catalogue credits to their finders, as T-
 T-009 record them, and the register entry’s regularizations name those results.
 The solver and the regularizer are Evan Daniel’s
 ([evand/square-packing](https://github.com/evand/square-packing), MIT); the run, the
-same-side re-solve, the exact decisions and the registration are this project’s. T-155’s
+same-side re-solve, the exact decisions and the registration are this project’s. T-156’s
 view was made by this project’s port of his coincidence placement, not his code; the
 method stays credited to him, and the regularization, the decision and the registration
 are this project’s.

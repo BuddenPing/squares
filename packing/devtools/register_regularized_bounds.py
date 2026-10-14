@@ -33,29 +33,36 @@ them; at `n = 29` it lies 5.4e-20 below the interval certificate's endpoint (T-0
 packings are the catalogue's; only the ceiling's exact identity moves, by 5.4e-20 to
 9.9e-15 at each count.
 
-**The second batch.** The owner's rule of 13 October 2026 (the policy's section 9,
-question 16) records any new upper bound as a result, however it was made. A view of
+**The second batch.** Under the policy's section 9, question 16 (the owner, 13 October
+2026), an exactly verified side below `U` is registered as a result however it was made.
+It is a new upper bound only where no larger count's verified upper bound is at or below
+it; otherwise the result says that its bound follows by monotonicity and names the
+result that proves it (**A bound already implied**, below). A view of
 `devtools.regularize_grid_slack`, this project's port of Evan Daniel's coincidence
-placement, decided at row 3 is registered as its own batch, T-155 (`GRID`): `select
---batch grid-slack` reads the named counts' reports in the named runs, decides each view
-by the policy's table against the case record's bound (`regularize_grid_slack.decided`),
-and takes at each count the row-3 view with the least exact side, the first run named
-among equals. A view is refused unless it was derived from the checkout's witness and its
-side is that witness's own `s_W`, which every row-3 grid-slack view's is: the generator's
-other side is the bound itself. The row records `s_W` as read from the witness, and
-`--check` reads the witness again. Its receipts and view lie under
-`cases/regularized_bounds/grid-slack-2026-10-13/`, laid out as the first batch's are,
-and the case-record layer below writes each count in the words of its batch's generator
-kind (`Batch.kind`), so a later grid-slack batch is written as this one is. The batches
-are disjoint.
+placement, decided at row 3 is registered so, as a batch of its own, T-156 the first
+(`GRID`): `select --batch grid-slack` reads the named counts' reports in the named runs,
+decides each view by the policy's table against the case record's bound
+(`regularize_grid_slack.decided`), and takes at each count the row-3 view with the least
+exact side, the first run named among equals. A view is refused unless it was derived
+from the checkout's witness and its side is that witness's own `s_W`, which every row-3
+grid-slack view's is: the generator's other side is the bound itself. The row records
+`s_W` as read from the witness, and `--check` reads the witness again. Its receipts and
+view lie under `cases/regularized_bounds/grid-slack-2026-10-13/`, laid out as the first
+batch's are, and the case-record layer below writes each count in the words of its
+batch's generator kind (`Batch.kind`), so a later grid-slack batch is written as this
+one is. The batches are disjoint.
 
 **A bound already implied.** `s(n) ≤ s(n + 1)`, since deleting a square from a packing
 leaves a packing in the same square, so a ceiling at the next count at or below a view's
-side already proves the view's bound. A grid-slack row records that ceiling, its evidence
-and the results that hold it (`implied_by`), and the case record says the bound was not
-new: T-154's certificate at `n = 291`, at exactly the side T-155 registers, proved
-`s(290)`'s bound from 12 October 2026, and T-155 is kept as the certificate of 290's own
-packing at that side (the owner's decision of 13 October 2026, on jlevy/squares#587).
+side already proves the view's bound. A grid-slack row records a ceiling at the view's
+side, its evidence and the results that hold it (`implied_by`), and the case record says
+the bound was not new: T-155's certificate at `n = 291`, at exactly the side T-156
+registers, proved `s(290)`'s bound from 12 October 2026, and T-156 is kept as the
+certificate of 290's own packing at that side (the owner's decision of 13 October 2026,
+on jlevy/squares#587). `select` refuses a view whose side lies above the next count's
+ceiling, since the record would then carry a weaker ceiling than the register proves; such
+a count's bound is registered by monotonicity instead. The next count suffices, since
+`test_verified_upper_bound_contract` holds every ceiling at or below the next count's.
 
 **What is retained.** Each registered view as the run wrote it, gzip-compressed, under
 `cases/regularized_bounds/views/`, and `selection.json`, a row per count: the view's side
@@ -141,7 +148,7 @@ PACKAGE_LINK = "../cases/regularized_bounds/README.md"
 FORMAT = "regularized-bounds-receipt-v1"
 TOOL = "python -m devtools.register_regularized_bounds"
 POLICY = "docs/project/policies/regularization-policy.md"
-RESULT = "T-154"
+RESULT = "T-155"
 EVIDENCE = "E-regularized-bounds-2026-10-12-exact-decision"
 SOURCE_KEY = "[Daniel regularizer 2026-10-11]"
 REGISTERED = "2026-10-12"
@@ -241,7 +248,7 @@ class Batch:
 
 FIRST_NAME = "evand"
 #: The views of Evan Daniel's regularizer from the full run of 11 and 12 October 2026 and
-#: its re-runs (T-154).
+#: its re-runs (T-155).
 FIRST = Batch(
     FIRST_NAME,
     EVAND_KIND,
@@ -254,11 +261,11 @@ FIRST = Batch(
     run_dates="11 and 12 October 2026",
 )
 #: The views of this project's grid-slack regularizer, its port of Evan Daniel's
-#: coincidence placement, from the runs of 13 October 2026 (T-155).
+#: coincidence placement, from the runs of 13 October 2026 (T-156).
 GRID = Batch(
     "grid-slack",
     GRID_KIND,
-    "T-155",
+    "T-156",
     "E-regularized-bounds-2026-10-13-grid-slack-exact-decision",
     "2026-10-13",
     "13 October 2026",
@@ -800,6 +807,15 @@ def grid_selection_row(
         )
     if frame.side is None or side != frame.side:
         raise RegistrationError(f"n={n}: the view's side is not the checkout witness's own s_W")
+    # A larger count's ceiling below the side proves more than the view does: the record
+    # would carry a weaker ceiling than the register proves (review C4).
+    implied = implied_by(n, side)
+    if implied is not None and Fraction(implied["side"]) < side:
+        raise RegistrationError(
+            f"n={n}: the record already proves s({n}) ≤ "
+            f"{side_text(Fraction(implied['side']))} by monotonicity from "
+            f"{', '.join(implied['results'])}; register the count by monotonicity"
+        )
     straightened = [int(row["square"]) for row in report.get("straightened") or []]
     identity = measure_identity(
         n,
@@ -829,7 +845,7 @@ def grid_selection_row(
         "value_raised": raised,
         "earlier_verified": earlier,
         "below_earlier_by": float(f"{float(upper - side):.4e}"),
-        "implied_by": implied_by(n, side),
+        "implied_by": implied,
         "t101_side": literal(t101_side) if t101_side is not None else None,
         "below_t101_side_by": (
             float(f"{float(t101_side - side):.4e}") if t101_side is not None else None
@@ -868,7 +884,7 @@ def select_grid(
     run_dirs: Sequence[Path], numbers: Sequence[int], batch: Batch = GRID
 ) -> tuple[dict[str, Any], Views]:
     """The named counts' least row-3 grid-slack views among the named runs, measured: a
-    grid-slack batch's receipt (T-155's the first), and the views `retain` writes. Nothing
+    grid-slack batch's receipt (T-156's the first), and the views `retain` writes. Nothing
     is written here, so a refused selection leaves the package as it was."""
     wanted = sorted(set(numbers))
     excluded = sorted(set(wanted) & batch.excluded)
@@ -1272,6 +1288,11 @@ def problems(batch: Batch = FIRST) -> list[str]:
             int(implied["n"]) > n and Fraction(implied["side"]) <= side
         ):
             found.append(f"n={n}: the ceiling the row says implies the bound does not")
+        elif implied is not None and Fraction(implied["side"]) < side:
+            found.append(
+                f"n={n}: the ceiling at n = {implied['n']} lies below the side, so the "
+                "record would carry a weaker ceiling than the register proves"
+            )
     return found
 
 
@@ -1519,25 +1540,22 @@ def _implied(n: int, row: Mapping[str, Any]) -> tuple[str, str]:
     if not implied:
         return "", ""
     later, results = int(implied["n"]), ", ".join(implied["results"])
-    there = (
-        "at the same side"
-        if Fraction(implied["side"]) == Fraction(row["side"])
-        else f"at `{side_text(Fraction(implied['side']))}`, below this side"
-    )
+    # `select` refuses a view above a larger count's ceiling, and `problems` a row that
+    # records one, so the ceiling is at the view's own side (review C4).
     step = (
         f"`s({n}) ≤ s({later})`, since deleting a square from a packing of {later} leaves a "
         f"packing of {n} in the same square"
     )
     dated = (
         f" The bound was not new: the certificate registered at `n = {later}` ({results}), "
-        f"{there}, already proved it by monotonicity; this one certifies this count’s own "
-        "packing."
+        "at the same side, already proved it by monotonicity; this one certifies this "
+        "count’s own packing."
     )
     section = (
         f" The bound was not new when it was registered. The exact certificate registered at "
-        f"`n = {later}` ({results}) is {there}, and {step}, so that certificate already "
-        "proved the bound. This one is a certificate of this count’s own packing, the one the "
-        "record credits."
+        f"`n = {later}` ({results}) is at the same side, and {step}, so that certificate "
+        "already proved the bound. This one is a certificate of this count’s own packing, the "
+        "one the record credits."
     )
     return dated, section
 
@@ -2006,7 +2024,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--batch",
         choices=tuple(BATCH_NAMES),
         default=FIRST_NAME,
-        help="the batch a command acts on (default: the first, T-154)",
+        help="the batch a command acts on (default: the first, T-155)",
     )
     parser.add_argument(
         "--n",

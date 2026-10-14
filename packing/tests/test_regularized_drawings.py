@@ -5,15 +5,21 @@ witness's source for a view at the witness's side, the one the verified upper bo
 on for a view at the bound or for a view at a witness's side that is exactly the bound
 where no result attributes the source, and none where no result answers or several do.
 The generated block reads back as the data it was written from, and the register's
-checker holds each item to the register.
+checker holds each item to the register. The last tests read the record itself: which of
+T-155's registered sides Evan Daniel's certificates first stated, and which of its solves
+the layer draws.
 """
 
 from __future__ import annotations
 
-from typing import Any
+import json
+from pathlib import Path
+from types import SimpleNamespace
+from typing import Any, cast
 
 import pytest
 
+from devtools import register_regularized_bounds as registration
 from devtools import regularized_drawings as drawings
 from devtools.check_results import regularized_drawings_problems
 from sqpack.yamlio import safe_load
@@ -55,9 +61,15 @@ def entry(n: int, relation: str | None = None) -> dict[str, Any]:
 
 
 def test_the_packing_is_the_result_holding_it_at_the_side_drawn() -> None:
-    def resolve(n: int, key: str | None, relation: str | None = None, holders=()) -> Any:
+    def resolve(
+        n: int, key: str | None, relation: str | None = None, holders=(), *, at_u: bool = True
+    ) -> Any:
         return drawings.packing_result(
-            entry(n, relation), RESULTS, source_key=key, bound_holders=list(holders)
+            entry(n, relation),
+            RESULTS,
+            source_key=key,
+            bound_holders=list(holders),
+            side_at_bound=at_u,
         )
 
     assert resolve(5, "[A]").of == "T-001"
@@ -67,10 +79,33 @@ def test_the_packing_is_the_result_holding_it_at_the_side_drawn() -> None:
     assert "several" in resolve(6, "[A]").reason
     assert resolve(6, "[A]", "bound", ["T-002"]).of == "T-002"
     assert resolve(6, "[A]", "bound", []).of is None
+    # A later result that lowers U leaves a `bound` view at a side no result holds: it is
+    # not credited to whoever holds the bound now (#548 review B1).
+    moved = resolve(6, "[A]", "bound", ["T-002"], at_u=False)
+    assert moved.of is None
+    assert "no longer the verified upper bound" in moved.reason
+
+
+def test_an_axis_view_is_at_the_side_its_regularization_states() -> None:
+    axis_view = entry(5)
+    assert drawings.relation(axis_view) == "same"
+    solved = {**axis_view, "regularization": {**axis_view["regularization"], "side": "solved"}}
+    assert drawings.relation(solved) == "solved"
+    found = drawings.packing_result(solved, RESULTS, source_key="[A]", bound_holders=[])
+    assert found.of is None
+    assert "row 4" in found.reason
+
+
+def test_an_exact_side_is_at_the_bound_only_where_the_bound_is_rational() -> None:
+    drawn = {**entry(6, "bound"), "side": {"relation": "bound", "view": "1449/250"}}
+    assert drawings.at_bound(drawn, {"value": "5.796", "exact_form": None})
+    assert drawings.at_bound(drawn, {"value": "5.80", "exact_form": "1449/250"})
+    assert not drawings.at_bound(drawn, {"value": "5.797", "exact_form": None})
+    assert not drawings.at_bound(drawn, {"value": "5.79", "exact_form": "3 + 2 sqrt(2)"})
 
 
 def test_a_witness_side_exactly_at_the_bound_falls_back_to_the_bound_holder() -> None:
-    """T-154 certified witnesses' own sides exactly: a `same` view there that no result
+    """T-155 certified witnesses' own sides exactly: a `same` view there that no result
     attributes is held by the result the bound rests on, and only when the side is exact."""
     found = entry(7, "same")
     found["side"]["view"] = "33/5"
@@ -98,14 +133,14 @@ def test_a_witness_side_exactly_at_the_bound_falls_back_to_the_bound_holder() ->
 
 
 def test_a_bound_two_results_prove_is_held_by_the_one_that_registered_the_view() -> None:
-    """At 33 counts T-154's view lies exactly at the side of Evan Daniel's earlier
+    """At 33 counts T-155's view lies exactly at the side of Evan Daniel's earlier
     certificate (T-101), and the case cites both: the view drawn at that bound is the one
     whose result registered it, by a `regularizations` item on the drawn side; with no
     such item, or two, the count stays unregistered (PR #549, review B2)."""
     registering = [
         {"id": "T-101", "scope": {"n_values": [6, 7]}, "attribution": {"source_keys": ["[A]"]}},
         {
-            "id": "T-154",
+            "id": "T-155",
             "scope": {"n_values": [6, 7]},
             "regularizations": [{"n": 6, "side": "solved"}, {"n": 7, "side": "same"}],
         },
@@ -117,19 +152,21 @@ def test_a_bound_two_results_prove_is_held_by_the_one_that_registered_the_view()
             found,
             registering,
             source_key="[B]",
-            bound_holders=["T-101", "T-154"],
+            bound_holders=["T-101", "T-155"],
             side_at_bound=at,
         )
 
-    assert resolve(6, "bound").of == "T-154"
-    assert resolve(7, "same", at=True).of == "T-154"
+    # A `bound` view resolves only while its side is the bound (#548 review B1).
+    assert resolve(6, "bound", at=True).of == "T-155"
+    assert resolve(6, "bound").of is None
+    assert resolve(7, "same", at=True).of == "T-155"
     # A `bound` drawing where the registering result's item is on the other side, or a
     # count no item names, keeps both holders and so no answer.
-    assert resolve(7, "bound").of is None
-    assert "T-101" in resolve(7, "bound").reason
-    assert drawings.registering_holders(8, ["T-101", "T-154"], registering, side="solved") == [
+    assert resolve(7, "bound", at=True).of is None
+    assert "T-101" in resolve(7, "bound", at=True).reason
+    assert drawings.registering_holders(8, ["T-101", "T-155"], registering, side="solved") == [
         "T-101",
-        "T-154",
+        "T-155",
     ]
 
 
@@ -300,7 +337,7 @@ def test_a_drawing_whose_exact_side_is_registered_says_so() -> None:
     method = "Evan Daniel's search/regularize, through devtools.regularize_evand"
     results = [
         {
-            "id": "T-154",
+            "id": "T-155",
             "kind": "upper-bound",
             "regularizations": [
                 {"n": 5, "of": "T-001", "by": "project", "method": method, "side": "solved"}
@@ -308,19 +345,19 @@ def test_a_drawing_whose_exact_side_is_registered_says_so() -> None:
         }
     ]
     bound = {**entry(5, "bound"), "generator": drawings.EVAND_GENERATOR}
-    count = drawings.Drawn(bound, drawings.Resolved("T-154", "x"), [])
-    assert drawings.registering_result(count, results) == "T-154"
+    count = drawings.Drawn(bound, drawings.Resolved("T-155", "x"), [])
+    assert drawings.registering_result(count, results) == "T-155"
     generators = {drawings.EVAND_GENERATOR: {"credit": "Regularized by the Squares Project"}}
-    ours = drawings.project_case_item(count, generators, "T-154")
-    assert ours["registered_in"] == "T-154"
+    ours = drawings.project_case_item(count, generators, "T-155")
+    assert ours["registered_in"] == "T-155"
     assert drawings.case_note([ours]) == (
-        "Regularized by the Squares Project, unmodified. A drawing of T-154's packing at the "
-        "verified upper bound. Its exact side is registered as T-154, the upper bound it "
+        "Regularized by the Squares Project, unmodified. A drawing of T-155's packing at the "
+        "verified upper bound. Its exact side is registered as T-155, the upper bound it "
         "proves; the drawing itself is no further result."
     )
     same = drawings.Drawn(
         {**entry(5, "same"), "generator": drawings.EVAND_GENERATOR},
-        drawings.Resolved("T-154", "x"),
+        drawings.Resolved("T-155", "x"),
         [],
     )
     assert drawings.registering_result(same, results) is None
@@ -365,7 +402,7 @@ REGISTER = """results:
         side: solved
         identity:
           basis: measured
-  - id: T-154
+  - id: T-155
     kind: upper-bound
     regularizations:
       - n: 9
@@ -504,3 +541,372 @@ def test_the_case_field_is_written_in_place_and_removed_whole() -> None:
         "Another."
     )
     assert drawings.with_case_field(written, None) == text
+
+
+def test_a_side_an_earlier_certificate_first_stated_proves_no_new_bound() -> None:
+    """Where the registering result's item names the earlier result whose certificate
+    first stated its exact side (`first_certified_in`), as T-155's 33 items at the side of
+    Evan Daniel's certificates name T-101, the drawn and the undrawn notes credit the
+    Squares Project, say the side is registered in the result and was first certified by
+    that certificate, naming it, and that it proves no new bound; without the field the
+    side is the upper bound it proves (PR #585, review B1)."""
+    record = {
+        "n": 5,
+        "of": "T-101",
+        "by": "project",
+        "method": EVAND_METHOD,
+        "side": "solved",
+        "first_certified_in": "T-101",
+        "identity": {"basis": "measured"},
+    }
+    results = [{"id": "T-155", "kind": "upper-bound", "regularizations": [record]}]
+    bound = {**entry(5, "bound"), "generator": drawings.EVAND_GENERATOR}
+    bound["regularization"] = {**bound["regularization"], "method": EVAND_METHOD}
+    count = drawings.Drawn(bound, drawings.Resolved("T-155", "x"), [])
+    registered = drawings.registered_record(count, results)
+    assert registered is not None
+    assert registered == ("T-155", record)
+    drawn = drawings.project_case_item(count, GENERATORS, "T-155", "T-101")
+    assert drawn["first_certified_in"] == "T-101"
+    assert "first_certified_in" not in drawings.project_case_item(
+        count, GENERATORS, None, "T-101"
+    )
+    certificates = {"T-101": "Evan Daniel's certificate"}
+    assert drawings.case_note([drawn], certificates) == (
+        "Regularized by the Squares Project with Evan Daniel's regularizer, unmodified. A "
+        "drawing of T-155's packing at the verified upper bound. Its exact side is "
+        "registered in T-155, and the same side was first certified by Evan Daniel's "
+        "certificate (T-101), so it proves no new bound; the drawing itself is no further "
+        "result."
+    )
+    undrawn = drawings.registered_case_items(results, GENERATORS)[5]
+    assert undrawn["first_certified_in"] == "T-101"
+    assert drawings.case_note([undrawn], certificates) == (
+        "Regularized by the Squares Project with Evan Daniel's regularizer, with none of "
+        "the project's modifications established; whether its solve climbed a retry rung "
+        "is not recorded. A regularization of T-101's packing solved to its side, not drawn "
+        "here; its exact side is registered in T-155, and the same side was first "
+        "certified by Evan Daniel's certificate (T-101), so it proves no new bound."
+    )
+    new = {key: value for key, value in undrawn.items() if key != "first_certified_in"}
+    assert drawings.case_note([new]).endswith(
+        "its exact side is registered as T-155, the upper bound it proves."
+    )
+    register = cast(
+        Any,
+        SimpleNamespace(
+            results=[
+                {"id": "T-101", "attribution": {"source_keys": ["[D]"]}},
+                {"id": "T-009"},
+            ],
+            sources={"[D]": SimpleNamespace(authors=("Daniel",))},
+            names={"Evan Daniel": "Daniel"},
+        ),
+    )
+    assert drawings.certificate_words("T-101", register) == "Evan Daniel's certificate"
+    assert drawings.certificate_words("T-009", register) == "this project's certificate"
+    assert drawings.certificate_words("T-999", register) == "T-999's certificate"
+
+
+def test_the_earlier_certificate_is_named_exactly_where_the_case_bound_rests_on_it(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """An item names `first_certified_in` exactly where the case's verified upper bound
+    rests on an earlier registered result beside the registering one: a missing name, a
+    name the bound does not rest on, and a name where the registering result alone proves
+    the bound are listed; a later result proving the same bound needs none (PR #585,
+    review B1)."""
+    holders = {
+        5: ["T-101", "T-155"],
+        6: ["T-101", "T-155"],
+        7: ["T-155"],
+        8: ["T-155"],
+        9: ["T-155", "T-160"],
+        10: ["T-101", "T-155"],
+    }
+    monkeypatch.setattr(drawings, "bound_holders", lambda n, _register: holders[n])
+
+    def item(n: int, first: str | None = None) -> dict[str, Any]:
+        found: dict[str, Any] = {"n": n, "of": "T-101", "by": "project", "side": "solved"}
+        if first:
+            found["first_certified_in"] = first
+        return found
+
+    register = cast(
+        Any,
+        SimpleNamespace(
+            results=[
+                {"id": "T-101", "attribution": {"published": "2026-10-05"}},
+                {
+                    "id": "T-155",
+                    "established": "2026-10-12",
+                    "regularizations": [
+                        item(5, "T-101"),
+                        item(6),
+                        item(7, "T-101"),
+                        item(8),
+                        item(9),
+                        item(10, "T-160"),
+                    ],
+                },
+                {"id": "T-160", "established": "2026-10-20"},
+            ]
+        ),
+    )
+    assert drawings.first_certified_problems(register) == [
+        (
+            "T-155's regularization at n = 6: the case's verified upper bound rests on "
+            "['T-101'] as well, whose certificate stated the side first; name it as "
+            "first_certified_in"
+        ),
+        (
+            "T-155's regularization at n = 7 names T-101 as first_certified_in, but the "
+            "case's verified upper bound rests on ['T-155']"
+        ),
+        (
+            "T-155's regularization at n = 10 names T-160 as first_certified_in, but the "
+            "case's verified upper bound rests on ['T-101', 'T-155']"
+        ),
+    ]
+
+
+def test_a_registered_item_reads_the_rungs_of_the_solve_the_layer_draws(
+    tmp_path: Path,
+) -> None:
+    """Where the layer draws the very solve a result registered (the result registers the
+    drawing, and its registration receipt names, at the count, a run whose receipt the
+    entry's run block records, with the entry's output and exact side), the item reads
+    its rungs from the drawn entry and leaves nothing unrecorded; a later run's view at
+    the same side, another output or side, or no receipt says nothing of that solve
+    (PR #585, review B2)."""
+    record = {
+        "n": 5,
+        "of": "T-101",
+        "by": "project",
+        "method": EVAND_METHOD,
+        "side": "solved",
+        "identity": {"basis": "measured"},
+    }
+    parameters = {"variant": "conservative", "workers": 4}
+    receipt = {
+        "format": drawings.REGISTRATION_RECEIPT,
+        "runs": [
+            {
+                "run": "full",
+                "generator": {"name": drawings.EVAND_GENERATOR},
+                "parameters": {**parameters, "timeout": 1800.0},
+                "cost": {"cpu_seconds": 10.0, "wall_seconds": 5.0, "workers": 4, "counts": 1},
+            }
+        ],
+        "rows": [{"n": 5, "run": "full", "output": "solved", "side": "33/5"}],
+    }
+    (tmp_path / "receipt.json").write_text(json.dumps(receipt), encoding="utf-8")
+    results = [
+        {
+            "id": "T-155",
+            "kind": "upper-bound",
+            "artifacts": ["receipt.json"],
+            "regularizations": [record],
+        }
+    ]
+    cost = {"cpu_seconds": 10.0, "wall_seconds": 5.0, "workers": 4}
+    runs = [
+        {
+            "id": "refreshed-full",
+            "generator": drawings.EVAND_GENERATOR,
+            "parameters": parameters,
+            "cost": cost,
+        },
+        {
+            "id": "later",
+            "generator": drawings.EVAND_GENERATOR,
+            "parameters": parameters,
+            "cost": {**cost, "cpu_seconds": 1.0},
+        },
+    ]
+
+    def drawn(run: str = "refreshed-full", output: str = "solved", side: str = "33/5") -> Any:
+        found = {**entry(5, "bound"), "generator": drawings.EVAND_GENERATOR}
+        found["regularization"] = {**found["regularization"], "method": EVAND_METHOD}
+        found["run"] = {"id": run, "output": output}
+        found["side"] = {"relation": "bound", "view": side}
+        return drawings.Drawn(found, drawings.Resolved("T-155", "x"), [])
+
+    count = drawn()
+    solves = drawings.recorded_solves([count], results, runs, repo=tmp_path)
+    assert solves == {("T-155", 5): count.entry}
+    assert drawings.registered_modifications(record, GENERATORS, {}, count.entry) == ([], [])
+    assert drawings.registered_modifications(record, GENERATORS, {}) == (
+        [],
+        [drawings.UNRECORDED_RUNGS],
+    )
+    climbed = {**count.entry, "run": {**count.entry["run"], "rungs": ["force-kkt"]}}
+    assert drawings.registered_modifications(record, GENERATORS, {}, climbed) == (
+        ["retry rung force-kkt"],
+        [],
+    )
+    for other in (drawn("later"), drawn(output="same"), drawn(side="34/5")):
+        assert drawings.recorded_solves([other], results, runs, repo=tmp_path) == {}
+    # A reclassified copy records no cost of its own (#548 review B5): its source's
+    # cost is the receipt's, so the copy's views answer as that run's solves.
+    copied = {
+        "id": "copied",
+        "generator": drawings.EVAND_GENERATOR,
+        "parameters": parameters,
+        "cost": {**cost, "cpu_seconds": 0.0, "wall_seconds": 0.0},
+        "reclassified_from": "refreshed-full",
+    }
+    copy = drawn("copied")
+    found = drawings.recorded_solves([copy], results, [*runs, copied], repo=tmp_path)
+    assert found == {("T-155", 5): copy.entry}
+    alone = drawings.recorded_solves([copy], results, [copied], repo=tmp_path)
+    assert alone == {}
+    bare = [{**results[0], "artifacts": []}]
+    assert drawings.recorded_solves([count], bare, runs, repo=tmp_path) == {}
+    text = f"""results:
+  - id: T-155
+    kind: upper-bound
+    regularizations:
+      - n: 5
+        of: T-101
+        by: project
+        method: "{EVAND_METHOD}"
+        side: solved
+        identity:
+          basis: measured
+"""
+    written = drawings.with_registered_modifications(
+        text, safe_load(text)["results"], GENERATORS, solves
+    )
+    (five,) = safe_load(written)["results"][0]["regularizations"]
+    assert five["modifications"] == []
+    assert "modifications_unrecorded" not in five
+    assert drawings.registered_problems(written, GENERATORS, solves) == []
+    assert drawings.registered_problems(written, GENERATORS) != []
+
+
+def test_t155_names_daniels_earlier_certificate_where_its_side_is_his() -> None:
+    """On the record: T-155's items that name `first_certified_in` are exactly the rows of
+    its registration receipt whose side is that of Evan Daniel's earlier certificate
+    (`register_regularized_bounds.at_t101_side`), 33 of its 59, each naming T-101; eight
+    are drawn and 25 are not. Their case notes say the side is registered in T-155 and
+    was first certified by Evan Daniel's certificate (T-101), so it proves no new bound;
+    the other 26 say it is the upper bound it proves. The layer draws T-155's own solve
+    at fourteen counts, whose items read their rungs from the drawn entries; at 87 it
+    draws a later run's view, so T-155's item there keeps the rungs unrecorded (PR #585,
+    review B1, B2)."""
+    register = drawings.load_register()
+    (t155,) = (result for result in register.results if result["id"] == "T-155")
+    items = {int(item["n"]): item for item in t155["regularizations"]}
+    receipt = json.loads(registration.FIRST.selection.read_text(encoding="utf-8"))
+    at_daniel = {int(row["n"]) for row in receipt["rows"] if registration.at_t101_side(row)}
+    named = {n for n, item in items.items() if item.get("first_certified_in")}
+    assert named == at_daniel
+    assert len(named) == 33
+    assert len(items) - len(named) == 26
+    assert {items[n]["first_certified_in"] for n in named} == {"T-101"}
+    index = drawings.index_document()
+    drawn = drawings.drawn_counts(index)
+    fields = drawings.case_fields(index, drawn=drawn)
+    drawn_named = sorted(
+        n
+        for n in named
+        if any("view" in found for found in fields[n]["items"] if found["by"] == "project")
+    )
+    assert drawn_named == [83, 87, 107, 171, 198, 230, 234, 293]
+    first = (
+        "registered in T-155, and the same side was first certified by Evan Daniel's "
+        "certificate (T-101), so it proves no new bound"
+    )
+    for n in items:
+        note = " ".join(fields[n]["note"].split())
+        if n in named:
+            assert first in note, n
+            assert "the upper bound it proves" not in note, n
+        else:
+            assert "registered as T-155, the upper bound it proves" in note, n
+            assert "first certified" not in note, n
+    solves = drawings.recorded_solves(drawn, register.results, index.get("runs") or [])
+    assert sorted(n for _rid, n in solves) == [
+        29, 37, 41, 50, 54, 71, 83, 107, 171, 178, 198, 230, 234, 293,
+    ]  # fmt: skip
+    for n, item in items.items():
+        assert ("modifications_unrecorded" in item) == (("T-155", n) not in solves), n
+
+
+def test_a_side_a_larger_counts_ceiling_already_proved_is_no_new_bound() -> None:
+    """Where a larger count's verified upper bound already proved the bound when the side
+    was registered, as T-155's certificate at n = 291 proved T-156's at n = 290, the
+    registering result's receipt records it (`implied_by`), and the note says the side is
+    registered in the result and that the certificate registered at that count already
+    proved the bound by monotonicity, so it proves no new bound, rather than calling it the
+    upper bound it proves (PR #587, review C1)."""
+    record = {
+        "n": 5,
+        "of": "T-101",
+        "by": "project",
+        "method": EVAND_METHOD,
+        "side": "same",
+        "identity": {"basis": "measured"},
+    }
+    results = [{"id": "T-156", "kind": "upper-bound", "regularizations": [record]}]
+    undrawn = drawings.registered_case_items(results, GENERATORS)[5]
+    implied = {"n": 6, "side": "3", "evidence": ["E-x"], "results": ["T-155"]}
+    note = drawings.case_note([undrawn], {}, {"T-156": implied})
+    assert note.endswith(
+        "not drawn here; its exact side is registered in T-156, and the certificate "
+        "registered at n = 6 (T-155) already proved the bound by monotonicity, so it "
+        "proves no new bound."
+    )
+    assert "the upper bound it proves" not in note
+    # Another result's ceiling says nothing of this one's.
+    assert drawings.case_note([undrawn], {}, {"T-999": implied}).endswith(
+        "its exact side is registered as T-156, the upper bound it proves."
+    )
+
+
+def test_t156s_note_says_its_bound_follows_from_t155_by_monotonicity() -> None:
+    """On the record: T-156's receipt records T-155's certificate at n = 291 as the ceiling
+    that already proved its bound, and it is the only registered regularization whose
+    receipt records one, so n = 290's note says so and no note calls T-156's side the
+    upper bound it proves (PR #587, review C1)."""
+    register = drawings.load_register()
+    implied = drawings.implied_bounds(register.results)
+    assert set(implied) == {("T-156", 290)}
+    assert implied["T-156", 290]["n"] == 291
+    assert implied["T-156", 290]["results"] == ["T-155"]
+    front = safe_load(
+        (drawings.REPO / "packing/frontier/n-290.md")
+        .read_text(encoding="utf-8")
+        .split("---\n")[1]
+    )
+    note = " ".join(front["packing"][drawings.CASE_FIELD]["note"].split())
+    assert (
+        "its exact side is registered in T-156, and the certificate registered at n = 291 "
+        "(T-155) already proved the bound by monotonicity, so it proves no new bound."
+    ) in note
+    assert "the upper bound it proves" not in note
+
+
+def test_the_generated_block_check_fails_on_an_edited_block() -> None:
+    """`problems` holds the committed block to what the layer's index generates, so an
+    edit to it fails the records tier rather than passing until the next regeneration
+    (#548 review B6)."""
+    text = drawings.RESULTS.read_text(encoding="utf-8")
+    index = drawings.index_document()
+    assert drawings.problems(text, index) == []
+    head, block = drawings.split(text)
+    named = safe_load(block)[drawings.KEY]["items"]
+    first, second = named[0], named[1]
+
+    edited = block.replace(f"      of: {first['of']}\n", "      of: T-999\n", 1)
+    assert edited != block
+    (problem,) = drawings.problems(head + edited, index)
+    assert problem.startswith(f"results.yaml's {drawings.KEY} differs")
+
+    renumbered = block.replace(f"    - n: {second['n']}\n", "    - n: 999\n", 1)
+    (problem,) = drawings.problems(head + renumbered, index)
+    assert f"items for [{second['n']}] missing, [999] extra" in problem
+
+    (problem,) = drawings.problems(head, index)
+    assert "missing" in problem

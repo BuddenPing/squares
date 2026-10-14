@@ -25,7 +25,7 @@ from typing import Any
 import pytest
 
 from devtools import census_drawing_regularity as census
-from devtools import default_drawings as defaults
+from devtools import regularize_axis_components as axis
 from devtools import regularize_evand as drive
 from devtools import regularize_select as select
 from tests.test_regularize_evand import both_outputs
@@ -153,6 +153,22 @@ def test_each_reason_a_view_is_refused_is_named(overrides: dict[str, Any], reaso
     judged = _judged(**overrides)
     assert not judged["adoptable"]
     assert any(reason in refusal for refusal in judged["refusals"]), judged["refusals"]
+
+
+def test_a_closed_form_bound_is_held_exactly_and_not_read_as_unknown() -> None:
+    """`regularize_evand.upper_bound` gives `U` only where it is rational. A closed form,
+    n = 5's 2 + (1/2)sqrt(2), is stated as the case record writes it and compared with the
+    side exactly, as the driver holds it, on either side of it."""
+    form = select.stated_bound(5)
+    assert form == "2 + (1/2)sqrt(2)"
+    below = _judged(side="2707/1000", upper=form, s_W="2707/1000", measures={"near_axis": 0})
+    above = _judged(side="2708/1000", upper=form, s_W="2708/1000", measures={"near_axis": 0})
+    assert below["below_U"]
+    assert below["minus_U"] == pytest.approx(2.707 - (2 + 2**0.5 / 2))
+    assert any("register it first" in reason for reason in below["refusals"])
+    assert not above["at_most_U"]
+    assert any("above U" in reason for reason in above["refusals"])
+    assert not any("unknown" in reason for reason in [*below["refusals"], *above["refusals"]])
 
 
 def test_one_more_hue_at_otherwise_equal_measures_is_worse() -> None:
@@ -393,13 +409,23 @@ def test_today_is_the_view_a_tree_draws_measured_like_a_candidate() -> None:
 def test_every_drawn_view_is_at_most_the_bound_but_the_named_exceptions() -> None:
     """Owner, 13 October 2026: a drawn view is exactly verified at a side no larger than
     `U` (question 13). Each drawn view's side is read from its view file, exactly as both
-    routes decide it, and held to `U` as the selection reads it
-    (`default_drawings.drawn_above_bound`). The exceptions are `default_drawings.ABOVE_U`,
-    the views policy section 9, question 13 names (#580 review B2), which the default
-    pictures' check reads too. The list can only shrink on purpose: a view drawn above `U`
-    at another count fails here, and so does a count listed there once its drawing is at
-    `U`."""
-    above = defaults.drawn_above_bound()
-    assert sorted(above) == sorted(defaults.ABOVE_U), above
+    routes decide it, and held to `U` exactly as the driver holds it, a closed form as the
+    root it is. The views above it are the exceptions question 13 names (#580 review B2),
+    which `--check-atlas` also holds the layer to: the one list, `axis.ABOVE_U`."""
+    index = drive.read_json(drive.LAYER_INDEX)
+    above: dict[int, float] = {}
+    for entry in index["entries"]:
+        if entry["status"] != "regularized":
+            continue
+        n = int(entry["n"])
+        text = gzip.decompress((select.REPO / entry["view"]["path"]).read_bytes())
+        side, _placements, _corners = drive.view_geometry(load_yaml(text.decode())["witness"])
+        bound = drive.verified_bound(drive.case_facts(n))
+        assert bound is not None, f"n={n}: U is unknown"
+        order = bound.compare(side)
+        assert order is not None, f"n={n}: U is not read exactly: {bound.unread}"
+        if order > 0:
+            above[n] = bound.difference(side)
+    assert sorted(above) == sorted(axis.ABOVE_U) == [18, 26, 66, 85, 110, 241, 297], above
     # A rounding sliver above the best known side at each, never another packing's side.
     assert max(above.values()) < 1e-10

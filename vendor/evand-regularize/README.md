@@ -14,9 +14,13 @@ was produced by Claude (Anthropic) under his direction.
 The code is under the MIT licence, whose notice is kept with this copy in
 [LICENSE](LICENSE).
 
-[vendored.yaml](vendored.yaml) is the machine-readable manifest: the pin, the licence
-and every file’s size and SHA-256. `devtools.check_vendored_evand` holds the directory
-to it in the edit tier.
+This README and [vendored.yaml](vendored.yaml) are this project’s own files; everything
+else here is upstream’s.
+`vendored.yaml` is the machine-readable manifest: the pin, the licence and every file’s
+size, SHA-256 and executable bit.
+`devtools.check_vendored_evand` holds the directory to the manifest in the edit tier and
+on every pull request, and its `--upstream` mode holds the manifest to upstream
+([Checking the Copy](#checking-the-copy)).
 
 ## Source and Pin
 
@@ -37,8 +41,9 @@ Every file keeps its upstream path relative to the repository root, so the code�
 Upstream’s
 [root README](https://github.com/evand/square-packing/blob/675a5eaa8712542daac8b4515b0f69ad7044df44/README.md)
 is not vendored; its “Data, licence, credits” section is where upstream states the MIT
-grant and carves David Ellsworth’s drawings under `site/www/data/` out of it, and
-nothing from `site/` is vendored either.
+grant and carves David Ellsworth’s drawings under `site/www/data/` out of it.
+Nothing from `site/` is vendored either, but the alternates lists quote the same
+catalogue (see [Credit](#credit)).
 
 The
 [regularization assessment](../../docs/project/research/research-2026-10-11-evand-regularization-assessment.md)
@@ -63,6 +68,13 @@ out of reader prose:
 Upstream’s lists and batch inputs are derived from this project’s known-best witnesses
 (CC BY 4.0, Joshua Levy, the squares project) and from Evan Daniel’s packing store;
 `search/exact/batch/README.md` and `search/regularize/REGULARIZE.md` say which.
+The alternates lists also draw on David Ellsworth’s
+[catalogue of squares in squares](https://kingbird.myphotos.cc/packing/squares_in_squares.html):
+70 of the 74 rows of `search/regularize/lists/alternates.json`, `.csv` and `.md` name a
+catalogue drawing as their source, and 64 of them quote its attribution text.
+Upstream’s README says of the same material in its `site/www/data/`, derived from his
+drawings and quoting his attribution text, that it is his and not covered by the MIT
+licence. The root [LICENSE](../../LICENSE) treats these rows the same way.
 
 ## What Each File Is For
 
@@ -103,6 +115,10 @@ its default of 0; the conservative and coincide path never imports it, and sympy
 is locked anyway through the `symbolic` extra and the `dev` group.
 matplotlib is imported by `gallery.py` at load and by `atlas.py draw`; it is not in the
 lockfile and `atlas.py compute` does not need it.
+This project runs neither.
+If a drawing path ever needs them, matplotlib enters through `packing/uv.lock` under the
+dependency cool-off (`tbd guidelines supply-chain-hardening`), never through an ad-hoc
+`pip install` or an unpinned `uvx`.
 
 ## How This Project Runs It
 
@@ -116,6 +132,46 @@ made: Ruff and BasedPyright do not reach `vendor/`, the lint-floor contract name
 directory, the integrity-ceremony scan skips `vendor/`, flowmark and Biome ignore
 `vendor/`, and the document map and the retained-JSON layout exempt it.
 The embedded-JavaScript scan reads its Python like any other and finds none.
+
+## Checking the Copy
+
+There are two checks, because the offline one cannot see upstream.
+
+- **Offline**: `python -m devtools.check_vendored_evand` from `packing/`, in the edit
+  tier and on every pull request.
+  It holds the copy to `vendored.yaml`: every pinned file’s size, SHA-256 and executable
+  bit, each recorded local change, and no other file in the directory.
+  It refuses a symbolic link anywhere in the copy.
+  It also refuses a module file named after a standard-library module, a dependency the
+  scripts import, such as a `numpy.py`, or a module a dependency looks up as it loads,
+  such as a `gmpy2.py`, which mpmath tries at import and falls back from silently: five
+  of the scripts put `search/regularize/` first on `sys.path` and two put
+  `search/exact/` there, so such a file would be imported in that module’s place.
+  The last group is measured by a test, with the optional modules installed and with
+  them hidden; what it cannot measure is named by hand, and anything a dependency
+  imports only later, at call time, is left to `--upstream`, which refuses any file
+  upstream’s tree does not hold.
+  **It catches accidental edits only.** Its expected values come from the manifest, so
+  a change that edits a vendored file and that file’s manifest line together passes it.
+- **Upstream**: the same command with `--upstream`.
+  It first fetches the commits of every upstream branch and tag, without trees or
+  blobs, and refuses a pin none of them holds: GitHub serves a pull request’s head by
+  id through upstream’s own URL, so a third party’s unmerged commit would otherwise
+  pass as upstream’s.
+  It then fetches the pinned commit’s trees, without blobs, into a temporary bare
+  repository, and deletes both afterwards.
+  It requires the commit’s tree, date and subject to be the manifest’s, every pristine
+  file’s Git blob id and mode to be upstream’s at the pin, and every file here to be in
+  upstream’s tree unless it is a recorded addition, and it names the branches and tags
+  that hold the pin.
+  It fetches only from `https://github.com/evand/square-packing`, and refuses a
+  manifest that names another source.
+  It needs the network, so no offline tier runs it.
+  Run it at every re-pin and before merging any change to `vendored.yaml` or to a
+  vendored file.
+
+No gate runs `--upstream` yet, so the person reviewing a change to this directory runs
+it; `think-vwlm` tracks a networked gate that would.
 
 ## Forking
 
@@ -174,12 +230,19 @@ One replica patch is recorded:
    (`git -C <checkout> show <commit>:<path>`), add any file the pipeline newly needs,
    and delete any the new commit no longer has.
 4. From `packing/`, run
-   `uv run --frozen --all-extras --group dev python -m devtools.check_vendored_evand --write --checkout ../attic/evand-square-packing --commit <commit> --retrieved <date>`.
+   `uv run --frozen --all-extras --group dev python -m devtools.check_vendored_evand --write --checkout ../attic/evand-square-packing --commit <commit> --retrieved <date>`,
+   with the full 40-digit commit id.
    It compares every vendored file with the checkout’s blob at the commit, byte for
-   byte, refuses on any difference, and rewrites `vendored.yaml`.
-5. Update Source and Pin and the credit lines above.
+   byte and mode for mode, refuses on any difference or symbolic link, and rewrites
+   `vendored.yaml`.
+   It needs the network: it refuses a checkout whose `origin` is not upstream, and a
+   commit none of upstream’s branches or tags holds, such as a pull request’s head.
+5. Run the check with `--upstream`, which holds the rewritten manifest to upstream
+   itself rather than to the local checkout.
+6. Update Source and Pin and the credit lines above.
    Records made at the old pin keep naming it as their provenance.
-6. Re-apply and re-record any local changes, then run the check and the edit tier.
+7. Re-apply and re-record any local changes, then run the check, `--upstream` again,
+   and the edit tier.
    A re-pin invalidates nothing the exact checkers have already decided.
 
 <!-- This document follows common-doc-guidelines.md.

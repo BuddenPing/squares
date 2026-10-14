@@ -8,8 +8,8 @@ ours, which rest on someone else's argument, and how far each has been checked.
 
 ## The short version
 
-- **523** evidence records. **321** are formal; **314** of those were established here.
-- **194** rest on an argument made elsewhere, of which **7** have been read by nobody here.
+- **524** evidence records. **321** are formal; **314** of those were established here.
+- **195** rest on an argument made elsewhere, of which **7** have been read by nobody here.
 - **1** formal record proves a theorem only under a hypothesis nothing here has replayed, and is verified as that implication alone: `E-k2m4-evand-bentz4-lean-build` (ValidTilt9).
 - **43** claim to be first established here. **14** make no novelty statement at all - not assessed, which is not the same as not novel.
 
@@ -544,15 +544,16 @@ results, it is a statement about what this repository has itself examined.
 | `E-n017-overbeck-capture-independent-sample` | 0 | derived-structure | verified | equalities and inequalities, no tolerance | here | - | previously-published | independent | `V-k3-n17-capture-row-checker` |
 | `E-n017-overbeck-tree-sample-replay` | 0 | derived-structure | verified | equalities and inequalities, no tolerance | here | - | previously-published | producer’s code | `V-overbeck-n17-tree-checkers` |
 | `E-n017-overbeck-statement-root-independent` | 0 | derived-structure | verified | equalities and inequalities, no tolerance | here | - | previously-published | independent | `V-k3-n17-root-isolation` |
+| `E-n017-fitzharding-lean-report` | 0 | exact-value | reported | - | elsewhere | informally-verified | previously-published | producer’s code | `V-fitzharding-n17-lean`, `V-fitzharding-n17-source-manifest`, `V-fitzharding-n17-premise-comparisons` |
 | `E-regularized-bounds-2026-10-12-exact-decision` | 59 | upper-bound | verified | equalities and inequalities, no tolerance | here | - | apparently-novel | producer’s code | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-register-regularized-bounds` |
 | `E-regularized-bounds-2026-10-13-grid-slack-exact-decision` | 1 | upper-bound | verified | equalities and inequalities, no tolerance | here | - | apparently-novel | producer’s code | `V-sqpack-verify`, `V-check-rational-witness-independent`, `V-register-regularized-bounds` |
 
 ## What the register rests on
 
-- **assurance**: numerically-checked 4, reported 198, verified 321
-- **method**: exact-algebraic 140, interval-certified 165, numerical-multiprecision 4, proof-assistant-checked 5, proof-audited 4, published-proof 7, reported 198
-- **novelty**: apparently-novel 43, common-knowledge 4, not assessed 14, previously-published 462
-- **relationship to the producer's code**: generator 5, independent-implementation 187, not-applicable 23, same-implementation 285, shared-components 17, unknown-historical 6
+- **assurance**: numerically-checked 4, reported 199, verified 321
+- **method**: exact-algebraic 140, interval-certified 165, numerical-multiprecision 4, proof-assistant-checked 5, proof-audited 4, published-proof 7, reported 199
+- **novelty**: apparently-novel 43, common-knowledge 4, not assessed 14, previously-published 463
+- **relationship to the producer's code**: generator 5, independent-implementation 187, not-applicable 23, same-implementation 286, shared-components 17, unknown-historical 6
 
 The `cases` column is how many frontier records cite each piece of evidence, and it is the reason to read this table rather than count records. Ranked below are the *formal* records only: a `reported` record cited across the frontier may be a shared catalogue and is labelled as such, which is the register working rather than risk. The risk is a verified claim resting on an argument nobody has examined.
 
@@ -568,7 +569,7 @@ Claims marked `apparently-novel`: first established here as far as the archived 
 | `E-n005-second-order-rigidity` | 5 | That n = 5 is not infinitesimally rigid but is second-order rigid, proved exactly; the catalogue asserts 'Rigid.' without defining or arguing it | 1 | verified |
 | `E-n011-trump-local-rigidity` | 11 | Local rigidity proved by exhausting all 128 branchwise cones; sources assert rigidity, and zero algebraic freedom does not exclude a branching motion | 1 | verified |
 | `E-n040-first-order-flexibility` | 40 | That the tilted block turns at first order and every turn is refused at second; DS7 asserts n = 40 is rigid and this refines rather than contradicts it | 1 | verified |
-| `E-regularized-bounds-2026-10-13-grid-slack-exact-decision` | 290 | An exact rational certificate of the catalogue's own packing at n = 290 at the witness's own side, 2.4e-15 below the record's ceiling and 1.8e-19 below the side of Evan Daniel's certificate of the same packing (T-101). The packing is the catalogue's; the regularizer is this project's port of Evan Daniel's coincidence placement. The bound it proves is not new: T-154's certificate at n = 291, at exactly this side, implies it by monotonicity (a packing of 291 unit squares contains a packing of 290), so what is new is the certificate of n = 290's own packing, not the bound. | 1 | verified |
+| `E-regularized-bounds-2026-10-13-grid-slack-exact-decision` | 290 | An exact rational certificate of the catalogue's own packing at n = 290 at the witness's own side, 2.4e-15 below the record's ceiling and 1.8e-19 below the side of Evan Daniel's certificate of the same packing (T-101). The packing is the catalogue's; the regularizer is this project's port of Evan Daniel's coincidence placement. The bound it proves is not new: T-155's certificate at n = 291, at exactly this side, implies it by monotonicity (a packing of 291 unit squares contains a packing of 290), so what is new is the certificate of n = 290's own packing, not the bound. | 1 | verified |
 | `E-green17-sixteen-point-lower` | 17, 18 | The certified object: sixteen rational points unavoidable in [0, 4426213/1000000]^2, every decision an exact rational sign. The bound's value sits below Green's reported number, so what is new is the verified certificate, not the frontier of reported claims. | 0 | verified |
 | `E-n011-corner-class-96-25-exact-decision` | 11 | A weighted fractional unavoidable-set certificate whose row domain is clipped by corner triangles, excluding one corner-bin class of eleven-square packings at side 96/25; the corpus contains no conditioned point certificate of this shape and no statement that every eleven-square packing at 3.84 has a square meeting a corner triangle of depth 1/2 | 0 | verified |
 | `E-n011-corner-class-96-25-interval-decision` | 11 | The same certificate decided by an independent interval route on the clipped domain. | 0 | verified |

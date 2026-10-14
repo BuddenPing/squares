@@ -1020,7 +1020,7 @@ def test_n29_credits_finder_and_optimizer_and_takes_the_registers_verdict() -> N
     Its assurance is whatever `bounds_agree_at_declared_precision` says, as for every other
     case; this test names it so a change of that rule is seen here, not special-cased. The
     certificate is scored new and the packing is still Schadt and Ellsworth's. Since 12
-    October 2026 the ceiling is the exact regularized view's side (T-154), below T-009's
+    October 2026 the ceiling is the exact regularized view's side (T-155), below T-009's
     endpoint; it still lies above the truncated decimal, so it confirms no displayed bound.
     """
     case = citations.load_case(29)
@@ -1030,7 +1030,7 @@ def test_n29_credits_finder_and_optimizer_and_takes_the_registers_verdict() -> N
     assert (upper["basis"], upper["confirmed_by"], upper["results"]) == (
         "external",
         [],
-        ["T-154"],
+        ["T-155"],
     )
     agrees = bounds_agree_at_declared_precision(
         case["reported_upper_bound"], case["verified_upper_bound"]

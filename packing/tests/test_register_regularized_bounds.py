@@ -1,13 +1,13 @@
 # ruff: noqa: RUF001 -- these tests read case-record prose, whose typography uses curly
 # apostrophes, as the layer that writes it does.
-"""The regularized views registered as verified upper bounds (T-154, T-155).
+"""The regularized views registered as verified upper bounds (T-155, T-156).
 
 `devtools.register_regularized_bounds` retains each view whose exact side lies below its
 case's verified upper bound, decides it on both maintained exact routes, makes three
 controls of it, and writes the case records' verified upper lane. These tests hold the
 committed receipts, the retained views and the case records to each other, the layer to
 its own output, and the controls' construction to the outcomes it promises. The first
-batch (T-154) is Evan Daniel's regularizer's views; the second (T-155) is the grid-slack
+batch (T-155) is Evan Daniel's regularizer's views; the second (T-156) is the grid-slack
 view of n = 290, held to the same receipts in its own words.
 """
 
@@ -230,10 +230,10 @@ def test_prose_calls_a_side_exact_only_where_its_decimal_is_the_side() -> None:
             assert not re.search(rf"{shown}\$?, exactly", text), n
             assert not re.search(rf"exact side, {shown}", text), n
             assert not re.search(
-                rf"{shown}\$?, the verified upper bound \(T-154\), the exact", text
+                rf"{shown}\$?, the verified upper bound \(T-155\), the exact", text
             ), n
             assert f"{row['side_text']}$ (rounded up at 36 places)" in text, n
-            assert "the verified upper bound (T-154) rounded up at 36 places" in text, n
+            assert "the verified upper bound (T-155) rounded up at 36 places" in text, n
         else:
             assert "rounded up at 36 places" not in text, n
             if not row["agrees_with_report"]:
@@ -367,7 +367,7 @@ def test_the_controls_are_151_distinct_mutants() -> None:
 
 
 # --------------------------------------------------------------------------------------
-# The second batch: the grid-slack view of n = 290 (T-155)
+# The second batch: the grid-slack view of n = 290 (T-156)
 # --------------------------------------------------------------------------------------
 
 
@@ -409,9 +409,10 @@ def test_the_second_batchs_record_names_its_result_and_its_generator() -> None:
     text = _flat(290)
     assert registered.GRID.dated in text
     assert registered.FIRST.dated not in text
-    assert "the verified upper bound (T-155)" in text
-    # T-154 is named only where the record says its n = 291 certificate implied the bound.
-    assert text.count("T-154") == 2
+    assert "the verified upper bound (T-156)" in text
+    # T-155 is named only where the record says its n = 291 certificate implied the bound:
+    # the dated paragraph, the section and the regularization note (review C1).
+    assert text.count("T-155") == 3
     assert "grid-slack regularizer" in text
     assert "the verified upper bound from 6 to 13 October 2026 (T-101)" in text
     assert f"]({registered.GRID.link})" in text
@@ -430,7 +431,7 @@ def test_the_second_batchs_controls_reached_their_outcomes() -> None:
 
 
 def test_the_grid_batch_refuses_a_count_the_first_batch_registers(tmp_path: Path) -> None:
-    with pytest.raises(registered.RegistrationError, match="registered by T-154"):
+    with pytest.raises(registered.RegistrationError, match="registered by T-155"):
         registered.select_grid([tmp_path], [291])
     with pytest.raises(registered.RegistrationError, match="held"):
         registered.select_grid([tmp_path], [17])
@@ -438,9 +439,9 @@ def test_the_grid_batch_refuses_a_count_the_first_batch_registers(tmp_path: Path
         registered.select_grid([tmp_path], [290])
 
 
-def test_n290s_bound_already_followed_from_t154s_certificate_at_n291() -> None:
-    """`s(290) ≤ s(291)`, and T-154 certified n = 291 at exactly the side T-155 registers,
-    so the bound was not new; the owner kept T-155 as the certificate of 290's own packing
+def test_n290s_bound_already_followed_from_t155s_certificate_at_n291() -> None:
+    """`s(290) ≤ s(291)`, and T-155 certified n = 291 at exactly the side T-156 registers,
+    so the bound was not new; the owner kept T-156 as the certificate of 290's own packing
     and the record says both (PR #587, review B1)."""
     row = registered.committed(registered.GRID)[290]
     side = Fraction(row["side"])
@@ -448,7 +449,7 @@ def test_n290s_bound_already_followed_from_t154s_certificate_at_n291() -> None:
         "n": 291,
         "side": row["side"],
         "evidence": [registered.EVIDENCE],
-        "results": ["T-154"],
+        "results": ["T-155"],
     }
     assert row["implied_by"] == implied
     assert registered.implied_by(290, side) == implied
@@ -456,13 +457,16 @@ def test_n290s_bound_already_followed_from_t154s_certificate_at_n291() -> None:
     assert Fraction(registered.committed()[291]["side"]) == side
     text = _flat(290)
     assert (
-        "The bound was not new: the certificate registered at $n = 291$ (T-154), at the "
+        "The bound was not new: the certificate registered at $n = 291$ (T-155), at the "
         "same side, already proved it by monotonicity; this one certifies this count’s own "
         "packing."
     ) in text
     assert "and $s(290) \\le s(291)$, since deleting a square from a packing of 291" in text
     # The first batch's rows record no implication, and their records say none.
     assert not any("implied_by" in each for each in registered.committed().values())
+    # T-156 cites the evidence of the ceiling that implies its bound, as T-002 and T-016
+    # cite their parents', so its derived route is in the register (review C2).
+    assert registered.results_holding(290, implied["evidence"]) == ["T-156"]
 
 
 def test_a_second_grid_slack_batch_is_written_in_grid_slack_words(tmp_path: Path) -> None:
@@ -491,7 +495,7 @@ def test_a_second_grid_slack_batch_is_written_in_grid_slack_words(tmp_path: Path
     assert "regularization pass of" not in written
     assert later.command("select").endswith("select --batch grid-slack-2")
     # Its select refuses a count another batch registers, naming that batch's result.
-    with pytest.raises(registered.RegistrationError, match="registered by T-155"):
+    with pytest.raises(registered.RegistrationError, match="registered by T-156"):
         registered.select_grid([tmp_path], [290], later)
 
 
@@ -635,33 +639,81 @@ def test_the_grid_batch_refuses_two_runs_of_one_name(tmp_path: Path) -> None:
         registered.select_grid([first, second], [290])
 
 
-def test_the_grid_batch_reproduces_its_row_and_writes_nothing(tmp_path: Path) -> None:
-    """From a run directory holding the retained view, `select_grid` rebuilds the
-    committed row's facts and returns the view's bytes for `retain`, writing nothing."""
+def _no_writes(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Fail the test on any write through the registrar's two writers, which `retain`, the
+    receipts and the case records all go through: rewriting a view with the same bytes
+    leaves the files as they were, so comparing bytes cannot see it (review C3, B6)."""
+
+    def refused(*args: object, **_kwargs: object) -> None:
+        raise AssertionError(f"select wrote {args[0] if args else 'a file'}")
+
+    monkeypatch.setattr(registered, "atomic_output_file", refused)
+    monkeypatch.setattr(registered, "write_json", refused)
+
+
+#: The row facts `select_grid` rebuilds from a run directory holding the retained view.
+_REBUILT = (
+    "side",
+    "value",
+    "earlier_verified",
+    "below_earlier_by",
+    "implied_by",
+    "t101_side",
+    "below_t101_side_by",
+    "witness_side",
+    "witness_frame",
+    "above_exact_side_by",
+    "agrees_with_report",
+    "identity",
+    "regularization",
+)
+
+
+def _reproduce(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """`select_grid` on a run directory holding the retained view: the committed row's
+    facts, the view's bytes for `retain`, and nothing written."""
     selection = registered.GRID.selection.read_bytes()
     retained = registered.view_path(290, registered.GRID).read_bytes()
     run = _grid_run(tmp_path, "deg5-1013-a", _grid_report(), _retained())
+    _no_writes(monkeypatch)
     receipt, views = registered.select_grid([run], [290])
     assert views == {290: _retained()}
     row, committed = receipt["rows"][0], registered.committed(registered.GRID)[290]
-    for key in (
-        "side",
-        "value",
-        "earlier_verified",
-        "below_earlier_by",
-        "implied_by",
-        "t101_side",
-        "below_t101_side_by",
-        "witness_side",
-        "witness_frame",
-        "above_exact_side_by",
-        "agrees_with_report",
-        "identity",
-        "regularization",
-    ):
+    for key in _REBUILT:
         assert row[key] == committed[key], key
     assert registered.GRID.selection.read_bytes() == selection
     assert registered.view_path(290, registered.GRID).read_bytes() == retained
+
+
+def test_the_grid_batch_reproduces_its_row_and_writes_nothing(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """From a run directory holding the retained view, `select_grid` rebuilds the
+    committed row's facts, the identity measured again included, and returns the view's
+    bytes for `retain`, writing nothing. The identity measurement took 5 to 6 s when
+    review C5 marked this slow; with `arrangement_gap`'s nearest-centre search it is 0.65
+    to 0.70 s of call (14 October 2026), under the 2 s threshold, so it runs on the
+    pull-request surface."""
+    _reproduce(monkeypatch, tmp_path)
+
+
+def test_the_grid_batch_rebuilds_its_row_and_writes_nothing_on_the_quick_lane(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """The reproduction above with the identity measurement taken as committed, so every
+    other fact of the row and that nothing is written are held apart from the
+    measurement; the measurement's own refusals are tested directly (PR #587, review
+    C5)."""
+    committed = registered.committed(registered.GRID)[290]["identity"]
+    measured: list[int] = []
+
+    def measure(n: int, *_args: object) -> dict[str, object]:
+        measured.append(n)
+        return dict(committed)
+
+    monkeypatch.setattr(registered, "measure_identity", measure)
+    _reproduce(monkeypatch, tmp_path)
+    assert measured == [290]
 
 
 def test_problems_names_a_count_both_batches_register(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -676,7 +728,7 @@ def test_problems_names_a_count_both_batches_register(monkeypatch: pytest.Monkey
         return rows
 
     monkeypatch.setattr(registered, "committed", overlapping)
-    assert "T-155 and T-154 both register [291]" in registered.problems(registered.GRID)
+    assert "T-156 and T-155 both register [291]" in registered.problems(registered.GRID)
     assert registered.batch_of(291) == registered.FIRST
 
 
@@ -707,3 +759,152 @@ def test_the_check_reads_the_witness_again(
     found = side if side is not None else Fraction(row["side"])
     monkeypatch.setattr(registered, "checkout_witness", lambda _n: (identity, found))
     assert message in registered.problems(registered.GRID)
+
+
+def test_the_grid_batch_refuses_a_view_above_a_larger_counts_ceiling(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """Where the next count's verified upper bound lies below the view's side, the record
+    already proves more than the view, and registering the view would leave the case
+    record a weaker ceiling than the register proves: `select_grid` refuses it and says to
+    register the count by monotonicity (PR #587, review C4)."""
+    row = registered.committed(registered.GRID)[290]
+    below = Fraction(row["side"]) - Fraction(1, 10**20)
+    monkeypatch.setattr(
+        registered,
+        "next_count_ceiling",
+        lambda _n: {"bound": below, "evidence": [registered.EVIDENCE]},
+    )
+    run = _grid_run(tmp_path, "run", _grid_report(), _retained())
+    with pytest.raises(
+        registered.RegistrationError,
+        match=(
+            re.escape(
+                f"n=290: the record already proves s(290) ≤ {registered.side_text(below)}"
+            )
+            + re.escape(" by monotonicity from T-155; register the count by monotonicity")
+        ),
+    ):
+        registered.select_grid([run], [290])
+
+
+def _with_implied(monkeypatch: pytest.MonkeyPatch, implied: dict[str, object]) -> None:
+    """`committed` with the grid batch's row at n = 290 recording `implied` as the ceiling
+    that implies its bound."""
+    real = registered.committed
+
+    def rows(batch: registered.Batch = registered.FIRST) -> dict[int, dict]:
+        found = dict(real(batch))
+        if batch == registered.GRID:
+            found[290] = {**found[290], "implied_by": implied}
+        return found
+
+    monkeypatch.setattr(registered, "committed", rows)
+
+
+def test_problems_names_a_row_whose_implied_ceiling_lies_below_its_side(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A committed row whose next-count ceiling lies below its own side is the record
+    `select_grid` now refuses to write, and `--check` names it (PR #587, review C4)."""
+    row = registered.committed(registered.GRID)[290]
+    below = registered.literal(Fraction(row["side"]) - Fraction(1, 10**20))
+    _with_implied(monkeypatch, {**row["implied_by"], "side": below})
+    assert (
+        "n=290: the ceiling at n = 291 lies below the side, so the record would carry a "
+        "weaker ceiling than the register proves"
+    ) in registered.problems(registered.GRID)
+
+
+def test_the_grid_batch_refuses_a_run_whose_reports_differ_in_settings(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """A run's reports must share their settings, and the refusal comes before anything is
+    written: with every row built, `select_grid` still writes nothing when it refuses
+    (PR #587, review C3, B6)."""
+    first, second = _grid_report(), _grid_report()
+    second["n"] = 1
+    second["settings"] = {"near_axis_degrees": 0.5}
+    run = tmp_path / "run"
+    monkeypatch.setattr(
+        registered,
+        "grid_reports",
+        lambda _runs, _numbers: {
+            1: [("run", run / "n-001", second)],
+            290: [("run", run / "n-290", first)],
+        },
+    )
+    monkeypatch.setattr(
+        registered, "grid_selection_row", lambda n, _found, _batch: ({"n": n}, b"view")
+    )
+    _no_writes(monkeypatch)
+    with pytest.raises(
+        registered.RegistrationError, match="run: its reports differ in their settings"
+    ):
+        registered.select_grid([run], [1, 290])
+
+
+@pytest.mark.parametrize(
+    ("source", "message"),
+    [
+        (
+            {"id": "W-known-best-n291"},
+            (
+                "n=290: the run read witness W-known-best-n291, not the checkout's "
+                "W-known-best-n290"
+            ),
+        ),
+        (
+            {"id": "W-known-best-n290", "s_W_exact": "1/2"},
+            (
+                "n=290: the run read its witness at another side than the checkout "
+                "witness's own s_W"
+            ),
+        ),
+    ],
+)
+def test_the_identity_measurement_refuses_a_run_of_another_witness(
+    source: dict[str, str], message: str
+) -> None:
+    """`measure_identity` measures a view against the checkout witness only where the run
+    read that witness, by its id and its exact side `s_W`; the first batch's `select`
+    reaches these refusals from a report's `source` (PR #587, review C3, B4)."""
+    row = registered.committed(registered.GRID)[290]
+    found = {"s_W_exact": row["witness_side"], **source}
+    with pytest.raises(registered.RegistrationError, match=re.escape(message)):
+        registered.measure_identity(290, registered.read_view(290, registered.GRID), [], found)
+
+
+@pytest.mark.parametrize(
+    "change",
+    [
+        pytest.param({"n": 290}, id="the same count"),
+        pytest.param({"n": 289}, id="a smaller count"),
+        pytest.param({"side": "18"}, id="above the side"),
+    ],
+)
+def test_problems_names_a_row_whose_implied_ceiling_does_not_imply_its_bound(
+    monkeypatch: pytest.MonkeyPatch, change: dict[str, object]
+) -> None:
+    """The ceiling a row says implies its bound must be a larger count's, at or below the
+    row's side; `--check` names one that is not (PR #587, review C3)."""
+    row = registered.committed(registered.GRID)[290]
+    _with_implied(monkeypatch, {**row["implied_by"], **change})
+    assert "n=290: the ceiling the row says implies the bound does not" in registered.problems(
+        registered.GRID
+    )
+
+
+def test_an_implied_ceiling_no_registered_result_holds_is_refused(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A next-count ceiling at or below the side is named by the results that hold it; one
+    that no registered result holds cannot be named, and `implied_by` refuses it rather
+    than recording an implication from nothing (PR #587, review C3)."""
+    row = registered.committed(registered.GRID)[290]
+    monkeypatch.setattr(registered, "results_holding", lambda _n, _evidence: [])
+    with pytest.raises(
+        registered.RegistrationError,
+        match="n=291: no registered result holds the verified bound",
+    ):
+        registered.implied_by(290, Fraction(row["side"]))
