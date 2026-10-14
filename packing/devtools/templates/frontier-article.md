@@ -43,7 +43,7 @@ $4.57$ and $9141/2000$ (13 and 16 August), and Massaccesi’s $4.5058$ (21 Augus
 replayed here as [T-015](results.html#t-015) and [T-016](results.html#t-016). The
 [seventeen-square record](cases/17.html) lists them all; each has since been superseded.
 On 12 October 2026 two proofs that Bidwell’s 1998 packing is optimal were published by
-separate routes, Marc Leonard Overbeck’s candidate proof ([T-153](results.html#t-153))
+separate routes: Marc Leonard Overbeck’s candidate proof ([T-153](results.html#t-153))
 and Oscar Fitzharding’s Lean 4 proof ([T-154](results.html#t-154)). Neither has yet been
 replayed in full here, so the case is reported proved and its verified bounds are
 unchanged.

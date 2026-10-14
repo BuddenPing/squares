@@ -1406,7 +1406,7 @@ graph.
 This section explains those pieces in general, as they apply to any $n$ whose best
 known packing is to be proved optimal.
 $n = 11$, where the proof is complete, and this project’s own route at $n = 17$,
-suspended on 13 October 2026 once two proofs by others were reported (item 7 of
+suspended on 13 October 2026 after two proofs by others were reported (item 7 of
 [§8](#8-what-is-known-and-what-is-not)), supply the illustrations; the
 [`n = 17` explainer](docs/project/guides/n17-optimality-explainer.md) gives that route’s
 numbers, records and status, and nothing below is a result about the case.
