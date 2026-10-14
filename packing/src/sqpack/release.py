@@ -762,6 +762,7 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "packing/devtools/site_documents.py",
             "packing/devtools/site_topics.py",
             "packing/devtools/site_urls.py",
+            "packing/devtools/templates/site-nav.css",
             "packing/devtools/templates/site-nav.html",
             "packing/src/sqpack/cli/validate.py",
         ),
@@ -785,7 +786,9 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "pipeline; existing links retain their legacy section landings. Shared import "
             "and page inventories include those reader sources conservatively. News, "
             "topic labels, significance meters, article disclosures, reading-card discovery "
-            "and navigation are site chrome. The five regenerated claim documents differ "
+            "and navigation are site chrome. Shared chooser styles also serve the "
+            "print-hidden navigation; the paper-owned typography is unchanged. The five "
+            "regenerated claim documents differ "
             "only in repository source-link provenance from c6118ca5 to 52b992d3. No "
             "byte-identical PDF rebuild is claimed."
         ),
