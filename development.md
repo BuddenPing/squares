@@ -1190,9 +1190,9 @@ A squash or a rebase lands the branch as new commits, and leaves the branch’s 
 commits on no branch once it is deleted.
 The record names those commits:
 
-- A release cut sets `PUBLICATION_REVISION` to the branch’s head, its merge from `main`
-  ([Cutting an edition](#cutting-an-edition)), and the claim documents link to it, so it
-  has to stay reachable from `main`.
+- A release cut sets `PUBLICATION_REVISION` to the commit it runs on, the branch’s head
+  at the cut ([Cutting an edition](#cutting-an-edition)), and the claim documents link
+  to it, so it has to stay reachable from `main`.
 - Recorded engine and provenance commits, which `check_provenance` resolves, and the
   claim documents’ verifier pins name branch commits.
 - A stacked or dependent branch loses its ancestry: its base’s commits are no longer in
