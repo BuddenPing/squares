@@ -1183,7 +1183,7 @@ def exact_view(
     first the tilted ones, then all of them.
     """
     started = time.perf_counter()
-    view_id = f"{witness['id']}-regularized"
+    view_id = regularized_id(witness)
     matched = same.match_rotations(frame, poses)
     tight = same.tight_rows(frame, poses, matched)
     keys = {row.priority for row in tight}
@@ -1251,6 +1251,11 @@ def exact_view(
         "replay": "uv run --frozen packing-witness verify <this file>",
     }
     return Exact(document, report)
+
+
+def regularized_id(witness: Mapping[str, Any]) -> str:
+    """The id of a witness's view, as `exact_view` writes it and admission holds it."""
+    return f"{witness['id']}-regularized"
 
 
 ATTEMPTS = (("same", False), ("same", True), ("bound", False), ("bound", True))
@@ -1468,7 +1473,8 @@ def source_record(n: int, data: bytes, witness: Mapping[str, Any]) -> dict[str, 
     id is fixed per count. Whether a run still describes the witness a count holds today
     is decided by the admitting layer (#548's `admitted()`): it holds `s_W_exact` to the
     exact side of today's witness and measures identity again against it, comparing
-    regenerated semantic results as OR-16 asks.
+    regenerated semantic results as OR-16 asks. The view itself is decided there too, on
+    both exact routes as its file is then (`view_decided`).
     """
     try:
         side: str | None = same.literal(same.exact_frame(witness).side)
@@ -1488,8 +1494,9 @@ def run_one(n: int, run_dir: Path, settings: Settings) -> dict[str, Any]:
     An earlier run's view, drawing and report are removed first, so a re-run that finds
     no view, or stops, leaves none of them beside its own (review B of #530, B4). The
     report records the view's bytes by their Git blob id as provenance only: nothing
-    compares it, and its verdicts are not bound to it (OR-18). The admitting layer
-    decides the view it admits again (`source_record`).
+    compares it, and its verdicts are not bound to it (OR-18). The admitting layer reads
+    the view file as it is then and decides it again on both exact routes, with its side
+    and id held to this report's (`admitted`, `view_decided`).
     """
     directory = _guard(run_dir) / f"n-{n:03d}"
     for stale in ("report.json", "view.yaml.gz", "drawing.svg"):
@@ -1521,10 +1528,18 @@ def run_one(n: int, run_dir: Path, settings: Settings) -> dict[str, Any]:
 # --------------------------------------------------------------------------------------
 
 
-def decided(report: Mapping[str, Any], witness: Mapping[str, Any]) -> driver.Decision:
+def decided(
+    report: Mapping[str, Any],
+    witness: Mapping[str, Any],
+    routes: Mapping[str, bool] | None = None,
+) -> driver.Decision:
     """The policy's decision table (section 4) applied to one count's view, as the driver
     applies it to its own: the exact routes, the side against `s_W` and `U`, the pairing
-    and named turns, the per-square and total contact counts, and the move bound."""
+    and named turns, the per-square and total contact counts, and the move bound.
+
+    The exact routes are `routes` where admission ran them on the view as it is now
+    (`view_decided`), else the verdicts the run recorded, as a run's own summary reads
+    them (`run_block`)."""
     if "measured" not in report:
         return driver.classify(
             driver.Measured("same", produced=False, status=str(report.get("refusal")))
@@ -1543,7 +1558,9 @@ def decided(report: Mapping[str, Any], witness: Mapping[str, Any]) -> driver.Dec
         driver.Measured(
             "same" if relation == "same" else "solved",
             produced=True,
-            routes={
+            routes=dict(routes)
+            if routes is not None
+            else {
                 "exact_verify": bool(verdicts["exact_verify"]["passed"]),
                 "independent": bool(verdicts["independent"]["passed"]),
             },
@@ -1564,6 +1581,13 @@ def decided(report: Mapping[str, Any], witness: Mapping[str, Any]) -> driver.Dec
 def admitted(directory: Path, run_id: str) -> driver.Admitted:
     """One count's grid-slack view, admitted by the decision table's row 10, in the
     layer's terms (`devtools.regularize_evand.admit_views` writes it).
+
+    The view admitted is the file in the run directory as it is now, decided again before
+    anything is measured on it (#548 review C, C1): both exact routes run on it, and its
+    exact side and id must be the ones its report decided (`view_decided`). The table
+    decides on those routes, and the entry records them, never the report's verdicts, so
+    a file edited, copied in or restored beside another report is refused rather than
+    drawn with a verdict it never earned.
 
     The run read the known-best witness of the checkout it ran in; the entry is about the
     witness this checkout holds. So admission holds the view to it, not to the run's
@@ -1587,8 +1611,12 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
     ran_side = ran_on.get("s_W_exact") if isinstance(ran_on, Mapping) else None
     view_path = directory / "view.yaml.gz"
     view: dict[str, Any] = {}
-    if "measured" in report and view_path.is_file():
-        view = load_yaml(gzip.decompress(view_path.read_bytes()).decode())["witness"]
+    routes: dict[str, bool] | None = None
+    if "measured" in report:
+        if not view_path.is_file():
+            raise GridSlackError(
+                f"n={n}: no {view_path.name} beside the report that decided it"
+            )
         if ran_side is not None:
             own = same.exact_frame(witness).side
             if Fraction(str(ran_side)) != own:
@@ -1596,14 +1624,15 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
                     f"n={n}: the run read a witness at s_W = {ran_side}, and this checkout's "
                     f"is at {same.literal(own)}: run the count again on this witness"
                 )
+        view, routes = view_decided(n, report, view_path, witness)
         straightened = [row["square"] for row in report.get("straightened") or []]
         report = {**report, "measured": measure(n, witness, view, straightened)}
         if not report["measured"]["identity"].get("one_to_one"):
             raise GridSlackError(
                 f"n={n}: the view does not pair one to one with this checkout's witness"
             )
-    decision = decided(report, witness)
-    if decision.decision != "admit":
+    decision = decided(report, witness, routes)
+    if decision.decision != "admit" or routes is None:
         raise GridSlackError(f"n={n}: not admitted: row {decision.row}, {decision.reason}")
     measured = report["measured"]
     ident = measured["identity"]
@@ -1634,7 +1663,6 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
         "max_move": float(ident["max_move"]),
         "max_turn_deg": float(ident["max_turn_deg"]),
     }
-    verdicts = report["attempts"][-1]["exact"]["verdicts"]
     current = shaded.get("against_current") or {}
     return driver.Admitted(
         n=n,
@@ -1658,8 +1686,8 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
         view=dict(view),
         provenance=dict(view.get("certificate") or {}),
         routes={
-            "repository_verifier": bool(verdicts["exact_verify"]["passed"]),
-            "independent_checker": bool(verdicts["independent"]["passed"]),
+            "repository_verifier": routes["exact_verify"],
+            "independent_checker": routes["independent"],
         },
         decision={
             "row": decision.row,
@@ -1688,6 +1716,43 @@ def admitted(directory: Path, run_id: str) -> driver.Admitted:
         regularization=record,
         house_after=list(shaded["house"]["after"]),
     )
+
+
+def view_decided(
+    n: int, report: Mapping[str, Any], path: Path, witness: Mapping[str, Any]
+) -> tuple[dict[str, Any], dict[str, bool]]:
+    """A run's view file (`path`) read as it is now, and the exact routes' verdicts on it,
+    or GridSlackError when it is not the view its report decided (#548 review C, C1).
+
+    `regularize_evand.decided_refusal` decides it as `layer_refusal` decides a driver
+    view: the file must read as a valid rational witness, `exact_verify` and the
+    independent checker must both accept it and decide it as the run recorded
+    (`attempts[-1].exact.verdicts`), and its exact side and id must be the run's
+    (`attempts[-1].exact.side`, and `regularized_id` of this checkout's witness, whose id
+    is fixed per count). Nothing is compared by digest or Git blob id (OR-16, OR-18).
+    """
+    attempts = report.get("attempts") or [{}]
+    exact = attempts[-1].get("exact") or {}
+    verdicts = exact.get("verdicts") or {}
+    try:
+        document = load_yaml(gzip.decompress(path.read_bytes()).decode("utf-8"))
+        validate_witness_document(document, path=path, fallback_schema=WITNESS_SCHEMA)
+        view: dict[str, Any] = document["witness"]
+        routes, refusal = driver.decided_refusal(
+            path.name,
+            view,
+            recorded={
+                route: bool((verdicts.get(route) or {}).get("passed"))
+                for route in ("exact_verify", "independent")
+            },
+            decided={"side": exact.get("side"), "id": regularized_id(witness)},
+        )
+    except Exception as error:  # a view that does not read is refused
+        message = f"n={n}: {path.name} does not read as a rational view: {error}"
+        raise GridSlackError(message) from error
+    if refusal is not None:
+        raise GridSlackError(f"n={n}: not admitted: {refusal}")
+    return view, routes
 
 
 UNRECORDED_SIDE = (

@@ -205,7 +205,7 @@ import subprocess
 import sys
 import tempfile
 import time
-from collections.abc import Collection, Iterable, Iterator, Mapping, Sequence
+from collections.abc import Callable, Collection, Iterable, Iterator, Mapping, Sequence
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass, field, replace
@@ -3058,23 +3058,55 @@ def view_refusal(
     `exact_verify` and the independent checker must both accept it; for the solved view,
     converted from a certificate, the half-angle route must decide it as the report
     recorded; and its exact side, its relation to the witness's side and the bound the
-    report stored, and its id must be the ones its report decided on.
+    report stored, and its id must be the ones its report decided on (`decided_refusal`).
     """
     block = (report.get("outputs") or {})[chosen]
+    _routes, refusal = decided_refusal(
+        name,
+        witness,
+        recorded=block.get("routes") or {},
+        decided={
+            "side": block.get("side_exact"),
+            "relation": block.get("relation"),
+            "id": block.get("id"),
+        },
+        relation=lambda side: report_relation(report, side),
+        half_angle=chosen == "solved",
+    )
+    return refusal
+
+
+def decided_refusal(
+    name: str,
+    witness: Mapping[str, Any],
+    *,
+    recorded: Mapping[str, Any],
+    decided: Mapping[str, Any],
+    relation: Callable[[Fraction], str] | None = None,
+    half_angle: bool = False,
+) -> tuple[dict[str, bool], str | None]:
+    """A view's witness decided as it is now, and why it is not the view its run decided,
+    or None: what `view_refusal` holds a driver view to, and the grid-slack generator's
+    admission its own (`regularize_grid_slack.admitted`, #548 review C, C1).
+
+    The routes are run on the witness: `exact_verify` and the independent checker, and
+    with `half_angle` the half-angle route. Both exact routes must accept it, and each
+    route must decide it as the run `recorded` (by route name). Each field the run
+    `decided` must be the witness's own: `side`, its exact side as a literal; `id`; and
+    `relation`, which `relation` reads from that side. The verdicts come back with the
+    refusal, so a caller records what was decided on these bytes, not what its run says.
+    """
     side, placements, corners = view_geometry(witness)
     result, _report = exact_verify(witness)
     now = {
         "exact_verify": bool(result["verification_passed"]),
         "independent": bool(independent.check_squares(corners, side)["verification_passed"]),
     }
-    if chosen == "solved":
+    if half_angle:
         now["half_angle"] = bool(area.decide_placed(side, placements).passed)
-    recorded = block.get("routes") or {}
-    stated = {
-        "side": (literal(side), block.get("side_exact")),
-        "relation": (report_relation(report, side), block.get("relation")),
-        "id": (witness.get("id"), block.get("id")),
-    }
+    own: dict[str, Any] = {"side": literal(side), "id": witness.get("id")}
+    if relation is not None:
+        own["relation"] = relation(side)
     failed = [route for route in ("exact_verify", "independent") if not now[route]]
     differ = [route for route, passed in now.items() if bool(recorded.get(route)) != passed]
     problems = [
@@ -3085,12 +3117,12 @@ def view_refusal(
             else []
         ),
         *(
-            f"{name}'s {field} is {found}, not the {decided} its report decided"
-            for field, (found, decided) in stated.items()
-            if found != decided
+            f"{name}'s {field} is {own[field]}, not the {value} its report decided"
+            for field, value in decided.items()
+            if own[field] != value
         ),
     ]
-    return "; ".join(problems) or None
+    return now, "; ".join(problems) or None
 
 
 def admit_views(
@@ -3328,7 +3360,12 @@ def write_layer_with_grid(
     exclude: Collection[int] = (),
 ) -> dict[str, Any]:
     """Admit finished runs' views and, at `grid_counts`, the grid-slack run's view instead
-    (`devtools.regularize_grid_slack.admitted_views`), in one write of the layer."""
+    (`devtools.regularize_grid_slack.admitted_views`), in one write of the layer.
+
+    Every view is decided again as it is now before it is written, on both exact routes
+    (`decided_refusal`), with its side and id held to its report's: the driver's by
+    `layer_refusal`, the grid run's by `regularize_grid_slack.admitted`, which refuses
+    the whole write when one is not the view its report decided (#548 review C, C1)."""
     grid = importlib.import_module("devtools.regularize_grid_slack")
     admitted, runs, refused = evand_candidates(run_dirs)
     chosen = set(grid_counts)
