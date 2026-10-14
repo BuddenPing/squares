@@ -147,7 +147,7 @@ SCREEN_EXCLUDED: dict[str, tuple[str, ...]] = {
 #: current complete retained motions, with the other 310 screen rows unchanged.
 #: The house adoption of 11 October 2026 (think-fvz4) re-screened its 42 counts, with the
 #: other 282 rows unchanged, its pass of 12 October the nine counts it moved, and the pass
-#: for issue 528 (T-154) the three counts it moved, 175, 232 and 264.
+#: for issue 528 (T-158) the three counts it moved, 175, 232 and 264.
 SCREEN_FINDINGS: dict[str, tuple[int, int, int, int]] = {
     "n=1..100": (28, 146, 86, 659),
     "n=1..200": (65, 535, 182, 2182),

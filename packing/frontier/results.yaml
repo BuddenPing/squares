@@ -13082,7 +13082,7 @@ results:
       smaller confirmed certificates: Francisco Couzo's refinements of these packings (T-128,
       T-130, T-134, T-140), Evan Daniel's reconstruction of the arrangement at 126 (T-139) and
       SQUISH's packing at 131 (T-136); at 175 Daniil Ostashev's composition of issue 528
-      (T-154) replaced T-140 on 12 October 2026. This entry now holds no case record; each of
+      (T-158) replaced T-140 on 12 October 2026. This entry now holds no case record; each of
       its certificates stays retained and verified as history.
     controls:
     - packing/resources/web/ry-xu-new-packings-2026-10-08/receipts/exact-certification.json.xz
@@ -13455,7 +13455,7 @@ results:
       re-implemented. The 10 October review found no blocking defect.
 
       On 11 October 2026 the case records adopted three of them as the house, at 84, 86 and
-      105. At 175 and 270 smaller certificates hold the case (at 175 issue 528's, T-154, and
+      105. At 175 and 270 smaller certificates hold the case (at 175 issue 528's, T-158, and
       at 270 issue 500's, T-151, both since 12 October 2026), and these two stay verified and
       are not selected.
 
@@ -13537,7 +13537,7 @@ results:
       October 2026 the case records adopted T-130 as the house at 84, 86 and 105, each
       earlier house kept as history, and T-140 at 175 and 270, where T-130's stay verified
       and are not selected; on 12 October
-      T-151 replaced T-140 at 270 and T-154 at 175.
+      T-151 replaced T-140 at 270 and T-158 at 175.
     next_rung: >-
       V4 and C4 need a retained human oversight record: two accepted adversarial
       reviews by distinct AI reviewers are retained, the 10 October review and the 11 October
@@ -14369,15 +14369,15 @@ results:
       PingYou Ltd's later certificates of issues 504 and 503 (T-148, T-147) are smaller still;
       at 270 and 305 the author's own later packings of issue 500 (T-151) are smaller than
       T-140's, at 305 Francisco Couzo's issue 506 refinement of that packing (T-152) is
-      smaller again, at 232 Daniil Ostashev's later composition of issue 528 (T-154) is
-      smaller, and at 154 Evan Daniel's later packing of issue 552 (T-156) is smaller.
+      smaller again, at 232 Daniil Ostashev's later composition of issue 528 (T-158) is
+      smaller, and at 154 Evan Daniel's later packing of issue 552 (T-160) is smaller.
 
       On 11 October 2026 the case records adopted this entry as the house at 131, 154, 232,
       259 and 307, T-140 at 209, 237, 270 and 305, T-146 at 236, 263, 269,
       292, 302 and 303, which regularizes these packings there and credits them to this
       entry, T-147 at 207 and
       T-148 at 153; on 12 October T-151 replaced T-140 at 270, T-152 replaced it at 305,
-      T-154 replaced this entry at 232, and T-156 replaced it at 154.
+      T-158 replaced this entry at 232, and T-160 replaced it at 154.
 
       Credit Nate Chaoweeraprasit (https://github.com/itsnaka/squish-certs), using SQUISH
       and its Mondrian composition method, after Francisco Couzo, Ryan Xu, Frits Göbel,
@@ -14485,8 +14485,8 @@ results:
       6.73e-16, 2.03e-13, 2.21e-17 and 4.48e-16. At 207 PingYou Ltd's later certificate of
       issue 503 (T-147) is smaller, by 4.55e-03, and at 153 that of issue 504 (T-148) is
       smaller than T-146's, so it is the smallest report known at 131, 259 and 307; at 232
-      Daniil Ostashev's later certificate of issue 528 (T-154) is smaller, by 3.25e-03, and
-      at 154 Evan Daniel's of issue 552 (T-156), by 5.04e-04.
+      Daniil Ostashev's later certificate of issue 528 (T-158) is smaller, by 3.25e-03, and
+      at 154 Evan Daniel's of issue 552 (T-160), by 5.04e-04.
 
       At 154, 207, 209, 236, 237, 263, 302 and 303 it replaces earlier SQUISH packings the
       cases hold directly or through Siddharth Gupta's refinements, and at 153 it is below
@@ -14514,10 +14514,10 @@ results:
       houses that day, each earlier house kept as history.
 
       The review of issues 528 and 529
-      (docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md) recommends T-154
+      (docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md) recommends T-158
       at 232, which the case holds since 12 October 2026, this entry's certificate kept as
       history. The review of issue 552
-      (docs/project/reviews/review-2026-10-12-upper-bound-import-552.md) recommends T-156
+      (docs/project/reviews/review-2026-10-12-upper-bound-import-552.md) recommends T-160
       at 154, which the case holds since 12 October 2026, this entry's certificate kept as
       history.
 
@@ -15062,7 +15062,7 @@ results:
       On 11 October 2026 the case records adopted five of them as the house, at 175, 209,
       237, 270 and 305. On 12 October the smaller certificates of issue 500 at 270 (T-151),
       of issue 506 at 305 (T-152), the latter refining issue 500's packing there, and of
-      issue 528 at 175 (T-154), Daniil Ostashev's composition, replaced them at those three
+      issue 528 at 175 (T-158), Daniil Ostashev's composition, replaced them at those three
       counts; there, and at 132, where the smaller certificate of issue 489 (T-141) holds the
       case, this entry stays verified and is not selected.
 
@@ -15135,7 +15135,7 @@ results:
       issue 476's sides at 237 and 270 by 7.21e-04 and 6.94e-03, T-130's at 270 by 6.95e-03
       and Mishapolk's issue 470 prints. The later exact sides of issue 500 (T-151) are
       smaller at 270 and 305, by 1.58e-03 and 5.95e-04, and issue 506's (T-152) at 305, by
-      6.73e-04, and issue 528's (T-154) at 175, by 2.95e-03,
+      6.73e-04, and issue 528's (T-158) at 175, by 2.95e-03,
       so it is the smallest known at 209 and 237.
 
       At 132 it is below the case's ceiling (Francisco Couzo, improved by Evan Daniel, T-098)
@@ -15151,7 +15151,7 @@ results:
       (packing/devtools/house-custody-2026-10-11.json), and the case records adopted the five
       houses that day, each earlier house kept as history. The reviews of issues 500 and 506
       recommend T-151 at 270 and
-      T-152 at 305, and the review of issues 528 and 529 recommends T-154 at 175, which
+      T-152 at 305, and the review of issues 528 and 529 recommends T-158 at 175, which
       replaced this entry there on 12 October 2026.
 
       The same commit changes 3 further certificates the issue does not name, at n = 303,
@@ -15840,7 +15840,7 @@ results:
       n = 40's reported and verified lower bounds move from T-133's 335427/50000, which the case
       record keeps as history, to 1340000/199529.
 
-      T-153, registered on 12 October on a new density, raised both lanes of n-040.md to
+      T-157, registered on 12 October on a new density, raised both lanes of n-040.md to
       3359/500; the case record keeps this entry as history.
 
   - id: T-146
@@ -17335,7 +17335,7 @@ results:
       340 and 343, and leave 53 byte-identical to the issue-476 and issue-488 packets'
       copies; the packet's claim record compares the four, and each is an import of its
       own. 175 was the smallest side known at its count until Daniil Ostashev's issue 528
-      (T-154), 2.94e-03 below it, and stays in the packet unless its author asks for it to
+      (T-158), 2.94e-03 below it, and stays in the packet unless its author asks for it to
       be registered (think-9fjl); 340 is the smallest known at 340 and its row is the owner's decision; 308 and 343 are
       beaten by T-141's 308 and Hunt 3's 343, and the source marks both superseded.
 
@@ -17370,7 +17370,7 @@ results:
           lineage measured where the record retains the parent.
         verdict: accepted
         covers: [T-152]
-  - id: T-153
+  - id: T-157
     kind: lower-bound
     registered: '2026-10-12'
     headline: "`s(40) > 3359/500 = 6.718`, by T-145's continuous-pose kernel on a density with 163 new supports"
@@ -17472,7 +17472,7 @@ results:
           replay's judge; the rungs and the drafted significance; and what a replay of wand125's
           sqverify_continuous would change.
         verdict: accepted
-        covers: [T-153]
+        covers: [T-157]
     artifacts:
       - packing/resources/web/guzhou-n40-new-supports-2026-10-11/README.md
       - packing/resources/web/guzhou-n40-new-supports-2026-10-11/source/PROOF.md
@@ -17527,7 +17527,12 @@ results:
 
       n = 40's reported and verified lower bounds move from T-145's 1340000/199529, which the case
       record keeps as history, to 3359/500.
-  - id: T-154
+
+      Registered as T-153 on the intake branch of 12 October and renumbered to T-157 when that
+      branch merged with main, where T-153 to T-156 had been registered in the meantime, in every
+      record, view, test and tool that names it. The stage 4 review of 12 October is stored as its
+      reviewer wrote it and is not edited: its "T-153" is this entry, T-157.
+  - id: T-158
     kind: upper-bound
     registered: '2026-10-12'
     headline: New packings of 175, 232 and 264 squares built on a new 38-square rectangle, each certified exactly
@@ -17672,6 +17677,13 @@ results:
       corner checker, share certificate parsing, half-angle conversion, Fraction arithmetic
       and the separating-axis method. No two independent methods, human oversight or
       optimality is claimed.
+
+      Registered as T-154 on the intake branch of 12 October and renumbered to T-158 when
+      that branch merged with main, where T-153 to T-156 had been registered in the
+      meantime, in every record, view, test and tool that names it. The reviews of 12
+      October are stored as their reviewers wrote them and are not edited: in the review of
+      issues 528 and 529, "T-154" is this entry, T-158, and "T-155" is T-159; in the review
+      of issue 552, "T-154" is this entry and "T-156" is T-160.
     next_rung: >-
       V4 and C4 need a second accepted adversarial review by a distinct reviewer and a
       retained human oversight record; one AI review, of 12 October, is retained.
@@ -17697,8 +17709,8 @@ results:
           case holds and every report pending at its count, and the named pieces measured
           where the record retains them.
         verdict: accepted
-        covers: [T-154, T-155]
-  - id: T-155
+        covers: [T-158, T-159]
+  - id: T-159
     kind: upper-bound
     registered: '2026-10-12'
     headline: Another arrangement of Ryan Xu's design for 102 squares, certified exactly from its decimal layout
@@ -17813,6 +17825,12 @@ results:
       certificate parsing, half-angle conversion, Fraction arithmetic and the
       separating-axis method. No two independent methods, human oversight or optimality is
       claimed.
+
+      Registered as T-155 on the intake branch of 12 October and renumbered to T-159 when
+      that branch merged with main, where T-153 to T-156 had been registered in the
+      meantime, in every record, view, test and tool that names it. The review of 12
+      October is stored as its reviewer wrote it and is not edited: its "T-155" is this
+      entry, T-159, and its "T-154" is T-158.
     next_rung: >-
       V4 and C4 need a second accepted adversarial review by a distinct reviewer and a
       retained human oversight record; one AI review, of 12 October, is retained.
@@ -17838,8 +17856,8 @@ results:
           case holds and every report pending at its count, and the named pieces measured
           where the record retains them.
         verdict: accepted
-        covers: [T-154, T-155]
-  - id: T-156
+        covers: [T-158, T-159]
+  - id: T-160
     kind: upper-bound
     registered: '2026-10-12'
     headline: A smaller packing of 154 squares from Evan Daniel's size-chaining explorer, certified exactly
@@ -17907,7 +17925,7 @@ results:
       rationale: >-
         A new arrangement of 154 squares, measured as no placement of the packing the case
         held (T-136) or of Couzo's 154, a smaller finite construction side 5.04e-04 below
-        the case ceiling and the smallest known at the count, as T-149, T-136 and T-154 are;
+        the case ceiling and the smallest known at the count, as T-149, T-136 and T-158 are;
         not a re-solve, regularization or refinement of a packing the record credits; no
         lower bound or optimum.
       scored: '2026-10-12'
@@ -17971,6 +17989,12 @@ results:
       certificate parsing, half-angle conversion, Fraction arithmetic and the
       separating-axis method. No two independent methods, human oversight or optimality is
       claimed.
+
+      Registered as T-156 on the intake branch of 12 October and renumbered to T-160 when
+      that branch merged with main, where T-153 to T-156 had been registered in the
+      meantime, in every record, view, test and tool that names it. The review of 12
+      October is stored as its reviewer wrote it and is not edited: its "T-156" is this
+      entry, T-160, and its "T-154" and "T-155" are T-158 and T-159.
     next_rung: >-
       V4 and C4 need a second accepted adversarial review by a distinct reviewer and a
       retained human oversight record; one AI review, of 12 October, is retained.
@@ -17995,4 +18019,4 @@ results:
           its case holds and against Couzo's 154, and the start the author names measured
           where the record retains it.
         verdict: accepted
-        covers: [T-156]
+        covers: [T-160]

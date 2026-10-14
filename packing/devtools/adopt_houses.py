@@ -231,7 +231,7 @@ RESULTS: dict[str, Prose] = {
             "under his direction."
         ),
     ),
-    "T-154": Prose(
+    "T-158": Prose(
         author="Daniil Ostashev",
         reported="on [jlevy/squares#528](https://github.com/jlevy/squares/issues/528)",
         producer_route=False,
@@ -241,7 +241,7 @@ RESULTS: dict[str, Prose] = {
             "agents wrote and ran the search, composition and verification code."
         ),
     ),
-    "T-156": Prose(
+    "T-160": Prose(
         author="Evan Daniel",
         reported="on [jlevy/squares#552](https://github.com/jlevy/squares/issues/552)",
         producer_route=False,
@@ -285,7 +285,7 @@ def _mondrian(pieces: str) -> Credit:
 
 def _composed(what: str) -> Credit:
     """Daniil Ostashev's composition with his 38-square rectangle, as his issue names the
-    pieces (T-154); the pieces' sources are acknowledged, the packing is his."""
+    pieces (T-158); the pieces' sources are acknowledged, the packing is his."""
     return Credit((OSTASHEV,), (), f"Daniil Ostashev’s composition of {what}")
 
 
@@ -328,7 +328,7 @@ CREDITS: dict[int, Credit] = {
         "certificate of it",
     ),
     # Evan Daniel's packing; the start he names, Couzo's 155 less one square, is his
-    # statement, consistent with the measurements and not established by them (T-156).
+    # statement, consistent with the measurements and not established by them (T-160).
     154: Credit(
         (DANIEL,),
         (),

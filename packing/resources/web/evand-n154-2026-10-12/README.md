@@ -91,7 +91,9 @@ No source program ran here.
 
 [acquisition/claims.json](acquisition/claims.json) freezes the certificate against the
 record as it stood when the issue was read: local branch `layer6` at `92649a2eb`, which
-carries the 2026-10-11 adoption layer and the records to `T-155`.
+carries the 2026-10-11 adoption layer and the records to `T-155` as that branch numbered
+them; its `T-153` to `T-155` are `T-157` to `T-159` since the merge with main, where
+`T-153` to `T-156` name other results.
 `check-claims` rebuilds the case ceiling and every other side from its own retained
 packet:
 
@@ -107,7 +109,7 @@ packet:
 
 The certificate is below every report the record holds or has pending at 154.
 No other open issue reports a packing of 154 squares, and no report of the 2026-10-11
-stack layers (`T-147` to `T-155`) is at 154.
+stack layers (`T-147` to `T-152`, and `T-157` to `T-159`) is at 154.
 
 ## Lineage
 

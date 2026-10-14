@@ -1913,7 +1913,7 @@ OTHER_PROJECTS: tuple[tuple[str, str, str], ...] = (
         "Daniil Ostashev",
         (
             "New packings of 155, 156, 175, 211, 232 and 264 squares with exact"
-            " certificates and a GMP checker; all six are replayed here (T-149, T-154)."
+            " certificates and a GMP checker; all six are replayed here (T-149, T-158)."
         ),
     ),
     (
@@ -1921,7 +1921,7 @@ OTHER_PROJECTS: tuple[tuple[str, str, str], ...] = (
         "Rio Calle",
         (
             "A decimal layout of 102 squares, another arrangement of Ryan Xu's design;"
-            " certified here from the layout (T-155)."
+            " certified here from the layout (T-159)."
         ),
     ),
     (

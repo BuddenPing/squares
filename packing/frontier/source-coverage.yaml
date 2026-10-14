@@ -3313,7 +3313,7 @@ sources:
     October 2026 the cases at 131, 154, 207, 232, 259 and 307 adopted these certificates, the selected
     overrides below; at the other eleven counts smaller confirmed certificates hold the cases (T-140,
     and T-146, which regularizes these packings). On 12 October 2026 issue 528's smaller certificate
-    (T-154) replaced this source's at 232 and issue 552's (T-156) at 154. The three sources/
+    (T-158) replaced this source's at 232 and issue 552's (T-160) at 154. The three sources/
     certificates at 155, 240 and 306 are above their cases and not imported.
 - id: ebdeleeuw-n70-refinement-2026-10-10
   title: Eric Deleeuw's n70 refinement at 24221d5, issue483
@@ -3423,7 +3423,7 @@ sources:
     copies. On 11 October 2026 the cases at 175, 209, 237, 270 and 305 adopted these certificates,
     the selected overrides below; at 132 issue 489's smaller side holds the case. On 12 October
     2026 smaller certificates replaced them at 270 and 305 (issues 500 and 506) and at 175 (issue
-    528, T-154).
+    528, T-158).
 - id: evand-record-hunt3-2026-10-10
   title: Evan Daniel's Hunt 3 certificates at 76a529b, issue489
   role: source-repository
@@ -3555,7 +3555,7 @@ sources:
     output equal to both release receipts apart from timing; the finite steps were decided again by a
     first-party exact audit and the near-axis statement by sqverify-fast; the mathematics was reviewed
     the same day with no blocking defect. Both lanes of n-040.md moved to 1340000/199529 (T-145), and on
-    12 October to 3359/500 (T-153) on a new density; T-133's 335427/50000 on the same density stays as
+    12 October to 3359/500 (T-157) on a new density; T-133's 335427/50000 on the same density stays as
     history.
 - id: guzhou-n40-new-supports-2026-10-11
   title: Strict lower bound for forty unit squares on a density with new rectangle supports, issue485
@@ -3586,7 +3586,7 @@ sources:
     the near-axis statement were decided here on 11 October; on 12 October both kernels were rebuilt
     into the CI run's binaries and replayed in full, every output equal to both release receipts apart
     from timing, and the mathematics was reviewed with no blocking defect. Both lanes of n-040.md move
-    to 3359/500 (T-153); T-145's 1340000/199529 stays as history.
+    to 3359/500 (T-157); T-145's 1340000/199529 stays as history.
 - id: evand-regularized-2026-10-10
   title: Evan Daniel's regularized record lists at ea1a2f2, no issue
   role: source-repository
@@ -3820,7 +3820,7 @@ sources:
     378 and 379, Evan Daniel's verified Hunt 3 row at 344 among them. T-152 records the in-corpus
     sides at 304 and 305 (couzo-certificates-2026-10-11-in-corpus). The four certificates the issue
     does not name, at 175, 308, 340 and 343, are compared in the claim record and registered by no
-    entry; 175 has its own import (think-9fjl), and since issue 528 (T-154) is 2.94e-03 below it,
+    entry; 175 has its own import (think-9fjl), and since issue 528 (T-158) is 2.94e-03 below it,
     it stays in the packet unless its author asks for it to be registered.
   claims_record: resources/web/couzo-certificates-2026-10-11/acquisition/beyond-horizon-claims.json
 - id: dostashev-records-2026-10-12
@@ -3845,7 +3845,7 @@ sources:
     All 3 complete certificates at a8db6ff are retained as the source wrote them under its MIT
     licence, with the eight files the commit adds or changes and the rest of the tree pinned at
     the issue-501 packet's digests, each admitted where its exact side rounds up to the side the
-    issue prints. T-154 records them at V3/C3 on the review of 12 October
+    issue prints. T-158 records them at V3/C3 on the review of 12 October
     (docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md), which reproduced all 9
     native jobs, decided the three by a third exact route and held every file to its bytes fetched
     at the pin. On 12 October 2026 the cases at 175, 232 and 264 adopted these certificates, the
@@ -3870,7 +3870,7 @@ sources:
   - E-calle-529-exact-feasibility
   notes: >-
     The one certificate is kept as a derived exact fact, no upstream byte retained, admitted at the
-    side the layout prints. T-155 records it at V3/C3 on the review of 12 October
+    side the layout prints. T-159 records it at V3/C3 on the review of 12 October
     (docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md), which reproduced all 3
     native jobs, decided the certificate by a third exact route and derived it again from the
     layout fetched at the pin. Its side is above the case's selected certificate at 102 (T-146) by
@@ -3896,7 +3896,7 @@ sources:
   notes: >-
     The 1 complete certificate at 597e660 is retained as the source wrote it under its MIT
     licence, with the regularized drawing of the same packing beside it, admitted where its exact
-    side equals the side the issue prints. T-156 records it at V3/C3 on the review of 12 October
+    side equals the side the issue prints. T-160 records it at V3/C3 on the review of 12 October
     (docs/project/reviews/review-2026-10-12-upper-bound-import-552.md), which reproduced all 3 native
     jobs, decided the certificate by a third exact route and held the retained file to its bytes
     fetched at the pin. On 12 October 2026 the case at 154 adopted the certificate, the selected
@@ -4039,7 +4039,7 @@ selected_overrides:
   value: '12.9225664019340596'
   evidence: E-evand-552-n154-report
   reason: The smallest exact side the register holds at this count, confirmed at V3/C3 by a replay
-    here and an accepted review, adopted on 2026-10-12 (T-156).
+    here and an accepted review, adopted on 2026-10-12 (T-160).
 - n: 155
   source_id: dostashev-records-2026-10-11
   value: '12.9524254069584562'
@@ -4063,7 +4063,7 @@ selected_overrides:
   value: '13.7641743174865967'
   evidence: E-ostashev-528-certificate-report
   reason: The smallest exact side the register holds at this count, confirmed at V3/C3 by a replay
-    here and an accepted review, adopted on 2026-10-12 (T-154).
+    here and an accepted review, adopted on 2026-10-12 (T-158).
 - n: 176
   source_id: squish-500-fourth-request-2026-10-11
   value: '13.8128562532770564'
@@ -4153,7 +4153,7 @@ selected_overrides:
   value: '15.7641743174865967'
   evidence: E-ostashev-528-certificate-report
   reason: The smallest exact side the register holds at this count, confirmed at V3/C3 by a replay
-    here and an accepted review, adopted on 2026-10-12 (T-154).
+    here and an accepted review, adopted on 2026-10-12 (T-158).
 - n: 236
   source_id: evand-regularized-2026-10-10
   value: '15.8639557471592675'
@@ -4219,7 +4219,7 @@ selected_overrides:
   value: '16.7747351323878329'
   evidence: E-ostashev-528-certificate-report
   reason: The smallest exact side the register holds at this count, confirmed at V3/C3 by a replay
-    here and an accepted review, adopted on 2026-10-12 (T-154).
+    here and an accepted review, adopted on 2026-10-12 (T-158).
 - n: 266
   source_id: evand-new-arrangements-2026-10-07
   value: '16.823028750756475970708783711254'

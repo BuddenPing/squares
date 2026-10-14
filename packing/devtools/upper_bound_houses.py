@@ -426,8 +426,8 @@ def _sources() -> dict[str, Source]:
         packet_source("T-150", "barnett-refinements-2026-10-11"),
         packet_source("T-151", "squish-500-fourth-request-2026-10-11"),
         packet_source("T-152", "couzo-certificates-2026-10-11"),
-        packet_source("T-154", "dostashev-records-2026-10-12"),
-        packet_source("T-156", "evand-n154-2026-10-12"),
+        packet_source("T-158", "dostashev-records-2026-10-12"),
+        packet_source("T-160", "evand-n154-2026-10-12"),
     ]
     return {source.key: source for source in sources}
 
@@ -454,10 +454,10 @@ ADOPTED: dict[int, str] = {
     132: "T-141",
     146: "T-150",
     153: "T-148",
-    154: "T-156",
+    154: "T-160",
     155: "T-149",
     156: "T-149",
-    175: "T-154",
+    175: "T-158",
     176: "T-151",
     180: "T-128",
     181: "T-151",
@@ -465,7 +465,7 @@ ADOPTED: dict[int, str] = {
     209: "T-140",
     211: "T-149",
     228: "T-128",
-    232: "T-154",
+    232: "T-158",
     236: "T-146",
     237: "T-140",
     238: "T-151",
@@ -474,7 +474,7 @@ ADOPTED: dict[int, str] = {
     259: "T-136",
     261: "T-150",
     263: "T-146",
-    264: "T-154",
+    264: "T-158",
     267: "T-134",
     269: "T-146",
     270: "T-151",
@@ -494,8 +494,8 @@ NUMBERS = tuple(sorted(ADOPTED))
 #: The counts a later pass adopted, by the day it did; every other count of `ADOPTED` was
 #: adopted on `ADOPTED_ON`. The passes of 12 October 2026 adopted issues 500 and 506
 #: (T-151, T-152), the second of them reviewed that day, moving 270 and 305 from T-140,
-#: issue 528 (T-154), reviewed that day, moving 175 from T-140 and 232 from T-136, and
-#: issue 552 (T-156), reviewed that day, moving 154 from T-136, which the first pass of
+#: issue 528 (T-158), reviewed that day, moving 175 from T-140 and 232 from T-136, and
+#: issue 552 (T-160), reviewed that day, moving 154 from T-136, which the first pass of
 #: 11 October had adopted there.
 LATER_PASSES: dict[str, frozenset[int]] = {
     "2026-10-12": frozenset({154, 175, 176, 181, 232, 238, 239, 264, 270, 271, 272, 304, 305}),

@@ -775,8 +775,8 @@ Decides, for one closed slab [PL/DEN, PH/DEN] of the half-angle tangent t = tan(
 | --- | --- | --- | --- |
 | `E-n040-guzhou-continuous-pose-report` | the source’s own run | producer’s code | T-145 |
 | `E-n040-guzhou-continuous-pose-kernel-replay` | replayed here | producer’s code | T-145 |
-| `E-n040-guzhou-new-supports-report` | the source’s own run | producer’s code | T-153 |
-| `E-n040-guzhou-new-supports-kernel-replay` | replayed here | producer’s code | T-153 |
+| `E-n040-guzhou-new-supports-report` | the source’s own run | producer’s code | T-157 |
+| `E-n040-guzhou-new-supports-kernel-replay` | replayed here | producer’s code | T-157 |
 
 ### `V-guzhou-n40-axis-integer-grid`
 
@@ -792,9 +792,9 @@ Decides that every horizontal square of side A in the northeast quadrant of [0, 
 | --- | --- | --- | --- |
 | `E-n040-guzhou-continuous-pose-report` | the source’s own run | producer’s code | T-145 |
 | `E-n040-guzhou-continuous-pose-kernel-replay` | replayed here | producer’s code | T-145 |
-| `E-n040-guzhou-new-supports-report` | the source’s own run | producer’s code | T-153 |
-| `E-n040-guzhou-new-supports-kernel-replay` | replayed here | producer’s code | T-153 |
-| `E-n040-guzhou-new-supports-crate-axis` | audited here | independent | T-153 |
+| `E-n040-guzhou-new-supports-report` | the source’s own run | producer’s code | T-157 |
+| `E-n040-guzhou-new-supports-kernel-replay` | replayed here | producer’s code | T-157 |
+| `E-n040-guzhou-new-supports-crate-axis` | audited here | independent | T-157 |
 
 ### `V-burns-n17-verify-py`
 
@@ -1014,9 +1014,9 @@ Decides a packing pair by pair and wall by wall: by exact sign in a number field
 | `E-barnett-505-exact-feasibility` | replayed here | independent | T-150 |
 | `E-squish-500-exact-feasibility` | replayed here | independent | T-151 |
 | `E-couzo-506-exact-feasibility` | replayed here | independent | T-152 |
-| `E-ostashev-528-exact-feasibility` | replayed here | independent | T-154 |
-| `E-calle-529-exact-feasibility` | replayed here | independent | T-155 |
-| `E-evand-552-exact-feasibility` | replayed here | independent | T-156 |
+| `E-ostashev-528-exact-feasibility` | replayed here | independent | T-158 |
+| `E-calle-529-exact-feasibility` | replayed here | independent | T-159 |
+| `E-evand-552-exact-feasibility` | replayed here | independent | T-160 |
 
 ### `V-check-rational-witness-independent`
 
@@ -1067,9 +1067,9 @@ Decides a rational-corner witness pair by pair and wall by wall in Fraction arit
 | `E-barnett-505-exact-feasibility` | replayed here | independent | T-150 |
 | `E-squish-500-exact-feasibility` | replayed here | independent | T-151 |
 | `E-couzo-506-exact-feasibility` | replayed here | independent | T-152 |
-| `E-ostashev-528-exact-feasibility` | replayed here | independent | T-154 |
-| `E-calle-529-exact-feasibility` | replayed here | independent | T-155 |
-| `E-evand-552-exact-feasibility` | replayed here | independent | T-156 |
+| `E-ostashev-528-exact-feasibility` | replayed here | independent | T-158 |
+| `E-calle-529-exact-feasibility` | replayed here | independent | T-159 |
+| `E-evand-552-exact-feasibility` | replayed here | independent | T-160 |
 
 ### `V-check-nagamochi-lemma1-counterexample`
 
@@ -1590,8 +1590,8 @@ Decides in exact rationals the finite steps of Guzhou0806's continuous-pose boun
 | `E-n040-guzhou-continuous-pose-kernel-replay` | replayed here | producer’s code | T-145 |
 | `E-n040-guzhou-continuous-pose-finite-audit` | audited here | independent | T-145 |
 | `E-n040-guzhou-continuous-pose-crate-axis` | audited here | independent | T-145 |
-| `E-n040-guzhou-new-supports-kernel-replay` | replayed here | producer’s code | T-153 |
-| `E-n040-guzhou-new-supports-finite-audit` | audited here | independent | T-153 |
+| `E-n040-guzhou-new-supports-kernel-replay` | replayed here | producer’s code | T-157 |
+| `E-n040-guzhou-new-supports-finite-audit` | audited here | independent | T-157 |
 
 ### `V-audit-n40-new-supports`
 
@@ -1606,9 +1606,9 @@ Decides the finite steps of Guzhou0806's s(40) > 3359/500 in exact rationals on 
 
 | evidence | run | code | results |
 | --- | --- | --- | --- |
-| `E-n040-guzhou-new-supports-kernel-replay` | replayed here | producer’s code | T-153 |
-| `E-n040-guzhou-new-supports-finite-audit` | audited here | independent | T-153 |
-| `E-n040-guzhou-new-supports-crate-axis` | audited here | independent | T-153 |
+| `E-n040-guzhou-new-supports-kernel-replay` | replayed here | producer’s code | T-157 |
+| `E-n040-guzhou-new-supports-finite-audit` | audited here | independent | T-157 |
+| `E-n040-guzhou-new-supports-crate-axis` | audited here | independent | T-157 |
 
 ### `V-check-half-angle-area`
 
@@ -1619,7 +1619,7 @@ Decides a rational centre and half-angle certificate, or a rational centre-basis
 - Source: [`packing/devtools/check_half_angle_area.py`](../../packing/devtools/check_half_angle_area.py), [`packing/tests/test_check_half_angle_area.py`](../../packing/tests/test_check_half_angle_area.py)
 - Versions run: this repository's commits, which Git holds
 - What its authors read and used: [`packing/devtools/check_half_angle_area.py`](../../packing/devtools/check_half_angle_area.py)
-- Note: Written on 2026-10-10 by the review lane of T-128, T-130 and T-131 from the certificate formats and plane geometry, and extended the same day by the review lanes of issues 476, 481, 483 and 484 and of issue 470 and Evan Daniel's n = 126 certificate; the review lane of issues 488 and 489 ran it as retained, on the ten certificates their entries cite and, by a driver of its functions, the four the two commits hold that no entry cites. The review lane of Evan Daniel's regularized record lists ran it as retained, with its regularized roster and --upstream at the pin, on the fifteen certificates T-146 cites; it measures each against the packing T-146's regularizations name, read from the register. The review lane of issues 503 and 504 (docs/project/reviews/review-2026-10-11-upper-bound-imports-503-504.md) extended it on 2026-10-11 with readers of PingYou Ltd's JSON and of corners witnesses, --upstream checks that hold a fact to its pinned same-packing witness, and patch_lineage, which counts a parent packing's squares that reappear in a certificate under a box symmetry and translation and decides nothing; it ran it on the two certificates T-147 and T-148 cite. The review lane of issues 505 and 501 (docs/project/reviews/review-2026-10-11-upper-bound-imports-505-501.md) added a reader of the sqcert format, an --upstream reader of Evan Daniel's format for derived facts, a check of each retained certificate's side against its README's print at the pin, and credit readers for T-146, T-128 and T-098, and ran it on the five certificates T-149 and T-150 cite. The review lane of issue 500 (docs/project/reviews/review-2026-10-11-upper-bound-imports-500.md) added its roster, a reader of T-128's retained certificates and a widened nearness for patch_lineage, and ran it on the nine certificates T-151 cites; the review lane of issue 506 (docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md) ran it through a roster entry and credit keys that read another import's certificate, with no change to any decision, on the eleven certificates T-152 and its beyond-horizon rows cite. The review lane of issues 528 and 529 (docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md) added a reader of Rio Calle's decimal layout, with exact decimal literals and a half-angle floor for radians by Taylor series in decimal arithmetic, a derivation of his certificate from the layout, and the roster's credit and lineage measurements, and ran it on the four certificates T-154 and T-155 cite. The import and review lanes of issue 552 (docs/project/reviews/review-2026-10-12-upper-bound-import-552.md) gave it that import's roster line with its credit and lineage keys, and ran it on the certificate T-156 cites. Its author had read both maintained routes, their parser and the importer's adapters before writing it, so it is not clean-room; it imports none of their parsing or deciding code and shares Fraction with every exact checker here. It is a second pair-deciding procedure within one method, exact-algebraic, not a second method.
+- Note: Written on 2026-10-10 by the review lane of T-128, T-130 and T-131 from the certificate formats and plane geometry, and extended the same day by the review lanes of issues 476, 481, 483 and 484 and of issue 470 and Evan Daniel's n = 126 certificate; the review lane of issues 488 and 489 ran it as retained, on the ten certificates their entries cite and, by a driver of its functions, the four the two commits hold that no entry cites. The review lane of Evan Daniel's regularized record lists ran it as retained, with its regularized roster and --upstream at the pin, on the fifteen certificates T-146 cites; it measures each against the packing T-146's regularizations name, read from the register. The review lane of issues 503 and 504 (docs/project/reviews/review-2026-10-11-upper-bound-imports-503-504.md) extended it on 2026-10-11 with readers of PingYou Ltd's JSON and of corners witnesses, --upstream checks that hold a fact to its pinned same-packing witness, and patch_lineage, which counts a parent packing's squares that reappear in a certificate under a box symmetry and translation and decides nothing; it ran it on the two certificates T-147 and T-148 cite. The review lane of issues 505 and 501 (docs/project/reviews/review-2026-10-11-upper-bound-imports-505-501.md) added a reader of the sqcert format, an --upstream reader of Evan Daniel's format for derived facts, a check of each retained certificate's side against its README's print at the pin, and credit readers for T-146, T-128 and T-098, and ran it on the five certificates T-149 and T-150 cite. The review lane of issue 500 (docs/project/reviews/review-2026-10-11-upper-bound-imports-500.md) added its roster, a reader of T-128's retained certificates and a widened nearness for patch_lineage, and ran it on the nine certificates T-151 cites; the review lane of issue 506 (docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md) ran it through a roster entry and credit keys that read another import's certificate, with no change to any decision, on the eleven certificates T-152 and its beyond-horizon rows cite. The review lane of issues 528 and 529 (docs/project/reviews/review-2026-10-12-upper-bound-imports-528-529.md) added a reader of Rio Calle's decimal layout, with exact decimal literals and a half-angle floor for radians by Taylor series in decimal arithmetic, a derivation of his certificate from the layout, and the roster's credit and lineage measurements, and ran it on the four certificates T-158 and T-159 cite. The import and review lanes of issue 552 (docs/project/reviews/review-2026-10-12-upper-bound-import-552.md) gave it that import's roster line with its credit and lineage keys, and ran it on the certificate T-160 cites. Its author had read both maintained routes, their parser and the importer's adapters before writing it, so it is not clean-room; it imports none of their parsing or deciding code and shares Fraction with every exact checker here. It is a second pair-deciding procedure within one method, exact-algebraic, not a second method.
 
 | evidence | run | code | results |
 | --- | --- | --- | --- |
@@ -1641,9 +1641,9 @@ Decides a rational centre and half-angle certificate, or a rational centre-basis
 | `E-barnett-505-exact-feasibility` | replayed here | independent | T-150 |
 | `E-squish-500-exact-feasibility` | replayed here | independent | T-151 |
 | `E-couzo-506-exact-feasibility` | replayed here | independent | T-152 |
-| `E-ostashev-528-exact-feasibility` | replayed here | independent | T-154 |
-| `E-calle-529-exact-feasibility` | replayed here | independent | T-155 |
-| `E-evand-552-exact-feasibility` | replayed here | independent | T-156 |
+| `E-ostashev-528-exact-feasibility` | replayed here | independent | T-158 |
+| `E-calle-529-exact-feasibility` | replayed here | independent | T-159 |
+| `E-evand-552-exact-feasibility` | replayed here | independent | T-160 |
 
 ### `V-evand-exact-certificates`
 
@@ -1680,9 +1680,9 @@ Reads Evan Daniel's rational certificates, refusing anything the format does not
 | `E-barnett-505-exact-feasibility` | replayed here | independent | T-150 |
 | `E-squish-500-exact-feasibility` | replayed here | independent | T-151 |
 | `E-couzo-506-exact-feasibility` | replayed here | independent | T-152 |
-| `E-ostashev-528-exact-feasibility` | replayed here | independent | T-154 |
-| `E-calle-529-exact-feasibility` | replayed here | independent | T-155 |
-| `E-evand-552-exact-feasibility` | replayed here | independent | T-156 |
+| `E-ostashev-528-exact-feasibility` | replayed here | independent | T-158 |
+| `E-calle-529-exact-feasibility` | replayed here | independent | T-159 |
+| `E-evand-552-exact-feasibility` | replayed here | independent | T-160 |
 
 ### `V-check-n11-final-composition`
 
@@ -1935,7 +1935,7 @@ Decides a measure-capture lower-bound certificate of format T, M or L on the 201
 | `E-n041-wand125-mixed-6775-sqverify-fast-replay` | replayed here | shared components | T-111 |
 | `E-n040-guzhou-clipped-corner-sqverify-fast-replay` | replayed here | producer’s code | T-133 |
 | `E-n040-guzhou-continuous-pose-crate-axis` | audited here | independent | T-145 |
-| `E-n040-guzhou-new-supports-crate-axis` | audited here | independent | T-153 |
+| `E-n040-guzhou-new-supports-crate-axis` | audited here | independent | T-157 |
 
 ### `V-replay-chelokot-lean`
 
@@ -2185,9 +2185,9 @@ Binds all three complete source certificates and all nine full deciding inputs/n
 | `E-barnett-505-exact-feasibility` | replayed here | independent | T-150 |
 | `E-squish-500-exact-feasibility` | replayed here | independent | T-151 |
 | `E-couzo-506-exact-feasibility` | replayed here | independent | T-152 |
-| `E-ostashev-528-exact-feasibility` | replayed here | independent | T-154 |
-| `E-calle-529-exact-feasibility` | replayed here | independent | T-155 |
-| `E-evand-552-exact-feasibility` | replayed here | independent | T-156 |
+| `E-ostashev-528-exact-feasibility` | replayed here | independent | T-158 |
+| `E-calle-529-exact-feasibility` | replayed here | independent | T-159 |
+| `E-evand-552-exact-feasibility` | replayed here | independent | T-160 |
 
 ### `V-upper-bound-reports`
 
@@ -2216,9 +2216,9 @@ Imports a report of rational upper-bound certificates by another author from its
 | `E-barnett-505-exact-feasibility` | replayed here | independent | T-150 |
 | `E-squish-500-exact-feasibility` | replayed here | independent | T-151 |
 | `E-couzo-506-exact-feasibility` | replayed here | independent | T-152 |
-| `E-ostashev-528-exact-feasibility` | replayed here | independent | T-154 |
-| `E-calle-529-exact-feasibility` | replayed here | independent | T-155 |
-| `E-evand-552-exact-feasibility` | replayed here | independent | T-156 |
+| `E-ostashev-528-exact-feasibility` | replayed here | independent | T-158 |
+| `E-calle-529-exact-feasibility` | replayed here | independent | T-159 |
+| `E-evand-552-exact-feasibility` | replayed here | independent | T-160 |
 
 ### `V-rehwaldt-n68-verify`
 

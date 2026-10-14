@@ -4396,7 +4396,7 @@ issues:
       both kernel inputs and every finite step decided here by a first-party exact audit, and the
       near-axis certificate reproduced with the CI run's axis binary and decided again by
       sqverify-fast. On 12 October both kernels were replayed in full here, all 43 slabs, and the
-      release reviewed with no blocking defect; it is registered as T-153, and n = 40's reported and
+      release reviewed with no blocking defect; it is registered as T-157, and n = 40's reported and
       verified lower bounds move to 3359/500 (think-tln9). wand125 edited the 17:14
       UTC comment at 02:19 UTC on 12 October to link the continuous-angle mode at
       wand125/square-packing f30cc2c (think-xzob).
@@ -4447,7 +4447,7 @@ issues:
         217911/99764500 above T-145.
       source: https://github.com/jlevy/squares/issues/485#issuecomment-6106761997
       register:
-      - T-153
+      - T-157
       evidence:
       - E-n040-guzhou-new-supports-report
       - E-n040-guzhou-new-supports-kernel-replay
@@ -5145,7 +5145,7 @@ issues:
         18.993870589750, as certificates/README.md prints them.
       source: source
       not_registered: Not requested. Compared in the packet's claim record; 175 was the smallest
-        side known at its count until issue 528 (T-154), 2.94e-03 below it, and stays in the
+        side known at its count until issue 528 (T-158), 2.94e-03 below it, and stays in the
         packet unless the author asks for it to be registered (think-9fjl), 340 is below its tracked row
         beyond the corpus and its row is the owner's decision, and 308 and 343 are above T-141's
         308 and Hunt 3's 343, marked superseded by the source.
@@ -5468,7 +5468,7 @@ issues:
       three certificates replayed with their controls on both maintained exact routes; the review
       of 12 October decided them again by a third exact route, measured each as no placement of
       a packing the record holds or has pending, and found no blocking defect. Registered as
-      T-154 at V3/C3 and adopted as the house at all three counts on 12 October 2026. Each side
+      T-158 at V3/C3 and adopted as the house at all three counts on 12 October 2026. Each side
       is below its case's earlier ceiling and every other report at its count:
       by 2.95e-03 at 175 (T-140, and Francisco Couzo's unregistered 337078c certificate,
       think-9fjl, by 2.94e-03), 3.25e-03 at 232 (T-136) and 3.44e-03 at 264 (the catalogue's
@@ -5485,7 +5485,7 @@ issues:
         rounded up at 38 places.
       source: body
       register:
-      - T-154
+      - T-158
       evidence:
       - E-ostashev-528-certificate-report
       - E-ostashev-528-exact-feasibility
@@ -5537,10 +5537,10 @@ issues:
       least wall and pair clearances 2.00e-12 and 1.93e-12, as the issue states, and the review
       of 12 October decided it again by a third exact route, derived it again from the layout at
       the pin, measured it as another arrangement of ry-xu's design and found no blocking
-      defect. Registered as T-155 at V3/C3, dated 11 October by the source. The side is below
+      defect. Registered as T-159 at V3/C3, dated 11 October by the source. The side is below
       T-125 by 5.48e-11, as the issue says, but above Evan Daniel's regularization of ry-xu's
       packing (T-146, registered 10 October and the case's house since 11 October) by 2.43e-11,
-      so it moves no case and T-155 is superseded by T-146 on arrival. Claude assistance
+      so it moves no case and T-159 is superseded by T-146 on arrival. Claude assistance
       disclosed. Credit name Rio Calle; no Twitter/X handle is listed on the author's GitHub
       profile.
     read_through: '2026-10-12T04:32:54Z'
@@ -5550,7 +5550,7 @@ issues:
         exact certificate derived from it; 5.5e-11 below T-125.
       source: body
       register:
-      - T-155
+      - T-159
       evidence:
       - E-calle-529-certificate-report
       - E-calle-529-exact-feasibility
@@ -6020,7 +6020,7 @@ issues:
       roster line, accepts it with all six controls. The review of 12 October accepted it for
       finite feasibility only, with seven non-blocking findings, and recommends it as the house
       at 154. It is 5.04e-4 below T-136 (SQUISH, #481), the case's house until then, 4.00e-3
-      below T-127 and below every other report at 154; it is registered as T-156 at V3/C3 and
+      below T-127 and below every other report at 154; it is registered as T-160 at V3/C3 and
       the case at 154 adopted it on 12 October. Measured by the third route's credit tools it is
       another arrangement than T-136's. The packing came from a time-travel test of the author's
       size-chaining explorer restarted from the 5 October register; the comment of 14:13 UTC
@@ -6033,7 +6033,7 @@ issues:
       claim: s(154) <= 12922566401934059503377267965457/10^30 (tt_n154.cert), 5.04e-4 below T-136.
       source: body
       register:
-      - T-156
+      - T-160
       evidence:
       - E-evand-552-n154-report
       - E-evand-552-exact-feasibility

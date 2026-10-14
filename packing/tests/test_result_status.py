@@ -277,7 +277,7 @@ def test_superseded_is_marked_on_a_bound_and_where_a_later_result_is_declared() 
     # took n = 105 and 292, the last verified ceilings T-056 held; fifty-four when
     # Guzhou0806's continuous-pose kernel (T-145) took both of n = 40's lower-bound lanes
     # from his clipped-corner transfer (T-133) on the same density.
-    # On 12 October the same kernels on his new-supports density (T-153) took both lanes
+    # On 12 October the same kernels on his new-supports density (T-157) took both lanes
     # from T-145.
     # T-120..T-123 report exact side forms for historical source configurations; no
     # current frontier lane relies on these unverified catalogue assertions. Each claim
@@ -359,7 +359,7 @@ def test_superseded_is_marked_on_a_bound_and_where_a_later_result_is_declared() 
         "T-137",
         "T-138",
         "T-145",
-        "T-155",
+        "T-159",
     }
     # The house adoption of 11 October 2026 moved 42 case records to the smallest
     # confirmed and reviewed side the register held (think-fvz4): SQUISH's earlier packets
@@ -368,7 +368,7 @@ def test_superseded_is_marked_on_a_bound_and_where_a_later_result_is_declared() 
     # their cases were never adopted, since a smaller one was (T-131, T-135, T-137, T-138).
     # Couzo's eight-case report of 8 October (T-128) and five-case follow-up (T-130),
     # pending adoption until then, hold case lanes at five counts and three, and are
-    # unmarked. Rio Calle's n = 102 certificate (T-155) is superseded from the day it was
+    # unmarked. Rio Calle's n = 102 certificate (T-159) is superseded from the day it was
     # registered: T-146, the house there, is smaller.
     for entry in ("T-128", "T-130"):
         assert entry not in marked

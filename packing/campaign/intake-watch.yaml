@@ -693,7 +693,7 @@ repositories:
       The six commits of 12 October from 7d5cc3f to 31523f8 past the ad86d42 read. 597e660 adds
       search/packer/candidates/tt_n154.* and tt_n154_regularized.*, s(154) <=
       12922566401934059503377267965457/10^30, which issue #552 reports and the
-      evand-n154-2026-10-12 packet retains at 597e660 (think-6no5; T-156). 31523f8, the head and
+      evand-n154-2026-10-12 packet retains at 597e660 (think-6no5; T-160). 31523f8, the head and
       the tag of the release exact-data-2026-10-12, adds one packer-log line recording the post;
       the release's two archives, the s(29) polynomial data and the grade-C certificates of
       #545, are release assets, not tree files, and the evand-exact-data-2026-10-12 packet pins
