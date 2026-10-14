@@ -1836,10 +1836,11 @@ def test_the_partial_checkouts_keep_the_directories_the_render_links() -> None:
         "!/packing/resources/web/evand-square-packing-2026-10-05/receipts/*",
         "/packing/resources/web/evand-square-packing-2026-10-05/receipts/register-comparison.json",
     )
-    assert set(kept) == PAPER_JOBS | {"overview"}
+    kept["publish"] = kept["overview"]
+    assert set(kept) == PAPER_JOBS | {"overview", "publish"}
 
     def keeps(job: str, declared: Path) -> bool:
-        if job == "overview":
+        if job in {"overview", "publish"}:
             return declared == REPO / kept["overview"][-1].removeprefix("/")
         for pattern in kept.get(job, ()):
             path = REPO / pattern.strip("/")
@@ -1977,6 +1978,9 @@ REVIEW_CHECKOUTS: dict[str, tuple[tuple[str, ...], tuple[str, ...]]] = {
         ),
     ),
 }
+
+
+REVIEW_CHECKOUTS["publish"] = REVIEW_CHECKOUTS["overview"]
 
 
 @pytest.mark.parametrize("job", sorted(REVIEW_CHECKOUTS))

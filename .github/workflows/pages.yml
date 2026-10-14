@@ -1965,6 +1965,13 @@ jobs:
             /*
             !/packing/resources/*/
             !/packing/campaign/*/
+            /packing/resources/web/
+            !/packing/resources/web/*
+            /packing/resources/web/evand-square-packing-2026-10-05/
+            !/packing/resources/web/evand-square-packing-2026-10-05/*
+            /packing/resources/web/evand-square-packing-2026-10-05/receipts/
+            !/packing/resources/web/evand-square-packing-2026-10-05/receipts/*
+            /packing/resources/web/evand-square-packing-2026-10-05/receipts/register-comparison.json
 
       - name: Install uv and Python 3.14
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
