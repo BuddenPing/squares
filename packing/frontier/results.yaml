@@ -17710,8 +17710,9 @@ results:
       If that build lands before T-153's complete replay, this entry would state a lower
       bound above n = 17's verified one, and a formalization moves no bound by itself: its
       standing reads pending adoption until the case record adopts it, and its kind is then
-      revisited, with its result page's registered identity amended by a dated reason in
-      packing/site-urls.yaml (epistemics.md, Result Kinds).
+      revisited, as the owner decides, with its result page's registered identity amended by
+      a dated reason in packing/site-urls.yaml; until the register records that decision,
+      the standing check refuses it (epistemics.md, Result Kinds).
 
       V4 and C4 need, on top of V3 and C3, the owner's oversight record naming
       trust-boundary, certificate-meaning and ai-findings, which would disposition the two

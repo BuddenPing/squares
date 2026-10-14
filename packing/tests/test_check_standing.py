@@ -317,8 +317,11 @@ def test_a_second_proof_keeps_a_standing_through_its_later_rungs(
     Replayed (C2 or C3) before the case records adopt it, T-154's `s(17) = …` states a
     lower bound strictly above n = 17's verified one: it is pending adoption, not
     superseded, and the check agrees. Adopted, with n = 17's verified lower bound citing
-    its evidence, it is the current best. A second proof that states only what its case
-    records hold still has nothing to improve on
+    its evidence, it is the current best, and a second proof moves no bound by itself, so
+    the check refuses it until its kind is revisited (review A4 on #592); so too where
+    the reported lane alone cites it. The owner decides the kind it then takes, and once
+    the register records one outside the second proofs, the check is satisfied. A second
+    proof that states only what its case records hold still has nothing to improve on
     (`test_an_entry_improves_only_in_the_directions_its_kind_bounds`)."""
     record = _entry(records, "T-154", kind=kind)
     assert check_standing.directions(record, check_standing.findings(record, records)) == {
@@ -343,7 +346,20 @@ def test_a_second_proof_keeps_a_standing_through_its_later_rungs(
     )
     replayed = {**record, "confirmation": "C3"}
     assert view.standing(replayed, adopted) == view.HOLDS
-    assert check_standing.problems(replayed, view.HOLDS, adopted) == []
+    (revisit,) = check_standing.problems(replayed, view.HOLDS, adopted)
+    assert revisit.startswith(f"T-154 is a {kind}, yet a case bound rests on it (current best)")
+    assert "its kind is revisited, as the owner decides" in revisit
+    assert "packing/site-urls.yaml" in revisit
+    reported = dataclasses.replace(
+        records, cases={**records.cases, 17: {**case, "reported_lower_bound": lane}}
+    )
+    assert view.standing(record, reported) == view.HOLDS_REPORTED
+    (alone,) = check_standing.problems(record, view.HOLDS_REPORTED, reported)
+    assert "a case bound rests on it (current best, reported)" in alone
+    # Whichever kind the owner decides; a bound's kind stands for any outside the two.
+    decided = {**replayed, "kind": "optimality"}
+    assert view.standing(decided, adopted) == view.HOLDS
+    assert check_standing.problems(decided, view.HOLDS, adopted) == []
 
 
 @pytest.mark.parametrize("kind", sorted(SECOND_PROOF_KINDS))

@@ -581,8 +581,11 @@ adoption. A bound better than the case’s reported one is another matter: no la
 that value, so the entry is no second proof and takes the value’s kind by the first
 rule, and `devtools.check_standing` refuses a simplification or a formalization that
 states one. Neither kind moves a bound by itself, so when the case record adopts that
-bound the kind is revisited, and the result page’s registered identity is amended with a
-dated reason (`packing/site-urls.yaml`).
+bound the kind is revisited: the owner decides what kind the result then is, and the
+result page’s registered identity is amended with a dated reason
+(`packing/site-urls.yaml`). Until the register records that decision,
+`devtools.check_standing` refuses a simplification or a formalization that a case bound
+rests on, in either lane.
 
 ## Results by Others
 
