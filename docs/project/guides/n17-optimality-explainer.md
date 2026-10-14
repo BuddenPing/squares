@@ -25,6 +25,18 @@ the next research decisions; the dated experiments preserve their original verdi
 [results register](../../../packing/frontier/RESULTS.md) hold, or the general machinery,
 which the tutorial explains and this document only names.
 
+**Since this account:** on 12 October 2026 others published two proofs, by separate
+routes, that Bidwell’s packing is optimal: Marc Leonard Overbeck’s (Kleddamag) candidate
+proof ([T-153](../../../packing/frontier/RESULTS.md)) and Oscar Fitzharding’s
+(ofitzharding) Lean 4 proof ([T-154](../../../packing/frontier/RESULTS.md)). The reviews
+here accepted both, but neither has been replayed in full, so both stand at `V0/C1` as
+reported results; the [case record](../../../packing/frontier/n-017.md) lists $n = 17$
+as reported proved and verified open, and the verified bracket below is unchanged.
+On 13 October the owner suspended new work on this project’s own route, judging it
+likely subsumed by Overbeck’s proof
+([owner decisions](../reviews/review-2026-10-13-owner-decisions.md)). What follows is
+that route as it stood on 6 October.
+
 ## The Bracket
 
 | Bound | Value | Who, when | Status |
