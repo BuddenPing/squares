@@ -852,19 +852,27 @@ def packing_figure(n: int, *, units: int = 1000, upper: dict[str, Any] | None = 
 def as_published(n: int, *, units: int = 1000) -> str:
     """The house drawing of a case drawn by default from its regularized view, as
     published: a disclosure under the figure, closed until it is pressed, holding the
-    house rendering of the record's witness and its source's credit. Without scripts it
-    opens as any `details` does."""
+    house rendering of the record's witness and its credit. Without scripts it opens as
+    any `details` does.
+
+    The credit is the finders' and the source whose packing the house drawing pictures
+    (`devtools.pictured_source`, the rule the atlas builder reads the witness by), which
+    is not always the source of the side: where an exact optimum of a packing reports the
+    side, the packing is its finder's. A record that names no finder is credited to its
+    source alone."""
     from devtools.build_bound_citations import load_case  # noqa: PLC0415
+    from devtools.pictured_source import pictured_source_key  # noqa: PLC0415
 
     upper = load_case(n)["reported_upper_bound"]
     credit = frontier.credit(upper.get("found_by"), upper.get("found_year"))
-    key = upper.get("source_key")
+    key = pictured_source_key(n, str(upper.get("source_key") or ""))
+    finders = f", {credit}" if credit else ""
     source = f' <span class="site-credit">{_esc(key)}</span>' if key else ""
     return (
         '<details class="site-case-published"><summary>As published</summary>'
         '<figure class="site-case-figure site-case-published-figure">'
         f"{frontier.packing_svg(n, units=units)}"
-        f"<figcaption>The packing as published, {credit}{source}</figcaption></figure>"
+        f"<figcaption>The packing as published{finders}{source}</figcaption></figure>"
         "</details>"
     )
 

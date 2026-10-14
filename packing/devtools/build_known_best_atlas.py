@@ -63,8 +63,8 @@ from devtools import (
 )
 from devtools import evand_arrangement_houses as evand_houses
 from devtools import evand_arrangement_reports as evand_reports
-from devtools import evand_exact_certificates as evand_certificates
 from devtools import gupta_house_links as gupta_houses
+from devtools import pictured_source as pictured
 from devtools import refinement_house_links as refinement_houses
 from devtools import refinement_packets as refinements
 from devtools import ryxu_house_links as ryxu_houses
@@ -196,9 +196,9 @@ PACKET_KIND = "packet-derived-facts"
 SQUISH_SOURCE_KEYS = frozenset(squish_packets.source_key(n) for n in squish_packets.NUMBERS)
 #: The report that solved 48 known-best packings to their exact optima (T-098). It moves
 #: a case's side by at most 5e-11 and keeps its packing, so the atlas pictures the
-#: packing from the source that held the count before, which the packet's comparison
-#: receipt names (`devtools.evand_exact_certificates compare`).
-EXACT_OPTIMA_SOURCE_KEY = "[evand exact optima 2026-10-05]"
+#: packing from the source that held the count before (`devtools.pictured_source`, the
+#: rule the case pages' "as published" credit reads too).
+EXACT_OPTIMA_SOURCE_KEY = pictured.EXACT_OPTIMA_SOURCE_KEY
 
 #: The cases this build covers, end to end: sources, witnesses, house renderings,
 #: frontier back-links and manifest entries.
@@ -985,23 +985,11 @@ def _unitsquare_source_path(n: int) -> Path:
     return found[0] if found else UNITSQUARE_ROOT / filename
 
 
-@cache
-def _exact_optima_pictured() -> dict[int, str]:
-    """The source key each exact optimum's packing is pictured from, by count."""
-    receipt = json.loads(evand_certificates.COMPARISON_RECEIPT.read_text(encoding="utf-8"))
-    return {int(row["n"]): str(row["earlier_source_key"]) for row in receipt["rows"]}
-
-
 def pictured_source_key(case: FrontierCase) -> str:
-    """The source whose geometry the atlas reads for a case: the record's own, except
-    where an exact optimum of a packing reports the side and its finder's source holds
-    the pose."""
-    if case.reported_source_key != EXACT_OPTIMA_SOURCE_KEY:
-        return case.reported_source_key
-    pictured = _exact_optima_pictured().get(case.n)
-    if pictured is None:
-        raise ValueError(f"n={case.n}: no source holds the packing of its exact optimum")
-    return pictured
+    """The source whose geometry the atlas reads for a case (`devtools.pictured_source`):
+    the record's own, except where an exact optimum of a packing reports the side and its
+    finder's source holds the pose."""
+    return pictured.pictured_source_key(case.n, case.reported_source_key)
 
 
 def _source_plan(

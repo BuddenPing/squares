@@ -378,6 +378,37 @@ def test_a_regularized_default_draws_its_view_and_keeps_the_house_as_published()
         assert '<span class="site-card-label">Regularized drawing</span>' not in data
 
 
+def test_as_published_credits_the_source_of_the_drawn_packing() -> None:
+    """The house drawing kept "as published" is credited to the source whose packing it
+    pictures, the rule the atlas builder reads the witness by
+    (`devtools.pictured_source`), not to the source of the side: where an exact optimum
+    of a packing reports the side, the packing is its finder's (review B1 of #591, at 14
+    counts). A record that names no finder is credited to its source
+    alone, with no empty credit before it (B3)."""
+    from devtools.build_bound_citations import load_case  # noqa: PLC0415
+    from devtools.pictured_source import (  # noqa: PLC0415
+        EXACT_OPTIMA_SOURCE_KEY,
+        pictured_source_key,
+    )
+
+    drawn = sorted(frontier_page.drawn_regularized())
+    uppers = {n: load_case(n)["reported_upper_bound"] for n in drawn}
+    solved = [n for n in drawn if uppers[n].get("source_key") == EXACT_OPTIMA_SOURCE_KEY]
+    if not solved:
+        pytest.skip("no drawn default reports its side from the exact optima")
+    n = solved[0]
+    caption = render_case_pages.as_published(n)
+    pictured = pictured_source_key(n, EXACT_OPTIMA_SOURCE_KEY)
+    assert pictured != EXACT_OPTIMA_SOURCE_KEY
+    assert f'<span class="site-credit">{html.escape(pictured)}</span>' in caption
+    assert html.escape(EXACT_OPTIMA_SOURCE_KEY) not in caption
+    unfound = [n for n in drawn if not uppers[n].get("found_by")]
+    if unfound:
+        caption = render_case_pages.as_published(unfound[0])
+        assert '<figcaption>The packing as published <span class="site-credit">' in caption
+        assert ",  " not in caption
+
+
 def test_the_old_case_directory_retains_known_counts_in_its_forwarder(
     page: str, numbers: list[int]
 ) -> None:
