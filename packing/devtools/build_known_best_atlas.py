@@ -2917,6 +2917,32 @@ REGULARIZATION_CREDIT_STEM = "Regularized "
 REGULARIZATION_CREDIT_SHARED = "by the Squares Project with "
 
 
+@cache
+def _full_names() -> tuple[tuple[str, str], ...]:
+    """Every full personal name the print credits know and the name they print it as:
+    each alias of several words in `credit-attributions.json` that begins or ends with
+    the name it normalizes to, longest first. A project's or a handle's alias ("Squares
+    Project" for Levy) is not a full name and is left alone."""
+    aliases = json.loads(_print_attributions().metadata)["name_aliases"]
+    found = {
+        (alias, name)
+        for alias, name in aliases.items()
+        if " " in alias
+        and alias != name
+        and (alias.endswith(f" {name}") or alias.startswith(f"{name} "))
+    }
+    return tuple(sorted(found, key=lambda pair: (-len(pair[0]), pair[0])))
+
+
+def _print_surnames(text: str) -> str:
+    """`text` with every full personal name printed as the other print credits print
+    names, by surname (the owner, 14 October 2026: the only full name in the information
+    block is the diagram's own credit)."""
+    for full, name in _full_names():
+        text = re.sub(rf"(?<!\w){re.escape(full)}(?!\w)", name, text)
+    return text
+
+
 def _series(items: Sequence[str]) -> tuple[str, ...]:
     """Items as a written list's atoms: commas between, "and" before the last; each item
     one atom, so no line breaks inside a credit."""
@@ -2933,13 +2959,16 @@ def regularization_sentences(numbers: Sequence[int], count: int) -> tuple[tuple[
     """A composite's regularization credit as sentences of unbreakable atoms: one
     sentence, the lead and then, after the shared "by the Squares Project with", what each
     generator's credit line names, once, in the order the cases first draw it; then any
-    credit line that does not share that opening, whole and on its own."""
+    credit line that does not share that opening, whole and on its own. A full personal
+    name in a credit line prints as its surname (`_print_surnames`)."""
     from devtools.default_drawings import credit_line  # noqa: PLC0415
 
     if not numbers:
         return ()
     shared = REGULARIZATION_CREDIT_STEM + REGULARIZATION_CREDIT_SHARED
-    lines = tuple(dict.fromkeys(credit_line(n) for n in numbers))
+    # The poster's compact form names people by surname, as its other credits do; the
+    # case pages and the register keep the full credit line.
+    lines = tuple(dict.fromkeys(_print_surnames(credit_line(n)) for n in numbers))
     named = [line.removeprefix(shared) for line in lines if line.startswith(shared)]
     whole = [line for line in lines if not line.startswith(shared)]
     lead = POSTER_REGULARIZATION_LEAD.format(drawn=len(numbers), count=count)

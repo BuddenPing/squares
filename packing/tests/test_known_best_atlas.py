@@ -1747,13 +1747,28 @@ def test_composite_tiles_draw_each_case_s_default_picture_and_credit_it() -> Non
             drawn=len(drawn), count=canvas.spec.count
         )
         shared = "Regularized by the Squares Project with "
-        named = [line.removeprefix(shared) for line in dict.fromkeys(map(credit_line, drawn))]
+        surnames = known_best_builder._print_surnames  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+        named = [
+            surnames(line).removeprefix(shared)
+            for line in dict.fromkeys(map(credit_line, drawn))
+        ]
         assert printed.startswith(f"{lead}, by the Squares Project with {named[0]}")
         assert printed.endswith(named[-1])
         # One sentence: the shared opening is printed once, each generator named once.
         assert printed.count("Squares Project") == 1
         assert printed.count("Regularized") == 1
         assert all(printed.count(name) == 1 for name in named)
+        # The owner, 14 October 2026: people are named by surname, as in every other print
+        # credit; the only full name in the information block is the diagram's credit.
+        information = root.find("svg:g[@data-feature='poster-information']", SVG)
+        assert information is not None
+        text = " ".join(
+            "".join(node.itertext()) for node in information.iter(f"{{{SVG['svg']}}}text")
+        )
+        full_names = known_best_builder._full_names()  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+        assert "Daniel's regularizer" in printed
+        assert [full for full, _name in full_names if full in text] == ["Joshua Levy"]
+        assert text.count("Joshua Levy") == text.count(known_best_builder.POSTER_DIAGRAM_CREDIT)
         description = root.find("svg:desc", SVG)
         assert description is not None
         assert known_best_builder.POSTER_REGULARIZATION_PROSE in (description.text or "")
@@ -1775,6 +1790,7 @@ def test_the_regularization_credit_factors_its_shared_opening_and_keeps_any_othe
         3: "Regularized by the Squares Project with tool A (a, MIT)",
         4: "Regularized by the Squares Project with tool C",
         5: "Redrawn by someone else entirely",
+        6: "Regularized by the Squares Project with Evan Daniel's tool D",
     }
     monkeypatch.setattr(default_drawings, "credit_line", credit_lines.__getitem__)
     sentences = known_best_builder.regularization_sentences((1, 2, 3, 4, 5), 9)
@@ -1794,6 +1810,9 @@ def test_the_regularization_credit_factors_its_shared_opening_and_keeps_any_othe
         )
     ]
     assert known_best_builder.regularization_sentences((), 9) == ()
+    # A full personal name prints by its surname, as the other print credits print names.
+    named = known_best_builder.regularization_sentences((6,), 9)
+    assert " ".join(named[0]).endswith("by the Squares Project with Daniel's tool D")
 
 
 def test_poster_enlarges_information_type_without_changing_card_geometry() -> None:
