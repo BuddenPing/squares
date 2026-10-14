@@ -1,4 +1,4 @@
-"""Validate retained project history and render its GitHub and About reader views.
+"""Validate retained project history and render its GitHub and News reader views.
 
 Rendering reads committed inputs only. GitHub acquisition belongs to
 `devtools.import_changelog`, and publication claims require retained evidence.
@@ -550,7 +550,7 @@ def _markdown_link(label: str, target: str, *, destination: Destination) -> str:
 
 
 def entry_anchor(identifier: str) -> str:
-    """Stable entry fragments occupy their own namespace within About."""
+    """Stable entry fragments retain their namespace across News and legacy About links."""
     return f"changelog-entry-{identifier}"
 
 
@@ -560,6 +560,49 @@ def _component_label(component: str) -> str:
     from devtools.render_overview import paper_record  # noqa: PLC0415
 
     return paper_record(component.removeprefix("paper:")).title
+
+
+def _entry_lines(document: Document, entry: Document, destination: Destination) -> list[str]:
+    """Shared contribution prose and evidence for the complete GitHub and News views."""
+    out: list[str] = []
+    out.extend([_prose(entry["summary"], destination=destination), ""])
+    if "details" in entry:
+        out.extend([_prose(entry["details"], destination=destination), ""])
+    if entry.get("artifacts"):
+        links = [
+            _markdown_link(item["label"], item["target"], destination=destination)
+            for item in entry["artifacts"]
+        ]
+        out.extend(["Published artifacts: " + " · ".join(links) + ".", ""])
+    if entry.get("releases"):
+        versions = [
+            f"{_text(_component_label(item['component']))} {_text(item['version'])}"
+            for item in entry["releases"]
+        ]
+        out.extend(["Component editions: " + "; ".join(versions) + ".", ""])
+    publication = entry.get("publication", {})
+    if publication:
+        evidence = _markdown_link(
+            "publication evidence" if "date" in publication else "Publication evidence",
+            publication["evidence"],
+            destination=destination,
+        )
+        if "date" in publication:
+            out.extend([f"First public: {publication['date']} ({evidence}).", ""])
+        else:
+            out.extend([evidence + ".", ""])
+    links = [
+        _markdown_link(
+            f"#{number}", f"{document['repository']}/pull/{number}", destination=destination
+        )
+        for number in sorted(entry["pull_requests"])
+    ]
+    links.extend(
+        _markdown_link(item["label"], item["target"], destination=destination)
+        for item in entry.get("references", [])
+    )
+    out.extend(["PRs and supporting records: " + " · ".join(links) + ".", ""])
+    return out
 
 
 def render_markdown(
@@ -574,10 +617,7 @@ def render_markdown(
     else:
         out = ['<a id="changelog"></a>', "", "#" * heading_level + " Changelog", ""]
     last_date = ""
-    for entry in sorted(
-        document["entries"],
-        key=lambda item: (-date.fromisoformat(item["date"]).toordinal(), item["id"]),
-    ):
+    for entry in ordered_entries(document):
         if entry["date"] != last_date:
             last_date = entry["date"]
             date_anchor = f"changelog-date-{last_date}"
@@ -613,44 +653,110 @@ def render_markdown(
                     "",
                 ]
             )
-        out.extend([_prose(entry["summary"], destination=destination), ""])
-        if "details" in entry:
-            out.extend([_prose(entry["details"], destination=destination), ""])
-        if entry.get("artifacts"):
-            links = [
-                _markdown_link(item["label"], item["target"], destination=destination)
-                for item in entry["artifacts"]
-            ]
-            out.extend(["Published artifacts: " + " · ".join(links) + ".", ""])
-        if entry.get("releases"):
-            versions = [
-                f"{_text(_component_label(item['component']))} {_text(item['version'])}"
-                for item in entry["releases"]
-            ]
-            out.extend(["Component editions: " + "; ".join(versions) + ".", ""])
-        publication = entry.get("publication", {})
-        if publication:
-            evidence = _markdown_link(
-                "publication evidence" if "date" in publication else "Publication evidence",
-                publication["evidence"],
-                destination=destination,
-            )
-            if "date" in publication:
-                out.extend([f"First public: {publication['date']} ({evidence}).", ""])
-            else:
-                out.extend([evidence + ".", ""])
-        links = [
-            _markdown_link(
-                f"#{number}", f"{document['repository']}/pull/{number}", destination=destination
-            )
-            for number in sorted(entry["pull_requests"])
-        ]
-        links.extend(
-            _markdown_link(item["label"], item["target"], destination=destination)
-            for item in entry.get("references", [])
-        )
-        out.extend(["PRs and supporting records: " + " · ".join(links) + ".", ""])
+        out.extend(_entry_lines(document, entry, destination))
     return "\n".join(out).rstrip() + "\n"
+
+
+def ordered_entries(document: Document) -> list[Document]:
+    """The retained newest-day order, with stable IDs ordering contributions on a day."""
+    return sorted(
+        document["entries"],
+        key=lambda item: (-date.fromisoformat(item["date"]).toordinal(), item["id"]),
+    )
+
+
+NEWS_TOPICS = {
+    "lower-bound": "Lower bounds",
+    "upper-bound": "Upper bounds",
+    "optimality": "Optimality",
+    "engineering": "Engineering",
+    "verification": "Verification",
+    "documentation": "Documentation",
+}
+
+
+def news_topics(topics: Sequence[str]) -> str:
+    """Subject tags reuse result chips without asserting a result kind or status."""
+    if not topics:
+        return ""
+    if any(topic not in NEWS_TOPICS for topic in topics):
+        raise ValueError("unknown News topic")
+    return (
+        '<p class="site-news-topics">'
+        + " ".join(
+            f'<span class="site-chip" data-news-topic="{topic}">{NEWS_TOPICS[topic]}</span>'
+            for topic in topics
+        )
+        + "</p>"
+    )
+
+
+def news_card(anchor: str, day_text: str, body: str) -> str:
+    """One dated card around already sanitized article HTML, complete without scripts."""
+    from devtools.overview_sections import arrow_icon  # noqa: PLC0415
+
+    day = date.fromisoformat(day_text)
+    label = f"{day:%B} {day.day}, {day.year}"
+    safe_anchor = html.escape(anchor, quote=True)
+    return (
+        f'<section class="site-news-day" id="{safe_anchor}" '
+        f'data-news-day="{day_text}"><header class="site-news-header">'
+        '<p class="site-news-date publication-date">'
+        f'<time datetime="{day_text}">{label}</time></p>'
+        f'</header><div class="site-news-body" id="{safe_anchor}-body">{body}</div>'
+        f'<footer class="site-news-footer"><button class="site-news-expand" '
+        f'type="button" hidden aria-expanded="true" aria-controls="{safe_anchor}-body" '
+        f'aria-label="Collapse news for {label}">{arrow_icon("double-up")}</button>'
+        f"</footer></section>"
+    )
+
+
+def render_news(document: Document, *, limit: int | None = None) -> str:
+    """One complete article per card, optionally limited to the first few items."""
+    validate(document)
+    if limit is not None and limit < 1:
+        raise ValueError("a News preview needs at least one item")
+    entries = ordered_entries(document)
+    if limit is not None:
+        entries = entries[:limit]
+    out = ['<div class="site-news sans-text" data-news>']
+    seen_dates: set[str] = set()
+    for entry in entries:
+        anchor = entry_anchor(entry["id"])
+        title = html.escape(entry["title"])
+        if limit is not None:
+            title = f'<a href="news.html#{anchor}">{title}</a>'
+        article = []
+        if entry["date"] not in seen_dates:
+            # Retain the old daily bookmark at the first individual card for that day.
+            article.append(f'<div id="changelog-date-{entry["date"]}"></div>')
+            seen_dates.add(entry["date"])
+        article.append(
+            f'<article class="site-news-item" data-news-entry="{entry["id"]}">'
+            f"<h3>{title}</h3>{news_topics(entry.get('topics', []))}"
+        )
+        article.extend(
+            _prose(field, destination="site")
+            for field in _entry_lines(document, entry, "github")
+            if field
+        )
+        article.append("</article>")
+        out.append(news_card(anchor, entry["date"], "\n".join(article)))
+    out.append("</div>")
+    return "\n".join(out)
+
+
+def legacy_news_anchors(document: Document) -> str:
+    """Keep old About bookmarks navigable without duplicating the history there."""
+    anchors = ["changelog", *(entry_anchor(entry["id"]) for entry in document["entries"])]
+    anchors.extend(
+        f"changelog-date-{day}" for day in sorted({e["date"] for e in document["entries"]})
+    )
+    return "".join(
+        f'<a class="site-news-legacy-anchor" id="{anchor}" '
+        f'href="news.html#{anchor}" data-news-target aria-hidden="true" tabindex="-1"></a>'
+        for anchor in anchors
+    )
 
 
 def render(document: Document) -> str:

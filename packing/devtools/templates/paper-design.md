@@ -1,7 +1,7 @@
 # Design System
 
 This is the one description of how every page of the site looks: the explainer, the
-overview, Atlas, About, case and result records, Frontier, papers, tutorial and
+overview, News, Atlas, About, case and result records, Frontier, papers, tutorial and
 Visualize. Each stylesheet implements what is written here and points back to it; when a
 page needs something new, it is added here first and then to the stylesheet that owns
 it.
@@ -737,15 +737,16 @@ it.
   (0.5rem) nearer the bar, since a drawing has no line spacing above its edge.
   On the explainer the source chips sit in that space and the title starts the token
   below them. Print keeps KPress’s spacing, so the explainer’s PDF does not move.
-  Its entries are Overview, Results, Papers, Frontier, Visualize and GitHub, in that
-  order on every page: the order is the partial’s, `site-nav.html`, which is the one
-  place it is written, and it is the keyboard’s order too.
-  On a phone, where the links take two lines, the first holds Overview, Results, Papers
-  and Frontier and the second Visualize, GitHub and the gear.
-  Papers leads to the papers page (`papers.html`) and is current on it and on both
-  papers, the explainer and the tutorial, which keep their own addresses.
-  Visualize leads to the film (`visualize.html`) and is current on both pages of the
-  Visualize section, the film and the workbench.
+  Its entries are Overview, News, Atlas, Results, Explanations, About and GitHub.
+  Their order comes from `site-nav.html` and is also the keyboard order.
+  Links wrap naturally on narrow screens.
+  Explanations leads to `papers.html` and is current on the papers, tutorial, film and
+  Workbench. The landing page starts with a prominent Tutorial section of its own,
+  followed by Papers, PDFs and Visuals.
+  The existing tutorial card appears only in its top section; the paper cards keep their
+  shared content. Visuals contains the film and the two-choice Film/Workbench switch.
+  The film does not autoplay there.
+  These pages keep their existing addresses.
   The workbench is an application rather than a KPress page, so its build
   (`workbench_tools.build_site`) takes the bar, its stylesheet, the theme bootstrap and
   the gear’s script from `render_overview.nav_shell`, in a shell that gives it the page
@@ -754,9 +755,11 @@ it.
   itself has no dark mode yet.
 
 - **Section tabs.** A section that spans pages carries one small tab bar under the
-  navigation bar; the Visualize section is the one that does, with two tabs, **Film**
-  (`visualize.html`, the section’s first page) and **Workbench** (`workbench/`). Each
-  tab is a real link to its own page, so the bar needs no script, and a tab can be
+  navigation bar where the destination is a dedicated visual page.
+  The shared Visuals switch has **Film** (`papers.html#visuals`) and **Workbench**
+  (`workbench/`). On Explanations, it sits in the Visuals section after Tutorial, Papers
+  and PDFs; it is not a page-wide Papers tab.
+  Each tab is a real link to its own page, so the bar needs no script, and a tab can be
   opened, bookmarked and shared; every existing `workbench/` address lands on the
   Workbench tab. The bar is a centred strip with square corners and the cards’ thin
   border, a hairline between tabs, in the bar’s sans at the links’ own size
@@ -765,15 +768,15 @@ it.
   page background in the page’s own text colour.
   It is `.site-tabs`, rendered by `render_overview.visualize_tabs`, and defined in
   `site-nav.css` rather than `site.css` because the workbench carries only the bar’s
-  stylesheet. On the film’s page it opens the document; on the workbench it sits in the
-  application shell under the bar, above the application.
+  stylesheet. On the legacy Film page it opens the document; on the workbench it sits in
+  the application shell under the bar, above the application.
   The same strip also switches a view in place: there it is a `tablist` of buttons
   (`role="tab"`), each stripped of a button’s own chrome and taking the strip’s type,
   the selected one filled as the current page’s link is.
   The dedicated Atlas uses it for its Grid and Triangle views (**Atlas views**, below)
   and for its Small, Medium and Large tiles (**Atlas sizes**, below); `site-nav.css`
   draws both forms, and the header rules above take only the `nav` strip.
-  From the top, both pages read bar, rule, tabs, content: the tabs stand under the rule
+  From the top, these pages read bar, rule, tabs, content: the tabs stand under the rule
   that runs under the bar, never over it.
   They are in the header slot, whose lower border is that rule, so a header that holds
   tabs gives up its border and the bar draws the rule at its own foot (`:has()`, in
@@ -782,10 +785,6 @@ it.
   On the film’s page the first block starts `--site-page-top` under the tabs; on the
   workbench, where the application starts at the shell’s lower edge, the tabs keep the
   same 0.7rem below them.
-  Measured at 1280px, on both pages: the bar from 16 to 67.6px with the rule its last
-  pixel, the tabs from 78.8 to 115.4px, then the film at 179.4px and the application at
-  126.6px; at 390px, where the bar wraps to two lines, the rule ends at 84.8px, the tabs
-  run from 96.0 to 132.6px, the film starts at 196.6px and the application at 143.8px.
   `devtools.measure_site_pages header` reports these, `preview_site` fails a built page
   whose tabs start over the rule (`tabs_problems`), and `tests/test_site_wide_blocks.py`
   holds both pages to it in a browser.
@@ -846,8 +845,11 @@ it.
   workbench’s does, so a re-pin puts every such page in the Pages workflow’s scope
   (`devtools.pages_scope`); nothing compares a page’s bytes with an earlier build’s.
 
-- **Homepage.** A short problem introduction opens the page.
-  The next sections are Atlas, Recent Major Results, Papers, PDFs, Video, Squares
+- **Homepage.** Its browser title and sharing title are **The Squares Project**, from
+  the shared project-name constant.
+  The opening content section remains The Square Packing Problem.
+  A short problem introduction opens the page.
+  The next sections are Atlas, News, Recent Major Results, Papers, PDFs, Video, Squares
   Project Documentation, then More Resources (`think-5c8r`, `think-sq1i`). Papers shares
   all reading cards with the Papers page; Squares Project Documentation shares its
   introductory text and cards with About.
@@ -869,6 +871,37 @@ it.
   appear on the homepage; **About** sits immediately before **GitHub** in the shared
   navigation.
 
+- **News.** News is the second navigation item and carries the complete retained project
+  history. Its H1 uses the shared sans-serif caps; its operational text uses the sans
+  face. Each entry is one hairline-bordered card containing its actual article once.
+  Dates use the paper heading’s sans-base date role.
+  Each date is followed by an ordinary H3 in the theme’s text foreground, then smaller
+  Results-style topic chips and the article.
+  H3 typography comes from the shared heading role; the chips retain shared fills,
+  corners and leading at 85% of the note-size chip scale.
+  Homepage News and the archive use the same card renderer and CSS roles.
+  After the enhancement loads, about ten lines are visible.
+  Clicking or tapping the card or its small shared arrow in the footer expands or
+  contracts it inline; Enter and Space activate the button.
+  A short fade marks the clipped edge.
+  Height, fade and arrow rotation share the existing motion timing and honor reduced
+  motion. Hover adds a subtle green wash without changing height.
+  Article links retain their ordinary actions; body-link focus reveals the article.
+  Readers without scripting see complete articles.
+  Entry and legacy date fragments reveal their corresponding card.
+  Topic labels reuse square-cornered Results chips with distinct subject metadata: lower
+  and upper bounds and optimality reuse bound fills, engineering uses the accent tint,
+  verification the review-blue palette, and documentation the neutral chip.
+  These subject labels assert no result kind or verification status.
+  Result kinds with no accurate subject mapping omit the topic tag and retain their real
+  kind, status, claim and credit.
+  The homepage highlights the three newest S5 results from the results register, using
+  their existing claims, credit and evidence, and follows them with “All news →”.
+  Formalization and simplification highlights carry an optimality subject tag while
+  retaining their actual result-kind and evidence chips.
+  About keeps one short News link; its old history bookmarks forward without duplicating
+  the feed.
+
 - **Page headings.** The homepage opens with “The Square Packing Problem” as its `h1`,
   followed by visible section `h1`s in the same title style.
   The Visualize page shows no title: the bar, the section tabs and the film are the
@@ -880,11 +913,11 @@ it.
   A page that has a title (the Frontier page, the Results page, the Papers page, the
   canonical case record) sets it in the hero, centred.
   The Frontier page’s title is “The Frontier Survey”, the Results page’s “Every Result”
-  and the Papers page’s “Papers”; each stood over a subtitle the owner dictated on 1
-  October (“A survey of everything known for cases $n = 1, \ldots, 324$”, “A survey of
-  all reviewed results”, “Papers and interactive explanations for specific results”) and
-  dropped on 2 October as adding little (`think-wz9d`); the page descriptions in each
-  `<head>` are their own constants and stay.
+  and the Explanations page’s “Explanations”; each stood over a subtitle the owner
+  dictated on 1 October (“A survey of everything known for cases $n = 1, \ldots, 324$”,
+  “A survey of all reviewed results”, “Papers and interactive explanations for specific
+  results”) and dropped on 2 October as adding little (`think-wz9d`); the page
+  descriptions in each `<head>` are their own constants and stay.
   Individual case pages use their own case heading; the Atlas replaces the former
   separate case-directory hero and index (**Case records**, below).
   A subtitle, where a page has one, is the sans face at 1.1 times the sans base
@@ -1388,13 +1421,12 @@ it.
 - **Atlas grid.** The complete grid at `atlas.html` holds every tracked case, n = 1 to
   324, as a cached square SVG image with its n beneath.
   The artwork uses dark ink on a white canvas in both page themes.
-  The grid bleeds past the wide track as the window grows, to 140rem less the page
-  gutters, and its cells keep a readable size (at least 6.4rem, 4.6rem on a phone, at
-  the Medium size; **Atlas sizes**, below), so a wider screen shows more cases per row:
-  4 at 390 pixels, 10 at 1280, 16 at 1920 and 20 at 2560 (measured on 2026-10-04; the
-  figures for 1280 and 1920 had read 11 and 17). A cell washes on hover and on keyboard
-  focus, and is a link to its case’s record file, `cases/11.html`, which opens in the
-  page’s one case popover (**Case records**, below).
+  The grid fills the available page width less its edge gutters, and its cells keep a
+  readable size (at least 6.4rem, 4.6rem on a phone, at the Medium size; **Atlas
+  sizes**, below), so a wider screen shows more cases per row: 4 at 390 pixels, 10 at
+  1280 and 16 at 1920. A cell washes on hover and on keyboard focus, and is a link to
+  its case’s record file, `cases/11.html`, which opens in the page’s one case popover
+  (**Case records**, below).
   The wash is the cell’s background, behind the drawing, and it is the only thing that
   changes: every line of the artwork keeps its fixed ink at rest, hovered, focused and
   pressed, in both themes.
@@ -1668,11 +1700,12 @@ it.
   It is independent of the prose measure, thirty-five times the base, so changes to
   reading lines preserve the room tables and card grids need.
   Two kinds bleed past it.
-  The atlas grid bleeds at every width, up to `--site-bleed-max` (140rem). A data table
-  bleeds only above `--site-table-bleed-from` (80rem, 1280 pixels): from there it grows
-  one pixel for each pixel of window, `--site-table-wide`, until it reaches the page
-  gutters or `--site-table-max` (100rem, 1600 pixels), past which its columns would only
-  spread apart and a row would be harder to follow.
+  The atlas grid fills the available page width less its edge gutters, with no fixed
+  maximum. Complete Triangle rows still pan horizontally when they exceed that frame.
+  A data table bleeds only above `--site-table-bleed-from` (80rem, 1280 pixels): from
+  there it grows one pixel for each pixel of window, `--site-table-wide`, until it
+  reaches the page gutters or `--site-table-max` (100rem, 1600 pixels), past which its
+  columns would only spread apart and a row would be harder to follow.
   So nothing changes at 1280 pixels or narrower, and on a large screen a table’s text
   columns wrap less. The frontier table, whose own track is 86rem, is the page’s content
   area less its gutters up to 1456 pixels and goes from 1376 to 1600 above that.

@@ -127,12 +127,9 @@ body {
      It is independent of the prose measure so tables and card grids retain their room
      when reading lines change (paper-design.md, Wide bleed). */
   --site-wide: calc(var(--kpress-font-size-base) * 40 + 24rem);
-  /* How far a block may bleed past the wide track (the atlas grid, and a data table
-     above `--site-table-bleed-from`): paper-design.md, Wide bleed. */
-  --site-bleed-max: 140rem;
   --site-table-bleed-from: 80rem;
-  /* A table stops at 100rem, short of the atlas's cap: past it, its columns only spread
-     apart and a row gets harder to follow. */
+  /* A table stops at 100rem: past it, its columns only spread apart and a row gets
+     harder to follow. */
   --site-table-max: 100rem;
   /* The tables of results hold eight columns since 2026-10-04 (`think-46fw`; nine from
      2026-10-03, `think-m3m4`), and on a very wide window they bleed further than the
@@ -530,7 +527,9 @@ body {
   mask: var(--site-arrow) center / contain no-repeat;
   rotate: var(--site-arrow-turn);
   scale: var(--site-arrow-flip) 1;
-  transition: translate var(--site-hover-duration) var(--site-hover-easing);
+  transition:
+    translate var(--site-hover-duration) var(--site-hover-easing),
+    rotate var(--site-hover-duration) var(--site-hover-easing);
   vertical-align: -0.125em;
 }
 .kpress
@@ -1232,7 +1231,12 @@ body {
    `confirmed` is the green of the confirmation rungs, at C3's strength, and its
    `reviewed` the verification rungs' blue. Bound kinds use the bound colours, recorded is yellow, and
    superseded standings keep the plain gray chip. `devtools.rung_scale` measures these fills too. */
-.site-chip:is([data-case-status], [data-status="confirmed"], [data-status="reviewed"]) {
+.site-chip:is(
+  [data-case-status],
+  [data-status="confirmed"],
+  [data-status="reviewed"],
+  [data-news-topic="verification"]
+) {
   --rung-chroma-boost: 0;
   background: oklch(
     calc(var(--site-rung-base) + var(--rung-level) * var(--site-rung-step))
@@ -1249,7 +1253,8 @@ body {
   --rung-hue: 158;
   --rung-level: 3;
 }
-.site-chip[data-status="reviewed"] {
+.site-chip[data-status="reviewed"],
+.site-chip[data-news-topic="verification"] {
   --rung-hue: 250;
   --rung-level: 2;
 }
@@ -1264,17 +1269,33 @@ body {
 }
 
 /* Bound chips share the plotted bound hues, diluted into the current page background. */
-.site-chip:is([data-kind="lower-bound"], [data-status="incomplete"]) {
+.site-chip:is(
+  [data-kind="lower-bound"],
+  [data-status="incomplete"],
+  [data-news-topic="lower-bound"]
+) {
   background: color-mix(
     in oklab,
     var(--site-bound-lower) var(--site-chip-tint),
     var(--kpress-doc-bg)
   );
 }
-.site-chip:is([data-kind="upper-bound"], [data-kind="optimality"]) {
+.site-chip:is(
+  [data-kind="upper-bound"],
+  [data-kind="optimality"],
+  [data-news-topic="upper-bound"],
+  [data-news-topic="optimality"]
+) {
   background: color-mix(
     in oklab,
     var(--site-bound-upper) var(--site-chip-tint),
+    var(--kpress-doc-bg)
+  );
+}
+.site-chip[data-news-topic="engineering"] {
+  background: color-mix(
+    in oklab,
+    var(--kpress-doc-accent) var(--site-chip-tint),
     var(--kpress-doc-bg)
   );
 }
@@ -2088,9 +2109,9 @@ body {
 }
 
 /* The atlas grid: every case's known-best packing in a square cell, numbered beneath.
-   It bleeds past the wide track as the window grows, up to 140rem, and its cells keep a
-   size that reads, so the row holds more cases the wider the screen: at Medium, four on
-   a phone, ten at 1280 pixels, sixteen at 1920 and twenty at 2560. A cell washes on hover
+   It fills the page container less its edge gutters at every window width, and its
+   cells keep a size that reads, so the row holds more cases the wider the screen: at
+   Medium, four on a phone, ten at 1280 pixels and sixteen at 1920. A cell washes on hover
    like a card and opens the case popover (Case records, below). The wash is the cell's
    background,
    behind the drawing, and it is all that changes: every line keeps the page's ink. */
@@ -2101,7 +2122,7 @@ body:has([data-atlas-preview]) {
   overflow-anchor: none;
 }
 .site-page .site-atlas-grid {
-  --site-wide: var(--site-bleed-max);
+  --site-wide: var(--site-wide-room);
   --site-atlas-toggle-space: 1.2rem;
   /* Both views share the grid's readable cell minimum and gap. The script reads
      these tokens in rem or px; complete Triangle rows pan at that cell width. The size's
@@ -3396,4 +3417,123 @@ html[data-site-atlas-view="triangle"]
   justify-content: space-between;
   gap: 1rem;
   margin-block-start: 2rem;
+}
+
+/* News is operational content: sans text, with one quiet frame for each entry. */
+.kpress .site-news {
+  --site-news-hover-tint: 7%;
+  font-family: var(--kpress-font-sans);
+  font-size: var(--site-font-size-sans-base);
+  font-weight: var(--site-font-weight-sans-light);
+  line-height: var(--kpress-line-height-normal);
+}
+.kpress .site-news-day {
+  border: 1px solid var(--kpress-doc-border);
+  margin-block: 1.25rem;
+  padding: 0.9rem 1rem;
+  transition: var(--site-hover-transition);
+}
+.kpress .site-news-day[data-news-enhanced] {
+  cursor: pointer;
+}
+.kpress .site-news-day[data-news-enhanced]:hover {
+  background: color-mix(
+    in oklch,
+    var(--kpress-doc-accent) var(--site-news-hover-tint),
+    transparent
+  );
+}
+.kpress .site-news-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-block-start: 0.4rem;
+}
+.kpress .site-news-footer:has([hidden]) {
+  display: none;
+}
+.kpress .site-news-expand {
+  background: none;
+  border: 0;
+  color: var(--kpress-doc-accent);
+  cursor: pointer;
+  font: inherit;
+  padding: 0.2rem;
+}
+.kpress .site-news-body {
+  overflow: hidden;
+  position: relative;
+  transition: max-block-size var(--site-hover-duration) var(--site-hover-easing);
+}
+.kpress .site-news-body::before,
+.kpress .site-news-body::after {
+  block-size: 1.25lh;
+  content: "";
+  inset-block-end: 0;
+  inset-inline: 0;
+  mask-image: linear-gradient(transparent, currentColor);
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  transition: opacity var(--site-hover-duration) var(--site-hover-easing);
+}
+.kpress .site-news-body::before {
+  background: var(--kpress-doc-bg);
+}
+.kpress .site-news-body::after {
+  background: color-mix(
+    in oklch,
+    var(--kpress-doc-accent) var(--site-news-hover-tint),
+    transparent
+  );
+}
+.kpress .site-news-day.is-collapsed .site-news-body::before,
+.kpress .site-news-day.is-collapsed:hover .site-news-body::after {
+  opacity: 1;
+}
+.kpress .site-news-date {
+  color: inherit;
+  font-family: var(--kpress-font-sans);
+  font-feature-settings: var(--kpress-font-features-sans);
+  font-size: var(--site-font-size-sans-base);
+  font-style: normal;
+  font-weight: var(--site-font-weight-sans-light);
+  letter-spacing: normal;
+  line-height: 1.45;
+  margin: 0 0 0.6rem;
+  text-align: start;
+  text-transform: none;
+}
+.kpress .site-news-item > h3 {
+  margin-block: 0.6rem;
+  text-align: start;
+}
+.kpress .site-news-item > h3 :is(.kpress-math, .katex, .tex, math) {
+  letter-spacing: normal;
+  text-transform: none;
+}
+.kpress .site-news-topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-block: 0 0.5rem;
+}
+/* News topics keep the Results chip's fill, corners and leading at a smaller scale. */
+.kpress .site-news-topics .site-chip {
+  font-size: calc(var(--site-font-size-note) * 0.85);
+  margin-block: calc(0.15rem * 0.85);
+  padding-inline: calc(0.35rem * 0.85);
+}
+.kpress .site-news-item + .site-news-item {
+  border-block-start: 1px solid var(--kpress-doc-border);
+  margin-block-start: 1.25rem;
+  padding-block-start: 0.5rem;
+}
+.kpress .site-news-item > :last-child {
+  margin-block-end: 0;
+}
+.site-news-legacy-anchor {
+  block-size: 0;
+  display: block;
+  inline-size: 0;
+  overflow: hidden;
 }

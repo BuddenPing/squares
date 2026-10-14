@@ -112,6 +112,13 @@ $defs:
         type: array
         uniqueItems: true
         items: {enum: [records, pipeline, regularization, site, documentation]}
+      topics:
+        type: array
+        minItems: 1
+        uniqueItems: true
+        items:
+          enum: [lower-bound, upper-bound, optimality, engineering, verification, documentation]
+        description: Subjects covered by the item; these labels do not state proof or assurance status.
       result_ids:
         type: array
         uniqueItems: true

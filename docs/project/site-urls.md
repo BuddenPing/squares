@@ -779,6 +779,7 @@ Patterns admit declared namespaces, file types and sixteen-digit asset names.
 | n11-optimality/t-060-explainer.html | papers/n11-optimality-review.html | forwarder | overview | 2026-09-29 | 2026-10-14 | forwarded → papers/n11-optimality-review.html |
 | n11-optimality/t-060-explainer.md | papers/n11-optimality-review.md | copy | assembly | 2026-09-29 | 2026-10-14 | live → papers/n11-optimality-review.md |
 | n11-optimality/t-060-explainer.pdf | papers/n11-optimality-review.pdf | copy | assembly | 2026-09-29 | 2026-10-14 | live → papers/n11-optimality-review.pdf |
+| news.html | news.html | page | overview | 2026-10-14 | 2026-10-14 | live |
 | papers.html | papers.html | page | overview | 2026-09-29 | 2026-10-14 | live |
 | papers/n11-lower-bounds-explainer.html | papers/n11-lower-bounds-explainer.html | paper-file | paper:n11-lower-bounds-explainer | 2026-09-05 | 2026-10-13 | live |
 | papers/n11-lower-bounds-explainer.md | papers/n11-lower-bounds-explainer.md | paper-file | paper:n11-lower-bounds-explainer | 2026-09-05 | 2026-10-13 | live |

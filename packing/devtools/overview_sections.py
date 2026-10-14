@@ -1619,7 +1619,7 @@ THRESHOLD_REVIEW = next(paper for paper in PAPERS if paper.href == THRESHOLD_BOU
 OPTIMALITY = next(paper for paper in PAPERS if paper.href == OPTIMALITY_PAPER)
 
 
-def paper_cards() -> str:
+def paper_cards(*, papers: Sequence[Paper] | None = None) -> str:
     """One card per paper. Each card is the link itself and goes to its paper in the same
     tab, as the overview's page cards do (`page_cards`): a paper is a full page the site
     serves, so no popover previews it (`link_card`, `new_tab=False`). A link holds no
@@ -1634,7 +1634,7 @@ def paper_cards() -> str:
                 size=paper.size,
                 new_tab=False,
             )
-            for paper in PAPERS
+            for paper in (PAPERS if papers is None else papers)
         ]
     )
 

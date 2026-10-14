@@ -17,7 +17,13 @@ from urllib.parse import parse_qs, urlsplit
 
 import pytest
 
-from devtools import overview_sections, render_overview, site_assets
+from devtools import (
+    news_highlights,
+    overview_sections,
+    render_changelog,
+    render_overview,
+    site_assets,
+)
 from devtools.render_n11_lower_bounds_explainer import COMPOSITE_ASSETS
 from sqpack.probes import probe
 from tests import site_browser, site_renders
@@ -32,6 +38,8 @@ TRANSITION = probe(PROBES, "site_homepage/transition")
 INITIAL_LAYOUT = probe(PROBES, "site_atlas_views/initial")
 HERO = probe(PROBES, "site_homepage/hero")
 DOWNLOAD_ACTION = probe(PROBES, "site_homepage/download_action")
+NEWS = probe(PROBES, "site_homepage/news")
+NEWS_SETTLED = probe(PROBES, "site_homepage/news-settled")
 ORIGIN = "http://homepage.test/"
 TOGGLE = "[data-homepage-atlas-toggle]"
 CELLS = "#homepage-atlas-cells"
@@ -48,7 +56,7 @@ def payloads() -> dict[str, bytes]:
     """The real destination pages and exercised cases, with every browser dependency."""
     documents = {
         name: site_renders.html(name)
-        for name in ("index.html", "atlas.html", "about.html", "results.html")
+        for name in ("index.html", "news.html", "atlas.html", "about.html", "results.html")
     }
     documents.update(
         {
@@ -155,7 +163,7 @@ def test_native_homepage_film_waits_for_click_and_main_headings_share_spacing(
         assert state["right"] <= width
         assert state["overflow"] <= 0
         assert state["width"] / state["height"] == pytest.approx(16 / 9, abs=0.01)
-        assert len(state["headings"]) == 8
+        assert len(state["headings"]) == 9
         for heading in state["headings"]:
             assert heading["above"] == pytest.approx(state["title_above"], abs=0.01)
             assert heading["below"] == pytest.approx(state["title_below"], abs=0.01)
@@ -683,6 +691,7 @@ def test_homepage_order_chrome_and_single_card_rows_keep_the_shared_design(
     home = seen[width]["initial"]
     assert home["headings"] == [
         "the-atlas-of-square-packings",
+        "news",
         "recent-results",
         "report-your-results",
         "papers",
@@ -693,8 +702,14 @@ def test_homepage_order_chrome_and_single_card_rows_keep_the_shared_design(
         "squares-project-documentation",
         "more-resources",
     ]
-    assert len(home["section_title_styles"]) == 7
-    assert home["lower_headings"] == 0
+    assert len(home["section_title_styles"]) == 8
+    selected = news_highlights.highlights(site_renders.overview())
+    assert [heading["entry"] for heading in home["news_headings"]] == [
+        result.id for result in selected
+    ]
+    assert len(home["news_headings"]) == 3
+    assert all(heading["title"] for heading in home["news_headings"])
+    assert home["other_lower_headings"] == []
     assert all(style == home["main_title_style"] for style in home["section_title_styles"])
     assert home["recent_title"] == "Recent Major Results"
     assert home["media"] == {
@@ -875,3 +890,163 @@ def test_explore_stays_usable_without_javascript_and_the_expander_stays_hidden(
         sync_api.expect(page.locator("[data-atlas-grid]")).to_be_visible()
     finally:
         page.close()
+
+
+@pytest.mark.parametrize("width", WIDTHS)
+def test_news_cards_expand_only_on_press_and_legacy_bookmarks_forward(
+    browser: Any, payloads: dict[str, bytes], width: int
+) -> None:
+    sync_api = site_browser.api()
+    page = browser.new_page(viewport={"width": width, "height": 900}, reduced_motion="reduce")
+    _serve(page, payloads)
+    try:
+        page.goto(ORIGIN, wait_until="load")
+        preview = page.evaluate(NEWS)
+        assert len(preview["entries"]) == 3
+        page.locator('.site-action[href="news.html"]').click()
+        page.wait_for_url(f"{ORIGIN}news.html")
+        news = page.evaluate(NEWS)
+        document = render_changelog.load()
+        assert len(news["entries"]) == len(document["entries"])
+        assert len(news["days"]) == len(document["entries"])
+        assert news["heading"]["transform"] == "uppercase"
+        assert news["family"] == news["heading"]["family"]
+        assert preview["reference_h3"] == news["reference_h3"]
+        for surface in (preview, news):
+            assert surface["overflow"] == 0
+            for day in surface["days"]:
+                assert day["border"] == 1
+                assert 0 <= day["left"] < day["right"] <= width
+                assert day["family"] == surface["family"]
+                assert day["body_family"] == surface["family"]
+                assert day["date_transform"] == "none"
+                assert day["title_style"] == surface["reference_h3"]
+                assert day["title_style"]["color"] == surface["text_color"]
+                assert day["date_before_title"]
+                assert day["title_before_topics"]
+                assert day["topics_after_title"]
+                for topic in day["topic_styles"]:
+                    assert float(topic["size"].removesuffix("px")) < day["title_size"]
+                    assert topic["family"] == day["title_style"]["family"]
+        card = page.locator("[data-news-day].is-collapsed").first
+        card_id = card.get_attribute("id")
+        assert card_id is not None
+        card = page.locator(f"#{card_id}")
+        button = card.locator(".site-news-expand")
+
+        def reading() -> dict[str, Any]:
+            return next(day for day in page.evaluate(NEWS)["days"] if day["id"] == card_id)
+
+        sync_api.expect(button).to_have_attribute("aria-expanded", "false")
+        closed = reading()
+        assert closed["body_height"] == pytest.approx(10 * closed["line_height"], abs=1)
+        assert closed["body_scroll"] > closed["body_height"]
+        assert closed["button_top"] >= closed["body_bottom"]
+        assert closed["fade"] == "1"
+        assert "max-block-size" in closed["height_transition"]
+        assert "rotate" in closed["arrow_transition"]
+        card.hover()
+        assert reading()["height"] == closed["height"]
+        button.focus()
+        assert reading()["height"] == closed["height"]
+        button.press("Enter")
+        sync_api.expect(button).to_have_attribute("aria-expanded", "true")
+        opened = reading()
+        assert opened["body_height"] >= opened["body_scroll"] - 1
+        assert opened["fade"] == "0"
+        page.mouse.move(0, 0)
+        assert reading()["height"] == opened["height"]
+        button.press("Space")
+        sync_api.expect(button).to_have_attribute("aria-expanded", "false")
+        link = card.locator('a[href*="/pull/"]').first
+        link.focus()
+        sync_api.expect(button).to_have_attribute("aria-expanded", "true")
+        button.click()
+        sync_api.expect(button).to_have_attribute("aria-expanded", "false")
+        card.locator("h3").first.click()
+        sync_api.expect(button).to_have_attribute("aria-expanded", "true")
+        if width == 1280:
+            button.click()
+            page.emulate_media(reduced_motion="no-preference")
+            button.click()
+            page.wait_for_function(
+                NEWS_SETTLED, arg={"id": card_id, "open": True}, timeout=5000
+            )
+            assert reading()["inline_height"] == ""
+            page.set_viewport_size({"width": 390, "height": 900})
+            page.wait_for_function(
+                NEWS_SETTLED, arg={"id": card_id, "open": True}, timeout=5000
+            )
+            page.set_viewport_size({"width": width, "height": 900})
+            button.click()
+            page.wait_for_function(
+                NEWS_SETTLED, arg={"id": card_id, "open": False}, timeout=5000
+            )
+            # Keep rapid activations on the same focused control as its footer moves.
+            button.press("Enter", delay=30)
+            button.press("Enter")
+            page.wait_for_function(
+                NEWS_SETTLED, arg={"id": card_id, "open": False}, timeout=5000
+            )
+            button.click()
+            page.wait_for_function(
+                NEWS_SETTLED, arg={"id": card_id, "open": True}, timeout=5000
+            )
+            page.emulate_media(reduced_motion="reduce")
+        link = card.locator('a[href*="/pull/"]').first
+        target = link.get_attribute("href")
+        assert target is not None
+        page.context.route(
+            target, lambda route: route.fulfill(body="<p>Ordinary proof link</p>")
+        )
+        if link.get_attribute("target") == "_blank":
+            with page.expect_popup() as opened_link:
+                link.click()
+            linked_page = opened_link.value
+            sync_api.expect(linked_page).to_have_url(target)
+            linked_page.close()
+        else:
+            link.click()
+            sync_api.expect(page).to_have_url(target)
+        anchor = render_changelog.entry_anchor(
+            render_changelog.ordered_entries(document)[0]["id"]
+        )
+        page.goto(f"{ORIGIN}about.html#{anchor}", wait_until="load")
+        page.wait_for_url(f"{ORIGIN}news.html#{anchor}")
+        sync_api.expect(page.locator(f"#{anchor}")).to_be_visible()
+        owner = page.locator(f"[data-news-day]#{anchor}")
+        sync_api.expect(owner.locator(".site-news-expand")).to_have_attribute(
+            "aria-expanded", "true"
+        )
+    finally:
+        page.close()
+    if width == 390:
+        for javascript in (False, True):
+            context = browser.new_context(
+                viewport={"width": width, "height": 900},
+                has_touch=True,
+                is_mobile=True,
+                java_script_enabled=javascript,
+            )
+            try:
+                touch = context.new_page()
+                _serve(touch, payloads)
+                touch.goto(f"{ORIGIN}news.html", wait_until="load")
+                card = touch.locator(
+                    "[data-news-day].is-collapsed" if javascript else "[data-news-day]"
+                ).first
+                card_id = card.get_attribute("id")
+                assert card_id is not None
+                card = touch.locator(f"#{card_id}")
+                button = card.locator(".site-news-expand")
+                if javascript:
+                    button.tap()
+                    sync_api.expect(button).to_have_attribute("aria-expanded", "true")
+                    button.tap()
+                    sync_api.expect(button).to_have_attribute("aria-expanded", "false")
+                else:
+                    sync_api.expect(button).to_be_hidden()
+                    full = touch.evaluate(NEWS)["days"][0]
+                    assert full["body_height"] >= full["body_scroll"] - 1
+            finally:
+                context.close()

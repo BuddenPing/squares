@@ -85,6 +85,14 @@ class PublicationHistoryEntry(NamedTuple):
 #: for each deployment's commit, what the page it built stated.
 PUBLICATION_HISTORY = (
     PublicationHistoryEntry(
+        version="v0.7.0",
+        first_published="October 14, 2026",
+        result_scope=(
+            "Add a dedicated News page and homepage preview of the project history, "
+            "and let the Atlas use the full available page width."
+        ),
+    ),
+    PublicationHistoryEntry(
         version="v0.6.2",
         first_published="October 14, 2026",
         result_scope=(
@@ -646,6 +654,16 @@ class ReleaseImpactDecision(NamedTuple):
 RELEASE_IMPACTS: tuple[ReleaseImpactDecision, ...] = (
     ReleaseImpactDecision(
         component="site",
+        previous_version="v0.6.2",
+        version="v0.7.0",
+        impact="minor",
+        reason=(
+            "Add a dedicated News page and homepage preview of the project history, "
+            "and let the Atlas use the full available page width."
+        ),
+    ),
+    ReleaseImpactDecision(
+        component="site",
         previous_version="v0.6.1",
         version="v0.6.2",
         impact="patch",
@@ -732,6 +750,14 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-381-100.md",
             "packing/cases/n11_threshold_certificate/t-025-verifiable-claim-191-50.md",
             "packing/cases/n11_threshold_certificate/t-026-verifiable-claim-dilation-limit.md",
+            "packing/devtools/probes/measure_atlas_views/layout.js",
+            "packing/devtools/probes/measure_atlas_views/widen.js",
+            "packing/devtools/news_highlights.py",
+            "packing/devtools/overview_sections.py",
+            "packing/devtools/render_changelog.py",
+            "packing/devtools/render_overview.py",
+            "packing/devtools/site_documents.py",
+            "packing/devtools/templates/site-nav.html",
             "packing/devtools/upper_bound_reports.py",
             "packing/pyproject.toml",
         ),
@@ -750,15 +776,25 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "papers/square-packing-methods-survey.pdf",
         ),
         reason=(
-            "Each paper was rendered with its own command at main's 37e6757ed and at "
-            "c6118ca59. The explainer's 55 files are byte-identical; the optimality, "
-            "threshold-bound and methods papers' HTML, Markdown and PDF are byte-identical "
-            "once the build commit their repository links pin is normalized. The inputs add "
-            "a beyond-horizon-only register plan and four HOUSES readers, reached from the "
-            "papers only through the atlas builder's import closure, and a BasedPyright "
-            "include that no render reads. The site v0.6.2 cut regenerates the claim "
-            "documents at its new link revision; the explainer rendered after that cut is "
-            "byte-identical in all 55 files to its render before it."
+            "Reviewed the four paper renderers, manuscripts, paper styles and fronts "
+            "against main: no paper content or paper-owned typesetting rules change. "
+            "Shared navigation adds News and groups Explanations; CHANGELOG aliases move "
+            "to News, and the new "
+            "article-card and result-highlight renderers are used by site pages only. "
+            "The optional paper-card subset separates the existing tutorial card from "
+            "the other unchanged reading cards on Explanations; its default stays the same. "
+            "Navigation, shared arrow motion and publication-link provenance are site "
+            "chrome, not independent paper editions. "
+            "Atlas measurement probes add report fields and remove the obsolete "
+            "screenshot width override. Exact comparison proves the five regenerated "
+            "claim documents retain the upstream c6118ca5 link revision; mathematical claims, "
+            "embedded certificates and verifiers remain "
+            "identical. The owning paper HTML/Markdown sources and PDF derivation paths "
+            "were reviewed; no byte-identical artifact build is claimed for News. "
+            "Upstream intake changes add a beyond-horizon register plan and HOUSES "
+            "readers through the atlas import closure, plus a BasedPyright include. "
+            "Its independent paper renders were compared against main at 37e6757ed; "
+            "they were identical after normalizing repository-link provenance."
         ),
     ),
     ReleaseNoPublicChange(

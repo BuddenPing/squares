@@ -359,6 +359,7 @@ def test_the_homepage_sections_run_in_the_requested_order(page: str, atlas_page:
     assert '<h1 id="the-problem"' in page
     assert re.findall(r'<h2 id="([^"]+)"', page) == [
         "the-atlas-of-square-packings",
+        "news",
         "recent-results",
         "report-your-results",
         "papers",
@@ -366,6 +367,7 @@ def test_the_homepage_sections_run_in_the_requested_order(page: str, atlas_page:
     assert re.findall(r'<h[12] id="([^"]+)" class="site-title"', page) == [
         "the-problem",
         "the-atlas-of-square-packings",
+        "news",
         "recent-results",
         "report-your-results",
         "papers",
@@ -388,7 +390,10 @@ def test_the_homepage_sections_run_in_the_requested_order(page: str, atlas_page:
     assert len(re.findall(r'data-atlas-n="\d+"', atlas_page)) == 324
     assert '<div class="site-atlas-rest" data-atlas-rest hidden>' in page
     assert page.count("data-atlas-toggle data-homepage-atlas-toggle") == 1
-    assert re.search(r"<h[3-6]\b", page) is None
+    headings = re.findall(r"<h[3-6]\b.*?</h[3-6]>", page, re.DOTALL)
+    news = page.split('id="news"', 1)[1].split('<h2 id="recent-results"', 1)[0]
+    assert headings == re.findall(r"<h3\b.*?</h3>", news, re.DOTALL)
+    assert len(headings) == 3
     assert '<h1 id="more-resources" class="site-title">More Resources' in page
     assert "site-resource-links" not in page
 
@@ -409,9 +414,9 @@ def test_papers_groups_every_reading_and_the_resources_keep_detail_reachable(
     assert cards == [paper.href for paper in overview_sections.PAPERS] + [
         overview_sections.PDF_CARD_SPECS[1][0]
     ]
-    assert [(href, tag, card_text(body)) for href, tag, body in _page_cards(paper_section)] == [
-        (href, tag, card_text(body)) for href, tag, body in _page_cards(papers)
-    ]
+    assert {href: (tag, card_text(body)) for href, tag, body in _page_cards(paper_section)} == {
+        href: (tag, card_text(body)) for href, tag, body in _page_cards(papers)
+    }
     assert 'target="_blank"' not in paper_section
     assert "popover" not in section
     assert 'class="site-homepage-media"' in media_section
@@ -443,7 +448,10 @@ def test_home_and_about_share_the_documentation_introduction_and_cards(
         "Squares Project Documentation</h1>"
     )
     home_section = page.split(heading, 1)[1].split('<h1 id="more-resources"', 1)[0]
-    about_section = about.split(heading, 1)[1].split('<h2 id="changelog">', 1)[0]
+    about_section = about.split(heading, 1)[1].split('<h1 id="news"', 1)[0]
+    about_section = re.sub(
+        r'<p>(?:<a class="site-news-legacy-anchor"[^>]*></a>)+</p>', "", about_section
+    )
     home_block, action_row = home_section.rsplit('<p class="site-action-row site-more">', 1)
     assert re.findall(r"<p>(.*?)</p>", home_block, re.DOTALL) == re.findall(
         r"<p>(.*?)</p>", about_section, re.DOTALL
@@ -542,8 +550,11 @@ def test_the_homepage_film_is_a_native_player_started_by_the_reader(page: str) -
 
 
 def _page_cards(page: str) -> list[tuple[str, str, str]]:
-    """A page's first card section: each card's address, opening tag, and body."""
-    frame = page.split('<div class="site-cards-frame', 1)[1].split("</div></div>", 1)[0]
+    """Reading cards, including Explanations' separate Tutorial and Papers sections."""
+    if '<h1 id="explanations"' in page:
+        frame = page.split('<h2 id="tutorial"', 1)[1].split('<h2 id="pdfs"', 1)[0]
+    else:
+        frame = page.split('<div class="site-cards-frame', 1)[1].split("</div></div>", 1)[0]
     cards = re.findall(
         r'<a class="site-card site-card-link" href="([^"]+)"([^>]*)>(.*?)</a>', frame, re.DOTALL
     )
@@ -598,7 +609,8 @@ def test_each_page_card_is_a_plain_link_to_its_page(about: str, papers: str) -> 
             )
             is None
         )
-    for (href, tag, body), paper in zip(cards, entries, strict=True):
+    displayed_entries = (entries[-1], *entries[:-1])
+    for (href, tag, body), paper in zip(cards, displayed_entries, strict=True):
         assert href in render_overview.SITE_PAGES, href
         assert tag == f' data-go="page" data-card-size="{paper.size}"', href
         assert "popovertarget" not in tag, href
@@ -2530,28 +2542,32 @@ def test_the_nav_links_only_to_served_pages() -> None:
 #: The bar's entries, in order: each one's key, where it leads and its label.
 NAV_ENTRIES = [
     ("overview", "./", "Overview"),
+    ("news", "news.html", "News"),
     ("atlas", "atlas.html", "Atlas"),
     ("results", "results.html", "Results"),
-    ("papers", "papers.html", "Papers"),
-    ("visualize", "visualize.html", "Visualize"),
+    ("explanations", "papers.html", "Explanations"),
     ("about", "about.html", "About"),
     ("github", "https://github.com/jlevy/squares", "GitHub"),
 ]
-#: The pages the bar's Papers entry is current on, of those this renderer owns; the
+#: The pages the bar's Explanations entry is current on, of those this renderer owns; the
 #: explainer, the third, is rendered by its own module and held there
 #: (`test_n11_lower_bounds_explainer`).
-PAPERS_SECTION = {"papers.html", "tutorial.html"}
+PAPERS_SECTION = {"papers.html", "tutorial.html", "visualize.html"}
 
 
-def test_the_nav_has_one_papers_entry_for_the_explainer_and_the_tutorial() -> None:
-    """The explainer and the tutorial have no entry of their own: Papers leads to the page
-    that holds them both, and neither old key can be marked current."""
+def test_the_nav_has_one_explanations_entry_for_the_papers_and_film() -> None:
+    """Papers, the film and the tutorial share one top-level Explanations destination.
+    The former papers key remains an alias for callers rendering legacy pages."""
     nav = render_overview.nav_html("papers")
     entries = re.findall(
         r'<a data-page="(\w+)"(?: aria-current="page")? href="([^"]+)">([^<]+)</a>', nav
     )
     assert entries == NAV_ENTRIES
-    assert '<a data-page="papers" aria-current="page" href="papers.html">Papers</a>' in nav
+    assert (
+        '<a data-page="explanations" aria-current="page" href="papers.html">Explanations</a>'
+        in nav
+    )
+    assert nav == render_overview.nav_html("explanations")
     assert "papers.html" in render_overview.SITE_PAGES
     assert "papers.html" in render_overview.PAGES
     for gone in ("explainer", "tutorial"):
@@ -2560,14 +2576,14 @@ def test_the_nav_has_one_papers_entry_for_the_explainer_and_the_tutorial() -> No
 
 
 @pytest.mark.parametrize("name", sorted(render_overview.PAGES))
-def test_papers_is_current_on_the_papers_page_and_the_tutorial_alone(
+def test_explanations_is_current_on_its_papers_tutorial_and_film_pages(
     name: str, rendered: Callable[[str], str]
 ) -> None:
-    """Papers is the current entry on `papers.html` and on the tutorial, which keeps its
-    own address, and on no other page this renderer owns."""
+    """Explanations is current on its papers, tutorial and film destinations, which
+    retain their addresses, and on no other page this renderer owns."""
     current = re.findall(r'<a data-page="(\w+)" aria-current="page"', rendered(name))
     assert len(current) == 1
-    assert (current == ["papers"]) is (name in PAPERS_SECTION), current
+    assert (current == ["explanations"]) is (name in PAPERS_SECTION), current
     assert set(render_overview.PAGES) >= PAPERS_SECTION
 
 
@@ -2803,28 +2819,43 @@ def test_every_site_page_carries_the_same_bar(
     assert _the_bar(page, root=root) == SITE_NAV_BLOCK.findall(partial)[0]
 
 
-def test_the_visualize_section_is_marked_current_on_both_its_pages(
+def test_the_explanations_section_and_its_shared_tabs_are_marked_current(
     rendered: Callable[[str], str],
 ) -> None:
-    """The bar's Visualize entry leads to the film and is current on the film's page and
-    on the workbench, which share one tab bar with their own tab current."""
+    """Explanations has a prominent tutorial and a bottom Visuals switch."""
     nav = render_overview.nav_html("overview")
-    assert '<a data-page="visualize" href="visualize.html">Visualize</a>' in nav
-    assert "Visualizer" not in nav
-    film = rendered("visualize.html")
-    for page, root, tab in ((film, "", "film"), (_workbench_page(), "../", "workbench")):
-        assert re.findall(r'<a data-page="(\w+)" aria-current="page"', page) == ["visualize"]
+    assert '<a data-page="explanations" href="papers.html">Explanations</a>' in nav
+    page = rendered("papers.html")
+    article = papers_article(page)
+    assert [
+        article.index(f'id="{section}"')
+        for section in ("tutorial", "papers", "pdfs", "visuals")
+    ] == sorted(
+        article.index(f'id="{section}"')
+        for section in ("tutorial", "papers", "pdfs", "visuals")
+    )
+    tabs = render_overview.visualize_tabs("film")
+    assert article.index('id="visuals"') < article.index(tabs) < article.index("<video ")
+    assert "data-autoplay" not in article
+    header = page.split('class="kpress-site-header"', 1)[1].split("</header>", 1)[0]
+    assert 'class="site-tabs"' not in header
+    for page, root, tab in (
+        (rendered("visualize.html"), "", "film"),
+        (_workbench_page(), "../", "workbench"),
+    ):
+        assert re.findall(r'<a data-page="(\w+)" aria-current="page"', page) == ["explanations"]
         tabs = render_overview.visualize_tabs(tab, root=root)
         assert page.count('class="site-tabs"') == 1
         assert tabs in page
+        assert 'aria-label="Visuals"' in tabs
+        assert re.findall(r'data-tab="(\w+)"', tabs) == ["film", "workbench"]
         assert re.findall(r'<a data-tab="(\w+)" aria-current="page"', tabs) == [tab]
-        # In the header slot, directly after the bar, on both pages alike: the bar's
-        # stylesheet draws the rule between the two (the next test).
+        assert f'href="{root}papers.html#visuals"' in tabs
         header = page.split('class="kpress-site-header"', 1)[1].split("</header>", 1)[0]
         assert header.index('class="site-nav"') < header.index(tabs)
         assert re.search(r'</nav>\s*<nav class="site-tabs"', header)
     with pytest.raises(SystemExit):
-        render_overview.visualize_tabs("stills")
+        render_overview.visualize_tabs("papers")
 
 
 def test_the_bars_type_is_set_from_the_papers_scale() -> None:
@@ -2952,7 +2983,7 @@ def test_the_film_starts_on_a_visit_to_its_page_and_nowhere_else(
         if name != "visualize.html":
             # The page as it is served, with every program it links.
             other = served(name)
-            if name == "index.html":
+            if name in {"index.html", "papers.html"}:
                 assert (
                     site_renders.html(name).count(_asset_tag(render_overview.FILM_SCRIPT, name))
                     == 1
@@ -4134,10 +4165,13 @@ def test_the_full_project_statement_lives_on_about_and_the_card_keeps_its_anchor
         "the-squares-project",
         "report-your-results",
         "squares-project-documentation",
+        "news",
     ]
     assert all('class="site-title"' in tag for tag in re.findall(r"<h1\b[^>]*>", about))
-    assert re.search(r"<h2\b", about.split('<h2 id="changelog">', 1)[0]) is None
-    assert re.findall(r'<h2\b[^>]*\bid="([^"]+)"', about) == ["changelog"]
+    assert re.search(r"<h2\b", about) is None
+    assert 'id="changelog" href="news.html#changelog" data-news-target' in about
+    assert "data-news-entry=" not in about
+    assert 'href="news.html">News and the complete project history</a>' in about
     following = about.split(heading, 1)[1].lstrip()
     assert following.startswith("<p>Work on the square packing problem")
     assert "Work on the square packing problem has exploded" not in page
@@ -4168,10 +4202,7 @@ def test_the_project_is_named_the_squares_project_wherever_it_is_named(
     # README's page is named for the file in its tab, since the project's name follows
     # it there as it does every page's name, and the overview's title is that name alone.
     assert "<title>README · The Squares Project</title>" in rendered("readme.html")
-    assert (
-        "<title>Square Packing: Bounds, Results and Best Packings · The Squares Project</title>"
-        in page
-    )
+    assert "<title>The Squares Project</title>" in page
     labels = [label for _, label, _ in overview_sections.DOCUMENTS]
     assert labels[0] == "The Squares Project"
     for name in (
@@ -4299,11 +4330,12 @@ def test_the_papers_page_holds_one_large_card_for_each_paper(
     assert {paper.size for paper in paper_specs} == {"large"}
     paper_hrefs = {paper.href for paper in paper_specs}
     cards = [card for card in _page_cards(page) if card[0] in paper_hrefs]
-    assert [href for href, _, _ in cards] == [paper.href for paper in paper_specs]
+    displayed_papers = (paper_specs[-1], *paper_specs[:-1])
+    assert [href for href, _, _ in cards] == [paper.href for paper in displayed_papers]
     assert len(re.findall(r'class="site-card[ "]', page)) == (
         len(overview_sections.PAPERS) + len(overview_sections.PDF_CARD_SPECS)
     )
-    for (href, tag, body), paper in zip(cards, paper_specs, strict=True):
+    for (href, tag, body), paper in zip(cards, displayed_papers, strict=True):
         assert href in render_overview.SITE_PAGES, href
         assert tag == ' data-go="page" data-card-size="large"', href
         assert f'<span class="site-card-label">{paper.label}</span>' in body, href
@@ -4339,7 +4371,8 @@ def test_a_papers_card_holds_no_link_so_the_introduction_links_what_it_names(
     assert explainer.href == overview_sections.LOWER_BOUNDS_PAPER
     assert overview_sections.THRESHOLD_REVIEW is overview_sections.PAPERS[1]
     article = papers_article(papers)
-    introduction, cards = article.split('<div class="site-cards-frame', 1)
+    paper_section = article.split('<h2 id="papers"', 1)[1]
+    introduction, cards = paper_section.split('<div class="site-cards-frame', 1)
     assert re.findall(r'<a\b[^>]*href="([^"]+)"[^>]*>([^<]+)</a>', introduction) == [
         (overview_sections.LOWER_BOUNDS_PAPER, "Part I"),
         (overview_sections.THRESHOLD_BOUND_PAPER, "Part II"),
@@ -4348,7 +4381,6 @@ def test_a_papers_card_holds_no_link_so_the_introduction_links_what_it_names(
         (overview_sections.OPTIMALITY_PAPER, "Part III"),
         ("https://x.com/ManassehA06", "Mannaseh Ahmed"),
         ("results.html#t-060", "T-060"),
-        ("tutorial.html", "square-packing tutorial"),
         ("papers/square-packing-methods-survey.html", "How Record Square Packings Are Found"),
     ]
     for body in re.findall(r"<a\b[^>]*>(.*?)</a>", cards, re.DOTALL):
@@ -4395,7 +4427,7 @@ def test_the_optimality_papers_card_says_what_t060s_rungs_allow(
     assert paper.href in render_overview.SITE_PAGES
     assert paper.title == renderer.TITLE
     assert paper.title == "A Review of the Optimality Proof of the Trump Packing of 11 Squares"
-    assert _page_cards(papers)[2][0] == paper.href
+    assert _page_cards(papers)[3][0] == paper.href
     value, note = _page_card_parts(papers, paper.href)
     assert card_text(value) == paper.title
     text = card_text(note)
@@ -4421,7 +4453,7 @@ def test_the_papers_page_introduces_the_papers_within_t060s_rungs(
 
     article = papers_article(papers)
     text = card_text(article)
-    assert re.search(r"<h1\b[^>]*>Papers</h1>", article)
+    assert re.search(r"<h1\b[^>]*>Explanations</h1>", article)
     assert '<a href="results.html#t-060">T-060</a>' in article
     assert f'<a href="{overview_sections.OPTIMALITY_PAPER}">Part III</a>' in article
     assert "machine-checked proof" in text
@@ -5217,8 +5249,19 @@ def test_the_icon_set_is_one_drawing_in_the_stylesheet() -> None:
     assert "--site-arrow" not in nav
     for content in re.findall(r"content:\s*([^;]+);", css):
         assert not ARROW_CHARACTERS.search(content), content
-    for mask in re.findall(r"mask(?:-image)?:\s*([^;]+);", css):
-        assert re.match(r"var\(--site-arrow(?:-sort|-double|-download)?\)", mask), mask
+    # The News disclosure's fade masks content, not an icon. Own that exception by
+    # its exact selector and gradient so any other mask still has to use the icon set.
+    fade_selector = ".kpress .site-news-body::before, .kpress .site-news-body::after"
+    fades = 0
+    rules = re.findall(r"([^{}]+)\{([^{}]*)\}", re.sub(r"/\*.*?\*/", "", css, flags=re.DOTALL))
+    for selector, declarations in rules:
+        for mask in re.findall(r"mask(?:-image)?:\s*([^;]+);", declarations):
+            if " ".join(selector.split()) == fade_selector:
+                assert mask == "linear-gradient(transparent, currentColor)"
+                fades += 1
+            else:
+                assert re.match(r"var\(--site-arrow(?:-sort|-double|-download)?\)", mask), mask
+    assert fades == 1
     # The double chevron is the arrow's head twice, in the arrow's own box and stroke.
     head = "stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'"
     double = re.search(r"--site-arrow-double: url\(\"([^\"]+)\"\);", css)
@@ -5421,14 +5464,11 @@ TABLE_BLEED = ".site-page .site-wide:is(.site-table-wrap, :has(> .site-table-wra
 
 def test_data_tables_bleed_like_the_atlas_only_above_1280_pixels() -> None:
     """A data table's wide track is one rule on shared tokens. It stops at its own
-    maximum, short of the atlas grid's, and its growth term is zero at or below
+    maximum, and its growth term is zero at or below
     `--site-table-bleed-from` (80rem), so a table at 1280 pixels or narrower keeps the
     plain wide track."""
     css = render_overview.SITE_CSS.read_text(encoding="utf-8")
-    assert "--site-bleed-max: 140rem;" in css
     assert "--site-table-bleed-from: 80rem;" in css
-    grid = css[css.index(".site-page .site-atlas-grid {") :]
-    assert "--site-wide: var(--site-bleed-max);" in grid[: grid.index("}")]
     rule = css[css.index(TABLE_BLEED) :]
     rule = rule[: rule.index("\n}")]
     assert "--site-table-max: 100rem;" in css

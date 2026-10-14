@@ -145,8 +145,11 @@ def test_the_bar_marks_papers_current_on_the_explainer(page: str) -> None:
     so the bar's links climb one level to the site's root. The bar is the site's one
     partial, so its entries stand in the order every other page has them."""
     assert page.count(render_overview.nav_html("papers", root=SITE_ROOT)) == 1
-    assert re.findall(r'<a data-page="(\w+)" aria-current="page"', page) == ["papers"]
-    assert '<a data-page="papers" aria-current="page" href="../papers.html">Papers</a>' in page
+    assert re.findall(r'<a data-page="(\w+)" aria-current="page"', page) == ["explanations"]
+    assert (
+        '<a data-page="explanations" aria-current="page" href="../papers.html">Explanations</a>'
+        in page
+    )
     assert 'data-page="explainer"' not in page
     assert SLUG == "n11-lower-bounds-explainer"
     assert f"papers/{SLUG}.html" == SITE_PATH

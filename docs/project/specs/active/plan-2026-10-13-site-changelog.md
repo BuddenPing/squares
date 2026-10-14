@@ -1,6 +1,6 @@
 ---
 title: Project Changelog and Recent PR Backfill
-description: A YAML-backed project history rendered for GitHub and at the bottom of About
+description: A YAML-backed project history rendered for GitHub, News and the homepage
 author: Codex, for the repository owner
 ---
 # Feature: Project Changelog and Recent PR Backfill
@@ -9,9 +9,11 @@ author: Codex, for the repository owner
 
 **Author:** Codex, for the repository owner
 
-**Status:** Implemented in PR #590; final validation and publication pending.
+**Status:** Changelog implemented in PR #590; News and full-width Atlas follow-up in
+progress.
 
-**Tracking:** `think-j7nb` (planning), `think-jpto` (implementation epic)
+**Tracking:** `think-j7nb` (planning), `think-jpto` (implementation epic), `think-kzet`
+(News), `think-q65u` (Atlas width)
 
 **Workflow:** W7 pipeline-improvement planning
 
@@ -20,8 +22,9 @@ author: Codex, for the repository owner
 Add a project-wide changelog that explains what each meaningful merged PR or stack
 contributed. Store the entries in YAML under a Soft Schema contract, with Markdown for
 reader-facing descriptions.
-Generate a readable GitHub document and embed the same history at the bottom of the
-website’s existing About page.
+Generate a readable GitHub document and publish the same history on News, with
+individual article cards and a homepage preview of the three newest S5 results.
+Keep a short News link and legacy bookmark forwarding on About.
 
 Backfill the latest 36 PRs merged into main, using their descriptions, reviews and the
 current project record.
@@ -40,17 +43,17 @@ proof imported, a pipeline repaired, or a regularization capability added.
 - Reuse the evidence and prose already available, editing them for readers who have not
   followed the PR discussions.
 - Maintain one authoritative YAML record and consistent GitHub and website views.
-- Make About an index of launched papers, PDFs, results and site features, with direct
+- Make News an index of launched papers, PDFs, results and site features, with direct
   links and known versions.
 
 ## Non-Goals
 
-Another results register, per-commit or per-bead reporting, a new website page, and
-automatic publication of machine-written summaries are outside this feature.
+Another results register, per-commit or per-bead reporting, and automatic publication of
+machine-written summaries are outside this feature.
 
 ## Background
 
-There is no project-wide changelog.
+At the initial planning baseline, there was no project-wide changelog.
 `PUBLICATION_HISTORY` in [`release.py`](../../../../packing/src/sqpack/release.py)
 covers publication editions, which should remain distinct from this PR-level project
 history.
@@ -61,7 +64,9 @@ last content section is Documentation.
 `about_page()` in
 [`render_overview.py`](../../../../packing/devtools/render_overview.py) expands that
 manuscript and sends it through kpress.
-This is the insertion point; no new navigation item or site assembler is needed.
+PR #590 used this insertion point.
+The October 14 follow-up moves the history to News and adds its navigation item and
+homepage preview.
 
 The existing PR template already separates results, dispositions, changes by purpose,
 validation and limits.
@@ -92,9 +97,9 @@ Related PRs sharing one public contribution can use `grouping: related`; this do
 assert formal-stack membership.
 Follow-ups can also reference an earlier entry.
 
-### About as a launch index
+### News as a launch index
 
-About must answer what has launched across papers, infographic PDFs, result records and
+News must answer what has launched across papers, infographic PDFs, result records and
 site features. Give each relevant entry direct, labeled links to those public artifacts,
 with its component editions when known.
 A reader should be able to go from the short announcement to the paper, downloadable PDF
@@ -117,7 +122,7 @@ Authoring/backfill checks public destinations and retains deployment or
 publication-history evidence before presenting an artifact as launched.
 Unknown historical first-live dates stay absent.
 
-Render the changelog at the bottom of About with readable contribution titles, concise
+Render the complete history on News with readable contribution titles, concise
 summaries, optional subpieces, artifact links and component versions.
 Distinguish a confirmed launch from project-only or prepared work in the wording.
 The complete history should make it easy to find both the public deliverable and the
@@ -178,14 +183,47 @@ absolute PR links, and provides `--check` for freshness.
 The YAML remains authoritative; the generated Markdown is a reader view, not another
 manually maintained source.
 
-Add `{{CHANGELOG}}` after `{{DOCUMENTATION_BLOCK}}` in the About manuscript, before its
-footer. Reuse the same entry renderer through `about_page()`, with the existing site
-section typography. Show newest dates first, group entries under date headings and keep
-metadata out of the reader’s way.
-The initial history should remain fully available without a new page or navigation item;
-add an `about.html#changelog` permalink.
-Entry links use `#changelog-entry-<id>` in both reader views; date headings use a
-separate `changelog-date-` namespace so neither can borrow another About heading.
+Publish the complete history at `news.html`, with News as the second navigation item.
+Use the usual uppercase sans-serif H1 and sans-serif operational text, with one
+hairline-bordered card per entry.
+Each card places the paper heading’s sans-base date above an ordinary H3 in the theme’s
+text foreground, followed by smaller Results-style topic chips and the article.
+Homepage News and the archive share the component and CSS roles; topic chips retain
+shared fills, corners and leading at 85% of the note-size chip scale.
+Each card contains its actual article once, with about ten lines visible after the
+enhancement loads. Click or tap the card or its small shared arrow button in the footer
+to expand or contract it inline; Enter and Space activate the button.
+A short fade marks the clipped edge.
+Height, fade and shared-arrow rotation use the existing hover timing and honor reduced
+motion. Hover adds a light green wash without changing height.
+Ordinary links keep their action; body-link focus reveals the article.
+Without scripting, complete articles remain visible.
+Entry and legacy date fragments reveal the corresponding card.
+Topic chips reuse the Results chips with separate subject metadata: lower bounds, upper
+bounds, optimality, engineering, verification and documentation.
+They classify the article’s subject without changing proof or verification status.
+A result kind without an accurate topic mapping omits that subject tag while preserving
+its real kind, claim, credit and evidence.
+The homepage highlights the three newest S5 results from the authoritative results
+register, followed by the shared “All news →” action.
+These highlights reuse result claims, credit and evidence without inventing changelog
+launch entries for older results.
+Explanations combines the former Papers and Visualize navigation entries.
+Its landing page (`papers.html`) has the Explanations H1 and four sections: Tutorial,
+Papers, PDFs and Visuals.
+Tutorial comes first as a prominent starting point.
+Visuals contains the film and the existing two-choice Film/Workbench switch; Film links
+to `papers.html#visuals`, and Workbench retains `workbench/`. The standalone
+`visualize.html` film URL remains available.
+Inline film playback requires a press; visiting Explanations does not start it.
+The homepage browser title and sharing title are The Squares Project, from the existing
+project-name constant.
+
+About retains one short News link at its former changelog section; hidden legacy anchors
+forward old entry and date bookmarks without duplicating the feed.
+Entry links retain `#changelog-entry-<id>` in both reader views; date headings retain
+the separate `changelog-date-` namespace.
+`CHANGELOG.md` links resolve to News.
 
 Use the existing repository-link helper to resolve structured references and Markdown
 links for each destination.
@@ -194,7 +232,7 @@ published and repository addresses.
 Preserve math through the existing kpress path.
 Escape title and metadata text; accept paragraphs, links, emphasis, inline code, math
 and lists in prose, and refuse raw HTML or unsafe link schemes.
-About currently renders trusted Markdown, so this policy must be explicit.
+The site renders trusted Markdown, so this policy must be explicit.
 
 Map the YAML as a registry and `CHANGELOG.md` as a generated view, and link the readable
 view from README’s Repository Guide.
@@ -298,7 +336,7 @@ Review the complete diff and merged state when a description is stale.
 Use PR summaries and their linked records as a starting point, then fill gaps, combine
 repeated prose and adapt the wording.
 Keep a separate backfill review mapping every selected PR to an entry or a short
-omission reason; do not put that audit table into About.
+omission reason; do not put that audit table into News.
 Changelog-only synchronization and purely administrative changes may have no independent
 noteworthy entry, with the reason retained in that review.
 
@@ -398,15 +436,17 @@ Use a small set of meaningful behavioral and negative checks:
   duplicate IDs, duplicate PR membership, unmerged layers and invalid stack grouping.
 - One fixture covers a standalone admission, a multi-piece stack delivery and a later
   delivery from the same stack, with frozen old membership and dates.
-- GitHub and About show the same entries, PR links and order.
+- GitHub and News show the same entries, PR links and order.
   Structured repository references resolve correctly in each destination; raw HTML and
   unsafe schemes fail.
 - Renderer `--check` detects an edited generated body.
   Markdown bullets and math survive both render paths and formatting.
 - Launch tests distinguish merged/prepared work from verified publication, preserve
   unknown first-live dates, and check direct public artifact links.
-- The changelog is the last About content section, has stable anchors and readable
-  desktop/mobile layout, and remains discoverable from GitHub.
+- News has stable anchors and readable desktop/mobile individual cards, remains
+  discoverable from GitHub and the second navigation item, and receives old About
+  bookmarks. The homepage previews the three newest S5 results and About keeps one short
+  link.
 - Component tests cover patch and minor successors, both infographic versions advancing
   together, a missing/mixed export refusal, independent paper editions, and no invented
   backfill versions.
@@ -425,8 +465,8 @@ Keep PR-level publication evidence separate from a mathematical proof replay.
 
 Review this plan and its copyable examples, then implement the single phase.
 Validate backfill coverage and compare both generated reader views against the same
-YAML. Publish through the existing About artifact and verify the deployed changelog with
-the normal publication audit.
+YAML. Publish News and its homepage preview, then verify the deployed history with the
+normal publication audit.
 Begin routine updates with the documented closeout process.
 
 ## Open Questions
