@@ -35,7 +35,10 @@ within ``u``; ``binary64``, a double printed at more places than it determines, 
 ulp of ``float(p)`` plus ``u``, as the lanes read #593's 16-place prints; ``cut`` (decimals
 followed by an ellipsis) in ``[p, p + u)``; and ``exact`` is the number printed. A
 claim's ``exact`` side, where a lane's frozen claim record or the certificate itself
-states it, replaces the print in every comparison. ``restates`` says, for the README,
+states it, replaces the print in every comparison. A claim's ``record_relations``, each
+an exact comparison with a case lane or a pending register entry that a lane's claim
+record or a decision's receipt states (`RecordRelation`), decide those comparisons while
+the record still prints what they read. ``restates`` says, for the README,
 that a claim's certificate is another holder's packing; it changes no verdict. A
 recorded claim is classified only where a source says what it is: ``refines`` (the same
 configuration with a tighter certificate, naming the packing's finder and the entry that
@@ -142,6 +145,9 @@ _COMMIT = re.compile(r"[0-9a-f]{40}")
 _DECIMAL = re.compile(r"[0-9]+(?:\.[0-9]+)?")
 _FRACTION = re.compile(r"[0-9]+/[1-9][0-9]*")
 _BEAD = re.compile(r"think-[a-z0-9]{4}")
+_ENTRY = re.compile(r"T-\d+")
+_MARGIN = re.compile(r"-?[0-9]+(?:\.[0-9]+)?(?:e[-+]?[0-9]+)?")
+_MARGIN_SIGN = {BELOW: -1, EQUAL: 0, ABOVE: 1}
 
 
 class LedgerError(ValueError):
@@ -157,9 +163,13 @@ def _require(condition: object, message: str) -> None:
 
 
 class RecordRelation(TypedDict):
-    """A lane's exact comparison of an algebraic side with one case lane it read.
+    """An exact comparison of a claim's side with one case lane, as a lane's claim record
+    or a decision's receipt states it, or with a register entry pending adoption.
 
-    ``relation`` holds only while that lane still prints ``value`` and ``exact_form``.
+    ``relation`` holds only while that lane still prints ``value`` and ``exact_form``, or,
+    where ``lane`` names a register entry (``T-NNN``), while the entry states ``value``
+    (`pending_member`; ``exact_form`` is then empty). ``margin``, where the decision gives
+    it, is the claim's side minus the other's, and the render shows it as the difference.
     """
 
     lane: str
@@ -167,6 +177,7 @@ class RecordRelation(TypedDict):
     value: str
     exact_form: str
     read_from: str
+    margin: NotRequired[str]
 
 
 class Refines(TypedDict):
@@ -410,16 +421,42 @@ def _problems_of_claim(where: str, claim: Mapping[str, Any], reported_at: str) -
     relations = claim.get("record_relations") or []
     if not isinstance(relations, list):
         return [*problems, f"{where}: record_relations is not a list"]
+    read: set[tuple[str, str, str]] = set()
     for relation in relations:
         if not isinstance(relation, Mapping):
             problems.append(f"{where}: a record relation is not a mapping")
             continue
-        if relation.get("relation") not in (BELOW, ABOVE, EQUAL):
-            problems.append(f"{where}: a record relation is below, above or equal")
-        if relation.get("lane") not in ("reported", "verified"):
-            problems.append(f"{where}: a record relation names the reported or verified lane")
-        if not all(isinstance(relation.get(key), str) for key in ("value", "exact_form")):
-            problems.append(f"{where}: a record relation states the value and form it read")
+        problems.extend(f"{where}: {problem}" for problem in _relation_problems(relation))
+        lane, value = str(relation.get("lane")), str(relation.get("value"))
+        key = (lane, value, str(relation.get("exact_form")))
+        if key in read:
+            problems.append(f"{where}: two record relations read {lane} at {value}")
+        read.add(key)
+    return problems
+
+
+def _relation_problems(relation: Mapping[str, Any]) -> list[str]:
+    """Every way one record relation breaks its contract (`RecordRelation`)."""
+    problems: list[str] = []
+    if relation.get("relation") not in (BELOW, ABOVE, EQUAL):
+        problems.append("a record relation is below, above or equal")
+    lane = str(relation.get("lane"))
+    if lane not in ("reported", "verified") and not _ENTRY.fullmatch(lane):
+        problems.append(
+            "a record relation names the reported or verified lane or a register entry"
+        )
+    if not all(isinstance(relation.get(key), str) for key in ("value", "exact_form")):
+        problems.append("a record relation states the value and form it read")
+    if "margin" in relation:
+        margin = str(relation["margin"])
+        if not _MARGIN.fullmatch(margin):
+            problems.append(f"a record relation's margin {margin!r} is not a number")
+        elif (Decimal(margin) > 0) - (Decimal(margin) < 0) != _MARGIN_SIGN.get(
+            str(relation.get("relation")), 2
+        ):
+            problems.append(
+                f"a record relation {relation.get('relation')} has the margin {margin}"
+            )
     return problems
 
 
@@ -1108,6 +1145,11 @@ def side_of(member: StartMember) -> Side:
         span.low if exact else (number(member["shown"]) if "." in member["shown"] else span.low)
     )
     prints = tuple((lane[0], lane[1], lane[2]) for lane in member["lanes"])
+    stated = member.get("stated")
+    if member["kind"] == "register" and stated:
+        # A pending entry is read as its id and the value its words state (`RecordRelation`).
+        entry = member["label"].removeprefix("register ").removesuffix(", pending adoption")
+        prints = ((entry, str(stated[0]), ""),)
     return Side(
         member["label"],
         member["holders"],
@@ -1318,14 +1360,28 @@ def entry_side(report: Report, claim: Claim) -> Side:
 _INVERSE = {BELOW: ABOVE, ABOVE: BELOW, EQUAL: EQUAL}
 
 
-def _frozen(side: Side, other: Side) -> str | None:
-    """A lane's frozen relation of ``side`` to the case lane ``other`` stands for, while
-    the record still prints the value and form the lane read."""
+def _frozen_relation(side: Side, other: Side) -> RecordRelation | None:
+    """The frozen relation of ``side`` to the case lane or pending entry ``other`` stands
+    for, while the record still prints the value and form the relation read."""
     for relation in side.relations:
         read = (relation["lane"], relation["value"], relation["exact_form"])
         if read in other.record_prints:
-            return relation["relation"]
+            return relation
     return None
+
+
+def _frozen(side: Side, other: Side) -> str | None:
+    relation = _frozen_relation(side, other)
+    return None if relation is None else relation["relation"]
+
+
+def _frozen_margin(side: Side, other: Side) -> Fraction | None:
+    """How far apart a frozen relation that states a margin puts the two, read in either
+    order."""
+    relation = _frozen_relation(side, other) or _frozen_relation(other, side)
+    if relation is None or "margin" not in relation:
+        return None
+    return abs(Fraction(Decimal(relation["margin"])))
 
 
 def _frozen_either(side: Side, other: Side) -> str | None:
@@ -1466,10 +1522,14 @@ def _difference(step: Step) -> str:
 
 
 def _gap(side: Side, member: Side, reason: str) -> tuple[Fraction, str]:
-    """How far apart two decided sides are: exactly where both are exact, else the least
-    separation of the numbers each may be; a lane's exact relation where the spans meet."""
+    """How far apart two decided sides are: exactly where both are exact or a frozen
+    relation states its margin, else the least separation of the numbers each may be; a
+    lane's exact relation where the spans meet."""
     if side.exact and member.exact:
         return abs(member.value - side.value), ""
+    margin = _frozen_margin(side, member)
+    if margin is not None:
+        return margin, ""
     if reason == BELOW:
         separation = member.span.low - side.span.high
     else:
@@ -1943,8 +2003,12 @@ def readme(ledger: Ledger, verdicts: Mapping[str, Any]) -> str:
             "claim stays beside the standing side until a claim is decidably below both. Exact "
             "sides come from the lanes' frozen claim records or, where `ledger.yaml` says so, "
             "from the certificate at its pinned commit; this ledger compares sides and "
-            "verifies no certificate. Sides are shown rounded up at 12 places where exact, as "
-            "printed otherwise."
+            "verifies no certificate. Where a lane's claim record or an exact decision's "
+            "receipt states how a claim compares with a record lane or a pending register "
+            "entry, that relation decides in place of the prints while the record still "
+            "prints what it read (`record_relations` in `ledger.yaml`, each naming where it "
+            "was read). Sides are shown rounded up at 12 places where exact, as printed "
+            "otherwise."
         ),
         "",
         "## Counts",
@@ -2516,14 +2580,18 @@ def _selected(
 
 
 def _merge(transcribed: Sequence[Claim], from_lanes: Sequence[Claim]) -> list[Claim]:
-    """Transcribed fields win; a lane adds the exact side and the commit time."""
+    """Transcribed fields win; a lane adds the exact side and the commit time. Record
+    relations are kept from both, the lane's first."""
     merged: dict[int, Claim] = {claim["n"]: cast("Claim", dict(claim)) for claim in from_lanes}
     for claim in transcribed:
         lane = merged.get(claim["n"])
         if lane is None:
             merged[claim["n"]] = claim
             continue
+        both = [*lane.get("record_relations", []), *claim.get("record_relations", [])]
         merged[claim["n"]] = cast("Claim", {**lane, **claim})
+        if both:
+            merged[claim["n"]]["record_relations"] = both
     return [merged[n] for n in sorted(merged)]
 
 
