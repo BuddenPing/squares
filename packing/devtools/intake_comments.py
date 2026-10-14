@@ -89,7 +89,9 @@ REFUSED = (
 )
 TRAILING_HANDLE = re.compile(r" \([^)]*\)$")
 HANDLE_IN_PARENTHESES = re.compile(r" \([A-Za-z0-9_-]+\)")
-DIFFERENCE = re.compile(r"(below|above) by (at least )?(\S+)")
+#: The ledger's difference (`intake_ledger._difference`): a direction, then a distance
+#: that may carry the qualifier ``at least`` or ``about``, kept before the number.
+DIFFERENCE = re.compile(r"(below|above) by ((?:at least |about )?)(\S+)")
 
 
 class CommentsError(ValueError):
@@ -422,7 +424,7 @@ def _margin(step: Mapping[str, Any], n: int) -> str:
     match = DIFFERENCE.match(step["difference"])
     if match is None:
         raise CommentsError(f"n = {n}, {step['report']}: no margin in {step['difference']!r}")
-    return f"{match.group(2) or ''}{match.group(3)}"
+    return f"{match.group(2)}{match.group(3)}"
 
 
 def ranges(ns: Iterable[int]) -> str:

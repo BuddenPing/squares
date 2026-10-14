@@ -102,6 +102,41 @@ def test_each_verdict_names_what_it_was_decided_against(tmp_path: Path) -> None:
     assert "| this report 9.9 |" in out["2.md"]
 
 
+def test_a_margin_keeps_its_at_least_or_about_qualifier(tmp_path: Path) -> None:
+    # intake_ledger._difference writes "at least" for separated spans and "about" where
+    # they meet; the qualifier stays before the number, never in its place.
+    data = ledger(
+        count(
+            100,
+            [
+                step(
+                    "#1",
+                    "recorded",
+                    "below",
+                    "record T-001",
+                    difference="below by at least 4.00e-13",
+                )
+            ],
+        ),
+        count(
+            101,
+            [
+                step(
+                    "#2",
+                    "not recorded",
+                    "above",
+                    "record T-001",
+                    difference="above by about 1.23e-15",
+                )
+            ],
+            best="record T-001",
+        ),
+    )
+    out = comments.drafts(comments.load(write_pass(tmp_path, data)))
+    assert "; at least 4.00e-13 below the record on main (Ryan Xu)" in out["1.md"]
+    assert "not recorded: about 1.23e-15 above the record on main (Ryan Xu)" in out["2.md"]
+
+
 def test_the_index_lists_each_comment_with_its_verdicts(tmp_path: Path) -> None:
     index = basic(tmp_path)[comments.INDEX]
     assert "| 1.md | #1 | recorded at 100 |" in index
