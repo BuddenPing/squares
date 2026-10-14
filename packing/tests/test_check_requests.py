@@ -261,6 +261,29 @@ def test_a_report_entry_beside_a_confirmed_register_entry_does_not_hold_it_open(
     assert check_requests.result_state(evidence_only, REGISTER).state == CONFIRMED
 
 
+def test_a_passing_sample_is_never_called_confirmed() -> None:
+    sample = {
+        **REGISTER.evidence["E-replay"],
+        "independence": {
+            "coverage": {"extent": "sample", "unit": "region records", "checked": 2, "of": 136}
+        },
+    }
+    register = Register(
+        results=REGISTER.results,
+        evidence={**REGISTER.evidence, "E-sample": sample},
+        verifiers=REGISTER.verifiers,
+    )
+    entry = check_requests.entry_state("E-sample", register)
+    assert entry.state == OPEN
+    assert entry.why == "a sample, 2 of 136 region records, replayed here"
+    words = check_requests._plain(entry, None, register)  # noqa: SLF001  # pyright: ignore[reportPrivateUsage]
+    assert "confirmed here" not in words
+    assert "confirms nothing beyond them" in words
+    only = {"key": "a", "claim": "c", "evidence": ["E-sample"]}
+    assert check_requests.result_state(only, register).state != CONFIRMED
+    assert check_requests.entry_state("E-replay", register).state == CONFIRMED
+
+
 def test_a_result_not_registered_is_settled_unless_it_is_queued() -> None:
     queued = {"key": "a", "claim": "c", "not_registered": "later", "queued": True}
     assert (
