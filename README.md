@@ -80,15 +80,20 @@ The most significant since August 2026:
   $s(17) = 4.67553009360455\ldots$. Marc Leonard Overbeck (Kleddamag) published what he
   calls a candidate proof, one that holds if the 210 obligations it lists hold
   ([T-153](packing/frontier/RESULTS.md),
-  [#557](https://github.com/jlevy/squares/issues/557)); Oscar Fitzharding (ofitzharding)
-  published a Lean 4 proof that leaves no premise open within its stated trust boundary
-  ([T-154](packing/frontier/RESULTS.md),
-  [#565](https://github.com/jlevy/squares/issues/565)). The reviews here accepted both,
-  but neither has been replayed in full, so the record holds them as reported (`V0/C1`).
-  Until a replay passes, the [case record](packing/frontier/n-017.md) keeps the verified
-  bracket: Guzhou0806’s lower bound $s(17) > 4.66044275$
-  ([T-093](packing/frontier/RESULTS.md)) and the upper bound of Bidwell’s packing,
-  certified exactly from Overbeck’s rational witness
+  [#557](https://github.com/jlevy/squares/issues/557)); its README says the mathematics,
+  engines, certificates, checkers, reviews and text were produced by AI systems under
+  his direction, Codex (OpenAI) and Claude (Anthropic).
+  Oscar Fitzharding (ofitzharding) published a Lean 4 proof that leaves no premise open
+  within its stated trust boundary ([T-154](packing/frontier/RESULTS.md),
+  [#565](https://github.com/jlevy/squares/issues/565)); its README says the project “was
+  developed with substantial assistance from Claude and Codex”.
+  Reviews here read parts of both and found no mathematical defect in what they read,
+  but neither has been replayed in full: parts of T-153’s computation have been rerun
+  here, and T-154’s Lean build has not been repeated.
+  So the record holds both as reported (`V0/C1`), and until a replay passes, the
+  [case record](packing/frontier/n-017.md) keeps the verified bracket: Guzhou0806’s
+  lower bound $s(17) > 4.66044275$ ([T-093](packing/frontier/RESULTS.md)) and the upper
+  bound of Bidwell’s packing, certified exactly from Overbeck’s rational witness
   ([T-065](packing/frontier/RESULTS.md)).
 
 ## Papers
