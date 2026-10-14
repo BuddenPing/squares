@@ -73,9 +73,10 @@ from sqpack.yamlio import safe_load
 REPO = Path(__file__).resolve().parents[2]
 PACKING = REPO / "packing"
 FRONTIER = PACKING / "frontier"
-INTAKE = PACKING / "campaign/issue-intake"
-SIDES = INTAKE / "upper-bounds-20261014-undecided-sides.json"
-RESOLVED = INTAKE / "upper-bounds-20261014-undecided-resolved.json"
+#: The ledger's intake directory, which keeps the sides and the receipt beside the ledger.
+INTAKE = PACKING / "campaign/issue-intake/upper-bounds-20261014"
+SIDES = INTAKE / "undecided-sides.json"
+RESOLVED = INTAKE / "undecided-resolved.json"
 LEDGER = "packing/campaign/issue-intake/upper-bounds-20261014/README.md"
 CATALOGUE = (
     PACKING / "resources/web/evand-exact-and-local-reports-2026-10-07/reported-catalogue.json"

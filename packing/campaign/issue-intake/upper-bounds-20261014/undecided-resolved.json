@@ -3,7 +3,7 @@
  "tool": "devtools.decide_undecided_comparisons decide",
  "ledger": "packing/campaign/issue-intake/upper-bounds-20261014/README.md, Undecided Comparisons (read, not edited)",
  "relation": "PR #574's side against the standing one: below means PR #574's upper bound is the smaller; margin is PR #574's side minus the standing side, with rigorous bounds rounded outward",
- "sides": "packing/campaign/issue-intake/upper-bounds-20261014-undecided-sides.json",
+ "sides": "packing/campaign/issue-intake/upper-bounds-20261014/undecided-sides.json",
  "sides_sha256": "16bfada41e480c2e640b5dadbd0ca7c8248cbf3e31c143a305650781c930999f",
  "counts": {
   "below": 0,
