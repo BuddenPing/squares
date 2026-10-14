@@ -1717,47 +1717,47 @@ def test_triangle_crop_resolves_complete_records_and_row_major_skips_grid_prefli
 def test_composite_tiles_draw_each_case_s_default_picture_and_credit_it() -> None:
     """Regularization policy, section 12 (the owner, 13 October 2026): a card draws its
     case's regularized view where `devtools.default_drawings` records the view as the
-    default picture, read as the homepage's regularized drawings read it, and the house
-    witness everywhere else; the card's labels are the record's either way. Each
-    composite counts its regularized cards and gives each generator's credit line once
-    (policy section 7), read from the retained composites so the published drawings are
-    what is held."""
-    from devtools.default_drawings import credit_line, regularized_defaults  # noqa: PLC0415
+    default picture, and the house witness everywhere else; the card's labels are the
+    record's either way.
 
-    defaults = regularized_defaults()
+    Each retained composite is held to itself always: the cards it marks as drawn from a
+    regularized view (`data-source-id` ending in `-regularized`) are the cases its
+    regularization paragraph lists and counts, in one sentence that says the shared
+    opening once and names people by surname, the diagram's credit being the block's only
+    full name. It is held to the current record only while it shows the pinned data, or
+    when trailing is off: a composite that trails the pin may show defaults the record
+    has since changed (`sqpack.release`, rule 5), as its sibling tests allow and
+    `--check-composites` lists (review A1 of #591)."""
+    from devtools.default_drawings import regularized_defaults  # noqa: PLC0415
+
     for canvas in known_best_builder.resolved_composites():
-        root = ET.fromstring(canvas.svg_path.read_text(encoding="utf-8"))
+        svg_text = canvas.svg_path.read_text(encoding="utf-8")
+        root = ET.fromstring(svg_text)
         cards = {
             int(card.attrib["data-n"]): card
             for card in root.iter(f"{{{SVG['svg']}}}g")
             if card.attrib.get("data-feature") == "packing-card"
         }
         assert list(cards) == list(canvas.spec.numbers)
-        drawn = [n for n in canvas.spec.numbers if n in defaults]
-        assert drawn, canvas.spec.stem
-        for n, card in cards.items():
-            source = card.attrib["data-source-id"]
-            assert source.endswith("-regularized") == (n in defaults), (canvas.spec.stem, n)
+        marked = [
+            n
+            for n, card in cards.items()
+            if card.attrib["data-source-id"].endswith("-regularized")
+        ]
+        assert marked, canvas.spec.stem
         block = root.find("svg:g/svg:g[@data-feature='regularization-credits']", SVG)
         assert block is not None, canvas.spec.stem
-        assert json.loads(block.attrib["data-regularized-cases"]) == drawn
+        assert json.loads(block.attrib["data-regularized-cases"]) == marked
         feature = "svg:text[@data-feature='regularization-credit-line']"
         printed = " ".join("".join(node.itertext()) for node in block.findall(feature, SVG))
         lead = known_best_builder.POSTER_REGULARIZATION_LEAD.format(
-            drawn=len(drawn), count=canvas.spec.count
+            drawn=len(marked), count=canvas.spec.count
         )
-        shared = "Regularized by the Squares Project with "
-        surnames = known_best_builder._print_surnames  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
-        named = [
-            surnames(line).removeprefix(shared)
-            for line in dict.fromkeys(map(credit_line, drawn))
-        ]
-        assert printed.startswith(f"{lead}, by the Squares Project with {named[0]}")
-        assert printed.endswith(named[-1])
-        # One sentence: the shared opening is printed once, each generator named once.
+        # One sentence: the lead counts the marked cards, and the shared opening is said
+        # once.
+        assert printed.startswith(f"{lead}, by the Squares Project with ")
         assert printed.count("Squares Project") == 1
         assert printed.count("Regularized") == 1
-        assert all(printed.count(name) == 1 for name in named)
         # The owner, 14 October 2026: people are named by surname, as in every other print
         # credit; the only full name in the information block is the diagram's credit.
         information = root.find("svg:g[@data-feature='poster-information']", SVG)
@@ -1766,12 +1766,39 @@ def test_composite_tiles_draw_each_case_s_default_picture_and_credit_it() -> Non
             "".join(node.itertext()) for node in information.iter(f"{{{SVG['svg']}}}text")
         )
         full_names = known_best_builder._full_names()  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
-        assert "Daniel's regularizer" in printed
         assert [full for full, _name in full_names if full in text] == ["Joshua Levy"]
         assert text.count("Joshua Levy") == text.count(known_best_builder.POSTER_DIAGRAM_CREDIT)
         description = root.find("svg:desc", SVG)
         assert description is not None
         assert known_best_builder.POSTER_REGULARIZATION_PROSE in (description.text or "")
+        identity = known_best_builder.retained_identity(svg_text)
+        if identity.current or not COMPOSITES_MAY_TRAIL:
+            defaults = regularized_defaults()
+            assert marked == [n for n in canvas.spec.numbers if n in defaults], canvas.spec.stem
+            sentences = known_best_builder.regularization_sentences(
+                tuple(marked), canvas.spec.count
+            )
+            assert printed == " ".join(" ".join(atoms) for atoms in sentences)
+
+
+def test_a_composite_trailing_the_pin_may_show_defaults_the_record_has_changed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Review A1 of #591: when a regularization pass withdraws a default, as #559 does at
+    180, the record moves, the pin moves with it, and the retained posters trail until
+    they are redrawn (`sqpack.release`, rule 5). The composite test then holds each poster
+    to itself and passes. While a poster still claims the pinned data, the same change
+    fails it, as every claim on a current poster must agree with the record."""
+    from devtools import default_drawings  # noqa: PLC0415
+
+    real = default_drawings.regularized_defaults()
+    withdrawn_n = next(n for n in sorted(real) if n > 100)
+    withdrawn = {n: row for n, row in real.items() if n != withdrawn_n}
+    monkeypatch.setattr(default_drawings, "regularized_defaults", lambda *_a, **_k: withdrawn)
+    with pytest.raises(AssertionError):
+        test_composite_tiles_draw_each_case_s_default_picture_and_credit_it()
+    monkeypatch.setattr(known_best_builder, "DATA_REVISION", "0" * 40)
+    test_composite_tiles_draw_each_case_s_default_picture_and_credit_it()
 
 
 def test_the_regularization_credit_factors_its_shared_opening_and_keeps_any_other_whole(
