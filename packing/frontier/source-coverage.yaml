@@ -3821,8 +3821,8 @@ sources:
     378 and 379, Evan Daniel's verified Hunt 3 row at 344 among them. T-152 records the in-corpus
     sides at 304 and 305 (couzo-certificates-2026-10-11-in-corpus). The four certificates the issue
     does not name, at 175, 308, 340 and 343, are compared in the claim record and registered by no
-    entry; 175 has its own import (think-9fjl), and since issue 528 (T-158) is 2.94e-03 below it,
-    it stays in the packet unless its author asks for it to be registered.
+    entry. 175 was the smallest side known at its count until issue 528 (T-158), 2.94e-03 below
+    it, and stays in the packet unless its author asks for it to be registered (think-9fjl).
   claims_record: resources/web/couzo-certificates-2026-10-11/acquisition/beyond-horizon-claims.json
 - id: overbeck-n17-candidate-2026
   title: Seventeen unit squares, verification edition of a candidate proof that s(17) = L

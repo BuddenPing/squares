@@ -17366,7 +17366,8 @@ results:
       copies; the packet's claim record compares the four, and each is an import of its
       own. 175 was the smallest side known at its count until Daniil Ostashev's issue 528
       (T-158), 2.94e-03 below it, and stays in the packet unless its author asks for it to
-      be registered (think-9fjl); 340 is the smallest known at 340 and its row is the owner's decision; 308 and 343 are
+      be registered (think-9fjl); 340 is the smallest known at 340 and its row is the
+      owner's decision; 308 and 343 are
       beaten by T-141's 308 and Hunt 3's 343, and the source marks both superseded.
 
       The source's own checkers were not run here, and its KKT statements are not decided.
@@ -18951,6 +18952,13 @@ results:
       agent (Claude) in the overnight regularization work of 12 October 2026; no review is
       yet retained.
 
+      At n = 264 the house adoption of 12 October 2026 moved the verified upper bound to
+      Daniil Ostashev's composition of issue 528 (T-158), 16.7747351323878329, 3.44e-03
+      below this entry's exact side there; layer 6 was open beside this batch, so the two
+      met at the merge. The case record keeps this entry's dated paragraph and section as
+      history. This entry stays true as stated and is superseded there as a ceiling; at
+      the other 58 counts its exact side is the case's verified upper bound.
+
   - id: T-156
     kind: upper-bound
     registered: '2026-10-13'
@@ -19317,7 +19325,8 @@ results:
       Each side was below the ceiling its case held, by 2.95e-03 at 175 (Francisco Couzo's
       refinement of ry-xu's packing, T-140), 3.25e-03 at 232 (SQUISH's third request, T-136)
       and 3.44e-03 at 264 (the catalogue's 9 + 11 sqrt(2)/2, Goebel's pattern, verified by
-      Evan Daniel's exact ceiling, T-101); at 175 it is also 2.94e-03 below Francisco
+      Evan Daniel's exact ceiling, T-101, and at its exact side by T-155's regularized
+      certificate of the same packing); at 175 it is also 2.94e-03 below Francisco
       Couzo's certificate of 11 October, which the issue names as the previous best and
       which the record holds in the issue-506 packet and has not registered, and 4.72e-03
       below ry-xu's T-125. At all three counts it is the smallest exact side the record

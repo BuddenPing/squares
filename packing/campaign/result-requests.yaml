@@ -4928,6 +4928,10 @@ issues:
         id: T-140
       corrects:
       - https://github.com/jlevy/squares/issues/488#issuecomment-6127533578
+      outdated:
+      - 'T-140 stays in both case records as history and remains the house at 175, 209 and 237;
+        Daniil Ostashev''s #528 composition (T-158) is the house at 175 since 12 October, with
+        T-140 as history there, and T-140 remains the house at 209 and 237'
     close_when: The import and its disposition are on main and the owner has posted the resulting state;
       optimality and the credit for the starting packings' constructions stay with their sources.
     notes: >-
@@ -4942,6 +4946,11 @@ issues:
       follow-up posted that day, which says T-151 is now the house at 270 and T-152 at 305 and
       T-140 remains it at 175, 209 and 237, names the final reply in `corrects` (think-fvz4,
       think-ckjc).
+
+      Layer 6 adopts Daniil Ostashev's #528 composition (T-158) as the house at 175, dated 12
+      October, with T-140 as history there, so the follow-up's "remains the house at 175, 209
+      and 237" is marked `outdated`; a later reply that names the follow-up in `corrects` is due
+      once layer 6 is on main.
   - number: 489
     title: 'New packings: s(132), s(308), s(343), s(344): registration request'
     author: evand
@@ -5708,6 +5717,11 @@ issues:
         status: confirmed
       - result: kkt-exact-optima
       - result: unnamed-175-308-340-343
+      outdated:
+      - '175 is below the case''s house, and its own import is queued; the certificate stays in the
+        couzo-certificates-2026-10-11 packet and is not registered unless its author asks
+        (think-9fjl), and Daniil Ostashev''s #528 composition (T-158), 2.94e-03 below it, is the
+        house at 175 since 12 October'
     close_when: The import and its disposition, including the beyond-horizon counts, are on main,
       the house adoption at 304 and 305 has landed or is owned, and the owner has posted the
       resulting state; the four unnamed certificates are imports of their own, and optimality is
@@ -5728,10 +5742,14 @@ issues:
       queued", while think-9fjl records the plan of the 12 October review's RX-5: the certificate
       stays in the couzo-certificates-2026-10-11 packet and is not registered unless the author
       asks. The reply asked nothing, so that bead's closing condition is not met. A follow-up here
-      waits for layer 6, which registers and adopts T-154 at 175, to be on main; it says the
-      certificate stays in the packet unless he wants it registered, asks whether he does, and
-      names the final reply in `corrects` once that reply's statement is marked `outdated` (review
-      A1 of #558).
+      waits for layer 6, which registers and adopts T-158 at 175 (numbered T-154 on the layer
+      when this was written), to be on main; it says the certificate stays in the packet unless he
+      wants it registered, asks whether he does, and names the final reply in `corrects` once that
+      reply's statement is marked `outdated` (review A1 of #558).
+
+      Layer 6 marks that statement `outdated` on the final reply: the certificate stays in the
+      packet, unregistered unless the author asks, and T-158 is the house at 175, 2.94e-03 below
+      it, so the follow-up is due once layer 6 is on main.
   - number: 557
     title: Intake on optimality proof of n=18
     author: jlevy
