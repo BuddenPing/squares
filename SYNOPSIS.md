@@ -627,6 +627,7 @@ case or experiment separately.
 | [Feature: Project Changelog and Recent PR Backfill](docs/project/specs/active/plan-2026-10-13-site-changelog.md) | implementation plan | current | transient | — |
 | [Mathematical Review: wand125’s Fine-Net Lower Bounds at n = 37, 39 and 44 and the Linear Lower Bound at n = 145](docs/project/reviews/review-2026-10-14-wand125-fine-net-and-linear-lower-bounds.md) | dated review record | record | retained | — |
 | [Fang’s Excess Theorem and Direct Certificates: Mathematical Review](docs/project/reviews/review-2026-10-14-fang-excess-theorem-and-direct-certificates.md) | dated review record | record | retained | — |
+| [Mathematical Review: wand125’s Closed-Form Lower Bound s(N) ≥ a(N) for Every Non-Square N ≥ 49](docs/project/reviews/review-2026-10-14-wand125-closed-form-lower-bound.md) | dated review record | record | retained | — |
 | [Fitzharding’s Lean Proof of s(17) = L: Mathematical-Correctness Review](docs/project/reviews/review-2026-10-13-fitzharding-n17-mathematical-correctness.md) | dated review record | record | retained | — |
 | [Mathematical Review: Overbeck’s Candidate Proof That `s(17) = L`, Correctness Lane](docs/project/reviews/review-2026-10-13-overbeck-n17-mathematical-correctness.md) | dated review record | record | retained | — |
 | [Adversarial Review: Fitzharding’s Lean Proof That `s(17) = L`](docs/project/reviews/review-2026-10-13-fitzharding-n17-lean.md) | dated review record | record | retained | — |
