@@ -14499,6 +14499,8 @@ urls:
     builds_on: null
     evidence:
     - E-wand125-closed-form-report
+    - E-wand125-closed-form-cfcheck-report
+    - E-wand125-closed-form-cfcheck-sample
     artifacts:
     - packing/resources/web/wand125-closed-form-2026-10-14/README.md
     - packing/resources/web/wand125-closed-form-2026-10-14/receipts/release-custody.json

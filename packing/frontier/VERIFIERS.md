@@ -25,8 +25,8 @@ second implementation agrees.
 
 ## The Short Version
 
-- **155** programs: **46** external and **109** first-party; **108** decide claims and **47** check premises.
-- **484** of **574** evidence entries name the programs that verified them: 250 reproduced with the producer’s code, 205 independently re-implemented, 18 re-implemented, sharing the producer’s components, 11 no relation: a proof, a derivation or a report.
+- **156** programs: **47** external and **109** first-party; **109** decide claims and **47** check premises.
+- **486** of **576** evidence entries name the programs that verified them: 250 reproduced with the producer’s code, 207 independently re-implemented, 18 re-implemented, sharing the producer’s components, 11 no relation: a proof, a derivation or a report.
 
 ## Programs
 
@@ -187,6 +187,7 @@ second implementation agrees.
 | [`V-closed-form-review-localization`](#v-closed-form-review-localization) | review/localization_checks.py | Squares Project (Levy) | first-party | premises | 0 | 0 |
 | [`V-closed-form-review-replay-receipt`](#v-closed-form-review-replay-receipt) | review/replay_receipt_pieces.py | Squares Project (Levy) | first-party | premises | 0 | 0 |
 | [`V-closed-form-review-family-probe`](#v-closed-form-review-family-probe) | review/family_probe.py | Squares Project (Levy) | first-party | premises | 0 | 0 |
+| [`V-wand125-cfcheck`](#v-wand125-cfcheck) | cfcheck (indep-checker) | wand125 | external | decides | 2 | 1 |
 
 ## By Program
 
@@ -3018,6 +3019,23 @@ For one released interval: re-derives the family's structure and savings from SP
 - Note: A sample: it ran to completion on interval 20 of 34, with 1,345 poses, and its runs on intervals 7 and 34 were stopped before a receipt was written. It decides the structure of interval 20's two families and the grids of its four records fully, the tiling of its top record fully and of the other three on 200 roots each, and the claim itself only at the poses it visited.
 
 No evidence entry names it yet.
+
+### `V-wand125-cfcheck`
+
+**cfcheck (indep-checker), its coverage, family, region and interval commands** · wand125 · external · decides · Rust · exact-algebraic
+
+Decides one interval of the closed-form certificate from SPEC.md: the input digests against SHA256SUMS and intervals.json; both families' structure (the wall period of mass 9/5, the reversal identities, the saving at both ends against the stored saving and the certified line, global against local agreement at k = 7, 8, 9, the right-side family); the region bounds; the product grid and 90-degree cover of each record's roots; the bisection tiling of every root; the published counts; and every leaf by its named exact test (EMPTY, CORE, B3D, EDGE, EX/EY, B3U, B3T, the nine CORE1 kinds, B4U), with no fallback between tests. Its coverage command checks that the 34 intervals partition (0, 1].
+
+- Source: [`packing/resources/web/wand125-closed-form-cfcheck-2026-10-14/square-packing/problems/closed-form/indep-checker/src`](../../packing/resources/web/wand125-closed-form-cfcheck-2026-10-14/square-packing/problems/closed-form/indep-checker/src), [`packing/resources/web/wand125-closed-form-cfcheck-2026-10-14/square-packing/problems/closed-form/indep-checker/Cargo.toml`](../../packing/resources/web/wand125-closed-form-cfcheck-2026-10-14/square-packing/problems/closed-form/indep-checker/Cargo.toml), [`packing/resources/web/wand125-closed-form-cfcheck-2026-10-14/square-packing/problems/closed-form/indep-checker/Cargo.lock`](../../packing/resources/web/wand125-closed-form-cfcheck-2026-10-14/square-packing/problems/closed-form/indep-checker/Cargo.lock)
+- Versions run: revision `746e2c5ac7a7` (The commit that adds it. The source's production build used rustc 1.99.0; the build here used rustc 1.97.0 with the locked crates, and its release binary had SHA-256 c5a163d48d10155dbe6d319a8a8cae8cab3feb9278c6fb7116c2d0396e686484.)
+- What its authors read and used: [`packing/resources/web/wand125-closed-form-cfcheck-2026-10-14/README.md`](../../packing/resources/web/wand125-closed-form-cfcheck-2026-10-14/README.md)
+- Independence: its authors read proof-text, specification, certificate-format, producer-output; it shares none of the producer’s code; written by Hiroaki Hosono (wand125); Codex (OpenAI) (named by the checker's README, "written with AI assistance (OpenAI Codex), reviewed by the author"; role, tier and reasoning setting not stated); Claude (Anthropic) (named co-author of the commit that adds it; its role is not stated), with its own code; authorship in common with the producer’s: people, The person who reviewed it, Hiroaki Hosono, wrote the producer's code, and issue #600 says the search, the certificates and both checkers were produced with Claude and Codex, so the authorship overlaps in the person and in both system families. clean_room is the source's statement ("which were not read"), which the code is consistent with and which cannot be checked here. The code shares no file, line, comment, local crate or arithmetic kernel with replay4d or seam4d_core (comparison/outputs/shared-code.json); its structural overlap, 8 to 23 times that of unrelated exact checkers, traces to procedures SPEC.md states step by step. SPEC.md is the producer's description of its own checker's procedures: cfcheck reads it as the specification and follows its names and constants, and reads the producer's published counts and five a(N) values of its README table as outputs to compare.
+- Note: Its relationship to the producer's code is independent-implementation. Its trust boundary is SPEC.md's procedures: an error in replay4d's code is one it can expose, and an error in a procedure SPEC.md prescribes is one it cannot. Not reviewed here for soundness; the mathematical review of 14 October 2026 read replay4d and SPEC.md, not cfcheck.
+
+| evidence | run | code | coverage | results |
+| --- | --- | --- | --- | --- |
+| `E-wand125-closed-form-cfcheck-report` | the source’s own run | independently re-implemented, clean-room | sample, 8 of 136: region records of the closed-form certificate | T-180 |
+| `E-wand125-closed-form-cfcheck-sample` | replayed here | independently re-implemented, clean-room | sample, 2,909 of 187,183,108: leaves of the closed-form certificate | T-180 |
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.

@@ -3655,3 +3655,77 @@ verifiers:
       of interval 20's two families and the grids of its four records fully, the tiling of
       its top record fully and of the other three on 200 roots each, and the claim itself
       only at the poses it visited.
+  - id: V-wand125-cfcheck
+    program: cfcheck (indep-checker), its coverage, family, region and interval commands
+    author: wand125
+    provenance: external
+    language: [Rust]
+    methods: [exact-algebraic]
+    role: decides
+    summary: >-
+      Decides one interval of the closed-form certificate from SPEC.md: the input digests
+      against SHA256SUMS and intervals.json; both families' structure (the wall period of
+      mass 9/5, the reversal identities, the saving at both ends against the stored saving
+      and the certified line, global against local agreement at k = 7, 8, 9, the right-side
+      family); the region bounds; the product grid and 90-degree cover of each record's
+      roots; the bisection tiling of every root; the published counts; and every leaf by its
+      named exact test (EMPTY, CORE, B3D, EDGE, EX/EY, B3U, B3T, the nine CORE1 kinds, B4U),
+      with no fallback between tests. Its coverage command checks that the 34 intervals
+      partition (0, 1].
+    source:
+      - >-
+        packing/resources/web/wand125-closed-form-cfcheck-2026-10-14/square-packing/problems/closed-form/indep-checker/src
+      - >-
+        packing/resources/web/wand125-closed-form-cfcheck-2026-10-14/square-packing/problems/closed-form/indep-checker/Cargo.toml
+      - >-
+        packing/resources/web/wand125-closed-form-cfcheck-2026-10-14/square-packing/problems/closed-form/indep-checker/Cargo.lock
+    versions:
+      - revision: 746e2c5ac7a7f534996dd50a5e1fd9f1d8836a8d
+        note: >-
+          The commit that adds it. The source's production build used rustc 1.99.0; the
+          build here used rustc 1.97.0 with the locked crates, and its release binary had
+          SHA-256 c5a163d48d10155dbe6d319a8a8cae8cab3feb9278c6fb7116c2d0396e686484.
+    independence_record: >-
+      packing/resources/web/wand125-closed-form-cfcheck-2026-10-14/README.md
+    independence:
+      read:
+        - proof-text
+        - specification
+        - certificate-format
+        - producer-output
+      clean_room: true
+      shares: []
+      written_by:
+        - kind: person
+          name: Hiroaki Hosono (wand125)
+        - kind: ai
+          system: Codex (OpenAI)
+          setting: >-
+            named by the checker's README, "written with AI assistance (OpenAI Codex),
+            reviewed by the author"; role, tier and reasoning setting not stated
+        - kind: ai
+          system: Claude (Anthropic)
+          setting: named co-author of the commit that adds it; its role is not stated
+      overlaps_producer:
+        extent: people
+        separate_prompt: null
+        separate_code: true
+        note: >-
+          The person who reviewed it, Hiroaki Hosono, wrote the producer's code, and issue
+          #600 says the search, the certificates and both checkers were produced with Claude
+          and Codex, so the authorship overlaps in the person and in both system families.
+          clean_room is the source's statement ("which were not read"), which the code is
+          consistent with and which cannot be checked here. The code shares no file, line,
+          comment, local crate or arithmetic kernel with replay4d or seam4d_core
+          (comparison/outputs/shared-code.json); its structural overlap, 8 to 23 times that
+          of unrelated exact checkers, traces to procedures SPEC.md states step by step.
+          SPEC.md is the producer's description of its own checker's procedures: cfcheck
+          reads it as the specification and follows its names and constants, and reads the
+          producer's published counts and five a(N) values of its README table as outputs to
+          compare.
+    note: >-
+      Its relationship to the producer's code is independent-implementation. Its trust
+      boundary is SPEC.md's procedures: an error in replay4d's code is one it can expose,
+      and an error in a procedure SPEC.md prescribes is one it cannot. Not reviewed here for
+      soundness; the mathematical review of 14 October 2026 read replay4d and SPEC.md, not
+      cfcheck.

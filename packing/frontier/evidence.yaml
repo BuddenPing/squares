@@ -34510,3 +34510,132 @@ evidence:
       replayed here; their two-route replay is priced at 3.02 CPU-hours (think-7bw3). Finite
       feasibility only.
     source_reviewed: '2026-10-14'
+  - id: E-wand125-closed-form-cfcheck-report
+    claim: lower-bound
+    scope: {n_values: [50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 65, 66,
+                        67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 82, 83, 84,
+                        85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 101,
+                        102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114,
+                        115, 116, 117, 118, 119, 120, 122, 123, 124, 125, 126, 127, 128,
+                        129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141,
+                        142, 143, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155,
+                        156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168,
+                        170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182,
+                        183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195,
+                        197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209,
+                        210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222,
+                        223, 224, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236,
+                        237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249,
+                        250, 251, 252, 253, 254, 255, 257, 258, 259, 260, 261, 262, 263,
+                        264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276,
+                        277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 290,
+                        291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303,
+                        304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316,
+                        317, 318, 319, 320, 321, 322, 323]}
+    assurance: reported
+    reported_method: exact-algebraic
+    performed_by: source-author
+    relationship_to_generator: independent-implementation
+    independence_record: >-
+      packing/resources/web/wand125-closed-form-cfcheck-2026-10-14/README.md
+    independence:
+      coverage:
+        extent: sample
+        unit: region records of the closed-form certificate
+        checked: 8
+        of: 136
+    origin: external
+    novelty: previously-published
+    source_key: '[wand125 cfcheck 2026-10-14]'
+    certificate: >-
+      packing/resources/web/wand125-closed-form-2026-10-14/square-packing/problems/closed-form/intervals.json.gz
+    replay_status: not-attempted
+    verifiers: [V-wand125-cfcheck]
+    limitations: >-
+      wand125/square-packing at 746e2c5ac7a7f534996dd50a5e1fd9f1d8836a8d
+      (2026-10-14T10:38:27Z) adds problems/closed-form/indep-checker/, cfcheck, which its
+      README says was written from SPEC.md and the published bundles only, shares no code
+      with replay4d, seam4d_core or validate_family.py, which were not read, and was written
+      with AI assistance (OpenAI Codex) and reviewed by the author. The source reports that
+      it replayed intervals 1, (0, 1/50], and 34, (99/100, 1], completely, all four records
+      of each: 91,044 roots and 3,138,681 leaves accepted with no refusal, the published
+      counts of every kind, in 242.02 worker-hours of summed per-leaf time, with 24,226
+      roots of interval 1 resumed from checkpoints of earlier runs of the same checker that
+      are not published. The other 32 intervals were not checked with it. Of the record's
+      counts, only the 33 at m^2 - 1, m^2 - 2 and m^2 - 3 for m = 8 to 18 have a(N) attained
+      on these intervals (interval 34, the cap k + 1), all proved already; none of the
+      counts where a(N) is above the record is. Here the code was compared with the
+      producer's: no file, line, comment, local crate or arithmetic kernel is shared, and
+      the structure it shares traces to procedures SPEC.md states step by step. SPEC.md is
+      the producer's description of its own checker's procedures, and the person who
+      reviewed cfcheck wrote the producer's code, so it is an independent implementation of
+      the producer's specification. The clean room is the source's statement, consistent
+      with the code and not checkable here. A report, not a replay; a sample of the
+      certificate.
+    source_reviewed: '2026-10-14'
+  - id: E-wand125-closed-form-cfcheck-sample
+    claim: lower-bound
+    scope: {n_values: [50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 65, 66,
+                        67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 82, 83, 84,
+                        85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 101,
+                        102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114,
+                        115, 116, 117, 118, 119, 120, 122, 123, 124, 125, 126, 127, 128,
+                        129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141,
+                        142, 143, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155,
+                        156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168,
+                        170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182,
+                        183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195,
+                        197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209,
+                        210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222,
+                        223, 224, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236,
+                        237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249,
+                        250, 251, 252, 253, 254, 255, 257, 258, 259, 260, 261, 262, 263,
+                        264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276,
+                        277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 290,
+                        291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303,
+                        304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316,
+                        317, 318, 319, 320, 321, 322, 323]}
+    assurance: verified
+    method: exact-algebraic
+    performed_by: repository
+    relationship_to_generator: independent-implementation
+    independence_record: >-
+      packing/resources/web/wand125-closed-form-cfcheck-2026-10-14/README.md
+    independence:
+      coverage:
+        extent: sample
+        unit: leaves of the closed-form certificate
+        checked: 2909
+        of: 187183108
+    origin: replayed-here
+    novelty: previously-published
+    source_key: '[wand125 cfcheck 2026-10-14]'
+    certificate: >-
+      packing/resources/web/wand125-closed-form-cfcheck-2026-10-14/receipts/runs/interval-1-premises-and-kind-sample.json
+    replay: >-
+      Restore problems/closed-form/ in scratch from this packet and the 9a28a84 packet and
+      match it to this packet's manifest; cargo fetch --locked, then cargo build --release
+      --locked --offline in indep-checker/; unpack interval_0_0.02.tar.gz and
+      interval_0.99_1.tar.gz of closed-form-v1, checked against ASSET.json and SHA256SUMS,
+      under assets/ beside intervals.json; then run the three cfcheck commands that
+      receipts/runs/*.json record, through replay/cfcheck_replay.py run. Each must exit 0
+      with CFCHECK PARTIAL and no refusal; the three commands of receipts/controls/*.json,
+      on the mutants replay/cfcheck_replay.py mutate writes, must each exit 1 with the
+      refusal the receipt names.
+    replay_status: passed
+    verifiers: [V-wand125-cfcheck]
+    limitations: >-
+      Run here on 14 October 2026 from the retained cfcheck at 746e2c5, built with rustc
+      1.97.0 (the source used 1.99.0), on four shared cores; its 42 tests passed. On
+      intervals 1 and 34 in full: every input digest, the structure of all four families,
+      the region bounds, the product grid and 90-degree cover of the roots of all eight
+      records, the bisection tiling of all 91,044 roots and the published counts, none
+      refused. Leaf tests on a stated sample only: the first 200 leaves of each kind of
+      interval 1's top.rec, the smallest record, and the first 25 (interval 1) and 20
+      (interval 34) leaves of each kind but B4U in each record, 2,909 distinct leaves of the
+      3,138,681, all accepted; 42.9 CPU-minutes in all. A duplicated root, a leaf relabelled
+      from CORE1:Tx to CORE and both families' masses scaled by 99/100, each re-sealed, were
+      refused for the targeted reason. A complete replay of the two intervals is priced at
+      288 worker-hours by the source's own rates, about 320 to 650 CPU-hours here. A sample
+      decides the leaves it checked and nothing about the others; it sets no rung.
+    source_reviewed: '2026-10-14'

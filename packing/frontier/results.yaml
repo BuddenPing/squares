@@ -5813,6 +5813,11 @@ results:
       [evand/square-packing](https://github.com/evand/square-packing/tree/08e8a5faa54c0a7b0bb1cb0134c77d3565ce40c5/s12/certificates/k2m3),
       building on Burns's and Massaccesi's method. The source's CREDITS.md says the work was
       produced by Claude (Anthropic) in a single session under human direction.
+
+      For k >= 8 wand125's closed form (T-180) gives the same value by another route, a
+      measure of line segments whose certified saving at the full side exceeds 3/4; it is
+      reported and not yet replayed here, and the source's second checker, cfcheck, has
+      checked interval 34, on which these counts rest.
     scope: {n_values: [33, 46, 61, 78, 97, 118, 141, 166, 193, 222, 253, 286, 321]}
     verification: V3
     confirmation: C3
@@ -8372,6 +8377,11 @@ results:
       here, independently re-implemented (devtools.check_karakus_strip_measure), by its own
       decomposition rather than the paper's Lemma 5.2. Hakan Karakuş,
       [arXiv:2609.37410](https://arxiv.org/abs/2609.37410), 29 September 2026.
+
+      For k >= 8 wand125's closed form (T-180) gives the same value by another route, a
+      measure of line segments whose certified saving at the full side exceeds 3/4; it is
+      reported and not yet replayed here, and the source's second checker, cfcheck, has
+      checked interval 34, on which these counts rest.
     scope: {n_values: [8, 15, 24, 35, 48, 63, 80, 99, 120, 143, 168, 195, 224, 255, 288, 323]}
     verification: V3
     confirmation: C3
@@ -8516,6 +8526,11 @@ results:
       its axioms are exactly propext, Classical.choice and Quot.sound. chelokot,
       [square-packing-archive](https://github.com/chelokot/square-packing-archive),
       September 2026.
+
+      For k >= 8 wand125's closed form (T-180) gives the same value by another route, a
+      measure of line segments whose certified saving at the full side exceeds 3/4; it is
+      reported and not yet replayed here, and the source's second checker, cfcheck, has
+      checked interval 34, on which these counts rest.
     scope: {n_values: [7, 14, 23, 34, 47, 62, 79, 98, 119, 142, 167, 194, 223, 254, 287, 322]}
     verification: V3
     confirmation: C3
@@ -23081,8 +23096,13 @@ results:
       of every record, the coverage of (0, 1] by the intervals, and the chord of the affine
       saving on each interval. The value at each count is derived from the intervals by
       V-closed-form-evaluation, exactly. A replay here would run the source's replay4d
-      unchanged, one implementation of one method.
-    evidence: [E-wand125-closed-form-report]
+      unchanged, one implementation of one method. The source's cfcheck is a second
+      implementation of SPEC.md's procedures, sharing none of replay4d's code, run by the
+      source on 8 of the 136 records and here on a sample of 2,909 leaves.
+    evidence:
+      - E-wand125-closed-form-report
+      - E-wand125-closed-form-cfcheck-report
+      - E-wand125-closed-form-cfcheck-sample
     artifacts:
       - packing/resources/web/wand125-closed-form-2026-10-14/README.md
       - packing/resources/web/wand125-closed-form-2026-10-14/receipts/release-custody.json
@@ -23096,8 +23116,10 @@ results:
       C3 needs a complete replay of all 136 records by replay4d from the retained crates,
       built with the locked Cargo.lock, with the structure check, two mutated records
       refused and a review that reads the replay; the source prices it at 4,294 CPU-hours.
-      An independently written checker of the leaf tests would be a second route beside the
-      rung; the source says none exists.
+      The source's second checker, cfcheck, written from SPEC.md and sharing no code with
+      replay4d (E-wand125-closed-form-cfcheck-report), has checked intervals 1 and 34 of the
+      34; a complete replay of all 136 records by it would be a second route at a higher
+      level, priced at about 9,900 worker-hours.
     unfinished_confirmations:
       - what: >-
           a complete replay of all 136 records (187,183,108 leaves) by replay4d built from
@@ -23113,6 +23135,22 @@ results:
             (rustc 1.86.0). Not calibrated here: the smallest records take 0.27 to 0.32
             CPU-hours by the source, so a calibration on two of them, plus the build of GMP
             from source, is about one CPU-hour.
+          priced: '2026-10-14'
+      - what: >-
+          a complete replay of all 136 records by cfcheck built from the retained crate at
+          746e2c5 with its locked dependencies, from no resumed checkpoint, with the three
+          re-sealed mutants refused by the same build
+        rung: C3
+        link: think-3n1x
+        estimated_cost:
+          cpu_hours: 9900
+          basis: >-
+            The source's cfcheck receipts price intervals 1 and 34 at 288.45 worker-hours
+            (242.02 recorded, 46.43 for resumed leaves at the source's per-kind rates), 2.31
+            times replay4d's 124.65 CPU-hours on the same eight records; that ratio applied
+            to replay4d's 4,294 CPU-hours for all 136 gives about 9,900, between 6,800 and
+            16,200 at the two intervals' own ratios. On this host the sampled leaves ran at
+            1.11 to 2.39 times the source's rates.
           priced: '2026-10-14'
     notes: >-
       V0 because the cited entry is the source's public claim: assurance reported, replay
