@@ -4,7 +4,11 @@ from __future__ import annotations
 
 import copy
 from fractions import Fraction
+from pathlib import Path
 from typing import Any, cast
+
+import pytest
+import yaml
 
 from devtools import check_standing
 from devtools import intake_ledger as ledger
@@ -80,14 +84,84 @@ def test_a_pending_adoption_bound_lowers_the_start() -> None:
     entry = {"id": "T-123", "attribution": {"source_keys": ["[Source 2026]"]}}
     stated = check_standing.Stated(Fraction("10.40"), Fraction(1, 100))
     pending = ledger.pending_side(entry, stated)
-    start = ledger.lowered(record(), [pending])
-    assert start.label == "register T-123, pending adoption"
+    start = ledger.minimal([record(), pending])
+    assert [item.label for item in start] == ["register T-123, pending adoption"]
     # A claim at 10.45 is below the record and above the pending bound: not recorded.
-    walk = ledger.walk(100, start, [side("#1", "10.45")])
+    walk = ledger.walk(100, [record(), pending], [side("#1", "10.45")])
     assert verdicts(walk) == [("#1", "not recorded", "register T-123, pending adoption")]
     # A bound that is not below the record lowers nothing.
     higher = ledger.pending_side(entry, check_standing.Stated(Fraction("10.6"), Fraction(0)))
-    assert ledger.lowered(record(), [higher]).label == "record T-001"
+    assert [item.label for item in ledger.minimal([record(), higher])] == ["record T-001"]
+
+
+def test_two_overlapping_pending_bounds_both_stay_in_the_start() -> None:
+    # The review's bug_demos case: T-901 is [10.40, 10.41) and T-902 [10.405, 10.406); a
+    # claim at 10.45 is above both, so it is not recorded, whatever the record says.
+    first = ledger.pending_side(
+        {"id": "T-901"}, check_standing.Stated(Fraction("10.40"), Fraction(1, 100))
+    )
+    second = ledger.pending_side(
+        {"id": "T-902"}, check_standing.Stated(Fraction("10.405"), Fraction(1, 1000))
+    )
+    start = ledger.minimal([record(), first, second])
+    assert {item.label for item in start} == {
+        "register T-901, pending adoption",
+        "register T-902, pending adoption",
+    }
+    walk = ledger.walk(100, [record(), first, second], [side("#1", "10.45")])
+    assert walk.steps[0].verdict == ledger.NOT_RECORDED
+    assert ledger.held_by(walk.steps[0]) == (
+        "register T-901, pending adoption, register T-902, pending adoption"
+    )
+
+
+def test_the_start_is_both_lanes_and_the_verified_root_decides() -> None:
+    # The reported lane prints sqrt(2) at 14 places; the verified lane names the root of
+    # s^2 - 2. A rational above the root but inside the print is not recorded against it.
+    reported = {"value": "1.41421356237309", "minimal_polynomial": "s^2 - 2 = 0"}
+    verified = {
+        "value": "1.4142135623730950488",
+        "exact_form": "root(P, 1.4142135623730950488)",
+    }
+    lanes = ledger.merged_lanes(
+        ledger.lane_member(9, "reported", reported, ["T-009"], "s^2 - 2 = 0"),
+        ledger.lane_member(9, "verified", verified, ["T-009"], "s^2 - 2 = 0"),
+    )
+    assert [member["model"] for member in lanes] == ["print", "root"]
+    start = [ledger.side_of(member) for member in lanes]
+    claim = side("#1", "1414213562373096/1000000000000000")
+    walk = ledger.walk(9, start, [claim])
+    assert verdicts(walk) == [("#1", "not recorded", "record T-009 (verified lane)")]
+    # One lane alone, the print, leaves it undecided.
+    assert ledger.walk(9, start[:1], [claim]).steps[0].verdict == ledger.UNDECIDED
+
+
+def test_two_lanes_with_one_side_are_one_member() -> None:
+    bound = {"value": "7.6903559372884918", "exact_form": "(16+5*sqrt(2))/3"}
+    lanes = ledger.merged_lanes(
+        ledger.lane_member(51, "reported", bound, ["T-126"]),
+        ledger.lane_member(51, "verified", bound, ["T-126"]),
+    )
+    assert [member["label"] for member in lanes] == ["record T-126"]
+    assert len(lanes[0]["lanes"]) == 2
+
+
+def test_a_sqrt_closed_form_is_a_rigorous_interval() -> None:
+    span = ledger.closed_form_span("(16+5*sqrt(2))/3")
+    assert span is not None
+    assert span.high - span.low < Fraction(1, 10**80)
+    # #593's exact side at 51 is 7.69e-20 above the radical side, decided exactly.
+    above = Fraction(7690355937288491748079718099723, 10**30)
+    assert ledger.below(span, exact_span(above))
+    assert ledger.closed_form_span("7 + (4/7)") == exact_span(Fraction(53, 7))
+    assert ledger.closed_form_span("root(P, 1.5)") is None
+
+
+def test_a_root_enclosure_brackets_the_root() -> None:
+    span = ledger.root_span(ledger.polynomial("4775s^{2} - 9550 = 0"), "1.41421356")
+    assert span.low**2 < 2 < span.high**2
+    assert span.high - span.low < Fraction(1, 10**60)
+    assert ledger.polynomial("s^8 - 20s^7 + 6865 = 0")[:2] == [1, -20]
 
 
 def test_the_start_beyond_the_horizon_is_the_row_or_the_grid() -> None:
@@ -119,21 +193,31 @@ def test_a_closed_form_of_integers_is_a_rational_record() -> None:
     ).exact
 
 
-def test_a_relation_frozen_against_the_record_holds_only_while_the_record_reads_so() -> None:
+def test_a_frozen_relation_holds_only_while_the_lane_reads_so_and_in_both_orders() -> None:
     form = "2 + (1/2)sqrt(2)"
     start = ledger.record_side(5, {"value": "2.70710678118654", "exact_form": form}, ["T-005"])
     frozen: ledger.RecordRelation = {
+        "lane": "reported",
         "relation": "equal",
         "value": "2.70710678118654",
         "exact_form": form,
         "read_from": "lane",
     }
-    algebraic = side(
-        "#1", "2.7071067811865475244008443621048490392848", "unstated", record_relation=frozen
-    )
+    print_ = "2.7071067811865475244008443621048490392848"
+    algebraic = side("#1", print_, "unstated", record_relations=[frozen])
     assert ledger.compare(algebraic, start) == ledger.EQUAL
+    assert ledger.compare(start, algebraic) == ledger.EQUAL
+    below_it = side(
+        "#2", print_, "unstated", record_relations=[{**frozen, "relation": "below"}]
+    )
+    assert ledger.compare(start, below_it) == ledger.ABOVE
+    # A record that moved, or the other lane, does not take the relation.
     moved = ledger.record_side(5, {"value": "2.707106781186547", "exact_form": form}, ["T-005"])
     assert ledger.compare(algebraic, moved) == ledger.UNDECIDED
+    verified = ledger.record_side(
+        5, {"value": "2.70710678118654", "exact_form": form}, ["T-005"], lane="verified"
+    )
+    assert ledger.compare(algebraic, verified) == ledger.UNDECIDED
 
 
 def test_a_binary64_print_spans_one_ulp_and_a_cut_print_its_next_unit() -> None:
@@ -142,6 +226,9 @@ def test_a_binary64_print_spans_one_ulp_and_a_cut_print_its_next_unit() -> None:
     assert not ledger.contains(
         ledger.printed_side("17.8702753825550609", "nearest"), Fraction("17.8702753825550621")
     )
+    nearest = ledger.printed_side("12.95", "nearest")
+    assert ledger.contains(nearest, Fraction("12.955"))
+    assert not ledger.contains(nearest, Fraction("12.9551"))
     cut = ledger.printed_side("12.95", "cut")
     assert ledger.contains(cut, Fraction("12.959"))
     assert not ledger.contains(cut, Fraction("12.96"))
@@ -200,13 +287,43 @@ def test_a_publication_dependent_verdict_is_listed_with_its_alternative() -> Non
             "claims": [{"n": 400, "printed": "19.98", "rounding": "exact"}],
         }
     )
-    verdict = ledger.evaluate(cast("ledger.Ledger", data), {400: GRID_10})
+    verdict = ledger.evaluate(cast(ledger.Ledger, data), {400: [GRID_10]})
     changes = {
         item["report"]: item for item in verdict["owner_decisions"]["publication_dependent"]
     }
     assert changes["#1"]["with_publications"] == "not recorded"
     assert changes["#1"]["without_publications"] == "recorded"
     assert changes["owner/repo@abc1234"]["without_publications"] == ledger.NOT_IN_WALK
+
+
+def test_render_reads_the_frozen_starts_and_never_the_tree(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    data = _minimal()
+    (tmp_path / ledger.LEDGER).write_text(yaml.safe_dump(data), encoding="utf-8")
+    member = ledger.lane_member(
+        100, "reported", {"value": "10.5", "exact_form": "21/2"}, ["T-1"]
+    )
+    starts = ledger.starts_document(data["read_at_main"], {100: [member]})
+    (tmp_path / ledger.STARTS).write_text(yaml.safe_dump(starts), encoding="utf-8")
+
+    def refuse(*_: object) -> None:
+        raise AssertionError("render read the tree")
+
+    monkeypatch.setattr(ledger, "tree_members", refuse)
+    monkeypatch.setattr(ledger.view, "load_records", refuse)
+    assert set(ledger.rendered(tmp_path)) == {ledger.VERDICTS, ledger.README}
+    stale = {**starts, "read_at_main": "e" * 40}
+    (tmp_path / ledger.STARTS).write_text(yaml.safe_dump(stale), encoding="utf-8")
+    with pytest.raises(ledger.LedgerError, match="read at"):
+        ledger.rendered(tmp_path)
+
+
+def test_a_lane_row_no_report_takes_is_refused() -> None:
+    taken = {"lane:packet/claims.json rows": {1, 2, 3}, "lane:packet/claims.json": {1, 3}}
+    assert "rows [2]" in ledger.unclaimed_rows(taken)[0]
+    taken["lane:packet/claims.json"].add(2)
+    assert ledger.unclaimed_rows(taken) == []
 
 
 def test_render_check_passes_on_the_committed_ledger() -> None:
@@ -260,7 +377,7 @@ def test_refinements_render_with_their_packing_and_form_a_chain() -> None:
         }
     )
     assert ledger.problems(data) == []
-    verdict = ledger.evaluate(cast("ledger.Ledger", data), {100: record()})
+    verdict = ledger.evaluate(cast(ledger.Ledger, data), {100: [record()]})
     steps = verdict["counts"][0]["steps"]
     assert ledger.recorded_text(steps[0]) == (
         "recorded, a refinement of A. Finder's packing (T-001)"

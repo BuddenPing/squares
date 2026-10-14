@@ -19,6 +19,10 @@ lanes:
   branch: claude/wizardly-meitner-wqn4x3-intake-1014-pr574
   commit: f817bf191f4320490b6a3e7031e7bd9464b2cbeb
   note: not the lane's final head; the commit read on 2026-10-14
+- name: main
+  branch: main
+  commit: 450bee031e14a4dc5f61861c2364fe22ff0e36ce
+  note: the fang-certs lane's packet as merged; Fang's exact sides at 380 to 382
 - name: ostashev
   branch: claude/wizardly-meitner-wqn4x3-intake-1014-ostashev
   commit: 8d396177be2f7e5067a1d41d1edff12075f6d7af
@@ -504,6 +508,12 @@ reports:
     first_committed: '2026-10-12T23:52:23Z'
     new_packing:
       source: '#573: ''new arrangement discovered using basin hopping'''
+    measured:
+      against: PingYou Ltd's T-148 packing
+      finding: 51 of 153 squares coincide to 1e-6, 53 to 1e-3 and 147 lie within 0.1 (largest
+        displacement 0.139), best of the box's 8 symmetries; the side 2.56e-12 below T-148's
+      source: packing/campaign/issue-intake/upper-bounds-20261014/review/compare_geometry.py
+        (docs/project/reviews/review-2026-10-14-intake-ledger.md, M5)
   - n: 154
     printed: 807660400121/62500000000
     rounding: exact
@@ -537,6 +547,13 @@ reports:
     first_committed: '2026-10-12T23:52:23Z'
     new_packing:
       source: '#573: ''new arrangement discovered using basin hopping'''
+    measured:
+      against: PingYou Ltd's T-147 packing
+      finding: 'all 207 squares lie within 2.8e-4 of T-147''s packing and 200 within 1e-6,
+        best of the box''s 8 symmetries; the side 1.49e-9 below T-147''s: the same contact
+        topology by measurement'
+      source: packing/campaign/issue-intake/upper-bounds-20261014/review/compare_geometry.py
+        (docs/project/reviews/review-2026-10-14-intake-ledger.md, M5)
   - n: 209
     printed: '14.946223226448'
     rounding: up
@@ -633,15 +650,22 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '2.70710678118654'
       exact_form: 2 + (1/2)sqrt(2)
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: equal
+      value: '2.70710678118654752440084436210485'
+      exact_form: 2 + (1/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
       packing_of: Frits Göbel
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
@@ -651,15 +675,22 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '3.70710678118654'
       exact_form: 3 + (1/2)sqrt(2)
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: equal
+      value: '3.70710678118654752440084436210485'
+      exact_form: 3 + (1/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
       packing_of: Frits Göbel
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
@@ -695,15 +726,22 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '4.82287565553229'
       exact_form: (7/2) + (1/2)sqrt(7)
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: equal
+      value: '4.82287565553229529525080787681963'
+      exact_form: (7/2) + (1/2)sqrt(7)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
       packing_of: Pertti Hämäläinen
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
@@ -713,15 +751,22 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '4.88561808316412'
       exact_form: 3 + (4/3)sqrt(2)
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: equal
+      value: '4.88561808316412673173558496561293'
+      exact_form: 3 + (4/3)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
       packing_of: Robert Wainwright
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
@@ -731,15 +776,22 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '5.62132034355964'
       exact_form: (7/2) + (3/2)sqrt(2)
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: equal
+      value: '5.62132034355964257320253308631455'
+      exact_form: (7/2) + (3/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
       packing_of: Erich Friedman
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
@@ -749,15 +801,22 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '5.70710678118654'
       exact_form: 5 + (1/2)sqrt(2)
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: equal
+      value: '5.70710678118654752440084436210485'
+      exact_form: 5 + (1/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
       packing_of: Frits Göbel
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
@@ -808,15 +867,22 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '6.70710678118654'
       exact_form: 6 + (1/2)sqrt(2)
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: equal
+      value: '6.70710678118654752440084436210485'
+      exact_form: 6 + (1/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
       packing_of: Frits Göbel
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
@@ -840,15 +906,22 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '6.82842712474619'
       exact_form: 4 + 2 sqrt(2)
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: equal
+      value: '6.82842712474619009760337744842'
+      exact_form: 4 + 2 sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
       packing_of: Frits Göbel
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
@@ -886,7 +959,14 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
+      relation: equal
+      value: '7.6903559372884918'
+      exact_form: (16+5*sqrt(2))/3
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
       relation: equal
       value: '7.6903559372884918'
       exact_form: (16+5*sqrt(2))/3
@@ -904,15 +984,22 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '7.70710678118654'
       exact_form: 7 + (1/2)sqrt(2)
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: equal
+      value: '7.70710678118654752440084436210485'
+      exact_form: 7 + (1/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
       packing_of: Frits Göbel
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
@@ -922,10 +1009,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 8; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '7.82287565553229'
       exact_form: (13/2) + (1/2)sqrt(7)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '7.82287565553230'
+      exact_form: 846662303743146120044858147095203729184452687173783855889207587068962740050787026154244302953124909685073507/108229037635845729482168900306561771451117458269560776822204029446269228900000000000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -940,6 +1034,13 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 4; the print is the lane's
+    record_relations:
+    - lane: verified
+      relation: below
+      value: '7.84666719284349'
+      exact_form: 312411060944608208367841498690854892883189283298420063951972168900339871665396069525107494339582754365627943/39814491078395808676235606394114758949952880245334657566739337857841105031250000000000000000000000000000000
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
       packing_of: David W. Cantrell
       entry: '[Kingbird]'
@@ -965,15 +1066,22 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '8.53553390593273'
       exact_form: 5 + (5/2)sqrt(2)
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: equal
+      value: '8.53553390593273762200422181052425'
+      exact_form: 5 + (5/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
       packing_of: Frits Göbel
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
@@ -983,15 +1091,22 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '8.65685424949238'
       exact_form: 3 + 4 sqrt(2)
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: equal
+      value: '8.65685424949238019520675489683879'
+      exact_form: 3 + 4 sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
       packing_of: Evert Stenlund
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
@@ -1001,15 +1116,22 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '8.70710678118654'
       exact_form: 8 + (1/2)sqrt(2)
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: equal
+      value: '8.70710678118654752440084436210485'
+      exact_form: 8 + (1/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
       packing_of: Evert Stenlund
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
@@ -1047,7 +1169,14 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 5; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
+      relation: below
+      value: '8.8809603715555796'
+      exact_form: 8880960371555579594785501178639/1000000000000000000000000000000
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
       relation: below
       value: '8.8809603715555796'
       exact_form: 8880960371555579594785501178639/1000000000000000000000000000000
@@ -1077,15 +1206,22 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '9.53553390593273'
       exact_form: 6 + (5/2)sqrt(2)
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: equal
+      value: '9.53553390593273762200422181052425'
+      exact_form: 6 + (5/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
       packing_of: Frits Göbel
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
@@ -1123,15 +1259,22 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '9.74264068711928'
       exact_form: (11/2) + 3 sqrt(2)
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: equal
+      value: '9.74264068711928514640506617262909'
+      exact_form: (11/2) + 3 sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
       packing_of: Erich Friedman
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
@@ -1183,15 +1326,22 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '9.94974746830583'
       exact_form: 5 + (7/2)sqrt(2)
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: equal
+      value: '9.94974746830583267080591053473394'
+      exact_form: 5 + (7/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
       packing_of: Evert Stenlund
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
@@ -1201,10 +1351,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '10.53553390593273'
       exact_form: 7 + (5/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '10.53553390593274'
+      exact_form: 42142135623730950488016887242097/4000000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -1247,10 +1404,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '10.70710678118654'
       exact_form: 10 + (1/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '10.70710678118655'
+      exact_form: 10707106781186547524507915429917/1000000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -1293,6 +1457,13 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 4; the print is the lane's
+    record_relations:
+    - lane: verified
+      relation: below
+      value: '10.84666719284349'
+      exact_form: 10846667192843489783051781262887/1000000000000000000000000000000
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
       packing_of: Károly Hajba
       entry: '[Kingbird]'
@@ -1318,10 +1489,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '10.94974746830583'
       exact_form: 6 + (7/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '10.94974746830584'
+      exact_form: 5474873734152916335457704004709/500000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -1350,10 +1528,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '11.53553390593273'
       exact_form: 8 + (5/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '11.53553390593274'
+      exact_form: 46142135623730950488016887242097/4000000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -1382,10 +1567,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '11.65685424949238'
       exact_form: 6 + 4 sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '11.65685424949239'
+      exact_form: 291421356237309504880168872421/25000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -1400,10 +1592,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '11.70710678118654'
       exact_form: 11 + (1/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '11.70710678118655'
+      exact_form: 11707106781186547524517915429917/1000000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -1517,10 +1716,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '12.53553390593273'
       exact_form: 9 + (5/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '12.53553390593274'
+      exact_form: 50142135623730950488016887242097/4000000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -1550,10 +1756,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '12.65685424949238'
       exact_form: 7 + 4 sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '12.65685424949239'
+      exact_form: 316421356237309504880168872421/25000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -1568,10 +1781,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '12.65685424949238'
       exact_form: 7 + 4 sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '12.65685424949239'
+      exact_form: 316421356237309504880168872421/25000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -1586,10 +1806,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '12.70710678118654'
       exact_form: 12 + (1/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '12.70710678118655'
+      exact_form: 12707106781186547524527915429917/1000000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -1604,10 +1831,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '12.77817459305202'
       exact_form: 5 + (11/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '12.77817459305203'
+      exact_form: 1277817459305203/100000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -1622,10 +1856,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 4; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '12.82287565553229'
       exact_form: (23/2) + (1/2)sqrt(7)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '12.82287565553230'
+      exact_form: 102583005244258362363032293067/8000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -1655,7 +1896,14 @@ reports:
     first_committed: '2026-10-13T01:29:11Z'
     note: the lane records 2026-10-13T00:29:11Z; the commit that adds the N153/N302 manifest,
       a006c45, is 02:29:11+01:00
-    record_relation:
+    record_relations:
+    - lane: reported
+      relation: below
+      value: '12.8700138504070441'
+      exact_form: 6435006925203522001385040447/500000000000000000000000000
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
       relation: below
       value: '12.8700138504070441'
       exact_form: 6435006925203522001385040447/500000000000000000000000000
@@ -1701,10 +1949,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '13.53553390593273'
       exact_form: 10 + (5/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '13.53553390593274'
+      exact_form: 845970869120796101383723571849/62500000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -1747,10 +2002,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '13.65685424949238'
       exact_form: 8 + 4 sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '13.65685424949239'
+      exact_form: 341421356237309504880168872421/25000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -1765,10 +2027,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '13.70710678118654'
       exact_form: 13 + (1/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '13.70710678118655'
+      exact_form: 13707106781186547524537915429917/1000000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -1829,6 +2098,13 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 4; the print is the lane's
+    record_relations:
+    - lane: verified
+      relation: below
+      value: '13.84666719284349'
+      exact_form: 8820768118639728966804082192888695142650886332190042535167785180566518372237881490876221235050827157614108183/637031857254332938819769702305836143199246083925354521067829405725457680500000000000000000000000000000000000
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
       packing_of: '[Kingbird]'
       entry: '[Kingbird]'
@@ -1896,10 +2172,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '14.53553390593273'
       exact_form: 11 + (5/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '14.53553390593274'
+      exact_form: 58142135623730950488016887242097/4000000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -1942,10 +2225,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '14.65685424949238'
       exact_form: 9 + 4 sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '14.65685424949239'
+      exact_form: 366421356237309504880168872421/25000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -1960,10 +2250,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '14.70710678118654'
       exact_form: 14 + (1/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '14.70710678118655'
+      exact_form: 14707106781186547524547915429917/1000000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -1978,10 +2275,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '14.72792206135785'
       exact_form: 2 + 9 sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '14.72792206135786'
+      exact_form: 14727922061357855439362477738501/1000000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -1996,10 +2300,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '14.77817459305202'
       exact_form: 7 + (11/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '14.77817459305203'
+      exact_form: 3694543648263005692139267432271/250000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -2057,7 +2368,14 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 5; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
+      relation: below
+      value: '14.8809603730436757'
+      exact_form: 148809603730436756319360591381170501178639/10000000000000000000000000000000000000000
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
       relation: below
       value: '14.8809603730436757'
       exact_form: 148809603730436756319360591381170501178639/10000000000000000000000000000000000000000
@@ -2130,10 +2448,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '15.53553390593273'
       exact_form: 12 + (5/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '15.53553390593274'
+      exact_form: 62142135623730950488016887242097/4000000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -2148,10 +2473,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '15.57106781186547'
       exact_form: (17/2) + 5 sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '15.57106781186548'
+      exact_form: 19463834764831844055010554526310613/1250000000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -2180,10 +2512,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '15.65685424949238'
       exact_form: 10 + 4 sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '15.65685424949239'
+      exact_form: 391421356237309504880168872421/25000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -2212,10 +2551,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '15.70710678118654'
       exact_form: 15 + (1/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '15.70710678118655'
+      exact_form: 15707106781186547524557915429917/1000000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -2247,10 +2593,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '15.77817459305202'
       exact_form: 8 + (11/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '15.77817459305203'
+      exact_form: 3944543648263005692141767432271/250000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -2265,10 +2618,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '15.82287565553229'
       exact_form: (29/2) + (1/2)sqrt(7)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '15.82287565553230'
+      exact_form: 126583005244258362363272293067/8000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -2383,10 +2743,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '16.53553390593273'
       exact_form: 13 + (5/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '16.53553390593274'
+      exact_form: 1033470869120796101385598571849/62500000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -2429,10 +2796,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '16.65685424949238'
       exact_form: 11 + 4 sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '16.65685424949239'
+      exact_form: 416421356237309504880168872421/25000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -2462,10 +2836,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '16.70710678118654'
       exact_form: 16 + (1/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '16.70710678118655'
+      exact_form: 16707106781186547524567915429917/1000000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -2511,10 +2892,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '16.77817459305202'
       exact_form: 9 + (11/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '16.77817459305203'
+      exact_form: 4194543648263005692144267432271/250000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -2642,10 +3030,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '17.53553390593273'
       exact_form: 14 + (5/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '17.53553390593274'
+      exact_form: 70142135623730950488016887242097/4000000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -2660,10 +3055,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '17.53553390593273'
       exact_form: 14 + (5/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '17.53553390593274'
+      exact_form: 70142135623730950488016887242097/4000000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -2706,10 +3108,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '17.65685424949238'
       exact_form: 12 + 4 sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '17.65685424949239'
+      exact_form: 441421356237309504880168872421/25000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -2738,10 +3147,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '17.70710678118654'
       exact_form: 17 + (1/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '17.70710678118655'
+      exact_form: 17707106781186547524577915429917/1000000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -2770,10 +3186,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '17.77817459305202'
       exact_form: 10 + (11/2)sqrt(2)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '17.77817459305203'
+      exact_form: 4444543648263005692146767432271/250000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -2788,10 +3211,17 @@ reports:
     rounding: unstated
     first_committed: '2026-10-13T01:58:06Z'
     note: algebraic side of degree 2; the print is the lane's
-    record_relation:
+    record_relations:
+    - lane: reported
       relation: equal
       value: '17.82287565553229'
       exact_form: (33/2) + (1/2)sqrt(7)
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
+      relation: below
+      value: '17.82287565553230'
+      exact_form: 142583005244258362363432293067/8000000000000000000000000000
       read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
         at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
     refines:
@@ -2835,7 +3265,14 @@ reports:
     first_committed: '2026-10-13T01:29:11Z'
     note: the lane records 2026-10-13T00:29:11Z; the commit that adds the N153/N302 manifest,
       a006c45, is 02:29:11+01:00
-    record_relation:
+    record_relations:
+    - lane: reported
+      relation: below
+      value: '17.8720298490811800'
+      exact_form: 558500932783786874181638432249/31250000000000000000000000000
+      read_from: packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+        at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb
+    - lane: verified
       relation: below
       value: '17.8720298490811800'
       exact_form: 558500932783786874181638432249/31250000000000000000000000000
@@ -3253,6 +3690,12 @@ reports:
   - n: 51
     printed: '7.6903559372884915'
     rounding: binary64
+    exact: 7690355937288491748079718099723/1000000000000000000000000000000
+    exact_from: packing/resources/web/mishapolk-records-2026-10-14/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-mishapolk@d4c198d0da8fe619bef0bccf18a8e6e32520c0f3,
+      from the header of certificates/n51.cert at Mishapolk/square-packing-records@46f638ce0537beeb1bad24242c6a3d357eecd9ee
+      (SHA-256 e066f65f...), which the review of 2026-10-14 re-read
+    note: held out of the lane's declaration, whose house reader cannot rebuild the radical
+      case side; the side is stated in its README
   - n: 68
     printed: '8.7987952372182843'
     rounding: binary64
@@ -3312,6 +3755,8 @@ reports:
     exact_from: packing/resources/web/mishapolk-records-2026-10-14/acquisition/claims.json
       at claude/wizardly-meitner-wqn4x3-intake-1014-mishapolk@d4c198d0da8fe619bef0bccf18a8e6e32520c0f3
     first_committed: '2026-10-12T23:52:23Z'
+    restates: 'restates Mishapolk''s own #573 certificate: the same bytes, first committed
+      at 336bdf5 (the mishapolk lane''s README)'
   - n: 105
     printed: '10.7893037837481582'
     rounding: binary64
@@ -3424,6 +3869,8 @@ reports:
     exact_from: packing/resources/web/mishapolk-records-2026-10-14/acquisition/claims.json
       at claude/wizardly-meitner-wqn4x3-intake-1014-mishapolk@d4c198d0da8fe619bef0bccf18a8e6e32520c0f3
     first_committed: '2026-10-12T23:52:23Z'
+    restates: 'restates Mishapolk''s own #573 certificate: the same bytes, first committed
+      at 336bdf5 (the mishapolk lane''s README)'
   - n: 154
     printed: '12.9224998146423982'
     rounding: binary64
@@ -3541,6 +3988,8 @@ reports:
     exact_from: packing/resources/web/mishapolk-records-2026-10-14/acquisition/claims.json
       at claude/wizardly-meitner-wqn4x3-intake-1014-mishapolk@d4c198d0da8fe619bef0bccf18a8e6e32520c0f3
     first_committed: '2026-10-12T23:52:23Z'
+    restates: 'restates Mishapolk''s own #573 certificate: the same bytes, first committed
+      at 336bdf5 (the mishapolk lane''s README)'
   - n: 208
     printed: '14.9245187720293568'
     rounding: binary64
@@ -3645,6 +4094,8 @@ reports:
     exact_from: packing/resources/web/mishapolk-records-2026-10-14/acquisition/claims.json
       at claude/wizardly-meitner-wqn4x3-intake-1014-mishapolk@d4c198d0da8fe619bef0bccf18a8e6e32520c0f3
     first_committed: '2026-10-12T23:52:23Z'
+    restates: 'restates Mishapolk''s own #573 certificate: the same bytes, first committed
+      at 336bdf5 (the mishapolk lane''s README)'
   - n: 259
     printed: '16.5913781454976998'
     rounding: binary64
@@ -3869,17 +4320,23 @@ reports:
   bead: ''
   claims:
   - n: 380
-    printed: 1102997094976695021048786866207114120794307672281712078143966862895587101/55213970774324510460005687954914031282828270928685798549291030582132736
-    rounding: exact
-    exact_from: n0380/n0380.cert (its n S line) at TheSnakeFang/squarepack-certs@078789a4cfd36f915f1bfbe76d742413d79b2965
+    printed: '19.976775433974195'
+    rounding: up
+    exact: 1102997094976695021048786866207114120794307672281712078143966862895587101/55213970774324510460005687954914031282828270928685798549291030582132736
+    exact_from: packing/resources/web/fang-direct-certificates-2026-10-13/acquisition/claims.json
+      at main@450bee031e14a4dc5f61861c2364fe22ff0e36ce
     first_committed: '2026-10-12T19:06:24Z'
+    note: printed in https://github.com/TheSnakeFang/squarepack-certs/blob/078789a4cfd36f915f1bfbe76d742413d79b2965/README.md
     new_packing:
       source: 'commit e646c47''s message: ''Direct packings for n = 380, 381, ...'''
   - n: 381
-    printed: 17234497240723668942314557127864871189472035564122930362827769318543721/862718293348820475141548404758626698746797696721330057918371520839680
-    rounding: exact
-    exact_from: n0381/n0381.cert (its n S line) at TheSnakeFang/squarepack-certs@078789a4cfd36f915f1bfbe76d742413d79b2965
+    printed: '19.976969740405508'
+    rounding: up
+    exact: 17234497240723668942314557127864871189472035564122930362827769318543721/862718293348820475141548404758626698746797696721330057918371520839680
+    exact_from: packing/resources/web/fang-direct-certificates-2026-10-13/acquisition/claims.json
+      at main@450bee031e14a4dc5f61861c2364fe22ff0e36ce
     first_committed: '2026-10-12T19:06:24Z'
+    note: printed in https://github.com/TheSnakeFang/squarepack-certs/blob/078789a4cfd36f915f1bfbe76d742413d79b2965/README.md
     new_packing:
       source: 'commit e646c47''s message: ''Direct packings for n = 380, 381, ...'''
   note: 'a publication no issue reports; #583 names it as its comparison at 380 and 381'
@@ -3891,10 +4348,13 @@ reports:
   bead: ''
   claims:
   - n: 382
-    printed: 269457653704352009538801091757719713332271894027604544062655799750885/13479973333575319909990991250831751289361739009640320293602072723456
-    rounding: exact
-    exact_from: n0382/n0382.cert (its n S line) at TheSnakeFang/squarepack-certs@078789a4cfd36f915f1bfbe76d742413d79b2965
+    printed: '19.989479729399675'
+    rounding: up
+    exact: 269457653704352009538801091757719713332271894027604544062655799750885/13479973333575319909990991250831751289361739009640320293602072723456
+    exact_from: packing/resources/web/fang-direct-certificates-2026-10-13/acquisition/claims.json
+      at main@450bee031e14a4dc5f61861c2364fe22ff0e36ce
     first_committed: '2026-10-13T00:05:31Z'
+    note: printed in https://github.com/TheSnakeFang/squarepack-certs/blob/078789a4cfd36f915f1bfbe76d742413d79b2965/README.md
     new_packing:
       source: 'commit c284cd0''s message: ''Six n^2-n+2 packings (382, ...)'''
   note: 'a publication no issue reports; #583 names it as its comparison at 382'
@@ -3966,6 +4426,13 @@ reports:
   note: 'certificates no issue names, retained by the couzo lane (the reply on #586 asks whether
     to register them)'
 exceptions: []
+key_reason_candidates:
+- n: 102
+  report: '#529'
+  argument: An independent arrangement of ry-xu's design, found from scratch, credited as
+    the author asked, after the precedents T-120, T-137 and T-150.
+  proposed_as: T-159, an S2 entry that moves no case, in the coordinator's layer 6 (jlevy/squares#598
+    at bd2ae5869); not on main
 other_items:
 - issue: '#521'
   url: https://github.com/jlevy/squares/issues/521
@@ -4044,3 +4511,47 @@ other_items:
   bead: think-osvq
   disposition: 's(76) = 9 by a mixed cover: a lower bound that meets the grid''s 9, an optimality
     entry; no new upper bound.'
+cross_check:
+- 'ostashev/dostashev-compositions-2026-10-12/claims.json n=129 reads #593 as 11.8700138504044652
+  (unstated); this ledger has 2374002770080892868915770707857/200000000000000000000000000000
+  (binary64) for #593'
+- 'ostashev/dostashev-compositions-2026-10-12/claims.json n=204 reads #593 as 14.8086632343869571
+  (unstated); this ledger has 7404331617193478283235495040473/500000000000000000000000000000
+  (binary64) for #593'
+- 'ostashev/dostashev-compositions-2026-10-12/claims.json n=303 reads #593 as 17.9099582910699091
+  (unstated); this ledger has 17909958291069907981595741081399/1000000000000000000000000000000
+  (binary64) for #593'
+- 'pingyou/pingyou-n302-certificate-2026-10-12/claims.json n=302 reads #593 as 17.8702753825550609
+  (unstated); this ledger has 2233784422819382458718924415903/125000000000000000000000000000
+  (binary64) for #593'
+- 'pingyou/pingyou-n153-refinement-2026-10-12/claims.json n=153 reads #593 as 12.8700138504044794
+  (unstated); this ledger has 20109396641257/1562500000000 (binary64) for #593'
+- 'pingyou/pingyou-n207-refinement-2026-10-12/claims.json n=207 reads #593 as 14.8809603715580003
+  (unstated); this ledger has 7440480185779/500000000000 (binary64) for #593'
+- 'pingyou/pingyou-n146-refinement-2026-10-12/claims.json n=146 reads #593 as 12.5837822039510456
+  (unstated); this ledger has 116279649124311595126859201479687720249979767041030579952911655754044079907072940826988977863589020722468729164581005669/9240437194455113887096299456817024243377978045957194209468060456305894240222303442118770000000000000000000000000000000
+  (binary64) for #593'
+- 'pingyou/pingyou-n261-refinement-2026-10-12/claims.json n=261 reads #593 as 16.6787798753432064
+  (unstated); this ledger has 281511998443714605777688141005451389058312249347102940135310582196387268624448354500213385873241046635777764262601/16878452773388004800535351238155816857400040173477095354881922318666694517637251382500000000000000000000000000000
+  (binary64) for #593'
+- 'pingyou/pingyou-n105-refinement-2026-10-12/claims.json n=105 reads #593 as 10.7893037837481582
+  (unstated); this ledger has 10789303783748158831034729697921/1000000000000000000000000000000
+  (binary64) for #593'
+- 'pingyou/pingyou-n272-refinement-2026-10-12/claims.json n=272 reads #593 as 16.9655864748376715
+  (unstated); this ledger has 1114257766245565718930381676208619768554065539361501231011879160325537643366400317478230690701220023471/65677527145799837468063782221943718992249135546143429464936478230690701220023471000000000000000000000
+  (binary64) for #593'
+- 'pr574/pingyou-pr574-certificates-2026-10-13/claims.json n=211 reads #583 as 14.993558913975
+  (up); this ledger has 5735936523425659529936799651/382560041700500000000000000 (up) for
+  #583'
+- 'pr574/pingyou-pr574-certificates-2026-10-13/claims.json n=241 reads #583 as 15.987117095151
+  (up); this ledger has 56654293892568867634658195801/3543746727775500000000000000 (up) for
+  #583'
+- 'ostashev/dostashev-merged-bands-2026-10-13/claims.json n=211 reads #593 as 14.9935589139740060
+  (unstated); this ledger has 7496779456987003085666602828823/500000000000000000000000000000
+  (binary64) for #593'
+- 'ostashev/dostashev-merged-bands-2026-10-13/claims.json n=241 reads #593 as 15.9871170951502393
+  (unstated); this ledger has 15987117095150238758321758129189/1000000000000000000000000000000
+  (binary64) for #593'
+- 'ostashev/dostashev-merged-bands-2026-10-13/claims.json n=304 reads #593 as 17.9294277580751746
+  (unstated); this ledger has 1792942775807517496566632613899/100000000000000000000000000000
+  (binary64) for #593'

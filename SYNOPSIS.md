@@ -618,6 +618,7 @@ case or experiment separately.
 
 | Document or collection | Role | Authority | Lifecycle | Current replacement |
 | --- | --- | --- | --- | --- |
+| [Review: the 2026-10-14 upper-bound intake ledger](docs/project/reviews/review-2026-10-14-intake-ledger.md) | dated review record | record | retained | — |
 | [Fitzharding’s Lean Proof of s(17) = L: Mathematical-Correctness Review](docs/project/reviews/review-2026-10-13-fitzharding-n17-mathematical-correctness.md) | dated review record | record | retained | — |
 | [Mathematical Review: Overbeck’s Candidate Proof That `s(17) = L`, Correctness Lane](docs/project/reviews/review-2026-10-13-overbeck-n17-mathematical-correctness.md) | dated review record | record | retained | — |
 | [Adversarial Review: Fitzharding’s Lean Proof That `s(17) = L`](docs/project/reviews/review-2026-10-13-fitzharding-n17-lean.md) | dated review record | record | retained | — |
@@ -1225,6 +1226,7 @@ case or experiment separately.
 | [Experiment ledger](packing/campaign/ledger.md) | generated status view | generated | generated | — |
 | [Agenda map](packing/campaign/agenda-map.md) | generated status view | generated | generated | — |
 | [Upper-Bound Reports, Count by Count, in Report Order](packing/campaign/issue-intake/upper-bounds-20261014/README.md) | generated status view | generated | generated | — |
+| [Intake Ledger Review Programs](packing/campaign/issue-intake/upper-bounds-20261014/review/README.md) | dated review record | record | retained | — |
 | [series-000 (S0) — smoke and calibration](packing/campaign/series/series-000-smoke-and-calibration/README.md) | series scope and comparability | definitive | maintained | — |
 | [Agenda 024 T+0 Dispatch Record](packing/campaign/series/series-000-smoke-and-calibration/results/agenda-024/launch-t-plus-00.md) | research synthesis | record | retained | — |
 | [Agenda 024 Commissioning Gate: Active Minute 15](packing/campaign/series/series-000-smoke-and-calibration/results/agenda-024/commissioning-gate-minute-015.md) | research synthesis | record | retained | — |

@@ -23,6 +23,10 @@ lanes:
   branch: claude/wizardly-meitner-wqn4x3-intake-1014-pr574
   commit: f817bf191f4320490b6a3e7031e7bd9464b2cbeb
   note: not the lane's final head; the commit read on 2026-10-14
+- name: main
+  branch: main
+  commit: 450bee031e14a4dc5f61861c2364fe22ff0e36ce
+  note: the fang-certs lane's packet as merged; Fang's exact sides at 380 to 382
 - name: ostashev
   branch: claude/wizardly-meitner-wqn4x3-intake-1014-ostashev
   commit: 8d396177be2f7e5067a1d41d1edff12075f6d7af
@@ -375,9 +379,22 @@ reports:
   - n: 153
     new_packing:
       source: '#573: ''new arrangement discovered using basin hopping'''
+    measured:
+      against: PingYou Ltd's T-148 packing
+      finding: 51 of 153 squares coincide to 1e-6, 53 to 1e-3 and 147 lie within 0.1 (largest
+        displacement 0.139), best of the box's 8 symmetries; the side 2.56e-12 below T-148's
+      source: packing/campaign/issue-intake/upper-bounds-20261014/review/compare_geometry.py
+        (docs/project/reviews/review-2026-10-14-intake-ledger.md, M5)
   - n: 207
     new_packing:
       source: '#573: ''new arrangement discovered using basin hopping'''
+    measured:
+      against: PingYou Ltd's T-147 packing
+      finding: 'all 207 squares lie within 2.8e-4 of T-147''s packing and 200 within 1e-6,
+        best of the box''s 8 symmetries; the side 1.49e-9 below T-147''s: the same contact
+        topology by measurement'
+      source: packing/campaign/issue-intake/upper-bounds-20261014/review/compare_geometry.py
+        (docs/project/reviews/review-2026-10-14-intake-ledger.md, M5)
   - n: 209
     new_packing:
       source: '#573: ''new arrangement discovered using basin hopping'''
@@ -404,14 +421,14 @@ reports:
   - n: 5
     refines:
       packing_of: Frits Göbel
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 10
     refines:
       packing_of: Frits Göbel
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
@@ -442,28 +459,28 @@ reports:
   - n: 18
     refines:
       packing_of: Pertti Hämäläinen
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 19
     refines:
       packing_of: Robert Wainwright
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 26
     refines:
       packing_of: Erich Friedman
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 27
     refines:
       packing_of: Frits Göbel
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
@@ -496,7 +513,7 @@ reports:
   - n: 38
     refines:
       packing_of: Frits Göbel
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
@@ -510,7 +527,7 @@ reports:
   - n: 40
     refines:
       packing_of: Frits Göbel
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
@@ -538,7 +555,7 @@ reports:
   - n: 52
     refines:
       packing_of: Frits Göbel
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
@@ -565,21 +582,21 @@ reports:
   - n: 65
     refines:
       packing_of: Frits Göbel
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 66
     refines:
       packing_of: Evert Stenlund
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
   - n: 67
     refines:
       packing_of: Evert Stenlund
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
@@ -612,7 +629,7 @@ reports:
   - n: 82
     refines:
       packing_of: Frits Göbel
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
@@ -633,7 +650,7 @@ reports:
   - n: 85
     refines:
       packing_of: Erich Friedman
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
@@ -661,7 +678,7 @@ reports:
   - n: 89
     refines:
       packing_of: Evert Stenlund
-      entry: '[Kingbird]'
+      entry: '[Kingbird],'
       source: 'packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-pr574@f817bf191f4320490b6a3e7031e7bd9464b2cbeb:
         the algebraic side is the case''s closed form exactly (16 counts in the verified lane,
         37 in the reported lane); think-9v2k: exact attainments of packings others found'
@@ -1702,6 +1719,12 @@ reports:
   - n: 51
     printed: '7.6903559372884915'
     rounding: binary64
+    exact: 7690355937288491748079718099723/1000000000000000000000000000000
+    exact_from: packing/resources/web/mishapolk-records-2026-10-14/README.md at claude/wizardly-meitner-wqn4x3-intake-1014-mishapolk@d4c198d0da8fe619bef0bccf18a8e6e32520c0f3,
+      from the header of certificates/n51.cert at Mishapolk/square-packing-records@46f638ce0537beeb1bad24242c6a3d357eecd9ee
+      (SHA-256 e066f65f...), which the review of 2026-10-14 re-read
+    note: held out of the lane's declaration, whose house reader cannot rebuild the radical
+      case side; the side is stated in its README
   - n: 68
     printed: '8.7987952372182843'
     rounding: binary64
@@ -1733,6 +1756,8 @@ reports:
   - n: 103
     printed: '10.6792320473613493'
     rounding: binary64
+    restates: 'restates Mishapolk''s own #573 certificate: the same bytes, first committed
+      at 336bdf5 (the mishapolk lane''s README)'
   - n: 105
     printed: '10.7893037837481582'
     rounding: binary64
@@ -1789,6 +1814,8 @@ reports:
   - n: 153
     printed: '12.8700138504044794'
     rounding: binary64
+    restates: 'restates Mishapolk''s own #573 certificate: the same bytes, first committed
+      at 336bdf5 (the mishapolk lane''s README)'
   - n: 154
     printed: '12.9224998146423982'
     rounding: binary64
@@ -1846,6 +1873,8 @@ reports:
   - n: 207
     printed: '14.8809603715580003'
     rounding: binary64
+    restates: 'restates Mishapolk''s own #573 certificate: the same bytes, first committed
+      at 336bdf5 (the mishapolk lane''s README)'
   - n: 208
     printed: '14.9245187720293568'
     rounding: binary64
@@ -1898,6 +1927,8 @@ reports:
   - n: 258
     printed: '16.5634480021371715'
     rounding: binary64
+    restates: 'restates Mishapolk''s own #573 certificate: the same bytes, first committed
+      at 336bdf5 (the mishapolk lane''s README)'
   - n: 259
     printed: '16.5913781454976998'
     rounding: binary64
@@ -2012,19 +2043,31 @@ reports:
   holders: Kevin Fang (TheSnakeFang)
   bead: ''
   note: 'a publication no issue reports; #583 names it as its comparison at 380 and 381'
+  lanes:
+  - lane: main
+    packet: fang-direct-certificates-2026-10-13
+    record: claims.json
+    counts:
+    - 380
+    - 381
+    printed_in_note: true
+    not_ours:
+    - 421
+    - 422
+    - 463
+    - 464
+    - 507
+    - 508
+    - 553
+    - 601
+    - 651
+    - 758
+    - 814
   claims:
   - n: 380
-    printed: 1102997094976695021048786866207114120794307672281712078143966862895587101/55213970774324510460005687954914031282828270928685798549291030582132736
-    rounding: exact
-    exact_from: n0380/n0380.cert (its n S line) at TheSnakeFang/squarepack-certs@078789a4cfd36f915f1bfbe76d742413d79b2965
-    first_committed: '2026-10-12T19:06:24Z'
     new_packing:
       source: 'commit e646c47''s message: ''Direct packings for n = 380, 381, ...'''
   - n: 381
-    printed: 17234497240723668942314557127864871189472035564122930362827769318543721/862718293348820475141548404758626698746797696721330057918371520839680
-    rounding: exact
-    exact_from: n0381/n0381.cert (its n S line) at TheSnakeFang/squarepack-certs@078789a4cfd36f915f1bfbe76d742413d79b2965
-    first_committed: '2026-10-12T19:06:24Z'
     new_packing:
       source: 'commit e646c47''s message: ''Direct packings for n = 380, 381, ...'''
 - report: TheSnakeFang/squarepack-certs@c284cd0
@@ -2033,12 +2076,15 @@ reports:
   holders: Kevin Fang (TheSnakeFang)
   bead: ''
   note: 'a publication no issue reports; #583 names it as its comparison at 382'
+  lanes:
+  - lane: main
+    packet: fang-direct-certificates-2026-10-13
+    record: claims.json
+    counts:
+    - 382
+    printed_in_note: true
   claims:
   - n: 382
-    printed: 269457653704352009538801091757719713332271894027604544062655799750885/13479973333575319909990991250831751289361739009640320293602072723456
-    rounding: exact
-    exact_from: n0382/n0382.cert (its n S line) at TheSnakeFang/squarepack-certs@078789a4cfd36f915f1bfbe76d742413d79b2965
-    first_committed: '2026-10-13T00:05:31Z'
     new_packing:
       source: 'commit c284cd0''s message: ''Six n^2-n+2 packings (382, ...)'''
 - report: franciscouzo/square-packing@93570ef
@@ -2086,6 +2132,13 @@ reports:
     - 378
     printed_in_note: true
 exceptions: []
+key_reason_candidates:
+- n: 102
+  report: '#529'
+  argument: An independent arrangement of ry-xu's design, found from scratch, credited as
+    the author asked, after the precedents T-120, T-137 and T-150.
+  proposed_as: T-159, an S2 entry that moves no case, in the coordinator's layer 6 (jlevy/squares#598
+    at bd2ae5869); not on main
 other_items:
 - issue: '#521'
   url: https://github.com/jlevy/squares/issues/521

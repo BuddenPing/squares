@@ -1,0 +1,9 @@
+## 1. two pending register bounds that overlap each other
+start chosen: record T-001 (both pending bounds are below the record 10.5, and undecided against each other)
+claim #1 = 10.45 (above both pending bounds): recorded against record T-001
+expected by the rule: not recorded (above T-901 and T-902)
+
+## 2. compare asymmetry with a frozen relation
+compare(#2, record) = below | compare(record, #2) = undecided
+verdicts: [('#1', 'undecided'), ('#2', 'undecided')]
+standing after the walk: ['record T-005', '#1', '#2'] <- the record stays although #2 is (by the frozen relation) decidably below it

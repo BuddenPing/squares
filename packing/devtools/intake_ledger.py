@@ -30,9 +30,9 @@ intake directory such as ``campaign/issue-intake/upper-bounds-20261014/``:
   when publications in watched repositories are not counted as reports.
 
 Printed sides carry a rounding (`ROUNDINGS`), ``u`` being one unit in the last printed
-place: ``up`` lies in ``(p - u, p]``; ``nearest`` and ``unstated`` within ``u`` of ``p``;
-``binary64``, a double printed at more places than it determines, within one ulp of
-``float(p)`` plus ``u``, as the lanes read #593's 16-place prints; ``cut`` (decimals
+place: ``up`` lies in ``(p - u, p]``; ``nearest`` within ``u/2`` of ``p`` and ``unstated``
+within ``u``; ``binary64``, a double printed at more places than it determines, within one
+ulp of ``float(p)`` plus ``u``, as the lanes read #593's 16-place prints; ``cut`` (decimals
 followed by an ellipsis) in ``[p, p + u)``; and ``exact`` is the number printed. A
 claim's ``exact`` side, where a lane's frozen claim record or the certificate itself
 states it, replaces the print in every comparison. ``restates`` says, for the README,
@@ -52,7 +52,7 @@ From ``packing/``, with the project interpreter::
 
     python -m devtools.intake_ledger gather [DIR] [--snapshot]
     python -m devtools.intake_ledger render [DIR] [--write | --check]
-    python -m devtools.intake_ledger check [DIR]
+    python -m devtools.intake_ledger check [DIR] [--tree]
 
 ``gather`` reads GitHub through ``gh`` (``--snapshot`` reuses ``github-issues.json``) and
 the lanes' records with ``git show COMMIT:PATH``; it may need the network and runs in no
@@ -63,26 +63,29 @@ either rendered file would change.
 from __future__ import annotations
 
 import argparse
-import ast
 import json
 import math
 import re
 import subprocess
 import sys
-from collections.abc import Callable, Iterable, Mapping, Sequence
+from collections.abc import Callable, Iterable, Iterator, Mapping, Sequence
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from decimal import Decimal
 from fractions import Fraction
 from pathlib import Path
 from typing import Any, NotRequired, TypedDict, cast
 
+import mpmath as mp
 import yaml
+from mpmath.libmp import to_rational
 from strif import atomic_output_file
 
 from devtools import check_source_coverage as coverage_check
 from devtools import check_standing
 from devtools import render_recent_results as view
 from devtools.upper_bound_reports import Span, below, exact_span, grid_side, printed_span
+from sqpack.retained_json import dumps as retained_dumps
 from sqpack.yamlio import safe_load
 
 MODULE = "devtools.intake_ledger"
@@ -93,12 +96,14 @@ DEFAULT_DIRECTORY = ROOT / "campaign/issue-intake/upper-bounds-20261014"
 SOURCES = "sources.yaml"
 SNAPSHOT = "github-issues.json"
 LEDGER = "ledger.yaml"
+STARTS = "starts.yaml"
 VERDICTS = "ledger.json"
 README = "README.md"
 LEDGER_FORMAT = "intake-ledger-v1"
 SOURCES_FORMAT = "intake-ledger-sources-v1"
 SNAPSHOT_FORMAT = "intake-ledger-github-v1"
 VERDICTS_FORMAT = "intake-ledger-verdicts-v1"
+STARTS_FORMAT = "intake-ledger-starts-v1"
 GITHUB_REPOSITORY = "jlevy/squares"
 #: The case corpus is ``n = 1..324``; above it the start is a beyond-horizon row or the grid.
 HORIZON = 324
@@ -142,11 +147,12 @@ def _require(condition: object, message: str) -> None:
 
 
 class RecordRelation(TypedDict):
-    """A lane's exact comparison of an algebraic side with the case record it read.
+    """A lane's exact comparison of an algebraic side with one case lane it read.
 
-    ``relation`` holds only while the record still prints ``value`` and ``exact_form``.
+    ``relation`` holds only while that lane still prints ``value`` and ``exact_form``.
     """
 
+    lane: str
     relation: str
     value: str
     exact_form: str
@@ -177,6 +183,17 @@ class NewPacking(TypedDict):
     continues: NotRequired[str]
 
 
+class Measured(TypedDict):
+    """A geometric measurement of a claim's certificate against another packing.
+
+    It is recorded beside the source's word and decides nothing.
+    """
+
+    against: str
+    finding: str
+    source: str
+
+
 class Claim(TypedDict):
     """One ``s(n) <= v`` a report states; see the module docstring for the fields."""
 
@@ -187,7 +204,8 @@ class Claim(TypedDict):
     exact_from: NotRequired[str]
     first_committed: NotRequired[str]
     reported_at: NotRequired[str]
-    record_relation: NotRequired[RecordRelation]
+    record_relations: NotRequired[list[RecordRelation]]
+    measured: NotRequired[Measured]
     restates: NotRequired[str]
     refines: NotRequired[Refines]
     new_packing: NotRequired[NewPacking]
@@ -235,6 +253,16 @@ class OtherItem(TypedDict):
     disposition: str
 
 
+class KeyReason(TypedDict):
+    """A claim someone argues has a key reason to be recorded, which the rule does not
+    apply: the render shows it beside the rule's verdict and among the owner's decisions."""
+
+    n: int
+    report: str
+    argument: str
+    proposed_as: NotRequired[str]
+
+
 class Ledger(TypedDict):
     format: str
     read_at_main: str
@@ -243,6 +271,8 @@ class Ledger(TypedDict):
     lanes: list[Lane]
     reports: list[Report]
     exceptions: list[OwnerException]
+    key_reason_candidates: NotRequired[list[KeyReason]]
+    cross_check: NotRequired[list[str]]
     other_items: list[OtherItem]
 
 
@@ -275,6 +305,9 @@ def printed_side(printed: str, rounding: str) -> Span:
         value = number(printed)
         slack = Fraction(math.ulp(float(value))) + unit(printed)
         return Span(value - slack, value + slack, open_low=False, open_high=False)
+    if rounding == "nearest":
+        value, half = number(printed), unit(printed) / 2
+        return Span(value - half, value + half, open_low=False, open_high=False)
     return printed_span(printed, "unstated")
 
 
@@ -334,9 +367,16 @@ def _problems_of_claim(where: str, claim: Mapping[str, Any], reported_at: str) -
         problems.append(f"{where}: refines names packing_of, entry and source")
     if new is not None and not str(new.get("source") or "").strip():
         problems.append(f"{where}: new_packing names its source")
-    relation = claim.get("record_relation")
-    if relation is not None and relation.get("relation") not in (BELOW, ABOVE, EQUAL):
-        problems.append(f"{where}: record_relation is below, above or equal")
+    for relation in claim.get("record_relations") or []:
+        if relation.get("relation") not in (BELOW, ABOVE, EQUAL):
+            problems.append(f"{where}: a record relation is below, above or equal")
+        if relation.get("lane") not in ("reported", "verified"):
+            problems.append(f"{where}: a record relation names the reported or verified lane")
+    measured = claim.get("measured")
+    if measured is not None and not all(
+        str(measured.get(key) or "").strip() for key in ("against", "finding", "source")
+    ):
+        problems.append(f"{where}: measured names against, finding and source")
     return problems
 
 
@@ -391,6 +431,12 @@ def problems(ledger: Mapping[str, Any]) -> list[str]:
             found.append(f"exception {key}: names no claim of the ledger")
         if not str(exception.get("reason") or "").strip():
             found.append(f"exception {key}: states no reason")
+    for candidate in ledger.get("key_reason_candidates") or []:
+        key = (str(candidate.get("report")), int(candidate.get("n") or 0))
+        if key not in claimed:
+            found.append(f"key-reason candidate {key}: names no claim of the ledger")
+        if not str(candidate.get("argument") or "").strip():
+            found.append(f"key-reason candidate {key}: states no argument")
     for item in ledger.get("other_items") or []:
         missing = set(OtherItem.__annotations__) - set(item)
         if missing:
@@ -409,9 +455,39 @@ def load_ledger(directory: Path) -> Ledger:
 # --------------------------------------------------------------------------- the start
 
 
+#: Digits of the interval arithmetic that encloses a case record's closed form, and of the
+#: root finder whose result an exact sign change then confirms.
+INTERVAL_DIGITS = 90
+#: mpmath's interval context, untyped: its stubs know neither its arithmetic nor its precision.
+IV: Any = mp.iv
+#: How a start member's side is known (`StartMember.model`).
+MODELS = ("exact", "closed form", "root", "print")
+
+
+class StartMember(TypedDict):
+    """One member of a count's start as ``gather`` froze it in ``starts.yaml``.
+
+    ``low`` and ``high`` bound the side (exact fractions; ``open_*`` say whether the bound
+    is excluded). ``lanes`` are the case lanes it stands for, each with the value and exact
+    form the case record printed, which a lane's frozen relation must match.
+    """
+
+    label: str
+    kind: str
+    holders: str
+    model: str
+    low: str
+    high: str
+    open_low: bool
+    open_high: bool
+    shown: str
+    decide: str
+    lanes: list[list[str]]
+
+
 @dataclass(frozen=True)
 class Side:
-    """One side in the walk: the record on the tree, or one report's claim."""
+    """One side in the walk: a member of the record's start, or one report's claim."""
 
     label: str
     holders: str
@@ -422,12 +498,13 @@ class Side:
     reported_at: str = ""
     first_committed: str = ""
     exact: bool = False
-    relation: RecordRelation | None = None
-    record_print: tuple[str, str] | None = None
+    relations: tuple[RecordRelation, ...] = ()
+    record_prints: tuple[tuple[str, str, str], ...] = ()
     decide: str = ""
     restates: str = ""
     refines: Refines | None = None
     new_packing: NewPacking | None = None
+    measured: Measured | None = None
 
 
 def shown(value: Fraction) -> str:
@@ -449,70 +526,340 @@ def _record_holders(bound: Mapping[str, Any]) -> str:
     return f"{text}, improved by {', '.join(improved)}" if improved else text
 
 
-_OPERATORS: Mapping[type[ast.operator], Callable[[Fraction, Fraction], Fraction]] = {
-    ast.Add: lambda a, b: a + b,
-    ast.Sub: lambda a, b: a - b,
-    ast.Mult: lambda a, b: a * b,
-    ast.Div: lambda a, b: a / b,
+_TOKEN = re.compile(r"\s*(?:([0-9]+(?:\.[0-9]+)?)|(sqrt)|([-+*/()]))")
+
+
+def _tokens(form: str) -> list[tuple[str, str]] | None:
+    """The tokens of a closed form, with the implicit products of ``(1/2)sqrt(2)`` made
+    explicit; None where the text has anything else, such as ``root(``."""
+    tokens: list[tuple[str, str]] = []
+    position = 0
+    while position < len(form):
+        match = _TOKEN.match(form, position)
+        if match is None:
+            return None if form[position:].strip() else tokens
+        position = match.end()
+        if match.group(1):
+            token = ("number", match.group(1))
+        elif match.group(2):
+            token = ("sqrt", "sqrt")
+        else:
+            token = ("operator", match.group(3))
+        previous = tokens[-1] if tokens else None
+        implicit = previous is not None and (
+            previous[0] == "number" or previous == ("operator", ")")
+        )
+        if implicit and (token[0] in ("number", "sqrt") or token == ("operator", "(")):
+            tokens.append(("operator", "*"))
+        tokens.append(token)
+    return tokens
+
+
+class _ClosedForm:
+    """A recursive-descent reader of a closed form over the rationals and ``sqrt``.
+
+    It evaluates exactly while it can and in `INTERVAL_DIGITS`-digit interval arithmetic
+    once a square root appears, so the result is an exact `Fraction` or a rigorous
+    enclosure.
+    """
+
+    def __init__(self, tokens: list[tuple[str, str]]) -> None:
+        self.tokens = tokens
+        self.position = 0
+
+    def peek(self) -> tuple[str, str] | None:
+        return self.tokens[self.position] if self.position < len(self.tokens) else None
+
+    def take(self) -> tuple[str, str]:
+        _require(self.position < len(self.tokens), "a closed form ended early")
+        token = self.tokens[self.position]
+        self.position += 1
+        return token
+
+    def expression(self) -> Any:
+        value = self.term()
+        while self.peek() in (("operator", "+"), ("operator", "-")):
+            operator = self.take()[1]
+            other = self.term()
+            value = _combine(value, other, operator)
+        return value
+
+    def term(self) -> Any:
+        value = self.factor()
+        while self.peek() in (("operator", "*"), ("operator", "/")):
+            operator = self.take()[1]
+            other = self.factor()
+            value = _combine(value, other, operator)
+        return value
+
+    def factor(self) -> Any:
+        token = self.take()
+        if token == ("operator", "-"):
+            return -self.factor()
+        if token == ("operator", "("):
+            value = self.expression()
+            _require(self.take() == ("operator", ")"), "an unclosed parenthesis")
+            return value
+        if token[0] == "sqrt":
+            _require(self.take() == ("operator", "("), "sqrt without its argument")
+            value = self.expression()
+            _require(self.take() == ("operator", ")"), "an unclosed sqrt")
+            return IV.sqrt(_interval(value))
+        _require(token[0] == "number", f"an unexpected {token[1]!r}")
+        return Fraction(Decimal(token[1]))
+
+
+def _interval(value: Any) -> Any:
+    """A rigorous interval for an exact `Fraction`, or the interval itself."""
+    if isinstance(value, Fraction):
+        return IV.mpf(value.numerator) / IV.mpf(value.denominator)
+    return value
+
+
+_ARITHMETIC: Mapping[str, Callable[[Any, Any], Any]] = {
+    "+": lambda a, b: a + b,
+    "-": lambda a, b: a - b,
+    "*": lambda a, b: a * b,
+    "/": lambda a, b: a / b,
 }
 
 
-def _evaluate(node: ast.expr) -> Fraction:
-    if isinstance(node, ast.Constant) and type(node.value) is int:
-        return Fraction(node.value)
-    if isinstance(node, ast.BinOp) and type(node.op) in _OPERATORS:
-        return _OPERATORS[type(node.op)](_evaluate(node.left), _evaluate(node.right))
-    if isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.USub):
-        return -_evaluate(node.operand)
-    raise LedgerError("not a rational expression")
+def _combine(value: Any, other: Any, operator: str) -> Any:
+    """Exact while both operands are, in interval arithmetic once either is an interval."""
+    if isinstance(value, Fraction) and isinstance(other, Fraction):
+        return _ARITHMETIC[operator](value, other)
+    return _ARITHMETIC[operator](_interval(value), _interval(other))
+
+
+def _fraction(raw: Any) -> Fraction:
+    """A raw mpmath number (an ``_mpf_`` tuple) as the exact rational it is."""
+    numerator, denominator = to_rational(raw)
+    return Fraction(int(numerator), int(denominator))
+
+
+@contextmanager
+def _interval_digits(digits: int) -> Iterator[None]:
+    """Interval arithmetic at ``digits`` decimal digits, restored afterwards."""
+    saved = IV.prec
+    IV.dps = digits
+    try:
+        yield
+    finally:
+        IV.prec = saved
+
+
+def closed_form_span(form: str) -> Span | None:
+    """A closed form of integers, decimals, ``+ - * /``, parentheses and ``sqrt``, as one
+    exact number or a rigorous enclosure; None for any other form, such as a root."""
+    tokens = _tokens(form) if form else None
+    if not tokens:
+        return None
+    with _interval_digits(INTERVAL_DIGITS):
+        reader = _ClosedForm(tokens)
+        try:
+            value = reader.expression()
+        except LedgerError, ZeroDivisionError:
+            return None
+        if reader.position != len(tokens):
+            return None
+        if isinstance(value, Fraction):
+            return exact_span(value)
+        low, high = value._mpi_
+        return Span(_fraction(low), _fraction(high), open_low=False, open_high=False)
 
 
 def rational_form(text: str) -> Fraction | None:
     """An exact form that is a rational, such as ``53/7`` or ``7 + (4/7)``; None for a
-    closed form with a root, or anything else that is not integer arithmetic."""
-    if not text or not re.fullmatch(r"[0-9+\-*/(). ]+", text):
-        return None
-    try:
-        return _evaluate(ast.parse(text, mode="eval").body)
-    except LedgerError, SyntaxError, ZeroDivisionError:
-        return None
+    closed form with a root, or anything else that is not rational arithmetic."""
+    span = closed_form_span(text) if text and "sqrt" not in text else None
+    return span.low if span is not None and span.low == span.high else None
 
 
-def record_side(n: int, bound: Mapping[str, Any], entries: Iterable[str]) -> Side:
-    """The case record's reported upper bound: its rational exact form, else its print."""
+_MONOMIAL = re.compile(r"([+-]?)([0-9]*)(s(?:\^\{?([0-9]+)\}?)?)?")
+
+
+def polynomial(text: str) -> list[int]:
+    """The integer coefficients, highest degree first, of a polynomial in ``s`` written as
+    ``s^8 - 20s^7 + ... - 6865 = 0`` or ``4775s^{18} - 190430s^{17} + ...``."""
+    written = text.split("=", 1)[0].replace(" ", "")
+    coefficients: dict[int, int] = {}
+    position = 0
+    while position < len(written):
+        match = _MONOMIAL.match(written, position)
+        _require(match is not None and match.end() > position, f"not a polynomial: {text!r}")
+        assert match is not None
+        sign = -1 if match.group(1) == "-" else 1
+        if match.group(3):
+            degree = int(match.group(4) or 1)
+            coefficient = int(match.group(2) or 1)
+        else:
+            _require(match.group(2), f"not a polynomial: {text!r}")
+            degree, coefficient = 0, int(match.group(2))
+        coefficients[degree] = coefficients.get(degree, 0) + sign * coefficient
+        position = match.end()
+    _require(coefficients, f"not a polynomial: {text!r}")
+    return [coefficients.get(degree, 0) for degree in range(max(coefficients), -1, -1)]
+
+
+def _evaluate_at(coefficients: Sequence[int], point: Fraction) -> Fraction:
+    total = Fraction(0)
+    for coefficient in coefficients:
+        total = total * point + coefficient
+    return total
+
+
+def root_span(coefficients: Sequence[int], near: str) -> Span:
+    """A rigorous enclosure of the root of an integer polynomial nearest ``near``: a
+    high-precision root, then rational endpoints where the polynomial changes sign."""
+    with mp.workdps(INTERVAL_DIGITS + 30):
+        root = mp.findroot(lambda s: mp.polyval(list(coefficients), s), mp.mpf(near))
+        centre = _fraction(mp.mpf(root)._mpf_)
+    for places in range(INTERVAL_DIGITS + 30, 20, -5):
+        epsilon = Fraction(1, 10**places)
+        low, high = centre - epsilon, centre + epsilon
+        if _evaluate_at(coefficients, low) * _evaluate_at(coefficients, high) < 0:
+            return Span(low, high, open_low=False, open_high=False)
+    raise LedgerError(f"no sign change of the polynomial around {near}")
+
+
+def _member(
+    label: str,
+    kind: str,
+    holders: str,
+    *,
+    model: str,
+    span: Span,
+    display: str,
+    decide: str,
+    lanes: list[list[str]],
+) -> StartMember:
+    return {
+        "label": label,
+        "kind": kind,
+        "holders": holders,
+        "model": model,
+        "low": str(span.low),
+        "high": str(span.high),
+        "open_low": span.open_low,
+        "open_high": span.open_high,
+        "shown": display,
+        "decide": decide,
+        "lanes": lanes,
+    }
+
+
+def lane_member(
+    n: int,
+    lane: str,
+    bound: Mapping[str, Any],
+    entries: Iterable[str],
+    polynomial_text: str = "",
+) -> StartMember:
+    """One case lane's upper bound: its exact form where that is rational, a rigorous
+    interval where it is a closed form with ``sqrt``, an enclosure of the root a ``root(``
+    form names where the case states the polynomial, else its print within one unit."""
     named = ", ".join(sorted(entries)) or str(bound.get("source_key") or "")
     label = f"record {named}"
-    holders = _record_holders(bound)
+    holders = _record_holders(bound) or ", ".join(sorted(entries))
     value = str(bound["value"])
     form = str(bound.get("exact_form") or "")
-    rational = rational_form(form)
-    if rational is not None:
-        return Side(
+    lanes = [[lane, value, form]]
+    span = closed_form_span(form) if form else None
+    if span is not None and span.low == span.high:
+        return _member(
             label,
-            holders,
-            exact_span(rational),
-            shown(rational),
-            rational,
             "record",
-            exact=True,
+            holders,
+            model="exact",
+            span=span,
+            display=shown(span.low),
+            decide="",
+            lanes=lanes,
+        )
+    if span is not None:
+        decide = f"an exact comparison with the {lane} lane's closed form {form}"
+        return _member(
+            label,
+            "record",
+            holders,
+            model="closed form",
+            span=span,
+            display=value,
+            decide=decide,
+            lanes=lanes,
+        )
+    if form.startswith("root(") and polynomial_text:
+        enclosure = root_span(polynomial(polynomial_text), value)
+        decide = f"an exact comparison with the {lane} lane's {form.partition(',')[0]})"
+        return _member(
+            label,
+            "record",
+            holders,
+            model="root",
+            span=enclosure,
+            display=value,
+            decide=decide,
+            lanes=lanes,
         )
     if "." not in value:
-        exact = number(value)
-        return Side(label, holders, exact_span(exact), value, exact, "record", exact=True)
-    decide = f"an exact comparison with the closed form {form}" if form else ""
-    return Side(
+        exact = exact_span(number(value))
+        return _member(
+            label,
+            "record",
+            holders,
+            model="exact",
+            span=exact,
+            display=value,
+            decide="",
+            lanes=lanes,
+        )
+    degree = bound.get("algebraic_degree")
+    if bound.get("minimal_polynomial"):
+        decide = (
+            f"the root of the {lane} lane's degree-{degree} minimal polynomial at its print "
+            f"{value} (n = {n})"
+        )
+    else:
+        decide = f"the exact side behind the {lane} lane's print {value} (n = {n})"
+    span = printed_side(value, "unstated")
+    return _member(
         label,
-        holders,
-        printed_side(value, "nearest"),
-        value,
-        number(value),
         "record",
-        record_print=(value, form),
-        decide=decide or f"the exact side behind the record's print {value} at n = {n}",
+        holders,
+        model="print",
+        span=span,
+        display=value,
+        decide=decide,
+        lanes=lanes,
     )
 
 
-def pending_side(record: Mapping[str, Any], stated: check_standing.Stated) -> Side:
+def merged_lanes(reported: StartMember, verified: StartMember) -> list[StartMember]:
+    """The two lanes, as one member where they are the same side and separate otherwise."""
+    same = all(
+        reported[key] == verified[key] for key in ("low", "high", "open_low", "open_high")
+    )
+    if same and reported["model"] == verified["model"]:
+        names = dict.fromkeys(
+            [
+                reported["label"].removeprefix("record "),
+                verified["label"].removeprefix("record "),
+            ]
+        )
+        return [
+            {
+                **reported,
+                "label": f"record {', '.join(names)}",
+                "lanes": reported["lanes"] + verified["lanes"],
+            }
+        ]
+    return [
+        {**reported, "label": f"{reported['label']} (reported lane)"},
+        {**verified, "label": f"{verified['label']} (verified lane)"},
+    ]
+
+
+def pending_member(record: Mapping[str, Any], stated: check_standing.Stated) -> StartMember:
     """A register entry pending adoption, at the bound its words state."""
     if stated.slack:
         span = Span(stated.value, stated.value + stated.slack, open_low=False, open_high=True)
@@ -521,78 +868,196 @@ def pending_side(record: Mapping[str, Any], stated: check_standing.Stated) -> Si
     entry = str(record["id"])
     keys = (record.get("attribution") or {}).get("source_keys") or []
     holders = ", ".join(str(key) for key in keys) or entry
-    return Side(
-        f"register {entry}, pending adoption",
-        holders,
-        span,
-        shown(stated.value),
-        stated.value,
+    model = "print" if stated.slack else "exact"
+    decide = f"{entry}'s exact side" if stated.slack else ""
+    label = f"register {entry}, pending adoption"
+    return _member(
+        label,
         "register",
-        exact=not stated.slack,
-        decide=f"{entry}'s exact side" if stated.slack else "",
+        holders,
+        model=model,
+        span=span,
+        display=shown(stated.value),
+        decide=decide,
+        lanes=[],
     )
 
 
-def lowered(start: Side, pending: Sequence[Side]) -> Side:
-    """The start, lowered by the smallest pending register bound decidably below it."""
-    below_start = [side for side in pending if below(side.span, start.span)]
-    smallest = [
-        side
-        for side in below_start
-        if all(below(side.span, other.span) for other in below_start if other is not side)
-    ]
-    return smallest[0] if smallest else start
-
-
-def beyond_side(n: int, rows: Mapping[int, Mapping[str, Any]]) -> Side:
-    """Above the horizon: the current beyond-horizon row, else the grid."""
+def beyond_member(n: int, rows: Mapping[int, Mapping[str, Any]]) -> StartMember:
+    """Above the horizon: the current beyond-horizon row, read within one unit of its
+    print, else the grid."""
     row = rows.get(n)
     if row is None:
-        grid = grid_side(n)
-        return Side(
-            "the grid", "ceil(sqrt n)", exact_span(grid), str(grid), grid, "record", exact=True
+        grid = exact_span(grid_side(n))
+        return _member(
+            "the grid",
+            "record",
+            "ceil(sqrt n)",
+            model="exact",
+            span=grid,
+            display=str(grid.low),
+            decide="",
+            lanes=[],
         )
     value = str(row["value"])
-    return Side(
+    decide = f"the exact side of the beyond-horizon row {row['source_id']} at n = {n}"
+    return _member(
         f"beyond-horizon row {row['source_id']}",
-        str(row["source_id"]),
-        printed_side(value, "nearest"),
-        value,
-        number(value),
         "record",
-        decide=f"the exact side of the beyond-horizon row {row['source_id']} at n = {n}",
+        str(row["source_id"]),
+        model="print",
+        span=printed_side(value, "unstated"),
+        display=value,
+        decide=decide,
+        lanes=[],
     )
 
 
-def tree_starts(counts: Iterable[int]) -> dict[int, Side]:
-    """Each count's start, read from the records on the tree."""
+def tree_members(counts: Iterable[int]) -> dict[int, list[StartMember]]:
+    """Each count's start members, read from the records on the tree: both case lanes and
+    any register entry pending adoption that states a smaller bound, or above the horizon
+    the beyond-horizon row or the grid."""
     wanted = sorted(set(counts))
-    starts: dict[int, Side] = {}
+    members: dict[int, list[StartMember]] = {}
     inside = [n for n in wanted if n <= HORIZON]
     if inside:
         records = view.load_records()
-        pending: dict[int, list[Side]] = {}
+        pending: dict[int, list[StartMember]] = {}
         for record in records.register.results:
             if view.standing(record, records) != view.PENDING_ADOPTION:
                 continue
             for finding in check_standing.improvements(record, records):
                 if finding.direction == check_standing.UPPER:
                     pending.setdefault(finding.n, []).append(
-                        pending_side(record, finding.stated)
+                        pending_member(record, finding.stated)
                     )
         for n in inside:
-            bound = coverage_check.parse_case(FRONTIER / f"n-{n:03d}.md")[
-                "reported_upper_bound"
-            ]
-            entries = view.lane_holders(n, records, "upper", ("reported",))
-            starts[n] = lowered(record_side(n, bound, entries), pending.get(n, []))
+            case = coverage_check.parse_case(FRONTIER / f"n-{n:03d}.md")
+            reported, verified = case["reported_upper_bound"], case["verified_upper_bound"]
+            text = str(
+                reported.get("minimal_polynomial") or verified.get("minimal_polynomial") or ""
+            )
+            lanes = merged_lanes(
+                lane_member(
+                    n,
+                    "reported",
+                    reported,
+                    view.lane_holders(n, records, "upper", ("reported",)),
+                    text,
+                ),
+                lane_member(
+                    n,
+                    "verified",
+                    verified,
+                    view.lane_holders(n, records, "upper", ("verified",)),
+                    text,
+                ),
+            )
+            members[n] = [*lanes, *pending.get(n, [])]
     outside = [n for n in wanted if n > HORIZON]
     if outside:
         coverage = load_yaml(coverage_check.COVERAGE)
         rows = coverage_check.current_beyond_horizon(coverage)
         for n in outside:
-            starts[n] = beyond_side(n, rows)
-    return starts
+            members[n] = [beyond_member(n, rows)]
+    return members
+
+
+def side_of(member: StartMember) -> Side:
+    """A start member as a side of the walk."""
+    span = Span(
+        number(member["low"]),
+        number(member["high"]),
+        open_low=member["open_low"],
+        open_high=member["open_high"],
+    )
+    exact = member["model"] == "exact"
+    value = (
+        span.low if exact else (number(member["shown"]) if "." in member["shown"] else span.low)
+    )
+    prints = tuple((lane[0], lane[1], lane[2]) for lane in member["lanes"])
+    return Side(
+        member["label"],
+        member["holders"],
+        span,
+        member["shown"],
+        value,
+        member["kind"],
+        exact=exact,
+        record_prints=prints,
+        decide=member["decide"],
+    )
+
+
+def record_side(
+    n: int, bound: Mapping[str, Any], entries: Iterable[str], lane: str = "reported"
+) -> Side:
+    """One case lane as a side (`lane_member`)."""
+    return side_of(
+        lane_member(n, lane, bound, entries, str(bound.get("minimal_polynomial") or ""))
+    )
+
+
+def pending_side(record: Mapping[str, Any], stated: check_standing.Stated) -> Side:
+    return side_of(pending_member(record, stated))
+
+
+def beyond_side(n: int, rows: Mapping[int, Mapping[str, Any]]) -> Side:
+    return side_of(beyond_member(n, rows))
+
+
+def minimal(sides: Sequence[Side]) -> list[Side]:
+    """The members nothing else is decidably below: the start the walk is seeded with.
+
+    A pending register bound below a case lane removes that lane; two pending bounds that
+    overlap each other both stay, and a claim must be below both to be recorded.
+    """
+    return [
+        side
+        for side in sides
+        if not any(below(other.span, side.span) for other in sides if other is not side)
+    ]
+
+
+def load_starts(directory: Path, read_at_main: str) -> dict[int, list[Side]]:
+    """The starts ``gather`` froze, refused unless they were read at ``read_at_main``."""
+    value = load_yaml(directory / STARTS)
+    _require(
+        isinstance(value, dict) and value.get("format") == STARTS_FORMAT, f"{STARTS} format"
+    )
+    _require(
+        value.get("read_at_main") == read_at_main,
+        f"{STARTS} was read at {value.get('read_at_main')}, the ledger at {read_at_main}",
+    )
+    return {
+        int(count["n"]): [side_of(cast("StartMember", member)) for member in count["members"]]
+        for count in value["counts"]
+    }
+
+
+def starts_document(
+    read_at_main: str, members: Mapping[int, list[StartMember]]
+) -> dict[str, Any]:
+    return {
+        "format": STARTS_FORMAT,
+        "read_at_main": read_at_main,
+        "counts": [{"n": n, "members": members[n]} for n in sorted(members)],
+    }
+
+
+def tree_drift(directory: Path) -> list[str]:
+    """Where the records on the tree now give a start other than the frozen one."""
+    frozen = load_yaml(directory / STARTS)
+    counts = [int(count["n"]) for count in frozen["counts"]]
+    now = tree_members(counts)
+    drift = []
+    for count in frozen["counts"]:
+        n = int(count["n"])
+        if count["members"] != now[n]:
+            before = "; ".join(f"{m['label']} {m['shown']}" for m in count["members"])
+            after = "; ".join(f"{m['label']} {m['shown']}" for m in now[n])
+            drift.append(f"n = {n}: frozen {before}; on the tree {after}")
+    return drift
 
 
 # --------------------------------------------------------------------------- the walk
@@ -619,24 +1084,40 @@ def entry_side(report: Report, claim: Claim) -> Side:
         reported_at=claim.get("reported_at", report["reported_at"]),
         first_committed=claim.get("first_committed", ""),
         exact=exact,
-        relation=claim.get("record_relation"),
+        relations=tuple(claim.get("record_relations", [])),
         decide=decide,
         restates=claim.get("restates", ""),
         refines=claim.get("refines"),
         new_packing=claim.get("new_packing"),
+        measured=claim.get("measured"),
     )
+
+
+_INVERSE = {BELOW: ABOVE, ABOVE: BELOW, EQUAL: EQUAL}
+
+
+def _frozen(side: Side, other: Side) -> str | None:
+    """A lane's frozen relation of ``side`` to the case lane ``other`` stands for, while
+    the record still prints the value and form the lane read."""
+    for relation in side.relations:
+        read = (relation["lane"], relation["value"], relation["exact_form"])
+        if read in other.record_prints:
+            return relation["relation"]
+    return None
 
 
 def compare(side: Side, other: Side) -> str:
     """Where ``side`` stands against ``other``: below, above, equal or undecided.
 
-    An algebraic side's frozen relation to the case record replaces the spans while the
-    record still prints what the lane read.
+    A lane's frozen relation between an algebraic side and a case lane replaces the spans,
+    read in either order.
     """
-    if side.relation is not None and other.record_print is not None:
-        value, form = other.record_print
-        if (side.relation["value"], side.relation["exact_form"]) == (value, form):
-            return side.relation["relation"]
+    frozen = _frozen(side, other)
+    if frozen is not None:
+        return frozen
+    inverse = _frozen(other, side)
+    if inverse is not None:
+        return _INVERSE[inverse]
     if below(side.span, other.span):
         return BELOW
     if below(other.span, side.span):
@@ -661,7 +1142,7 @@ class Step:
 @dataclass
 class Walk:
     n: int
-    start: Side
+    start: list[Side]
     steps: list[Step]
     standing: list[Side]
 
@@ -673,19 +1154,20 @@ def decider(side: Side, others: Sequence[Side]) -> str:
 
 def walk(
     n: int,
-    start: Side,
+    start: Side | Sequence[Side],
     entries: Sequence[Side],
     exceptions: Mapping[tuple[int, str], str] | None = None,
 ) -> Walk:
     """The owner's rule at one count: each claim in report order against the standing side.
 
-    The standing side is a set: the record, then each recorded claim, together with any
-    undecided claim nothing has since been decidably below. A claim is recorded only when
-    it is below every member; it is not recorded when it is above or exactly equal to
-    one; otherwise it is undecided and joins the set.
+    The standing side is a set: the minimal members of the start (`minimal`), then each
+    recorded claim, together with any undecided claim nothing has since been decidably
+    below. A claim is recorded only when it is below every member; it is not recorded when
+    it is above or exactly equal to one; otherwise it is undecided and joins the set.
     """
     exceptions = exceptions or {}
-    standing = [start]
+    seeds = minimal([start] if isinstance(start, Side) else list(start))
+    standing = list(seeds)
     steps: list[Step] = []
     for side in sorted(entries, key=lambda item: (item.reported_at, item.label)):
         relations = [(member, compare(side, member)) for member in standing]
@@ -706,7 +1188,7 @@ def walk(
         if reason and step.verdict != RECORDED:
             step.verdict, step.exception = BY_EXCEPTION, reason
         steps.append(step)
-    return Walk(n, start, steps, standing)
+    return Walk(n, seeds, steps, standing)
 
 
 # --------------------------------------------------------------------------- the render
@@ -726,9 +1208,24 @@ def _difference(step: Step) -> str:
         return "equal"
     if step.reason == UNDECIDED or not step.holders:
         return ""
-    gap = min(abs(member.value - step.side.value) for member in step.holders)
     word = "below" if step.reason == BELOW else "above"
-    return f"{word} by {scientific(gap)}"
+    gaps = [_gap(step.side, member, step.reason) for member in step.holders]
+    gap, how = min(gaps, key=lambda item: item[0])
+    return f"{word} by {how}{scientific(gap)}"
+
+
+def _gap(side: Side, member: Side, reason: str) -> tuple[Fraction, str]:
+    """How far apart two decided sides are: exactly where both are exact, else the least
+    separation of the numbers each may be; a lane's exact relation where the spans meet."""
+    if side.exact and member.exact:
+        return abs(member.value - side.value), ""
+    if reason == BELOW:
+        separation = member.span.low - side.span.high
+    else:
+        separation = side.span.low - member.span.high
+    if separation > 0:
+        return separation, "at least "
+    return abs(member.value - side.value), "about "
 
 
 def step_record(step: Step) -> dict[str, Any]:
@@ -752,6 +1249,8 @@ def step_record(step: Step) -> dict[str, Any]:
         record["exception"] = step.exception
     if side.restates:
         record["restates"] = side.restates
+    if side.measured is not None:
+        record["measured"] = side.measured["finding"]
     if side.refines is not None:
         record["packing"] = {
             "kind": REFINEMENT,
@@ -794,7 +1293,7 @@ def counts_of(ledger: Ledger) -> list[int]:
     return sorted({claim["n"] for report in ledger["reports"] for claim in report["claims"]})
 
 
-def evaluate(ledger: Ledger, starts: Mapping[int, Side]) -> dict[str, Any]:
+def evaluate(ledger: Ledger, starts: Mapping[int, Sequence[Side]]) -> dict[str, Any]:
     """Every verdict, the owner decisions and the per-report summary, as ``ledger.json``."""
     exceptions = {
         (item["n"], item["report"]): item["reason"] for item in ledger.get("exceptions", [])
@@ -806,14 +1305,22 @@ def evaluate(ledger: Ledger, starts: Mapping[int, Side]) -> dict[str, Any]:
         n: walk(n, starts[n], alternative_entries.get(n, []), exceptions)
         for n in counts_of(ledger)
     }
+    candidates = {
+        (item["n"], item["report"]): item["argument"]
+        for item in ledger.get("key_reason_candidates", [])
+    }
     counts = []
     for result in walks:
         steps = [step_record(step) for step in result.steps]
+        for record in steps:
+            argument = candidates.get((result.n, record["report"]))
+            if argument:
+                record["key_reason_candidate"] = argument
         changed = publication_changes(result, alternative[result.n])
         counts.append(
             {
                 "n": result.n,
-                "start": side_record(result.start),
+                "start": [side_record(side) for side in result.start],
                 "steps": steps,
                 "best_now": [side_record(side) for side in result.standing],
                 "publication_dependent": changed,
@@ -829,10 +1336,13 @@ def evaluate(ledger: Ledger, starts: Mapping[int, Side]) -> dict[str, Any]:
         "read_on": ledger["read_on"],
         "counts": counts,
         "summary": tally(walks),
+        "cross_check": ledger.get("cross_check", []),
         "reports": report_summaries(ledger, walks),
         "owner_decisions": {
             **owner_decisions(ledger, walks, unknown, counts),
             "refinement_chains": refinement_chains(walks),
+            "key_reason_candidates": key_reasons(ledger, walks),
+            "measured_identity": measured_identity(walks),
         },
         "other_items": ledger.get("other_items", []),
     }
@@ -869,6 +1379,53 @@ def publication_changes(default: Walk, without: Walk) -> list[dict[str, Any]]:
             }
         )
     return changed
+
+
+def key_reasons(ledger: Ledger, walks: Sequence[Walk]) -> list[dict[str, Any]]:
+    """Each key-reason candidate beside the verdict the rule gives its claim."""
+    steps = {(result.n, step.side.label): step for result in walks for step in result.steps}
+    found = []
+    for candidate in ledger.get("key_reason_candidates", []):
+        step = steps[(candidate["n"], candidate["report"])]
+        found.append(
+            {
+                **candidate,
+                "verdict": step.verdict,
+                "reason": step.reason,
+                "decided_against": held_by(step),
+                "difference": _difference(step),
+            }
+        )
+    return found
+
+
+def measured_identity(walks: Sequence[Walk]) -> list[dict[str, Any]]:
+    """Each claim whose certificate a measurement compares with another packing, beside
+    what its source says it is; the measurement decides nothing."""
+    found = []
+    for result in walks:
+        for step in result.steps:
+            measured = step.side.measured
+            if measured is None:
+                continue
+            says = (
+                f"a refinement of {step.side.refines['packing_of']}'s packing "
+                f"({step.side.refines['entry']})"
+                if step.side.refines is not None
+                else "a new packing"
+                if step.side.new_packing is not None
+                else "nothing stated"
+            )
+            found.append(
+                {
+                    "n": result.n,
+                    "report": step.side.label,
+                    "verdict": step.verdict,
+                    "source_says": says,
+                    **measured,
+                }
+            )
+    return found
 
 
 def kind_of(step: Step) -> str:
@@ -1114,19 +1671,23 @@ def readme(ledger: Ledger, verdicts: Mapping[str, Any]) -> str:
         "The owner's rule: “" + " ".join(ledger["rule"].split()) + "”",
         "",
         (
-            "At each count the standing side starts at the record on `main`. For n ≤ 324 that "
-            "is the case record's reported upper bound (`packing/frontier/n-NNN.md`): its "
-            "exact form where that is a rational, else its printed value within one unit of "
-            "its last place, lowered by a register entry pending adoption that states a "
-            "smaller bound. Above 324 it is the current beyond-horizon row of "
+            "At each count the standing side starts at the record on `main`, frozen by "
+            "`gather` in [starts.yaml](starts.yaml) and never read from the working tree. For "
+            "n ≤ 324 it is the set of both upper lanes of the case record "
+            "(`packing/frontier/n-NNN.md`): each lane's exact form where that is rational, a "
+            "rigorous 90-digit interval where it is a closed form with square roots, an "
+            "enclosure by exact sign change of the root a `root(...)` form names, else its "
+            "printed value within one unit of its last place; with any register entry pending "
+            "adoption that states a smaller bound, and only the members nothing else is "
+            "decidably below. Above 324 it is the current beyond-horizon row of "
             "`frontier/source-coverage.yaml`, else the grid ⌈√n⌉. The claims are then taken in "
             "the order they reached this repository: issue, comment or pull-request creation, "
             "the update comment for a claim added to an issue later, the commit for a claim "
             "added to a pull request later, and the first commit for a publication in a "
             "watched repository that no issue reports. A claim is recorded when every number "
-            "it may be is below every number the standing side may be, and it becomes the "
-            "standing side. A claim equal to the standing side (a tie: the earlier holder "
-            "keeps it) or above it is not recorded, and the table names what holds the count. "
+            "it may be is below every number every member of the standing side may be, and it "
+            "becomes the standing side. A claim equal to a member (a tie: the earlier holder "
+            "keeps it) or above one is not recorded, and the table names what holds the count. "
             "A comparison the printed precision cannot decide is undecided; the undecided "
             "claim stays beside the standing side until a claim is decidably below both. Exact "
             "sides come from the lanes' frozen claim records or, where `ledger.yaml` says so, "
@@ -1196,8 +1757,10 @@ def readme(ledger: Ledger, verdicts: Mapping[str, Any]) -> str:
         "| ---: | --- | --- | --- |",
     ]
     for count in verdicts["counts"]:
-        start = count["start"]
-        record = f"{start['side']} ({_cell(start['label'])}; {_cell(start['holders'])})"
+        record = "; ".join(
+            f"{member['side']} ({_cell(member['label'])}; {_cell(member['holders'])})"
+            for member in count["start"]
+        )
         steps = []
         for step in count["steps"]:
             verdict = recorded_text(step)
@@ -1208,6 +1771,10 @@ def readme(ledger: Ledger, verdicts: Mapping[str, Any]) -> str:
                 detail += f"; exception: {step['exception']}"
             if step.get("restates"):
                 detail = f"{detail}; {step['restates']}".lstrip("; ")
+            if step.get("measured"):
+                detail = f"{detail}; measured: {step['measured']}".lstrip("; ")
+            if step.get("key_reason_candidate"):
+                detail = f"{detail}; key-reason candidate (owner decision)".lstrip("; ")
             steps.append(
                 f"{_cell(step['report'])} {step['side']}: {verdict}"
                 + (f" ({_cell(detail)})" if detail else "")
@@ -1220,6 +1787,17 @@ def readme(ledger: Ledger, verdicts: Mapping[str, Any]) -> str:
         lines.append(f"| {count['n']} | {record} | {'; '.join(steps)} | {best} |")
     lines += _decision_lines(verdicts["owner_decisions"])
     lines += _note_lines(ledger)
+    lines += [
+        "",
+        "## Lane Cross-Check",
+        "",
+        (
+            "Where a lane's claim record reads another report's side in a way this ledger's "
+            "claim contradicts, as `gather` found it."
+        ),
+        "",
+        *([f"- {_cell(warning)}" for warning in verdicts["cross_check"]] or ["None."]),
+    ]
     lines += [
         "",
         "## Other Items (No New Upper Bound)",
@@ -1271,6 +1849,25 @@ def _decision_lines(decisions: Mapping[str, Any]) -> list[str]:
     else:
         lines.append("None.")
     lines += [
+        "",
+        "### Key-Reason Candidates",
+        "",
+        (
+            "Claims an argument says have a key reason to be recorded. The rule does not "
+            "apply it: the verdict is the rule's, and the owner decides."
+        ),
+        "",
+        *_key_reason_lines(decisions["key_reason_candidates"]),
+        "",
+        "### Measured Identity Against the Source's Word",
+        "",
+        (
+            "Claims whose certificate a measurement compares with another packing. The "
+            "measurement is recorded beside what the source says and decides nothing; the "
+            "owner decides the credit."
+        ),
+        "",
+        *_measured_lines(decisions["measured_identity"]),
         "",
         "### Refinement Chains",
         "",
@@ -1355,6 +1952,38 @@ def _decision_lines(decisions: Mapping[str, Any]) -> list[str]:
     return lines
 
 
+def _key_reason_lines(items: Sequence[Mapping[str, Any]]) -> list[str]:
+    if not items:
+        return ["None."]
+    lines = [
+        "| n | Report | Rule's verdict | Argument | Proposed as |",
+        "| ---: | --- | --- | --- | --- |",
+    ]
+    for item in items:
+        verdict = f"{item['verdict']} ({item['difference']} {item['decided_against']})".strip()
+        lines.append(
+            f"| {item['n']} | {_cell(item['report'])} | {_cell(verdict)} "
+            f"| {_cell(item['argument'])} | {_cell(item.get('proposed_as', '-'))} |"
+        )
+    return lines
+
+
+def _measured_lines(items: Sequence[Mapping[str, Any]]) -> list[str]:
+    if not items:
+        return ["None."]
+    lines = [
+        "| n | Report | Verdict | The source says | Measured against | Finding | Measured by |",
+        "| ---: | --- | --- | --- | --- | --- | --- |",
+    ]
+    lines.extend(
+        f"| {item['n']} | {_cell(item['report'])} | {item['verdict']} "
+        f"| {_cell(item['source_says'])} | {_cell(item['against'])} "
+        f"| {_cell(item['finding'])} | {_cell(item['source'])} |"
+        for item in items
+    )
+    return lines
+
+
 def _chain_lines(chains: Sequence[Mapping[str, Any]]) -> list[str]:
     if not chains:
         return ["None."]
@@ -1433,13 +2062,18 @@ def _note_lines(ledger: Ledger) -> list[str]:
 
 
 def json_text(value: Any) -> str:
-    return json.dumps(value, indent=1, ensure_ascii=False) + "\n"
+    """JSON in the retained layout (`sqpack.retained_json`), non-ASCII kept."""
+    return retained_dumps(value, ensure_ascii=False)
 
 
 def rendered(directory: Path) -> dict[str, str]:
-    """The two rendered files' text, from the ledger and the records on the tree."""
+    """The two rendered files' text, from the ledger and the starts ``gather`` froze; the
+    records on the tree are not read (`tree_drift` compares them)."""
     ledger = load_ledger(directory)
-    verdicts = evaluate(ledger, tree_starts(counts_of(ledger)))
+    starts = load_starts(directory, ledger["read_at_main"])
+    missing = sorted(set(counts_of(ledger)) - set(starts))
+    _require(not missing, f"{STARTS} has no start at n = {missing}")
+    verdicts = evaluate(ledger, starts)
     return {VERDICTS: json_text(verdicts), README: readme(ledger, verdicts)}
 
 
@@ -1533,13 +2167,19 @@ def _lane_claim(
             "first_committed": str(row["first_committed"]),
             "note": f"algebraic side of degree {row['degree']}; the print is the lane's",
         }
-        if case.get("reported_relation") in (BELOW, ABOVE, EQUAL):
-            claim["record_relation"] = {
-                "relation": str(case["reported_relation"]),
-                "value": str(case["reported_value"]),
-                "exact_form": str(case.get("reported_exact_form") or ""),
+        relations: list[RecordRelation] = [
+            {
+                "lane": lane,
+                "relation": str(case[f"{lane}_relation"]),
+                "value": str(case[f"{lane}_value"]),
+                "exact_form": str(case.get(f"{lane}_exact_form") or ""),
                 "read_from": where,
             }
+            for lane in ("reported", "verified")
+            if case.get(f"{lane}_relation") in (BELOW, ABOVE, EQUAL)
+        ]
+        if relations:
+            claim["record_relations"] = relations
         return claim
     offered = str(row["offered_side"])
     claim = {
@@ -1555,10 +2195,22 @@ def _lane_claim(
     return claim
 
 
+def record_key(mapping: Mapping[str, Any]) -> str:
+    return f"{mapping['lane']}:{mapping['packet']}/{mapping['record']}"
+
+
 def lane_claims(
-    mapping: Mapping[str, Any], lanes: Mapping[str, Mapping[str, Any]], url: str, rounding: str
+    mapping: Mapping[str, Any],
+    lanes: Mapping[str, Mapping[str, Any]],
+    url: str,
+    rounding: str,
+    taken: dict[str, set[int]] | None = None,
 ) -> list[Claim]:
-    """The claims one lane record gives a report: its rows printed in it, or those named."""
+    """The claims one lane record gives a report: its rows printed in it, or those named.
+
+    ``taken`` collects every row of every record read, and the rows some report took, so
+    ``gather`` can refuse a row no report claims (`unclaimed_rows`).
+    """
     lane = lanes[mapping["lane"]]
     path = f"packing/resources/web/{mapping['packet']}/acquisition/{mapping['record']}"
     record = git_show(lane["commit"], path)
@@ -1568,7 +2220,38 @@ def lane_claims(
     if wanted:
         found = {int(row["n"]) for row in rows}
         _require(found == wanted, f"{path}: no rows for {sorted(wanted - found)}")
+    if taken is not None:
+        key = record_key(mapping)
+        taken.setdefault(f"{key} rows", set()).update(
+            int(row["n"]) for row in record["results"]
+        )
+        taken.setdefault(key, set()).update(int(row["n"]) for row in rows)
+        taken[key].update(int(n) for n in mapping.get("not_ours") or [])
     return [_lane_claim(row, mapping, where, rounding, url) for row in rows]
+
+
+def unclaimed_rows(taken: Mapping[str, set[int]]) -> list[str]:
+    """Each lane record's rows that no report took and no mapping names as ``not_ours``."""
+    return [
+        f"{key}: rows {sorted(rows - taken.get(key, set()))} are claimed by no report; "
+        "map them to one or list them in a mapping's not_ours"
+        for key, rows in sorted(
+            (name.removesuffix(" rows"), rows)
+            for name, rows in taken.items()
+            if name.endswith(" rows")
+        )
+        if rows - taken.get(key, set())
+    ]
+
+
+def frontier_differs(read_at_main: str) -> bool:
+    """Whether the checkout's ``packing/frontier/`` differs from ``read_at_main``'s."""
+    compared = subprocess.run(
+        ("git", "-C", str(REPO), "diff", "--quiet", read_at_main, "--", "packing/frontier"),
+        check=False,
+    )
+    _require(compared.returncode in (0, 1), f"git cannot compare with {read_at_main}")
+    return compared.returncode == 1
 
 
 def _selected(
@@ -1603,9 +2286,20 @@ def _later(claim: Claim, reported_at: str) -> Claim:
 
 
 def gather(directory: Path, *, snapshot: bool = False, api: Fetch = _gh_api) -> list[str]:
-    """Write ``github-issues.json`` and ``ledger.yaml``; return the cross-check warnings."""
+    """Write ``github-issues.json``, ``ledger.yaml`` and ``starts.yaml``; return the
+    cross-check warnings, which ``ledger.yaml`` keeps too.
+
+    The starts are read from the checkout's records, which must be ``read_at_main``'s, so
+    the frozen starts are the ones the ledger says it was decided against.
+    """
     sources = load_yaml(directory / SOURCES)
     _require(sources.get("format") == SOURCES_FORMAT, f"{SOURCES} format")
+    read_at_main = str(sources["read_at_main"])
+    _require(
+        not frontier_differs(read_at_main),
+        f"packing/frontier/ differs from read_at_main {read_at_main[:12]}: gather the starts "
+        "from a checkout of it, or move read_at_main",
+    )
     lanes = {lane["name"]: lane for lane in sources["lanes"]}
     if snapshot:
         github = json.loads((directory / SNAPSHOT).read_text(encoding="utf-8"))["items"]
@@ -1617,6 +2311,7 @@ def gather(directory: Path, *, snapshot: bool = False, api: Fetch = _gh_api) -> 
         ]
     by_report = {item["report"]: item for item in github}
     reports: list[Report] = []
+    taken: dict[str, set[int]] = {}
     for source in sources["reports"]:
         item = by_report.get(source["report"])
         if item is not None:
@@ -1627,7 +2322,7 @@ def gather(directory: Path, *, snapshot: bool = False, api: Fetch = _gh_api) -> 
         from_lanes = [
             claim
             for mapping in source.get("lanes", [])
-            for claim in lane_claims(mapping, lanes, url, rounding)
+            for claim in lane_claims(mapping, lanes, url, rounding, taken)
         ]
         claims = _merge(source.get("claims", []), from_lanes)
         if kind == "pull-request":
@@ -1644,24 +2339,33 @@ def gather(directory: Path, *, snapshot: bool = False, api: Fetch = _gh_api) -> 
         if source.get("note"):
             report["note"] = source["note"]
         reports.append(report)
+    unclaimed = unclaimed_rows(taken)
+    _require(not unclaimed, "; ".join(unclaimed))
     ledger: Ledger = {
         "format": LEDGER_FORMAT,
-        "read_at_main": sources["read_at_main"],
+        "read_at_main": read_at_main,
         "read_on": sources["read_on"],
         "rule": sources["rule"],
         "lanes": sources["lanes"],
         "reports": reports,
         "exceptions": sources.get("exceptions", []),
+        "key_reason_candidates": sources.get("key_reason_candidates", []),
         "other_items": sources.get("other_items", []),
     }
+    warnings = cross_check(ledger, sources, lanes)
+    ledger["cross_check"] = warnings
     found = problems(ledger)
     _require(not found, "; ".join(found))
-    snapshot_text = json_text({"format": SNAPSHOT_FORMAT, "items": github})
-    ledger_text = yaml.safe_dump(ledger, sort_keys=False, allow_unicode=True, width=88)
-    for name, text in ((SNAPSHOT, snapshot_text), (LEDGER, ledger_text)):
+    starts = starts_document(read_at_main, tree_members(counts_of(ledger)))
+    texts = (
+        (SNAPSHOT, json_text({"format": SNAPSHOT_FORMAT, "items": github})),
+        (LEDGER, yaml.safe_dump(ledger, sort_keys=False, allow_unicode=True, width=88)),
+        (STARTS, yaml.safe_dump(starts, sort_keys=False, allow_unicode=True, width=88)),
+    )
+    for name, text in texts:
         with atomic_output_file(directory / name) as temporary:
             Path(temporary).write_text(text, encoding="utf-8")
-    return cross_check(ledger, sources, lanes)
+    return warnings
 
 
 def _pending_owner(
@@ -1762,6 +2466,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         command.add_argument("directory", type=Path, nargs="?", default=DEFAULT_DIRECTORY)
         if name == "gather":
             command.add_argument("--snapshot", action="store_true")
+        if name == "check":
+            command.add_argument(
+                "--tree",
+                action="store_true",
+                help="also report where today's records give other starts (never fails)",
+            )
         if name == "render":
             mode = command.add_mutually_exclusive_group()
             mode.add_argument(
@@ -1774,12 +2484,20 @@ def main(argv: Sequence[str] | None = None) -> int:
         warnings = gather(directory, snapshot=args.snapshot)
         for warning in warnings:
             print(f"WARN  {warning}")
-        print(f"wrote {SNAPSHOT} and {LEDGER}; {len(warnings)} cross-check warnings")
+        print(f"wrote {SNAPSHOT}, {LEDGER} and {STARTS}; {len(warnings)} cross-check warnings")
         return 0
     if args.action == "check":
         ledger = load_ledger(directory)
+        starts = load_starts(directory, ledger["read_at_main"])
+        missing = sorted(set(counts_of(ledger)) - set(starts))
+        _require(not missing, f"{STARTS} has no start at n = {missing}")
         claims = sum(len(report["claims"]) for report in ledger["reports"])
-        print(f"OK: {len(ledger['reports'])} reports, {claims} claims")
+        print(f"OK: {len(ledger['reports'])} reports, {claims} claims, {len(starts)} starts")
+        if args.tree:
+            drift = tree_drift(directory)
+            for line in drift:
+                print(f"DRIFT  {line}")
+            print(f"{len(drift)} counts where today's records give another start (not a gate)")
         return 0
     changed = render(directory, check=args.check)
     if args.check and changed:
