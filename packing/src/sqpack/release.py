@@ -85,6 +85,16 @@ class PublicationHistoryEntry(NamedTuple):
 #: for each deployment's commit, what the page it built stated.
 PUBLICATION_HISTORY = (
     PublicationHistoryEntry(
+        version="v0.6.4",
+        first_published="October 14, 2026",
+        result_scope=(
+            "Register 24 results from the 14 October intake, none adopting a house: "
+            "smaller exact packings and certificates at 69 counts, lower bounds at 37, "
+            "39, 44 and 145 to 149, Hiroaki Hosono's closed form, which raises 154 "
+            "reported lower bounds, Kevin Fang's n^2 - n + 1 theorem and s(76) = 9."
+        ),
+    ),
+    PublicationHistoryEntry(
         version="v0.6.3",
         first_published="October 14, 2026",
         result_scope=(
@@ -654,6 +664,18 @@ class ReleaseImpactDecision(NamedTuple):
 RELEASE_IMPACTS: tuple[ReleaseImpactDecision, ...] = (
     ReleaseImpactDecision(
         component="site",
+        previous_version="v0.6.3",
+        version="v0.6.4",
+        impact="patch",
+        reason=(
+            "Register 24 results from the 14 October intake, none adopting a house: "
+            "smaller exact packings and certificates at 69 counts, lower bounds at 37, "
+            "39, 44 and 145 to 149, Hiroaki Hosono's closed form, which raises 154 "
+            "reported lower bounds, Kevin Fang's n^2 - n + 1 theorem and s(76) = 9."
+        ),
+    ),
+    ReleaseImpactDecision(
+        component="site",
         previous_version="v0.6.2",
         version="v0.6.3",
         impact="patch",
@@ -797,7 +819,7 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "papers/n11-threshold-bound-review.md",
         ),
         reason=(
-            "Rendered from main at 2319afaa and from this branch at one link revision, "
+            "Rendered from main at 77fa15c7 and from this branch at one link revision, "
             "both papers' HTML before the browser's math pass and their Markdown are "
             "byte-identical; the math pass and the PDF take that same HTML. The register "
             "gains T-161 to T-184, the importer reads longer literals, the case generator "
@@ -826,7 +848,7 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "papers/n11-lower-bounds-explainer.md",
         ),
         reason=(
-            "Rendered from main at 2319afaa and from this branch, the HTML before the "
+            "Rendered from main at 77fa15c7 and from this branch, the HTML before the "
             "browser's math pass and the Markdown differ only in the live register count "
             "beside T-018, 160 results registered so far and now 184. The claim documents "
             "change only the revision their links pin. A register count follows the site's "
@@ -873,7 +895,7 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "papers/square-packing-methods-survey.md",
         ),
         reason=(
-            "Rendered from main at 2319afaa and from this branch at one link revision, the "
+            "Rendered from main at 77fa15c7 and from this branch at one link revision, the "
             "HTML before the browser's math pass and the Markdown are byte-identical; the "
             "PDF prints from that HTML. Each case record gains the closed form's reported "
             "lower bound, its evidence and resource, a later source_reviewed date and a "
@@ -1147,7 +1169,7 @@ def validate_release_impacts(
 #: fresh render, so a link naming the build commit would fail their drift check forever. It is
 #: in no version string. It moves when the claim documents are regenerated for an edition. It
 #: must be a commit on `main`; the site's own links name `main` itself (`devtools.repo_links`).
-PUBLICATION_REVISION = "e4d46b8d"
+PUBLICATION_REVISION = "e3cf9421"
 
 
 def data_pathspec() -> tuple[str, ...]:
