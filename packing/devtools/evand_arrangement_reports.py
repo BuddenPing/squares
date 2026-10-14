@@ -44,10 +44,11 @@ RECEIPT_FORMAT = "evand-399-complete-exact-replay-v1"
 JOBS = ("positive", "duplicate-square-overlap", "square-translated-outside-container")
 ROUTES = ("exact_verify", "independent")
 MAX_BYTES = 4_000_000
-#: The longest exact diagnostic a receipt row may state, in characters. Two receipts passed
-#: the earlier ceiling of 1,024: #567's n261 outside-container control states a wall
-#: clearance of 2,205 characters, and #569's n272 positive a least pair gap of 1,043.
-MAX_RATIONAL_CHARS = 4096
+#: The longest exact diagnostic a receipt row may state, in characters. Receipts passed the
+#: earlier ceiling of 1,024: #567's n261 outside-container control states a wall clearance
+#: of 2,205 characters and #569's n272 positive a least pair gap of 1,043, and PR #574's n146
+#: certificate has rotation literals of 6,023 characters, whose products are twice as long.
+MAX_RATIONAL_CHARS = 32768
 MAX_XZ_MEMORY = 32 * 1024 * 1024
 JOB_TIMEOUT = 600
 WITNESS_PREFIX = "W-evand-399-n"
