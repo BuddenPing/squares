@@ -118,7 +118,7 @@ def _exact30(a30: Decimal) -> str:
         return f"{int(places.scaleb(30))}/1{'0' * 30}"
 
 
-def _stronger(n: int, a30: Decimal) -> str | None:
+def stronger(n: int, a30: Decimal) -> str | None:
     for entry, bound, counts in STRONGER:
         if n in counts and Fraction(a30) < bound:
             return entry
@@ -146,7 +146,7 @@ def plans(frontier: Path = FRONTIER) -> list[Plan]:
         if relation not in {">", "="} or not (frontier / f"n-{n:03d}.md").exists():
             continue
         a30 = Decimal(row["a_floor_30"])
-        raising = relation == ">" and _stronger(n, a30) is None
+        raising = relation == ">" and stronger(n, a30) is None
         evidence = (REPORT,) if raising else EQUAL_EVIDENCE if relation == "=" else ()
         if not evidence:
             continue
@@ -223,23 +223,33 @@ def _append_list(front: str, name: str, items: Sequence[str]) -> str:
 def apply_case(plan: Plan, frontier: Path = FRONTIER) -> str:
     """The case record with this plan written into it."""
     front, payload, body = _front(plan.n, frontier)
-    current = payload.get("reported_lower_bound")
+    current: Mapping[str, Any] = payload.get("reported_lower_bound") or {}
     if plan.raise_reported:
-        if not _ours(current) and str((current or {}).get("value")) != str(plan.held["value"]):
+        if not _ours(current) and str(current.get("value")) != str(plan.held["value"]):
             raise ValueError(
                 f"n = {plan.n}: the reported lower bound is {current.get('value')!r}, "
                 f"not the {plan.held['value']!r} the evaluation compared with"
             )
-        front = _replace_block(front, "reported_lower_bound", _block("reported_lower_bound", reported_field(plan)))
+        front = _replace_block(
+            front, "reported_lower_bound", _block("reported_lower_bound", reported_field(plan))
+        )
     existing = payload.get("evidence") or []
-    front = _append_list(front, "evidence", [f"  - {item}\n" for item in plan.evidence if item not in existing])
+    front = _append_list(
+        front, "evidence", [f"  - {item}\n" for item in plan.evidence if item not in existing]
+    )
     keys = {resource.get("key") for resource in payload.get("resources") or []}
     if SOURCE_KEY not in keys:
         dumped = yaml.safe_dump([RESOURCE], allow_unicode=True, sort_keys=False, width=100)
-        front = _append_list(front, "resources", ["".join("  " + line + "\n" for line in dumped.splitlines())])
+        front = _append_list(
+            front, "resources", ["".join("  " + line + "\n" for line in dumped.splitlines())]
+        )
     reviewed = max(str(payload.get("source_reviewed") or ""), INTAKE)
     front = re.sub(
-        r"^  source_reviewed: .*$", f"  source_reviewed: '{reviewed}'", front, count=1, flags=re.MULTILINE
+        r"^  source_reviewed: .*$",
+        f"  source_reviewed: '{reviewed}'",
+        front,
+        count=1,
+        flags=re.MULTILINE,
     )
     title, _, rest = body.partition("\n\n")
     parts = rest.split("\n\n")
@@ -261,7 +271,8 @@ def stale(frontier: Path = FRONTIER) -> list[str]:
     return [
         f"n = {plan.n}"
         for plan in plans(frontier)
-        if apply_case(plan, frontier) != (frontier / f"n-{plan.n:03d}.md").read_text(encoding="utf-8")
+        if apply_case(plan, frontier)
+        != (frontier / f"n-{plan.n:03d}.md").read_text(encoding="utf-8")
     ]
 
 
@@ -276,9 +287,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.plan:
         for plan in found:
             lane = "reported" if plan.raise_reported else "cites"
-            print(f"{plan.n}\t{lane}\t{_a12(plan.a30)}\t{plan.held.get('value')}\t{','.join(plan.evidence)}")
+            print(
+                f"{plan.n}\t{lane}\t{_a12(plan.a30)}\t{plan.held.get('value')}\t{','.join(plan.evidence)}"
+            )
         raised = [plan.n for plan in found if plan.raise_reported]
-        print(f"{len(raised)} reported lanes raised, {len(found) - len(raised)} records cite only")
+        print(
+            f"{len(raised)} reported lanes raised, {len(found) - len(raised)} records cite only"
+        )
         return 0
     if args.check:
         problems = stale(args.frontier)

@@ -14,6 +14,7 @@ from pathlib import Path
 
 import pytest
 
+from devtools import upper_bound_reports
 from devtools.check_certificate_citations import (
     CASES,
     DEFERRAL_DAYS,
@@ -185,9 +186,7 @@ def test_a_method_limit_result_cannot_stand_in_for_a_bound() -> None:
 
 
 def test_the_horizon_is_the_import_tools_horizon() -> None:
-    from devtools.upper_bound_reports import HORIZON as REPORTS_HORIZON
-
-    assert HORIZON == REPORTS_HORIZON
+    assert HORIZON == upper_bound_reports.HORIZON
 
 
 def test_the_source_register_stands_in_only_past_the_horizon() -> None:

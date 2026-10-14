@@ -44,6 +44,7 @@ import re
 from collections.abc import Mapping, Sequence
 from datetime import date
 from pathlib import Path
+from typing import Any
 
 from sqpack.yamlio import safe_load
 
@@ -145,7 +146,7 @@ HORIZON = 324
 
 def beyond_horizon_evidence(
     evidence_by_id: Mapping[str, Mapping[str, object]],
-    coverage: Mapping[str, object] | None = None,
+    coverage: Mapping[str, Any] | None = None,
 ) -> set[str]:
     """Evidence wholly beyond the case corpus that the source register cites.
 
@@ -156,14 +157,17 @@ def beyond_horizon_evidence(
     exception cannot hide a bound a case should carry. `coverage` is the source register,
     read from `frontier/source-coverage.yaml` when not given.
     """
-    if coverage is None:
-        coverage = safe_load((FRONTIER / "source-coverage.yaml").read_text(encoding="utf-8"))
+    register: Mapping[str, Any] = (
+        coverage
+        if coverage is not None
+        else safe_load((FRONTIER / "source-coverage.yaml").read_text(encoding="utf-8"))
+    )
     listing: dict[str, set[str]] = {}
-    for source in coverage.get("sources") or []:
+    for source in register.get("sources") or []:
         for identifier in source.get("evidence") or []:
             listing.setdefault(str(identifier), set()).add(str(source["id"]))
     rows = {
-        (row["n"], str(row["source_id"])) for row in coverage.get("beyond_horizon_claims") or []
+        (row["n"], str(row["source_id"])) for row in register.get("beyond_horizon_claims") or []
     }
     found: set[str] = set()
     for identifier, sources in listing.items():

@@ -1124,8 +1124,10 @@ COPY_SEPARATELY = (
         for name in (
             "README.md",
             "acquisition/sources.json",
-            "square-packing/problems/square-lower-bounds/certificates/mixed_n145_L1224/"
-            "completion-audit.json",
+            (
+                "square-packing/problems/square-lower-bounds/certificates/mixed_n145_L1224/"
+                "completion-audit.json"
+            ),
             "receipts/linear-premises.json",
             "receipts/linear-sample-diagnostic.json",
         )
