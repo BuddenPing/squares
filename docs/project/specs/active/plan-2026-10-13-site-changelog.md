@@ -209,9 +209,13 @@ register, followed by the shared “All news →” action.
 These highlights reuse result claims, credit and evidence without inventing changelog
 launch entries for older results.
 Explanations combines the former Papers and Visualize navigation entries.
-Its existing section-tab design links Papers (`papers.html`), Film (`visualize.html`)
-and Workbench (`workbench/`); all three retain their URLs and share the active
-Explanations entry. The landing page’s H1 is Explanations.
+Its landing page (`papers.html`) has the Explanations H1 and four sections: Tutorial,
+Papers, PDFs and Visuals.
+Tutorial comes first as a prominent starting point.
+Visuals contains the film and the existing two-choice Film/Workbench switch; Film links
+to `papers.html#visuals`, and Workbench retains `workbench/`. The standalone
+`visualize.html` film URL remains available.
+Inline film playback requires a press; visiting Explanations does not start it.
 The homepage browser title and sharing title are The Squares Project, from the existing
 project-name constant.
 

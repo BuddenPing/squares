@@ -414,9 +414,9 @@ def test_papers_groups_every_reading_and_the_resources_keep_detail_reachable(
     assert cards == [paper.href for paper in overview_sections.PAPERS] + [
         overview_sections.PDF_CARD_SPECS[1][0]
     ]
-    assert [(href, tag, card_text(body)) for href, tag, body in _page_cards(paper_section)] == [
-        (href, tag, card_text(body)) for href, tag, body in _page_cards(papers)
-    ]
+    assert {href: (tag, card_text(body)) for href, tag, body in _page_cards(paper_section)} == {
+        href: (tag, card_text(body)) for href, tag, body in _page_cards(papers)
+    }
     assert 'target="_blank"' not in paper_section
     assert "popover" not in section
     assert 'class="site-homepage-media"' in media_section
@@ -550,8 +550,11 @@ def test_the_homepage_film_is_a_native_player_started_by_the_reader(page: str) -
 
 
 def _page_cards(page: str) -> list[tuple[str, str, str]]:
-    """A page's first card section: each card's address, opening tag, and body."""
-    frame = page.split('<div class="site-cards-frame', 1)[1].split("</div></div>", 1)[0]
+    """Reading cards, including Explanations' separate Tutorial and Papers sections."""
+    if '<h1 id="explanations"' in page:
+        frame = page.split('<h2 id="tutorial"', 1)[1].split('<h2 id="pdfs"', 1)[0]
+    else:
+        frame = page.split('<div class="site-cards-frame', 1)[1].split("</div></div>", 1)[0]
     cards = re.findall(
         r'<a class="site-card site-card-link" href="([^"]+)"([^>]*)>(.*?)</a>', frame, re.DOTALL
     )
@@ -606,7 +609,8 @@ def test_each_page_card_is_a_plain_link_to_its_page(about: str, papers: str) -> 
             )
             is None
         )
-    for (href, tag, body), paper in zip(cards, entries, strict=True):
+    displayed_entries = (entries[-1], *entries[:-1])
+    for (href, tag, body), paper in zip(cards, displayed_entries, strict=True):
         assert href in render_overview.SITE_PAGES, href
         assert tag == f' data-go="page" data-card-size="{paper.size}"', href
         assert "popovertarget" not in tag, href
@@ -2822,31 +2826,40 @@ def test_every_site_page_carries_the_same_bar(
 def test_the_explanations_section_and_its_shared_tabs_are_marked_current(
     rendered: Callable[[str], str],
 ) -> None:
-    """The shared Explanations entry leads to papers, with a tab for papers, film and
-    the workbench that marks the current destination on each page."""
+    """Explanations has a prominent tutorial and a bottom Visuals switch."""
     nav = render_overview.nav_html("overview")
     assert '<a data-page="explanations" href="papers.html">Explanations</a>' in nav
-    assert "Visualizer" not in nav
-    film = rendered("visualize.html")
+    page = rendered("papers.html")
+    article = papers_article(page)
+    assert [
+        article.index(f'id="{section}"')
+        for section in ("tutorial", "papers", "pdfs", "visuals")
+    ] == sorted(
+        article.index(f'id="{section}"')
+        for section in ("tutorial", "papers", "pdfs", "visuals")
+    )
+    tabs = render_overview.visualize_tabs("film")
+    assert article.index('id="visuals"') < article.index(tabs) < article.index("<video ")
+    assert "data-autoplay" not in article
+    header = page.split('class="kpress-site-header"', 1)[1].split("</header>", 1)[0]
+    assert 'class="site-tabs"' not in header
     for page, root, tab in (
-        (rendered("papers.html"), "", "papers"),
-        (film, "", "film"),
+        (rendered("visualize.html"), "", "film"),
         (_workbench_page(), "../", "workbench"),
     ):
         assert re.findall(r'<a data-page="(\w+)" aria-current="page"', page) == ["explanations"]
         tabs = render_overview.visualize_tabs(tab, root=root)
         assert page.count('class="site-tabs"') == 1
         assert tabs in page
-        assert 'aria-label="Explanations"' in tabs
-        assert re.findall(r'data-tab="(\w+)"', tabs) == ["papers", "film", "workbench"]
+        assert 'aria-label="Visuals"' in tabs
+        assert re.findall(r'data-tab="(\w+)"', tabs) == ["film", "workbench"]
         assert re.findall(r'<a data-tab="(\w+)" aria-current="page"', tabs) == [tab]
-        # In the header slot, directly after the bar, on all three pages: the bar's
-        # stylesheet draws the rule between the two (the next test).
+        assert f'href="{root}papers.html#visuals"' in tabs
         header = page.split('class="kpress-site-header"', 1)[1].split("</header>", 1)[0]
         assert header.index('class="site-nav"') < header.index(tabs)
         assert re.search(r'</nav>\s*<nav class="site-tabs"', header)
     with pytest.raises(SystemExit):
-        render_overview.visualize_tabs("stills")
+        render_overview.visualize_tabs("papers")
 
 
 def test_the_bars_type_is_set_from_the_papers_scale() -> None:
@@ -2974,7 +2987,7 @@ def test_the_film_starts_on_a_visit_to_its_page_and_nowhere_else(
         if name != "visualize.html":
             # The page as it is served, with every program it links.
             other = served(name)
-            if name == "index.html":
+            if name in {"index.html", "papers.html"}:
                 assert (
                     site_renders.html(name).count(_asset_tag(render_overview.FILM_SCRIPT, name))
                     == 1
@@ -4322,11 +4335,12 @@ def test_the_papers_page_holds_one_large_card_for_each_paper(
     assert {paper.size for paper in paper_specs} == {"large"}
     paper_hrefs = {paper.href for paper in paper_specs}
     cards = [card for card in _page_cards(page) if card[0] in paper_hrefs]
-    assert [href for href, _, _ in cards] == [paper.href for paper in paper_specs]
+    displayed_papers = (paper_specs[-1], *paper_specs[:-1])
+    assert [href for href, _, _ in cards] == [paper.href for paper in displayed_papers]
     assert len(re.findall(r'class="site-card[ "]', page)) == (
         len(overview_sections.PAPERS) + len(overview_sections.PDF_CARD_SPECS)
     )
-    for (href, tag, body), paper in zip(cards, paper_specs, strict=True):
+    for (href, tag, body), paper in zip(cards, displayed_papers, strict=True):
         assert href in render_overview.SITE_PAGES, href
         assert tag == ' data-go="page" data-card-size="large"', href
         assert f'<span class="site-card-label">{paper.label}</span>' in body, href
@@ -4362,7 +4376,8 @@ def test_a_papers_card_holds_no_link_so_the_introduction_links_what_it_names(
     assert explainer.href == overview_sections.LOWER_BOUNDS_PAPER
     assert overview_sections.THRESHOLD_REVIEW is overview_sections.PAPERS[1]
     article = papers_article(papers)
-    introduction, cards = article.split('<div class="site-cards-frame', 1)
+    paper_section = article.split('<h2 id="papers"', 1)[1]
+    introduction, cards = paper_section.split('<div class="site-cards-frame', 1)
     assert re.findall(r'<a\b[^>]*href="([^"]+)"[^>]*>([^<]+)</a>', introduction) == [
         (overview_sections.LOWER_BOUNDS_PAPER, "Part I"),
         (overview_sections.THRESHOLD_BOUND_PAPER, "Part II"),
@@ -4371,7 +4386,6 @@ def test_a_papers_card_holds_no_link_so_the_introduction_links_what_it_names(
         (overview_sections.OPTIMALITY_PAPER, "Part III"),
         ("https://x.com/ManassehA06", "Mannaseh Ahmed"),
         ("results.html#t-060", "T-060"),
-        ("tutorial.html", "square-packing tutorial"),
         ("papers/square-packing-methods-survey.html", "How Record Square Packings Are Found"),
     ]
     for body in re.findall(r"<a\b[^>]*>(.*?)</a>", cards, re.DOTALL):
@@ -4418,7 +4432,7 @@ def test_the_optimality_papers_card_says_what_t060s_rungs_allow(
     assert paper.href in render_overview.SITE_PAGES
     assert paper.title == renderer.TITLE
     assert paper.title == "A Review of the Optimality Proof of the Trump Packing of 11 Squares"
-    assert _page_cards(papers)[2][0] == paper.href
+    assert _page_cards(papers)[3][0] == paper.href
     value, note = _page_card_parts(papers, paper.href)
     assert card_text(value) == paper.title
     text = card_text(note)

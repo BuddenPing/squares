@@ -105,8 +105,7 @@ def test_the_page_is_the_workbench_tab_of_the_explanations_section(page: str) ->
     assert page.count('class="site-tabs"') == 1
     current = re.findall(r'<a data-tab="(\w+)" aria-current="page" href="([^"]+)"', page)
     assert current == [("workbench", "../workbench/")]
-    assert '<a data-tab="papers" href="../papers.html">Papers</a>' in page
-    assert '<a data-tab="film" href="../visualize.html">Film</a>' in page
+    assert '<a data-tab="film" href="../papers.html#visuals">Film</a>' in page
     # In the header after the bar, where a kpress page of the section also puts it.
     body = page.split("<body>", 1)[1]
     bar_end = body.index("</nav>", body.index('class="site-nav"'))

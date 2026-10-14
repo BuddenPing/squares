@@ -162,7 +162,6 @@ def section_pages(pages: dict[str, Path]) -> dict[str, tuple[Path, str, float]]:
     workbench = pages["visualize.html"].with_name("workbench.html")
     workbench.write_text(shell.replace("__WORKBENCH_CSS__", styles), encoding="utf-8")
     return {
-        "papers.html": (pages["papers.html"], "Papers", PAGE_TOP),
         "visualize.html": (pages["visualize.html"], "Film", PAGE_TOP),
         "workbench/": (workbench, "Workbench", TABS_SPACE),
     }
@@ -341,7 +340,7 @@ def test_the_name_stands_on_the_links_baseline(
             first = min(found["links"], key=lambda link: link["top"])
             assert abs(found["name"] - first["baseline"]) <= BASELINE_TOLERANCE, where
             assert [tab["label"] for tab in found["tabs"]] == (
-                [] if name == "atlas.html" else ["Papers", "Film", "Workbench"]
+                [] if name == "atlas.html" else ["Film", "Workbench"]
             ), where
             if rows == 1:
                 over_rule.setdefault(width, set()).add(found["current_above_rule"])

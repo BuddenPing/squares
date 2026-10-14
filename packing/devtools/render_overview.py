@@ -204,8 +204,7 @@ def film_release_date() -> str:
 #: The Explanations section reuses the existing papers, film and workbench addresses.
 #: Each tab names its key, its address from the site root, and its label.
 VISUALIZE_TABS: tuple[tuple[str, str, str], ...] = (
-    ("papers", "papers.html", "Papers"),
-    ("film", "visualize.html", "Film"),
+    ("film", "papers.html#visuals", "Film"),
     ("workbench", "workbench/", "Workbench"),
 )
 FRONTIER_DESCRIPTION = (
@@ -918,7 +917,7 @@ def visualize_tabs(current: str, *, root: str = "") -> str:
         f'href="{root}{href}">{html.escape(label)}</a>'
         for key, href, label in VISUALIZE_TABS
     )
-    return f'<nav class="site-tabs" aria-label="Explanations">{links}</nav>'
+    return f'<nav class="site-tabs" aria-label="Visuals">{links}</nav>'
 
 
 #: The icon's size in a tab, in CSS pixels: whole pixels, so its one-pixel frame
@@ -1424,8 +1423,16 @@ def papers_page() -> Page:
     series are the cards' own addresses, filled from the one constant each."""
     from devtools import overview_sections  # noqa: PLC0415
 
+    tutorial = next(
+        paper for paper in overview_sections.PAPERS if paper.href == "tutorial.html"
+    )
     values = {
-        "PAPER_CARDS": overview_sections.paper_cards(),
+        "TUTORIAL_CARD": overview_sections.paper_cards(papers=(tutorial,)),
+        "PAPER_CARDS": overview_sections.paper_cards(
+            papers=tuple(paper for paper in overview_sections.PAPERS if paper != tutorial)
+        ),
+        "VISUAL_TABS": visualize_tabs("film"),
+        "FILM": film_markdown(inline=True),
         "PDF_CARDS": overview_sections.pdf_cards(),
         "PDF_NOTE": overview_sections.pdf_note(),
         "LOWER_BOUNDS_PAPER": overview_sections.LOWER_BOUNDS_PAPER,
@@ -1444,7 +1451,7 @@ def papers_page() -> Page:
         title="Explanations",
         description=PAPERS_DESCRIPTION,
         toc=False,
-        tabs=visualize_tabs("papers"),
+        page_scripts=(FILM_SCRIPT,),
     )
 
 
@@ -1516,13 +1523,8 @@ def case_records() -> list[Page]:
     return build()
 
 
-def visualize_page() -> Page:
-    """The Visualize section's first tab: the film of the ascent at full size.
-
-    The film starts when the page is visited: its markup mutes it and marks it
-    `data-autoplay`, and `overview/film.js` starts it unless the reader asks for reduced
-    motion or the page is framed in a popover. No other page carries that script, so no
-    other film on the site starts unasked."""
+def film_markdown(*, inline: bool = False) -> str:
+    """The shared film and its evidence note; inline readers choose when to play."""
     values = {
         "FILM_URL": FILM_URL,
         "SHORT_FILM_URL": SHORT_FILM_URL,
@@ -1533,6 +1535,22 @@ def visualize_page() -> Page:
     markdown = fill(
         VISUALIZE_ARTICLE.read_text(encoding="utf-8"), values, where=VISUALIZE_ARTICLE.name
     )
+    if inline:
+        heading = '<h1 class="site-visually-hidden" id="visualize">Visualize</h1>'
+        if not markdown.startswith(heading):
+            raise ValueError("the film template no longer starts with its page heading")
+        markdown = markdown.removeprefix(heading).replace(" data-autoplay", "", 1)
+    return markdown
+
+
+def visualize_page() -> Page:
+    """The Visualize section's first tab: the film of the ascent at full size.
+
+    The film starts when the page is visited: its markup mutes it and marks it
+    `data-autoplay`, and `overview/film.js` starts it unless the reader asks for reduced
+    motion or the page is framed in a popover. No other page carries that script, so no
+    other film on the site starts unasked."""
+    markdown = film_markdown()
     return kpress_page(
         markdown,
         name="visualize.html",
