@@ -475,6 +475,62 @@ def test_each_field_is_held_to_the_last_reply_that_stated_it() -> None:
     assert list(check_requests.issue_state(caught_up, at_c4).replies_due) == []
 
 
+#: The register with T-001 moved to V3/C4, which reads confirmed.
+AT_C4 = Register(
+    results={**REGISTER.results, "T-001": result_entry("T-001", "V3", "C4", "E-replay")},
+    evidence=REGISTER.evidence,
+    verifiers=REGISTER.verifiers,
+)
+
+
+def _named(**fields: str) -> Record:
+    """A reply's item naming T-001 under `bound`, with the fields it states."""
+    return {"result": "bound", "id": "T-001", **fields}
+
+
+def test_two_replies_of_one_day_are_each_quoted_for_what_it_stated() -> None:
+    """The review's reproduction: a confirmation of 2 October states V3/C3, confirmed, and
+    the final reply that day restates only the status, as reviewed. Grouped by date, the
+    two were quoted as one reply that stated "V3/C3, reviewed", which neither said, and
+    "the reply of 2026-10-02" could be either. Each is now quoted for its own statement and
+    named by its kind; two replies of one day and one kind are named by their address
+    (#597's review, A1)."""
+    full = _named(verification="V3", confirmation="C3", status="confirmed")
+    same_day = issue(
+        replies=[
+            reply(1, "2026-10-02", kind="confirmation", reported=[full]),
+            reply(2, "2026-10-02", kind="final", reported=[_named(status="reviewed")]),
+        ]
+    )
+    state = check_requests.issue_state(same_day, AT_C4)
+    assert list(state.replies_due) == [
+        "bound: the confirmation reply of 2026-10-02 stated T-001 at V3/C3; it is now V3/C4",
+        "bound: the final reply of 2026-10-02 stated T-001 at reviewed; it is now confirmed",
+    ]
+    assert check_requests.corrections(same_day, state.results) == [
+        "The confirmation reply of 2026-10-02 gave T-001 as V3/C3; it now reads V3/C4.",
+        "The final reply of 2026-10-02 gave T-001 as reviewed; it now reads confirmed.",
+    ]
+    assert not any("V3/C3, reviewed" in reason for reason in state.replies_due)
+
+    twins = issue(
+        replies=[
+            reply(1, "2026-10-02", kind="final", reported=[full]),
+            reply(2, "2026-10-02", kind="final", reported=[_named(status="reviewed")]),
+        ]
+    )
+    assert list(check_requests.issue_state(twins, AT_C4).replies_due) == [
+        (
+            f"bound: the reply of 2026-10-02 ({URL.format(1)}) stated T-001 at V3/C3; "
+            "it is now V3/C4"
+        ),
+        (
+            f"bound: the reply of 2026-10-02 ({URL.format(2)}) stated T-001 at reviewed; "
+            "it is now confirmed"
+        ),
+    ]
+
+
 def test_an_outdated_statement_is_due_until_a_later_reply_corrects_it() -> None:
     said = [{"result": "bound", "id": "T-001", "verification": "V3", "confirmation": "C3"}]
     first = reply(1, "2026-10-01", reported=said, outdated=["a link into a branch"])
