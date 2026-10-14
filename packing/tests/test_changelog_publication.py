@@ -113,3 +113,20 @@ def test_news_groups_days_and_home_previews_only_the_first_two_items(
         assert f'id="{anchor}" href="news.html#{anchor}" data-news-target' in about
         if entry in ordered[:2]:
             assert f'href="news.html#{anchor}"' in home
+
+
+def test_news_preview_keeps_semantic_math_once_and_skips_hidden_subtrees() -> None:
+    source = render_changelog._prose(
+        "Verified **bound** $s(11) \\ge 381/100$.", destination="site"
+    )
+    preview = " ".join("".join(render_changelog._NewsPreviewText(source).parts).split())
+    assert preview == "Verified bound s(11)≥381/100."
+    nested = (
+        '<p>Before <span aria-hidden="true">visual<annotation>nested<br/>'
+        "<span>hidden</span></annotation><span>still hidden</span></span>"
+        "<math><mrow><mi>x</mi><mo>≥</mo><mn>1</mn></mrow>"
+        "<annotation>duplicate</annotation><annotation-xml>"
+        "<span>duplicate again</span></annotation-xml></math><br/>after<br>end.</p>"
+    )
+    clean = " ".join("".join(render_changelog._NewsPreviewText(nested).parts).split())
+    assert clean == "Before x≥1 after end."

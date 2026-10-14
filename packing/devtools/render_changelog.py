@@ -666,30 +666,72 @@ def ordered_entries(document: Document) -> list[Document]:
 
 
 class _NewsPreviewText(HTMLParser):
-    """Plain preview text from sanitized prose, omitting duplicate math annotations."""
+    """Plain preview text from sanitized prose, keeping semantic math exactly once."""
+
+    VOID_TAGS = frozenset(
+        {
+            "area",
+            "base",
+            "br",
+            "col",
+            "embed",
+            "hr",
+            "img",
+            "input",
+            "link",
+            "meta",
+            "param",
+            "source",
+            "track",
+            "wbr",
+        }
+    )
 
     def __init__(self, text: str) -> None:
         super().__init__()
         self.parts: list[str] = []
-        self.annotation = False
+        self.stack: list[tuple[str, bool]] = []
         self.feed(text)
         self.close()
 
+    def _hidden(self) -> bool:
+        return bool(self.stack and self.stack[-1][1])
+
     @override
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        if tag == "annotation":
-            self.annotation = True
+        hidden = (
+            self._hidden()
+            or tag in {"annotation", "annotation-xml"}
+            or any(
+                name == "aria-hidden" and value is not None and value.lower() == "true"
+                for name, value in attrs
+            )
+        )
+        if tag in self.VOID_TAGS:
+            if tag in {"br", "wbr"} and not hidden:
+                self.parts.append(" ")
+        else:
+            self.stack.append((tag, hidden))
+
+    @override
+    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        self.handle_starttag(tag, attrs)
+        if tag not in self.VOID_TAGS:
+            self.handle_endtag(tag)
 
     @override
     def handle_endtag(self, tag: str) -> None:
-        if tag == "annotation":
-            self.annotation = False
-        if tag in {"p", "li"}:
-            self.parts.append(" ")
+        for index in range(len(self.stack) - 1, -1, -1):
+            if self.stack[index][0] == tag:
+                hidden = self.stack[index][1]
+                del self.stack[index:]
+                if tag in {"p", "li"} and not hidden:
+                    self.parts.append(" ")
+                break
 
     @override
     def handle_data(self, data: str) -> None:
-        if not self.annotation:
+        if not self._hidden():
             self.parts.append(data)
 
 
