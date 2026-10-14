@@ -1493,6 +1493,8 @@ def run_one(n: int, run_dir: Path, settings: Settings) -> dict[str, Any]:
 
     An earlier run's view, drawing and report are removed first, so a re-run that finds
     no view, or stops, leaves none of them beside its own (review B of #530, B4). The
+    report records when it was written (`finished`, UTC), which dates the run in the
+    layer's index (`run_block`) as a copy or restore of the directory cannot. The
     report records the view's bytes by their Git blob id as provenance only: nothing
     compares it, and its verdicts are not bound to it (OR-18). The admitting layer reads
     the view file as it is then and decides it again on both exact routes, with its side
@@ -1517,6 +1519,7 @@ def run_one(n: int, run_dir: Path, settings: Settings) -> dict[str, Any]:
         straightened = [row["square"] for row in report["straightened"]]
         report["measured"] = measure(n, witness, view, straightened)
         _write(directory / "drawing.svg", drawing(n, witness, view).encode("utf-8"))
+    report["finished"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     _write(
         directory / "report.json", (json.dumps(report, indent=1, default=str) + "\n").encode()
     )
@@ -1785,11 +1788,18 @@ def run_block(run_dir: Path, run_id: str) -> tuple[dict[str, Any], dict[str, Any
     by the table and the seconds its reports record. The run kept no receipt of its own
     CPU time, so the cost is those seconds, summed, at one worker a count. Reports another
     version of this generator wrote into the same directory are not this run's: they are
-    counted apart, and their views are never admitted here (`admitted`)."""
+    counted apart, and their views are never admitted here (`admitted`).
+
+    The run is dated by the latest time its reports record (`finished`, written by
+    `run_one`), never by the files' modification times, which Git does not keep and a
+    copy or a restore resets (#548 review C, C2, as B5 is for the driver). A report from
+    before the time was recorded was written before any that records one, so the latest
+    recorded time stands; where none records one the date is `None`, which
+    `regularize_evand.dated_runs` fills from the index's own record of the run."""
     decisions: dict[str, int] = {}
     seconds = 0.0
     settings: dict[str, Any] = {}
-    finished = 0.0
+    finished: list[str] = []
     counts = 0
     others = 0
     for path in sorted(run_dir.glob("n-*/report.json")):
@@ -1803,12 +1813,13 @@ def run_block(run_dir: Path, run_id: str) -> tuple[dict[str, Any], dict[str, Any
         decisions[word] = decisions.get(word, 0) + 1
         seconds += float(report.get("seconds") or 0)
         settings = dict(report.get("settings") or settings)
-        finished = max(finished, path.stat().st_mtime)
+        if report.get("finished"):
+            finished.append(str(report["finished"]))
         counts += 1
     block = {
         "id": run_id,
         "generator": GENERATOR,
-        "finished": time.strftime("%Y-%m-%d", time.gmtime(finished)),
+        "finished": max(finished)[:10] if finished else None,
         "parameters": {**settings, **({"other_versions_left_out": others} if others else {})},
         "counts": counts,
         "decisions": dict(sorted(decisions.items())),

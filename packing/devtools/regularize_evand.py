@@ -3210,8 +3210,9 @@ def dated_runs(
             if not held.get(str(dated["id"])):
                 message = (
                     f"{dated['id']}: its receipt records no finish time (a run from before "
-                    "the driver wrote one), and the index holds no date for it: add "
-                    "`finished`, the UTC time the run ended, to its receipt.json"
+                    "its generator wrote one), and the index holds no date for it: add "
+                    "`finished`, the UTC time the run ended, to its receipt.json, or for a "
+                    "grid-slack run to one of its reports"
                 )
                 raise EvandRunError(message)
             dated["finished"] = held[str(dated["id"])]

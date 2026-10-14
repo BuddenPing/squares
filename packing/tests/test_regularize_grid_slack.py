@@ -16,6 +16,7 @@ from __future__ import annotations
 import gzip
 import hashlib
 import json
+import os
 from fractions import Fraction
 from pathlib import Path
 from typing import Any
@@ -24,6 +25,7 @@ import pytest
 
 from devtools import census_drawing_regularity as census
 from devtools import regularize_axis_components as axis
+from devtools import regularize_evand as driver
 from devtools import regularize_grid_slack as slack
 from devtools import render_regularized_atlas as render
 from devtools.regularize_evand import Decision, view_geometry
@@ -459,6 +461,43 @@ def test_admission_holds_the_view_to_this_checkouts_witness(
 
 
 VERDICTS = ("exact_verify", "independent")
+
+
+def test_a_grid_run_is_dated_by_its_reports_and_not_by_its_files_time(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """#548 review C, C2: Git keeps no modification times, so a copied or restored grid
+    run directory would be dated the day it was copied. The run is dated by the latest
+    time its reports record; a run none of whose reports records one is dated by the
+    index, as the driver's undated receipts are, and refused where the index has none."""
+    run_dir = tmp_path / "all"
+    run_id = f"grid-slack-{run_dir.name}"
+    admit = Decision(10, "admit", None, None, "every admission condition holds")
+    monkeypatch.setattr(slack, "decided", lambda _report, _witness: admit)
+
+    def report(n: int, **extra: Any) -> Path:
+        directory = run_dir / f"n-{n:03d}"
+        directory.mkdir(parents=True, exist_ok=True)
+        path = directory / "report.json"
+        body = {"n": n, "generator": slack.GENERATOR, "seconds": 1.5, "settings": {}}
+        path.write_text(json.dumps({**body, **extra}))
+        os.utime(path, (0, 0))
+        return path
+
+    report(4)  # from before reports recorded the time: written before the others
+    report(5, finished="2026-10-13T01:00:00Z")
+    report(6, finished="2026-10-12T05:00:00Z")
+    block, _settings = slack.run_block(run_dir, run_id)
+    assert (block["finished"], block["counts"]) == ("2026-10-13", 3)
+
+    for n in (5, 6):
+        report(n)
+    block, _settings = slack.run_block(run_dir, run_id)
+    assert block["finished"] is None
+    held = [{"id": run_id, "finished": "2026-10-12"}]
+    assert driver.dated_runs([block], held)[0]["finished"] == "2026-10-12"
+    with pytest.raises(driver.EvandRunError, match="records no finish time"):
+        driver.dated_runs([block], [])
 
 
 def test_admission_decides_the_view_file_it_admits(
