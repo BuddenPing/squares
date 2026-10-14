@@ -2276,6 +2276,26 @@ sources:
       and ran the LP search, the export, the verification script, the coverage checks, the
       Lean wrapper and the replay, and drafted the write-up. MIT licence. Retained whole in
       web/bengreff-s76-certificate-2026-10-14/. Dated by that revision, 2026-10-14 UTC.
+  - key: '[wand125 closed form 2026-10-14]'
+    authors: [wand125]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-14'
+    credit: wand125
+    lineage: independent
+    note: >-
+      wand125/square-packing problems/closed-form (closed-form-v1), added in eb0fd1938fcabf9b81b638f9d6b6db7f80b8985a
+      (2026-10-13T09:36:19Z) and unchanged at the pin 9a28a84bd55dc124bfa2919bb6c4fb504dda3149 (committed
+      2026-10-14T09:27:10Z), in web/wand125-closed-form-2026-10-14/: s(N) >= a(N) for every non-square
+      N >= 49, a closed form with one square root on each of 34 intervals of the fractional part, from a
+      C4-symmetric measure of line segments and Lebesgue measure whose families and region records (136
+      records, 187,183,108 leaves, release closed-form-v1, 815.7 MB pinned by digest and not retained) the
+      source replayed with its Rust checker replay4d in 4,294 CPU-hours. It also gives s(n^2 - 1) =
+      s(n^2 - 2) = s(n^2 - 3) = n for n >= 8 without Nagamochi's lemma, values it says are not new. The
+      folder README credits Hiroaki Hosono (wand125) and names no method it builds on; it cites
+      Nagamochi 2005, Karakus 2026, Evan Daniel's Valid7 and jlevy/squares#295 for comparison and for the
+      discussion of Nagamochi's gap. The commit names Claude Opus 5.5 as co-author; the folder's prose
+      says nothing about AI assistance. MIT for problems/closed-form/. Dated by the pin.
 credited_names:
   Benjamin Greff: Greff
   Oscar Fitzharding: Fitzharding
