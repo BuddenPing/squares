@@ -486,6 +486,48 @@ T-145’s kernels or crate runs (their retained receipts were judged by the firs
 audits only); no Lean build; no price measured here for T-120 to T-124. No house
 adoption, case-record change or private-worker custody.
 
+## Status, 14 October
+
+`main` moved past parts of this review after it was written, and review A of the pull
+request that carries it (#563, finding A2) found that nothing said so.
+The findings above are left as written on 11 October; this note says what has changed.
+It was checked against `main` at `b8c930338`.
+
+- **The adoption section, `RR-8` and `RR-9` are overtaken by #518,** which merged at
+  15:11 UTC on 12 October and adopted the houses without waiting for PR #403, still
+  open. `packing/devtools/certificate-citation-deferrals.yaml` reads `deferrals: []`, so
+  no deferral can expire.
+  Six counts are now held by imports registered after the table, not by the house it
+  names:
+
+| n | The table’s house | The house on `main` |
+| --- | --- | --- |
+| 146 | T-146 | T-150 |
+| 153 | T-146 | T-148 |
+| 155 | T-128 | T-149 |
+| 207 | T-136 | T-147 |
+| 270 | T-140 | T-151 |
+| 305 | T-140 | T-152 |
+
+`T-125`’s notes now say it holds no case record and name the adoption, and `T-136`’s
+`next_rung` names no houses, so `RR-9`’s fixes have nothing left to change.
+
+- **`RR-1` misquotes `T-146`.** Its `next_rung` reads “the 11 October review and the 11
+  October final review”, not “the 10 October review”; the other thirteen read as quoted.
+  A change that applies `RR-1`’s proposed text keeps “11 October” at `T-146`.
+
+- **`RR-6` quotes the four `next_rung`s as of 11 October.** On `main` each now reads
+  “after the regularization of every packing (think-ux1v, planned in jlevy/squares#497)”
+  where it read “after the regularization work (jlevy/squares#497)”. None of `RR-6`’s
+  fix is on `main`: no `activity` on `T-132`, `T-142` or `T-143`, no branch named,
+  `T-142`’s control and `T-144`’s price basis as they were, and the smoke receipts still
+  unretained.
+
+- **`RR-1` to `RR-7` otherwise stand.** The fourteen `next_rung`s still say the two
+  reviews are by distinct reviewers; `T-133`’s rationale still calls it the strongest
+  lower bound at $n = 40$, which `T-145` superseded; `T-132` and `T-142` to `T-144`
+  carry no `activity`; and `44eb6a017`, the tooling `RR-6` names, is not on `main`.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->

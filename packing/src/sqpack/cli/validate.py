@@ -3452,11 +3452,25 @@ def _skills_mirrored(context: Context) -> str:
 
 
 def _synopsis(context: Context) -> str:
+    impact_baseline = (
+        ("--base", "HEAD^1")
+        if _git("rev-parse", "HEAD").strip() == _git("rev-parse", "origin/main").strip()
+        else ("--baseline-ref", "origin/main")
+    )
     return _commands(
         context,
         (
             (sys.executable, "-m", "devtools.check_documentation"),
             (sys.executable, "-m", "devtools.check_synopsis"),
+            (
+                sys.executable,
+                "-m",
+                "devtools.render_changelog",
+                "--check",
+                "--baseline-ref",
+                "origin/main",
+            ),
+            (sys.executable, "-m", "devtools.check_release_impact", *impact_baseline),
         ),
     )
 

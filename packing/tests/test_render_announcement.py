@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import textwrap
 from collections.abc import Mapping
+from dataclasses import replace
 from datetime import date
 from fractions import Fraction
 from pathlib import Path
@@ -64,6 +65,17 @@ def test_a_bound_is_printed_to_as_many_places_as_keep_it_better_than_the_previou
     low, earlier = exact("6.7158157460820"), exact("6.71581574608")
     printed = Fraction(ra.shown(low, LOWER, earlier))
     assert earlier.high < printed <= low.low
+
+
+def test_a_tied_or_trailing_bound_is_printed_at_the_usual_places() -> None:
+    """No number of places makes such a bound better than the previous, so none are added
+    in the attempt (review A, A5)."""
+    tie = exact("17.5355339059327376220042218105242")
+    assert ra.shown(tie, UPPER, tie) == "17.53554"
+    assert ra.shown(exact("10.61"), UPPER, exact("10.5")) == "10.61"
+    assert ra.shown(exact(Fraction(1340000, 199529)), LOWER, exact("7")) == "6.71581"
+    cut = ra.Span.of_stated(Stated(Fraction("10.5"), Fraction(1, 10)))
+    assert ra.shown(cut, UPPER, exact("10.6")) == "10.6"
 
 
 def test_a_margin_is_cut_to_two_significant_figures_never_rounded_up() -> None:
@@ -144,7 +156,7 @@ def test_a_credit_line_splits_into_its_finders_and_its_lineage_in_register_order
         ["Couzo", "Daniel"],
         ["Couzo", "Levy"],
     )
-    assert ra.primary_names("Wang, Li after Kleddamag, Levy") == ["Wang", "Li"]
+    assert ra.primary_names("Wang, Li after Overbeck, Levy") == ["Wang", "Li"]
 
 
 def test_the_owner_is_never_among_the_people_a_line_credits() -> None:
@@ -525,6 +537,58 @@ def test_all_keeps_a_bettered_result_and_says_what_betters_it(
     assert "new best" not in lines[1]
 
 
+def test_all_prints_a_tied_bound_at_five_places_and_says_what_supersedes_a_boundless_one(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """T-156 only equals its case record; T-125 states no bound and holds no case
+    (review A, A5)."""
+    lines, _ = run(
+        capsys, ["--ids", "T-156", "--date", "2026-10-12", "--all", "--min-significance", "1"]
+    )
+    assert lines[1].startswith("s(290) ≤ 17.53554 (verified), since equalled first by ")
+    lines, _ = run(capsys, ["--ids", "T-125", "--date", "2026-10-12", "--all"])
+    assert "(verified), since superseded by " in lines[1]
+
+
+def test_a_since_clause_names_at_most_three_and_counts_the_rest() -> None:
+    assert ra.whom("bettered", ["T-146", "T-150"], 2) == "bettered by T-146 and T-150"
+    cases = [f"the n = {n} case record" for n in (28, 29, 37, 39)]
+    assert ra.whom("bettered", cases, 4) == "bettered at 4 counts by their case records"
+    labels = ["T-128", "T-130", "T-134", "T-136, T-140", *cases]
+    assert ra.whom("bettered", labels, 9) == (
+        "bettered at 9 counts by 5 results and their case records"
+    )
+    assert ra.whom("superseded", ["T-128", "T-130", "T-134", "T-136"]) == (
+        "superseded by 4 results"
+    )
+
+
+def test_all_keeps_a_long_since_clause_postable(capsys: pytest.CaptureFixture[str]) -> None:
+    """T-155 is bettered or equalled first at 59 counts by their case records; its line
+    once listed fourteen of them, 1,587 characters (review A, A5)."""
+    lines, err = run(
+        capsys, ["--ids", "T-155", "--date", "2026-10-12", "--all", "--min-significance", "1"]
+    )
+    assert "case record," not in lines[1]
+    assert "on X" not in err
+
+
+def test_a_line_about_a_few_counts_prints_each_bound_where_the_line_stays_brief(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """T-149's three bounds fit; T-151's seven counts do not and stay elided (review A,
+    A8)."""
+    lines, _ = run(capsys, ["--ids", "T-149", "T-151", "--date", "2026-10-12"])
+    assert lines[1].startswith(
+        "s(155) ≤ 12.95243, s(156) ≤ 12.97918, s(211) ≤ 14.99634, new best known (verified): "
+    )
+    assert lines[2].startswith("s(n) ≤ … at 7 counts, n = 176\u2013272, new best known ")
+    record = {"id": "T-900", "headline": "s(n) ≤ 10", "claim": ""}
+    group = [ra.Count(n, UPPER, exact(f"{n}.5")) for n in (10, 11)]
+    assert ra.statement(record, group) == "s(10) ≤ 10.5, s(11) ≤ 11.5"
+    assert ra.statement(record, group, each=False) == "s(n) ≤ … at n = 10, 11"
+
+
 def test_a_regularization_credits_the_finder_of_the_packing_it_regularizes(
     capsys: pytest.CaptureFixture[str], records: Records
 ) -> None:
@@ -537,6 +601,71 @@ def test_a_regularization_credits_the_finder_of_the_packing_it_regularizes(
         capsys, ["--ids", entry, "--date", "2026-10-11", "--min-significance", "1", "--all"]
     )
     assert ", regularizing " in lines[1]
+
+
+def test_a_case_held_by_a_regularization_of_the_entrys_own_packing_does_not_better_it(
+    records: Records,
+) -> None:
+    """T-146 regularizes T-136's packings at 236, 263, 269, 292, 302 and 303 and holds
+    those cases: neither its own bound nor the case records' count against T-136 there
+    (review B, B2)."""
+    index = ra.rival_bounds(records)
+    found = {c.n: c for c in ra.counts(records.results["T-136"], records, index)}
+    for n in (236, 263, 269, 292, 302, 303):
+        assert ra.regularizes(records.results["T-146"], n, "T-136")
+        assert "T-146" not in found[n].bettered_by, (n, found[n].bettered_by)
+        # T-146's side is the smaller, so the line prints no number of T-136's there.
+        assert found[n].regularized_by == ("T-146",)
+    record = {"id": "T-900", "headline": "s(103) ≤ 10", "claim": ""}
+    count = ra.Count(103, UPPER, exact("10"), regularized_by=("T-901",))
+    assert ra.statement(record, [count]) == "s(103) ≤ …"
+
+
+def test_a_refinement_credits_the_person_its_headline_names_singular_or_plural(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """T-137 refines Ryan Xu's packing and T-150 his packings; both credit him."""
+    lines, _ = run(
+        capsys, ["--ids", "T-137", "--date", "2026-10-11", "--all", "--min-significance", "1"]
+    )
+    assert ", refining Ryan Xu's packing " in lines[1]
+    lines, _ = run(
+        capsys, ["--ids", "T-150", "--date", "2026-10-12", "--min-significance", "1"]
+    )
+    assert ": Robert Barnett, refining Ryan Xu's packings " in lines[1]
+
+
+def test_a_refinement_of_a_requests_packings_credits_the_entry_its_claim_names(
+    capsys: pytest.CaptureFixture[str], records: Records
+) -> None:
+    """T-152 refines "SQUISH's Mondrian packings", which its claim names as T-151's, Nate
+    Chaoweeraprasit's; the line credits him, since T-151's own line no longer names 304 or
+    305 (review B, B1)."""
+    lines, err = run(capsys, ["--ids", "T-152", "--date", "2026-10-12"])
+    assert ": Francisco Couzo, refining Nate Chaoweeraprasit's packings " in lines[1]
+    assert "Chaoweeraprasit" in err.split("printed by name: ", 1)[1]
+    refinement = ra.refined(records.results["T-152"], records)
+    assert refinement is not None
+    assert refinement.people == (("Chaoweeraprasit", ""),)
+
+
+def test_a_refinement_resolves_through_headlines_with_either_apostrophe(
+    records: Records,
+) -> None:
+    """`REFINED` reads a straight or a typographic apostrophe before the s, and so does
+    the search for the entry a claim names (review C, C7): with every SQUISH headline
+    typeset, T-152 still credits Nate Chaoweeraprasit."""
+    typeset = {
+        entry: {**records.results[entry], "headline": str(records.results[entry]["headline"])}
+        for entry in ("T-136", "T-151", "T-152")
+    }
+    for record in typeset.values():
+        record["headline"] = str(record["headline"]).replace("SQUISH's", "SQUISH\u2019s")
+    assert all("\u2019" in str(record["headline"]) for record in typeset.values())
+    swapped = replace(records, results={**records.results, **typeset})
+    refinement = ra.refined(typeset["T-152"], swapped)
+    assert refinement is not None
+    assert refinement.people == (("Chaoweeraprasit", ""),)
 
 
 def test_the_frontmatter_reader_reads_only_the_opening_block() -> None:
@@ -552,6 +681,19 @@ def test_the_frontmatter_reader_reads_only_the_opening_block() -> None:
     )
     assert ra.frontmatter(text) == "a: 1"
     assert ra.frontmatter("no front matter\n") == ""
+
+
+def test_stderr_says_whether_the_announcement_fits_one_post_or_a_thread(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """Review A, A9: the line limit implies one post a line, so the block is checked too."""
+    _, err = run(capsys, ["--ids", "T-147", "--date", "2026-10-12"])
+    assert "the announcement fits one X post" in err
+    _, err = run(
+        capsys, ["--ids", *[f"T-{n}" for n in range(147, 153)], "--date", "2026-10-12"]
+    )
+    assert "over one post's 280; as a thread of one line a post, every line fits" in err
+    assert ra.block_fit(["a", "b"]) == "the announcement fits one X post: 3 of 280 characters"
 
 
 def test_the_header_names_the_day_and_the_count() -> None:
