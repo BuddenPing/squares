@@ -62,8 +62,10 @@ provenance only; nothing reads it. ``gather`` may need the network and runs in n
 validation tier. It keeps a ``starts.yaml`` already frozen at ``read_at_main`` and reads
 the starts from the checkout only when there is none or ``--refresh-starts`` asks, which
 is run from a checkout of ``read_at_main`` (``check --tree`` reports where the checkout's
-records give other starts). ``render`` and ``check`` are offline; ``render --check``
-fails when either rendered file would change.
+records give other starts). ``render`` and ``check`` are offline. Both refuse a
+``starts.yaml`` member whose span its stored lanes, stated bound or print do not give, so
+a start edited by hand fails; ``render --check`` also fails when either rendered file
+would change.
 """
 
 from __future__ import annotations
@@ -111,7 +113,7 @@ LEDGER_FORMAT = "intake-ledger-v1"
 SOURCES_FORMAT = "intake-ledger-sources-v1"
 SNAPSHOT_FORMAT = "intake-ledger-github-v1"
 VERDICTS_FORMAT = "intake-ledger-verdicts-v1"
-STARTS_FORMAT = "intake-ledger-starts-v1"
+STARTS_FORMAT = "intake-ledger-starts-v2"
 GITHUB_REPOSITORY = "jlevy/squares"
 #: The case corpus is ``n = 1..324``; above it the start is a beyond-horizon row or the grid.
 HORIZON = 324
@@ -283,6 +285,11 @@ class Ledger(TypedDict):
     key_reason_candidates: NotRequired[list[KeyReason]]
     cross_check: NotRequired[list[str]]
     other_items: list[OtherItem]
+
+
+def _is_count(value: object) -> bool:
+    """A positive integer count; a bool is not one."""
+    return isinstance(value, int) and not isinstance(value, bool) and value >= 1
 
 
 def number(text: str) -> Fraction:
@@ -469,16 +476,17 @@ def load_ledger(directory: Path) -> Ledger:
 INTERVAL_DIGITS = 90
 #: mpmath's interval context, untyped: its stubs know neither its arithmetic nor its precision.
 IV: Any = mp.iv
-#: How a start member's side is known (`StartMember.model`).
-MODELS = ("exact", "closed form", "root", "print")
 
 
 class StartMember(TypedDict):
     """One member of a count's start as ``gather`` froze it in ``starts.yaml``.
 
     ``low`` and ``high`` bound the side (exact fractions; ``open_*`` say whether the bound
-    is excluded). ``lanes`` are the case lanes it stands for, each with the value and exact
-    form the case record printed, which a lane's frozen relation must match.
+    is excluded). ``lanes`` are the case lanes it stands for, each as its name, the value
+    and exact form the case record printed, which a lane's frozen relation must match, and
+    the polynomial it was read with (`lane_polynomials`). ``stated`` is a pending register
+    entry's stated value and slack. ``check`` recomputes the span from these
+    (`starts_problems`), so a span edited by hand is refused.
     """
 
     label: str
@@ -492,6 +500,7 @@ class StartMember(TypedDict):
     shown: str
     decide: str
     lanes: list[list[str]]
+    stated: NotRequired[list[str]]
 
 
 @dataclass(frozen=True)
@@ -782,7 +791,7 @@ def lane_member(
     holders = _record_holders(bound) or ", ".join(sorted(entries))
     value = str(bound["value"])
     form = str(bound.get("exact_form") or "")
-    lanes = [[lane, value, form]]
+    lanes = [[lane, value, form, polynomial_text]]
     span = closed_form_span(form) if form else None
     if span is not None and span.low == span.high:
         return _member(
@@ -890,7 +899,7 @@ def pending_member(record: Mapping[str, Any], stated: check_standing.Stated) -> 
     model = "print" if stated.slack else "exact"
     decide = f"{entry}'s exact side" if stated.slack else ""
     label = f"register {entry}, pending adoption"
-    return _member(
+    member = _member(
         label,
         "register",
         holders,
@@ -900,6 +909,8 @@ def pending_member(record: Mapping[str, Any], stated: check_standing.Stated) -> 
         decide=decide,
         lanes=[],
     )
+    member["stated"] = [str(stated.value), str(stated.slack)]
+    return member
 
 
 def beyond_member(n: int, rows: Mapping[int, Mapping[str, Any]]) -> StartMember:
@@ -1052,16 +1063,109 @@ def minimal(sides: Sequence[Side]) -> list[Side]:
     ]
 
 
+_SPAN = ("model", "low", "high", "open_low", "open_high")
+_MEMBER_TYPES: Mapping[str, type] = {
+    **dict.fromkeys(
+        ("label", "kind", "holders", "model", "low", "high", "shown", "decide"), str
+    ),
+    "open_low": bool,
+    "open_high": bool,
+    "lanes": list,
+}
+
+
+def recomputed(n: int, member: Mapping[str, Any]) -> list[dict[str, Any]]:
+    """The span each of a frozen member's stored inputs gives: every case lane it stands
+    for (`lane_member`), a pending entry's stated bound, a beyond-horizon print, or the
+    grid. Each must equal the member's own."""
+    if member["lanes"]:
+        found = []
+        for lane in member["lanes"]:
+            _require(
+                isinstance(lane, list)
+                and len(lane) == 4
+                and all(isinstance(x, str) for x in lane),
+                f"n = {n} {member['label']}: a lane is [name, value, exact form, polynomial]",
+            )
+            name, value, form, text = lane
+            bound = {"value": value, "exact_form": form, "minimal_polynomial": text}
+            found.append(lane_member(n, name, bound, [], text))
+    elif member["kind"] == "register":
+        stated = member.get("stated")
+        stated = stated if isinstance(stated, list) else []
+        _require(
+            len(stated) == 2,
+            f"n = {n} {member['label']}: a pending entry states [value, slack]",
+        )
+        value, slack = (number(str(item)) for item in stated)
+        found = [pending_member({"id": "-"}, check_standing.Stated(value, slack))]
+    elif member["label"] == "the grid":
+        found = [beyond_member(n, {})]
+    else:
+        source = str(member["label"]).removeprefix("beyond-horizon row ")
+        found = [beyond_member(n, {n: {"value": member["shown"], "source_id": source}})]
+    return [{key: item[key] for key in _SPAN} for item in found]
+
+
+def starts_problems(value: Any, read_at_main: str) -> list[str]:
+    """Every way a frozen ``starts.yaml`` breaks its contract: its header, its shape, an
+    empty start, and any member whose span is not the one its stored inputs give."""
+    if not isinstance(value, Mapping) or value.get("format") != STARTS_FORMAT:
+        return [f"{STARTS} is not a mapping of format {STARTS_FORMAT}"]
+    if value.get("read_at_main") != read_at_main:
+        return [
+            f"{STARTS} was read at {value.get('read_at_main')}, the ledger at {read_at_main}"
+        ]
+    counts = value.get("counts")
+    if not isinstance(counts, list):
+        return [f"{STARTS}: counts is not a list"]
+    found: list[str] = []
+    seen: set[int] = set()
+    for count in counts:
+        if not isinstance(count, Mapping) or not _is_count(count.get("n")):
+            found.append(f"{STARTS}: a count without a positive n: {str(count)[:80]}")
+            continue
+        n = int(count["n"])
+        if n in seen:
+            found.append(f"{STARTS} n = {n}: listed twice")
+        seen.add(n)
+        members = count.get("members")
+        if not isinstance(members, list) or not members:
+            found.append(f"{STARTS} n = {n}: no members; a start is never empty")
+            continue
+        for member in members:
+            found.extend(_member_problems(n, member))
+    return found
+
+
+def _member_problems(n: int, member: Any) -> list[str]:
+    where = f"{STARTS} n = {n}"
+    if not isinstance(member, Mapping):
+        return [f"{where}: a member is not a mapping"]
+    wrong = sorted(
+        key for key, kind in _MEMBER_TYPES.items() if not isinstance(member.get(key), kind)
+    )
+    if wrong:
+        return [f"{where} {member.get('label')}: missing or mistyped {wrong}"]
+    where = f"{where} {member['label']}"
+    try:
+        frozen = {key: member[key] for key in _SPAN}
+        spans = recomputed(n, member)
+    except LedgerError as error:
+        return [f"{where}: {error}"]
+    return [
+        f"{where}: frozen {frozen}, but its stored inputs give {span}"
+        for span in spans
+        if span != frozen
+    ]
+
+
 def load_starts(directory: Path, read_at_main: str) -> dict[int, list[Side]]:
-    """The starts ``gather`` froze, refused unless they were read at ``read_at_main``."""
+    """The starts ``gather`` froze, refused unless they were read at ``read_at_main`` and
+    every member's span is the one its stored inputs give (`starts_problems`)."""
     value = load_yaml(directory / STARTS)
-    _require(
-        isinstance(value, dict) and value.get("format") == STARTS_FORMAT, f"{STARTS} format"
-    )
-    _require(
-        value.get("read_at_main") == read_at_main,
-        f"{STARTS} was read at {value.get('read_at_main')}, the ledger at {read_at_main}",
-    )
+    found = starts_problems(value, read_at_main)
+    _require(not found, "; ".join(found))
     return {
         int(count["n"]): [side_of(cast("StartMember", member)) for member in count["members"]]
         for count in value["counts"]
@@ -2576,7 +2680,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         missing = sorted(set(counts_of(ledger)) - set(starts))
         _require(not missing, f"{STARTS} has no start at n = {missing}")
         claims = sum(len(report["claims"]) for report in ledger["reports"])
-        print(f"OK: {len(ledger['reports'])} reports, {claims} claims, {len(starts)} starts")
+        print(
+            f"OK: {len(ledger['reports'])} reports, {claims} claims, {len(starts)} starts, "
+            "each member's span recomputed from its stored inputs"
+        )
         if args.tree:
             drift = tree_drift(directory)
             for line in drift:

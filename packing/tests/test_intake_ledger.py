@@ -411,6 +411,50 @@ def test_render_reads_the_frozen_starts_and_never_the_tree(
         ledger.rendered(tmp_path)
 
 
+FROZEN_AT = "f" * 40
+
+
+def _starts() -> dict[str, Any]:
+    """A start of every kind: a print and a root lane, an exact lane beside a pending
+    entry, a beyond-horizon row and the grid."""
+    reported = {"value": "1.41421356237309", "minimal_polynomial": "s^2 - 2 = 0"}
+    verified = {
+        "value": "1.4142135623730950488",
+        "exact_form": "root(P, 1.4142135623730950488)",
+    }
+    texts = ledger.lane_polynomials(reported, verified)
+    lanes = ledger.merged_lanes(
+        ledger.lane_member(9, "reported", reported, ["T-009"], texts[0]),
+        ledger.lane_member(9, "verified", verified, ["T-009"], texts[1]),
+    )
+    exact = ledger.lane_member(100, "reported", {"value": "10.5", "exact_form": "21/2"}, [])
+    stated = check_standing.Stated(Fraction("10.40"), Fraction(1, 100))
+    pending = ledger.pending_member({"id": "T-123"}, stated)
+    row = {"n": 400, "source_id": "row-2026-10-11", "value": "19.990000000000"}
+    members = {
+        9: lanes,
+        100: [exact, pending],
+        400: [ledger.beyond_member(400, {400: row})],
+        401: [ledger.beyond_member(401, {})],
+    }
+    return ledger.starts_document(FROZEN_AT, members)
+
+
+def test_check_recomputes_every_start_span_and_refuses_one_edited_by_hand() -> None:
+    starts = _starts()
+    assert ledger.starts_problems(starts, FROZEN_AT) == []
+    for n, index in ((9, 0), (9, 1), (100, 0), (100, 1), (400, 0), (401, 0)):
+        edited = copy.deepcopy(starts)
+        member = next(count for count in edited["counts"] if count["n"] == n)["members"][index]
+        member["low"] = str(Fraction(member["low"]) - Fraction(1, 10**6))
+        found = " ".join(ledger.starts_problems(edited, FROZEN_AT))
+        assert f"n = {n} {member['label']}: frozen" in found
+        assert "its stored inputs give" in found
+    moved = copy.deepcopy(starts)
+    moved["counts"][1]["members"][0]["lanes"][0][2] = "53/5"
+    assert "its stored inputs give" in " ".join(ledger.starts_problems(moved, FROZEN_AT))
+
+
 def test_gather_keeps_the_frozen_starts_and_reads_the_tree_only_to_refresh_them(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
