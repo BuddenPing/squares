@@ -45,9 +45,9 @@ W1 phase on one branch:
    It does not wait for a replay budget, and it lands in a pull request of its own when
    it returns.
 4. **Validate** from `packing/` with `packing-validate --records`, then `--push`.
-5. **Open one draft pull request** with `tbd shortcut create-or-update-pr-simple`. It
-   lists each item with its bead and the stage it reached, and every source under Not
-   Checked.
+5. **Open one draft pull request** with `tbd shortcut create-or-update-pr-simple`,
+   labelled `intake`. It lists each item with its bead and the stage it reached, and
+   every source under Not Checked.
 6. **Render the announcement** of the results the pass registered, from `packing/`:
    `uv run --frozen --all-extras --group dev python -m devtools.render_announcement
    --ids T-NNN … --github`, with the pass’s own `T-NNN`. Select by id, not with
@@ -88,8 +88,8 @@ final comment.
 Without the grant it drafts each reply in the issue’s answer bead and asks
 the owner to post it.
 The owner may post instead.
-Under the same grant it adds the `intake` label; it edits nothing else on an issue
-without the owner’s word.
+Under the same grant it adds the `intake` label, and a case label where one applies; it
+edits nothing else on an issue without the owner’s word.
 
 ### The Prompt
 
@@ -113,8 +113,9 @@ claude/intake-YYYY-MM-DD, with today's date.
    or is resolved. An item whose blocker has resolved is resumed on this branch, or
    its bead says what it waits on now. An issue that reports a new item for intake
    (a result, a counterexample or a method) and lacks the `intake` label gets it under
-   the github-workflows grant (`gh issue edit N --add-label intake`); without the
-   grant, list those issues for the owner. Run `tbd sync`.
+   the github-workflows grant (`gh issue edit N --add-label intake`), and the case
+   label too where one applies (development.md, "Issue and Pull-Request Labels");
+   without the grant, list those issues for the owner. Run `tbd sync`.
 4. Take each new result through stages 1 to 3 of the runbook on this branch: triage,
    retain the source in a packet at a pinned revision, register it as reported. Run a
    stage 4 replay only when the source prices it at minutes; otherwise record it in
@@ -122,7 +123,7 @@ claude/intake-YYYY-MM-DD, with today's date.
    reviews, and when") as soon as its source is retained, in parallel.
 5. From packing/, run `uv run --frozen --all-extras --group dev packing-validate
    --records`, then `--push`, and fix what fails.
-6. Commit, push the branch, and open one draft pull request with
+6. Commit, push the branch, and open one draft pull request, labelled intake, with
    `tbd shortcut create-or-update-pr-simple`. List every item with its bead and the
    stage it reached, and every source the sweep could not check.
 7. From packing/, run `uv run --frozen --all-extras --group dev python -m
@@ -147,8 +148,8 @@ issue is closed with a final comment; the owner's standing instruction of 2026-1
 why. Without the grant, draft each reply and ask the owner to post it. Post only after
 the pull request that carries the change has merged, link only to main, and check
 first that main and the deployed site say what the comment says. Add the `intake`
-label under the github-workflows grant; edit nothing else on a GitHub issue without
-the owner's word. If github.com, kingbird.myphotos.cc or evand.github.io is
+label, and a case label where one applies, under the github-workflows grant; edit
+nothing else on a GitHub issue without the owner's word. If github.com, kingbird.myphotos.cc or evand.github.io is
 unreachable, say so in the pull request and continue with the rest.
 ```
 
@@ -220,9 +221,12 @@ happened:
   track the intake of a reported item carry the label too, as #532 to #537 do; an issue
   that tracks other work does not.
   Under the `github-workflows` grant the pass adds the label with
-  `gh issue edit N --add-label intake`; without the grant, it lists those issues for the
-  owner. The sweep lists each `result-report` entry and each entry marked `intake: true`
-  whose issue lacks the label.
+  `gh issue edit N --add-label intake`, and the case label as well where one applies
+  (`--add-label n-17,intake`), as
+  [the label policy](../../development.md#issue-and-pull-request-labels) says; without
+  the grant, it lists those issues for the owner.
+  The sweep lists each `result-report` entry and each entry marked `intake: true` whose
+  issue lacks the label.
   The owner asked for the label on 12 October 2026, when no issue carried it.
 - **A watched repository with nothing to import gets a read** in
   [`intake-watch.yaml`](intake-watch.yaml): the head, the date, and a note saying what

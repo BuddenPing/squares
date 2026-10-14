@@ -336,6 +336,9 @@ packing, live in [jlevy/thinking](https://github.com/jlevy/thinking).
   reconstructs damaged text, it is flagged inline and counted in the archive README.
 - **Pull requests merge with a merge commit**, and squash only for a stated reason:
   [development.md → Merging a Pull Request](development.md#merging-a-pull-request).
+- **Issues and pull requests carry labels from one set**, such as `intake` and the case
+  labels `n-11`, `n-17` and `n-18`:
+  [development.md → Issue and Pull-Request Labels](development.md#issue-and-pull-request-labels).
 
 <!-- BEGIN FLOWMARK INTEGRATION format=f03 surface=agents-md -->
 ## flowmark

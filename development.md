@@ -1201,6 +1201,23 @@ The record names those commits:
   refuses repository links that name a commit
   ([Publishing the Explainer](#publishing-the-explainer)).
 
+## Issue and Pull-Request Labels
+
+Issues and pull requests on jlevy/squares carry labels from this set, which is the
+repository’s policy (the owner, 2026-10-14). Labels combine: an import for the
+seventeen-square case carries `n-17,intake`.
+
+| Label | Carried by |
+| --- | --- |
+| `intake` | An issue or pull request that brings in, validates, tabulates or credits new results: every result-registration issue, every intake pull request, an external pull request that submits results (jlevy/squares#574), and an issue the project opens itself for an unreported result scored `S4` or above |
+| `tracker` | A tracking issue for a major effort |
+| `n-11`, `n-17`, `n-18` | Work on a notable case. A count gets a case label once it has a tracker issue of its own, or an optimality proof or claim under review. A new one is named `n-<k>`, coloured `7E3D1D` as the others are, and described `Work on the n = <k> case…` |
+| `deep-gate` | A pull request whose [deferred surface](#the-deep-gate-the-deferred-surface-before-the-merge) runs before merge; the label’s own description lists what that surface runs |
+| `bug`, `enhancement`, `documentation`, `question`, `duplicate`, `invalid`, `wontfix`, `good first issue`, `help wanted` | GitHub’s defaults, in their usual senses; `question` also marks a list of decisions for the owner, such as jlevy/squares#543 |
+
+An intake pass adds `intake` and any case label under the `github-workflows` grant
+([the runbook’s stage 0](packing/campaign/result-import.md#stage-0-sweep)).
+
 ## The Published Site
 
 Every content page is complete in its first HTML response: navigation, headings,
