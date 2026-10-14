@@ -2200,6 +2200,25 @@ sources:
       Nagamochi 2005, Karakus 2026, Evan Daniel's Valid7 and jlevy/squares#295 for comparison and for the
       discussion of Nagamochi's gap. The commit names Claude Opus 5.5 as co-author; the folder's prose
       says nothing about AI assistance. MIT for problems/closed-form/. Dated by the pin.
+  - key: '[wand125 cfcheck 2026-10-14]'
+    authors: [wand125]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-14'
+    credit: wand125
+    lineage: independent
+    note: >-
+      wand125/square-packing problems/closed-form/indep-checker at 746e2c5ac7a7f534996dd50a5e1fd9f1d8836a8d
+      (committed 2026-10-14T10:38:27Z), the child of the [wand125 closed form 2026-10-14] pin, in
+      web/wand125-closed-form-cfcheck-2026-10-14/: cfcheck, a Rust checker of the closed-form
+      certificate that its README says was written from SPEC.md and the published bundles only and
+      shares no code with replay4d, seam4d_core or validate_family.py, which were not read. The source
+      reports intervals 1 and 34 replayed completely, 91,044 roots and 3,138,681 leaves accepted with no
+      refusal; the other 32 intervals are not checked with it. Cargo.toml names Hiroaki Hosono (wand125)
+      as author and neither README names a method it builds on or cites this project; the README says it
+      was written with AI assistance (OpenAI Codex) and reviewed by the author, the commit names Claude
+      Opus 5.5 as co-author, and issue #600 names Claude and Codex for the search, the certificates and
+      both checkers. MIT. Dated by the pin.
 credited_names:
   Oscar Fitzharding: Fitzharding
   Marc Leonard Overbeck: Overbeck
