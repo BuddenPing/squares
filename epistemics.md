@@ -566,17 +566,17 @@ A headline that opens with a relation on $s(n)$ states its kind: `≥` or `>` is
 bound, `≤` or `<` an upper bound and `=` optimality, and only a simplification or a
 formalization may restate one.
 A bound cites evidence that claims that bound, and optimality cites an exact value or
-both halves. A second proof records `proves_kind`, the conclusion it proves again:
-its target's kind, or that target's own `proves_kind` for a chain of second proofs.
-It agrees with the relations this proof states and a named target on every claimed
-case. A single bound requires that side, an exact value both sides, and a structural
-result its structural evidence; each requirement holds at every count.
+both halves. A second proof records `proves_kind`, the conclusion it proves again: its
+target’s kind, or that target’s own `proves_kind` for a chain of second proofs.
+It agrees with the relations this proof states and a named target on every claimed case.
+A single bound requires that side, an exact value both sides, and a structural result
+its structural evidence; each requirement holds at every count.
 A formalization cites evidence of its own whose method, performed or reported, is
 `proof-assistant-checked` and whose scope and claim substantiate that conclusion on
-every claimed case. A sample or a component check cannot substantiate a whole bound
-or value. Evidence that the result it proves again cites
-is not its own, though a second proof may cite it for a half the two share: a proof
-assistant’s check of that result is no check of the second proof.
+every claimed case. A sample or a component check cannot substantiate a whole bound or
+value. Evidence that the result it proves again cites is not its own, though a second
+proof may cite it for a half the two share: a proof assistant’s check of that result is
+no check of the second proof.
 A simplification may cite such evidence too, where the owner chose that kind for a proof
 that fits both. Uniqueness, rigidity, case exclusion and restricted optimality cite
 `derived-structure` evidence and state no relation on $s(n)$ in their headline.
