@@ -933,7 +933,10 @@ def refined(
         for other in dict.fromkeys(RESULT_ID.findall(str(record.get("claim") or "")))
         if other != entry
         and other in records.results
-        and f"{owner}'s" in plain(str(records.results[other].get("headline") or ""))
+        and re.search(
+            rf"{re.escape(owner)}['\u2019]s\b",
+            plain(str(records.results[other].get("headline") or "")),
+        )
     ]
     found: list[str] = []
     for n in sorted(set(at) if at is not None else scope_values(dict(record["scope"]))):

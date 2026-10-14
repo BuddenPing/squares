@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import textwrap
 from collections.abc import Mapping
+from dataclasses import replace
 from datetime import date
 from fractions import Fraction
 from pathlib import Path
@@ -644,6 +645,25 @@ def test_a_refinement_of_a_requests_packings_credits_the_entry_its_claim_names(
     assert ": Francisco Couzo, refining Nate Chaoweeraprasit's packings " in lines[1]
     assert "Chaoweeraprasit" in err.split("printed by name: ", 1)[1]
     refinement = ra.refined(records.results["T-152"], records)
+    assert refinement is not None
+    assert refinement.people == (("Chaoweeraprasit", ""),)
+
+
+def test_a_refinement_resolves_through_headlines_with_either_apostrophe(
+    records: Records,
+) -> None:
+    """`REFINED` reads a straight or a typographic apostrophe before the s, and so does
+    the search for the entry a claim names (review C, C7): with every SQUISH headline
+    typeset, T-152 still credits Nate Chaoweeraprasit."""
+    typeset = {
+        entry: {**records.results[entry], "headline": str(records.results[entry]["headline"])}
+        for entry in ("T-136", "T-151", "T-152")
+    }
+    for record in typeset.values():
+        record["headline"] = str(record["headline"]).replace("SQUISH's", "SQUISH\u2019s")
+    assert all("\u2019" in str(record["headline"]) for record in typeset.values())
+    swapped = replace(records, results={**records.results, **typeset})
+    refinement = ra.refined(typeset["T-152"], swapped)
     assert refinement is not None
     assert refinement.people == (("Chaoweeraprasit", ""),)
 
