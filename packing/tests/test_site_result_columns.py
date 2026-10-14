@@ -569,7 +569,7 @@ def test_every_kind_and_standing_chip_is_one_size(
     assert not gone & {chip["text"] for chip in standing}
     assert kinds
     if name == render_overview.RESULTS_PAGE:
-        assert {chip["text"] for chip in kinds} >= {"lower bound", "optimality"}
+        assert {chip["text"] for chip in kinds} >= {"Lower bound", "Optimality"}
     else:
         overview = site_renders.overview()
         reference = overview_sections.reference_date(overview)
@@ -581,7 +581,7 @@ def test_every_kind_and_standing_chip_is_one_size(
             )
         ][: overview_sections.RECENT_LIMIT]
         assert {chip["text"] for chip in kinds} == {
-            overview_sections.kind_label(str(result.record["kind"])) for result in selected
+            overview_sections.topic_label(str(result.record["kind"])) for result in selected
         }
     for measure in ("font_size", "line_height", "block_size"):
         sizes = {chip[measure] for chip in (*standing, *kinds)}

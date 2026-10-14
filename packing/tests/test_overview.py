@@ -3535,7 +3535,7 @@ def test_every_result_shows_its_kind(
     for result in overview.results:
         kind = result.record["kind"]
         chip = overview_sections.kind_chip(result)
-        label = check_results.kind_label(kind)
+        label = overview_sections.topic_label(kind)
         assert chip == f'<span class="site-chip" data-kind="{kind}">{label}</span>'
         assert "data-tone" not in chip
         marks = overview_sections.status_marks(result)
@@ -6238,13 +6238,13 @@ def test_the_filter_bar_is_one_helpers_and_reads_the_whole_register(
     assert offered == [
         ("", "All"),
         *(
-            (kind, check_results.kind_label(kind))
+            (kind, overview_sections.topic_label(kind))
             for kind in check_results.KINDS
             if kind in held
         ),
     ]
     values = [value for value, _ in offered]
-    assert ("formalization", "formalization") in offered
+    assert ("formalization", "Formalization") in offered
     assert values.index("formalization") == values.index("simplification") + 1
     assert f' min="1" max="{max(overview.cases)}" ' in full
     assert 'data-bound="age" min="0" placeholder="any"> days</label>' in full

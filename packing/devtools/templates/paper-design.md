@@ -910,12 +910,18 @@ it.
   and upper bounds and optimality reuse bound fills, engineering uses the accent tint,
   verification the review-blue palette, and documentation the neutral chip.
   These subject labels assert no result kind or verification status.
-  Result kinds with no accurate subject mapping omit the topic tag and retain their real
-  kind, status, claim and credit.
+  Results and News use the shared topic vocabulary and sentence-case labels in
+  `devtools/site_topics.py`. Every registered result kind keeps its precise topic; News
+  also accepts Engineering, Verification and Documentation.
+  News filters offer the topics present in the archive, in the shared vocabulary’s
+  order. Topic chips explicitly reset text transformation, small caps and letter spacing,
+  so parent headings cannot change their casing.
+  The chip renderer preserves each consumer’s filter attribute.
+  All surfaces retain the result’s real kind, status, claim and credit.
   The homepage highlights the three newest S5 results from the results register, using
   their existing claims, credit and evidence, and follows them with “All news →”.
-  Formalization and simplification highlights carry an optimality subject tag while
-  retaining their actual result-kind and evidence chips.
+  Formalization and simplification highlights use their precise registered topic labels
+  and retain the original result-kind and evidence chips.
   About keeps one short News link; its old history bookmarks forward without duplicating
   the feed.
 

@@ -525,6 +525,17 @@ The importer never derives importance from incidental result references.
 - [About manuscript](../../../../packing/devtools/templates/about-article.md)
 - [Soft Schema](https://github.com/jlevy/softschema)
 
+## Shared Topic Vocabulary
+
+Results, homepage News and the News archive use the same stable topic keys and
+sentence-case labels from `packing/devtools/site_topics.py`. Registered result kinds
+retain their precise meanings; Engineering, Verification and Documentation cover project
+news. News accepts the complete vocabulary and offers filters for the topics present in
+its archive. Shared chips reset text transformation and small caps so the same label has
+the same casing on each surface.
+The Results Kind selector uses the same display labels without changing the register’s
+kinds or scientific claims.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->

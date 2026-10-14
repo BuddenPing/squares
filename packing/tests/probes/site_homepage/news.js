@@ -17,6 +17,7 @@
       color: style.color,
       spacing: style.letterSpacing,
       transform: style.textTransform,
+      caps: style.fontVariantCaps,
     };
   };
   // Measure the page's ordinary H3 role outside News, without copying its CSS.

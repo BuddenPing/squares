@@ -14,6 +14,7 @@ from devtools import (
     overview_data,
     overview_sections,
     render_changelog,
+    site_topics,
 )
 from tests import site_renders
 
@@ -75,7 +76,8 @@ def test_current_news_has_three_results_including_the_older_s5_result(
     rendered = news_highlights.render(overview)
     assert re.findall(r'data-news-entry="([^"]+)"', rendered) == ["T-154", "T-153", "T-060"]
     assert rendered.count('class="site-news-day"') == 3
-    assert rendered.count('data-news-topic="optimality"') == 3
+    assert rendered.count('data-news-topic="optimality"') == 2
+    assert rendered.count('data-news-topic="formalization"') == 1
     assert 'data-kind="formalization"' in rendered
     assert 'data-news-day="2026-10-12"' in rendered
     assert 'data-news-day="2026-09-29"' in rendered
@@ -146,21 +148,21 @@ def test_news_reads_no_launch_history_and_mutates_no_result_record(
 
 
 @pytest.mark.parametrize("kind", check_results.KINDS)
-def test_every_accepted_result_kind_renders_without_inventing_a_topic(
+def test_every_accepted_result_kind_uses_the_same_topic_in_results_and_news(
     overview: overview_data.Overview, kind: str
 ) -> None:
     candidate = _candidate(overview.results[0], "T-999", "2026-10-14")
     candidate.record["kind"] = kind
     rendered = news_highlights.render(replace(overview, results=[candidate]))
     topics = re.findall(r'data-news-topic="([^"]+)"', rendered)
-    expected = {
-        "lower-bound": "lower-bound",
-        "upper-bound": "upper-bound",
-        "optimality": "optimality",
-        "formalization": "optimality",
-        "simplification": "optimality",
-    }
-    assert topics == ([expected[kind]] if kind in expected else [])
+    assert topics == [kind]
+    label = site_topics.topic_label(kind)
+    assert f'data-news-topic="{kind}">{label}</span>' in rendered
+    assert overview_sections.kind_chip(candidate) == site_topics.topic_chip(
+        kind, attribute="data-kind"
+    )
+    assert label[0].isupper()
+    assert label[1:] == label[1:].lower()
     assert overview_sections.status_chips(candidate) in rendered
     assert overview_sections.credit_cell(candidate.credit) in rendered
     assert overview_data.prose_html(candidate.record["claim"], between="</p><p>") in rendered
@@ -176,9 +178,22 @@ def test_a_real_rigidity_result_can_enter_the_s5_news_without_changing_its_claim
     assert news_highlights.highlights(example)[0] is candidate
     rendered = news_highlights.render(example)
     article = rendered.split('data-news-entry="T-012">', 1)[1].split("</article>", 1)[0]
-    assert "data-news-topic" not in article
+    assert 'data-news-topic="rigidity">Rigidity</span>' in article
     assert overview_sections.status_chips(candidate) in article
     assert overview_sections.credit_cell(original.credit) in article
     assert overview_data.prose_html(original.record["claim"], between="</p><p>") in article
     with pytest.raises(ValueError, match="unknown News topic"):
-        render_changelog.news_topics(["rigidity"])
+        render_changelog.news_topics(["not-a-topic"])
+
+
+def test_news_schema_uses_the_shared_topic_vocabulary() -> None:
+    import yaml  # noqa: PLC0415
+
+    schema = yaml.safe_load(render_changelog.SCHEMA.read_text())
+    entry = schema["$defs"]["entry"]
+    assert set(entry["properties"]["topics"]["items"]["enum"]) == set(site_topics.TOPICS)
+    assert set(check_results.KINDS) <= set(site_topics.TOPICS)
+    assert site_topics.topic_label("lower-bound") == "Lower bound"
+    assert site_topics.topic_label("upper-bound") == "Upper bound"
+    with pytest.raises(ValueError, match="unknown topic"):
+        site_topics.topic_label("unregistered")

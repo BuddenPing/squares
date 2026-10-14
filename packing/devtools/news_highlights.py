@@ -3,21 +3,13 @@
 from __future__ import annotations
 
 from devtools import overview_sections, render_changelog
+from devtools.check_results import KINDS
 from devtools.overview_data import Overview, Result, prose_html, tex_bounds
 
 LIMIT = 3
 
-# Topics describe subjects, independently of the register's result-kind vocabulary.
-# The two second-proof kinds retain the optimality subject used by the current feed.
-# Other kinds can concern narrower structural or methodological claims; omit a topic
-# rather than recasting them as an unrestricted bound or an evidence assessment.
-TOPIC_BY_KIND = {
-    "lower-bound": "lower-bound",
-    "upper-bound": "upper-bound",
-    "optimality": "optimality",
-    "formalization": "optimality",
-    "simplification": "optimality",
-}
+# Result highlights retain the precise registered kind from the shared vocabulary.
+TOPIC_BY_KIND = {kind: kind for kind in KINDS}
 
 
 def highlights(overview: Overview) -> tuple[Result, ...]:

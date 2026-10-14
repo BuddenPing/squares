@@ -1203,6 +1203,9 @@ body {
    the text light. A plain chip is a neutral tint; a status chip takes its status's
    fill (below). A rung chip adds `site-rung-fill`. */
 .site-chip {
+  font-variant-caps: normal;
+  letter-spacing: normal;
+  text-transform: none;
   background: color-mix(
     in oklch,
     var(--kpress-doc-muted) var(--site-chip-tint),

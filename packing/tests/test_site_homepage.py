@@ -928,6 +928,8 @@ def test_news_cards_expand_only_on_press_and_legacy_bookmarks_forward(
                 assert day["title_before_topics"]
                 assert day["topics_after_title"]
                 for topic in day["topic_styles"]:
+                    assert topic["transform"] == "none"
+                    assert topic["caps"] == "normal"
                     assert float(topic["size"].removesuffix("px")) < day["title_size"]
                     assert topic["family"] == day["title_style"]["family"]
         card = page.locator("[data-news-day].is-collapsed").first
@@ -1091,11 +1093,14 @@ def test_news_facets_history_bookmarks_and_shared_meters(
         page.goto(f"{ORIGIN}news.html?reader=kept", wait_until="load")
         seen = check({4, 5})
         assert seen["scores"] == ["4", "5"]
-        assert len(seen["topics"]) == len(render_changelog.NEWS_TOPICS)
+        used_topics = {
+            topic for entry in document["entries"] for topic in entry.get("topics", [])
+        }
+        assert set(seen["topics"]) == used_topics
         page.locator('button[data-news-score="3"]').focus()
         page.keyboard.press("Space")
         check({3, 4, 5})
-        for topic in render_changelog.NEWS_TOPICS:
+        for topic in used_topics:
             if topic != "optimality":
                 page.locator(f'button[data-news-topic="{topic}"]').click()
         check({3, 4, 5}, {"optimality"})

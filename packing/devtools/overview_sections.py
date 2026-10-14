@@ -27,7 +27,7 @@ from urllib.parse import urlsplit
 from xml.etree import ElementTree as ET
 
 from devtools import repo_links
-from devtools.check_results import KINDS, kind_label
+from devtools.check_results import KINDS
 from devtools.overview_data import (
     APOSTROPHE,
     BIBLIOGRAPHY,
@@ -54,6 +54,7 @@ from devtools.render_overview import PAPERS as PAPER_RECORDS
 from devtools.render_recent_results import REPORTED_MARK, SUPERSEDED, listed, superseded
 from devtools.repo_links import branch_file
 from devtools.result_status import CONFIRMED, STATUSES, recent_contributions_by_case
+from devtools.site_topics import topic_chip, topic_label
 from sqpack.known_best import PackingSegment, grid_transitions
 from sqpack.yamlio import safe_load
 
@@ -141,7 +142,7 @@ def kind_chip(result: Result) -> str:
     `case exclusion` (epistemics.md, Result Kinds). Every result has one; bound kinds
     use the same semantic hues as the corresponding bounds."""
     kind = str(result.record["kind"])
-    return f'<span class="site-chip" data-kind="{_esc(kind)}">{_esc(kind_label(kind))}</span>'
+    return topic_chip(kind, attribute="data-kind")
 
 
 def status_chip(status: str) -> str:
@@ -866,7 +867,7 @@ def result_filters(
         "</select></label>"
         for scale, label in RUNG_FILTERS
     )
-    kinds = [("", ALL), *((kind, kind_label(kind)) for kind in KINDS if kind in held)]
+    kinds = [("", ALL), *((kind, topic_label(kind)) for kind in KINDS if kind in held)]
     statuses = [("", ALL), *((status, status) for status in STATUSES if status in present)]
     sources = [("", ALL), ("ours", "This project"), ("others", "Others")]
     projects = [("", ALL), *((project_slug(url), project_name(url)) for url in project_urls())]

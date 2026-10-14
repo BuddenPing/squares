@@ -34,6 +34,7 @@ from mdit_py_plugins.dollarmath import dollarmath_plugin
 from strif import atomic_output_file
 
 from devtools.repo_links import path_kind, repo_url
+from devtools.site_topics import TOPICS, topic_chip
 from sqpack import release
 from sqpack.yamlio import load_yaml
 
@@ -707,14 +708,7 @@ def ordered_entries(document: Document) -> list[Document]:
     )
 
 
-NEWS_TOPICS = {
-    "lower-bound": "Lower bounds",
-    "upper-bound": "Upper bounds",
-    "optimality": "Optimality",
-    "engineering": "Engineering",
-    "verification": "Verification",
-    "documentation": "Documentation",
-}
+NEWS_TOPICS = TOPICS
 
 
 def news_topics(topics: Sequence[str]) -> str:
@@ -725,10 +719,7 @@ def news_topics(topics: Sequence[str]) -> str:
         raise ValueError("unknown News topic")
     return (
         '<p class="site-news-topics">'
-        + " ".join(
-            f'<span class="site-chip" data-news-topic="{topic}">{NEWS_TOPICS[topic]}</span>'
-            for topic in topics
-        )
+        + " ".join(topic_chip(topic, attribute="data-news-topic") for topic in topics)
         + "</p>"
     )
 
@@ -743,7 +734,7 @@ def news_rating(rating: Significance) -> str:
     )
 
 
-def news_filters() -> str:
+def news_filters(topics_present: set[str] | None = None) -> str:
     """Progressive controls: without the enhancement every article stays visible."""
     scores = "".join(
         f'<button type="button" data-news-score="{score}" '
@@ -753,6 +744,7 @@ def news_filters() -> str:
     topics = "".join(
         f'<button type="button" data-news-topic="{topic}" aria-pressed="true">{label}</button>'
         for topic, label in NEWS_TOPICS.items()
+        if topics_present is None or topic in topics_present
     )
     return (
         '<div class="site-news-filters sans-text" data-news-filters hidden>'
@@ -798,7 +790,9 @@ def render_news(document: Document, *, limit: int | None = None) -> str:
     if limit is not None:
         entries = entries[:limit]
     out = [
-        news_filters() if limit is None else "",
+        news_filters({topic for entry in entries for topic in entry.get("topics", [])})
+        if limit is None
+        else "",
         '<div class="site-news sans-text" data-news>',
     ]
     seen_dates: set[str] = set()
