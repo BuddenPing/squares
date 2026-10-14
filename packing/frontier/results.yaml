@@ -21288,7 +21288,15 @@ results:
 
       The per-count ledger of 14 October (jlevy/squares#601) records it at these 68 counts,
       each below every earlier report there, and at no other: at 59 counts it ties or trails
-      an earlier report and at 21 the printed precision does not decide it.
+      an earlier report, and at 21 the printed precision did not decide it.
+
+      Seventeen of those 21 are now decided exactly, by devtools.decide_undecided_comparisons.
+      At 14 counts the pull request's side is above the standing one: the case records'
+      reported lanes at 17, 28, 37, 39, 41, 69, 87, 128, 205, 235 and 300, and the entries
+      pending adoption at 106, 152 and 177, T-121, T-122 and T-123. At 54, 107 and 178 it
+      equals the reported lane. It is recorded at none of the 17. At 29, 55, 71 and 83 the
+      comparison stays undecided, because the record holds only a print of the standing
+      side.
     scope: {n_values: [68, 70, 84, 86, 88, 102, 103, 105, 108, 110, 123, 126, 127, 129,
                         130, 131, 132, 146, 153, 155, 156, 172, 175, 176, 179, 180, 181,
                         182, 199, 204, 206, 207, 208, 209, 210, 211, 228, 232, 236, 237,
@@ -21317,6 +21325,7 @@ results:
       - packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/claims.json
       - >-
         packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+      - packing/campaign/issue-intake/upper-bounds-20261014/undecided-resolved.json
       - packing/devtools/algebraic_witness_reports.py
       - packing/devtools/upper_bound_reports.py
       - >-
@@ -21697,10 +21706,19 @@ results:
       1.04e-03; smallest: this certificate.
 
       The same pull request states certificates at 80 more counts, which the ledger does not
-      record (59 not below an earlier report, 21 undecided): rational ones at 21 and
-      algebraic ones at 56, which stay in the packet and are not replayed here (priced at
-      under an hour and about 2.1 hours), and rows of its v2 release at 11, 17 and 29 that
-      neither of the packet's declarations states.
+      record (76 not below an earlier report, 17 of them decided exactly after the ledger
+      first left them undecided, and 4 undecided): rational ones at 21 and algebraic ones at
+      56, which stay in the packet and are not replayed here (priced at under an hour and
+      about 2.1 hours), and rows of its v2 release at 11, 17 and 29 that neither of the
+      packet's declarations states.
+
+      The 17 exact decisions are the receipt
+      packing/campaign/issue-intake/upper-bounds-20261014/undecided-resolved.json, written
+      by devtools.decide_undecided_comparisons from the ledger's undecided comparisons: each
+      rational side placed in the standing root's isolating interval by one sign, and each
+      equality decided by exact arithmetic in the two number fields. At 29, 55, 71 and 83 it
+      records what an exact decision needs, an exact side for the reported lane's packing,
+      which the case records do not hold.
 
       The source's own checkers were not run here. The two maintained routes, the sqpack
       rational witness verifier and the independent rational corner checker, share

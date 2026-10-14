@@ -13953,12 +13953,108 @@ urls:
     - packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md
     - packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/claims.json
     - packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+    - packing/campaign/issue-intake/upper-bounds-20261014/undecided-resolved.json
     - packing/devtools/algebraic_witness_reports.py
     - packing/devtools/upper_bound_reports.py
     - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/algebraic-route1-n070.json.xz
     - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/algebraic-route1-n153.json.xz
     - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/algebraic-route1-n207.json.xz
     - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/algebraic-route1-n302.json.xz
+  amendments:
+  - date: '2026-10-14'
+    reason: 'Cite the receipt of PR #574''s 17 exactly decided comparisons (campaign/issue-intake/upper-bounds-20261014/undecided-resolved.json)
+      among the artifacts; scope, attribution, evidence and the stated bounds are unchanged.'
+    previous:
+      kind: upper-bound
+      scope:
+        n_values:
+        - 68
+        - 70
+        - 84
+        - 86
+        - 88
+        - 102
+        - 103
+        - 105
+        - 108
+        - 110
+        - 123
+        - 126
+        - 127
+        - 129
+        - 130
+        - 131
+        - 132
+        - 146
+        - 153
+        - 155
+        - 156
+        - 172
+        - 175
+        - 176
+        - 179
+        - 180
+        - 181
+        - 182
+        - 199
+        - 204
+        - 206
+        - 207
+        - 208
+        - 209
+        - 210
+        - 211
+        - 228
+        - 232
+        - 236
+        - 237
+        - 238
+        - 239
+        - 240
+        - 241
+        - 258
+        - 259
+        - 261
+        - 263
+        - 264
+        - 266
+        - 267
+        - 268
+        - 269
+        - 270
+        - 271
+        - 272
+        - 273
+        - 292
+        - 295
+        - 297
+        - 301
+        - 302
+        - 303
+        - 304
+        - 305
+        - 306
+        - 307
+        - 308
+      established: null
+      attribution:
+        source_keys:
+        - '[PingYou PR 574 certificates 2026-10-13]'
+        published: '2026-10-13'
+      builds_on: null
+      evidence:
+      - E-pingyou-574-certificate-report
+      - E-pingyou-574-algebraic-report
+      artifacts:
+      - packing/resources/web/pingyou-pr574-certificates-2026-10-13/README.md
+      - packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/claims.json
+      - packing/resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/algebraic-claims.json
+      - packing/devtools/algebraic_witness_reports.py
+      - packing/devtools/upper_bound_reports.py
+      - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/algebraic-route1-n070.json.xz
+      - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/algebraic-route1-n153.json.xz
+      - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/algebraic-route1-n207.json.xz
+      - packing/resources/web/pingyou-pr574-certificates-2026-10-13/receipts/algebraic-route1-n302.json.xz
 - path: result/t-175.html
   canonical: result/t-175.html
   kind: result
