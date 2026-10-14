@@ -92,7 +92,7 @@ Every side is a short terminating decimal, with 11 to 14 places.
 ## Against the Record
 
 [acquisition/claims.json](acquisition/claims.json) freezes each of the 19 certificates
-against the record at `main` `aeef99ef0` (14 October 2026), and `check-claims` rebuilds
+against the record at `main` `b8c930338` (14 October 2026), and `check-claims` rebuilds
 it: each case ceiling from its holder’s own packet, each register entry at the count
 from its own packet or the bound its claim states, and each open report from the side it
 prints. The open reports are those of the

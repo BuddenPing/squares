@@ -8,7 +8,7 @@
   "witness_prefix": "W-mishapolk-573-n",
   "claim_limitations": "Complete 336bdf5 rational centre/half-angle certificate in Evan Daniel's format, centres in [0, S]^2, converted from a checkout at the pin whose bytes have the digests the packet records; no upstream byte is retained. Finite construction feasibility only; no local minimum, rigidity, novelty, priority or global optimality claim.",
   "read_on": "2026-10-14",
-  "read_at_main": "aeef99ef0ef27ace054434094118a6ac355da384",
+  "read_at_main": "b8c930338ee3577a43faccb52472c6975ab7eccd",
   "requested": [103, 153, 207, 209, 258, 270],
   "replayed": [153, 154, 175, 207],
   "certificates": [

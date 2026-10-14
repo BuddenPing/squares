@@ -13,7 +13,7 @@ The issue had no comments and had not been renamed when it was read at 07:10Z.
 
 The issue’s claim is that all 73 bounds “beat or tie all standing records in the
 official catalogue and all open issues/PRs (#500, #501, #503, #504, #505, #506, #552)”.
-**Measured against the record at `main` `aeef99ef0` and every open report of 14 October,
+**Measured against the record at `main` `b8c930338` and every open report of 14 October,
 that holds at one count, 237.** At 40 counts the certificate’s exact side equals the
 case’s, at 16 it is above the case, and at 17 it is below the case, where at 16 of them
 another open report is smaller or states the same side.
@@ -125,7 +125,7 @@ by $1 + 10^{-20}$. It is pinned by digest, not derived and not replayed.
 ## Against the Record
 
 [acquisition/claims.json](acquisition/claims.json) freezes each of the 72 certificates
-against the record at `main` `aeef99ef0` (14 October 2026), and `check-claims` rebuilds
+against the record at `main` `b8c930338` (14 October 2026), and `check-claims` rebuilds
 it: each case ceiling from its holder’s own packet, each register entry at the count
 from its own packet or, where it has none, from the bound its claim states, and each
 open report from the side it prints.
