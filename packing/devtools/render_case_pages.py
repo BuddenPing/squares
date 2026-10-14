@@ -705,7 +705,11 @@ def _regularization(case: dict[str, Any]) -> str:
     note = field.get("note")
     if not note:
         return ""
-    drawn = any(item.get("view") for item in field.get("items") or [])
+    # The label says a regularized drawing only where the page draws one: a view that ties
+    # its house drawing on every goal is not the default picture (policy, section 12).
+    drawn = any(item.get("view") for item in field.get("items") or []) and (
+        case["n"] in frontier.drawn_regularized()
+    )
     label = "Regularized drawing" if drawn else "Regularization"
     return (
         f'<div class="site-case-note"><span class="site-card-label">{label}</span>'
@@ -818,18 +822,50 @@ def _sources(case: dict[str, Any]) -> str:
 
 
 def packing_figure(n: int, *, units: int = 1000, upper: dict[str, Any] | None = None) -> str:
-    """The original packing drawing and optional best-known side/source caption."""
-    figcaption = ""
+    """The case's default picture and optional best-known side/source caption.
+
+    Where the default picture is the case's regularized view (regularization policy,
+    section 12), the figure draws the view and its caption carries the regularization's
+    credit line (section 7), and the house drawing follows one click away, in a
+    disclosure named "As published", with its source's credit (`as_published`).
+    """
+    regularized = n in frontier.drawn_regularized()
+    root = frontier.REGULARIZED_RENDERINGS if regularized else frontier.RENDERINGS
+    caption = []
     if upper is not None:
-        figcaption = (
-            f"<figcaption>The best packing known for {n} square{'s' if n != 1 else ''}, "
+        caption.append(
+            f"The best packing known for {n} square{'s' if n != 1 else ''}, "
             f"side {_math(bound_tex(upper))}, "
             f"{frontier.credit(upper.get('found_by'), upper.get('found_year'))}"
-            "</figcaption>"
         )
+    if regularized:
+        from devtools.default_drawings import credit_line  # noqa: PLC0415
+
+        caption.append(f'<span class="site-case-regularized">{_esc(credit_line(n))}</span>')
+    figcaption = f"<figcaption>{'. '.join(caption)}</figcaption>" if caption else ""
     return (
-        f'<figure class="site-case-figure">{frontier.packing_svg(n, units=units)}'
-        f"{figcaption}</figure>"
+        f'<figure class="site-case-figure">{frontier.packing_svg(n, units=units, root=root)}'
+        f"{figcaption}</figure>{as_published(n, units=units) if regularized else ''}"
+    )
+
+
+def as_published(n: int, *, units: int = 1000) -> str:
+    """The house drawing of a case drawn by default from its regularized view, as
+    published: a disclosure under the figure, closed until it is pressed, holding the
+    house rendering of the record's witness and its source's credit. Without scripts it
+    opens as any `details` does."""
+    from devtools.build_bound_citations import load_case  # noqa: PLC0415
+
+    upper = load_case(n)["reported_upper_bound"]
+    credit = frontier.credit(upper.get("found_by"), upper.get("found_year"))
+    key = upper.get("source_key")
+    source = f' <span class="site-credit">{_esc(key)}</span>' if key else ""
+    return (
+        '<details class="site-case-published"><summary>As published</summary>'
+        '<figure class="site-case-figure site-case-published-figure">'
+        f"{frontier.packing_svg(n, units=units)}"
+        f"<figcaption>The packing as published, {credit}{source}</figcaption></figure>"
+        "</details>"
     )
 
 

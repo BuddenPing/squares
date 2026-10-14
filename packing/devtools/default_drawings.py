@@ -250,6 +250,21 @@ def regularized_defaults(
     return {n: row for n, row in rows.items() if row["default"] == REGULARIZED}
 
 
+@cache
+def _generators(index: Path = INDEX) -> dict[str, Any]:
+    return dict(json.loads(index.read_text(encoding="utf-8")).get("generators") or {})
+
+
+def credit_line(n: int) -> str:
+    """The credit line a drawing of count `n`'s regularized default carries: the
+    generator's, as the policy's section 7 gives it (`regularized_drawings.
+    generator_credit`)."""
+    from devtools.regularized_drawings import generator_credit  # noqa: PLC0415
+
+    row = regularized_defaults()[n]
+    return generator_credit(str(row["generator"]), _generators())
+
+
 def problems(expected: Mapping[str, Any], record: Path = RECORD) -> tuple[list[str], list[str]]:
     """What fails the check, and what it lists without failing: the counts that keep
     the house picture and why."""

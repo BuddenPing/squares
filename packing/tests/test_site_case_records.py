@@ -70,9 +70,11 @@ def test_a_case_page_prints_its_regularization_note_and_nothing_without_one() ->
     """The case page prints the record's generated `regularization` note
     (`devtools.regularized_drawings`) as one labelled line: for a drawn count who
     regularized the drawing, with its source's regularization of the house after it where
-    one exists; for a count the layer does not draw whose regularization a result
-    registers, the credit to the Squares Project and the result; and nothing at all for a
-    record without the field."""
+    one exists, labelled a regularized drawing where the page draws the view (its default
+    picture, regularization policy section 12) and a regularization where the view ties
+    its house drawing and the page draws the house; for a count the layer does not draw
+    whose regularization a result registers, the credit to the Squares Project and the
+    result; and nothing at all for a record without the field."""
     cases = {case["n"]: case for case in render_frontier_page.frontier_cases()}
     regularization = render_case_pages._regularization  # noqa: SLF001  # pyright: ignore[reportPrivateUsage]
 
@@ -85,7 +87,9 @@ def test_a_case_page_prints_its_regularization_note_and_nothing_without_one() ->
     assert "a pure regularization, which proves no new bound, so not a result" in drawn
 
     housed = regularization(cases[70])
-    assert "Regularized drawing" in housed
+    drawn_here = 70 in render_frontier_page.drawn_regularized()
+    assert ("Regularized drawing" in housed) == drawn_here
+    assert ('<span class="site-card-label">Regularization</span>' in housed) != drawn_here
     assert "The house is itself its source" in housed
 
     registered = regularization(cases[28])
@@ -496,7 +500,21 @@ def test_without_scripts_a_record_file_is_read_where_it_is(browser: Any, served:
         assert re.search(r'<article\b[^>]*\bdata-case="29"', response.text())
         assert page.url == f"{served}cases/29.html"
         _canonical_case(page, 29)
-        assert page.locator("article.site-case figure svg").count() == 1
+        assert page.locator("article.site-case .site-case-head > figure svg").count() == 1
+        # Where the default picture is the regularized view, the house drawing waits in a
+        # closed disclosure, as published (regularization policy, section 12).
+        published = page.locator("article.site-case details.site-case-published")
+        expected = int(29 in render_frontier_page.drawn_regularized())
+        assert published.count() == expected
+        if expected:
+            assert published.get_attribute("open") is None
+            assert published.locator("summary").inner_text() == "As published"
+            assert published.locator("figure svg").count() == 1
+            assert not published.locator("figure svg").is_visible()
+            published.locator("summary").click()
+            published.locator("figure svg").wait_for(state="visible")
+            assert published.get_attribute("open") is not None
+            assert "The packing as published" in published.locator("figcaption").inner_text()
 
 
 def _centered_case_bounds(layout: dict[str, Any]) -> None:

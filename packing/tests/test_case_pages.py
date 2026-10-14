@@ -232,8 +232,8 @@ def test_the_atlas_grid_and_the_frontier_table_open_the_same_record(
     popover: the atlas grid's cells and the frontier table's `n` are links marked
     `data-case`, and a frontier row names its record for the popover to open. A case
     drawn from its regularized view, the atlas's one tile for it since the House and
-    Regularized tabs went (think-k8x9), links the same record, whose drawing is the
-    house one."""
+    Regularized tabs went (think-k8x9), links the same record, which draws the same view
+    and keeps the house drawing as published."""
     grid = overview_sections.atlas_grid()
     assert "<template data-atlas-regularized>" not in grid
     link = r'href="cases/(\d+)\.html" data-case="(\d+)" data-atlas-n="(\d+)"'
@@ -338,6 +338,46 @@ def test_a_case_diagram_precedes_its_count_and_ordered_status_row() -> None:
     assert "data-case-index" not in markup
 
 
+def test_a_regularized_default_draws_its_view_and_keeps_the_house_as_published() -> None:
+    """Regularization policy, section 12 (the owner, 13 October 2026): a case whose
+    default picture is its regularized view draws the view first, its caption carrying
+    the regularization's credit line, and keeps the house drawing one click away in a
+    disclosure named "As published", with its source's credit. A case whose view ties its
+    house drawing, and a case with no view, draw the house drawing alone."""
+    from devtools import default_drawings  # noqa: PLC0415
+
+    cases = {case["n"]: case for case in frontier_page.frontier_cases()}
+    record = default_drawings.drawn_views()
+    drawn = sorted(frontier_page.drawn_regularized())
+    kept = sorted(set(record) - set(drawn))
+    plain = next(n for n in sorted(cases) if n not in record)
+    n = drawn[0]
+    head = render_case_pages.record_head(cases[n], first=1, last=324).split("</header>")[0]
+    view = frontier_page.packing_svg(n, units=1000, root=frontier_page.REGULARIZED_RENDERINGS)
+    house = frontier_page.packing_svg(n, units=1000)
+    assert view != house
+    figure = head.index('<figure class="site-case-figure">')
+    disclosure = head.index('<details class="site-case-published"><summary>As published')
+    assert figure < head.index(view) < disclosure < head.index(house)
+    assert disclosure < head.index('class="site-case-title"')
+    assert html.escape(default_drawings.credit_line(n)) in head[:disclosure]
+    published = head[disclosure:]
+    assert '<figure class="site-case-figure site-case-published-figure">' in published
+    assert "The packing as published, " in published
+    upper = cases[n]["reported_upper_bound"]
+    assert frontier_page.credit(upper.get("found_by"), upper.get("found_year")) in published
+    assert published.count("<svg ") == 1
+    for other in [*kept[:1], plain]:
+        head = render_case_pages.record_head(cases[other], first=1, last=324)
+        head = head.split("</header>")[0]
+        assert frontier_page.packing_svg(other, units=1000) in head, other
+        assert "site-case-published" not in head, other
+        assert "Regularized by" not in head, other
+    if kept:
+        data = render_case_pages.record_head(cases[kept[0]], first=1, last=324)
+        assert '<span class="site-card-label">Regularized drawing</span>' not in data
+
+
 def test_the_old_case_directory_retains_known_counts_in_its_forwarder(
     page: str, numbers: list[int]
 ) -> None:
@@ -379,7 +419,13 @@ def test_every_record_opens_with_its_visual_summary(
             record.index('<div class="site-case-prose"'),
         ]
         assert order == sorted(order), n
-        assert record.count('<figure class="site-case-figure') == 1, n
+        # The default picture, and for a case drawn from its regularized view the house
+        # drawing as published, in a disclosure after it (`test_a_regularized_default_...`).
+        published = n in frontier_page.drawn_regularized()
+        figures = record.count('<figure class="site-case-figure')
+        assert figures - record.count("site-case-published-figure") == 1, n
+        assert record.count('<details class="site-case-published">') == published, n
+        assert figures == 1 + published, n
         assert 'class="site-case-interval" data-math-face="serif"' in record, n
         assert 'class="site-atlas-pop-bound" data-math-face="serif"' in record, n
         assert "<svg " in record, n

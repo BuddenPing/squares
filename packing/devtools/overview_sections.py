@@ -1768,12 +1768,12 @@ HERO_CASES = (HERO_CASE,)
 def hero() -> str:
     """The representative native packing with its shared case popover."""
     from devtools.render_case_pages import case_url  # noqa: PLC0415
-    from devtools.render_frontier_page import packing_svg  # noqa: PLC0415
+    from devtools.render_frontier_page import default_root, packing_svg  # noqa: PLC0415
 
     links = "".join(
         f'<a href="{case_url(n)}" data-case="{n}" '
         f'aria-label="The best packing known for {n} squares: packing and bounds">'
-        f"{packing_svg(n, units=1000)}</a>"
+        f"{packing_svg(n, units=1000, root=default_root(n))}</a>"
         for n in HERO_CASES
     )
     return (
@@ -2760,12 +2760,15 @@ ATLAS_REGULARIZED = "regularized"
 
 
 def atlas_regularized() -> tuple[int, ...]:
-    """The cases with a regularized drawing, read from the layer's index: each record it
-    lists as regularized, whose view `devtools.render_regularized_atlas` has drawn.
+    """The cases drawn from their regularized view: each whose default picture the view
+    is (regularization policy, section 12; `devtools.default_drawings`), among the records
+    the layer's index lists as regularized, whose views `devtools.render_regularized_atlas`
+    has drawn.
 
-    The set is the index's, so a view the layer gains joins the atlas at the next
-    render. A drawing the index does not ask for, or one it asks for that is not there,
-    is a stale render, and the page is refused rather than drawn from it.
+    The sets are the index's and the record's, so a view the layer gains joins the atlas
+    at the next render once it improves on its house drawing. A drawing the index does not
+    ask for, or one it asks for that is not there, is a stale render, and the page is
+    refused rather than drawn from it.
     """
     import json  # noqa: PLC0415
 
@@ -2788,15 +2791,16 @@ def atlas_regularized() -> tuple[int, ...]:
             f"the regularized drawings are stale (missing {missing}, unexpected {extra}); "
             "run python -m devtools.render_regularized_atlas --update"
         )
-    return listed
+    return tuple(n for n in listed if n in frontier.drawn_regularized())
 
 
 @cache
 def atlas_enclosing_sides() -> dict[int, float]:
     """Actual enclosing sides of the selected drawings, independent of frontier bounds.
 
-    House drawings use their canonical witness; a regularized drawing uses its retained
-    derived witness, whose certified side the renderer draws. Project the same scalar
+    House drawings use their canonical witness; a case drawn from its regularized view
+    (`atlas_regularized`) uses its retained derived witness, whose certified side the
+    renderer draws. Project the same scalar
     sources as the renderer to browser precision without changing the witnesses.
     The shared frame reader preserves algebraic coefficient vectors and their root
     declarations as one exact side.
@@ -2809,7 +2813,8 @@ def atlas_enclosing_sides() -> dict[int, float]:
     from sqpack.yamlio import load_yaml  # noqa: PLC0415
 
     manifest = json.loads((REPO / "packing/atlas/known-best/manifest.json").read_text())
-    views = {entry["n"]: entry for entry in regularized_entries()}
+    drawn = set(atlas_regularized())
+    views = {entry["n"]: entry for entry in regularized_entries() if entry["n"] in drawn}
     sides: dict[int, float] = {}
     for entry in manifest["atlas"]["entries"]:
         n = entry["n"]
@@ -3168,13 +3173,16 @@ def atlas_grid(*, homepage: bool = False) -> str:
     popover, filled by the script from a JSON of the film's facts, stood after the block until
     2026-10-03; the case popover took its place.
 
-    A case with a regularized view (`atlas_regularized`) is drawn from it directly, and
-    every other case from its house rendering: one tile a case. Until 2026-10-04 the
-    house tiles were the default and a third `<template>` held a second tile for each
-    regularized case, which House and Regularized tabs swapped in place; the owner
-    dropped the choice for the regularized drawings alone (think-k8x9), and with it the
-    second set. Layout, Size and Scale strips and the key
-    (`atlas_legend`) share the controls box (`.site-atlas-controls`) above the tiles.
+    A case whose default picture is its regularized view (`atlas_regularized`) is drawn
+    from it directly, and every other case from its house rendering: one tile a case.
+    Until 2026-10-04 the house tiles were the default and a third `<template>` held a
+    second tile for each regularized case, which House and Regularized tabs swapped in
+    place; the owner dropped the choice for the regularized drawings alone (think-k8x9),
+    and with it the second set. Since 2026-10-13 a view is the default only where it
+    improves on its house drawing (regularization policy, sections 11 and 12), and the
+    house drawing stays on the case record as published. Layout, Size and Scale strips and
+    the key (`atlas_legend`) share the controls box (`.site-atlas-controls`) above the
+    tiles.
     """
     from devtools.render_case_pages import case_popover  # noqa: PLC0415
 
