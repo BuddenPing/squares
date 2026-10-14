@@ -898,7 +898,11 @@ def test_news_cards_expand_only_on_press_and_legacy_bookmarks_forward(
     browser: Any, payloads: dict[str, bytes], width: int
 ) -> None:
     sync_api = site_browser.api()
-    page = browser.new_page(viewport={"width": width, "height": 900}, reduced_motion="reduce")
+    page = browser.new_page(
+        viewport={"width": width, "height": 900},
+        reduced_motion="reduce",
+        has_touch=width == 390,
+    )
     _serve(page, payloads)
     try:
         page.goto(ORIGIN, wait_until="load")
@@ -955,6 +959,36 @@ def test_news_cards_expand_only_on_press_and_legacy_bookmarks_forward(
         assert closed["fade"] == "1"
         assert "max-block-size" in closed["height_transition"]
         assert "rotate" in closed["arrow_transition"]
+        meter = card.locator(".site-significance[data-site-tooltip]")
+        meaning = meter.get_attribute("data-site-tooltip")
+        entry_id = card.locator("[data-news-entry]").get_attribute("data-news-entry")
+        entry = next(item for item in document["entries"] if item["id"] == entry_id)
+        assert meaning is not None
+        assert (
+            overview_sections.rung_meanings()[f"S{entry['significance']['score']}"] in meaning
+        )
+        assert entry["significance"]["rationale"] in meaning
+        tooltip = page.locator(".site-rating-tooltip.kpress-tooltip-visible")
+        for interaction in ("hover", "focus", "press"):
+            page.mouse.move(0, 0)
+            button.focus()
+            if interaction == "hover":
+                meter.hover()
+            elif interaction == "focus":
+                meter.focus()
+            elif width == 390:
+                meter.tap()
+            else:
+                meter.click()
+            sync_api.expect(tooltip).to_be_visible()
+            sync_api.expect(tooltip).to_have_text(meaning)
+            sync_api.expect(button).to_have_attribute("aria-expanded", "false")
+            assert reading()["height"] == closed["height"]
+            assert reading()["body_height"] == closed["body_height"]
+            page.keyboard.press("Escape")
+            sync_api.expect(tooltip).to_have_count(0)
+        page.mouse.move(0, 0)
+        button.focus()
         card.hover()
         assert reading()["height"] == closed["height"]
         button.focus()

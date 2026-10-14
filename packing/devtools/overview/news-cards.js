@@ -71,7 +71,12 @@
       }
     };
     button.addEventListener("click", toggle);
-    card.querySelector(".site-news-body")?.addEventListener("focusin", () => setOpen(true));
+    body.addEventListener("focusin", (event) => {
+      if (event.target instanceof Element && event.target.closest("[data-site-tooltip]")) {
+        return;
+      }
+      setOpen(true);
+    });
     card.addEventListener("click", (event) => {
       if (
         !(event.target instanceof Element) ||
