@@ -1813,7 +1813,8 @@ _LADDER_CELL_RE = re.compile(
     r'aria-label="Significance S(?P=s_level) of 5" title="(?P<s_title>[^"]*)">'
     r'<span class="site-significance-label" aria-hidden="true">(?P<s_label>S\d)</span>'
     r'<span class="site-significance-bars" aria-hidden="true">'
-    r'(?P<bars>(?:<span class="site-significance-bar"></span>)*)</span></span>)'
+    r'(?P<bars>(?:<span class="site-significance-bar" '
+    r'data-filled="(?:true|false)"></span>)*)</span></span>)'
     r'<span class="site-ladders-meaning">(?P<meaning>[^<]*)</span></div>)?</div>'
 )
 
@@ -1821,7 +1822,7 @@ _LADDER_CELL_RE = re.compile(
 class _LADDER_CELL:  # noqa: N801
     """The ladder diagram's cells, a chip's (V and C) and a significance mark's (S) read
     alike: `ladder`, `label`, `scale`, `level`, `title` and `meaning`, and for a mark
-    the bars it draws, one per level."""
+    five segments, filled up to the level."""
 
     @staticmethod
     def finditer(text: str) -> list[dict[str, str | None]]:
@@ -1829,8 +1830,11 @@ class _LADDER_CELL:  # noqa: N801
         for match in _LADDER_CELL_RE.finditer(text):
             cell = match.groupdict()
             if cell["s_label"]:
-                bars = (cell["bars"] or "").count("site-significance-bar")
-                assert bars == int(cell["s_level"] or 0), cell
+                bars = cell["bars"] or ""
+                assert (
+                    bars.count("site-significance-bar") == overview_sections.SIGNIFICANCE_TOP
+                ), cell
+                assert bars.count('data-filled="true"') == int(cell["s_level"] or 0), cell
                 cell |= {
                     "label": cell["s_label"],
                     "scale": "S",
@@ -3127,7 +3131,8 @@ RUNG_CHIP = re.compile(
     r'|site-significance" data-level="\d" role="img" aria-label="[^"]*"(?: title="[^"]*")?>'
     r'<span class="site-significance-label" aria-hidden="true)">([SVC]\d)</span>'
     r'(?:<span class="site-significance-bars" aria-hidden="true">'
-    r'(?:<span class="site-significance-bar"></span>)*</span></span>)?'
+    r'(?:<span class="site-significance-bar" '
+    r'data-filled="(?:true|false)"></span>)*</span></span>)?'
 )
 #: The order the site lists a result's rungs in: significance first (think-ucon).
 RUNG_ORDER = "SVC"
@@ -6943,3 +6948,15 @@ def test_atlas_scale_refuses_an_invalid_exact_root_declaration(
                 overview_sections.atlas_enclosing_sides()
     finally:
         overview_sections.atlas_enclosing_sides.cache_clear()
+
+
+def test_significance_is_one_box_with_five_filled_or_empty_segments() -> None:
+    for level in range(overview_sections.SIGNIFICANCE_TOP + 1):
+        mark = overview_sections.significance_mark(level, "Importance, not assurance.")
+        assert f'aria-label="Significance S{level} of 5"' in mark
+        assert 'title="Importance, not assurance."' in mark
+        assert mark.count('class="site-significance-bar"') == 5
+        assert mark.count('data-filled="true"') == level
+        assert mark.count('data-filled="false"') == 5 - level
+    with pytest.raises(ValueError, match="zero and five"):
+        overview_sections.significance_mark(6)

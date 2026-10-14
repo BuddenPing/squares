@@ -191,9 +191,15 @@ A significance rung is drawn in an ink of its own on the page, not on a chip:
 `--site-significance`, a dark teal at hue 205, between the confirmation green and the
 verification blue so it reads as neither, and darker and bluer than the accent so it
 never reads as a link; it is light in dark mode.
-The rung is its letter and level, `S4`, at the sans medium weight, then as many short
-bars in the same ink as its level, one to five, so a column of them reads as a meter
-(`overview_sections.significance_mark`). It is the second column of a table of results,
+Every score uses `overview_sections.significance_mark`: an S label and five segments in
+one square-cornered border box, 5.5em wide at the shared note size and sans medium
+weight. Each bar is 0.5em wide and 0.6em tall; the first S bars are solid and the rest
+are empty outlines.
+The box keeps the same width from S0 through S5, while its accessible
+name states the score and its tooltip explains the judgment.
+News, Results tables, ladders, result overviews, case records and popovers share this
+component; significance continues to describe importance rather than V/C assurance.
+It keeps the shared chip height, 1.45em. It is the second column of a table of results,
 narrow, and it stands first among the rungs in a result’s overview, a case record and
 the rating ladders.
 
@@ -873,10 +879,21 @@ it.
   H3 typography comes from the shared heading role; the chips retain shared fills,
   corners and leading at 85% of the note-size chip scale.
   Homepage News and the archive use the same card renderer and CSS roles.
+  Every post has an explicit importance score and a plain rationale.
+  A visible “Significance” line uses the shared meter; homepage highlights keep their
+  actual result scores and assurance qualifiers.
+  Archive controls default to S4/S5 and all topics, with OR within a facet and AND
+  across facets. All significance and All topics clear their facet; Reset restores the
+  defaults. Counts and an empty state describe the selection.
+  URL state preserves unrelated query parameters and browser history; a low-score
+  bookmark widens the filters to reveal its target.
+  Without JavaScript the controls stay hidden and the complete history remains visible.
   After the enhancement loads, about ten lines are visible.
   Clicking or tapping the card or its small shared arrow in the footer expands or
   contracts it inline; Enter and Space activate the button.
   A short fade marks the clipped edge.
+  News and Atlas disclosure footers center their expand/contract control on the content
+  through one shared rule; ordinary navigation actions keep their own roles.
   Height, fade and arrow rotation share the existing motion timing and honor reduced
   motion. Hover adds a subtle green wash without changing height.
   Article links retain their ordinary actions; body-link focus reveals the article.
@@ -1370,20 +1387,15 @@ it.
   - **Rows.** Every rung is the same height at any one width, since each is a chip and a
     two-line box; a significance mark stands as tall as a chip, the chip’s line height
     and margin. A cell arranges the two by its own width.
-    With 18rem or more it sets the chip in a rail, 2.25rem, the chip’s own width, or
-    3.75rem for significance, the widest mark’s (`--site-ladders-significance-rail`;
-    S5’s is 58.8px in the page’s face), and the description beside it, 0.75rem on,
-    64.1px a row: at 1280 and 1024 pixels, down to a 980-pixel window, and on a phone
-    down to 320 pixels. The rail is never narrower than what stands in it
-    (`minmax(rail, max-content)`): at 3.6rem S5’s mark ran 1.2px past it, and a wider
-    face, 65px in the fallback and more in some system faces, ran it into the words
-    beside it (the owner, 2026-10-05). Every cell turns at the widest rail’s width, so a
-    row’s rungs stay one height and a significance description, 1.5rem narrower than the
-    others beside its wider rail, is never under its least: at 16.5rem, the chips’
-    rail’s, it was set 21.6px short and took a third line (2026-10-03). Narrower, it
-    sets the chip on a line of its own and the description under it across the cell,
-    91.8px a row, from 979 pixels down to 716, so at 768 and 908. A description is never
-    set narrower than 13.5rem (`--site-ladders-meaning-min`).
+    A cell at least 20.5rem wide places its mark in a rail beside the description:
+    2.25rem for V/C chips or 6.25rem for the significance meter, then a 0.75rem gap and
+    at least 13.5rem for the two-line meaning.
+    All cells turn together, preserving uniform row heights; narrower cells put their
+    meanings below the mark.
+    The rail uses `minmax(rail, max-content)` so a reader’s enlarged meter remains clear
+    of its description. The three-column boundary is 1100px; on the stacked diagram the
+    side-by-side boundary is 360px. Retained browser checks cover both sides of each
+    boundary and a 20% enlarged-meter control.
   - **Columns.** The three columns are equal, and each keeps 0.75rem
     (`--site-ladders-inset`) clear after its words, before the next column’s chip.
     Three columns therefore need 42.75rem: three times the least description and its
@@ -1993,8 +2005,8 @@ it.
   The widths follow from each column’s floor and from what the n column asks for.
   The id, the significance, the rungs, the status, the details and the date are as
   narrow as what they hold.
-  The significance is as wide as its widest mark, S5’s five bars, with the cell’s 0.2rem
-  padding either side: its bars are 0.36em wide, 0.2em after the label.
+  The significance column holds the shared 5.5em meter, with the cell’s 0.2rem padding
+  either side and room for a new-result star.
   The details are as wide as their widest link, “evidence 10”, 102 pixels, and a result
   with many records is the tallest row: T-075’s sixteen links stand 410 pixels.
   The rungs column is as wide as its widest chip, since no chip wraps: the two rungs

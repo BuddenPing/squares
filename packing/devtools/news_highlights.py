@@ -44,7 +44,8 @@ def _article(result: Result) -> str:
         f'<article class="site-news-item" data-news-entry="{result.id}">'
         f"<h3>{tex_bounds(result.summary)}</h3>"
         f"{render_changelog.news_topics([topic] if topic else [])}"
-        f'<p class="site-result-status">{overview_sections.status_chips(result)}</p>'
+        '<p class="site-result-status">Significance '
+        f"{overview_sections.status_chips(result)}</p>"
         f'<p class="site-result-meta">{overview_sections.date_cell(result)} · '
         f"{overview_sections.credit_cell(result.credit)}</p>"
         f"{qualifier}<p>{claim}</p><p>{rationale}</p>"

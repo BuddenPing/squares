@@ -94,6 +94,7 @@ BROWSER = PACKING / "devtools" / "overview"
 FORWARD_SCRIPT = BROWSER / "forward.js"
 NEWS_CARDS_SCRIPT = BROWSER / "news-cards.js"
 NEWS_FORWARD_SCRIPT = BROWSER / "news-forward.js"
+NEWS_FILTERS_SCRIPT = BROWSER / "news-filters.js"
 TABLE_SCRIPT = BROWSER / "table.js"
 MATH_SCRIPT = BROWSER / "math.js"
 POPOVER_SCRIPT = BROWSER / "popover.js"
@@ -1355,7 +1356,7 @@ def news_page() -> Page:
             "with the retained contribution history."
         ),
         toc=False,
-        page_scripts=(NEWS_CARDS_SCRIPT,),
+        page_scripts=(NEWS_CARDS_SCRIPT, NEWS_FILTERS_SCRIPT),
         rewrite_body=_case_links,
     )
 

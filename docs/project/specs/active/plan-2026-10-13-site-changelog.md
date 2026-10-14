@@ -472,6 +472,44 @@ Extend it if the owner wants more historical context; the schema and backfill co
 must support that without changing the rendering design.
 No unresolved question blocks the draft implementation plan.
 
+## Significance and archive filters follow-up
+
+Each News entry requires `significance: {score, rationale}`: an integer S1–S5 and a
+nonempty plain-text editorial explanation.
+Importance is separate from V/C truth.
+An announcement of a new registered result inherits that result’s score; a grouped
+announcement takes the maximum of the actual new results.
+An incidental citation never assigns an article the cited result’s score.
+
+| Score | News anchor |
+| --- | --- |
+| S1 | Minor housekeeping |
+| S2 | Routine engineering or internal reliability |
+| S3 | A notable focused public improvement, verification, method explanation or new S3 result |
+| S4 | A substantial new result or major public capability or policy launch |
+| S5 | A landmark mathematical advance or major resolution |
+
+The archive has keyboard- and touch-operable significance and topic toggles.
+S4/S5 and all topics are the defaults; choices within each facet combine with OR and the
+facets combine with AND. Each facet has an All action, and Reset restores the defaults.
+The visible count and empty state reflect the current selection.
+Namespaced query parameters preserve other URL state and Back/Forward; a bookmark to a
+filtered post adds the required choices before revealing and expanding it.
+Without JavaScript all posts and complete articles stay visible.
+
+Every significance display uses the existing shared renderer: an S label and five larger
+filled/empty segments inside one fixed-width border box, using the Results ink, font
+size, tooltip and accessible naming.
+This applies to News, result tables, ladders, overviews and popovers.
+The ladder’s wider rail and derived breakpoint keep its two-line meanings clear of the
+meter. News and Atlas expansion footers share a centering rule.
+Filtered cards remeasure on revelation and width changes; the existing ten-line fade,
+click/tap expansion, hover wash and reduced-motion behavior remain.
+
+Importing a new candidate requires an explicit editorial score/rationale in retained
+metadata or the paired `--significance` and `--significance-rationale` CLI options.
+The importer never derives importance from incidental result references.
+
 ## References
 
 - [PR template](../../../../.github/PULL_REQUEST_TEMPLATE.md)

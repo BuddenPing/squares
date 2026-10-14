@@ -40,6 +40,7 @@ HERO = probe(PROBES, "site_homepage/hero")
 DOWNLOAD_ACTION = probe(PROBES, "site_homepage/download_action")
 NEWS = probe(PROBES, "site_homepage/news")
 NEWS_SETTLED = probe(PROBES, "site_homepage/news-settled")
+NEWS_FILTERS = probe(PROBES, "site_homepage/news-filters")
 ORIGIN = "http://homepage.test/"
 TOGGLE = "[data-homepage-atlas-toggle]"
 CELLS = "#homepage-atlas-cells"
@@ -905,6 +906,7 @@ def test_news_cards_expand_only_on_press_and_legacy_bookmarks_forward(
         assert len(preview["entries"]) == 3
         page.locator('.site-action[href="news.html"]').click()
         page.wait_for_url(f"{ORIGIN}news.html")
+        page.locator('[data-news-all="scores"]').click()
         news = page.evaluate(NEWS)
         document = render_changelog.load()
         assert len(news["entries"]) == len(document["entries"])
@@ -1050,3 +1052,124 @@ def test_news_cards_expand_only_on_press_and_legacy_bookmarks_forward(
                     assert full["body_height"] >= full["body_scroll"] - 1
             finally:
                 context.close()
+
+
+@pytest.mark.parametrize("width", WIDTHS)
+def test_news_facets_history_bookmarks_and_shared_meters(
+    browser: Any, payloads: dict[str, bytes], width: int
+) -> None:
+    document = render_changelog.load()
+    page = browser.new_page(
+        viewport={"width": width, "height": 900},
+        reduced_motion="reduce",
+        has_touch=width == 390,
+    )
+    _serve(page, payloads)
+
+    def state() -> dict[str, Any]:
+        return page.evaluate(NEWS_FILTERS)
+
+    def expected(scores: set[int], topics: set[str] | None = None) -> set[str]:
+        return {
+            render_changelog.entry_anchor(entry["id"])
+            for entry in document["entries"]
+            if entry["significance"]["score"] in scores
+            and (topics is None or topics.intersection(entry.get("topics", [])))
+        }
+
+    def check(scores: set[int], topics: set[str] | None = None) -> dict[str, Any]:
+        seen = state()
+        visible = {card["id"] for card in seen["cards"] if card["visible"]}
+        assert visible == expected(scores, topics)
+        assert seen["count"] == f"{len(visible)} of {len(document['entries'])} news items"
+        assert seen["empty"] is (not visible)
+        assert parse_qs(urlsplit(page.url).query)["reader"] == ["kept"]
+        assert seen["overflow"] == 0
+        return seen
+
+    try:
+        page.goto(f"{ORIGIN}news.html?reader=kept", wait_until="load")
+        seen = check({4, 5})
+        assert seen["scores"] == ["4", "5"]
+        assert len(seen["topics"]) == len(render_changelog.NEWS_TOPICS)
+        page.locator('button[data-news-score="3"]').focus()
+        page.keyboard.press("Space")
+        check({3, 4, 5})
+        for topic in render_changelog.NEWS_TOPICS:
+            if topic != "optimality":
+                page.locator(f'button[data-news-topic="{topic}"]').click()
+        check({3, 4, 5}, {"optimality"})
+        page.locator('button[data-news-topic="verification"]').click()
+        check({3, 4, 5}, {"optimality", "verification"})
+        page.locator("[data-news-reset]").click()
+        check({4, 5})
+        for score in (4, 5):
+            button = page.locator(f'button[data-news-score="{score}"]')
+            button.tap() if width == 390 else button.click()
+        check(set())
+        assert parse_qs(urlsplit(page.url).query)["news-s"] == ["none"]
+        page.locator('[data-news-all="scores"]').click()
+        check({1, 2, 3, 4, 5})
+        page.locator("[data-news-reset]").click()
+        check({4, 5})
+        page.go_back(wait_until="load")
+        check({1, 2, 3, 4, 5})
+        page.go_forward(wait_until="load")
+        check({4, 5})
+        low = max(
+            (entry for entry in document["entries"] if entry["significance"]["score"] < 4),
+            key=lambda entry: len(entry["summary"]) + len(entry.get("details", "")),
+        )
+        anchor = render_changelog.entry_anchor(low["id"])
+        page.goto(f"{ORIGIN}news.html?reader=kept#{anchor}", wait_until="load")
+        seen = check({4, 5, low["significance"]["score"]})
+        target = next(card for card in seen["cards"] if card["id"] == anchor)
+        assert target["expanded"] == "true"
+        assert not target["button_hidden"]
+        assert abs(target["center_offset"]) <= 0.5
+        button = page.locator(f"#{anchor} .site-news-expand")
+        button.click()
+        assert (
+            next(card for card in state()["cards"] if card["id"] == anchor)["expanded"]
+            == "false"
+        )
+        button.click()
+        assert (
+            next(card for card in state()["cards"] if card["id"] == anchor)["expanded"]
+            == "true"
+        )
+        specimens = "".join(
+            overview_sections.significance_mark(level, "Importance only.")
+            for level in range(overview_sections.SIGNIFICANCE_TOP + 1)
+        )
+        samples = page.evaluate(NEWS_FILTERS, {"meters": specimens})["samples"]
+        assert len(samples) == 6
+        assert (
+            max(item["width"] for item in samples) - min(item["width"] for item in samples)
+            <= 0.1
+        )
+        for item in samples:
+            assert item["filled"] == item["level"]
+            assert item["border"] == 1
+            assert len(item["bars"]) == 5
+            for bar in item["bars"]:
+                assert bar["border"] == 1
+                assert bar["height"] > 0.5 * item["font"]
+                assert bar["width"] > 0.4 * item["font"]
+                assert (bar["fill"] == "rgba(0, 0, 0, 0)") is (not bar["filled"])
+        static = browser.new_page(
+            viewport={"width": width, "height": 900}, java_script_enabled=False
+        )
+        _serve(static, payloads)
+        try:
+            static.goto(f"{ORIGIN}news.html?news-s=none", wait_until="load")
+            complete = static.evaluate(NEWS_FILTERS)
+            assert complete["controls_hidden"]
+            assert all(
+                card["visible"] and card["full"] and card["button_hidden"]
+                for card in complete["cards"]
+            )
+        finally:
+            static.close()
+    finally:
+        page.close()

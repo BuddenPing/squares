@@ -68,6 +68,7 @@ def test_inventory_accepts_the_actual_protocol_font_bootstrap(tmp_path: Path) ->
         ("rating-tooltips", "rating-tooltips.0123456789abcdef.js", "input-response"),
         ("rating-tooltips", "page.0123456789abcdef.js", "input-response"),
         ("news-cards", "news-cards.0123456789abcdef.js", "input-response"),
+        ("news-filters", "news-filters.0123456789abcdef.js", "input-response"),
         ("news-forward", "news-forward.0123456789abcdef.js", "registered-forwarder"),
     ],
 )

@@ -19,7 +19,7 @@ from devtools.repo_links import repo_url
 
 
 def document() -> dict:
-    return {
+    data = {
         "softschema": {
             "contract": "packing.squares:SiteChangelog/v1",
             "schema": "site-changelog.schema.yaml",
@@ -84,6 +84,13 @@ def document() -> dict:
             {"id": "foundations", "date": "2026-10-13", "pull_requests": [497, 509]}
         ],
     }
+
+    for entry in data["entries"]:
+        entry["significance"] = {
+            "score": 3,
+            "rationale": "A focused public tooling improvement.",
+        }
+    return data
 
 
 def test_shared_renderer_orders_links_math_and_anchors() -> None:
@@ -352,14 +359,18 @@ def test_previous_local_main_is_independent_of_editable_frozen_rows(
         stdout = {
             "rev-parse": "a" * 40,
             "ls-tree": "100644 blob metadata site-changelog.yaml",
-            "show": yaml.safe_dump(previous, sort_keys=False),
+            "show": (
+                render_changelog.SCHEMA.read_text()
+                if args[-1].endswith("site-changelog.schema.yaml")
+                else yaml.safe_dump(previous, sort_keys=False)
+            ),
         }[args[1]]
         return subprocess.CompletedProcess(args, 0, stdout=stdout)
 
     monkeypatch.setattr(render_changelog.subprocess, "run", git)
     with pytest.raises(ValueError, match="frozen entry later-delivery"):
         render_changelog.validate_previous_ref(current, "origin/main")
-    assert [call[1] for call in calls] == ["rev-parse", "ls-tree", "show"]
+    assert [call[1] for call in calls] == ["rev-parse", "ls-tree", "show", "show"]
 
 
 def test_candidate_main_delivery_refusal_does_not_create_output(
@@ -374,6 +385,10 @@ def test_candidate_main_delivery_refusal_does_not_create_output(
             "baseRefName": "main",
             "mergeCommit": {"oid": "b" * 40},
             "state": "MERGED",
+            "significance": {
+                "score": 2,
+                "rationale": "Routine engineering and reliability work.",
+            },
         }
     ]
     metadata = tmp_path / "metadata.json"
@@ -480,6 +495,10 @@ def test_candidate_import_requires_actual_merged_main_and_preserves_old_entries(
             "baseRefName": "main",
             "mergeCommit": {"oid": "b" * 40},
             "state": "MERGED",
+            "significance": {
+                "score": 2,
+                "rationale": "Routine engineering and reliability work.",
+            },
         }
     ]
     candidate = import_changelog.draft(rows, baseline)
@@ -551,6 +570,7 @@ def test_related_launch_group_is_explicit_and_does_not_invent_a_stack() -> None:
     data["coverage"]["pull_requests"].extend([600, 601])
     entry = {
         "id": "related-launch",
+        "significance": {"score": 3, "rationale": "A focused public launch."},
         "date": "2026-10-16",
         "title": "Related launch",
         "pull_requests": [600, 601],
@@ -591,6 +611,7 @@ def test_stacked_import_proves_first_parent_main_delivery_before_preserving_api_
         "number": 600,
         "title": "Stack delivery",
         "state": "MERGED",
+        "significance": {"score": 2, "rationale": "Routine engineering and reliability work."},
         "mergedAt": "2026-10-15T00:01:00Z",
         "baseRefName": "stack/predecessor",
         "mergeCommit": {"oid": "b" * 40},
@@ -624,3 +645,43 @@ def test_stacked_import_proves_first_parent_main_delivery_before_preserving_api_
     )
     with pytest.raises(ValueError, match="first-parent delivery"):
         import_changelog.verify_main_delivery(parsed)
+
+
+@pytest.mark.parametrize(
+    "rating",
+    [
+        None,
+        {"score": 0, "rationale": "Too low."},
+        {"score": 6, "rationale": "Too high."},
+        {"score": True, "rationale": "Boolean."},
+        {"score": 2.5, "rationale": "Fractional."},
+        {"score": 3, "rationale": " "},
+        {"score": 3, "rationale": "A **formatted** judgment."},
+        {"score": 3, "rationale": "<script>bad</script>"},
+    ],
+)
+def test_news_requires_an_explicit_plain_importance_judgment(rating: dict | None) -> None:
+    data = document()
+    if rating is None:
+        data["entries"][0].pop("significance")
+    else:
+        data["entries"][0]["significance"] = rating
+    with pytest.raises(ValueError, match=r"significance|entries/0"):
+        render_changelog.validate(data)
+
+
+def test_imported_result_citations_do_not_assign_importance() -> None:
+    row = {
+        "number": 700,
+        "title": "Policy mentioning T-060",
+        "body": "See T-060.",
+        "state": "MERGED",
+        "mergedAt": "2026-10-15T00:01:00Z",
+        "baseRefName": "main",
+        "mergeCommit": {"oid": "b" * 40},
+    }
+    with pytest.raises(ValueError, match="editorial significance"):
+        import_changelog.draft([row], document())
+    row["significance"] = {"score": 2, "rationale": "A routine policy clarification."}
+    candidate = import_changelog.draft([row], document())
+    assert candidate["entries"][-1]["significance"] == row["significance"]
