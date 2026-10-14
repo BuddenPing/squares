@@ -221,6 +221,74 @@ def test_a_frozen_relation_holds_only_while_the_lane_reads_so_and_in_both_orders
     assert ledger.compare(algebraic, verified) == ledger.UNDECIDED
 
 
+BELOW_THE_RECORD: ledger.RecordRelation = {
+    "lane": "reported",
+    "relation": "below",
+    "value": "10.5",
+    "exact_form": "21/2",
+    "read_from": "lane",
+}
+
+
+def test_a_frozen_below_survives_once_the_record_leaves_the_standing_side() -> None:
+    # #1's print overlaps the record 21/2 and a lane froze it below; #2 is exactly above
+    # the record and inside #1's print. #1, recorded, still holds the count against #2.
+    first = side(
+        "#1",
+        "10.5000000000",
+        "unstated",
+        when="2026-10-12T01:00:00Z",
+        record_relations=[BELOW_THE_RECORD],
+    )
+    second = side("#2", "10.50000000005", when="2026-10-12T02:00:00Z")
+    assert ledger.compare(second, record()) == ledger.ABOVE
+    walk = ledger.walk(100, record(), [first, second])
+    assert verdicts(walk) == [("#1", "recorded", "record T-001"), ("#2", "not recorded", "#1")]
+    assert [item.label for item in walk.standing] == ["#1"]
+    assert walk.standing[0].span.high == Fraction(21, 2)
+    assert walk.standing[0].span.open_high
+
+
+def test_a_frozen_below_survives_when_the_claim_joins_an_undecided_set() -> None:
+    # A pending bound overlapping the record leaves #1 undecided; #1 joins the set and the
+    # record leaves it, so #2 is above #1 through the relation, not undecided against it.
+    entry = {"id": "T-123"}
+    pending = ledger.pending_side(
+        entry, check_standing.Stated(Fraction("10.45"), Fraction(1, 10))
+    )
+    first = side(
+        "#1",
+        "10.5000000000",
+        "unstated",
+        when="2026-10-12T01:00:00Z",
+        record_relations=[BELOW_THE_RECORD],
+    )
+    second = side("#2", "10.50000000005", when="2026-10-12T02:00:00Z")
+    walk = ledger.walk(100, [record(), pending], [first, second])
+    assert [step.verdict for step in walk.steps] == ["undecided", "not recorded"]
+    assert ledger.held_by(walk.steps[1]) == "#1"
+    assert {item.label for item in walk.standing} == {"register T-123, pending adoption", "#1"}
+
+
+def test_a_frozen_below_an_interval_member_ends_at_its_high() -> None:
+    # The relation compares with the member's exact value, which may be anywhere in its
+    # enclosure, so the claim is bounded by the enclosure's high and never by its low.
+    form = "2 + (1/2)sqrt(2)"
+    member = ledger.record_side(5, {"value": "2.70710678118654", "exact_form": form}, [])
+    relation: ledger.RecordRelation = {
+        "lane": "reported",
+        "relation": "below",
+        "value": "2.70710678118654",
+        "exact_form": form,
+        "read_from": "lane",
+    }
+    claim = side("#1", "2.70710678118654752440", "unstated", record_relations=[relation])
+    bounded = ledger.clamped(claim, [member])
+    assert (bounded.span.low, bounded.span.high) == (claim.span.low, member.span.high)
+    assert bounded.span.open_high
+    assert ledger.clamped(claim, [record()]) is claim
+
+
 def test_a_binary64_print_spans_one_ulp_and_a_cut_print_its_next_unit() -> None:
     span = ledger.printed_side("17.8702753825550609", "binary64")
     assert ledger.contains(span, Fraction("17.8702753825550621"))

@@ -76,7 +76,7 @@ import subprocess
 import sys
 from collections.abc import Callable, Iterable, Iterator, Mapping, Sequence
 from contextlib import contextmanager
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from decimal import Decimal
 from fractions import Fraction
 from pathlib import Path
@@ -1115,18 +1115,24 @@ def _frozen(side: Side, other: Side) -> str | None:
     return None
 
 
+def _frozen_either(side: Side, other: Side) -> str | None:
+    """A frozen relation of ``side`` to ``other``, read in either order."""
+    frozen = _frozen(side, other)
+    if frozen is not None:
+        return frozen
+    inverse = _frozen(other, side)
+    return None if inverse is None else _INVERSE[inverse]
+
+
 def compare(side: Side, other: Side) -> str:
     """Where ``side`` stands against ``other``: below, above, equal or undecided.
 
     A lane's frozen relation between an algebraic side and a case lane replaces the spans,
     read in either order.
     """
-    frozen = _frozen(side, other)
+    frozen = _frozen_either(side, other)
     if frozen is not None:
         return frozen
-    inverse = _frozen(other, side)
-    if inverse is not None:
-        return _INVERSE[inverse]
     if below(side.span, other.span):
         return BELOW
     if below(other.span, side.span):
@@ -1156,6 +1162,26 @@ class Walk:
     standing: list[Side]
 
 
+def clamped(side: Side, members: Iterable[Side]) -> Side:
+    """``side`` with its span ended below each member a frozen relation puts it below.
+
+    The relation compares the side with the member's exact value, which lies in the
+    member's span, so the side is below the member's ``high``: a claim recorded through a
+    frozen relation, or joining the standing side through one, keeps that once the member
+    leaves the set, and a later claim above the member is above it too. For an exact
+    member that bound is the member itself.
+    """
+    span = side.span
+    for member in members:
+        if _frozen_either(side, member) != BELOW:
+            continue
+        if member.span.high < span.high or (
+            member.span.high == span.high and not span.open_high
+        ):
+            span = Span(span.low, member.span.high, open_low=span.open_low, open_high=True)
+    return side if span == side.span else replace(side, span=span)
+
+
 def decider(side: Side, others: Sequence[Side]) -> str:
     needed = [item.decide for item in (side, *others) if item.decide]
     return "; ".join(dict.fromkeys(needed)) or "an exact comparison of the two sides"
@@ -1172,7 +1198,9 @@ def walk(
     The standing side is a set: the minimal members of the start (`minimal`), then each
     recorded claim, together with any undecided claim nothing has since been decidably
     below. A claim is recorded only when it is below every member; it is not recorded when
-    it is above or exactly equal to one; otherwise it is undecided and joins the set.
+    it is above or exactly equal to one; otherwise it is undecided and joins the set. A
+    claim recorded, or joining, through a lane's frozen relation below a member carries
+    that relation in its span (`clamped`).
     """
     exceptions = exceptions or {}
     seeds = minimal([start] if isinstance(start, Side) else list(start))
@@ -1185,14 +1213,15 @@ def walk(
         unsure = [member for member, relation in relations if relation == UNDECIDED]
         if all(relation == BELOW for _, relation in relations):
             step = Step(side, RECORDED, BELOW, [member for member, _ in relations])
-            standing = [side]
+            standing = [clamped(side, standing)]
         elif above or equal:
             reason = ABOVE if above else EQUAL
             step = Step(side, NOT_RECORDED, reason, above or equal)
         else:
             step = Step(side, UNDECIDED, UNDECIDED, unsure, against=unsure)
+            joining = clamped(side, standing)
             standing = [member for member in standing if compare(member, side) != ABOVE]
-            standing.append(side)
+            standing.append(joining)
         reason = exceptions.get((n, side.label))
         if reason and step.verdict != RECORDED:
             step.verdict, step.exception = BY_EXCEPTION, reason
