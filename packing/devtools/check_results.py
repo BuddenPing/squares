@@ -151,14 +151,16 @@ KINDS = (
     "audit",
 )
 SIMPLIFICATION = "simplification"
-FORMALIZATION = "formalization"
+#: The result kind `formalization`. A review of `kind: formalization` is another thing,
+#: a human expert's review of a formal proof (`FORMALIZATION_REVIEWS`, `FORMALIZATION_CHECKS`).
+FORMALIZATION_KIND = "formalization"
 #: The kinds of a second proof: each proves again a result the record already holds and
 #: moves no bound by itself, its claim names that result, and its headline may restate the
 #: result's relation on `s(n)`. A formalization is one a proof assistant checked, by
 #: evidence of its own; a simplification is one by a shorter, cleaner or more elementary
 #: route, which a proof assistant may also have checked. Where a second proof is both,
 #: either kind fits and the owner chooses at registration (epistemics.md, Result Kinds).
-SECOND_PROOF_KINDS = frozenset({SIMPLIFICATION, FORMALIZATION})
+SECOND_PROOF_KINDS = frozenset({SIMPLIFICATION, FORMALIZATION_KIND})
 #: The relations on `s(n)` each bound kind states, as a headline (`≥`) and a claim (`>=`)
 #: write them. These three kinds are the bounds; every other kind is no bound on `s(n)`.
 KIND_RELATIONS = {
@@ -881,7 +883,9 @@ def kind_problems(
         named = {other for other in _RESULT_ID.findall(claim) if other != rid}
         again_of = {other for other in named if cases & scopes.get(other, set())}
         if not again_of:
-            again = "formalizes or proves again" if kind == FORMALIZATION else "proves again"
+            again = (
+                "formalizes or proves again" if kind == FORMALIZATION_KIND else "proves again"
+            )
             problems.append(
                 f"a {kind}'s claim names the registered result it {again}, on a case they share"
             )
@@ -890,7 +894,7 @@ def kind_problems(
             proof_assistant_checked(entry) and str(entry.get("id")) not in theirs
             for entry in cited
         )
-        if kind == FORMALIZATION and not checked:
+        if kind == FORMALIZATION_KIND and not checked:
             problems.append(
                 "kind is formalization, and no cited evidence of its own is "
                 f"`{FORMAL_METHOD}`, performed or reported"

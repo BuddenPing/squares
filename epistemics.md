@@ -428,8 +428,9 @@ mixed three things: the frontier position (`current best`, `superseded`), whethe
 bound had been replayed (`current best, reported`), and what kind of result the entry
 was (`second certificate`, `not a bound`). The first is now the superseded mark, the
 second is the status, and the third is the result’s kind: a second certificate is a
-*simplification*. The vocabulary is provisional until the owner confirms it; the
-proposal and the status of every result are in
+second proof, a *simplification* or, since 2026-10-13, a *formalization*. The vocabulary
+is provisional until the owner confirms it; the proposal and the status of every result
+are in
 [the result-status plan](docs/project/specs/done/plan-2026-10-01-result-status.md).
 On 2026-10-13 the owner added the kind *formalization*, a proof-assistant proof of a
 result the record already holds, apart from a simplification, in three remarks:
@@ -520,7 +521,7 @@ matters; the kind says what sort of claim it is.
 | upper bound | Proves $s(n) \le v$ by a packing of $n$ unit squares in a square of side $v$ |
 | optimality | Settles an exact value $s(n) = v$: a lower bound that meets an upper bound |
 | uniqueness | Classifies every packing that attains $s(n)$: each is one of finitely many named packings, up to the container’s symmetries and the relabelling of the squares, and moves no bound |
-| simplification | Proves again a result the record already holds, by a shorter, cleaner or more elementary route, and moves no bound |
+| simplification | Proves again a result the record already holds, by a shorter, cleaner or more elementary route, and moves no bound by itself |
 | formalization | Proves in a proof assistant a result the record already holds, by formalizing an existing argument or by a route of its own, and moves no bound by itself |
 | rigidity | Says whether one named packing can move at fixed side: its flexes, its rigidity at first or second order, the isolation of its pose |
 | case exclusion | Shows that one named class of configurations, such as a branch, a corner class or a region of pose space, holds no packing at a stated side, and moves no bound by itself |
