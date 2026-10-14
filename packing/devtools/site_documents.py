@@ -188,7 +188,7 @@ _BY_SOURCE = {doc.source.relative_to(REPO).as_posix(): doc for doc in DOCUMENTS}
 RECORD_PAGES: dict[str, str] = {
     repo_links.RESULTS: render_overview.RESULTS_PAGE,
     repo_links.STATUS: "atlas.html",
-    repo_links.CHANGELOG: "about.html#changelog",
+    repo_links.CHANGELOG: "news.html#changelog",
 }
 #: Where every case's record is served, one address per case (`render_case_pages`).
 CASES_DIR = "cases"
@@ -450,12 +450,12 @@ def render_document(
 def unresolved(pages: dict[str, Page], report: LinkReport) -> list[str]:
     """Every link the render could not resolve, missing files and anchors together."""
     ids = {name: element_ids(page.html) for name, page in pages.items()}
-    # Reader documents are also rendered on their own. About is a record landing,
+    # Reader documents are also rendered on their own. News is a record landing,
     # so validate its anchors against the actual page even in that partial build.
-    if "about.html" not in ids and any(
-        name == "about.html" for name, _anchor, _url in report.anchors
+    if "news.html" not in ids and any(
+        name == "news.html" for name, _anchor, _url in report.anchors
     ):
-        ids["about.html"] = element_ids(render_overview.about_page().html)
+        ids["news.html"] = element_ids(render_overview.news_page().html)
     problems = [f"no such path in the tree: {url}" for url in report.missing]
     problems += [
         f"no heading #{anchor} in {name}: {url}"

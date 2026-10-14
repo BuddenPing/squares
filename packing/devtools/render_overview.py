@@ -84,6 +84,7 @@ PAPER_TYPE_CSS = TEMPLATES / "paper-type.css"
 OVERVIEW_ARTICLE = TEMPLATES / "overview-article.md"
 ATLAS_ARTICLE = TEMPLATES / "atlas-article.md"
 ABOUT_ARTICLE = TEMPLATES / "about-article.md"
+NEWS_ARTICLE = TEMPLATES / "news-article.md"
 #: The invitation to report results, with its button: About's and the overview's alike.
 REPORT_RESULTS = TEMPLATES / "report-results.md"
 RESULTS_ARTICLE = TEMPLATES / "all-results-article.md"
@@ -91,6 +92,8 @@ VISUALIZE_ARTICLE = TEMPLATES / "visualize-article.md"
 PAPERS_ARTICLE = TEMPLATES / "papers-article.md"
 BROWSER = PACKING / "devtools" / "overview"
 FORWARD_SCRIPT = BROWSER / "forward.js"
+NEWS_FORWARD_SCRIPT = BROWSER / "news-forward.js"
+NEWS_CARDS_SCRIPT = BROWSER / "news-cards.js"
 TABLE_SCRIPT = BROWSER / "table.js"
 MATH_SCRIPT = BROWSER / "math.js"
 POPOVER_SCRIPT = BROWSER / "popover.js"
@@ -408,6 +411,7 @@ def paper_path(slug: str, suffix: str = ".html") -> str:
 #: writes it. The navigation bar links only to these, and tests hold it to that.
 SITE_PAGES: tuple[str, ...] = (
     "index.html",
+    "news.html",
     "atlas.html",
     "about.html",
     RESULTS_PAGE,
@@ -496,6 +500,7 @@ RENDER_INPUTS: tuple[Path, ...] = (
     OVERVIEW_ARTICLE,
     ATLAS_ARTICLE,
     ABOUT_ARTICLE,
+    NEWS_ARTICLE,
     REPORT_RESULTS,
     RESULTS_ARTICLE,
     VISUALIZE_ARTICLE,
@@ -1255,11 +1260,12 @@ def report_results() -> str:
 
 def overview_page() -> Page:
     """A short introduction, bounded previews, papers, and links to the full pages."""
-    from devtools import overview_data, overview_sections  # noqa: PLC0415
+    from devtools import overview_data, overview_sections, render_changelog  # noqa: PLC0415
 
     overview = overview_data.load()
     values = {
         "HERO": overview_sections.hero(),
+        "NEWS_PREVIEW": render_changelog.render_news(render_changelog.load(), limit=2),
         "ATLAS_GRID": overview_sections.atlas_preview(),
         "PAPER_CARDS": overview_sections.paper_cards(),
         "DOCUMENTATION_BLOCK": overview_sections.documentation_block(),
@@ -1284,6 +1290,7 @@ def overview_page() -> Page:
         rewrite_body=_case_links,
         page_styles=(HOMEPAGE_CSS,),
         page_scripts=(
+            NEWS_CARDS_SCRIPT,
             FILM_SCRIPT,
             FORWARD_SCRIPT,
             TABLE_SCRIPT,
@@ -1327,6 +1334,28 @@ def atlas_page() -> Page:
     )
 
 
+def news_page() -> Page:
+    """The complete retained contribution and launch history, grouped by day."""
+    from devtools import render_changelog  # noqa: PLC0415
+
+    markdown = _template_markdown(
+        NEWS_ARTICLE, {"NEWS": render_changelog.render_news(render_changelog.load())}
+    )
+    return kpress_page(
+        markdown,
+        name="news.html",
+        current="news",
+        title="News",
+        description=(
+            "Project news: newly launched results, papers, downloads and site features, "
+            "with the retained contribution history."
+        ),
+        toc=False,
+        page_scripts=(NEWS_CARDS_SCRIPT,),
+        rewrite_body=_case_links,
+    )
+
+
 def about_page() -> Page:
     """The project narrative, approach, attribution, and supporting resources."""
     from devtools import overview_sections, render_changelog  # noqa: PLC0415
@@ -1336,8 +1365,8 @@ def about_page() -> Page:
         {
             "REPORT_RESULTS": report_results(),
             "DOCUMENTATION_BLOCK": overview_sections.documentation_block(),
-            "CHANGELOG": render_changelog.render_markdown(
-                render_changelog.load(), destination="site"
+            "NEWS_LEGACY_ANCHORS": render_changelog.legacy_news_anchors(
+                render_changelog.load()
             ),
         },
     )
@@ -1353,7 +1382,7 @@ def about_page() -> Page:
         ),
         toc=False,
         rewrite_body=_case_links,
-        page_scripts=(POPOVER_SCRIPT,),
+        page_scripts=(POPOVER_SCRIPT, NEWS_FORWARD_SCRIPT),
     )
 
 
@@ -1522,6 +1551,7 @@ def _document_page(name: str) -> Callable[[], Page]:
 #: The pages this renderer owns, by served name.
 PAGES: dict[str, Callable[[], Page]] = {
     "index.html": overview_page,
+    "news.html": news_page,
     "atlas.html": atlas_page,
     "about.html": about_page,
     RESULTS_PAGE: results_page,

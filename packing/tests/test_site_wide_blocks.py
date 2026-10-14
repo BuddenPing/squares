@@ -321,7 +321,7 @@ def test_the_name_stands_on_the_links_baseline(
             assert baseline_problems(found) == [], where
             lines = {link["top"] for link in found["links"]}
             assert len(lines) == rows, where
-            assert len(found["links"]) == 7, where
+            assert len(found["links"]) == 8, where
             first = min(found["links"], key=lambda link: link["top"])
             assert abs(found["name"] - first["baseline"]) <= BASELINE_TOLERANCE, where
             assert len(found["tabs"]) == (0 if name == "atlas.html" else 2), where

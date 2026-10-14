@@ -1,7 +1,7 @@
 # Design System
 
 This is the one description of how every page of the site looks: the explainer, the
-overview, Atlas, About, case and result records, Frontier, papers, tutorial and
+overview, News, Atlas, About, case and result records, Frontier, papers, tutorial and
 Visualize. Each stylesheet implements what is written here and points back to it; when a
 page needs something new, it is added here first and then to the stylesheet that owns
 it.
@@ -847,7 +847,7 @@ it.
   (`devtools.pages_scope`); nothing compares a page’s bytes with an earlier build’s.
 
 - **Homepage.** A short problem introduction opens the page.
-  The next sections are Atlas, Recent Major Results, Papers, PDFs, Video, Squares
+  The next sections are Atlas, News, Recent Major Results, Papers, PDFs, Video, Squares
   Project Documentation, then More Resources (`think-5c8r`, `think-sq1i`). Papers shares
   all reading cards with the Papers page; Squares Project Documentation shares its
   introductory text and cards with About.
@@ -868,6 +868,20 @@ it.
   The full project narrative and attribution live on About; documentation cards also
   appear on the homepage; **About** sits immediately before **GitHub** in the shared
   navigation.
+
+- **News.** News is the second navigation item and carries the complete retained project
+  history. Its H1 uses the shared sans-serif caps; its operational text uses the sans
+  face. Each day is one hairline-bordered native disclosure with a three-line preview and
+  “Show more” indicator.
+  Hover or keyboard focus expands it inline.
+  A pointer press pins the expansion; focusing or using a body link keeps it open.
+  Otherwise a transient card closes once both pointer and focus leave.
+  Keyboard activation and touch toggle the disclosure, including without scripts.
+  PR, paper and download links remain ordinary links inside the expanded body.
+  Entry and day fragments open their owning disclosure.
+  The homepage selects the first two individual entries in the same newest-day order,
+  groups them by day and follows them with “All news →”. About keeps one short News
+  link; its old history bookmarks forward without duplicating the feed.
 
 - **Page headings.** The homepage opens with “The Square Packing Problem” as its `h1`,
   followed by visible section `h1`s in the same title style.
@@ -1388,13 +1402,12 @@ it.
 - **Atlas grid.** The complete grid at `atlas.html` holds every tracked case, n = 1 to
   324, as a cached square SVG image with its n beneath.
   The artwork uses dark ink on a white canvas in both page themes.
-  The grid bleeds past the wide track as the window grows, to 140rem less the page
-  gutters, and its cells keep a readable size (at least 6.4rem, 4.6rem on a phone, at
-  the Medium size; **Atlas sizes**, below), so a wider screen shows more cases per row:
-  4 at 390 pixels, 10 at 1280, 16 at 1920 and 20 at 2560 (measured on 2026-10-04; the
-  figures for 1280 and 1920 had read 11 and 17). A cell washes on hover and on keyboard
-  focus, and is a link to its case’s record file, `cases/11.html`, which opens in the
-  page’s one case popover (**Case records**, below).
+  The grid fills the available page width less its edge gutters, and its cells keep a
+  readable size (at least 6.4rem, 4.6rem on a phone, at the Medium size; **Atlas
+  sizes**, below), so a wider screen shows more cases per row: 4 at 390 pixels, 10 at
+  1280 and 16 at 1920. A cell washes on hover and on keyboard focus, and is a link to
+  its case’s record file, `cases/11.html`, which opens in the page’s one case popover
+  (**Case records**, below).
   The wash is the cell’s background, behind the drawing, and it is the only thing that
   changes: every line of the artwork keeps its fixed ink at rest, hovered, focused and
   pressed, in both themes.
@@ -1668,11 +1681,12 @@ it.
   It is independent of the prose measure, thirty-five times the base, so changes to
   reading lines preserve the room tables and card grids need.
   Two kinds bleed past it.
-  The atlas grid bleeds at every width, up to `--site-bleed-max` (140rem). A data table
-  bleeds only above `--site-table-bleed-from` (80rem, 1280 pixels): from there it grows
-  one pixel for each pixel of window, `--site-table-wide`, until it reaches the page
-  gutters or `--site-table-max` (100rem, 1600 pixels), past which its columns would only
-  spread apart and a row would be harder to follow.
+  The atlas grid fills the available page width less its edge gutters, with no fixed
+  maximum. Complete Triangle rows still pan horizontally when they exceed that frame.
+  A data table bleeds only above `--site-table-bleed-from` (80rem, 1280 pixels): from
+  there it grows one pixel for each pixel of window, `--site-table-wide`, until it
+  reaches the page gutters or `--site-table-max` (100rem, 1600 pixels), past which its
+  columns would only spread apart and a row would be harder to follow.
   So nothing changes at 1280 pixels or narrower, and on a large screen a table’s text
   columns wrap less. The frontier table, whose own track is 86rem, is the page’s content
   area less its gutters up to 1456 pixels and goes from 1376 to 1600 above that.

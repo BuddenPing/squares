@@ -85,6 +85,14 @@ class PublicationHistoryEntry(NamedTuple):
 #: for each deployment's commit, what the page it built stated.
 PUBLICATION_HISTORY = (
     PublicationHistoryEntry(
+        version="v0.7.0",
+        first_published="October 14, 2026",
+        result_scope=(
+            "Add a dedicated News page and homepage preview of the project history, "
+            "and let the Atlas use the full available page width."
+        ),
+    ),
+    PublicationHistoryEntry(
         version="v0.6.1",
         first_published="October 14, 2026",
         result_scope=(
@@ -636,6 +644,16 @@ class ReleaseImpactDecision(NamedTuple):
 # No impact is invented retrospectively for the published baseline editions.
 RELEASE_IMPACTS: tuple[ReleaseImpactDecision, ...] = (
     ReleaseImpactDecision(
+        component="site",
+        previous_version="v0.6.1",
+        version="v0.7.0",
+        impact="minor",
+        reason=(
+            "Add a dedicated News page and homepage preview of the project history, "
+            "and let the Atlas use the full available page width."
+        ),
+    ),
+    ReleaseImpactDecision(
         component="paper:square-packing-methods-survey",
         previous_version="v0.2.1",
         version="v0.2.2",
@@ -699,6 +717,54 @@ class ReleaseNoPublicChange(NamedTuple):
 
 
 RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
+    ReleaseNoPublicChange(
+        components=(
+            "paper:n11-lower-bounds-explainer",
+            "paper:n11-optimality-review",
+            "paper:n11-threshold-bound-review",
+            "paper:square-packing-methods-survey",
+        ),
+        paths=(
+            "packing/cases/n11_fractional_certificate/t-018-proof-card.md",
+            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-19-5.md",
+            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-381-100.md",
+            "packing/cases/n11_threshold_certificate/t-025-verifiable-claim-191-50.md",
+            "packing/cases/n11_threshold_certificate/t-026-verifiable-claim-dilation-limit.md",
+            "packing/devtools/probes/measure_atlas_views/layout.js",
+            "packing/devtools/probes/measure_atlas_views/widen.js",
+            "packing/devtools/render_changelog.py",
+            "packing/devtools/render_overview.py",
+            "packing/devtools/site_documents.py",
+            "packing/devtools/templates/site-nav.html",
+        ),
+        outputs=(
+            "papers/n11-lower-bounds-explainer.html",
+            "papers/n11-lower-bounds-explainer.md",
+            "papers/n11-lower-bounds-explainer.pdf",
+            "papers/n11-optimality-review.html",
+            "papers/n11-optimality-review.md",
+            "papers/n11-optimality-review.pdf",
+            "papers/n11-threshold-bound-review.html",
+            "papers/n11-threshold-bound-review.md",
+            "papers/n11-threshold-bound-review.pdf",
+            "papers/square-packing-methods-survey.html",
+            "papers/square-packing-methods-survey.md",
+            "papers/square-packing-methods-survey.pdf",
+        ),
+        reason=(
+            "Reviewed the four paper renderers, manuscripts, paper styles and fronts "
+            "against main: no paper content or typesetting input changes. Shared "
+            "navigation adds News; CHANGELOG aliases move to News, and the new "
+            "feed/disclosure renderers are used by the site pages only. Navigation and "
+            "publication-link provenance are site chrome, not independent paper editions. "
+            "Atlas measurement probes add report fields and remove the obsolete "
+            "screenshot width override. Exact comparison proves the five regenerated "
+            "claim documents change only GitHub blob-link revisions, 93822bfe to "
+            "37e6757e; mathematical claims, embedded certificates and verifiers remain "
+            "identical. The owning paper HTML/Markdown sources and PDF derivation paths "
+            "were reviewed; no byte-identical artifact build is claimed."
+        ),
+    ),
     ReleaseNoPublicChange(
         components=("paper:n11-optimality-review", "paper:n11-threshold-bound-review"),
         paths=(
@@ -945,7 +1011,7 @@ def validate_release_impacts(
 #: fresh render, so a link naming the build commit would fail their drift check forever. It is
 #: in no version string. It moves when the claim documents are regenerated for an edition. It
 #: must be a commit on `main`; the site's own links name `main` itself (`devtools.repo_links`).
-PUBLICATION_REVISION = "93822bfe"
+PUBLICATION_REVISION = "37e6757e"
 
 
 def data_pathspec() -> tuple[str, ...]:

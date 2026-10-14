@@ -1,4 +1,4 @@
-"""Validate retained project history and render its GitHub and About reader views.
+"""Validate retained project history and render its GitHub and News reader views.
 
 Rendering reads committed inputs only. GitHub acquisition belongs to
 `devtools.import_changelog`, and publication claims require retained evidence.
@@ -550,7 +550,7 @@ def _markdown_link(label: str, target: str, *, destination: Destination) -> str:
 
 
 def entry_anchor(identifier: str) -> str:
-    """Stable entry fragments occupy their own namespace within About."""
+    """Stable entry fragments retain their namespace across News and legacy About links."""
     return f"changelog-entry-{identifier}"
 
 
@@ -560,6 +560,49 @@ def _component_label(component: str) -> str:
     from devtools.render_overview import paper_record  # noqa: PLC0415
 
     return paper_record(component.removeprefix("paper:")).title
+
+
+def _entry_lines(document: Document, entry: Document, destination: Destination) -> list[str]:
+    """Shared contribution prose and evidence for the complete GitHub and News views."""
+    out: list[str] = []
+    out.extend([_prose(entry["summary"], destination=destination), ""])
+    if "details" in entry:
+        out.extend([_prose(entry["details"], destination=destination), ""])
+    if entry.get("artifacts"):
+        links = [
+            _markdown_link(item["label"], item["target"], destination=destination)
+            for item in entry["artifacts"]
+        ]
+        out.extend(["Published artifacts: " + " · ".join(links) + ".", ""])
+    if entry.get("releases"):
+        versions = [
+            f"{_text(_component_label(item['component']))} {_text(item['version'])}"
+            for item in entry["releases"]
+        ]
+        out.extend(["Component editions: " + "; ".join(versions) + ".", ""])
+    publication = entry.get("publication", {})
+    if publication:
+        evidence = _markdown_link(
+            "publication evidence" if "date" in publication else "Publication evidence",
+            publication["evidence"],
+            destination=destination,
+        )
+        if "date" in publication:
+            out.extend([f"First public: {publication['date']} ({evidence}).", ""])
+        else:
+            out.extend([evidence + ".", ""])
+    links = [
+        _markdown_link(
+            f"#{number}", f"{document['repository']}/pull/{number}", destination=destination
+        )
+        for number in sorted(entry["pull_requests"])
+    ]
+    links.extend(
+        _markdown_link(item["label"], item["target"], destination=destination)
+        for item in entry.get("references", [])
+    )
+    out.extend(["PRs and supporting records: " + " · ".join(links) + ".", ""])
+    return out
 
 
 def render_markdown(
@@ -574,10 +617,7 @@ def render_markdown(
     else:
         out = ['<a id="changelog"></a>', "", "#" * heading_level + " Changelog", ""]
     last_date = ""
-    for entry in sorted(
-        document["entries"],
-        key=lambda item: (-date.fromisoformat(item["date"]).toordinal(), item["id"]),
-    ):
+    for entry in ordered_entries(document):
         if entry["date"] != last_date:
             last_date = entry["date"]
             date_anchor = f"changelog-date-{last_date}"
@@ -613,44 +653,115 @@ def render_markdown(
                     "",
                 ]
             )
-        out.extend([_prose(entry["summary"], destination=destination), ""])
-        if "details" in entry:
-            out.extend([_prose(entry["details"], destination=destination), ""])
-        if entry.get("artifacts"):
-            links = [
-                _markdown_link(item["label"], item["target"], destination=destination)
-                for item in entry["artifacts"]
-            ]
-            out.extend(["Published artifacts: " + " · ".join(links) + ".", ""])
-        if entry.get("releases"):
-            versions = [
-                f"{_text(_component_label(item['component']))} {_text(item['version'])}"
-                for item in entry["releases"]
-            ]
-            out.extend(["Component editions: " + "; ".join(versions) + ".", ""])
-        publication = entry.get("publication", {})
-        if publication:
-            evidence = _markdown_link(
-                "publication evidence" if "date" in publication else "Publication evidence",
-                publication["evidence"],
-                destination=destination,
-            )
-            if "date" in publication:
-                out.extend([f"First public: {publication['date']} ({evidence}).", ""])
-            else:
-                out.extend([evidence + ".", ""])
-        links = [
-            _markdown_link(
-                f"#{number}", f"{document['repository']}/pull/{number}", destination=destination
-            )
-            for number in sorted(entry["pull_requests"])
-        ]
-        links.extend(
-            _markdown_link(item["label"], item["target"], destination=destination)
-            for item in entry.get("references", [])
-        )
-        out.extend(["PRs and supporting records: " + " · ".join(links) + ".", ""])
+        out.extend(_entry_lines(document, entry, destination))
     return "\n".join(out).rstrip() + "\n"
+
+
+def ordered_entries(document: Document) -> list[Document]:
+    """The retained newest-day order, with stable IDs ordering contributions on a day."""
+    return sorted(
+        document["entries"],
+        key=lambda item: (-date.fromisoformat(item["date"]).toordinal(), item["id"]),
+    )
+
+
+class _NewsPreviewText(HTMLParser):
+    """Plain preview text from sanitized prose, omitting duplicate math annotations."""
+
+    def __init__(self, text: str) -> None:
+        super().__init__()
+        self.parts: list[str] = []
+        self.annotation = False
+        self.feed(text)
+        self.close()
+
+    @override
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag == "annotation":
+            self.annotation = True
+
+    @override
+    def handle_endtag(self, tag: str) -> None:
+        if tag == "annotation":
+            self.annotation = False
+        if tag in {"p", "li"}:
+            self.parts.append(" ")
+
+    @override
+    def handle_data(self, data: str) -> None:
+        if not self.annotation:
+            self.parts.append(data)
+
+
+def render_news(document: Document, *, limit: int | None = None) -> str:
+    """Daily inline disclosures, or a homepage preview of individual contributions."""
+    validate(document)
+    if limit is not None and limit < 1:
+        raise ValueError("a News preview needs at least one item")
+    entries = ordered_entries(document)
+    if limit is not None:
+        entries = entries[:limit]
+    days: dict[str, list[Document]] = {}
+    for entry in entries:
+        days.setdefault(entry["date"], []).append(entry)
+    out = ['<div class="site-news" data-news>']
+    for day_text, items in days.items():
+        day = date.fromisoformat(day_text)
+        label = f"{day:%B} {day.day}, {day.year}"
+        out.append(
+            f'<details class="site-news-day" id="changelog-date-{day_text}" '
+            f'data-news-day="{day_text}"><summary class="site-news-summary">'
+            f'<h2><time datetime="{day_text}">{label}</time></h2>'
+            '<span class="site-news-preview">'
+        )
+        for entry in items:
+            preview = _NewsPreviewText(_prose(entry["summary"], destination="site"))
+            text = html.escape(" ".join("".join(preview.parts).split()))
+            out.append(
+                '<span class="site-news-preview-item">'
+                f"<strong>{html.escape(entry['title'])}</strong> {text}</span>"
+            )
+        out.append(
+            '</span><span class="site-news-toggle"><span data-news-closed>Show more '
+            '<span aria-hidden="true">⌄</span></span><span data-news-open>Show less '
+            '<span aria-hidden="true">⌃</span></span></span></summary>'
+            '<div class="site-news-body">'
+        )
+        for entry in items:
+            anchor = entry_anchor(entry["id"])
+            title = html.escape(entry["title"])
+            if limit is not None:
+                title = f'<a href="news.html#{anchor}">{title}</a>'
+            out.append(
+                f'<article class="site-news-item" id="{anchor}" '
+                f'data-news-entry="{entry["id"]}"><h3>{title}</h3>'
+            )
+            if limit is None:
+                # Metadata and authored prose share the same sanitized link policy.
+                out.extend(
+                    _prose(field, destination="site")
+                    for field in _entry_lines(document, entry, "github")
+                    if field
+                )
+            else:
+                out.append(_prose(entry["summary"], destination="site"))
+            out.append("</article>")
+        out.append("</div></details>")
+    out.append("</div>")
+    return "\n".join(out)
+
+
+def legacy_news_anchors(document: Document) -> str:
+    """Keep old About bookmarks navigable without duplicating the history there."""
+    anchors = ["changelog", *(entry_anchor(entry["id"]) for entry in document["entries"])]
+    anchors.extend(
+        f"changelog-date-{day}" for day in sorted({e["date"] for e in document["entries"]})
+    )
+    return "".join(
+        f'<a class="site-news-legacy-anchor" id="{anchor}" '
+        f'href="news.html#{anchor}" data-news-target aria-hidden="true" tabindex="-1"></a>'
+        for anchor in anchors
+    )
 
 
 def render(document: Document) -> str:

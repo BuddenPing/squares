@@ -168,20 +168,20 @@ def _record_context(base: str = "") -> LinkContext:
         ("CHANGELOG.md#missing-entry", "changelog-entry-missing-entry"),
     ],
 )
-def test_changelog_alias_preserves_and_checks_the_about_landing(url: str, anchor: str) -> None:
+def test_changelog_alias_preserves_and_checks_the_news_landing(url: str, anchor: str) -> None:
     report = LinkReport()
     rewritten = rewrite_link(url, tag="a", context=_record_context(), report=report)
-    assert rewritten == f"about.html#{anchor}"
-    assert report.anchors == [("about.html", anchor, url)]
+    assert rewritten == f"news.html#{anchor}"
+    assert report.anchors == [("news.html", anchor, url)]
     assert not report.missing
     page = render_overview.Page(
-        "about.html",
+        "news.html",
         '<article><h2 id="changelog">Changelog</h2>'
         '<h4 id="changelog-entry-regularization-foundations">Regularization</h4></article>',
     )
-    problems = unresolved({"about.html": page}, report)
+    problems = unresolved({"news.html": page}, report)
     assert problems == (
-        [f"no heading #{anchor} in about.html: {url}"]
+        [f"no heading #{anchor} in news.html: {url}"]
         if anchor == "changelog-entry-missing-entry"
         else []
     )

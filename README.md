@@ -10,7 +10,8 @@ that rates how far each new result has been verified.
 Its homepage links every other major resource on square packing.
 All of it is generated from the record in this repository.
 
-**On the website:** [Atlas](https://jlevy.github.io/squares/atlas.html) ·
+**On the website:** [News](https://jlevy.github.io/squares/news.html) ·
+[Atlas](https://jlevy.github.io/squares/atlas.html) ·
 [Results](https://jlevy.github.io/squares/results.html) ·
 [Frontier Survey](https://jlevy.github.io/squares/atlas.html#the-frontier-survey) ·
 [Papers](https://jlevy.github.io/squares/papers.html) ·
@@ -112,7 +113,7 @@ paper and its PDF. Three form a series on $n = 11$:
 is a tutorial on geometric construction, physics-inspired search, annealing, surgery,
 local refinement, and upper-bound certification.
 
-The website is at edition `v0.6.1` and the atlas posters at `v0.6.0`; each paper carries
+The website is at edition `v0.7.0` and the atlas posters at `v0.6.0`; each paper carries
 its own version.
 
 ## Repository Guide
@@ -125,7 +126,7 @@ every claim is graded, and every defect is logged
 
 | Where | What |
 | --- | --- |
-| [**Changelog**](CHANGELOG.md) | Noteworthy merged contributions and launched papers, PDFs, results and site features; also at the bottom of [About](https://jlevy.github.io/squares/about.html#changelog) |
+| [**Changelog**](CHANGELOG.md) | Noteworthy merged contributions and launched papers, PDFs, results and site features; also on [News](https://jlevy.github.io/squares/news.html) |
 | [**Tutorial**](TUTORIAL.md) | First-principles introduction to the objects, bounds, cells, stationary branches, search, and proof obligations |
 | [**Synopsis**](SYNOPSIS.md) | Current research status and roadmap, established results, terminology, workflow contracts, and handoff |
 | [**Results register**](packing/frontier/RESULTS.md) | Whole-result bounds, audits, structural theorems, and errata graded under [`epistemics.md`](epistemics.md) |

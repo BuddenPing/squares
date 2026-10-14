@@ -359,6 +359,7 @@ def test_the_homepage_sections_run_in_the_requested_order(page: str, atlas_page:
     assert '<h1 id="the-problem"' in page
     assert re.findall(r'<h2 id="([^"]+)"', page) == [
         "the-atlas-of-square-packings",
+        "news",
         "recent-results",
         "report-your-results",
         "papers",
@@ -366,6 +367,7 @@ def test_the_homepage_sections_run_in_the_requested_order(page: str, atlas_page:
     assert re.findall(r'<h[12] id="([^"]+)" class="site-title"', page) == [
         "the-problem",
         "the-atlas-of-square-packings",
+        "news",
         "recent-results",
         "report-your-results",
         "papers",
@@ -2530,6 +2532,7 @@ def test_the_nav_links_only_to_served_pages() -> None:
 #: The bar's entries, in order: each one's key, where it leads and its label.
 NAV_ENTRIES = [
     ("overview", "./", "Overview"),
+    ("news", "news.html", "News"),
     ("atlas", "atlas.html", "Atlas"),
     ("results", "results.html", "Results"),
     ("papers", "papers.html", "Papers"),
@@ -5421,14 +5424,11 @@ TABLE_BLEED = ".site-page .site-wide:is(.site-table-wrap, :has(> .site-table-wra
 
 def test_data_tables_bleed_like_the_atlas_only_above_1280_pixels() -> None:
     """A data table's wide track is one rule on shared tokens. It stops at its own
-    maximum, short of the atlas grid's, and its growth term is zero at or below
+    maximum, and its growth term is zero at or below
     `--site-table-bleed-from` (80rem), so a table at 1280 pixels or narrower keeps the
     plain wide track."""
     css = render_overview.SITE_CSS.read_text(encoding="utf-8")
-    assert "--site-bleed-max: 140rem;" in css
     assert "--site-table-bleed-from: 80rem;" in css
-    grid = css[css.index(".site-page .site-atlas-grid {") :]
-    assert "--site-wide: var(--site-bleed-max);" in grid[: grid.index("}")]
     rule = css[css.index(TABLE_BLEED) :]
     rule = rule[: rule.index("\n}")]
     assert "--site-table-max: 100rem;" in css
