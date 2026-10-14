@@ -92,11 +92,13 @@ DECLARED_CONSUMER_TREES = {
 DECLARED_CONSUMERS = {
     "packing/devtools/regularize_evand.py": (
         "the regularization driver reads each case's verified bound as U, the ceiling a "
-        "regularized view's exact side is compared with (policy rows 3 and 4): a side below "
-        "it is a register-result candidate, a side exactly at it is a drawing frame (`bound`), "
-        "and a side above it is not; `reclassify --refresh-bounds` copies it into a finished "
-        "run's reports again from the case record before deciding. It never reads the field "
-        "as s(n) or as the witness's side, which it takes from the witness"
+        "regularized view's exact side is compared with (policy rows 3 and 4), held exactly: "
+        "a rational U as itself, a closed form as a root of its minimal polynomial, and a form "
+        "it cannot read as deciding nothing. A side below it is a register-result candidate, "
+        "a side exactly at a rational U is a drawing frame (`bound`), and a side above it is "
+        "not; `reclassify --refresh-bounds` copies it into a finished run's reports again "
+        "from the case record before deciding. It never reads the field as s(n) or as the "
+        "witness's side, which it takes from the witness"
     ),
     "packing/tests/test_regularize_evand.py": (
         "a synthetic report for the driver's tests carries U as the driver writes it, so the "
@@ -121,8 +123,9 @@ DECLARED_CONSUMERS = {
     ),
     "packing/devtools/regularize_grid_slack.py": (
         "the grid-slack generator re-solves a view at the case's verified bound U where the "
-        "witness's own side is not a frame, and records the view's side minus U in its index "
-        "entry; U is the ceiling the view's side is held to, never s(n)"
+        "witness's own side is not a frame, and only where U is rational exactly "
+        "(`rational_bound`): a closed form's evaluation is not U; U is the ceiling the "
+        "view's side is held to, never s(n)"
     ),
     "packing/devtools/regularize_select.py": (
         "the selection among finished regularization runs reads each case's verified bound "
@@ -148,8 +151,16 @@ DECLARED_CONSUMERS = {
         "states a difference to a ceiling, never s(n)"
     ),
     "packing/tests/test_regularize_axis_components.py": (
-        "a synthetic index entry for the axis tool's tests carries the v2 contract's "
-        "`view_minus_verified_upper_bound` as null; the test reads no value from it"
+        "synthetic index entries and case records for the axis tool's tests carry the v2 "
+        "contract's `view_minus_verified_upper_bound` and a case's verified bound U, so the "
+        "test can check the layer's check holds a drawn view's side to U; a ceiling there, "
+        "never s(n)"
+    ),
+    "packing/devtools/regularize_axis_components.py": (
+        "the regularized layer's check reads each drawn count's verified bound U from its "
+        "case record and decides the view's exact side against it: none below U, a `bound` "
+        "view at it, and the views above it named; U is the ceiling a drawing frame is held "
+        "to, never s(n) (#548 review B1)"
     ),
     "packing/tests/test_regularize_gallery.py": (
         "a synthetic run report for the gallery's tests carries U as the driver writes it; "

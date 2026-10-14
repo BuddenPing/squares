@@ -19,11 +19,13 @@ decided on four counts:
 1. **Exact.** Both maintained routes decide the view over Q
    (`register_regularized_bounds.decide_view`: `sqpack.witness.exact_verify` and the
    independent checker).
-2. **Side.** Its exact side against `U`, the case record's `verified_upper_bound` as
-   `regularize_evand.upper_bound` reads it (a ceiling the side is held to, never s(n)),
-   and against the side today's drawing is drawn at. A view below `U` is a register
-   candidate (policy row 3): listed apart, registered through the import runbook first,
-   never admitted here.
+2. **Side.** Its exact side against `U`, the case record's `verified_upper_bound` held
+   exactly as `regularize_evand.verified_bound` holds it (a ceiling the side is held to,
+   never s(n)): a rational `U` as a fraction, a closed form as the one root of its
+   minimal polynomial in a rational interval, compared with the side exactly and never
+   equal to it. It is also held against the side today's drawing is drawn at. A view
+   below `U` is a register candidate (policy row 3): listed apart, registered through the
+   import runbook first, never admitted here.
 3. **Table.** The decision table as it stands. An Evan Daniel report is decided again on
    a copy by the driver's own `regularize_evand.redecide`, the function `reclassify
    --refresh-bounds` runs (`U` read again from the case record, a same-side view above it
@@ -134,6 +136,24 @@ def _literal(value: Fraction | None) -> str | None:
     return None if value is None else driver.literal(value)
 
 
+def stated_bound(n: int) -> str | None:
+    """`U` as a row states it: the exact fraction where it is rational, else the case
+    record's closed form, which `held_bound` reads back exactly; None without one."""
+    bound = driver.verified_bound(driver.case_facts(n))
+    if bound is None:
+        return None
+    return _literal(bound.rational) if bound.rational is not None else bound.form
+
+
+def held_bound(upper: str | None) -> driver.VerifiedBound | None:
+    """A row's `upper` held exactly, as the driver holds the case record's bound
+    (`regularize_evand.verified_bound`): a closed form is compared with a side as the root
+    it is, never through a decimal evaluation of it."""
+    if upper is None:
+        return None
+    return driver.verified_bound({"verified_upper_bound": upper, "exact_form": upper})
+
+
 def _record(job: Job, output: str | None) -> dict[str, Any]:
     run = job.run.name
     source = f"evand:{run}:{output}" if job.kind == "evand" else f"grid:{run}"
@@ -173,7 +193,7 @@ def decided_view(
             "independent": bool(exact["independent"]["passed"]),
         },
         "side": exact["side"],
-        "upper": _literal(driver.upper_bound(driver.case_facts(n))),
+        "upper": stated_bound(n),
         "s_W": _literal(driver.source_frame(witness).side),
         "row": decision.row,
         "decision": decision.decision,
@@ -217,7 +237,9 @@ def _set_aside(report: Mapping[str, Any]) -> driver.Measured:
 
 def evand_candidates(job: Job) -> list[dict[str, Any]]:
     """Every view of one count of a driver run, decided on a copy of its report by the
-    driver's own `redecide`, exactly as `reclassify --refresh-bounds` will decide it.
+    driver's own `redecide`, exactly as `reclassify --refresh-bounds` will decide it: a
+    report labelled with other settings than its stored regularization ran with is sent
+    to review there, as `layer` would refuse it.
 
     The count is stale when that copy differs from the stored report in anything at all:
     `layer` reads the stored report, so where the two differ (another view admitted, as
@@ -227,7 +249,7 @@ def evand_candidates(job: Job) -> list[dict[str, Any]]:
     directory = driver.count_dir(job.run, job.n)
     stored = driver.read_json(directory / "report.json")
     report = copy.deepcopy(stored)
-    driver.redecide(report, job.n, refresh_bounds=True)
+    driver.redecide(report, job.n, refresh_bounds=True, directory=directory)
     outputs = report.get("outputs") or {}
     solved = driver.measured_from_report(report, "solved")
     same = driver.measured_from_report(report, "same") if outputs.get("same") else None
@@ -366,6 +388,8 @@ def refusals(row: Mapping[str, Any]) -> list[str]:
         reasons.append(f"refused by {', '.join(refused)}")
     if row["upper"] is None:
         reasons.append("U is unknown")
+    elif row["minus_U"] is None:
+        reasons.append(f"U ({row['upper']}) is not read exactly, so no side is held to it")
     elif not row["at_most_U"]:
         reasons.append(f"its side is {row['minus_U']:+.2e} above U")
     elif row["below_U"]:
@@ -400,13 +424,16 @@ def judge(row: Mapping[str, Any], now: Mapping[str, Any]) -> dict[str, Any]:
         judged.update(gains=[], worse=[], notes=[])
     else:
         side = Fraction(judged["side"])
-        upper, drawn = _fraction(judged["upper"]), _fraction(now.get("side"))
+        drawn = _fraction(now.get("side"))
+        # `U` held exactly: a closed form is compared with the side, not read as unknown.
+        bound = held_bound(judged["upper"])
+        order = None if bound is None else bound.compare(side)
         judged.update(
-            minus_U=_difference(side, upper),
+            minus_U=None if bound is None or order is None else bound.difference(side),
             minus_s_W=_difference(side, _fraction(judged["s_W"])),
             minus_drawn=_difference(side, drawn),
-            at_most_U=upper is not None and side <= upper,
-            below_U=upper is not None and side < upper,
+            at_most_U=order is not None and order <= 0,
+            below_U=order is not None and order < 0,
             above_drawn=drawn is not None and side > drawn,
             smaller=drawn is not None and side < drawn,
             replaces_unverified=not now.get("verified", True),

@@ -459,14 +459,16 @@ Both generators were then run on the new witnesses, and each count was decided b
 grid lane’s rule, as in the grid pass above.
 As the layer stands on 13 October:
 
-- 16 of Evan Daniel’s views are drawn.
-  18 were admitted on 12 October; 270’s lapsed when #553 re-housed it (below), and 236’s
-  was withdrawn on 13 October because it turned two squares 0.000537 degrees off their
-  group and drew one more angle class.
+- 14 of Evan Daniel’s views are drawn.
+  18 were admitted on 12 October; 270’s lapsed when #553 re-housed it (below), and three
+  were withdrawn on 13 October: 236’s because it turned two squares 0.000537 degrees off
+  their group and drew one more angle class, and 180’s and 207’s because they tied the
+  axis tool’s views on all seven measures at the same side, which the owner’s rule does
+  not draw.
 - 10 grid views are drawn, at 105, 131, 146, 156, 175, 211, 267, 292, 307 and 308; 305’s
   lapsed with #553.
 - 232’s grid view goes to review: five per-square counts fall against #518’s view.
-- The other 14 counts keep the axis tool’s view of the new house.
+- The other 16 counts keep the axis tool’s view of the new house.
   303 is among them: its new house draws 4 / 8 / 0, which neither generator changes.
 - At 302 the new house already draws 0 / 0 / 0, and Evan Daniel’s view adds four full
   sides.

@@ -3629,13 +3629,16 @@ def _t007_consumer_audit(context: Context) -> str:
 
 
 def _regularized_atlas(context: Context) -> str:
-    # Under a second: the derived regularized views (X-049, think-bgkz) are compared with
-    # their index and their source witnesses by digest, re-verifying nothing; a view
+    # About two seconds: the derived regularized views (X-049, think-bgkz) are compared
+    # with their index and their source witnesses by digest, re-verifying nothing; a view
     # another generator made (Evan Daniel's regularizer through `regularize_evand`, or the
     # grid-slack generator, think-k35c) is also read and held to its entry: its label,
     # generator, credit line, side and regularization record, and the decision table's
-    # admission. Re-deriving and re-deciding them exactly is `--verify-atlas`, which
-    # belongs to a deferred checkpoint rather than here.
+    # admission. Every drawn view's exact side is held to the witness's `s_W` and to its
+    # case record's verified upper bound `U`, decided exactly for closed forms too, so no
+    # view lies below `U`, a `bound` view lies at it, and a view above it lies at a count
+    # that `ABOVE_U` names (#548 review B1, think-du42). Re-deriving and re-deciding the
+    # views exactly is `--verify-atlas`, which belongs to a deferred checkpoint instead.
     output = _module(context, "devtools.regularize_axis_components", "--check-atlas")
     _require_text(output, "regularized atlas check passed")
     return output
@@ -3651,9 +3654,10 @@ def _regularized_atlas_verify(context: Context) -> str:
     census's shades of each file -- and requires every index record and every retained
     view to come out byte-identical. Where the layer draws another generator's view, the
     axis tool's record of the count is held to the `reference` beside it, and the drawn
-    view is decided again over `Q` on both maintained routes, with its shades measured
-    again. It is the only check that the verdicts the index records were earned by the
-    code that now ships.
+    view is decided again over `Q` on both maintained routes, with its square count, its
+    identity against the source witness (the half-angle route's `arrangement_gap`, as at
+    admission; #548 review B3) and its shades measured again. It is the only check that
+    the verdicts the index records were earned by the code that now ships.
 
     Deferred on its own measurement: about 800 cpu-seconds on a four-cpu host, 223s of
     wall at four workers, against the 0.1s digest check that stays on every pull
@@ -3677,9 +3681,11 @@ def _regularized_atlas_drawings(context: Context) -> str:
 
 def _vendored_evand(context: Context) -> str:
     # About 0.2s: `vendor/evand-regularize`, Evan Daniel's regularizer copied at a pin, is
-    # held to its manifest -- each file's size and SHA-256 at the upstream commit, each
-    # recorded local change, and no file beside them. The digests cross a real boundary
-    # (downloaded third-party code, OR-16); nothing but this step reads them.
+    # held to its manifest -- each file's size, SHA-256 and mode at the upstream commit,
+    # each recorded local change, no link and no file beside them. That catches accidental
+    # edits only; `--upstream`, which holds the manifest to upstream, needs the network
+    # and is run by hand (think-vwlm). The digests cross a real boundary (downloaded
+    # third-party code, OR-16); nothing but this check reads them.
     output = _module(context, "devtools.check_vendored_evand")
     _require_text(output, "vendored copy check passed")
     return output
@@ -5440,6 +5446,8 @@ STEPS: tuple[Step, ...] = (
             "packing/atlas/known-best/regularized/*",
             "packing/atlas/known-best/manifest.json",
             "packing/witnesses/*",
+            # Each drawn view's side is held to its case record's verified upper bound.
+            "packing/frontier/n-*.md",
             *_RENDERER_HUB,
         ),
     ),
@@ -5490,7 +5498,7 @@ STEPS: tuple[Step, ...] = (
         ),
     ),
     Step(
-        "the vendored regularizer matches its pin",
+        "the vendored regularizer matches its manifest",
         _vendored_evand,
         fast=True,
         records=True,
@@ -6183,7 +6191,7 @@ TREE_REUSABLE_FAST_STEPS = frozenset(
         "the Lean replay receipt for s(k^2-2) = k holds",
         # The vendored files and their manifest, compared byte for byte; git is asked only
         # which files the tree holds. No clock, no network, no history.
-        "the vendored regularizer matches its pin",
+        "the vendored regularizer matches its manifest",
         "the inventory agrees with the register",
         "results rungs are earned and the view agrees",
         "the synopsis headline carries every result",
