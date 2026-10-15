@@ -1038,7 +1038,7 @@ force). These labels describe the retained evidence and confirmation; the mathem
 claim is the proved lower bound above.
 
 The detailed lesson below starts with the simpler point-only T-018 certificate;
-[the standalone v0.4.6 explainer](https://jlevy.github.io/squares/papers/n11-lower-bounds-explainer.html#proof-of-the-new-lower-bound)
+[the standalone v0.4.7 explainer](https://jlevy.github.io/squares/papers/n11-lower-bounds-explainer.html#proof-of-the-new-lower-bound)
 uses it as a visual worked example, then gives the threshold-counting and dilation proof
 of T-025 and T-026. The numerical $3.81$ result is not a premise of T-026. Keeping the
 T-018 proof in full also gives readers an assurance bridge: its short standard-library
