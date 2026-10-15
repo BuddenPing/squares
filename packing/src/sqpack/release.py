@@ -846,6 +846,7 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "packing/cases/n11_threshold_certificate/t-025-verifiable-claim-191-50.md",
             "packing/cases/n11_threshold_certificate/t-026-verifiable-claim-dilation-limit.md",
             "packing/devtools/adopt_houses.py",
+            "packing/devtools/apply_closed_form.py",
             "packing/devtools/census_atlas_contact_shades.py",
             "packing/devtools/check_half_angle_area.py",
             "packing/devtools/generate_frontier_case.py",
@@ -876,6 +877,7 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
         ),
         paths=(
             "packing/devtools/adopt_houses.py",
+            "packing/devtools/apply_closed_form.py",
             "packing/devtools/census_atlas_contact_shades.py",
             "packing/devtools/check_half_angle_area.py",
             "packing/devtools/generate_frontier_case.py",
@@ -904,6 +906,7 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
         components=("paper:square-packing-methods-survey",),
         paths=(
             "packing/devtools/adopt_houses.py",
+            "packing/devtools/apply_closed_form.py",
             "packing/devtools/census_atlas_contact_shades.py",
             "packing/devtools/check_half_angle_area.py",
             "packing/devtools/generate_frontier_case.py",
