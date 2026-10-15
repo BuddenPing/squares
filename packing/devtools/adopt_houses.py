@@ -117,6 +117,14 @@ FOOTER = "<!-- This document follows common-doc-guidelines.md."
 PLACES = select_houses.DISPLAY_PLACES
 #: Longest exact fraction the prose writes out; a longer one is given by its decimals.
 FRACTION_CHARS = 72
+#: The verifier table, which `render_case_verifiers` writes into the body, not this.
+VERIFIER_TABLE = re.compile(
+    r"<!-- BEGIN verification code.*?<!-- END verification code -->", re.DOTALL
+)
+#: Counts whose body the first pass, on 11 October 2026, marked as history by hand, in
+#: prose no tool writes in a fixed form (`historical`): the SQUISH update sections at 155,
+#: 258, 263 and 302 and the grid prose at 308. Only their owned parts are the writer's.
+HAND_MARKED = frozenset({155, 258, 263, 302, 308})
 
 
 @dataclass(frozen=True)
@@ -1437,8 +1445,8 @@ def historical(move: Move, text: str) -> str:
     Prose in no fixed form, which no tool here wrote, is not rewritten; `check_case_prose`
     refuses a record that still states it as the bound. The first pass marked such prose
     by hand at five counts, the SQUISH update sections at 155, 258, 263 and 302 and the
-    grid prose at 308 (`test_house_adoption.HAND_MARKED`); every other word of an adopted
-    body is what this writes from the record its last pass read.
+    grid prose at 308 (`HAND_MARKED`); every other word of an adopted body, the verifier
+    table apart, is what this writes from the record its last pass read.
     """
     n, until = move.n, day_words(move.n)
     text = _named_prose(text)
@@ -1935,12 +1943,16 @@ def _span(text: str, start: str, end: str) -> tuple[int, int]:
 def refreshed(move: Move, committed: str) -> str:
     """The committed record with what its last pass's writer writes now in the parts the
     writer alone owns: the evidence roster, the dated paragraph and the certificate
-    section. The rest, which other tools refresh, stays as it is."""
+    section, and, outside `HAND_MARKED`, the rest of the body, which it marks as history.
+    The rest, the verifier table and the front matter other tools refresh, stays as it
+    is."""
     written = replayed_text(move)
     fence, front, rest = _split(committed)
     evidence = _packing(_split(written)[1])["evidence"]
     if _packing(front).get("evidence") != evidence:
         front = _replace(front, "evidence", evidence)
+    if move.n not in HAND_MARKED:
+        rest = _with_history(rest, _split(written)[2])
     text = fence + front + rest
     for start, end in (
         (f"\n**House adoption, {day_words(move.n)}.**", "\n\n"),
@@ -1955,6 +1967,23 @@ def refreshed(move: Move, committed: str) -> str:
 
 def _flat(text: str) -> str:
     return " ".join(text.split())
+
+
+def history_words(body: str) -> str:
+    """A body as the writer is answerable for it: flowmark's wrapping and escapes undone
+    and the verifier table left out."""
+    return _flat(VERIFIER_TABLE.sub("", body).replace("\\+", "+"))
+
+
+def _with_history(committed: str, written: str) -> str:
+    """The written body where its words differ from the committed one's, with the
+    committed verifier table in place of the written one."""
+    if history_words(committed) == history_words(written):
+        return committed
+    table = VERIFIER_TABLE.search(committed)
+    if table is None:
+        return written
+    return VERIFIER_TABLE.sub(lambda _match: table.group(), written, count=1)
 
 
 def refresh(*, write: bool) -> list[int]:

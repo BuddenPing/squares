@@ -278,7 +278,8 @@ def test_an_entry_over_two_sources_reads_each_count_where_its_replay_decided_it(
         assert select.source_key_at(reversed_keys, evidence, n) == select.source_key_at(
             entry, evidence, n
         )
-    # A count no replay of the entry decided has no reader: the entry is named unread.
+    # A count no replay of the entry decided is no candidate, and the entry is not named
+    # unread either: there is nothing there for a reader to read.
     unstated = {**entry, "scope": {"n_values": [7, 9]}}
     select.candidates([unstated], evidence, unread=unread)
     assert unread == []
@@ -439,6 +440,48 @@ def test_every_record_names_a_smaller_held_or_algebraic_certificate(
         assert "RP-3 of the [review of 14 October 2026]" in text, n
     # At 302 T-174's algebraic side is above the house, and nothing is said of it.
     assert "algebraic certificate at this count" not in select.case_path(302).read_text()
+
+
+#: The sentence a certificate section ends with, listing what its house was chosen over.
+NOT_SELECTED = re.compile(
+    r"The\s+other\s+certificates\s+confirmed\s+here\s+at\s+this\s+count,\s+(.*?),\s+stay"
+    r"\s+verified\s+and\s+are\s+not\s+selected\.",
+    re.DOTALL,
+)
+
+
+def _not_selected(text: str) -> set[str]:
+    """Every result a record's sections list as confirmed there and not selected."""
+    return {
+        result
+        for match in NOT_SELECTED.finditer(text)
+        for result in re.findall(r"\bT-\d+\b", match.group(1))
+    }
+
+
+def test_no_section_lists_its_current_house_or_a_held_certificate_as_not_selected(
+    selections: dict[int, select.Selection],
+) -> None:
+    """A section's not-selected list names what its house was chosen over, so no record
+    lists the count's current house there, and none lists a held certificate, which is
+    no candidate. Each pass's prior state is held to the same: one that lists the house
+    its own pass adopts is a record already rewritten, not the record as the pass read
+    it (reviews A10 and B8 of PR 614: the 15 October archive took round 1's branch text
+    at nine counts, and their earlier sections named the new house and T-174)."""
+    found = []
+    for n, selection in selections.items():
+        listed = _not_selected(select.case_path(n).read_text(encoding="utf-8"))
+        named = listed & {houses.ADOPTED.get(n), *(c.result for c in selection.held)}
+        if named:
+            found.append((n, sorted(named)))
+    assert found == []
+    for day in adopt.passes():
+        for n, text in adopt.read_pass(day).items():
+            assert houses.ADOPTED[n] not in _not_selected(text), (day, n)
+    # The sentence is what the writer writes, so the pattern reads it where it stands.
+    assert {"T-127", "T-115", "T-113"} <= _not_selected(
+        select.case_path(129).read_text(encoding="utf-8")
+    )
 
 
 def test_a_held_note_is_written_kept_and_dropped_by_the_held_results() -> None:
@@ -640,20 +683,12 @@ def _flat(text: str) -> str:
     return " ".join(text.split())
 
 
-#: The verifier table, which `render_case_verifiers` writes.
-VERIFIER_TABLE = re.compile(
-    r"<!-- BEGIN verification code.*?<!-- END verification code -->", re.DOTALL
-)
-#: Counts whose body the first pass, on 11 October 2026, marked as history by hand, in
-#: prose no tool writes in a fixed form (`adopt_houses.historical`): the SQUISH update
-#: sections and the grid prose. Their owned parts are still compared.
-HAND_MARKED = frozenset({155, 258, 263, 302, 308})
-
-
 def _body(text: str) -> str:
-    """A record's body as the writer is answerable for it: flowmark's wrapping and escapes
-    undone and the verifier table left out."""
-    return _flat(VERIFIER_TABLE.sub("", text.split("---\n", 2)[2]).replace("\\+", "+"))
+    """A record's body as the writer is answerable for it (`adopt_houses.history_words`).
+
+    The counts the first pass marked by hand (`adopt_houses.HAND_MARKED`) are compared
+    only in their owned parts."""
+    return adopt.history_words(text.split("---\n", 2)[2])
 
 
 def test_the_writer_rebuilds_every_adopted_record_from_its_prior_state(
@@ -684,7 +719,7 @@ def test_the_writer_rebuilds_every_adopted_record_from_its_prior_state(
         body = _flat(committed.split("---\n", 2)[2])
         assert _flat(adopt.opening(move)) in body, f"n={move.n}: opening paragraph"
         assert _flat(adopt.section(move)) in body, f"n={move.n}: certificate section"
-        if move.n not in HAND_MARKED:
+        if move.n not in adopt.HAND_MARKED:
             assert _body(committed) == _body(written), f"n={move.n}: the body as history"
 
 
