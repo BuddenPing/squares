@@ -108,6 +108,7 @@ from devtools import squish_followup_packets as squish_update
 from devtools import squish_second_update_packets as squish_second
 from devtools import squish_upper_bound_packets as squish_first
 from devtools.retained_data import read_retained_bytes
+from sqpack.field import FieldElement
 from sqpack.witness import (
     WitnessError,
     validate_witness_document,
@@ -284,9 +285,11 @@ class House(TypedDict):
 class Pending(TypedDict):
     """Another report at the same count that no case record holds.
 
-    Either ``reader`` names the retained packet whose exact side it is, for a register
-    entry pending adoption, or ``printed`` is the side it prints, with ``rounding``
-    (`ROUNDINGS`).
+    One of three says what its side is: ``reader`` names the retained packet whose exact
+    rational side it is, for a register entry pending adoption; ``algebraic`` names the
+    import packet whose derived algebraic-number-field fact ``facts/alg-n-NNN.yaml`` states
+    it exactly, as PR #574's sides at 153, 207 and 302 are (`algebraic_side`); or
+    ``printed`` is the side it prints, with ``rounding`` (`ROUNDINGS`).
     """
 
     n: int
@@ -295,6 +298,7 @@ class Pending(TypedDict):
     holders: str
     result: NotRequired[str]
     reader: NotRequired[str]
+    algebraic: NotRequired[str]
     printed: NotRequired[str]
     rounding: NotRequired[str]
 
@@ -464,8 +468,15 @@ def load_declaration(packet: Path) -> Declaration:
         _require(pending["n"] in counts, f"{where}: a pending report at an undeclared count")
         if "reader" in pending:
             _require(
-                pending["reader"] in HOUSES and not {"printed", "rounding"} & set(pending),
-                f"{where}: a known reader, and no printed side beside it",
+                pending["reader"] in HOUSES
+                and not {"algebraic", "printed", "rounding"} & set(pending),
+                f"{where}: a known reader, and no printed side beside it, nor an algebraic one",
+            )
+        elif "algebraic" in pending:
+            _require(
+                _PACKET.fullmatch(pending["algebraic"])
+                and not {"printed", "rounding"} & set(pending),
+                f"{where}: an algebraic side names a dated packet, and no printed side",
             )
         else:
             _require(
@@ -1302,6 +1313,8 @@ HOUSES: dict[str, Callable[[int], Fraction]] = {
     "[PingYou PR 574 certificates 2026-10-13]": _import(
         "pingyou-pr574-certificates-2026-10-13"
     ),
+    "[Daniel n146 2026-10-14]": _import("evand-n146-2026-10-14"),
+    "[Mishapolk KKT refinements 2026-10-14]": _import("mishapolk-kkt-refinements-2026-10-14"),
     # T-155: the side of the retained view of Evan Daniel's regularizer at each count.
     "[Daniel regularizer 2026-10-11]": regularized.view_side,
 }
@@ -1313,6 +1326,75 @@ def house_side(reader: str, n: int) -> Fraction:
         return HOUSES[reader](n)
     except (OSError, ValueError, KeyError) as error:
         raise ReportError(f"n={n}: {reader} does not rebuild: {error}") from error
+
+
+#: The places an algebraic side's enclosure is first refined to, and the most it is refined
+#: to before a comparison is refused; the relation itself is decided by one exact sign.
+ALGEBRAIC_PLACES = (60, 4000)
+
+
+@functools.cache
+def _algebraic_witness(name: str, n: int) -> dict[str, Any]:
+    """The algebraic witness at ``n`` of import packet ``name``, admitted once.
+
+    `devtools.algebraic_witness_reports` admits it: that packet's custody check, then the
+    derived fact ``facts/alg-n-NNN.yaml`` held to the schema and to its own rebuild.
+    """
+    # That module imports this one, so it is imported where it is first used.
+    from devtools import algebraic_witness_reports as algebraic  # noqa: PLC0415
+
+    witnesses = algebraic.read_facts(packet_path(name), {n})
+    _require(n in witnesses, f"n={n}: {name} declares no algebraic witness at this count")
+    return witnesses[n]
+
+
+def algebraic_side(name: str, n: int) -> FieldElement | Fraction:
+    """The exact side of import packet ``name``'s algebraic witness at ``n``.
+
+    A `FieldElement` in a field built afresh from the witness, so that the refinement one
+    comparison makes never narrows the next one's starting enclosure; a Fraction where the
+    witness's side is rational.
+    """
+    from devtools import algebraic_witness_reports as algebraic  # noqa: PLC0415
+
+    value = algebraic.side_of(_algebraic_witness(name, n))
+    _require(isinstance(value, FieldElement | Fraction), f"n={n}: {name} states no exact side")
+    return value
+
+
+def algebraic_against(
+    value: FieldElement | Fraction, side: Fraction
+) -> tuple[str, Span, Fraction, Fraction]:
+    """The certificate's side against an exact algebraic side ``value``.
+
+    Returns the certificate's relation, decided by the exact sign of ``value - side``; an
+    enclosure of ``value``, the span it stands as among the other reports, refined until it
+    excludes the certificate's side; and rigorous bounds on ``value - side``, within one
+    part in a million of each other.
+    """
+    if isinstance(value, Fraction):
+        return relation(side, exact_span(value)), exact_span(value), value - side, value - side
+    sign = (value - side).sign()
+    if sign == 0:
+        return "equal", exact_span(side), Fraction(0), Fraction(0)
+    field = value.field
+    places, most = ALGEBRAIC_PLACES
+    while True:
+        field.refine_to(places)
+        low, high = field.enclose(value)
+        apart_low, apart_high = low - side, high - side
+        if (
+            apart_low * sign > 0
+            and apart_high * sign > 0
+            and (apart_high - apart_low) * 10**6 <= min(abs(apart_low), abs(apart_high))
+        ):
+            span = Span(low, high, open_low=False, open_high=False)
+            return ("below" if sign > 0 else "above"), span, apart_low, apart_high
+        if places >= most:
+            break
+        # Doubling, but the last refinement is to `most` itself, not short of it.
+        places = min(2 * places, most)
+    raise ReportError(f"the algebraic side does not separate from {side} at {most} places")
 
 
 # --------------------------------------------------------------------------- comparison
@@ -1445,17 +1527,28 @@ def _row(
         entry: dict[str, Any] = {
             key: value for key, value in report.items() if key not in {"n", "reader"}
         }
-        if "reader" in report:
-            value = house_side(report["reader"], n)
-            span = exact_span(value)
-            entry["exact_side"] = legacy.literal(value)
+        if "algebraic" in report:
+            exact = algebraic_side(report["algebraic"], n)
+            verdict, span, low, high = algebraic_against(exact, side)
+            entry["exact_side"] = (
+                exact.text() if isinstance(exact, FieldElement) else legacy.literal(exact)
+            )
+            entry["relation"] = verdict
+            # The other side less the certificate's: an enclosure's midpoint, with its bounds.
+            entry["difference"] = legacy.literal((low + high) / 2)
+            entry["difference_bounds"] = [legacy.literal(low), legacy.literal(high)]
         else:
-            printed, rounding = report.get("printed", ""), report.get("rounding", "")
-            value = Fraction(Decimal(printed))
-            span = printed_span(printed, rounding)
-        entry["relation"] = relation(side, span)
-        # The other side less the certificate's, exactly or at its printed value.
-        entry["difference"] = legacy.literal(value - side)
+            if "reader" in report:
+                value = house_side(report["reader"], n)
+                span = exact_span(value)
+                entry["exact_side"] = legacy.literal(value)
+            else:
+                printed, rounding = report.get("printed", ""), report.get("rounding", "")
+                value = Fraction(Decimal(printed))
+                span = printed_span(printed, rounding)
+            entry["relation"] = relation(side, span)
+            # The other side less the certificate's, exactly or at its printed value.
+            entry["difference"] = legacy.literal(value - side)
         others.append(entry)
         candidates.append((report["report"], span))
     result["pending"] = others

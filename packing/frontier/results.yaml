@@ -2,7 +2,7 @@ softschema:
   contract: packing.squares:ResultsRegister/v1
   schema: results.schema.yaml
   status: enforced
-last_reviewed: '2026-10-14'
+last_reviewed: '2026-10-15'
 results:
   - id: T-001
     kind: lower-bound
@@ -17415,9 +17415,9 @@ results:
       340 and 343, and leave 53 byte-identical to the issue-476 and issue-488 packets'
       copies; the packet's claim record compares the four, and each is an import of its
       own. 175 was the smallest side known at its count until Daniil Ostashev's issue 528
-      (T-158), 2.94e-03 below it, and stays in the packet unless its author asks for it to
-      be registered (think-9fjl); 340 is the smallest known at 340 and its row is the
-      owner's decision; 308 and 343 are
+      (T-158), 2.94e-03 below it; its author asked on issue 506 on 14 October 2026 for it
+      to be imported, and T-185 records it, superseded by T-158; 340 is the smallest known
+      at 340 and its row is the owner's decision; 308 and 343 are
       beaten by T-141's 308 and Hunt 3's 343, and the source marks both superseded.
 
       The source's own checkers were not run here, and its KKT statements are not decided.
@@ -19512,7 +19512,7 @@ results:
       Evan Daniel's exact ceiling, T-101, and at its exact side by T-155's regularized
       certificate of the same packing); at 175 it is also 2.94e-03 below Francisco
       Couzo's certificate of 11 October, which the issue names as the previous best and
-      which the record holds in the issue-506 packet and has not registered, and 4.72e-03
+      which the record holds in the issue-506 packet and registers as T-185, and 4.72e-03
       below Ryan Xu's T-125. At all three counts it is the smallest exact side the record
       holds.
 
@@ -23158,8 +23158,9 @@ results:
             summed from replay4d's cpu_seconds over 269 runs on two Ubuntu 24.04.5 machines
             (rustc 1.86.0). Calibrated here on 14 October 2026
             (wand125-closed-form-2026-10-14/receipts/calibration/): replay4d 0.1.0, built
-            with rustc 1.86.0 from the retained crates, replayed the two smallest records,
-            interval 26 and interval 14 top, REPLAY OK, in 0.672 CPU-hours against the
+            with rustc 1.86.0 from the retained crates, replayed the two records cheapest by
+            the source's CPU time (not the fewest leaves), interval 26 and interval 14 top,
+            REPLAY OK, in 0.672 CPU-hours against the
             source's 0.55. That is a ratio of 1.223, 1.20 to 1.25 at the source's two
             decimals, measured at nice 10 on four cores shared under load. At that ratio the
             complete replay is about 5,250 CPU-hours on this host, held over the owner's 40
@@ -23686,6 +23687,567 @@ results:
       the entry is pending adoption at n = 76 while wand125's 1793/200 holds the lower
       lanes. The source's full zm_mixed.py pass over all 129,600 D4 roots is not at the
       pinned revision.
+  - id: T-185
+    kind: upper-bound
+    registered: '2026-10-15'
+    headline: >-
+      A tighter packing of 175 squares from Francisco Couzo, superseded by Daniil Ostashev's
+      composition
+    claim: >-
+      One complete rational source certificate reports a finite upper-bound improvement at
+      the exact side it states: s(175) <= 13.7671190241983642888907662905. Complete native
+      feasibility outcomes are retained separately; the selected standing case is unchanged.
+
+      It is the release's certificate at 175, first committed on 11 October 2026, which
+      issue 506's release holds and the issue does not name; the author asked for it to be
+      imported on issue 506 on 14 October 2026. When it was published it was below the
+      case's ceiling, Ryan Xu's packing (T-125), by 1.78e-03, and below every other report
+      at 175: T-140 (issue 488) by 1.70e-06, T-130, T-138 and the issue-476 certificate by
+      3.61e-05, and T-101 (issue 375) by 1.11e-02. Daniil Ostashev's issue 528 composition
+      (T-158), the case's house since 12 October 2026, is 2.94e-03 below it, so the entry is
+      superseded.
+
+      Credit Francisco Couzo (https://github.com/franciscouzo/square-packing), after Ryan
+      Xu: the source's standing table says the 175 was seeded from Ryan Xu. Measured here,
+      it is the arrangement of his T-140 certificate, itself a refinement of Ryan Xu's
+      packing, moved: every centre within 0.0113 of T-140's and 137 of 175 within 1e-3.
+      Issue 506 states that the search code and the request were written with Claude (Claude
+      Code), directed and reviewed by the author.
+    scope: {n_values: [175]}
+    verification: V0
+    confirmation: C0
+    significance:
+      score: 1
+      rationale: >-
+        A smaller finite construction side at n = 175 when published, 1.70e-06 below the
+        same author's T-140 certificate it refines and 1.78e-03 below the case ceiling; a
+        routine refinement; no lower bound or optimum.
+      scored: '2026-10-15'
+      by: think-9fjl Francisco Couzo import (draft)
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Couzo n175 2026-10-11]']
+      published: '2026-10-11'
+    evidence: [E-couzo-506-n175-report]
+    artifacts:
+      - packing/resources/web/couzo-certificates-2026-10-11/README.md
+      - packing/resources/web/couzo-certificates-2026-10-11/acquisition/claims.json
+      - packing/resources/web/couzo-certificates-2026-10-11/source/certificates/n175.cert
+      - packing/devtools/upper_bound_reports.py
+    controls: [packing/tests/test_upper_bound_reports.py]
+    notes: >-
+      The packet's complete repository replay covers n = 175 with its two controls: the
+      positive passed and the duplicate-square and outside-container controls were refused
+      on both maintained routes, 91,350 pair decisions, decided twice on 11 October 2026;
+      the positive clears every wall by 1/(2*10^20) and every pair by just under 1e-20. The
+      12 October review (docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md,
+      RY-10) decided it again on the third route in scratch, with six controls, and that
+      decision is not retained. The receipt is receipts/exact-certification.json.xz in
+      couzo-certificates-2026-10-11, shared with T-152.
+
+      At n = 175 the certificate is above the case's ceiling (Daniil Ostashev, T-158) by
+      2.94e-03, as dostashev-records-2026-10-12's claim record measures exactly; it is below
+      T-140 (#488) by 1.70e-06, T-130 (#460), T-138 (#470) and the #476 certificate by
+      3.61e-05, T-125 (#432) by 1.78e-03 and T-101 (#375) by 1.11e-02. Later reports at 175,
+      PingYou Ltd's PR 574 (T-174) and Mykhailo Polkovskyi's of 14 October (T-186), refine
+      T-158's packing.
+
+      The source's own checkers were not run here. The two maintained routes, the sqpack
+      rational witness verifier and the independent rational corner checker, share
+      certificate parsing, half-angle conversion, Fraction arithmetic and the
+      separating-axis method. No two independent methods, human oversight or optimality is
+      claimed.
+
+      Measured here by compare_lineage.py of mishapolk-kkt-refinements-2026-10-14, greedy
+      nearest-centre matching under the box's eight symmetries (output in
+      couzo-certificates-2026-10-11/review/compare_lineage-output.txt), every centre lies
+      within 0.0113 of T-140's certificate and 137 of 175 within 1e-3, so its regularization
+      of T-140 is measured; against T-158 it is another arrangement.
+
+      The per-count rule of 14 October takes the reports at 175 in the order they reached
+      this repository: this certificate, published on 11 October 2026, was decidably below
+      every earlier report and is recorded; issue 528 (T-158), reported 2026-10-12, is
+      decidably below it and supersedes it.
+    next_rung: >-
+      None for the bound, which T-158 supersedes at 175. A retained third-route decision
+      (devtools.check_half_angle_area roster line for #506's 175) and the review mapping
+      would let the rungs rise to the replay already retained. Final exact-head CI remains
+      required.
+    regularizations:
+      - n: 175
+        of: T-140
+        by: '[Couzo n175 2026-10-11]'
+        method: >-
+          exact optimum from Evan Daniel's exact contact solver, seeded from Ryan Xu
+        side: solved
+        identity:
+          basis: measured
+          measured_in: packing/resources/web/couzo-certificates-2026-10-11/review/compare_lineage-output.txt
+          moved: 38
+          max_move: 0.01122
+  - id: T-186
+    kind: upper-bound
+    registered: '2026-10-15'
+    headline: >-
+      Exact certificates at twelve counts from Mykhailo Polkovskyi, tightening the smallest
+      reported there
+    claim: >-
+      Twelve complete rational source certificates report finite upper-bound improvements at
+      the exact sides they state: s(129) <=
+      593500692520223217223007670039029699948354116213961/50000000000000000000000000000000000000000000000000,
+      s(154) <=
+      646060328856631552497101463610355043240689434277149/50000000000000000000000000000000000000000000000000,
+      s(156) <=
+      648958292691713822691804519015415761935309055406679/50000000000000000000000000000000000000000000000000,
+      s(175) <=
+      6882087158743298314645090738433738429734596852921042192847398468605899002561978177069845581/500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+      s(176) <=
+      137958723184364072631738953307277133712331066995515103744502117015291642972051776912348029686675350647263/10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+      s(204) <=
+      740433161719347828316145172430104761481126338872178671530915993369069066972891707484286255665843382616078162213/50000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+      s(232) <=
+      1576417431748659662929018147686747685946919370584208438569479693721179800512385635413969116208071951422158405421/100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+      s(264) <=
+      838736756619391642122125861799894632619976183429475268094914028891692156889593756790740302236975468449744536043/50000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+      s(271) <=
+      1694899235645120560305712851306208344982773066757282853717334516897079238059065607134656903415421834818577532691/100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+      s(302) <=
+      893500692520223217223007670039029699948384116213961/50000000000000000000000000000000000000000000000000,
+      s(303) <=
+      223874478638373849767708018731100462502930758319276667065271354307189968584331641646777792095999047220400719209/12500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+      and s(304) <=
+      1792942775807517496548703186140836311278604266912137/100000000000000000000000000000000000000000000000000.
+
+      Complete native feasibility outcomes are retained separately; the selected standing
+      cases are unchanged pending independent review and record review.
+
+      The source's README, unchanged since the revision issue 593 reports, states that every
+      certificate passes Evan Daniel's exact checkers verify_cert.py and verify_cert2.py
+      with zero tolerance and that every separating-axis margin and boundary clearance is
+      strictly positive; census.json at the pin names the source of each count, 'Mykhailo
+      Polkovskyi (ultra-precision KKT dual-verified optimum)' at the twelve counts
+      registered here. The commit, 'Refine 14 contested certificates to ultra-precision KKT
+      endpoints', states no further check. Those statements are the author's; no source
+      program ran here.
+
+      Credit Mykhailo Polkovskyi (https://github.com/Mishapolk/square-packing-records), the
+      name the author asks for on issue 593, with each certificate as a refinement of the
+      packing it tightens, after that packing's finder: Daniil Ostashev's at 129, 204 and
+      303 (T-162, issue 562), 175, 232 and 264 (T-158, issue 528) and 176 and 304 (issue
+      575; T-175 at 304), and Francisco Couzo's at 154 (T-182, issue 586), 156 and 271
+      (T-161, issue 561) and 302 (T-181, issues 583 and 586); at 129, 156, 175, 176, 204,
+      232, 264, 271 and 303 by way of PingYou Ltd's refinement (T-174, PR 574).
+
+      Measured here, every certificate places every square centre within 1.1e-3 of the
+      certificate it tightens, and within 1.3e-15 at 156, 175, 264, 271, 302, 303 and 304.
+      The commit states no AI assistance; issue 593 discloses Gemini assistance with solver
+      scripting, precision checks and formatting.
+    scope: {n_values: [129, 154, 156, 175, 176, 204, 232, 264, 271, 302, 303, 304]}
+    verification: V0
+    confirmation: C0
+    significance:
+      score: 1
+      rationale: >-
+        Routine refinements of packings the record already credits, 1.25e-94 to 1.79e-19
+        below the nearest earlier report at each of twelve counts, as T-174's are; no lower
+        bound or optimum.
+      scored: '2026-10-15'
+      by: think-o644 Mykhailo Polkovskyi import (draft)
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Mishapolk KKT refinements 2026-10-14]']
+      published: '2026-10-14'
+    evidence: [E-mishapolk-70a033f-certificate-report]
+    artifacts:
+      - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/README.md
+      - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/acquisition/claims.json
+      - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/n-129.yaml.gz
+      - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/n-154.yaml.gz
+      - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/n-156.yaml.gz
+      - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/n-175.yaml.gz
+      - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/n-176.yaml.gz
+      - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/n-204.yaml.gz
+      - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/n-232.yaml.gz
+      - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/n-264.yaml.gz
+      - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/n-271.yaml.gz
+      - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/n-302.yaml.gz
+      - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/n-303.yaml.gz
+      - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/n-304.yaml.gz
+      - packing/devtools/upper_bound_reports.py
+    controls: [packing/tests/test_upper_bound_reports.py]
+    notes: >-
+      A separate complete repository replay is retained for n = 129, 153, 154, 155, 156,
+      175, 176, 181, 204, 207, 209, 232, 264, 267, 270, 271, 272, 302, 303, 304, 305, 306,
+      307 and 308: 24 positives and 48 duplicate-square and outside-container controls
+      passed their required outcomes on both routes, 4186086 pair decisions; summed over the
+      72 jobs, the receipt records 2167.9 route CPU seconds and 2194.11 job wall seconds,
+      the longest job 78.28 seconds. Every positive clears every wall by at least 5.00e-101
+      and every pair by at least 9.99e-101.
+
+      The replay's receipts are receipts/exact-certification-nNNN.json.xz in
+      mishapolk-kkt-refinements-2026-10-14, one for each of the 24 counts; they stay out of
+      this entry's artifacts, as the 14 October entries' receipts do. The twelve recorded
+      certificates are the artifacts facts/n-NNN.yaml.gz.
+
+      At n = 129 the certificate is below the case's ceiling (Ryan Xu, improved by Evan
+      Daniel, T-146) by 2.02e-03; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.19e-19;
+      below T-101 (#375) (Daniel after Couzo, de Winter, Ellsworth, Levy) by 1.13e-02; below
+      T-113 (#401) (Chaoweeraprasit after Ellsworth) by 1.09e-02; below T-115 (#401)
+      (Chaoweeraprasit after Couzo and Ellsworth) by 9.36e-03; below T-125 (#432) (Ryan Xu)
+      by 2.02e-03; below T-127 (#438) (Gupta after Chaoweeraprasit, Daniel) by 9.36e-03;
+      below T-162 (#562) (Daniil Ostashev) by 1.19e-19; below T-174 (PR #574) (PingYou Ltd
+      (BuddenPing), numerical v2) by 1.10e-21; smallest: this certificate.
+
+      At n = 154 the certificate is below the case's ceiling (Evan Daniel, T-160) by
+      1.36e-03; below #573 (Mykhailo Polkovskyi (Mishapolk)) by 1.36e-03; below #593
+      (Mykhailo Polkovskyi (Mishapolk)) by 1.29e-03; below T-098 (#375) (Daniel after Couzo,
+      de Winter, Ellsworth, Levy) by 1.05e-02; below T-113 (#401) (Chaoweeraprasit after
+      Ellsworth) by 7.09e-03; below T-115 (#401) (Chaoweeraprasit after Couzo and Ellsworth)
+      by 5.36e-03; below T-127 (#438) (Gupta after Chaoweeraprasit, Daniel) by 5.36e-03;
+      below T-172 (#583) (Francisco Couzo) by 1.29e-03; below T-182 (#586) (Francisco Couzo)
+      by 1.29e-19; below T-136 (#481) (Chaoweeraprasit after Couzo, Xu, Goebel, Schadt,
+      Ellsworth, Hajba, Levy) by 1.86e-03; below T-056 (Francisco Couzo) by 1.05e-02;
+      smallest: this certificate.
+
+      At n = 156 the certificate is below the case's ceiling (Daniil Ostashev, T-149) by
+      6.76e-06; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.30e-19; below T-098 (#375)
+      (Daniel after Couzo, de Winter, Ellsworth, Levy) by 2.92e-03; below T-161 (#561)
+      (Francisco Couzo) by 1.30e-19; below T-174 (PR #574) (PingYou Ltd (BuddenPing),
+      numerical v2) by 1.19e-34; below T-056 (Francisco Couzo) by 2.92e-03; smallest: this
+      certificate.
+
+      At n = 175 the certificate is below the case's ceiling (Daniil Ostashev, T-158) by
+      1.38e-19; below #573 (Mykhailo Polkovskyi (Mishapolk)) by 1.40e-12; below #593
+      (Mykhailo Polkovskyi (Mishapolk)) by 1.38e-19; below T-185 (#506) (Francisco Couzo) by
+      2.94e-03; below T-101 (#375) (Daniel after Couzo, de Winter, Ellsworth, Levy) by
+      1.40e-02; below T-125 (#432) (Ryan Xu) by 4.72e-03; below T-130 (#460) (Couzo after
+      Xu, Daniel, Ellsworth, Levy) by 2.98e-03; below T-138 (#470) (Mishapolk after
+      Stenlund, Friedman, Ellsworth, Chaoweeraprasit, Couzo, Xu, Levy) by 2.98e-03; below
+      T-174 (PR #574) (PingYou Ltd (BuddenPing), numerical v2) by 7.23e-75; below T-140
+      (#488) (Francisco Couzo) by 2.95e-03; smallest: this certificate.
+
+      At n = 176 the certificate is below the case's ceiling (Nate Chaoweeraprasit
+      (itsnaka), T-151) by 1.70e-02; below #562 (Daniil Ostashev) by 1.28e-02; below #575
+      (Daniil Ostashev) by 1.38e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      1.38e-19; below T-101 (#375) (Daniel after Couzo, de Winter, Ellsworth, Levy) by
+      2.70e-02; below T-161 (#561) (Francisco Couzo) by 1.18e-02; below T-165 (no issue)
+      (Francisco Couzo) by 1.18e-02; below T-174 (PR #574) (PingYou Ltd (BuddenPing),
+      numerical v2) by 1.25e-94; smallest: this certificate.
+
+      At n = 204 the certificate is below the case's ceiling (the Kingbird catalogue,
+      verified by Evan Daniel's exact ceiling, T-101) by 1.42e-02; below #593 (Mykhailo
+      Polkovskyi (Mishapolk)) by 1.48e-19; below T-155 (no issue) (this project) by
+      1.42e-02; below T-162 (#562) (Daniil Ostashev) by 1.48e-19; below T-174 (PR #574)
+      (PingYou Ltd (BuddenPing), numerical v2) by 1.83e-21; smallest: this certificate.
+
+      At n = 232 the certificate is below the case's ceiling (Daniil Ostashev, T-158) by
+      1.58e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.58e-19; below T-101 (#375)
+      (Daniel after Couzo, de Winter, Ellsworth, Levy) by 1.40e-02; below T-174 (PR #574)
+      (PingYou Ltd (BuddenPing), numerical v2) by 1.45e-74; below T-136 (#481)
+      (Chaoweeraprasit after Couzo, Xu, Goebel, Schadt, Ellsworth, Hajba, Levy) by 3.25e-03;
+      smallest: this certificate.
+
+      At n = 264 the certificate is below the case's ceiling (Daniil Ostashev, T-158) by
+      1.68e-19; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.68e-19; below T-155 (no
+      issue) (this project) by 3.44e-03; below T-174 (PR #574) (PingYou Ltd (BuddenPing),
+      numerical v2) by 1.75e-74; below T-101 (#375) (Daniel after Couzo, de Winter,
+      Ellsworth, Levy) by 3.44e-03; smallest: this certificate.
+
+      At n = 271 the certificate is below the case's ceiling (Nate Chaoweeraprasit
+      (itsnaka), T-151) by 1.24e-04; below #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      1.69e-19; below T-098 (#375) (Daniel after Couzo, de Winter, Ellsworth, Levy) by
+      1.83e-03; below T-161 (#561) (Francisco Couzo) by 1.69e-19; below T-174 (PR #574)
+      (PingYou Ltd (BuddenPing), numerical v2) by 2.09e-34; below T-056 (Francisco Couzo) by
+      1.83e-03; smallest: this certificate.
+
+      At n = 302 the certificate is below the case's ceiling (Nate Chaoweeraprasit
+      (itsnaka), improved by Evan Daniel, T-146) by 2.02e-03; below #573 (Mykhailo
+      Polkovskyi (Mishapolk)) by 2.02e-03; below #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      2.62e-04; below T-098 (#375) (Daniel after Couzo, de Winter, Ellsworth, Levy) by
+      1.60e-02; below T-116 (#422) (Chaoweeraprasit after Ellsworth, Couzo and SQUISH) by
+      1.13e-02; below T-136 (#481) (Chaoweeraprasit after Couzo, Xu, Goebel, Schadt,
+      Ellsworth, Hajba, Levy) by 2.02e-03; below T-138 (#470) (Mishapolk after Stenlund,
+      Friedman, Ellsworth, Chaoweeraprasit, Couzo, Xu, Levy) by 1.13e-02; below T-164 (#564)
+      (PingYou Ltd (BuddenPing)) by 2.62e-04; below T-174 (PR #574) (PingYou Ltd
+      (BuddenPing), exact 153/302) by 2.62e-04; below T-181 (#583, #586) (Francisco Couzo)
+      by 1.79e-19; below T-056 (Francisco Couzo) by 1.60e-02; smallest: this certificate.
+
+      At n = 303 the certificate is below the case's ceiling (Nate Chaoweeraprasit
+      (itsnaka), improved by Evan Daniel, T-146) by 3.11e-03; below #573 (Mykhailo
+      Polkovskyi (Mishapolk)) by 3.11e-03; below #593 (Mykhailo Polkovskyi (Mishapolk)) by
+      1.79e-19; below T-092 (no issue) (Couzo) by 1.44e-02; below T-098 (#375) (Daniel after
+      Couzo, de Winter, Ellsworth, Levy) by 1.44e-02; below T-113 (#401) (Chaoweeraprasit
+      after Ellsworth) by 1.04e-02; below T-134 (#476) (Couzo after Mishapolk,
+      Chaoweeraprasit, Gupta, Xu, Daniel, Ellsworth, Levy) by 7.49e-03; below T-136 (#481)
+      (Chaoweeraprasit after Couzo, Xu, Goebel, Schadt, Ellsworth, Hajba, Levy) by 3.11e-03;
+      below T-138 (#470) (Mishapolk after Stenlund, Friedman, Ellsworth, Chaoweeraprasit,
+      Couzo, Xu, Levy) by 1.04e-02; below T-162 (#562) (Daniil Ostashev) by 1.79e-19; below
+      T-174 (PR #574) (PingYou Ltd (BuddenPing), numerical v2) by 2.43e-74; below #488
+      (unnamed) (Francisco Couzo) by 7.41e-03; below T-056 (Francisco Couzo) by 1.44e-02;
+      smallest: this certificate.
+
+      At n = 304 the certificate is below the case's ceiling (Nate Chaoweeraprasit
+      (itsnaka), improved by Francisco Couzo, T-152) by 1.38e-04; below #593 (Mykhailo
+      Polkovskyi (Mishapolk)) by 1.79e-19; below T-098 (#375) (Daniel after Couzo, de
+      Winter, Ellsworth, Levy) by 5.22e-03; below T-151 (#500) (Chaoweeraprasit after Couzo,
+      Gupta, Ellsworth, Friedman, Levy) by 2.29e-04; below T-174 (PR #574) (PingYou Ltd
+      (BuddenPing), numerical v2) by 1.38e-04; below T-175 (#575) (Daniil Ostashev) by
+      1.79e-19; below T-056 (Francisco Couzo) by 5.22e-03; smallest: this certificate.
+
+      The same commit holds 12 further certificates, at n = 153, 155, 181, 207, 209, 267,
+      270, 272, 305, 306, 307 and 308, and this entry does not record them: at each, PR
+      574's certificate (T-174) is decidably smaller, by 1.29e-39 at 153, by 1.49e-99 at
+      207, decided exactly against PR 574's algebraic side, and by 1.30e-23 to 1.80e-23 at
+      the other ten. The packet's claim record compares each with its case.
+
+      The source's own checkers were not run here. The two maintained routes, the sqpack
+      rational witness verifier and the independent rational corner checker, share
+      certificate parsing, half-angle conversion, Fraction arithmetic and the
+      separating-axis method. No two independent methods, human oversight or optimality is
+      claimed.
+
+      No issue reports the commit, so the record reads it as a publication at its first
+      commit, on 14 October 2026, as the owner decided for watched repositories that day.
+      The per-count rule of 14 October takes the reports at each count in the order they
+      reached this repository; the commit is later than every report the 14 October ledger
+      walks at these counts and decidably below each of them at the twelve recorded here, so
+      it is recorded there and changes no earlier verdict.
+
+      Each count is listed in regularizations as a refinement of the certificate it
+      tightens: T-174 at 129, 156, 175, 176, 204, 232, 264, 271 and 303, T-182 at 154, T-181
+      at 302 and T-175 at 304. The source states no identity, so the basis is measured here,
+      by review/compare_lineage.py in the packet (greedy nearest-centre matching under the
+      box's eight symmetries, output review/compare_lineage-output.txt): at most 2 of a
+      count's squares move by more than 1e-3, at 204, and none elsewhere.
+    next_rung: >-
+      Independently review the retained replay, then decide adoption at the twelve counts:
+      each certificate is below its case's ceiling and below every earlier report at its
+      count, the nearest by 1.25e-94 (176) to 1.79e-19 (302 and 304). Final exact-head CI
+      remains required.
+    regularizations:
+      - n: 129
+        of: T-174
+        by: '[Mishapolk KKT refinements 2026-10-14]'
+        method: >-
+          refinement to an ultra-precision KKT endpoint
+        side: solved
+        identity:
+          basis: measured
+          measured_in: packing/resources/web/mishapolk-kkt-refinements-2026-10-14/review/compare_lineage-output.txt
+          moved: 0
+          max_move: 0.0001414
+      - n: 154
+        of: T-182
+        by: '[Mishapolk KKT refinements 2026-10-14]'
+        method: >-
+          refinement to an ultra-precision KKT endpoint
+        side: solved
+        identity:
+          basis: measured
+          measured_in: packing/resources/web/mishapolk-kkt-refinements-2026-10-14/review/compare_lineage-output.txt
+          moved: 0
+          max_move: 0.0006364
+      - n: 156
+        of: T-174
+        by: '[Mishapolk KKT refinements 2026-10-14]'
+        method: >-
+          refinement to an ultra-precision KKT endpoint
+        side: solved
+        identity:
+          basis: measured
+          measured_in: packing/resources/web/mishapolk-kkt-refinements-2026-10-14/review/compare_lineage-output.txt
+          moved: 0
+          max_move: 7.586e-16
+      - n: 175
+        of: T-174
+        by: '[Mishapolk KKT refinements 2026-10-14]'
+        method: >-
+          refinement to an ultra-precision KKT endpoint
+        side: solved
+        identity:
+          basis: measured
+          measured_in: packing/resources/web/mishapolk-kkt-refinements-2026-10-14/review/compare_lineage-output.txt
+          moved: 0
+          max_move: 9.237e-16
+      - n: 176
+        of: T-174
+        by: '[Mishapolk KKT refinements 2026-10-14]'
+        method: >-
+          refinement to an ultra-precision KKT endpoint
+        side: solved
+        identity:
+          basis: measured
+          measured_in: packing/resources/web/mishapolk-kkt-refinements-2026-10-14/review/compare_lineage-output.txt
+          moved: 0
+          max_move: 0.0001414
+      - n: 204
+        of: T-174
+        by: '[Mishapolk KKT refinements 2026-10-14]'
+        method: >-
+          refinement to an ultra-precision KKT endpoint
+        side: solved
+        identity:
+          basis: measured
+          measured_in: packing/resources/web/mishapolk-kkt-refinements-2026-10-14/review/compare_lineage-output.txt
+          moved: 2
+          max_move: 0.001019
+      - n: 232
+        of: T-174
+        by: '[Mishapolk KKT refinements 2026-10-14]'
+        method: >-
+          refinement to an ultra-precision KKT endpoint
+        side: solved
+        identity:
+          basis: measured
+          measured_in: packing/resources/web/mishapolk-kkt-refinements-2026-10-14/review/compare_lineage-output.txt
+          moved: 0
+          max_move: 0.0002828
+      - n: 264
+        of: T-174
+        by: '[Mishapolk KKT refinements 2026-10-14]'
+        method: >-
+          refinement to an ultra-precision KKT endpoint
+        side: solved
+        identity:
+          basis: measured
+          measured_in: packing/resources/web/mishapolk-kkt-refinements-2026-10-14/review/compare_lineage-output.txt
+          moved: 0
+          max_move: 1.206e-15
+      - n: 271
+        of: T-174
+        by: '[Mishapolk KKT refinements 2026-10-14]'
+        method: >-
+          refinement to an ultra-precision KKT endpoint
+        side: solved
+        identity:
+          basis: measured
+          measured_in: packing/resources/web/mishapolk-kkt-refinements-2026-10-14/review/compare_lineage-output.txt
+          moved: 0
+          max_move: 9.88e-16
+      - n: 302
+        of: T-181
+        by: '[Mishapolk KKT refinements 2026-10-14]'
+        method: >-
+          refinement to an ultra-precision KKT endpoint
+        side: solved
+        identity:
+          basis: measured
+          measured_in: packing/resources/web/mishapolk-kkt-refinements-2026-10-14/review/compare_lineage-output.txt
+          moved: 0
+          max_move: 7.783e-16
+      - n: 303
+        of: T-174
+        by: '[Mishapolk KKT refinements 2026-10-14]'
+        method: >-
+          refinement to an ultra-precision KKT endpoint
+        side: solved
+        identity:
+          basis: measured
+          measured_in: packing/resources/web/mishapolk-kkt-refinements-2026-10-14/review/compare_lineage-output.txt
+          moved: 0
+          max_move: 9.544e-16
+      - n: 304
+        of: T-175
+        by: '[Mishapolk KKT refinements 2026-10-14]'
+        method: >-
+          refinement to an ultra-precision KKT endpoint
+        side: solved
+        identity:
+          basis: measured
+          measured_in: packing/resources/web/mishapolk-kkt-refinements-2026-10-14/review/compare_lineage-output.txt
+          moved: 0
+          max_move: 9.377e-16
+  - id: T-187
+    kind: upper-bound
+    registered: '2026-10-15'
+    headline: >-
+      A smaller packing of 146 squares from Evan Daniel's chain search, started from Ryan
+      Xu's packing
+    claim: >-
+      One complete rational source certificate reports a finite upper-bound improvement at
+      the exact side it states: s(146) <= 12.583782190151860342292508597077. Complete native
+      feasibility outcomes are retained separately; the selected standing case is unchanged
+      pending independent review and record review.
+
+      The author reports that his two exact rational checkers, verify_cert.py (separating
+      axes) and verify_cert2.py (polygon intersection), accept the certificate and its
+      regularized drawing. The side is the 80-digit KKT point S* =
+      12.58378219015186034216... scaled by 1 + 1e-20 about the origin corner; the source
+      reports a local minimum strict modulo 59 exact flat motions, 69 corner-corner contacts
+      with no corner-corner MILP descent, and 13 rattlers, and measures it against #505's
+      packing as a different local minimum that agrees to about 1e-7 except a cluster of 10
+      squares tilted near 42 degrees. Those are numerical evidence, as the source says, not
+      proofs. No source program ran here.
+
+      Credit Evan Daniel (https://github.com/evand/square-packing), whose chain search found
+      the packing in a time-travel test started from the public packings of 10 October, and
+      credit Ryan Xu's packing of 146 (issue 432, T-125) as its start, as the author asks:
+      two random large perturbations of it and a re-polish, then one exact descent step. The
+      author names Robert Barnett's refinement (T-150, issue 505) as the record it improves
+      and calls the result a different local minimum from it. Issue 606 states: "The search,
+      the checks and this request were done with Claude (Claude Code). Evan Daniel directed
+      and reviewed the work."
+    scope: {n_values: [146]}
+    verification: V0
+    confirmation: C0
+    significance:
+      score: 2
+      rationale: >-
+        A smaller finite construction side at n = 146, a new packing 1.38e-08 below the case
+        ceiling and below every report there; no lower bound or optimum.
+      scored: '2026-10-15'
+      by: think-rvv7 Evan Daniel import (draft)
+    novelty: previously-published
+    attribution:
+      source_keys: ['[Daniel n146 2026-10-14]']
+      published: '2026-10-14'
+    evidence: [E-evand-606-n146-report]
+    artifacts:
+      - packing/resources/web/evand-n146-2026-10-14/README.md
+      - packing/resources/web/evand-n146-2026-10-14/acquisition/claims.json
+      - packing/resources/web/evand-n146-2026-10-14/source/search/packer/candidates/tt2_n146.cert
+      - packing/devtools/upper_bound_reports.py
+    controls: [packing/tests/test_upper_bound_reports.py]
+    notes: >-
+      A separate complete repository replay is retained for n = 146: 1 positive and 2
+      duplicate-square and outside-container controls passed their required outcomes on both
+      routes, 63510 pair decisions; summed over the 3 jobs, the receipt records 21.14 route
+      CPU seconds and 21.33 job wall seconds, the longest job 7.24 seconds. Every positive
+      clears every wall by at least 5.00e-21 and every pair by at least 9.99e-21.
+
+      The replay's receipt is receipts/exact-certification.json.xz in evand-n146-2026-10-14;
+      it stays out of this entry's artifacts so that the workers' snapshot stays under its
+      cap.
+
+      At n = 146 the certificate is below the case's ceiling (Ryan Xu, improved by Robert
+      Barnett, T-150) by 1.38e-08; below T-101 (#375) (the Kingbird catalogue, verified by
+      Evan Daniel's exact ceiling) by 1.71e-02; below T-125 (#432) (Ryan Xu) by 8.74e-08;
+      below T-146 (no issue) (Evan Daniel) by 8.73e-08; below T-168 (#566) (PingYou Ltd) by
+      1.38e-08; below T-174 (PR #574) (PingYou Ltd) by 1.38e-08; below #593 (Mykhailo
+      Polkovskyi (Mishapolk)) by 1.38e-08; smallest: this certificate.
+
+      The source's own checkers were not run here. The two maintained routes, the sqpack
+      rational witness verifier and the independent rational corner checker, share
+      certificate parsing, half-angle conversion, Fraction arithmetic and the
+      separating-axis method. No two independent methods, human oversight or optimality is
+      claimed.
+
+      Measured here by compare_lineage.py (mishapolk-kkt-refinements-2026-10-14/review;
+      output in evand-n146-2026-10-14/review), greedy nearest-centre matching under the
+      box's eight symmetries: against T-150, 63 of 146 centres lie within 1e-6, 89 within
+      1e-3 and 137 within 0.1, the largest move 0.453, and against T-168 and T-174 the same
+      within two squares. It is not a refinement of issue 505's packing, as the author says,
+      and it is recorded as a new packing with no regularization; that it continues Ryan
+      Xu's arrangement stays the author's statement.
+
+      The per-count rule of 14 October takes the reports at 146 in the order they reached
+      this repository: issue 606, filed on 14 October 2026 a minute after the certificate's
+      first commit, is the latest report at 146 and decidably below every earlier one,
+      T-168, PR 574's T-174 and issue 593's certificate included, so it is recorded.
+    next_rung: >-
+      Independently review the retained replay, then decide adoption at 146: the certificate
+      is below the case's ceiling (T-150) by 1.38e-8 and below every report at 146, PR 574's
+      T-174 included. Final exact-head CI remains required.
 # Generated by python -m devtools.regularized_drawings from the regularized layer's
 # index (packing/atlas/known-best/regularized/index.json); do not edit by hand.
 regularized_drawings:

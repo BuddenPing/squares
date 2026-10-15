@@ -21,7 +21,7 @@ softschema:
   status: enforced
 repository: jlevy/squares
 owner: jlevy
-last_reviewed: '2026-10-14'
+last_reviewed: '2026-10-15'
 issues:
   - number: 420
     title: 'Lean proofs that 178 best-known packings are local minima (n ≤ 324): registration request'
@@ -5780,8 +5780,9 @@ issues:
       blocking defect. 304 and 305 are registered as T-152 at V3/C3; the nine beyond the corpus
       are verified beyond-horizon rows that supersede the rows tracked at 338, 339, 344, 375,
       376, 378 and 379. Author checkers and KKT statements were not run here; no optimality is
-      claimed. Claude assistance disclosed.
-    read_through: '2026-10-14T12:03:16Z'
+      claimed. Claude assistance disclosed. The release's unnamed 175, imported at the author's
+      request of 14 October, is registered as T-185 at V0/C0, superseded by T-158.
+    read_through: '2026-10-14T16:38:36Z'
     results:
     - key: n304-n305-exact-optima
       claim: s(304) <= 17.929565946849 and s(305) <= 17.950466482138, each the exact rational side of
@@ -5813,15 +5814,23 @@ issues:
         13.767119024199, s(308) <= 17.998459831024, s(340) <= 18.939649632892 and s(343) <=
         18.993870589750, as certificates/README.md prints them.
       source: source
-      not_registered: Not requested. Compared in the packet's claim record; 175 was the smallest
-        side known at its count until issue 528 (T-158), 2.94e-03 below it, and stays in the
-        packet unless the author asks for it to be registered (think-9fjl), 340 is below its tracked row
-        beyond the corpus and its row is the owner's decision, and 308 and 343 are above T-141's
-        308 and Hunt 3's 343, marked superseded by the source.
+      not_registered: Not requested in the issue. Compared in the packet's claim record; 175, which
+        the author asked on 14 October to have imported, is the result n175 below (T-185), 340 is
+        below its tracked row beyond the corpus and its row is the owner's decision, and 308 and
+        343 are above T-141's 308 and Hunt 3's 343, marked superseded by the source.
       queued: false
+    - key: n175
+      claim: s(175) <= 13.767119024199, certificates/n175.cert at 337078c, which the issue does not
+        name; the author asks for it to be imported.
+      source: https://github.com/jlevy/squares/issues/506#issuecomment-6173333473
+      register:
+      - T-185
+      evidence:
+      - E-couzo-506-n175-report
     beads:
     - think-om5l
     - think-720n
+    - think-9fjl
     answer_bead: think-om5l
     replies:
     - url: https://github.com/jlevy/squares/issues/506#issuecomment-6130063939
@@ -5889,6 +5898,12 @@ issues:
       Layer 6 marks that statement `outdated` on the final reply: the certificate stays in the
       packet, unregistered unless the author asks, and T-158 is the house at 175, 2.94e-03 below
       it, so the follow-up is due once layer 6 is on main.
+
+      The correction of 14 October asked, and the author answered at 16:38Z the same day, "sure,
+      import it". Under the per-count rule the certificate, first committed at
+      2026-10-11T03:39:54Z, was decidably below every earlier report at 175, so the records pull
+      request of 15 October registers it as T-185 (think-9fjl), superseded from registration by
+      T-158. The issue stays closed; a reply naming T-185 follows the merge.
   - number: 557
     title: Intake on optimality proof of n=18
     author: jlevy
@@ -6413,8 +6428,8 @@ issues:
       a packing the record holds or has pending, and found no blocking defect. Registered as
       T-158 at V3/C3 and adopted as the house at all three counts on 12 October 2026. Each side
       is below its case's earlier ceiling and every other report at its count:
-      by 2.95e-03 at 175 (T-140, and Francisco Couzo's unregistered 337078c certificate,
-      think-9fjl, by 2.94e-03), 3.25e-03 at 232 (T-136) and 3.44e-03 at 264 (the catalogue's
+      by 2.95e-03 at 175 (T-140, and Francisco Couzo's 337078c certificate, which the record
+      registers as T-185, by 2.94e-03), 3.25e-03 at 232 (T-136) and 3.44e-03 at 264 (the catalogue's
       Goebel pattern, T-101). The issue also restates issue 501's sides at the same commit, which
       are the c3d17ab certificates T-149 already carries, and states AI assistance: AI agents
       wrote and ran the search, composition and verification code in a research loop the author
@@ -6491,16 +6506,16 @@ issues:
     summary: >-
       Rio Calle (University of New Hampshire) reports a packing of 102 squares at s =
       10.605828696455852 in riocalle/my-repo at 831368623f2d4dcef2e9434fd85c3e154083c97d, a decimal
-      layout of ry-xu's design (T-125) found independently about ten hours after ry-xu's, with a
+      layout of Ryan Xu's design (T-125) found independently about ten hours after Xu's, with a
       60-digit decimal checker; the author's exact certificate comes from a private engine. The
       tree states no licence, so the riocalle-n102-2026-10-12 packet keeps digests and an exact
       certificate derived here from the layout, every decimal as printed and each tan(theta/2)
       rounded down at 40 places; it passed both maintained exact routes with its controls, with
       least wall and pair clearances 2.00e-12 and 1.93e-12, as the issue states, and the review
       of 12 October decided it again by a third exact route, derived it again from the layout at
-      the pin, measured it as another arrangement of ry-xu's design and found no blocking
+      the pin, measured it as another arrangement of Xu's design and found no blocking
       defect. Registered as T-159 at V3/C3, dated 11 October by the source. The side is below
-      T-125 by 5.48e-11, as the issue says, but above Evan Daniel's regularization of ry-xu's
+      T-125 by 5.48e-11, as the issue says, but above Evan Daniel's regularization of Ryan Xu's
       packing (T-146, registered 10 October and the case's house since 11 October) by 2.43e-11,
       so it moves no case and T-159 is superseded by T-146 on arrival. Claude assistance
       disclosed. Credit name Rio Calle; no Twitter/X handle is listed on the author's GitHub
@@ -6559,7 +6574,7 @@ issues:
       - result: valley-bottom
       - result: earlier-layout
       - result: private-certificate
-    close_when: The import and its disposition are on main, the credit relation to ry-xu's
+    close_when: The import and its disposition are on main, the credit relation to Ryan Xu's
       packing is measured and stated, and the resulting state has been posted; optimality and
       the author's private certificate are outside this request.
   - number: 532
@@ -6856,7 +6871,7 @@ issues:
       review-2026-10-11-lean-backed-rungs.md), none of which moves a rung; held until the reviews
       are on main and the owner rules on RR-1's wording. It tracks project work, not the intake
       of a reported item.
-    read_through: '2026-10-12T07:51:12Z'
+    read_through: '2026-10-14T10:47:20Z'
     results: []
     asks:
     - what: Each record and tool change the two reviews propose, on main or recorded as declined.
@@ -6867,7 +6882,23 @@ issues:
     - think-18b8
     - think-66e5
     answer_bead: think-npvi
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/542#issuecomment-6165937906
+      date: '2026-10-14'
+      by: jlevy
+      kind: follow-up
+      reported: []
+    - url: https://github.com/jlevy/squares/issues/542#issuecomment-6166610508
+      date: '2026-10-14'
+      by: jlevy
+      kind: follow-up
+      reported: []
+    notes: >-
+      The follow-ups of 14 October: the first updates the list from the round-1 reviews of #563
+      (RR-9 done, RR-1's date at T-146, section 8's distinct-reviewer question); the second says
+      both reviews are on main since #563 merged, that RR-2 to RR-7 and LR-7 can be applied as
+      they stand, and that RR-1's wording and section 8 still wait on the owner's ruling,
+      tracked on #543.
     close_when: Each item is on main or recorded as declined, and check_results and packing-validate
       --records pass.
   - number: 543
@@ -6883,7 +6914,7 @@ issues:
       claims (D1 to D6), the significance policy paragraph and three scored pairs, the lower-bound
       replays' retention and control tolerance (#532), and the results-page overview. It tracks
       decisions, not the intake of a reported item.
-    read_through: '2026-10-12T07:52:30Z'
+    read_through: '2026-10-14T10:29:41Z'
     results: []
     asks:
     - what: The owner's decisions listed on the issue, each recorded with its bead.
@@ -6899,9 +6930,26 @@ issues:
     - think-r333
     - think-2z22
     - think-8spq
+    - think-xnj5
     answer_bead: think-mq0k
-    replies: []
+    replies:
+    - url: https://github.com/jlevy/squares/issues/543#issuecomment-6165938456
+      date: '2026-10-14'
+      by: jlevy
+      kind: follow-up
+      reported: []
+    - url: https://github.com/jlevy/squares/issues/543#issuecomment-6166305101
+      date: '2026-10-14'
+      by: jlevy
+      kind: follow-up
+      reported: []
     close_when: Every decision on the issue is recorded, in the record or in its bead.
+    notes: >-
+      The follow-ups of 14 October: the first updates the significance policy paragraph, the
+      credit alias and RR-1 from the round-1 reviews of #563 (think-7j5d gives the three scores
+      a reviewing lane); the second adds one decision from the 12 October intake, whether to
+      keep T-159 (#529, Rio Calle at 102), which the per-count rule would not record
+      (think-xnj5). T-159 stays until the owner decides.
   - number: 544
     title: 'Intake pass of 2026-10-11: remaining work'
     author: jlevy
@@ -6981,6 +7029,67 @@ issues:
     replies: []
     close_when: Both reports are recorded on main, and the replay and review are either run or
       priced with an owner decision.
+  - number: 550
+    title: "test_site_homepage: the toggle_seen fixture's theme menu choice stays hidden under CI load"
+    author: jlevy
+    opened: '2026-10-12'
+    state: open
+    kind: other
+    triage: done
+    summary: >-
+      A test-flake bug the project opened on #547's head: the module-scoped toggle_seen fixture
+      in packing/tests/test_site_homepage.py waited 30 s for the theme menu's system choice,
+      which stayed hidden under CI load, and a re-run passed. It asks for the fixture to wait
+      on the menu's own state. It tracks project work, not the intake of a reported item, and
+      reports no result.
+    read_through: '2026-10-12T12:50:01Z'
+    results: []
+    asks:
+    - what: The fixture waits on the theme menu's own state, without a longer timeout or a skip,
+        and the module passes repeatedly under load.
+      state: queued
+      bead: think-mvsm
+    beads:
+    - think-mvsm
+    answer_bead: think-mvsm
+    replies: []
+    close_when: The fixture waits on the menu's own state and the module passes repeatedly under
+      load, as the issue's done-when says.
+    notes: >-
+      The project opened this issue; it reports no result, and no acknowledgement is owed on
+      it. `check_requests` still lists an acknowledgement as due, because the record has no
+      state for an issue its owner opened (think-abcm).
+  - number: 554
+    title: 'Workbench colourer: one colour per angle class across the atlas, not fixed five-degree bands'
+    author: jlevy
+    opened: '2026-10-12'
+    state: open
+    kind: other
+    triage: done
+    summary: >-
+      An enhancement the project opened from #553's senior review (C1): the workbench colourer
+      assigns palette slots from fixed five-degree bands, so two angle classes 0.35 degrees apart
+      across the 65-degree edge, at n = 272 and n = 29, draw in different colours. It asks for
+      slots from class centres shared across the atlas. It tracks project work, not the intake
+      of a reported item, and reports no result.
+    read_through: '2026-10-12T15:37:05Z'
+    results: []
+    asks:
+    - what: The colourer derives slots from shared atlas-wide class centres, the animate-view
+        contract's core check holds exact slots again, and the workbench browser behaviour step
+        passes.
+      state: queued
+      bead: think-9xhw
+    beads:
+    - think-9xhw
+    answer_bead: think-9xhw
+    replies: []
+    close_when: The colourer derives slots from shared centres and the animate-view contract's core
+      check holds exact slots again, as the issue's done-when says.
+    notes: >-
+      The project opened this issue; it reports no result, and no acknowledgement is owed on
+      it. `check_requests` still lists an acknowledgement as due, because the record has no
+      state for an issue its owner opened (think-abcm).
   - number: 552
     title: 'New packing: s(154) ≤ 12.92256640193406: registration request'
     author: evand
@@ -8074,7 +8183,6 @@ issues:
         id: E-mishapolk-593-certificate-report
         status: recorded
       - result: ties-211-241
-      - result: other-70
       corrects:
       - https://github.com/jlevy/squares/issues/593#issuecomment-6163849805
     close_when: The import and its disposition are on main, the owner has posted the resulting state with
@@ -8249,9 +8357,38 @@ issues:
         status: confirmed
       corrects:
       - https://github.com/jlevy/squares/issues/600#issuecomment-6167331402
+      outdated:
+      - 'E-wand125-closed-form-cfcheck-sample, confirmed: a sample is never called confirmed
+        (epistemics.md); it is recorded, 2,909 of 187,183,108 leaves replayed here'
+      - 'V0 because no record has been replayed here: two of the 136 records have since been replayed
+        here as a calibration (E-wand125-closed-form-replay4d-sample), a sample that moves no rung'
+    - url: https://github.com/jlevy/squares/issues/600#issuecomment-6181480533
+      date: '2026-10-15'
+      by: jlevy
+      kind: follow-up
+      reported:
+      - result: closed-form
+        id: T-180
+        verification: V0
+        confirmation: C1
+        status: reviewed
+      - result: closed-form
+        id: E-wand125-closed-form-cfcheck-sample
+        status: recorded
+      - result: closed-form
+        id: E-wand125-closed-form-replay4d-sample
+        status: recorded
+      corrects:
+      - https://github.com/jlevy/squares/issues/600#issuecomment-6179773241
     close_when: The import and its disposition are on main, the owner has posted the resulting state with
       each recorded count's id, and the review and replay that would confirm each V0 entry are owned by
       its bead; optimality is outside this request.
+    notes: >-
+      The follow-up of 15 October corrects the reply of 14 October on two statements, now marked
+      outdated there: it gives the cfcheck sample as recorded, 2,909 of 187,183,108 leaves, and the
+      replay4d calibration as a second sample, 2 of 136 region records. It prices the complete
+      replay4d replay at about 5,250 CPU-hours on this host, held over the owner's 40 CPU-hour cap
+      for each validation item (think-wu73).
   - number: 603
     title: 's(n² − n + 1) < n for every n ≥ 15, and the F(n) excess (Kevin Fang): tracking an unreported
       result'
@@ -8299,3 +8436,40 @@ issues:
     close_when: The import and its disposition are on main, the owner has posted the resulting state with
       the entry's id, and the review and replay that would raise its rungs are owned by its bead; optimality
       is outside this request.
+  - number: 606
+    title: 's(146) ≤ 12.583782190152: registration request'
+    author: evand
+    opened: '2026-10-14'
+    state: open
+    kind: result-report
+    triage: done
+    summary: Evan Daniel reports s(146) <= 12.583782190152, the exact rational side
+      12583782190151860342292508597077/10^30 of tt2_n146.cert at evand/square-packing e006ce6, found by
+      his chain search started from Ryan Xu's issue 432 packing and 1.38e-8 below Robert Barnett's issue
+      505 refinement, the case's ceiling. Imported on 14 October 2026 in the evand-n146-2026-10-14 packet
+      and replayed on both maintained exact routes with both controls refused; a new packing, not a
+      refinement of issue 505's, by the source's word and a measurement here. Registered as T-187 at
+      V0/C0. Claude assistance disclosed.
+    read_through: '2026-10-14T21:51:24Z'
+    results:
+    - key: n146
+      claim: s(146) <= 12.583782190152, the exact rational side of tt2_n146.cert rounded up at 12 places.
+      source: body
+      register:
+      - T-187
+      evidence:
+      - E-evand-606-n146-report
+    - key: distinct-local-minimum
+      claim: A different local minimum from issue 505's, KKT and strict modulo 59 exact flat motions, with
+        no corner-corner MILP descent, by numerical evidence at 80 digits.
+      source: body
+      not_registered: Numerical evidence of local optimality and of distinctness, not a bound on s(n);
+        recorded as reported in T-187's claim and not checked here.
+      queued: false
+    beads:
+    - think-rvv7
+    answer_bead: think-rvv7
+    replies: []
+    close_when: The import and its disposition are on main, the owner has posted the resulting state with
+      the entry's id, and the review and replay that would confirm the V0 entry are owned by its bead;
+      optimality is outside this request.
