@@ -1499,11 +1499,12 @@ def root_files() -> tuple[Path, ...]:
 # saves 14,082,212 of the 14,415,037.
 #
 # `--audit-snapshot` read 226,344,073 bytes on main 6964362b5, 148,343 under the cap, and
-# reads 212,287,522 on this branch, 14,204,894 under it, with 25,661 of the branch's own
+# reads 212,288,610 on this branch, 14,203,806 under it, with 26,749 of the branch's own
 # code, tests and comments counted. All 174 controls fire at `-j 3`.
 # `run_negative_controls --baseline` ran each of the 50 distinct registered commands
 # unmutated in a worker before and after, and each printed the same apart from wall
-# times, the four already red included (the full suite, `validate_schemas`, the
+# times (one re-run alone after the shared host's load timed it out), the four already
+# red included (the full suite, `validate_schemas`, the
 # operating-rules append script and `test_change_scoped_selection`). `check_documentation`,
 # which no control runs, was red in a worker before (270 distinct lines) and loses none
 # after; it adds 380, the dead links to all 225 dropped files the documents link and 18
