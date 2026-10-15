@@ -429,7 +429,11 @@ def _sources() -> dict[str, Source]:
         packet_source("T-158", "dostashev-records-2026-10-12"),
         packet_source("T-160", "evand-n154-2026-10-12"),
     ]
-    return {source.key: source for source in sources}
+    found = {source.result: source for source in sources}
+    # Two results may read one packet (T-181 and T-182 both read issue 586's), so the
+    # sources are keyed by result, not by source key.
+    _require(len(found) == len(sources), "one house source per result")
+    return found
 
 
 #: The house this adoption gave each count, by the register result whose certificate it is.
@@ -510,15 +514,15 @@ def adopted_on(n: int) -> str:
 
 @cache
 def sources() -> dict[str, Source]:
-    """Each adopted result's source, by source key, built once."""
+    """Each adopted result's source, by result, built once."""
     return _sources()
 
 
 def source_for(n: int) -> Source:
     _require(type(n) is int and n in ADOPTED, f"n={n}: not a count this adoption houses")
-    found = [source for source in sources().values() if source.result == ADOPTED[n]]
-    _require(len(found) == 1, f"n={n}: {ADOPTED[n]} has no house source")
-    return found[0]
+    found = sources().get(ADOPTED[n])
+    _require(found is not None, f"n={n}: {ADOPTED[n]} has no house source")
+    return cast("Source", found)
 
 
 def source_keys() -> frozenset[str]:
@@ -527,6 +531,11 @@ def source_keys() -> frozenset[str]:
 
 def numbers_for(key: str) -> tuple[int, ...]:
     return tuple(n for n in NUMBERS if source_for(n).key == key)
+
+
+def numbers_of(result: str) -> tuple[int, ...]:
+    """The counts one adopted result houses."""
+    return tuple(n for n in NUMBERS if ADOPTED[n] == result)
 
 
 def house_path(n: int) -> Path:
@@ -728,7 +737,7 @@ def worker_custody() -> dict[str, Any]:
         _require(path.is_file() and not path.is_symlink(), f"{path}: not an ordinary file")
     check_houses()
     refused = []
-    for n in sorted({min(numbers_for(key)) for key in source_keys()}):
+    for n in sorted({min(numbers_of(result)) for result in sources()}):
         for name, path, mutate in _mutants(n):
             original = path.read_bytes()
             try:

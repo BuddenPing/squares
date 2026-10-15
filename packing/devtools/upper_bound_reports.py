@@ -1307,6 +1307,14 @@ HOUSES: dict[str, Callable[[int], Fraction]] = {
 }
 
 
+def import_packet(reader: str) -> Path | None:
+    """The import packet a house reader reads its sides from, or None for another reader."""
+    function = HOUSES.get(reader)
+    if isinstance(function, functools.partial) and function.func is import_side:
+        return packet_path(str(function.args[0]))
+    return None
+
+
 def house_side(reader: str, n: int) -> Fraction:
     _require(reader in HOUSES, f"no reader for {reader}")
     try:

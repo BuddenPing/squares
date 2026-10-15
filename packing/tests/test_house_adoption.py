@@ -173,6 +173,132 @@ def test_a_candidate_below_an_algebraic_ceilings_display_is_left_to_a_human(
     assert "undecided" in select.table({7: held}, everything=False)
 
 
+def test_an_entry_over_two_sources_reads_each_count_where_its_report_states_it(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """T-181 states 211 and 241 from issue 583's revision and 302 from issue 586's."""
+    entry, evidence = _confirmed_entry()
+    entry = {
+        **entry,
+        "scope": {"n_values": [7, 8]},
+        "attribution": {"source_keys": ["[first]", "[second]"], "published": "2026-10-10"},
+        "evidence": ["E-first", "E-second", "E-test-replay"],
+    }
+    evidence = {
+        **evidence,
+        "E-first": {
+            "assurance": "reported",
+            "source_key": "[first]",
+            "scope": {"n_values": [7]},
+        },
+        "E-second": {
+            "assurance": "reported",
+            "source_key": "[second]",
+            "scope": {"n_values": [7, 8]},
+        },
+    }
+    sides = {("[first]", 7): Fraction(3), ("[second]", 8): Fraction(4)}
+    monkeypatch.setitem(select.reports.HOUSES, "[first]", lambda _n: Fraction(3))
+    monkeypatch.setitem(select.reports.HOUSES, "[second]", lambda _n: Fraction(4))
+    monkeypatch.setattr(select, "_side", lambda key, n: sides[key, n])
+    assert select.source_key_at(entry, evidence, 7) == "[first]"
+    assert select.source_key_at(entry, evidence, 8) == "[second]"
+    assert select.source_key_at(entry, evidence, 9) == ""
+    unread: list[str] = []
+    found = select.candidates([entry], evidence, unread=unread)
+    assert [(c.source_key, c.side, c.report_evidence) for c in found[7]] == [
+        ("[first]", Fraction(3), ("E-first",))
+    ]
+    assert [(c.source_key, c.side) for c in found[8]] == [("[second]", Fraction(4))]
+    assert unread == []
+    # A count no report of the entry states has no reader: the entry is named unread.
+    unstated = {**entry, "scope": {"n_values": [7, 9]}}
+    select.candidates([unstated], evidence, unread=unread)
+    assert unread == ["T-900"]
+
+
+def test_the_two_couzo_entries_from_one_packet_each_keep_their_house_source() -> None:
+    """T-181 and T-182 both read issue 586's packet; keyed by result, neither is lost."""
+    by_result = houses.sources()
+    assert all(result == source.result for result, source in by_result.items())
+    keys = [source.key for source in by_result.values()]
+    for n in houses.NUMBERS:
+        assert houses.source_for(n).result == houses.ADOPTED[n]
+    shared = {key for key in keys if keys.count(key) > 1}
+    assert all(
+        len({s.result for s in by_result.values() if s.key == key}) > 1 for key in shared
+    )
+
+
+def test_an_algebraic_count_is_left_out_of_the_selection_and_named(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """PR #574's sides at 70, 153, 207 and 302 are roots of integer polynomials, decided
+    on one route; no house reader rebuilds them, and the selection leaves them out
+    rather than failing to read them."""
+    key = "[PingYou PR 574 certificates 2026-10-13]"
+    counts = select.algebraic_counts(key)
+    assert {70, 153, 207, 302} <= counts
+    assert not {68, 105, 211, 304} & counts
+    assert select.algebraic_counts("[Couzo certificates 2026-10-13]") == frozenset()
+    entry, evidence = _confirmed_entry()
+    entry = {
+        **entry,
+        "scope": {"n_values": [68, 70]},
+        "attribution": {"source_keys": [key], "published": "2026-10-13"},
+    }
+
+    def side(_key: str, n: int) -> Fraction:
+        assert n == 68, "an algebraic count was read"
+        return Fraction(9)
+
+    monkeypatch.setattr(select, "_side", side)
+    algebraic: list[tuple[str, int]] = []
+    found = select.candidates([entry], evidence, algebraic=algebraic)
+    assert sorted(found) == [68]
+    assert algebraic == [("T-900", 70)]
+
+
+def test_a_held_result_keeps_its_counts_at_their_case_and_says_so(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """Where a held result is best, the case stays though another candidate is below it,
+    and `--check` reports the count as held rather than failing on it."""
+    entry, evidence = _confirmed_entry()
+    other = {
+        **entry,
+        "id": "T-901",
+        "attribution": {"source_keys": ["[other]"], "published": "2026-10-09"},
+        "reviews": [{"verdict": "accepted", "covers": ["T-901"]}],
+    }
+    sides = {"[test]": Fraction(3), "[other]": Fraction(7, 2)}
+    monkeypatch.setitem(select.reports.HOUSES, "[test]", lambda _n: Fraction(3))
+    monkeypatch.setitem(select.reports.HOUSES, "[other]", lambda _n: Fraction(7, 2))
+    monkeypatch.setattr(select, "_side", lambda key, _n: sides[key])
+    case = select.Case(
+        n=7, verified=Fraction(4), reported=Fraction(4), source_key="", evidence=()
+    )
+    held = select.select([entry, other], evidence, cases={7: case}, held={"T-900": "why"})[7]
+    assert held.held
+    assert held.house is None
+    assert not held.moves
+    assert [c.result for c in held.candidates] == ["T-900", "T-901"]
+    assert "(held)" in select.table({7: held}, everything=False)
+    free = select.select([entry, other], evidence, cases={7: case}, held={})[7]
+    assert free.house is not None
+    assert free.house.result == "T-900"
+    assert not free.held
+    monkeypatch.setattr(select, "select", lambda **_arguments: {7: held})
+    monkeypatch.setattr(select, "unread_pending", lambda _unread: {})
+    assert select.main(["--check"]) == 0
+    assert "held for the owner (T-900): n = [7]" in capsys.readouterr().out
+
+
+def test_the_held_results_are_named_with_why() -> None:
+    assert set(select.HELD) == {"T-174"}
+    assert all(reason.strip() for reason in select.HELD.values())
+
+
 def test_no_unread_eligible_entry_is_pending_adoption() -> None:
     """An eligible entry with no exact reader is never a candidate, so `--check` reads its
     standing instead: one that states a side below its case would be an adoption the
@@ -257,7 +383,7 @@ def test_the_receipt_of_the_custody_run_names_every_input_and_house() -> None:
     for row in receipt["inputs"]:
         raw = (houses.REPO / row["path"]).read_bytes()
         assert (row["bytes"], row["sha256"]) == (len(raw), hashlib.sha256(raw).hexdigest())
-    assert len(receipt["mutations_refused_and_restored"]) == 2 * len(houses.source_keys())
+    assert len(receipt["mutations_refused_and_restored"]) == 2 * len(houses.sources())
     assert receipt["fresh_geometric_deciders"] is False
 
 
