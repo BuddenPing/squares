@@ -1250,8 +1250,15 @@ V3/C3 on the
 [review of 12 October](../../docs/project/reviews/review-2026-10-11-upper-bound-imports-506.md),
 and the cases at 304 and 305 hold them as the house since 12 October 2026. The nine
 sides beyond the case corpus are verified beyond-horizon rows that supersede the rows
-tracked at 338, 339, 344, 375, 376, 378 and 379; the four certificates the issue does
-not name, at 175, 308, 340 and 343, are registered nowhere.
+tracked at 338, 339, 344, 375, 376, 378 and 379. Of the four certificates the issue does
+not name, 175 has a key of its own, below; 308, 340 and 343 are registered nowhere.
+Claude assistance disclosed.
+
+**[Couzo n175 2026-10-11]**: Francisco Couzo’s exact rational certificate for n = 175 in
+the same release, which #506 does not name;
+[packet](web/couzo-certificates-2026-10-11/README.md).
+T-185 records it at V0/C0, at the author’s request of 14 October 2026, superseded by
+T-158; the source’s standing table says it was seeded from Ryan Xu.
 Claude assistance disclosed.
 
 ## Evan Daniel’s regularizer, vendored 11 October 2026
@@ -1529,6 +1536,29 @@ as the source wrote them; [packet](web/evand-fresh-compositions-2026-10-14/READM
 Both project exact routes accept all 3 replayed certificates and refuse all 6 controls.
 The n = 365, 370 and 460 sides lie beyond the case corpus and are tracked as
 beyond-horizon rows.
+
+## The Evening Intake of 14 October 2026
+
+The two packets of the evening intake lane, registered in report order on 15 October as
+T-186 and T-187, after Francisco Couzo’s 175 (T-185, above).
+
+**[Mishapolk KKT refinements 2026-10-14]**: Mykhailo Polkovskyi’s exact rational
+certificates for n = 129, 154, 156, 175, 176, 204, 232, 264, 271, 302, 303 and 304,
+pinned at `70a033f0ecfa9e643cd5fb5dbac190cb7f4ffb94`, kept as derived exact facts, no
+upstream byte retained; [packet](web/mishapolk-kkt-refinements-2026-10-14/README.md).
+Both project exact routes accept all 24 replayed certificates and refuse all 48
+controls. T-186 records the twelve in-horizon sides below every earlier report at their
+counts at V0/C0, each a measured refinement of the certificate it tightens, pending
+independent review and adoption; at the commit’s other twelve counts PR #574’s
+certificates are smaller, and they are not recorded.
+
+**[Daniel n146 2026-10-14]**: Evan Daniel’s exact rational certificate for n = 146,
+pinned at `e006ce6230f2240457b083199755a3a5d287692c`, retained as the source wrote it;
+[packet](web/evand-n146-2026-10-14/README.md).
+Both project exact routes accept the 1 replayed certificate and refuse both controls.
+T-187 records the side, a new packing below every report at 146, at V0/C0, pending
+independent review and adoption.
+Claude assistance disclosed.
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.

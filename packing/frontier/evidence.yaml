@@ -28803,7 +28803,7 @@ evidence:
       into each rational input; no further dilation or rounding is applied. Rational n51 is separate
       from the selected undilated radical witness. Complete source/result/house binding, private-worker
       copied inputs, mutation refusals, producer guards and original-frontier recovery were independently
-      reviewed. Offline admission is not a fresh deciding replay. Issue 432 reports that ry-xu''s own
+      reviewed. Offline admission is not a fresh deciding replay. Issue 432 reports that Ryan Xu''s own
       checks ran this repository''s sqpack at 84881f2 (packing-witness check, promote and verify, the
       last VERIFIED for all 25), so the sqpack exact_verify route reproduces with the producer''s
       checker; the independent rational-corner checker decides apart
@@ -31583,8 +31583,9 @@ evidence:
       describe this certificate (RY-2). The author reports passes from Evan Daniel's
       verify_cert.py and a copy of this repository's sqpack verifier; neither was run here,
       and the KKT statement is not checked. The same two commits hold four certificates the
-      issue does not name, at 175, 308, 340 and 343, replayed and compared in the packet and
-      registered by no entry (RY-10), and leave 53 byte-identical to the issue-476 and
+      issue does not name, at 175, 308, 340 and 343, replayed and compared in the packet
+      (RY-10); 175 is recorded at its author's request in E-couzo-506-n175-report, and the
+      other three by no entry. The two commits leave 53 byte-identical to the issue-476 and
       issue-488 packets' copies. The issue states that the search code and the request were
       written with Claude (Claude Code), directed and reviewed by the author. The repository
       replay and its review are E-couzo-506-exact-feasibility. No optimality is claimed.
@@ -36472,10 +36473,86 @@ evidence:
       Run here on 14 October 2026 from the retained crates, replay4d 0.1.0 (source hash
       92002e0e...), rustc 1.86.0, one thread per record, B3_PLAIN_RF unset, on four cores
       shared with other agents. Interval 26 [0.495, 0.5] top (4,158 roots, 32,828 leaves)
-      and interval 14 [0.435, 0.44] top (3,861 roots, 91,343 leaves), the two smallest of the
-      136 records, each REPLAY OK with the family digest, record digest, roots and leaves
+      and interval 14 [0.435, 0.44] top (3,861 roots, 91,343 leaves), the two of the 136
+      records cheapest by the source's CPU time, 0.27 and 0.28 CPU-hours (not the fewest
+      leaves), each REPLAY OK with the family digest, record digest, roots and leaves
       of every kind of intervals.json, in 1,178.9 and 1,241.7 CPU-seconds. The first two
       roots alone and a leaf relabelled from CORE1:Tx to CORE were refused. The producer's
       own code re-run on 124,171 of the certificate's 187,183,108 leaves; a sample decides the
       records it replayed and nothing about the others, and it sets no rung.
     source_reviewed: '2026-10-14'
+  - id: E-couzo-506-n175-report
+    claim: upper-bound
+    scope: {n_values: [175]}
+    assurance: reported
+    reported_method: exact-algebraic
+    performed_by: source-author
+    relationship_to_generator: same-implementation
+    origin: external
+    novelty: previously-published
+    source_key: '[Couzo n175 2026-10-11]'
+    certificate: packing/resources/web/couzo-certificates-2026-10-11/source/certificates/
+    replay_status: not-attempted
+    verifiers: []
+    source_reviewed: '2026-10-15'
+    limitations: >-
+      This atom records the source author's certificate at 175 at 337078c, which issue 506
+      does not name and its author asked on 14 October 2026 to import. The packet's complete
+      repository replay of it, 3 jobs on both maintained routes, is retained in
+      receipts/exact-certification.json.xz and shared with E-couzo-506-exact-feasibility;
+      that entry's scope does not include 175. Independent review and confirmation remain
+      pending. The source's own checkers were not run here.
+  - id: E-mishapolk-70a033f-certificate-report
+    claim: upper-bound
+    scope: {n_values: [129, 154, 156, 175, 176, 204, 232, 264, 271, 302, 303, 304]}
+    assurance: reported
+    reported_method: exact-algebraic
+    performed_by: source-author
+    relationship_to_generator: same-implementation
+    origin: external
+    novelty: previously-published
+    source_key: '[Mishapolk KKT refinements 2026-10-14]'
+    certificate: packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/
+    replay_status: not-attempted
+    verifiers: []
+    source_reviewed: '2026-10-15'
+    limitations: >-
+      This atom records the source author's report of 12 exact rational certificates at
+      70a033f. A separate complete repository replay is retained for n = 129, 153, 154, 155,
+      156, 175, 176, 181, 204, 207, 209, 232, 264, 267, 270, 271, 272, 302, 303, 304, 305,
+      306, 307 and 308: 24 positives and 48 duplicate-square and outside-container controls
+      passed their required outcomes on both routes, 4186086 pair decisions; summed over the
+      72 jobs, the receipt records 2167.9 route CPU seconds and 2194.11 job wall seconds,
+      the longest job 78.28 seconds. Every positive clears every wall by at least 5.00e-101
+      and every pair by at least 9.99e-101. Independent review and confirmation remain
+      pending. The source's own checkers were not run here. The two maintained routes, the
+      sqpack rational witness verifier and the independent rational corner checker, share
+      certificate parsing, half-angle conversion, Fraction arithmetic and the
+      separating-axis method. No two independent methods, human oversight or optimality is
+      claimed.
+  - id: E-evand-606-n146-report
+    claim: upper-bound
+    scope: {n_values: [146]}
+    assurance: reported
+    reported_method: exact-algebraic
+    performed_by: source-author
+    relationship_to_generator: same-implementation
+    origin: external
+    novelty: previously-published
+    source_key: '[Daniel n146 2026-10-14]'
+    certificate: packing/resources/web/evand-n146-2026-10-14/source/search/packer/candidates/
+    replay_status: not-attempted
+    verifiers: []
+    source_reviewed: '2026-10-15'
+    limitations: >-
+      This atom records the source author's report of 1 exact rational certificate at
+      e006ce6. A separate complete repository replay is retained for n = 146: 1 positive and
+      2 duplicate-square and outside-container controls passed their required outcomes on
+      both routes, 63510 pair decisions; summed over the 3 jobs, the receipt records 21.14
+      route CPU seconds and 21.33 job wall seconds, the longest job 7.24 seconds. Every
+      positive clears every wall by at least 5.00e-21 and every pair by at least 9.99e-21.
+      Independent review and confirmation remain pending. The source's own checkers were not
+      run here. The two maintained routes, the sqpack rational witness verifier and the
+      independent rational corner checker, share certificate parsing, half-angle conversion,
+      Fraction arithmetic and the separating-axis method. No two independent methods, human
+      oversight or optimality is claimed.

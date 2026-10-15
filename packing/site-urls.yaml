@@ -4106,7 +4106,7 @@ urls:
   generator: devtools.render_case_pages:case_records
   producer: overview
   first_published: '2026-10-03'
-  lastmod: '2026-10-14'
+  lastmod: '2026-10-15'
   status: live
 - path: cases/176.html
   canonical: cases/176.html
@@ -4618,7 +4618,7 @@ urls:
   generator: devtools.render_case_pages:case_records
   producer: overview
   first_published: '2026-10-03'
-  lastmod: '2026-10-14'
+  lastmod: '2026-10-15'
   status: live
 - path: cases/233.html
   canonical: cases/233.html
@@ -4898,7 +4898,7 @@ urls:
   generator: devtools.render_case_pages:case_records
   producer: overview
   first_published: '2026-10-03'
-  lastmod: '2026-10-14'
+  lastmod: '2026-10-15'
   status: live
 - path: cases/265.html
   canonical: cases/265.html
@@ -13545,7 +13545,8 @@ urls:
   - date: '2026-10-15'
     reason: 'The 14 October review accepts the retained replay: the result rises to V3/C3 and cites
       its confirming evidence (E-couzo-561-exact-feasibility), with the third route and the review
-      among its artifacts; the bound, scope and attribution are unchanged.'
+      among its artifacts, and its claim says how the house adoption of 15 October 2026 stands at
+      its counts; the bound, scope and attribution are unchanged.'
     previous:
       kind: upper-bound
       scope:
@@ -13607,7 +13608,8 @@ urls:
   - date: '2026-10-15'
     reason: 'The 14 October review accepts the retained replay: the result rises to V3/C3 and cites
       its confirming evidence (E-ostashev-562-exact-feasibility), with the third route and the review
-      among its artifacts; the bound, scope and attribution are unchanged.'
+      among its artifacts, and its claim says how the house adoption of 15 October 2026 stands at
+      its counts; the bound, scope and attribution are unchanged.'
     previous:
       kind: upper-bound
       scope:
@@ -13701,7 +13703,8 @@ urls:
   - date: '2026-10-15'
     reason: 'The 14 October review accepts the retained replay: the result rises to V3/C3 and cites
       its confirming evidence (E-pingyou-564-exact-feasibility), with the third route and the review
-      among its artifacts; the bound, scope and attribution are unchanged.'
+      among its artifacts, and its claim says how the house adoption of 15 October 2026 stands at
+      its counts; the bound, scope and attribution are unchanged.'
     previous:
       kind: upper-bound
       scope:
@@ -13753,7 +13756,8 @@ urls:
   - date: '2026-10-15'
     reason: 'The 14 October review accepts the retained replay: the result rises to V3/C3 and cites
       its confirming evidence (E-couzo-586-exact-feasibility), with the third route and the review
-      among its artifacts; the bound, scope and attribution are unchanged.'
+      among its artifacts, and its claim says how the house adoption of 15 October 2026 stands at
+      its counts; the bound, scope and attribution are unchanged.'
     previous:
       kind: upper-bound
       scope:
@@ -13805,7 +13809,8 @@ urls:
   - date: '2026-10-15'
     reason: 'The 14 October review accepts the retained replay: the result rises to V3/C3 and cites
       its confirming evidence (E-pingyou-504-refinement-exact-feasibility), with the third route and
-      the review among its artifacts; the bound, scope and attribution are unchanged.'
+      the review among its artifacts, and its claim says how the house adoption of 15 October 2026
+      stands at its counts; the bound, scope and attribution are unchanged.'
     previous:
       kind: upper-bound
       scope:
@@ -13857,7 +13862,8 @@ urls:
   - date: '2026-10-15'
     reason: 'The 14 October review accepts the retained replay: the result rises to V3/C3 and cites
       its confirming evidence (E-pingyou-503-refinement-exact-feasibility), with the third route and
-      the review among its artifacts; the bound, scope and attribution are unchanged.'
+      the review among its artifacts, and its claim says how the house adoption of 15 October 2026
+      stands at its counts; the bound, scope and attribution are unchanged.'
     previous:
       kind: upper-bound
       scope:
@@ -13909,7 +13915,8 @@ urls:
   - date: '2026-10-15'
     reason: 'The 14 October review accepts the retained replay: the result rises to V3/C3 and cites
       its confirming evidence (E-pingyou-566-exact-feasibility), with the third route and the review
-      among its artifacts; the bound, scope and attribution are unchanged.'
+      among its artifacts, and its claim says how the house adoption of 15 October 2026 stands at
+      its counts; the bound, scope and attribution are unchanged.'
     previous:
       kind: upper-bound
       scope:
@@ -13961,7 +13968,8 @@ urls:
   - date: '2026-10-15'
     reason: 'The 14 October review accepts the retained replay: the result rises to V3/C3 and cites
       its confirming evidence (E-pingyou-567-exact-feasibility), with the third route and the review
-      among its artifacts; the bound, scope and attribution are unchanged.'
+      among its artifacts, and its claim says how the house adoption of 15 October 2026 stands at
+      its counts; the bound, scope and attribution are unchanged.'
     previous:
       kind: upper-bound
       scope:
@@ -14013,7 +14021,8 @@ urls:
   - date: '2026-10-15'
     reason: 'The 14 October review accepts the retained replay: the result rises to V3/C3 and cites
       its confirming evidence (E-pingyou-568-exact-feasibility), with the third route and the review
-      among its artifacts; the bound, scope and attribution are unchanged.'
+      among its artifacts, and its claim says how the house adoption of 15 October 2026 stands at
+      its counts; the bound, scope and attribution are unchanged.'
     previous:
       kind: upper-bound
       scope:
@@ -14065,7 +14074,8 @@ urls:
   - date: '2026-10-15'
     reason: 'The 14 October review accepts the retained replay: the result rises to V3/C3 and cites
       its confirming evidence (E-pingyou-569-exact-feasibility), with the third route and the review
-      among its artifacts; the bound, scope and attribution are unchanged.'
+      among its artifacts, and its claim says how the house adoption of 15 October 2026 stands at
+      its counts; the bound, scope and attribution are unchanged.'
     previous:
       kind: upper-bound
       scope:
@@ -14117,7 +14127,8 @@ urls:
   - date: '2026-10-15'
     reason: 'The 14 October review accepts the retained replay: the result rises to V3/C3 and cites
       its confirming evidence (E-couzo-583-exact-feasibility), with the third route and the review
-      among its artifacts; the bound, scope and attribution are unchanged.'
+      among its artifacts, and its claim says how the house adoption of 15 October 2026 stands at
+      its counts; the bound, scope and attribution are unchanged.'
     previous:
       kind: upper-bound
       scope:
@@ -14171,7 +14182,8 @@ urls:
   - date: '2026-10-15'
     reason: 'The 14 October review accepts the retained replay: the result rises to V3/C3 and cites
       its confirming evidence (E-mishapolk-573-exact-feasibility), with the third route and the review
-      among its artifacts; the bound, scope and attribution are unchanged.'
+      among its artifacts, and its claim says how the house adoption of 15 October 2026 stands at
+      its counts; the bound, scope and attribution are unchanged.'
     previous:
       kind: upper-bound
       scope:
@@ -14394,8 +14406,8 @@ urls:
   - date: '2026-10-15'
     reason: 'The 14 October review accepts the retained replay: the result rises to V3/C3 and cites
       its confirming evidence (E-pingyou-574-exact-feasibility and E-pingyou-574-algebraic-feasibility),
-      with the third route and the review among its artifacts; the bound, scope and attribution are
-      unchanged.'
+      with the third route and the review among its artifacts, and its claim says how the house adoption
+      of 15 October 2026 stands at its counts; the bound, scope and attribution are unchanged.'
     previous:
       kind: upper-bound
       scope:
@@ -14525,7 +14537,8 @@ urls:
   - date: '2026-10-15'
     reason: 'The 14 October review accepts the retained replay: the result rises to V3/C3 and cites
       its confirming evidence (E-ostashev-575-exact-feasibility), with the third route and the review
-      among its artifacts; the bound, scope and attribution are unchanged.'
+      among its artifacts, and its claim says how the house adoption of 15 October 2026 stands at
+      its counts; the bound, scope and attribution are unchanged.'
     previous:
       kind: upper-bound
       scope:
@@ -15296,7 +15309,8 @@ urls:
   - date: '2026-10-15'
     reason: 'The 14 October review accepts the retained replay: the result rises to V3/C3 and cites
       its confirming evidence (E-couzo-583-exact-feasibility and E-couzo-586-exact-feasibility), with
-      the third route and the review among its artifacts; the bound, scope and attribution are unchanged.'
+      the third route and the review among its artifacts, and its claim says how the house adoption
+      of 15 October 2026 stands at its counts; the bound, scope and attribution are unchanged.'
     previous:
       kind: upper-bound
       scope:
@@ -15358,7 +15372,8 @@ urls:
   - date: '2026-10-15'
     reason: 'The 14 October review accepts the retained replay: the result rises to V3/C3 and cites
       its confirming evidence (E-couzo-586-exact-feasibility), with the third route and the review
-      among its artifacts; the bound, scope and attribution are unchanged.'
+      among its artifacts, and its claim says how the house adoption of 15 October 2026 stands at
+      its counts; the bound, scope and attribution are unchanged.'
     previous:
       kind: upper-bound
       scope:
@@ -15414,7 +15429,8 @@ urls:
   - date: '2026-10-15'
     reason: 'The 14 October review accepts the retained replay: the result rises to V3/C3 and cites
       its confirming evidence (E-mishapolk-593-exact-feasibility), with the third route and the review
-      among its artifacts; the bound, scope and attribution are unchanged.'
+      among its artifacts, and its claim says how the house adoption of 15 October 2026 stands at
+      its counts; the bound, scope and attribution are unchanged.'
     previous:
       kind: upper-bound
       scope:
@@ -15462,6 +15478,106 @@ urls:
     - packing/resources/web/bengreff-s76-certificate-2026-10-14/receipts/n76_cover_audit.json
     - packing/resources/web/bengreff-s76-certificate-2026-10-14/receipts/n76_zmx2_d4.log
     - packing/resources/web/bengreff-s76-certificate-2026-10-14/receipts/n76_triage_checks.log
+- path: result/t-185.html
+  canonical: result/t-185.html
+  kind: result
+  generator: devtools.render_overview:result_fragments
+  producer: overview
+  first_published: '2026-10-15'
+  lastmod: '2026-10-15'
+  status: live
+  identity:
+    kind: upper-bound
+    scope:
+      n_values:
+      - 175
+    established: null
+    attribution:
+      source_keys:
+      - '[Couzo n175 2026-10-11]'
+      published: '2026-10-11'
+    builds_on: null
+    evidence:
+    - E-couzo-506-n175-report
+    artifacts:
+    - packing/resources/web/couzo-certificates-2026-10-11/README.md
+    - packing/resources/web/couzo-certificates-2026-10-11/acquisition/claims.json
+    - packing/resources/web/couzo-certificates-2026-10-11/source/certificates/n175.cert
+    - packing/devtools/upper_bound_reports.py
+- path: result/t-186.html
+  canonical: result/t-186.html
+  kind: result
+  generator: devtools.render_overview:result_fragments
+  producer: overview
+  first_published: '2026-10-15'
+  lastmod: '2026-10-15'
+  status: live
+  identity:
+    kind: upper-bound
+    scope:
+      n_values:
+      - 129
+      - 154
+      - 156
+      - 175
+      - 176
+      - 204
+      - 232
+      - 264
+      - 271
+      - 302
+      - 303
+      - 304
+    established: null
+    attribution:
+      source_keys:
+      - '[Mishapolk KKT refinements 2026-10-14]'
+      published: '2026-10-14'
+    builds_on: null
+    evidence:
+    - E-mishapolk-70a033f-certificate-report
+    artifacts:
+    - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/README.md
+    - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/acquisition/claims.json
+    - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/n-129.yaml.gz
+    - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/n-154.yaml.gz
+    - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/n-156.yaml.gz
+    - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/n-175.yaml.gz
+    - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/n-176.yaml.gz
+    - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/n-204.yaml.gz
+    - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/n-232.yaml.gz
+    - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/n-264.yaml.gz
+    - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/n-271.yaml.gz
+    - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/n-302.yaml.gz
+    - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/n-303.yaml.gz
+    - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/facts/n-304.yaml.gz
+    - packing/devtools/upper_bound_reports.py
+- path: result/t-187.html
+  canonical: result/t-187.html
+  kind: result
+  generator: devtools.render_overview:result_fragments
+  producer: overview
+  first_published: '2026-10-15'
+  lastmod: '2026-10-15'
+  status: live
+  identity:
+    kind: upper-bound
+    scope:
+      n_values:
+      - 146
+    established: null
+    attribution:
+      source_keys:
+      - '[Daniel n146 2026-10-14]'
+      published: '2026-10-14'
+    builds_on: null
+    evidence:
+    - E-evand-606-n146-report
+    artifacts:
+    - packing/resources/web/evand-n146-2026-10-14/README.md
+    - packing/resources/web/evand-n146-2026-10-14/acquisition/claims.json
+    - packing/resources/web/evand-n146-2026-10-14/source/search/packer/candidates/tt2_n146.cert
+    - packing/devtools/upper_bound_reports.py
 - path: results.html
   canonical: results.html
   kind: page

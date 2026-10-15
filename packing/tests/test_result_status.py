@@ -376,6 +376,7 @@ def test_superseded_is_marked_on_a_bound_and_where_a_later_result_is_declared() 
         "T-166",
         "T-167",
         "T-172",
+        "T-185",
     }
     # The house adoption of 11 October 2026 moved 42 case records to the smallest
     # confirmed and reviewed side the register held (think-fvz4): SQUISH's earlier packets
@@ -397,6 +398,8 @@ def test_superseded_is_marked_on_a_bound_and_where_a_later_result_is_declared() 
     # Robert Barnett's refinements (T-150) lost 146 and 261 to PingYou Ltd's re-solves of
     # them (T-168, T-169). PR 574's algebraic sides (T-174), held for the owner,
     # supersede nothing.
+    # Francisco Couzo's 175 (T-185), registered on 15 October at his request, is
+    # superseded from registration by T-158, the house at 175 since 12 October.
     for entry in ("T-128", "T-130"):
         assert entry not in marked
         assert view.standing(records.results[entry], records) == view.HOLDS

@@ -2530,6 +2530,22 @@ def test_gate_budgets_reads_its_wall_workflows_in_a_worker(
         text=True,
     )
     assert shallow.stdout.strip() == "false"
+    # The store's refs are the only ones added, and `HEAD` stays unborn, so a checker
+    # that walks history from a ref still finds none in a worker (review A9 of #611).
+    head = subprocess.run(
+        ["git", "-C", str(tree), "rev-parse", "--verify", "--quiet", "HEAD"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert head.returncode != 0, head.stdout
+    refs = subprocess.run(
+        ["git", "-C", str(tree), "for-each-ref", "--format=%(refname)"],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.split()
+    assert set(refs) == set(controls.source_bead_store_refs())
     with tempfile.TemporaryDirectory(prefix="negctl-pycache-", dir=tree) as pycache:
         environment = controls.control_environment(tree, Path(pycache))
         environment["CI"] = "true"

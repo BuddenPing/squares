@@ -88,8 +88,8 @@ PUBLICATION_HISTORY = (
         version="v0.7.3",
         first_published="October 15, 2026",
         result_scope=(
-            "Raise the 14 October upper-bound entries to V3/C3 on their stage 4 reviews "
-            "and adopt eight houses at 153, 154, 207, 211, 237, 241, 302 and 304."
+            "Register three results in report order, T-185 to T-187, none adopting a "
+            "house, and bring the requests record and Ryan Xu's credits up to date."
         ),
     ),
     PublicationHistoryEntry(
@@ -273,7 +273,7 @@ COMPOSITES_MAY_TRAIL = True
 #: The last data commit, pinned in full: what `data_revision` returned when it was last
 #: re-pinned. Full rather than six characters so the drift check compares a commit, not
 #: a prefix.
-DATA_REVISION = "6eb178165d34aa6017211c7a68e603bf141ffb66"
+DATA_REVISION = "6f1f09634198ac019260ef24c964d12510bf2fe0"
 
 #: The version, written the one way it is ever written: `v0.4.1-f5e113`. Semver core,
 #: then the data revision, in the shape a build identifier takes everywhere else.
@@ -692,8 +692,8 @@ RELEASE_IMPACTS: tuple[ReleaseImpactDecision, ...] = (
         version="v0.7.3",
         impact="patch",
         reason=(
-            "Raise the 14 October upper-bound entries to V3/C3 on their stage 4 reviews "
-            "and adopt eight houses at 153, 154, 207, 211, 237, 241, 302 and 304."
+            "Register three results in report order, T-185 to T-187, none adopting a "
+            "house, and bring the requests record and Ryan Xu's credits up to date."
         ),
     ),
     ReleaseImpactDecision(
@@ -861,111 +861,98 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
     ReleaseNoPublicChange(
         components=("paper:n11-lower-bounds-explainer",),
         paths=(
-            "packing/atlas/known-best/bound-citations.json",
-            "packing/atlas/known-best/composite-figure.json",
             "packing/cases/n11_fractional_certificate/t-018-proof-card.md",
             "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-19-5.md",
             "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-381-100.md",
             "packing/cases/n11_threshold_certificate/t-025-verifiable-claim-191-50.md",
             "packing/cases/n11_threshold_certificate/t-026-verifiable-claim-dilation-limit.md",
-            "packing/devtools/adopt_houses.py",
-            "packing/devtools/check_half_angle_area.py",
-            "packing/devtools/regularize_axis_components.py",
-            "packing/devtools/select_houses.py",
-            "packing/devtools/upper_bound_houses.py",
             "packing/devtools/upper_bound_reports.py",
             "packing/frontier/results.yaml",
-            "packing/src/sqpack/cli/validate.py",
         ),
         outputs=(
             "papers/n11-lower-bounds-explainer.html",
             "papers/n11-lower-bounds-explainer.md",
         ),
         reason=(
-            "Rendered from main at 6964362b and from this branch with the browser's math "
-            "pass, every file the explainer writes is byte-identical but its HTML, which "
-            "differs only in where an empty style attribute falls within one formula's span, "
-            "as it does between any two renders. The 14 October records and the house "
-            "adoption of 15 October 2026, with the site's v0.7.3 cut, do not reach the "
-            "explainer, which keeps v0.4.6."
+            "Rendered on this branch over main 6964362b at one link revision, once with "
+            "main's versions of these paths and once with the branch's, the HTML before the "
+            "browser's math pass and the Markdown differ only in the live register count "
+            "beside T-018, 184 results registered so far and now 187; the other 52 files the "
+            "render writes are byte-identical. The claim documents change only the revision "
+            "their links pin. A register count follows the site's data and is not a "
+            "revision of the paper, so the explainer keeps v0.4.6."
         ),
     ),
     ReleaseNoPublicChange(
         components=(
             "paper:n11-optimality-review",
             "paper:n11-threshold-bound-review",
+            "paper:square-packing-methods-survey",
         ),
         paths=(
-            "packing/devtools/adopt_houses.py",
-            "packing/devtools/check_half_angle_area.py",
-            "packing/devtools/regularize_axis_components.py",
-            "packing/devtools/select_houses.py",
-            "packing/devtools/upper_bound_houses.py",
+            "packing/campaign/result-requests.yaml",
             "packing/devtools/upper_bound_reports.py",
-            "packing/frontier/results.yaml",
-        ),
-        outputs=(
-            "papers/n11-optimality-review.html",
-            "papers/n11-optimality-review.md",
-            "papers/n11-optimality-review.pdf",
-            "papers/n11-threshold-bound-review.html",
-            "papers/n11-threshold-bound-review.md",
-            "papers/n11-threshold-bound-review.pdf",
-        ),
-        reason=(
-            "Rendered from main at 6964362b and from this branch at one link revision, both "
-            "papers' HTML, Markdown and PDF are byte-identical. The register's rungs and the "
-            "house adoption of 15 October 2026 change the record and its writers; neither "
-            "review cites them."
-        ),
-    ),
-    ReleaseNoPublicChange(
-        components=("paper:square-packing-methods-survey",),
-        paths=(
-            "packing/devtools/adopt_houses.py",
-            "packing/devtools/check_half_angle_area.py",
-            "packing/devtools/regularize_axis_components.py",
-            "packing/devtools/select_houses.py",
-            "packing/devtools/upper_bound_houses.py",
-            "packing/devtools/upper_bound_reports.py",
-            "packing/frontier/n-084.md",
-            "packing/frontier/n-086.md",
-            "packing/frontier/n-102.md",
-            "packing/frontier/n-103.md",
-            "packing/frontier/n-105.md",
-            "packing/frontier/n-108.md",
-            "packing/frontier/n-123.md",
-            "packing/frontier/n-126.md",
-            "packing/frontier/n-127.md",
-            "packing/frontier/n-129.md",
-            "packing/frontier/n-131.md",
-            "packing/frontier/n-146.md",
-            "packing/frontier/n-153.md",
-            "packing/frontier/n-154.md",
-            "packing/frontier/n-175.md",
-            "packing/frontier/n-180.md",
-            "packing/frontier/n-207.md",
-            "packing/frontier/n-209.md",
-            "packing/frontier/n-236.md",
-            "packing/frontier/n-237.md",
-            "packing/frontier/n-238.md",
-            "packing/frontier/n-239.md",
-            "packing/frontier/n-261.md",
-            "packing/frontier/n-267.md",
-            "packing/frontier/n-295.md",
             "packing/frontier/results.yaml",
             "packing/frontier/source-coverage.yaml",
         ),
         outputs=(
+            "papers/n11-optimality-review.html",
+            "papers/n11-optimality-review.md",
+            "papers/n11-threshold-bound-review.html",
+            "papers/n11-threshold-bound-review.md",
             "papers/square-packing-methods-survey.html",
             "papers/square-packing-methods-survey.md",
-            "papers/square-packing-methods-survey.pdf",
         ),
         reason=(
-            "Rendered from main at 6964362b and from this branch at one link revision, the "
-            "survey's HTML, Markdown and PDF are byte-identical. Its account of the adopted "
-            "houses is dated 11 and 12 October; the case records the house adoption of 15 "
-            "October 2026 moves and the register's rungs reach none of its text."
+            "Rendered on this branch over main 6964362b at one link revision, once with "
+            "main's versions of these paths and once with the branch's, the three papers' "
+            "HTML before the browser's math pass and Markdown are byte-identical. The "
+            "register gains T-185 to T-187 and edits T-152, T-158 and T-180's text, the "
+            "requests record gains replies and entries, and the source register gains two "
+            "rows and Xu's name; none of the three papers reads any of them, so each keeps "
+            "its edition."
+        ),
+    ),
+    ReleaseNoPublicChange(
+        components=(
+            "paper:n11-lower-bounds-explainer",
+            "paper:n11-optimality-review",
+            "paper:n11-threshold-bound-review",
+            "paper:square-packing-methods-survey",
+            "site",
+        ),
+        paths=("packing/devtools/upper_bound_reports.py",),
+        outputs=(
+            "papers/n11-lower-bounds-explainer.html",
+            "papers/n11-lower-bounds-explainer.md",
+            "papers/n11-optimality-review.html",
+            "papers/n11-optimality-review.md",
+            "papers/n11-threshold-bound-review.html",
+            "papers/n11-threshold-bound-review.md",
+            "papers/square-packing-methods-survey.html",
+            "papers/square-packing-methods-survey.md",
+            "about.html",
+            "atlas.html",
+            "conventions.html",
+            "development.html",
+            "epistemics.html",
+            "index.html",
+            "news.html",
+            "papers.html",
+            "readme.html",
+            "results.html",
+            "synopsis.html",
+            "tutorial-advanced.html",
+            "tutorial.html",
+            "visualize.html",
+        ),
+        reason=(
+            "Rendered on this branch over main 0dd9003e at one link revision, once with this "
+            "branch's importer and once with main's in its place, the four papers' HTML and "
+            "Markdown and every page, result overview and case record render_overview writes "
+            "(1,452 files) are byte-identical. The "
+            "importer gains an exact algebraic pending report and the house readers of two "
+            "new packets, which no record or page reads yet."
         ),
     ),
     ReleaseNoPublicChange(
@@ -1476,7 +1463,7 @@ def validate_release_impacts(
 #: fresh render, so a link naming the build commit would fail their drift check forever. It is
 #: in no version string. It moves when the claim documents are regenerated for an edition. It
 #: must be a commit on `main`; the site's own links name `main` itself (`devtools.repo_links`).
-PUBLICATION_REVISION = "9e58bdb2"
+PUBLICATION_REVISION = "f8daf777"
 
 
 def data_pathspec() -> tuple[str, ...]:
