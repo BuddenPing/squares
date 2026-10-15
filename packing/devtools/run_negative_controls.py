@@ -1499,17 +1499,29 @@ def root_files() -> tuple[Path, ...]:
 # saves 14,082,212 of the 14,415,037.
 #
 # `--audit-snapshot` read 226,344,073 bytes on main 6964362b5, 148,343 under the cap, and
-# reads 212,288,610 on this branch, 14,203,806 under it, with 26,749 of the branch's own
+# reads 212,294,894 on this branch, 14,197,522 under it, with 33,033 of the branch's own
 # code, tests and comments counted. All 174 controls fire at `-j 3`.
 # `run_negative_controls --baseline` ran each of the 50 distinct registered commands
 # unmutated in a worker before and after, and each printed the same apart from wall
-# times (one re-run alone after the shared host's load timed it out), the four already
-# red included (the full suite, `validate_schemas`, the
-# operating-rules append script and `test_change_scoped_selection`). `check_documentation`,
-# which no control runs, was red in a worker before (270 distinct lines) and loses none
-# after; it adds 380, the dead links to all 225 dropped files the documents link and 18
-# links to pruned directories a review names, which were recreated empty before. That
-# is the change itself: those links are now checked where `check_documentation` runs.
+# times, the four already red included: the full suite, `validate_schemas`, the
+# operating-rules append script and `test_change_scoped_selection`. Two of those say
+# nothing about readers: the full suite dies at collection on the absent `vendor/kpress`
+# both times, and `test_change_scoped_selection`, timed out by the shared host's load in
+# the final record, matched only when re-run alone. The tests' readers are evidenced by
+# the per-module control commands and the worker tests instead; `test_fn1_input_bindings`
+# found the squish one. `check_documentation`, which no control runs, was red in a worker
+# before (270 distinct lines) and loses none after. It adds 380: the dead links to all
+# 225 dropped files the documents link, and 18 links to pruned directories a review names,
+# which were recreated empty before. That is the change itself, and think-b6ir's
+# criterion for it was amended to say so: those links are checked where
+# `check_documentation` runs, never in a worker.
+#
+# Review A2 of #611 found that `check_gate_budgets` exited 1 unmutated in every hosted
+# worker, on main as on this branch. Under `CI` it refuses an advisory bead it cannot
+# confirm, and a worker's fresh repository held no bead store, so its six controls were
+# scored over a red checker. `index_tree` now points each worker at the source's
+# sync-branch refs (`_carry_bead_store`). With `CI=1` the checker exits 1 in a worker
+# built by c8181dd77's runner and 0 in one built by this one, and all six controls fire.
 SNAPSHOT_MAX_BYTES = 216 * 1024 * 1024
 DEFAULT_CONTROL_TIMEOUT_SECONDS = 120.0
 TERMINATION_GRACE_SECONDS = 1.0
@@ -2130,6 +2142,60 @@ def index_tree(root: Path) -> None:
             capture_output=True,
             env=environment,
         )
+    _carry_bead_store(root, environment)
+
+
+#: The sync-branch refs `devtools.bead_state` reads the bead store from (its `REFS`), as
+#: full names: the local branch, and the copy a full-history CI checkout fetches.
+BEAD_STORE_REFS = ("refs/heads/tbd-sync", "refs/remotes/origin/tbd-sync")
+
+
+def source_bead_store_refs(environment: dict[str, str] | None = None) -> tuple[str, ...]:
+    """The bead-store refs the source repository holds; empty where it has none."""
+    return tuple(
+        ref
+        for ref in BEAD_STORE_REFS
+        if not subprocess.run(
+            ("git", "-C", str(REPO), "show-ref", "--verify", "--quiet", ref),
+            check=False,
+            capture_output=True,
+            env=environment,
+        ).returncode
+    )
+
+
+def _carry_bead_store(root: Path, environment: dict[str, str]) -> None:
+    """Point the worker's fresh repository at the source's bead store, copying nothing.
+
+    A checker that confirms a tracked exception against the bead store refuses under
+    `CI` when no store is reachable, and a worker's repository is new, so it reached
+    none: `check_gate_budgets` exited 1 unmutated in every hosted worker, and its six
+    controls were scored over a checker already red (review A2 of #611; think-nns5's
+    class). The worker borrows the source's objects through `objects/info/alternates`,
+    added after its own index is written, and gets the source's sync-branch refs. Nothing
+    is fetched, so the worker is not made shallow and holds no history, as before. A
+    source without the refs gives the worker none.
+    """
+    refs = source_bead_store_refs(environment)
+    if not refs:
+        return
+
+    def git(repository: Path, *arguments: str) -> str:
+        return subprocess.run(
+            ("git", "-C", str(repository), *arguments),
+            check=True,
+            capture_output=True,
+            text=True,
+            env=environment,
+        ).stdout.strip()
+
+    common = Path(git(REPO, "rev-parse", "--path-format=absolute", "--git-common-dir"))
+    worker = Path(git(root, "rev-parse", "--path-format=absolute", "--git-dir"))
+    alternates = worker / "objects/info/alternates"
+    alternates.parent.mkdir(parents=True, exist_ok=True)
+    alternates.write_text(f"{common / 'objects'}\n", encoding="utf-8")
+    for ref in refs:
+        git(root, "update-ref", ref, git(REPO, "rev-parse", "--verify", ref))
 
 
 def clone_tree(dest: Path) -> None:
@@ -2347,11 +2413,16 @@ def write_baseline(path: Path, commands: Sequence[tuple[str, float]]) -> int:
             file=sys.stderr,
         )
         return 1
-    with handle:
-        source_bytes = snapshot_source_bytes()
-        rows = baseline_outcomes(commands)
-        handle.write(json.dumps({"source_bytes": source_bytes, "commands": rows}, indent=2))
-        handle.write("\n")
+    # A run that fails leaves no empty record behind to refuse the next one.
+    try:
+        with handle:
+            source_bytes = snapshot_source_bytes()
+            rows = baseline_outcomes(commands)
+            handle.write(json.dumps({"source_bytes": source_bytes, "commands": rows}, indent=2))
+            handle.write("\n")
+    except BaseException:
+        path.unlink(missing_ok=True)
+        raise
     for row in rows:
         print(
             f"  {row['returncode']:>4}  {str(row['output_sha256'])[:12]}  "
