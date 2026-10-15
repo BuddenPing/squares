@@ -77,6 +77,11 @@ Beside them stand every report #593’s packet compared with, each under the `T-
 gave it where it has one; #593’s own certificate at `46f638c`; Francisco Couzo’s 175 at
 `337078c`, which #506 does not name and its author asked on 14 October to import; and
 Kevin Fang’s `T-163` at 307.
+On 15 October, at reviews A6, B2 and B3 of #612, the declaration gained the registered
+reports that list left out: `T-136` at 154 and 232, `T-140` at 175, `T-101` at 264,
+#488’s unnamed 303 and `T-056`’s printed sides at 154, 156, 271, 302, 303 and 304. Its
+labels now name Couzo’s 175 as `T-185` and `T-130` by PR #460, and the claim record was
+frozen again; no verdict moved.
 At 153, 207 and 302, PR #574’s sides are algebraic numbers, and the comparison reads them
 exactly from that packet’s derived field witnesses (`facts/alg-n-NNN.yaml.gz` in
 [the PR #574 packet](../pingyou-pr574-certificates-2026-10-13/README.md)): the relation
@@ -159,7 +164,7 @@ The first-found column is the 14 October ledger’s account of whose packing PR 
 refines at each count; PR #574’s own lineage is its claim.
 At 129, 154, 176, 204 and 232 some centres move by more than $10^{-6}$, as many as 85 of
 232, but none by more than $1.1 \times 10^{-3}$; at the other seven every centre stays
-within $10^{-15}$.
+within $1.3 \times 10^{-15}$.
 Each reads as the same arrangement re-solved, a refinement in the ledger’s sense, to be
 credited to its finder after the finder of the packing it refines, as a regularization
 ([result-import.md](../../../campaign/result-import.md#several-reports-at-one-count)).
