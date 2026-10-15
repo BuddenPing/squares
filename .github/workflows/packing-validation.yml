@@ -1422,6 +1422,10 @@ jobs:
             /packing/resources/web/couzo-certificates-2026-10-11/
             /packing/resources/web/dostashev-records-2026-10-12/
             /packing/resources/web/evand-n154-2026-10-12/
+            /packing/resources/web/mishapolk-exact-certificates-2026-10-12/
+            /packing/resources/web/dostashev-merged-bands-2026-10-13/
+            /packing/resources/web/couzo-certificates-2026-10-13/
+            /packing/resources/web/mishapolk-records-2026-10-14/
             /packing/resources/papers/
             !/packing/resources/papers/*
             /packing/resources/papers/kingbird-square-29-provenance.svg

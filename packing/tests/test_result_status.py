@@ -366,8 +366,15 @@ def test_superseded_is_marked_on_a_bound_and_where_a_later_result_is_declared() 
         "T-137",
         "T-138",
         "T-145",
+        "T-147",
+        "T-148",
         "T-159",
+        "T-160",
         "T-163",
+        "T-164",
+        "T-166",
+        "T-167",
+        "T-172",
     }
     # The house adoption of 11 October 2026 moved 42 case records to the smallest
     # confirmed and reviewed side the register held (think-fvz4): SQUISH's earlier packets
@@ -379,7 +386,14 @@ def test_superseded_is_marked_on_a_bound_and_where_a_later_result_is_declared() 
     # unmarked. Rio Calle's n = 102 certificate (T-159) is superseded from the day it was
     # registered: T-146, the house there, is smaller. Kevin Fang's theorem (T-163) states
     # finite bounds at 211, 241, 273 and 307 that the houses there already beat, so it is
-    # superseded at every count it holds, as its claim says.
+    # superseded at every count it holds, as its claim says. The adoption of 15 October
+    # 2026 took the last counts of seven more: PingYou Ltd's n = 153 and 207 certificates
+    # (T-148, T-147) and their refinements (T-166, T-167) to Mykhailo Polkovskyi's exact
+    # certificates (T-173); Evan Daniel's n = 154 packing (T-160) and Couzo's issue 570
+    # refinement of it (T-172) to his issue 586 (T-182); and PingYou's n = 302 refinement
+    # (T-164) to issue
+    # 583's certificate (T-181). PR 574's algebraic sides (T-174), held for the owner,
+    # supersede nothing.
     for entry in ("T-128", "T-130"):
         assert entry not in marked
         assert view.standing(records.results[entry], records) == view.HOLDS
