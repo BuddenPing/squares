@@ -1341,7 +1341,7 @@ def atlas_page() -> Page:
 
 
 def news_page() -> Page:
-    """The complete retained contribution and launch history, grouped by day."""
+    """Public contribution and launch announcements, grouped by day."""
     from devtools import render_changelog  # noqa: PLC0415
 
     markdown = _template_markdown(
@@ -1357,7 +1357,7 @@ def news_page() -> Page:
             "with the retained contribution history."
         ),
         toc=False,
-        page_scripts=(NEWS_CARDS_SCRIPT, NEWS_FILTERS_SCRIPT),
+        page_scripts=(NEWS_CARDS_SCRIPT, NEWS_FILTERS_SCRIPT, NEWS_FORWARD_SCRIPT),
         rewrite_body=_case_links,
     )
 

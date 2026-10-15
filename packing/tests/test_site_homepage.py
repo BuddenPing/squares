@@ -710,6 +710,10 @@ def test_homepage_order_chrome_and_single_card_rows_keep_the_shared_design(
     ]
     assert len(home["news_headings"]) == 3
     assert all(heading["title"] for heading in home["news_headings"])
+    assert [heading["href"] for heading in home["paper_headings"]] == [
+        paper.href for paper in overview_sections.PAPERS
+    ]
+    assert all(heading["title"] for heading in home["paper_headings"])
     assert home["other_lower_headings"] == []
     assert all(style == home["main_title_style"] for style in home["section_title_styles"])
     assert home["recent_title"] == "Recent Major Results"

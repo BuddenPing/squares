@@ -79,11 +79,11 @@ entries:
         target: packing/campaign/issue-intake/upper-bounds-20261014/README.md
   - id: reusable-intake-process-and-decided-comparisons
     date: '2026-10-14'
-    title: "A Reusable Intake Process and 17 Decided Comparisons"
+    title: "Seventeen Packing Comparisons Decided Exactly"
     significance:
       score: 2
       rationale: "Process, policy and verification work on reports already recorded; it registers no new result."
-    topics: [engineering, verification, documentation]
+    topics: [upper-bound, verification, engineering]
     pull_requests:
       - 605
     categories:
@@ -91,11 +91,10 @@ entries:
       - documentation
       - records
     summary: |
-      The result-intake process is now a reusable runbook: the report-order ledger, the
-      owner’s standing decisions, a compute cap with a tracked validation backlog, and
-      verdict comments drafted from the ledger. Seventeen comparisons the printed
-      precision left undecided for PR #574 are now decided exactly, and none is below
-      the side already recorded.
+      Seventeen comparisons that printed precision left undecided for PR #574 are
+      now decided exactly. None is below the side already recorded. The intake runbook
+      records the report-order ledger, the owner’s standing decisions, a compute cap
+      with a tracked validation backlog, and verdict comments drafted from the ledger.
     details: |
       - Pull requests merge with a merge commit by default, issues and pull requests
         share one label set, and credits name people by name, keeping a handle only as
@@ -226,7 +225,7 @@ entries:
     categories:
       - site
       - documentation
-    topics: [documentation, engineering]
+    topics: [engineering]
     summary: |
       The public changelog links project releases to their papers, posters and
       result pages. Each paper, the site and the shared pair of posters has its own
@@ -283,7 +282,7 @@ entries:
       - T-053
       - T-063
       - T-065
-    topics: [verification, documentation]
+    topics: [correction, audit]
     summary: |
       The significance scores for three results have been corrected. Their
       verification and confirmation ratings and numerical bounds are unchanged.
@@ -569,7 +568,7 @@ entries:
     pull_requests: [558]
     categories: [records]
     result_ids: [T-147, T-148]
-    topics: [upper-bound, documentation]
+    topics: [upper-bound]
     summary: |
       PingYou Ltd identifies its unreleased AI agent, PY, as assisting with both
       its 153- and 207-square solutions. The result records, case pages and source
@@ -695,7 +694,7 @@ entries:
       rationale: "A focused public reading and layout improvement makes existing explanations easier to use."
     pull_requests: [513]
     categories: [site, documentation]
-    topics: [documentation, engineering]
+    topics: [engineering]
     summary: |
       A narrower prose column and responsive text-only navigation make the project’s
       reader pages easier to follow across screen sizes. Editorial corrections clarify
@@ -724,7 +723,7 @@ entries:
     pull_requests: [508]
     categories: [records, documentation]
     result_ids: [T-062, T-064, T-081]
-    topics: [optimality, documentation]
+    topics: [optimality, correction]
     summary: |
       The 46-square citation and the README and About accounts of $s(60) = 8$
       explicitly credit Evan Daniel. The attribution audit covers the result register,
@@ -743,7 +742,7 @@ entries:
       rationale: "A public reporting route and clearer site introduction improve participation without a new mathematical result."
     pull_requests: [502]
     categories: [site, documentation]
-    topics: [documentation]
+    topics: [engineering]
     summary: |
       The homepage and About invite result reports through a shared form that asks
       contributors for the name they want credited. README opens with the website
@@ -827,7 +826,7 @@ entries:
       rationale: "A coherent public navigation structure improves discovery of existing atlas, results and explanation pages."
     pull_requests: [462]
     categories: [site]
-    topics: [engineering, documentation]
+    topics: [engineering]
     summary: |
       Shared navigation connects the homepage’s packing previews with the atlas,
       result records, papers and exports. The pages use readable formulas and
@@ -859,7 +858,9 @@ entries:
       rationale: "Reader-facing typography and mathematical title corrections improve the published papers without changing their claims."
     pull_requests: [492]
     categories: [documentation, pipeline]
-    topics: [documentation]
+    news_exclusion: >-
+      Routine title-case, punctuation and print-spacing maintenance; no new result,
+      explanation or reader capability.
     summary: |
       Paper fronts, references and version histories use consistent title case and
       typographic punctuation. Part I’s print spacing keeps its colophon with the final
@@ -904,7 +905,7 @@ entries:
       rationale: "A substantial new illustrated explanation connects search, refinement and certification for readers across the full pipeline."
     pull_requests: [477]
     categories: [documentation]
-    topics: [upper-bound, documentation]
+    topics: [upper-bound, verification]
     summary: |
       The methods tutorial explains search and certification through 32 selected
       upper-bound improvements and five attributed packing illustrations. Daniel’s
@@ -930,7 +931,7 @@ entries:
       rationale: "A coordinated public atlas and print-export launch materially improves how readers inspect and share packings."
     pull_requests: [474]
     categories: [site]
-    topics: [engineering, documentation]
+    topics: [engineering]
     summary: |
       The web atlas and redesigned 100- and 324-packing posters have shared legends
       and complete named credits for comparing packings on screen and in print.
@@ -994,7 +995,7 @@ entries:
       rationale: "New external packing reports and their source history are notable focused news without an optimality or complete verification claim."
     pull_requests: [479]
     categories: [records, pipeline]
-    topics: [upper-bound, documentation]
+    topics: [upper-bound]
     summary: |
       Francisco Couzo reports smaller sides at $n = 375$ and $378$, with the earlier
       source facts preserved as dated history. The comparisons concern printed

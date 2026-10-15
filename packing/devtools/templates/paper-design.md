@@ -880,23 +880,33 @@ it.
 - **News.** News is the second navigation item and carries the complete retained project
   history. Its H1 uses the shared sans-serif caps; its operational text uses the sans
   face. Each entry is one hairline-bordered card containing its actual article once.
-  Dates use the paper heading’s sans-base date role.
-  Each card starts with an ordinary H3 in the theme’s text foreground, followed by the
-  date, then a metadata row with smaller Results-style topic chips on the left and the
-  shared significance meter fixed at the right.
-  The article follows.
-  H3 typography comes from the shared heading role; the chips retain shared fills,
-  corners and leading at 85% of the note-size chip scale.
+  News and Explanations share an article heading: an optional eyebrow, the title, the
+  original publication date, then optional topic tags and significance metadata.
+  The title uses the Explanations card’s sans face, medium weight, size and leading; it
+  stays upright, left aligned and in the theme’s text foreground.
+  The date is a prominent sans-base line in medium weight, with a machine-readable
+  `time` value. Paper dates come from the oldest edition in each component’s retained
+  publication history.
+  Tutorial dates name their first site deployments; manuscript creation and later
+  revisions do not restamp them.
+  News retains each announcement’s frozen date or the highlighted result’s original
+  registered date. No current site edition or filesystem timestamp supplies a date.
+  Explanations uses the eyebrow for the paper’s series part or tutorial label.
+  News places smaller Results-style topic chips on the left and the shared significance
+  meter at the right below the date, followed by the article.
+  The chips retain shared fills, corners and leading at 85% of the note-size chip scale.
   Homepage News and the archive use the same card renderer and CSS roles.
   Every post has an explicit importance score and a plain rationale.
   The meter’s accessible label names its S level; its shared tooltip explains the level
   and the post’s rationale.
+  Its S and five bars remain one tightly paired mark.
   Homepage highlights keep their actual result scores and assurance qualifiers, with one
   S meter per card. Archive controls default to S4/S5 and all topics, with OR within a
   facet and AND across facets.
   All significance and All topics clear their facet; Reset restores the defaults.
   The compact chooser groups share the homepage’s small controls, wrap inline, and keep
   their group names accessible without visible headings.
+  Multi-select topic buttons wrap within their group on narrow screens.
   Counts use the Results control row, right aligned above the cards; an empty state
   describes a selection without matches.
   URL state preserves unrelated query parameters and browser history; a low-score

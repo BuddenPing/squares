@@ -176,15 +176,14 @@ PRs and supporting records: [\#511](https://github.com/jlevy/squares/pull/511) �
 
 <a id="changelog-entry-reusable-intake-process-and-decided-comparisons"></a>
 
-#### A Reusable Intake Process and 17 Decided Comparisons
+#### Seventeen Packing Comparisons Decided Exactly
 
 Significance S2: Process, policy and verification work on reports already recorded; it registers no new result.
 
-The result-intake process is now a reusable runbook: the report-order ledger, the
-owner’s standing decisions, a compute cap with a tracked validation backlog, and
-verdict comments drafted from the ledger. Seventeen comparisons the printed
-precision left undecided for PR #574 are now decided exactly, and none is below
-the side already recorded.
+Seventeen comparisons that printed precision left undecided for PR #574 are
+now decided exactly. None is below the side already recorded. The intake runbook
+records the report-order ledger, the owner’s standing decisions, a compute cap
+with a tracked validation backlog, and verdict comments drafted from the ledger.
 
 - Pull requests merge with a merge commit by default, issues and pull requests
   share one label set, and credits name people by name, keeping a handle only as
