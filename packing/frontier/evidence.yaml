@@ -34745,8 +34745,9 @@ evidence:
       Run here on 14 October 2026 from the retained crates, replay4d 0.1.0 (source hash
       92002e0e...), rustc 1.86.0, one thread per record, B3_PLAIN_RF unset, on four cores
       shared with other agents. Interval 26 [0.495, 0.5] top (4,158 roots, 32,828 leaves)
-      and interval 14 [0.435, 0.44] top (3,861 roots, 91,343 leaves), the two smallest of the
-      136 records, each REPLAY OK with the family digest, record digest, roots and leaves
+      and interval 14 [0.435, 0.44] top (3,861 roots, 91,343 leaves), the two of the 136
+      records cheapest by the source's CPU time, 0.27 and 0.28 CPU-hours (not the fewest
+      leaves), each REPLAY OK with the family digest, record digest, roots and leaves
       of every kind of intervals.json, in 1,178.9 and 1,241.7 CPU-seconds. The first two
       roots alone and a leaf relabelled from CORE1:Tx to CORE were refused. The producer's
       own code re-run on 124,171 of the certificate's 187,183,108 leaves; a sample decides the

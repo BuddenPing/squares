@@ -23158,8 +23158,9 @@ results:
             summed from replay4d's cpu_seconds over 269 runs on two Ubuntu 24.04.5 machines
             (rustc 1.86.0). Calibrated here on 14 October 2026
             (wand125-closed-form-2026-10-14/receipts/calibration/): replay4d 0.1.0, built
-            with rustc 1.86.0 from the retained crates, replayed the two smallest records,
-            interval 26 and interval 14 top, REPLAY OK, in 0.672 CPU-hours against the
+            with rustc 1.86.0 from the retained crates, replayed the two records cheapest by
+            the source's CPU time (not the fewest leaves), interval 26 and interval 14 top,
+            REPLAY OK, in 0.672 CPU-hours against the
             source's 0.55. That is a ratio of 1.223, 1.20 to 1.25 at the source's two
             decimals, measured at nice 10 on four cores shared under load. At that ratio the
             complete replay is about 5,250 CPU-hours on this host, held over the owner's 40
