@@ -320,6 +320,7 @@ def test_site_checks_collect_claim_refusals_and_defer_full_net(tmp_path: Path) -
             "tests/test_release_components.py",
             "tests/test_artifact_dates.py",
             "tests/test_verify_claim.py",
+            "tests/test_verify_threshold_claim.py",
         }
         selections.append(nodes)
     quick, deep = selections
@@ -334,3 +335,14 @@ def test_site_checks_collect_claim_refusals_and_defer_full_net(tmp_path: Path) -
         "test_a_failed_cross_check_is_an_internal_error_with_status_2",
     ):
         assert any(node.split("::", 1)[1].split("[", 1)[0] == contract for node in quick)
+
+    for contract in (
+        "test_generated_claims_embed_the_exact_verifier_and_data",
+        "test_a_changed_embedded_byte_is_refused_before_the_sweep",
+        "test_changed_limit_mathematics_is_refused",
+    ):
+        assert any(
+            node.startswith("tests/test_verify_threshold_claim.py::")
+            and node.split("::", 1)[1].split("[", 1)[0] == contract
+            for node in quick
+        )

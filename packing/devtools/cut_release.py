@@ -56,12 +56,13 @@ COMMON_TESTS = (
 #: Generation ownership also determines the tests a cut runs (think-8iml). Scientific
 #: assertions stay in their existing lanes; a cut's quick checks are iteration feedback.
 COMPONENT_TESTS = {
-    "site": ("tests/test_verify_claim.py",),
+    "site": ("tests/test_verify_claim.py", "tests/test_verify_threshold_claim.py"),
     "infographics": ("tests/test_known_best_composites.py",),
     "paper:n11-lower-bounds-explainer": (
         "tests/test_n11_lower_bounds_explainer.py",
         "tests/test_render_n11_lower_bounds_explainer_pdf.py",
         "tests/test_verify_claim.py",
+        "tests/test_verify_threshold_claim.py",
     ),
     "paper:n11-optimality-review": ("tests/test_render_n11_optimality_review.py",),
     "paper:n11-threshold-bound-review": ("tests/test_render_n11_threshold_bound_review.py",),
