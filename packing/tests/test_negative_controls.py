@@ -1727,6 +1727,58 @@ def test_snapshot_audit_cli_never_clones_or_runs_a_control(
         controls.main([str(spec), "--prune-candidate", str(old)])
 
 
+def test_baseline_runs_each_command_unmutated_once_in_one_private_worker(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """The record says what each checker printed before any mutation, path-neutrally."""
+    spec = tmp_path / "controls.yaml"
+    command = "cat probe.txt && pwd"
+    spec.write_text(
+        "controls:\n"
+        f"- {{name: first, file: probe.txt, replace: [kept, gone], run: '{command}',"
+        " expect: gone, timeout_seconds: 7}\n"
+        f"- {{name: second, file: probe.txt, replace: [kept, lost], run: '{command}',"
+        " expect: lost}\n"
+    )
+    trees: list[Path] = []
+
+    def clone(tree: Path) -> None:
+        trees.append(tree)
+        (tree / controls.HERE).mkdir(parents=True)
+        (tree / controls.HERE / "probe.txt").write_text("kept\n")
+
+    monkeypatch.setattr(controls, "clone_tree", clone)
+    monkeypatch.setattr(controls, "snapshot_source_bytes", lambda: 5)
+    record = tmp_path / "baseline.json"
+    assert controls.main([str(spec), "--baseline", str(record)]) == 0
+    assert len(trees) == 1
+    assert not trees[0].exists()
+    baseline = json.loads(record.read_text())
+    assert baseline["source_bytes"] == 5
+    [row] = baseline["commands"]
+    assert row["command"] == command
+    assert (row["returncode"], row["timed_out"], row["stderr"]) == (0, False, "")
+    assert row["stdout"] == f"kept\n<worker>/{controls.HERE.as_posix()}\n"
+    assert row["output_sha256"] == hashlib.sha256(f"{row['stdout']}\0".encode()).hexdigest()
+    assert command in capsys.readouterr().out
+
+    # Evidence is never overwritten, and nothing is cloned to find that out.
+    assert controls.main([str(spec), "--baseline", str(record)]) == 1
+    assert "refuses to overwrite" in capsys.readouterr().err
+    assert len(trees) == 1
+
+    # A checker no control runs can be named instead; its failure is recorded, not raised.
+    other = tmp_path / "other.json"
+    argv = [str(spec), "--baseline", str(other), "--baseline-command", "echo red >&2; exit 3"]
+    assert controls.main(argv) == 0
+    [row] = json.loads(other.read_text())["commands"]
+    assert (row["returncode"], row["stdout"], row["stderr"]) == (3, "", "red\n")
+    with pytest.raises(SystemExit, match="2"):
+        controls.main([str(spec), "--baseline-command", "true"])
+
+
 def test_tiny_snapshot_prune_rescues_linked_and_registered_files_as_private_copies(
     snapshot_audit_fixture: tuple[Path, Path],
     tmp_path: Path,

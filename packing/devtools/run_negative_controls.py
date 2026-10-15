@@ -56,6 +56,15 @@ Usage:
     uv run --frozen python -m devtools.run_negative_controls --audit-snapshot
     uv run --frozen python -m devtools.run_negative_controls --audit-snapshot \
         --prune-candidate packing/campaign/agent-sessions/old-output.log
+    uv run --frozen python -m devtools.run_negative_controls --baseline before.json
+    uv run --frozen python -m devtools.run_negative_controls --baseline after.json \
+        --baseline-command "python3 -m devtools.check_documentation"
+
+`--baseline` is how a change to what a worker holds is shown to leave its checkers alone:
+it builds one private worker and runs each command unmutated there, in the environment a
+control gets, and records what each printed. Two records taken either side of the change
+are compared with `diff`; the worker's own path is written as `<worker>`, so only what the
+commands said differs.
 """
 
 from __future__ import annotations
@@ -2161,6 +2170,97 @@ def run_one(c: dict, tree: Path) -> tuple[bool, str]:
         target.write_bytes(original)
 
 
+def baseline_commands(
+    selected: Sequence[dict], explicit: Sequence[str]
+) -> list[tuple[str, float]]:
+    """The distinct commands a baseline runs, each with the longest timeout it is given.
+
+    Explicit commands replace the registry's, for a checker no control runs; they get the
+    default timeout.
+    """
+    if explicit:
+        return [
+            (command, DEFAULT_CONTROL_TIMEOUT_SECONDS) for command in dict.fromkeys(explicit)
+        ]
+    timeouts: dict[str, float] = {}
+    for c in selected:
+        seconds = float(c.get("timeout_seconds", DEFAULT_CONTROL_TIMEOUT_SECONDS))
+        timeouts[c["run"]] = max(timeouts.get(c["run"], 0.0), seconds)
+    return list(timeouts.items())
+
+
+def baseline_outcomes(commands: Sequence[tuple[str, float]]) -> list[dict[str, object]]:
+    """Run each command unmutated in one fresh private worker, as a control's command runs.
+
+    This is the half of a control that the registry does not score: what the checker
+    prints before anything is corrupted. Workers are shared across controls, so one tree
+    serves every command here too. The worker's path is written as `<worker>` and each
+    command's bytecode cache has a fixed name, so two records taken on either side of a
+    change to the worker's contents differ only where a command's output does.
+    """
+    rows: list[dict[str, object]] = []
+    with tempfile.TemporaryDirectory(prefix="negctl-baseline-") as tmp:
+        tree = Path(tmp) / "w0"
+        clone_tree(tree)
+        spellings = (str(tree.resolve()), str(tree))
+        for index, (command, timeout_seconds) in enumerate(commands):
+            pycache = tree / f"negctl-pycache-{index}"
+            pycache.mkdir()
+            started = time.perf_counter()
+            try:
+                outcome = run_control_command(
+                    command,
+                    cwd=tree / HERE,
+                    environment=control_environment(tree, pycache),
+                    timeout_seconds=timeout_seconds,
+                )
+            finally:
+                shutil.rmtree(pycache, ignore_errors=True)
+            stdout, stderr = outcome.stdout, outcome.stderr
+            for spelling in spellings:
+                stdout = stdout.replace(spelling, "<worker>")
+                stderr = stderr.replace(spelling, "<worker>")
+            rows.append(
+                {
+                    "command": command,
+                    "returncode": outcome.returncode,
+                    "timed_out": outcome.timed_out,
+                    "output_sha256": hashlib.sha256(f"{stdout}\0{stderr}".encode()).hexdigest(),
+                    "wall_seconds": round(time.perf_counter() - started, 3),
+                    "stdout": stdout,
+                    "stderr": stderr,
+                }
+            )
+    return rows
+
+
+def write_baseline(path: Path, commands: Sequence[tuple[str, float]]) -> int:
+    """Create `path` before cloning, so a refusal to overwrite evidence costs nothing."""
+    if not commands:
+        print("  no commands selected for the baseline", file=sys.stderr)
+        return 1
+    try:
+        handle = path.open("x", encoding="utf-8")
+    except FileExistsError:
+        print(
+            f"baseline already exists (--baseline refuses to overwrite): {path}",
+            file=sys.stderr,
+        )
+        return 1
+    with handle:
+        source_bytes = snapshot_source_bytes()
+        rows = baseline_outcomes(commands)
+        handle.write(json.dumps({"source_bytes": source_bytes, "commands": rows}, indent=2))
+        handle.write("\n")
+    for row in rows:
+        print(
+            f"  {row['returncode']:>4}  {str(row['output_sha256'])[:12]}  "
+            f"{row['wall_seconds']:8.2f}s  {row['command']}"
+        )
+    print(f"  baseline of {len(rows)} commands, {source_bytes} source bytes: {path}")
+    return 0
+
+
 PROFILE_TIMEOUT_SECONDS = 60.0
 
 
@@ -2331,6 +2431,20 @@ def _parser() -> argparse.ArgumentParser:
         help="audit a proposed repository-relative prune, retaining inline/result dependencies",
     )
     parser.add_argument(
+        "--baseline",
+        type=Path,
+        help=(
+            "run the selected controls' distinct commands unmutated in one private worker "
+            "and create a JSON record of what each printed; refuses to overwrite"
+        ),
+    )
+    parser.add_argument(
+        "--baseline-command",
+        action="append",
+        default=[],
+        help="with --baseline, run this command instead of the registered ones (repeatable)",
+    )
+    parser.add_argument(
         "--profile-native-script",
         type=Path,
         help="profile this native child script in an existing private diagnostic tree",
@@ -2423,7 +2537,26 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
         except (OSError, ValueError) as error:
             parser.error(str(error))
+    if options.baseline is not None:
+        if options.source_bytes or options.audit_snapshot or options.prune_candidate:
+            parser.error("--baseline does not combine with the snapshot reports")
+        return _run_baseline(options)
+    if options.baseline_command:
+        parser.error("--baseline-command requires --baseline")
     return _run_selected_controls(options, argv)
+
+
+def _run_baseline(options: argparse.Namespace) -> int:
+    """Record the selected controls' commands, or the named ones, run unmutated."""
+    selected: list[dict] = []
+    if not options.baseline_command:
+        spec_path = options.spec if options.spec.is_absolute() else ROOT / options.spec
+        spec = safe_load(spec_path.read_text(encoding="utf-8"))
+        only = options.match
+        selected = [c for c in spec["controls"] if not only or only in c["name"]]
+    return write_baseline(
+        options.baseline, baseline_commands(selected, options.baseline_command)
+    )
 
 
 def _run_selected_controls(options: argparse.Namespace, argv: Sequence[str] | None) -> int:
