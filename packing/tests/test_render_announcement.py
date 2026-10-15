@@ -578,10 +578,11 @@ def test_a_line_about_a_few_counts_prints_each_bound_where_the_line_stays_brief(
 ) -> None:
     """T-162's three bounds fit; T-151's five counts do not and stay elided (review A,
     A8). T-149's three were the example until the intake of 14 October left it the best
-    known at 155 alone."""
+    known at 155 alone. T-162 reads as verified since its stage 4 review raised it to V3
+    on 15 October."""
     lines, _ = run(capsys, ["--ids", "T-151", "T-162", "--date", "2026-10-14"])
     assert lines[2].startswith(
-        "s(129) ≤ 11.87002, s(204) ≤ 14.80867, s(303) ≤ 17.90996, new best known (reported): "
+        "s(129) ≤ 11.87002, s(204) ≤ 14.80867, s(303) ≤ 17.90996, new best known (verified): "
     )
     assert lines[1].startswith("s(n) ≤ … at n = 181, 238, 239, 270, 272, new best known ")
     record = {"id": "T-900", "headline": "s(n) ≤ 10", "claim": ""}

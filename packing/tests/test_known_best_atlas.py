@@ -1628,7 +1628,7 @@ def test_triangle_fast_label_check_requires_the_compact_caption() -> None:
     assert check(canvas, root) == [
         (
             "atlas/known-best/known-best-1-324.svg n=211 side-bound is "
-            "('s(211) ≤ 14.997961',); expected ('s(211) ≤ 14.99634',)"
+            "('s(211) ≤ 14.997961',); expected ('s(211) ≤ 14.99356',)"
         )
     ]
 
@@ -2135,9 +2135,12 @@ def test_poster_packing_credits_name_every_retained_construction_author_and_sour
     # and Barnett and draws no de Winter packing, from eight more sources; that of 12
     # October draws from SQUISH's and Couzo's 11 October releases (think-fvz4), and the
     # pass for issue 528 from Daniil Ostashev's 12 October release, and that for issue 552
-    # from Evan Daniel's n = 154 packet (think-cq95).
+    # from Evan Daniel's n = 154 packet (think-cq95). The pass of 15 October draws from
+    # four more, Mishapolk's of 12 and 14 October and Ostashev's and Couzo's of 13
+    # October, and no longer from PingYou's n = 153 and 207 certificates or Evan
+    # Daniel's n = 154 packet: one source more, and no new name.
     assert len(expected_names) == 26
-    assert len(expected_sources) == 22
+    assert len(expected_sources) == 23
     assert set(json.loads(credit_block.attrib["data-credited-names"])) == expected_names
     assert set(json.loads(credit_block.attrib["data-source-keys"])) == expected_sources
     assert credit_block.find("svg:text[@data-feature='packing-credits-heading']", SVG) is None
@@ -2322,7 +2325,7 @@ def test_poster_accents_recent_contributions_independently_in_svg_and_pdf() -> N
         line = cards[211].find(f"svg:text[@data-feature='{feature}']", SVG)
         assert line is not None
         assert "".join(line.itertext()) == (
-            "s(211) ≤ 14.99634" if feature == "side-bound" else "s(211) ≥ 14.54457"
+            "s(211) ≤ 14.99356" if feature == "side-bound" else "s(211) ≥ 14.54457"
         )
         colored = [span for span in line if span.attrib.get("fill") == FIRST_PARTY_ACCENT_COLOR]
         assert len(colored) == 1
