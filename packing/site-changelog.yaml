@@ -6,6 +6,59 @@ softschema:
   status: enforced
 repository: https://github.com/jlevy/squares
 entries:
+  - id: october-fourteen-reviewed-packing-adoptions
+    date: '2026-10-15'
+    title: "Smaller Verified Packings for 18 Square Counts"
+    significance:
+      score: 3
+      rationale: "This adoption announcement inherits the highest S3 significance of its reviewed packing results."
+    topics: [upper-bound, verification]
+    pull_requests:
+      - 614
+    categories:
+      - records
+    result_ids:
+      - T-161
+      - T-162
+      - T-164
+      - T-165
+      - T-166
+      - T-167
+      - T-168
+      - T-169
+      - T-170
+      - T-171
+      - T-172
+      - T-173
+      - T-174
+      - T-175
+      - T-181
+      - T-182
+      - T-183
+    summary: |
+      Eighteen case records now use smaller, exactly verified packings from the
+      14 October intake. Francisco Couzo, Daniil Ostashev, PingYou Ltd and Mykhailo
+      Polkovskyi supplied the adopted certificates; each case retains credit for
+      earlier designs and refinements.
+    details: |
+      - The adopted packings cover 105, 129, 146, 153, 154, 156, 176, 204, 207, 211,
+        237, 241, 261, 271, 272, 302, 303 and 304 squares. The case records give their
+        exact sides and certificate links.
+      - Independent checks and review raised 17 reported results to V3/C3. These
+        establish that the packings fit; they do not prove optimality.
+      - Smaller certificates from PingYou Ltd’s T-174 remain unadopted while the
+        project owner decides their storage cost. Ten of these cases use the next
+        eligible reviewed certificate; its algebraic certificates at 70, 153 and 207
+        await a separate owner decision.
+    references:
+      - label: Case records
+        target: packing/frontier/README.md
+      - label: Reviewed result register
+        target: packing/frontier/RESULTS.md
+      - label: Review of the 14 October upper-bound reports
+        target: docs/project/reviews/review-2026-10-14-upper-bound-imports-561-593.md
+      - label: Review of PingYou Ltd’s PR 574 certificates
+        target: docs/project/reviews/review-2026-10-14-upper-bound-imports-574.md
   - id: october-fourteen-intake-records
     date: '2026-10-14'
     title: "Two Bound Families and 22 More Results From the 14 October Intake"
@@ -1005,6 +1058,12 @@ entries:
       - label: Beyond-horizon source coverage
         target: packing/frontier/source-coverage.yaml
 deliveries:
+- number: 614
+  title: 'research: adopt the 14 October reviews, seventeen entries at V3/C3 and eighteen houses,
+    PR #574''s held for the owner'
+  merged_at: '2026-10-15T09:58:13Z'
+  base_ref: main
+  merge_commit: d33de8b105f5b7a43646ad5fc2aa890894dbb50c
 - number: 598
   title: 'research: intake layer 6, the 12 October results (T-157 to T-160) and their
     houses'
@@ -1354,6 +1413,7 @@ stacks:
   evidence: https://github.com/jlevy/squares/pull/518
 coverage:
   pull_requests:
+  - 614
   - 598
   - 592
   - 595
@@ -1545,3 +1605,27 @@ frozen_entries:
   - 585
   - 587
   - 591
+- id: october-fourteen-intake-records
+  date: '2026-10-14'
+  pull_requests:
+  - 602
+- id: reusable-intake-process-and-decided-comparisons
+  date: '2026-10-14'
+  pull_requests:
+  - 605
+- id: october-fourteen-intake-ledger
+  date: '2026-10-14'
+  pull_requests:
+  - 601
+- id: october-twelve-intake-and-house-admissions
+  date: '2026-10-14'
+  pull_requests:
+  - 598
+- id: project-changelog-and-independent-editions
+  date: '2026-10-14'
+  pull_requests:
+  - 590
+- id: verification-significance-and-announcement-audit
+  date: '2026-10-14'
+  pull_requests:
+  - 563

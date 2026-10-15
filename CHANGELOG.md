@@ -9,6 +9,33 @@ The authoritative record is [site-changelog.yaml](packing/site-changelog.yaml).
 
 ## Changelog
 
+<a id="changelog-date-2026-10-15"></a>
+
+### 2026-10-15
+
+<a id="changelog-entry-october-fourteen-reviewed-packing-adoptions"></a>
+
+#### Smaller Verified Packings for 18 Square Counts
+
+Significance S3: This adoption announcement inherits the highest S3 significance of its reviewed packing results.
+
+Eighteen case records now use smaller, exactly verified packings from the
+14 October intake. Francisco Couzo, Daniil Ostashev, PingYou Ltd and Mykhailo
+Polkovskyi supplied the adopted certificates; each case retains credit for
+earlier designs and refinements.
+
+- The adopted packings cover 105, 129, 146, 153, 154, 156, 176, 204, 207, 211,
+  237, 241, 261, 271, 272, 302, 303 and 304 squares. The case records give their
+  exact sides and certificate links.
+- Independent checks and review raised 17 reported results to V3/C3. These
+  establish that the packings fit; they do not prove optimality.
+- Smaller certificates from PingYou Ltd’s T-174 remain unadopted while the
+  project owner decides their storage cost. Ten of these cases use the next
+  eligible reviewed certificate; its algebraic certificates at 70, 153 and 207
+  await a separate owner decision.
+
+PRs and supporting records: [\#614](https://github.com/jlevy/squares/pull/614) · [Case records](packing/frontier/README.md) · [Reviewed result register](packing/frontier/RESULTS.md) · [Review of the 14 October upper-bound reports](docs/project/reviews/review-2026-10-14-upper-bound-imports-561-593.md) · [Review of PingYou Ltd’s PR 574 certificates](docs/project/reviews/review-2026-10-14-upper-bound-imports-574.md).
+
 <a id="changelog-date-2026-10-14"></a>
 
 ### 2026-10-14
