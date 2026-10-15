@@ -814,6 +814,61 @@ class ReleaseNoPublicChange(NamedTuple):
 
 RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
     ReleaseNoPublicChange(
+        components=("paper:n11-lower-bounds-explainer",),
+        paths=(
+            "packing/cases/n11_fractional_certificate/t-018-proof-card.md",
+            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-19-5.md",
+            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-381-100.md",
+            "packing/cases/n11_threshold_certificate/t-025-verifiable-claim-191-50.md",
+            "packing/cases/n11_threshold_certificate/t-026-verifiable-claim-dilation-limit.md",
+            "packing/devtools/upper_bound_reports.py",
+            "packing/frontier/results.yaml",
+        ),
+        outputs=(
+            "papers/n11-lower-bounds-explainer.html",
+            "papers/n11-lower-bounds-explainer.md",
+        ),
+        reason=(
+            "Rendered on this branch over main 6964362b at one link revision, once with "
+            "main's versions of these paths and once with the branch's, the HTML before the "
+            "browser's math pass and the Markdown differ only in the live register count "
+            "beside T-018, 184 results registered so far and now 187; the other 52 files the "
+            "render writes are byte-identical. The claim documents change only the revision "
+            "their links pin. A register count follows the site's data and is not a "
+            "revision of the paper, so the explainer keeps v0.4.6."
+        ),
+    ),
+    ReleaseNoPublicChange(
+        components=(
+            "paper:n11-optimality-review",
+            "paper:n11-threshold-bound-review",
+            "paper:square-packing-methods-survey",
+        ),
+        paths=(
+            "packing/campaign/result-requests.yaml",
+            "packing/devtools/upper_bound_reports.py",
+            "packing/frontier/results.yaml",
+            "packing/frontier/source-coverage.yaml",
+        ),
+        outputs=(
+            "papers/n11-optimality-review.html",
+            "papers/n11-optimality-review.md",
+            "papers/n11-threshold-bound-review.html",
+            "papers/n11-threshold-bound-review.md",
+            "papers/square-packing-methods-survey.html",
+            "papers/square-packing-methods-survey.md",
+        ),
+        reason=(
+            "Rendered on this branch over main 6964362b at one link revision, once with "
+            "main's versions of these paths and once with the branch's, the three papers' "
+            "HTML before the browser's math pass and Markdown are byte-identical. The "
+            "register gains T-185 to T-187 and edits T-152, T-158 and T-180's text, the "
+            "requests record gains replies and entries, and the source register gains two "
+            "rows and Xu's name; none of the three papers reads any of them, so each keeps "
+            "its edition."
+        ),
+    ),
+    ReleaseNoPublicChange(
         components=(
             "paper:n11-lower-bounds-explainer",
             "paper:n11-optimality-review",
