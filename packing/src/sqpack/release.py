@@ -851,7 +851,6 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "packing/devtools/render_changelog.py",
             "packing/devtools/render_n11_lower_bounds_explainer.py",
             "packing/devtools/render_overview.py",
-            "packing/devtools/run_negative_controls.py",
             "packing/devtools/site_topics.py",
         ),
         outputs=(
@@ -878,8 +877,7 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "unchanged. The new code-symbol fonts are opt-in site assets; standalone "
             "paper font declarations retain their defaults. The preview probe only "
             "distinguishes header tabs from inline controls and changes no paper output. "
-            "The worker-input repair copies registered identity measurements; no "
-            "paper producer executes that worker. Each paper keeps its own edition. "
+            "Each paper keeps its own edition. "
             "No release PDF was redrawn or "
             "compared for byte identity in this slice."
         ),
