@@ -1545,7 +1545,7 @@
           {"active_blockers":{"container_normals":0,"square_indices":[]},"direction":{"x":"0.707106781186547524401","y":"-0.707106781186547524401"},"slide_distance":"0.00367397921125523191925","square_index":103,"witness_kind":"strict-separating","witness_square_id":104}
         ],
         "n": 105,
-        "reported_side": "10.7893037837481589",
+        "reported_side": "10.78930378374815884",
         "separating_square_count": 8,
         "square_count": 105,
         "stable_across_tolerances": true
