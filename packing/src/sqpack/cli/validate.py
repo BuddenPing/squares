@@ -150,11 +150,13 @@ SCREEN_EXCLUDED: dict[str, tuple[str, ...]] = {
 #: current complete retained motions, with the other 310 screen rows unchanged.
 #: The house adoption of 11 October 2026 (think-fvz4) re-screened its 42 counts, with the
 #: other 282 rows unchanged, its pass of 12 October the nine counts it moved, and the pass
-#: for issue 528 (T-158) the three counts it moved, 175, 232 and 264.
+#: for issue 528 (T-158) the three counts it moved, 175, 232 and 264, and the pass of 15
+#: October 2026 the eighteen counts it moved, 105, 129, 146, 153, 154, 156, 176, 204, 207,
+#: 211, 237, 241, 261, 271, 272, 302, 303 and 304.
 SCREEN_FINDINGS: dict[str, tuple[int, int, int, int]] = {
     "n=1..100": (28, 146, 86, 659),
-    "n=1..200": (65, 535, 182, 2182),
-    "n=1..324": (121, 1502, 302, 5038),
+    "n=1..200": (65, 583, 182, 2349),
+    "n=1..324": (122, 1509, 302, 5373),
 }
 UNDETERMINED_BY_MISS = (28,)
 #: The cases the two sampled sweeps re-derive on every pull request, computed here from

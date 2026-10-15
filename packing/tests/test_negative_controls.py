@@ -3728,7 +3728,7 @@ def test_adopted_houses_survive_native_worker_boundaries(
     assert completed.returncode == 0, completed.stdout + completed.stderr
     report = json.loads(completed.stdout.strip().splitlines()[-1])
     assert report["houses"] == len(houses.NUMBERS)
-    assert len(report["refused"]) == 2 * len(houses.source_keys())
+    assert len(report["refused"]) == 2 * len(houses.sources())
     for source, original in originals.items():
         assert source.read_bytes() == original
         assert (tree / source.relative_to(controls.REPO)).read_bytes() == original

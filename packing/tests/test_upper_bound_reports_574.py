@@ -472,7 +472,18 @@ def test_the_574_algebraic_sides_against_the_case_records() -> None:
     rows = _algebraic()
     equal = sorted(n for n, row in rows.items() if row["case"]["verified_relation"] == "equal")
     assert equal == [5, 10, 18, 19, 26, 27, 38, 40, 51, 52, 65, 66, 67, 82, 85, 89]
-    assert all(row["case"]["verified_relation"] in {"equal", "below"} for row in rows.values())
+    # The record compares each side with the case as it now stands. The adoption of 15
+    # October 2026 moved 302 to issue 583's certificate (T-181), smaller than the algebraic
+    # side there, as the pending row for #583 already said; every other side is at or below
+    # its case.
+    assert {n for n, row in rows.items() if row["case"]["verified_relation"] == "above"} == {
+        302
+    }
+    assert all(
+        row["case"]["verified_relation"] in {"equal", "below"}
+        for n, row in rows.items()
+        if n != 302
+    )
     assert sorted(n for n, row in rows.items() if row["below_every_other"]) == [207]
     assert rows[302]["pending"]
     assert any(
