@@ -1097,6 +1097,11 @@ entries:
       - label: Beyond-horizon source coverage
         target: packing/frontier/source-coverage.yaml
 deliveries:
+- number: 618
+  title: 'fix(ci): keep push and release validation in their quick lanes'
+  merged_at: '2026-10-15T11:50:04Z'
+  base_ref: main
+  merge_commit: fc2ceae79f462fe707ebbad1b94eb7cc306797b8
 - number: 617
   title: 'fix: refine News cards and publication headings'
   merged_at: '2026-10-15T10:48:50Z'
@@ -1519,7 +1524,11 @@ coverage:
   - 597
   - 604
   - 617
+  - 618
   omissions:
+  - pull_request: 618
+    reason: 'S2 routine engineering: internal quick-push and release-test selection changes,
+      with no new public result. A substantive CI timing improvement is not yet established.'
   - pull_request: 617
     reason: Routine News and publication-heading refinements, filter layout and font repairs.
       Its packing-adoption announcement is already covered by PR614's separate entry;
