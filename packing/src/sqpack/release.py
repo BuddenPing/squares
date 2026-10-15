@@ -814,6 +814,21 @@ class ReleaseNoPublicChange(NamedTuple):
 
 RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
     ReleaseNoPublicChange(
+        components=("paper:n11-lower-bounds-explainer", "site"),
+        paths=("packing/src/sqpack/campaign/ledger.py",),
+        outputs=(
+            "index.html",
+            "papers/n11-lower-bounds-explainer.html",
+            "papers/n11-lower-bounds-explainer.md",
+        ),
+        reason=(
+            "The ledger's `dead_links` pattern moves, character for character, into the "
+            "module constant `LINK_TARGET`, so a negative-control test can import it "
+            "rather than copy it. What `dead_links` reports is unchanged, and no builder "
+            "calls it. No render was taken, and both components keep their versions."
+        ),
+    ),
+    ReleaseNoPublicChange(
         components=(
             "paper:n11-lower-bounds-explainer",
             "paper:n11-optimality-review",
