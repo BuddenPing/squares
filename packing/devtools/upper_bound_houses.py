@@ -421,10 +421,17 @@ def _sources() -> dict[str, Source]:
         packet_source("T-141", "evand-record-hunt3-2026-10-10"),
         packet_source("T-146", "evand-regularized-2026-10-10"),
         packet_source("T-149", "dostashev-records-2026-10-11"),
-        packet_source("T-150", "barnett-refinements-2026-10-11"),
         packet_source("T-151", "squish-500-fourth-request-2026-10-11"),
         packet_source("T-152", "couzo-certificates-2026-10-11"),
         packet_source("T-158", "dostashev-records-2026-10-12"),
+        packet_source("T-161", "couzo-certificates-2026-10-12"),
+        packet_source("T-162", "dostashev-compositions-2026-10-12"),
+        # T-165's 176 is in issue 586's packet too, unchanged there since 12 October.
+        packet_source("T-165", "couzo-certificates-2026-10-13"),
+        packet_source("T-168", "pingyou-n146-refinement-2026-10-12"),
+        packet_source("T-169", "pingyou-n261-refinement-2026-10-12"),
+        packet_source("T-170", "pingyou-n105-refinement-2026-10-12"),
+        packet_source("T-171", "pingyou-n272-refinement-2026-10-12"),
         packet_source("T-173", "mishapolk-exact-certificates-2026-10-12"),
         packet_source("T-175", "dostashev-merged-bands-2026-10-13"),
         # T-181's 302 is issue 583's certificate as issue 586's packet retains it, byte
@@ -447,31 +454,33 @@ def _sources() -> dict[str, Source]:
 #: 146, 153, 155 and 207, the third, for issues 500 and 506, at 270 and 305, the
 #: fourth, for issue 528, at 175 and 232, the fifth, for issue 552, at 154, and the
 #: pass of 15 October 2026, for issues 573, 575, 583, 586 and 593, at 153, 154, 207,
-#: 211, 237, 241, 302 and 304. PR 574's houses (T-174) are held for the owner
-#: (`select_houses.HELD`), and none of its counts is here.
+#: 211, 237, 241, 302 and 304, and, for the next candidates where PR 574's (T-174) are
+#: held for the owner (`select_houses.HELD`), at 105, 129, 146, 156, 176, 204, 261, 271,
+#: 272 and 303. None of T-174's counts is T-174's here.
 ADOPTED: dict[int, str] = {
     70: "T-146",
     84: "T-130",
     86: "T-130",
     102: "T-146",
     103: "T-146",
-    105: "T-130",
+    105: "T-170",
     108: "T-128",
     123: "T-146",
     126: "T-139",
     127: "T-128",
-    129: "T-146",
+    129: "T-162",
     131: "T-136",
     132: "T-141",
-    146: "T-150",
+    146: "T-168",
     153: "T-173",
     154: "T-182",
     155: "T-149",
-    156: "T-149",
+    156: "T-161",
     175: "T-158",
-    176: "T-151",
+    176: "T-165",
     180: "T-128",
     181: "T-151",
+    204: "T-162",
     207: "T-173",
     209: "T-140",
     211: "T-182",
@@ -484,18 +493,18 @@ ADOPTED: dict[int, str] = {
     241: "T-182",
     258: "T-146",
     259: "T-136",
-    261: "T-150",
+    261: "T-169",
     263: "T-146",
     264: "T-158",
     267: "T-134",
     269: "T-146",
     270: "T-151",
-    271: "T-151",
-    272: "T-151",
+    271: "T-161",
+    272: "T-171",
     292: "T-146",
     295: "T-146",
     302: "T-181",
-    303: "T-146",
+    303: "T-162",
     304: "T-175",
     305: "T-152",
     306: "T-128",
@@ -513,11 +522,38 @@ NUMBERS = tuple(sorted(ADOPTED))
 #: PingYou Ltd's T-148 and T-147, issue 586 (T-182) at 154 from T-160, at 211 from T-149
 #: and at 241, first adopted here, from Evan Daniel's exact optimum (T-098), issue 593
 #: (T-183) at 237 from T-140, issue 583's 302 (T-181) from T-146, and issue 575 (T-175)
-#: at 304 from T-152. A count a pass names keeps its place in the earlier passes' sets,
-#: which their archives hold; it was adopted on the latest day that names it.
+#: at 304 from T-152. The same day, once a hold skipped only the held entry (reviews A
+#: and B of PR 614), it adopted the next candidates where PR 574's (T-174) are held:
+#: issue 562 (T-162) at 129 and 303 from T-146 and at 204, first adopted here, from the
+#: Kingbird catalogue; issue 561 (T-161) at 156 from T-149 and at 271 from T-151; T-165
+#: at 176 from T-151; and PingYou Ltd's re-solves (T-168 to T-171) at 146 and 261 from
+#: T-150, at 105 from T-130 and at 272 from T-151. A count a pass names keeps its place in
+#: the earlier passes' sets, which their archives hold; it was adopted on the latest day
+#: that names it.
 LATER_PASSES: dict[str, frozenset[int]] = {
     "2026-10-12": frozenset({154, 175, 176, 181, 232, 238, 239, 264, 270, 271, 272, 304, 305}),
-    "2026-10-15": frozenset({153, 154, 207, 211, 237, 241, 302, 304}),
+    "2026-10-15": frozenset(
+        {
+            105,
+            129,
+            146,
+            153,
+            154,
+            156,
+            176,
+            204,
+            207,
+            211,
+            237,
+            241,
+            261,
+            271,
+            272,
+            302,
+            303,
+            304,
+        }
+    ),
 }
 
 
@@ -674,8 +710,8 @@ def linked_house_problem(path: str, *, repository: Path) -> str | None:
 #: Where the custody run's receipt is kept: one record for every adopted packet.
 CUSTODY_RECEIPT = ROOT / "devtools/house-custody-2026-10-11.json"
 CUSTODY_FORMAT = "AdoptedHouseCustody/v1"
-#: The worker's deadline: it admits all 51 houses and refuses 36 mutations, two for each
-#: of the eighteen results (21.23 s in the worker on 15 October 2026).
+#: The worker's deadline: it admits all 52 houses and refuses 48 mutations, two for each
+#: of the twenty-four results (31.07 s in the worker on 15 October 2026).
 CUSTODY_TIMEOUT = 120
 
 

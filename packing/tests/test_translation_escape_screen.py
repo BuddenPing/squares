@@ -92,7 +92,9 @@ def _rendering_entry(directory: Path) -> dict[str, Any]:
 #: 176 and 270 joined, and 238, 271, 272 and 304 left. The pass for issue 528 (T-158)
 #: moved it at its three: 175 and 264 joined, and 232 stayed; that for issue 552 (T-160)
 #: at 154, which left. The pass of 15 October 2026 moved it at its eight: 154 and 304
-#: joined, and 211 and 302 left. Re-screening the adopted
+#: joined, and 211 and 302 left; once a hold skipped only the held entry, its ten next
+#: candidates moved it again: 129 and 204 joined, and 156, 176 and 303 left.
+#: Re-screening the adopted
 #: counts with the screen's own `--update --n` rebuilds the retained screen byte for byte.
 GOLDEN_UNSTABLE = {
     "n=1..100": [
@@ -106,13 +108,12 @@ GOLDEN_UNSTABLE = {
         88,
         106,
         110,
+        129,
         130,
         146,
         154,
-        156,
         172,
         175,
-        176,
         177,
         179,
         180,
@@ -124,17 +125,17 @@ GOLDEN_UNSTABLE = {
         88,
         106,
         110,
+        129,
         130,
         146,
         154,
-        156,
         172,
         175,
-        176,
         177,
         179,
         180,
         199,
+        204,
         206,
         207,
         210,
@@ -152,7 +153,6 @@ GOLDEN_UNSTABLE = {
         273,
         297,
         301,
-        303,
         304,
         307,
     ],

@@ -626,13 +626,14 @@ def test_a_case_held_by_a_regularization_of_the_entrys_own_packing_does_not_bett
 def test_a_refinement_credits_the_person_its_headline_names_singular_or_plural(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
-    """T-137 refines Ryan Xu's packing and T-150 his packings; both credit him."""
+    """T-137 refines Ryan Xu's packing and T-150 his packings; both credit him. T-150 is
+    kept with `--all` since PingYou Ltd's re-solves (T-168, T-169) took its counts."""
     lines, _ = run(
         capsys, ["--ids", "T-137", "--date", "2026-10-11", "--all", "--min-significance", "1"]
     )
     assert ", refining Ryan Xu's packing " in lines[1]
     lines, _ = run(
-        capsys, ["--ids", "T-150", "--date", "2026-10-12", "--min-significance", "1"]
+        capsys, ["--ids", "T-150", "--date", "2026-10-12", "--all", "--min-significance", "1"]
     )
     assert ": Robert Barnett, refining Ryan Xu's packings " in lines[1]
 

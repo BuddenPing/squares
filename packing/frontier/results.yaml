@@ -20018,14 +20018,17 @@ results:
       search code and submissions were prepared with Claude Code, and that he directed the
       work.
 
-      Measured pose by pose by that review, the 156 continues Daniil Ostashev's packing
-      (T-149), the 237 continues the author's T-140 design and the 271 refines Nate
-      Chaoweeraprasit's SQUISH packing (T-151), each paired square for square; the 176 moves
-      Ostashev's issue-562 arrangement and pairs with no placement of it. At 237 Mykhailo
-      Polkovskyi's issue 593 (T-183) is smaller and has held the case since 15 October 2026.
-      At 156, 176 and 271 PR 574's certificates (T-174) are smaller, and their adoption is
-      held for the owner (devtools.select_houses.HELD), so the cases keep their houses until
-      the owner decides.
+      Measured pose by pose by that review, the 156 continues Daniil Ostashev's packing (T-149),
+      the 237 continues the author's T-140 design and the 271 refines Nate Chaoweeraprasit's
+      SQUISH packing (T-151), each paired square for square; the 176 moves Ostashev's issue-562
+      arrangement and pairs with no placement of it.
+
+      At 237 Mykhailo Polkovskyi's issue 593 (T-183) is smaller and has held the case since 15
+      October 2026. At 156, 176 and 271 PR 574's certificates (T-174) are smaller, by 1.30e-19,
+      1.18e-02 and 1.69e-19, and their adoption is held for the owner
+      (devtools.select_houses.HELD). Since 15 October 2026 this entry holds the cases at 156 and
+      271, the smallest certificates there that are not held, and T-165, the author's re-solve
+      of the 176, holds 176; those counts move to T-174 if the owner adopts its houses.
     scope: {n_values: [156, 176, 237, 271]}
     verification: V3
     confirmation: C3
@@ -20217,12 +20220,14 @@ results:
       against the register found 129.
 
       Measured pose by pose by that review, no symmetry of the box pairs the 129 square for
-      square with Ryan Xu's packing or T-146's, though 46 of Xu's squares lie in place under
-      a quarter turn, and the 204 and 303 are new arrangements; that the 129 is cut from the
-      s(302) house is the author's statement, consistent with the measurements and
-      established by none of them. At 129, 204 and 303 PR 574's certificates (T-174) are
-      smaller, and their adoption is held for the owner (devtools.select_houses.HELD), so
-      the cases keep their houses until the owner decides.
+      square with Ryan Xu's packing or T-146's, though 46 of Xu's squares lie in place under a
+      quarter turn, and the 204 and 303 are new arrangements; that the 129 is cut from the
+      s(302) house is the author's statement, consistent with the measurements and established
+      by none of them. At 129, 204 and 303 PR 574's certificates (T-174) are smaller, by
+      1.18e-19, 1.46e-19 and 1.79e-19, and their adoption is held for the owner
+      (devtools.select_houses.HELD). Since 15 October 2026 this entry holds the three cases, the
+      smallest certificates there that are not held; they move to T-174 if the owner adopts its
+      houses.
     scope: {n_values: [129, 204, 303]}
     verification: V3
     confirmation: C3
@@ -20631,8 +20636,10 @@ results:
       statement about AI assistance; the author's issues of 12 and 13 October say OpenAI
       Codex assisted the search and verification and that he directed the work.
 
-      At 176 PR 574's certificate (T-174) is smaller, and its adoption is held for the owner
-      (devtools.select_houses.HELD), so the case keeps its house until the owner decides.
+      At 176 PR 574's certificate (T-174) is smaller, by 1.18e-02, and its adoption is held for
+      the owner (devtools.select_houses.HELD). Since 15 October 2026 this entry holds the case,
+      the smallest certificate there that is not held; it moves to T-174 if the owner adopts its
+      houses.
     scope: {n_values: [176]}
     verification: V3
     confirmation: C3
@@ -21061,10 +21068,11 @@ results:
       Daniel with the contact-solver source and the earlier n146 regularization. The pinned
       source makes no statement about AI assistance.
 
-      Measured pose by pose by that review, it is Robert Barnett's packing (T-150)
-      re-solved, no square moved beyond 2e-06. At 146 PR 574's certificate (T-174) is
-      smaller, and its adoption is held for the owner (devtools.select_houses.HELD), so the
-      case keeps its house until the owner decides.
+      Measured pose by pose by that review, it is Robert Barnett's packing (T-150) re-solved, no
+      square moved beyond 2e-06. At 146 PR 574's certificate (T-174) is smaller, by 1.26e-79,
+      and its adoption is held for the owner (devtools.select_houses.HELD). Since 15 October
+      2026 this entry holds the case, the smallest certificate there that is not held; it moves
+      to T-174 if the owner adopts its houses.
     scope: {n_values: [146]}
     verification: V3
     confirmation: C3
@@ -21202,11 +21210,12 @@ results:
       Daniel with the contact-solver source. The pinned source makes no statement about AI
       assistance.
 
-      Measured pose by pose by that review, it is Robert Barnett's packing (T-150)
-      re-solved, no square moved beyond 2e-06; squares touch the box and the closest pair
-      touches, which the closed box allows. At 261 PR 574's certificate (T-174) is smaller,
-      and its adoption is held for the owner (devtools.select_houses.HELD), so the case
-      keeps its house until the owner decides.
+      Measured pose by pose by that review, it is Robert Barnett's packing (T-150) re-solved, no
+      square moved beyond 2e-06; squares touch the box and the closest pair touches, which the
+      closed box allows. At 261 PR 574's certificate (T-174) is smaller, by 1.99e-21, and its
+      adoption is held for the owner (devtools.select_houses.HELD). Since 15 October 2026 this
+      entry holds the case, the smallest certificate there that is not held; it moves to T-174
+      if the owner adopts its houses.
     scope: {n_values: [261]}
     verification: V3
     confirmation: C3
@@ -21348,9 +21357,10 @@ results:
       AI assistance.
 
       Measured pose by pose by that review, it is Francisco Couzo's packing (T-130) at less
-      padding, no square moved beyond 2e-19. At 105 PR 574's certificate (T-174) is smaller,
-      and its adoption is held for the owner (devtools.select_houses.HELD), so the case
-      keeps its house until the owner decides.
+      padding, no square moved beyond 2e-19. At 105 PR 574's certificate (T-174) is smaller, by
+      1.08e-79, and its adoption is held for the owner (devtools.select_houses.HELD). Since 15
+      October 2026 this entry holds the case, the smallest certificate there that is not held;
+      it moves to T-174 if the owner adopts its houses.
     scope: {n_values: [105]}
     verification: V3
     confirmation: C3
@@ -21487,10 +21497,11 @@ results:
       AI-assisted; the requested attribution is as stated above.' The pinned source makes no
       statement about AI assistance.
 
-      Measured pose by pose by that review, it is Nate Chaoweeraprasit's SQUISH packing
-      (T-151) re-solved, no square moved beyond 2e-07. At 272 PR 574's certificate (T-174)
-      is smaller, and its adoption is held for the owner (devtools.select_houses.HELD), so
-      the case keeps its house until the owner decides.
+      Measured pose by pose by that review, it is Nate Chaoweeraprasit's SQUISH packing (T-151)
+      re-solved, no square moved beyond 2e-07. At 272 PR 574's certificate (T-174) is smaller,
+      by 1.70e-99, and its adoption is held for the owner (devtools.select_houses.HELD). Since
+      15 October 2026 this entry holds the case, the smallest certificate there that is not
+      held; it moves to T-174 if the owner adopts its houses.
     scope: {n_values: [272]}
     verification: V3
     confirmation: C3
@@ -21947,16 +21958,22 @@ results:
       comparison stays undecided, because the record holds only a print of the standing
       side.
 
-      The 14 October review recommends this entry as the house at the 60 rational counts
-      where it is the smallest exact side. On 15 October 2026 the coordinator of the 14
-      October intake held those houses for the owner (devtools.select_houses.HELD): their
-      witnesses would add about 18.5 MB to Git and their custody inputs about 5.8 MB to
-      every worker's snapshot, and the cases there keep their houses until the owner
-      decides. At 70, 153 and 207 the algebraic certificates are the smallest sides known
-      but rest on one route; the record's house selection leaves them out, the case at 70
-      keeps its house and Mykhailo Polkovskyi's issue 573 (T-173) holds 153 and 207 (RP-3,
-      for the owner). At 211, 237, 241, 302 and 304 smaller certificates hold the cases
-      (T-182, T-183, T-182, T-181, T-175).
+      The 14 October review recommends this entry as the house at the 60 rational counts where
+      it is the smallest exact side. On 15 October 2026 the coordinator of the 14 October intake
+      held those houses for the owner (devtools.select_houses.HELD): their witnesses would add
+      about 18.5 MB to Git and their custody inputs about 5.8 MB to every worker's snapshot.
+
+      The hold skips this entry only: at 105, 129, 146, 156, 176, 204, 261, 271, 272 and 303 the
+      next certificate below the case that a replay here decided and a review accepted holds it
+      since that day (T-170, T-162, T-168, T-161, T-165, T-162, T-169, T-161, T-171, T-162),
+      this entry being smaller by 1.7e-99 to 1.18e-02, and at the other 50 counts the cases keep
+      their houses. All 60 move to this entry if the owner adopts its houses.
+
+      At 70, 153 and 207 the algebraic certificates are the smallest sides known but rest on one
+      route; the record's house selection leaves them out, the case at 70 keeps its house and
+      Mykhailo Polkovskyi's issue 573 (T-173) holds 153 and 207 (RP-3, for the owner). At 211,
+      237, 241, 302 and 304 smaller certificates hold the cases (T-182, T-183, T-182, T-181,
+      T-175).
     scope: {n_values: [68, 70, 84, 86, 88, 102, 103, 105, 108, 110, 123, 126, 127, 129,
                         130, 131, 132, 146, 153, 155, 156, 172, 175, 176, 179, 180, 181,
                         182, 199, 204, 206, 207, 208, 209, 210, 211, 228, 232, 236, 237,
@@ -22413,24 +22430,25 @@ results:
       receipts/third-route-2026-10-14.json.xz in pingyou-pr574-certificates-2026-10-13; it
       stays out of this entry's artifacts so that the workers' snapshot stays under its cap.
 
-      The review's findings are non-blocking: at 199 and 292 the certificate is not the
-      named packing by pose, and the reply should ask which certificate each started from
-      (RP-1); issue 593 restates the pull request's packings at 42 counts, which establishes
-      no copying (RP-2); the algebraic certificates rest on one route, and their adoption at
-      70, 153 and 207 is the owner's (RP-3); the 176 is Daniil Ostashev's packing, which the
-      owner's decision 8 on pull request 602 covers (RP-4); the regularization statement
-      holds by pose at 28 counts, which the claim now says (RP-5); 21 rational and 56
-      algebraic counts stay unreplayed (RP-6); and the third route lifts Python's
-      integer-text limit for its own numbers only (RP-7).
+      The review's findings are non-blocking: at 199 and 292 the certificate is not the named
+      packing by pose, and the reply should ask which certificate each started from (RP-1);
+      issue 593 restates the pull request's packings at 42 counts, which establishes no copying
+      (RP-2); the algebraic certificates rest on one route, and their adoption at 70, 153 and
+      207 is the owner's (RP-3); the 176 is Daniil Ostashev's packing, which the owner's
+      decision 8 on pull request 602 covers (RP-4); the regularization statement holds by pose
+      at 28 counts, 27 of them among the regularized counts and the 28th the 176, which the
+      claim now says (RP-5); 21 rational and 56 algebraic counts stay unreplayed (RP-6); and the
+      third route lifts Python's integer-text limit for its own numbers only (RP-7).
 
       A second exact route over the number fields of the algebraic certificates is recorded
       beside the rung and is no condition of it; it needs field arithmetic of its own, a
       code slice rather than compute.
     next_rung: >-
-      V4 and C4 need a second accepted adversarial review by a distinct reviewer and a
-      retained human oversight record; one AI review, of 14 October, is retained. The houses
-      at its 60 rational counts wait on the owner (devtools.select_houses.HELD), and the
-      algebraic certificates at 70, 153 and 207 on the owner's decision RP-3.
+      V4 and C4 need a second accepted adversarial review by a distinct reviewer and a retained
+      human oversight record; one AI review, of 14 October, is retained. The houses at its 60
+      rational counts wait on the owner (devtools.select_houses.HELD), the next candidate
+      holding the case meanwhile at 10 of them, and the algebraic certificates at 70, 153 and
+      207 on the owner's decision RP-3.
     reviews:
       - path: docs/project/reviews/review-2026-10-14-upper-bound-imports-574.md
         kind: adversarial
@@ -25159,18 +25177,17 @@ regularized_drawings:
         max_turn_deg: 0.0
       view: packing/atlas/known-best/regularized/n-103-regularized.yaml.gz
     - n: 105
-      of: T-130
+      of: T-170
       by: project
-      method: "regularize_grid_slack/1: Evan Daniel's coincidence placement (evand/square-packing search/regularize reg.coincidences and reg.place, MIT), ported to start from the witness's exact frame and to keep its contacts, then the same-side exact re-solve, through devtools.regularize_grid_slack"
-      modifications: ["port of his coincidence placement (regularize_grid_slack/1) rather than his code", "same-side exact re-solve (devtools.regularize_same_side)"]
+      method: regularize_axis_components/2
       side: same
       identity:
         basis: measured
         measured_in: packing/atlas/known-best/regularized/index.json
         one_to_one: true
-        moved: 31
+        moved: 21
         max_move: 0.1631154
-        max_turn_deg: 0.327601
+        max_turn_deg: 0.000944499
       view: packing/atlas/known-best/regularized/n-105-regularized.yaml.gz
     - n: 106
       of: T-098
@@ -25273,18 +25290,17 @@ regularized_drawings:
         max_turn_deg: 0.0653528
       view: packing/atlas/known-best/regularized/n-127-regularized.yaml.gz
     - n: 129
-      of: T-146
+      of: T-162
       by: project
-      method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
-      modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+      method: regularize_axis_components/2
       side: same
       identity:
         basis: measured
         measured_in: packing/atlas/known-best/regularized/index.json
         one_to_one: true
-        moved: 22
-        max_move: 0.1274132
-        max_turn_deg: 0.0
+        moved: 6
+        max_move: 0.1394352
+        max_turn_deg: 9.50079e-15
       view: packing/atlas/known-best/regularized/n-129-regularized.yaml.gz
     - n: 130
       of: T-127
@@ -25330,18 +25346,17 @@ regularized_drawings:
         max_turn_deg: 0.346905
       view: packing/atlas/known-best/regularized/n-132-regularized.yaml.gz
     - n: 146
-      of: T-150
+      of: T-168
       by: project
-      method: "regularize_grid_slack/1: Evan Daniel's coincidence placement (evand/square-packing search/regularize reg.coincidences and reg.place, MIT), ported to start from the witness's exact frame and to keep its contacts, then the same-side exact re-solve, through devtools.regularize_grid_slack"
-      modifications: ["port of his coincidence placement (regularize_grid_slack/1) rather than his code", "same-side exact re-solve (devtools.regularize_same_side)"]
+      method: regularize_axis_components/2
       side: same
       identity:
         basis: measured
         measured_in: packing/atlas/known-best/regularized/index.json
         one_to_one: true
-        moved: 26
-        max_move: 0.0502318
-        max_turn_deg: 1.07177
+        moved: 17
+        max_move: 0.01790098
+        max_turn_deg: 9.41991e-05
       view: packing/atlas/known-best/regularized/n-146-regularized.yaml.gz
     - n: 152
       of: T-098
@@ -25398,18 +25413,17 @@ regularized_drawings:
         max_turn_deg: 0.0
       view: packing/atlas/known-best/regularized/n-155-regularized.yaml.gz
     - n: 156
-      of: T-149
+      of: T-161
       by: project
-      method: "regularize_grid_slack/1: Evan Daniel's coincidence placement (evand/square-packing search/regularize reg.coincidences and reg.place, MIT), ported to start from the witness's exact frame and to keep its contacts, then the same-side exact re-solve, through devtools.regularize_grid_slack"
-      modifications: ["port of his coincidence placement (regularize_grid_slack/1) rather than his code", "same-side exact re-solve (devtools.regularize_same_side)"]
+      method: regularize_axis_components/2
       side: same
       identity:
         basis: measured
         measured_in: packing/atlas/known-best/regularized/index.json
         one_to_one: true
-        moved: 7
-        max_move: 0.01568611
-        max_turn_deg: 0.0
+        moved: 12
+        max_move: 0.2015837
+        max_turn_deg: 0.000386982
       view: packing/atlas/known-best/regularized/n-156-regularized.yaml.gz
     - n: 171
       of: T-155
@@ -25455,18 +25469,17 @@ regularized_drawings:
         max_turn_deg: 1.88881e-64
       view: packing/atlas/known-best/regularized/n-175-regularized.yaml.gz
     - n: 176
-      of: T-151
+      of: T-165
       by: project
-      method: "regularize_grid_slack/1: Evan Daniel's coincidence placement (evand/square-packing search/regularize reg.coincidences and reg.place, MIT), ported to start from the witness's exact frame and to keep its contacts, then the same-side exact re-solve, through devtools.regularize_grid_slack"
-      modifications: ["port of his coincidence placement (regularize_grid_slack/1) rather than his code", "same-side exact re-solve (devtools.regularize_same_side)"]
+      method: regularize_axis_components/2
       side: same
       identity:
         basis: measured
         measured_in: packing/atlas/known-best/regularized/index.json
         one_to_one: true
-        moved: 65
-        max_move: 0.1602348
-        max_turn_deg: 3.0308
+        moved: 23
+        max_move: 0.3968426
+        max_turn_deg: 0.00441286
       view: packing/atlas/known-best/regularized/n-176-regularized.yaml.gz
     - n: 177
       of: T-098
@@ -25581,6 +25594,19 @@ regularized_drawings:
         max_move: 0.3135603
         max_turn_deg: 1.61089
       view: packing/atlas/known-best/regularized/n-199-regularized.yaml.gz
+    - n: 204
+      of: T-162
+      by: project
+      method: regularize_axis_components/2
+      side: same
+      identity:
+        basis: measured
+        measured_in: packing/atlas/known-best/regularized/index.json
+        one_to_one: true
+        moved: 12
+        max_move: 0.03995108
+        max_turn_deg: 8.18184e-65
+      view: packing/atlas/known-best/regularized/n-204-regularized.yaml.gz
     - n: 206
       of: T-098
       by: project
@@ -25822,7 +25848,7 @@ regularized_drawings:
         max_turn_deg: 0.403258
       view: packing/atlas/known-best/regularized/n-259-regularized.yaml.gz
     - n: 261
-      of: T-150
+      of: T-169
       by: project
       method: regularize_axis_components/2
       side: same
@@ -25831,8 +25857,8 @@ regularized_drawings:
         measured_in: packing/atlas/known-best/regularized/index.json
         one_to_one: true
         moved: 0
-        max_move: 1.433421e-10
-        max_turn_deg: 5.82125e-14
+        max_move: 1.414248e-06
+        max_turn_deg: 1.14592e-16
       view: packing/atlas/known-best/regularized/n-261-regularized.yaml.gz
     - n: 263
       of: T-146
@@ -25932,21 +25958,20 @@ regularized_drawings:
         max_turn_deg: 3.28361e-53
       view: packing/atlas/known-best/regularized/n-270-regularized.yaml.gz
     - n: 271
-      of: T-151
+      of: T-161
       by: project
-      method: "regularize_grid_slack/1: Evan Daniel's coincidence placement (evand/square-packing search/regularize reg.coincidences and reg.place, MIT), ported to start from the witness's exact frame and to keep its contacts, then the same-side exact re-solve, through devtools.regularize_grid_slack"
-      modifications: ["port of his coincidence placement (regularize_grid_slack/1) rather than his code", "same-side exact re-solve (devtools.regularize_same_side)"]
+      method: regularize_axis_components/2
       side: same
       identity:
         basis: measured
         measured_in: packing/atlas/known-best/regularized/index.json
         one_to_one: true
-        moved: 18
-        max_move: 0.1062867
-        max_turn_deg: 1.0867e-53
+        moved: 11
+        max_move: 0.00856013
+        max_turn_deg: 0.000957677
       view: packing/atlas/known-best/regularized/n-271-regularized.yaml.gz
     - n: 272
-      of: T-151
+      of: T-171
       by: project
       method: regularize_axis_components/2
       side: same
@@ -26057,7 +26082,7 @@ regularized_drawings:
         max_turn_deg: 0.00564274
       view: packing/atlas/known-best/regularized/n-302-regularized.yaml.gz
     - n: 303
-      of: T-146
+      of: T-162
       by: project
       method: regularize_axis_components/2
       side: same
@@ -26065,8 +26090,8 @@ regularized_drawings:
         basis: measured
         measured_in: packing/atlas/known-best/regularized/index.json
         one_to_one: true
-        moved: 0
-        max_move: 1.727759e-19
+        moved: 4
+        max_move: 0.02375713
         max_turn_deg: 0.0
       view: packing/atlas/known-best/regularized/n-303-regularized.yaml.gz
     - n: 304
