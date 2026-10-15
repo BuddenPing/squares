@@ -1297,7 +1297,8 @@ body {
     var(--kpress-doc-bg)
   );
 }
-.site-chip[data-news-topic="engineering"] {
+.site-chip[data-news-topic="engineering"],
+.site-chip[data-news-topic="project"] {
   background: color-mix(
     in oklab,
     var(--kpress-doc-accent) var(--site-chip-tint),

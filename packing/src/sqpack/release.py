@@ -88,8 +88,8 @@ PUBLICATION_HISTORY = (
         version="v0.7.8",
         first_published="October 15, 2026",
         result_scope=(
-            "Credit and explain Fitzharding's reported seventeen-square Lean proof "
-            "directly, show only S3 to S5 News, and space significance labels from their bars."
+            "Backfill a week of News, connect PR significance labels to intake, and "
+            "clarify proof credit, surname headlines and shared significance meters."
         ),
     ),
     PublicationHistoryEntry(
@@ -753,9 +753,8 @@ RELEASE_IMPACTS: tuple[ReleaseImpactDecision, ...] = (
         version="v0.7.8",
         impact="patch",
         reason=(
-            "Clarify the author, theorem and novelty of the reported seventeen-square "
-            "Lean proof, restrict News to S3 to S5, and adjust shared "
-            "significance-label spacing."
+            "Backfill notable News from the past week, show S3 to S5 only, add the "
+            "Project topic and labeled-PR intake, and clarify proof copy and meters."
         ),
     ),
     ReleaseImpactDecision(
@@ -957,7 +956,11 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "paper:n11-threshold-bound-review",
             "paper:square-packing-methods-survey",
         ),
-        paths=("packing/frontier/results.yaml",),
+        paths=(
+            "packing/devtools/render_changelog.py",
+            "packing/devtools/site_topics.py",
+            "packing/frontier/results.yaml",
+        ),
         outputs=(
             "papers/n11-lower-bounds-explainer.html",
             "papers/n11-lower-bounds-explainer.md",
@@ -980,7 +983,12 @@ RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
             "figures select none of the changed results. The methods survey substitutes "
             "no result "
             "record text. No paper manuscript, selected ladder value, figure input "
-            "or result count changes. This reviewed source-consumer finding does not "
+            "or result count changes. The changed news_entries, archived_news_targets "
+            "and news_filters functions govern News eligibility, bookmark forwarding "
+            "and topic controls; standalone paper renderers call none of them. The "
+            "shared topic vocabulary adds only Project; existing result-kind labels "
+            "and chip markup are unchanged. Papers retain their own styles and do not "
+            "render project-topic chips. This reviewed source-consumer finding does not "
             "claim byte identity for unrebuilt PDFs."
         ),
     ),

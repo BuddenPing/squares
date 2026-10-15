@@ -140,7 +140,7 @@ def test_news_cards_keep_the_actual_article_and_structured_math_once(
     formula: str, structure: str
 ) -> None:
     document = copy.deepcopy(render_changelog.load())
-    first = render_changelog.ordered_entries(document)[0]
+    first = render_changelog.news_entries(document)[0]
     first["summary"] = f"Verified **bound & label** ${formula}$. Use `<tag>`."
     first["details"] = "Actual article detail with a [proof](https://example.com/proof)."
     rendered = render_changelog.render_news(document, limit=1)
