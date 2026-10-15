@@ -377,6 +377,12 @@ a note names, such as $n = 21$, is sans math too, never upright words.
 Documents write math as LaTeX (`$…$`) rather than in code spans;
 `devtools.check_math_markup` holds the documents already migrated to it.
 Code uses Planetaire Mono Text at KPress’s calibrated monospace size.
+Literal source code keeps its Unicode characters.
+Two site-only KaTeX subsets supply AMS’s blackboard-R outline for `ℝ` and Main’s
+outlines for `↔` and `≤` within the monospace family, preserving ordinary ASCII glyphs
+and metrics.
+Both subsets travel through the shared asset bundle; standalone paper styles
+keep their existing declarations.
 
 **A formula is drawn as its text is.** Beside the face, a formula takes the size of the
 text it sits in (KaTeX’s outer em is 1 of its text’s on every surface), its colour, and
@@ -877,9 +883,11 @@ it.
   appear on the homepage; **About** sits immediately before **GitHub** in the shared
   navigation.
 
-- **News.** News is the second navigation item and carries the complete retained project
-  history. Its H1 uses the shared sans-serif caps; its operational text uses the sans
-  face. Each entry is one hairline-bordered card containing its actual article once.
+- **News.** News is the second navigation item and carries eligible public
+  announcements. The changelog record retains excluded historical entries and their
+  reasons; `CHANGELOG.md` contains the complete history.
+  Its H1 uses the shared sans-serif caps; its operational text uses the sans face.
+  Each eligible entry is one hairline-bordered card containing its actual article once.
   News and Explanations share an article heading: an optional eyebrow, the title, the
   original publication date, then optional topic tags and significance metadata.
   The title uses the Explanations card’s sans face, medium weight, size and leading; it
@@ -911,7 +919,8 @@ it.
   describes a selection without matches.
   URL state preserves unrelated query parameters and browser history; a low-score
   bookmark widens the filters to reveal its target.
-  Without JavaScript the controls stay hidden and the complete history remains visible.
+  Without JavaScript the controls stay hidden and complete eligible articles remain
+  visible, with a link to the full changelog.
   After the enhancement loads, about ten lines are visible.
   Clicking or tapping the card or its small shared arrow in the footer expands or
   contracts it inline; Enter and Space activate the button.
@@ -921,15 +930,16 @@ it.
   Height, fade and arrow rotation share the existing motion timing and honor reduced
   motion. Hover adds a subtle green wash without changing height.
   Article links retain their ordinary actions; body-link focus reveals the article.
-  Readers without scripting see complete articles.
-  Entry and legacy date fragments reveal their corresponding card.
+  Eligible entry and legacy date fragments reveal their corresponding card.
+  Bookmarks for excluded entries, and dates with no eligible articles, forward to the
+  retained GitHub changelog.
   Topic labels reuse square-cornered Results chips with distinct subject metadata: lower
   and upper bounds and optimality reuse bound fills, engineering uses the accent tint,
-  verification the review-blue palette, and documentation the neutral chip.
+  and verification the review-blue palette.
   These subject labels assert no result kind or verification status.
   Results and News use the shared topic vocabulary and sentence-case labels in
   `devtools/site_topics.py`. Every registered result kind keeps its precise topic; News
-  also accepts Engineering, Verification and Documentation.
+  also accepts Engineering and Verification.
   News filters offer the topics present in the archive, in the shared vocabulary’s
   order. Topic chips explicitly reset text transformation, small caps and letter spacing,
   so parent headings cannot change their casing.

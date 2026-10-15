@@ -1764,11 +1764,19 @@ def linked_pruned_targets(*, roots: Sequence[Path] | None = None) -> list[Path]:
 
 
 def _result_paths(register: object) -> list[str]:
-    """The paths the results register names structurally, as written."""
+    """The files result consumers require, including both identity measurement blocks."""
+    data = cast(dict, register)
     raw_paths: list[str] = []
-    for record in cast(dict, register)["results"]:
+    regularizations = list((data.get("regularized_drawings") or {}).get("items") or [])
+    for record in data["results"]:
         raw_paths.extend([*(record.get("artifacts") or []), *(record.get("controls") or [])])
         raw_paths.extend(review["path"] for review in record.get("reviews") or [])
+        regularizations.extend(record.get("regularizations") or [])
+    raw_paths.extend(
+        item["identity"]["measured_in"]
+        for item in regularizations
+        if (item.get("identity") or {}).get("measured_in")
+    )
     return raw_paths
 
 
