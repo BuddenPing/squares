@@ -393,8 +393,16 @@ def test_the_homepage_sections_run_in_the_requested_order(page: str, atlas_page:
     assert page.count("data-atlas-toggle data-homepage-atlas-toggle") == 1
     headings = re.findall(r"<h[3-6]\b.*?</h[3-6]>", page, re.DOTALL)
     news = page.split('id="news"', 1)[1].split('<h2 id="recent-results"', 1)[0]
-    assert headings == re.findall(r"<h3\b.*?</h3>", news, re.DOTALL)
-    assert len(headings) == 3
+    article_headers = re.findall(
+        r'<header class="site-article-header[^"]*">(.*?)</header>', page, re.DOTALL
+    )
+    assert headings == [
+        heading
+        for header in article_headers
+        for heading in re.findall(r"<h3\b.*?</h3>", header, re.DOTALL)
+    ]
+    assert len(re.findall(r"<h3\b.*?</h3>", news, re.DOTALL)) == 3
+    assert len(headings) == 9  # Three News items, four papers and two tutorials.
     assert '<h1 id="more-resources" class="site-title">More Resources' in page
     assert "site-resource-links" not in page
 

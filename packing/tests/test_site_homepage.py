@@ -917,11 +917,12 @@ def test_news_cards_expand_only_on_press_and_legacy_bookmarks_forward(
         page.locator('[data-news-all="scores"]').click()
         news = page.evaluate(NEWS)
         document = render_changelog.load()
-        assert len(news["entries"]) == len(document["entries"])
-        assert len(news["days"]) == len(document["entries"])
+        entries = render_changelog.news_entries(document)
+        assert len(news["entries"]) == len(entries)
+        assert len(news["days"]) == len(entries)
         assert news["heading"]["transform"] == "uppercase"
         assert news["family"] == news["heading"]["family"]
-        assert preview["reference_h3"] == news["reference_h3"]
+        assert preview["reference_article_title"] is not None
         for surface in (preview, news):
             assert surface["overflow"] == 0
             for day in surface["days"]:
@@ -930,7 +931,7 @@ def test_news_cards_expand_only_on_press_and_legacy_bookmarks_forward(
                 assert day["family"] == surface["family"]
                 assert day["body_family"] == surface["family"]
                 assert day["date_transform"] == "none"
-                assert day["title_style"] == surface["reference_h3"]
+                assert day["title_style"] == preview["reference_article_title"]
                 assert day["title_style"]["color"] == surface["text_color"]
                 assert day["title_before_date"]
                 assert day["date_before_topics"]
@@ -966,7 +967,7 @@ def test_news_cards_expand_only_on_press_and_legacy_bookmarks_forward(
         meter = card.locator(".site-significance[data-site-tooltip]")
         meaning = meter.get_attribute("data-site-tooltip")
         entry_id = card.locator("[data-news-entry]").get_attribute("data-news-entry")
-        entry = next(item for item in document["entries"] if item["id"] == entry_id)
+        entry = next(item for item in entries if item["id"] == entry_id)
         assert meaning is not None
         assert (
             overview_sections.rung_meanings()[f"S{entry['significance']['score']}"] in meaning
@@ -1056,9 +1057,7 @@ def test_news_cards_expand_only_on_press_and_legacy_bookmarks_forward(
         else:
             link.click()
             sync_api.expect(page).to_have_url(target)
-        anchor = render_changelog.entry_anchor(
-            render_changelog.ordered_entries(document)[0]["id"]
-        )
+        anchor = render_changelog.entry_anchor(entries[0]["id"])
         page.goto(f"{ORIGIN}about.html#{anchor}", wait_until="load")
         page.wait_for_url(f"{ORIGIN}news.html#{anchor}")
         sync_api.expect(page.locator(f"#{anchor}")).to_be_visible()
@@ -1100,11 +1099,43 @@ def test_news_cards_expand_only_on_press_and_legacy_bookmarks_forward(
                 context.close()
 
 
+def test_excluded_news_bookmarks_reach_the_retained_changelog(
+    browser: Any, payloads: dict[str, bytes]
+) -> None:
+    sync_api = site_browser.api()
+    document = render_changelog.load()
+    targets = render_changelog.archived_news_targets(document)
+    assert targets
+    page = browser.new_page(viewport={"width": 1280, "height": 900})
+    _serve(page, payloads)
+    page.route(
+        f"{document['repository']}/blob/main/CHANGELOG.md",
+        lambda route: route.fulfill(body="<p>Retained project changelog</p>"),
+    )
+    errors = []
+    page.on("pageerror", lambda error: errors.append(str(error)))
+    try:
+        for surface in ("about.html", "news.html"):
+            for anchor, target in targets.items():
+                encoded = f"%{ord(anchor[0]):02X}{anchor[1:]}"
+                for fragment in (anchor, encoded):
+                    page.goto(f"{ORIGIN}{surface}#{fragment}", wait_until="load")
+                    sync_api.expect(page).to_have_url(target)
+            malformed = f"{ORIGIN}{surface}#%E0%A4%A"
+            page.goto(malformed, wait_until="load")
+            sync_api.expect(page).to_have_url(malformed)
+        assert errors == []
+    finally:
+        page.close()
+
+
 @pytest.mark.parametrize("width", WIDTHS)
 def test_news_facets_history_bookmarks_and_shared_meters(
     browser: Any, payloads: dict[str, bytes], width: int, request: pytest.FixtureRequest
 ) -> None:
+    sync_api = site_browser.api()
     document = render_changelog.load()
+    entries = render_changelog.news_entries(document)
     page = browser.new_page(
         viewport={"width": width, "height": 900},
         reduced_motion="reduce",
@@ -1118,7 +1149,7 @@ def test_news_facets_history_bookmarks_and_shared_meters(
     def expected(scores: set[int], topics: set[str] | None = None) -> set[str]:
         return {
             render_changelog.entry_anchor(entry["id"])
-            for entry in document["entries"]
+            for entry in entries
             if entry["significance"]["score"] in scores
             and (topics is None or topics.intersection(entry.get("topics", [])))
         }
@@ -1127,7 +1158,7 @@ def test_news_facets_history_bookmarks_and_shared_meters(
         seen = state()
         visible = {card["id"] for card in seen["cards"] if card["visible"]}
         assert visible == expected(scores, topics)
-        assert seen["count"] == f"{len(visible)} of {len(document['entries'])} news items"
+        assert seen["count"] == f"{len(visible)} of {len(entries)} news items"
         assert seen["empty"] is (not visible)
         assert parse_qs(urlsplit(page.url).query)["reader"] == ["kept"]
         assert seen["overflow"] == 0
@@ -1186,7 +1217,41 @@ def test_news_facets_history_bookmarks_and_shared_meters(
                         }
                 appearances[name] = samples
             assert appearances["scores"] == appearances["home"], scheme
-            assert appearances["topics"] == appearances["home"], scheme
+            border_edges = {"border-top-width", "border-bottom-width"}
+            for key, topic in appearances["topics"].items():
+                home = appearances["home"][key]
+                assert {
+                    name: value
+                    for name, value in topic["appearance"].items()
+                    if name not in border_edges
+                } == {
+                    name: value
+                    for name, value in home["appearance"].items()
+                    if name not in border_edges
+                }, (scheme, key)
+                for edge in border_edges:
+                    assert topic["appearance"][edge] == "1px", (scheme, key, edge)
+                    assert home["appearance"][edge] == "0px", (scheme, key, edge)
+                assert (topic["border"], home["border"]) == ("0px", "1px")
+                assert (topic["gap"], home["gap"]) == ("4px", "normal")
+                assert topic["height"] == pytest.approx(home["height"] + 2, abs=0.1)
+            topic_group = page.locator('[aria-labelledby="news-topics-label"]')
+            group_box = topic_group.bounding_box()
+            assert group_box is not None
+            rows = set()
+            for button in topic_group.locator("button").all():
+                box = button.bounding_box()
+                assert box is not None
+                rows.add(round(box["y"], 1))
+                assert group_box["x"] <= box["x"]
+                assert box["x"] + box["width"] <= group_box["x"] + group_box["width"]
+                assert group_box["y"] <= box["y"]
+                assert box["y"] + box["height"] <= group_box["y"] + group_box["height"]
+                sync_api.expect(button).to_have_css("white-space", "nowrap")
+                sync_api.expect(button).to_have_css("border-left-width", "1px")
+                sync_api.expect(button).to_have_css("border-right-width", "1px")
+            if width == 390:
+                assert len(rows) > 1
             request.node.user_properties.append(
                 (f"chooser-{scheme}", str(appearances["home"]["selected", "normal"]))
             )
@@ -1222,9 +1287,7 @@ def test_news_facets_history_bookmarks_and_shared_meters(
         page.goto(f"{ORIGIN}news.html?reader=kept", wait_until="load")
         seen = check({4, 5})
         assert seen["scores"] == ["4", "5"]
-        used_topics = {
-            topic for entry in document["entries"] for topic in entry.get("topics", [])
-        }
+        used_topics = {topic for entry in entries for topic in entry.get("topics", [])}
         assert set(seen["topics"]) == used_topics
         page.locator('button[data-news-score="3"]').focus()
         page.keyboard.press("Space")
@@ -1251,7 +1314,7 @@ def test_news_facets_history_bookmarks_and_shared_meters(
         page.go_forward(wait_until="load")
         check({4, 5})
         low = max(
-            (entry for entry in document["entries"] if entry["significance"]["score"] < 4),
+            (entry for entry in entries if entry["significance"]["score"] < 4),
             key=lambda entry: len(entry["summary"]) + len(entry.get("details", "")),
         )
         anchor = render_changelog.entry_anchor(low["id"])
