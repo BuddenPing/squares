@@ -2464,13 +2464,9 @@ def test_private_child_environment_cannot_fall_back_to_parent_checkout(
 #: ledger controls. Two remain red and are not listed: `validate_schemas`, on verifier
 #: registry paths under the pruned `resources/web/`, and
 #: `tests/test_change_scoped_selection.py`, on `vendor/kpress`, which no worker carries.
-#: `check_gate_budgets` joined on 2026-10-15 (think-b6ir), when the two workflows it opens
-#: became declared inputs instead of the targets of a review's links: green here is what
-#: says its six controls still reach the register they rehearse.
 GREEN_BASELINE_COMMANDS = (
     "python3 -m devtools.check_readme",
     "python3 -m sqpack.campaign.ledger check",
-    "python3 -m devtools.check_gate_budgets",
 )
 
 
@@ -2498,6 +2494,33 @@ def test_a_control_command_is_green_unmutated_in_a_worker(
     output = outcome.stdout + outcome.stderr
     assert NO_INDEX not in output
     assert outcome.returncode == 0, output
+
+
+def test_gate_budgets_reads_its_wall_workflows_in_a_worker(
+    control_snapshot: tuple[Path, set[Path]],
+) -> None:
+    """The six `check_gate_budgets` controls reach the workflows their register names.
+
+    Not a green baseline: where no bead store is reachable, as on a hosted runner, the
+    checker refuses to confirm an advisory bead and exits 1 before any mutation. What the
+    worker owes it is the two workflows, declared since 2026-10-15 (think-b6ir) rather
+    than brought by a review's link, so a missing one is what this refuses.
+    """
+    tree, _copied = control_snapshot
+    for workflow in controls.wall_workflows():
+        relative = workflow.relative_to(controls.REPO)
+        assert (tree / relative).read_bytes() == workflow.read_bytes(), relative
+    with tempfile.TemporaryDirectory(prefix="negctl-pycache-", dir=tree) as pycache:
+        outcome = run_control_command(
+            "python3 -m devtools.check_gate_budgets",
+            cwd=tree / HERE,
+            environment=controls.control_environment(tree, Path(pycache)),
+            timeout_seconds=controls.DEFAULT_CONTROL_TIMEOUT_SECONDS,
+        )
+    output = outcome.stdout + outcome.stderr
+    assert not outcome.timed_out
+    assert "Traceback" not in output, output
+    assert "has no readable jobs" not in output, output
 
 
 def test_the_root_files_reach_every_worker(control_snapshot: tuple[Path, set[Path]]) -> None:
