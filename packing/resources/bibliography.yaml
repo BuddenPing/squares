@@ -2600,8 +2600,8 @@ sources:
     year: 2026
     venue: GitHub
     dated: '2026-10-14'
-    lineage: builds-on-project
-    credit: Polkovskyi after Ostashev, Couzo, PingYou Ltd
+    lineage: credits-project
+    credit: Polkovskyi after Ostashev, Couzo, PingYou Ltd, Levy
     short_credit: Polkovskyi after Ostashev et al.
     note: >-
       Twenty-four exact certificates at 70a033f0ecfa9e643cd5fb5dbac190cb7f4ffb94, each
@@ -2615,7 +2615,7 @@ sources:
     year: 2026
     venue: GitHub
     dated: '2026-10-14'
-    lineage: builds-on-project
+    lineage: independent
     credit: Daniel after Xu
     note: >-
       One complete exact certificate at e006ce6230f2240457b083199755a3a5d287692c, s(146) <=
