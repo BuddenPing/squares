@@ -240,6 +240,14 @@ PUBLICATION_STATUS = ""
 #: Both retained 1-100 and 1-324 graphics, their PDFs and PNGs share this history.
 INFOGRAPHIC_HISTORY = (
     PublicationHistoryEntry(
+        version="v0.6.1",
+        first_published="October 15, 2026",
+        result_scope=(
+            "Correct both atlas descriptions to match gray case numbers and accents on "
+            "recent bound values only."
+        ),
+    ),
+    PublicationHistoryEntry(
         version="v0.6.0",
         first_published="October 14, 2026",
         result_scope=(
@@ -714,6 +722,16 @@ class ReleaseImpactDecision(NamedTuple):
 # New component cuts append decisions here, newest first, alongside their own histories.
 # No impact is invented retrospectively for the published baseline editions.
 RELEASE_IMPACTS: tuple[ReleaseImpactDecision, ...] = (
+    ReleaseImpactDecision(
+        component="infographics",
+        previous_version="v0.6.0",
+        version="v0.6.1",
+        impact="patch",
+        reason=(
+            "Correct both atlas descriptions to match gray case numbers and accents on "
+            "recent bound values only."
+        ),
+    ),
     ReleaseImpactDecision(
         component="site",
         previous_version="v0.7.5",
