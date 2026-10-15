@@ -241,6 +241,20 @@ uv run --frozen --all-extras --group dev python -m devtools.upper_bound_reports 
 `certify --jobs-dir SCRATCH --workers 1` writes a new receipt from a fresh job directory,
 and `register-plan` prints the record entries the import needs.
 
+## The 175 Certificate, 14 October
+
+On 14 October 2026 at 16:38Z the author answered on #506 that the unnamed 175 certificate
+should be imported (“sure, import it”). Under the owner’s per-count rule it was decidably
+below every earlier report at 175 when it was first committed, on 11 October, so it is
+recorded, and Daniil Ostashev’s #528 (`T-158`), $2.94 \times 10^{-3}$ below it, supersedes
+it. [register-plan-n175.yaml](register-plan-n175.yaml) is the register entry the records
+pull request needs, written by hand since this packet’s declaration requests only the
+counts the issue names; the certificate, its replay and its comparison are the ones above.
+Measured against `T-140` by
+[`compare_lineage.py`](../mishapolk-kkt-refinements-2026-10-14/review/compare_lineage.py),
+every centre lies within 0.011 of that certificate’s and 137 of 175 within $10^{-3}$: the
+same arrangement, Ryan Xu’s as the author refined it, moved.
+
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.
 -->
