@@ -1,5 +1,6 @@
 """Historical browser output needs a worker consumer before link rescue copies it."""
 
+import re
 import subprocess
 from pathlib import Path
 
@@ -7,6 +8,81 @@ import pytest
 
 from devtools import run_negative_controls as controls
 from tests.test_negative_controls import index_fixture_source
+
+#: How `sqpack.campaign.ledger.dead_links` reads a campaign link: everything up to the
+#: closing parenthesis, resolved by its path before any `#`.
+LEDGER_LINK = re.compile(r"\]\(([^)#][^)]*)\)")
+
+
+def test_fragment_links_rescue_their_target(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """`[proof](review.md#section)` needs `review.md` as much as a bare link does."""
+    repo = tmp_path / "source"
+    packing = repo / "packing"
+    archive = packing / "resources"
+    review = archive / "original_review/review.md"
+    review.parent.mkdir(parents=True)
+    review.write_text("# Seven rows close the support\n")
+    bundle = archive / "bundle"
+    bundle.mkdir()
+    (bundle / "certificate.json").write_bytes(b"deciding scientific input")
+    campaign = packing / "campaign/X-001-cover.md"
+    campaign.parent.mkdir()
+    campaign.write_text(
+        "[support proof](../resources/original_review/review.md#seven-rows-close-the-support)\n"
+        "[bundle](../resources/bundle#readme)\n"
+        "[this document](#cover)\n"
+    )
+    register = packing / "frontier/results.yaml"
+    register.parent.mkdir()
+    register.write_text("results: []\n")
+    monkeypatch.setattr(controls, "REPO", repo)
+    monkeypatch.setattr(controls, "ROOT", packing)
+    monkeypatch.setattr(controls, "HERE", Path("packing"))
+    monkeypatch.setattr(controls, "PRUNE", frozenset({archive}))
+    monkeypatch.setattr(controls, "DESCEND", frozenset())
+    monkeypatch.setattr(controls, "LINKED_PRUNE_ROOTS", (archive,))
+    monkeypatch.setattr(controls, "ROOT_DOCUMENTS", ())
+    monkeypatch.setattr(controls, "COPY_SEPARATELY", ())
+    monkeypatch.setattr(controls, "LINK_BACK", ())
+    monkeypatch.setattr(controls, "root_files", lambda: ())
+
+    assert controls.INLINE_LINK.findall(campaign.read_text()) == [
+        "../resources/original_review/review.md",
+        "../resources/bundle",
+    ]
+    assert controls.snapshot_pruned_targets() == [review]
+    assert controls.linked_pruned_directories() == [bundle]
+    index_fixture_source(repo)
+    tree = tmp_path / "worker"
+    controls.clone_tree(tree)
+    assert (tree / review.relative_to(repo)).read_bytes() == review.read_bytes()
+    assert (tree / bundle.relative_to(repo)).is_dir()
+
+
+def test_every_pruned_target_the_ledger_resolves_reaches_a_worker() -> None:
+    """The copier reads campaign links the way `ledger check` does (think-wzmf).
+
+    The ledger stats every relative link's path before its `#`. A target under a pruned
+    root that the copier misses is a dead link in every worker, and the 35 controls that
+    drive `ledger check` would report it in place of the refusal each one rehearses. The
+    original n11 review was that case, linked from campaign Markdown only with fragments.
+    """
+    roots = frozenset(controls.LINKED_PRUNE_ROOTS)
+    files = set(controls.snapshot_pruned_targets())
+    directories = set(controls.linked_pruned_directories())
+    missing = []
+    for document in sorted((controls.ROOT / "campaign").rglob("*.md")):
+        for target in LEDGER_LINK.findall(document.read_text(encoding="utf-8")):
+            if target.startswith(("http://", "https://", "mailto:")):
+                continue
+            resolved = (document.parent / target.split("#")[0]).resolve()
+            if not resolved.exists() or not controls.in_pruned_roots(resolved, roots):
+                continue
+            if resolved not in (files if resolved.is_file() else directories):
+                missing.append(f"{document.relative_to(controls.REPO)} -> {target}")
+    assert not missing
 
 
 def test_operational_links_preserve_checked_consumers_and_scientific_custody(

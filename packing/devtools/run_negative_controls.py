@@ -1555,7 +1555,13 @@ def _clone_into(src: Path, dst: Path) -> None:
         subprocess.run(["cp", "-R", *bulk, str(dst)], capture_output=True, check=True)
 
 
-INLINE_LINK = re.compile(r"\]\(([^)#\s]+)\)")
+# An inline link's target, without its `#fragment`. The checkers in a worker resolve the
+# path before the `#` and then read the heading, so `[proof](review.md#section)` needs
+# `review.md` exactly as `[proof](review.md)` does. The pattern once stopped at a `#` and
+# matched neither, and `ledger check`'s 35 controls kept the original n11 review only
+# because a `docs/` review happened to link it bare (think-wzmf). A bare `(#section)`
+# names this document and matches nothing.
+INLINE_LINK = re.compile(r"\]\(([^)#\s]+)(?:#[^)\s]*)?\)")
 # Omitted sources a checked document may legitimately link into. `.venv` and the five
 # cargo `target` directories are symlinked back whole, and `.gate-running` is a
 # marker, so the linked-file copy covers only the content prunes and referenced
