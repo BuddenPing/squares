@@ -1499,7 +1499,7 @@ def root_files() -> tuple[Path, ...]:
 # saves 14,082,212 of the 14,415,037.
 #
 # `--audit-snapshot` read 226,344,073 bytes on main 6964362b5, 148,343 under the cap, and
-# reads 212,294,894 on this branch, 14,197,522 under it, with 33,033 of the branch's own
+# reads 212,296,412 on this branch, 14,196,004 under it, with 34,551 of the branch's own
 # code, tests and comments counted. All 174 controls fire at `-j 3`.
 # `run_negative_controls --baseline` ran each of the 50 distinct registered commands
 # unmutated in a worker before and after, and each printed the same apart from wall
@@ -1522,6 +1522,14 @@ def root_files() -> tuple[Path, ...]:
 # scored over a red checker. `index_tree` now points each worker at the source's
 # sync-branch refs (`_carry_bead_store`). With `CI=1` the checker exits 1 in a worker
 # built by c8181dd77's runner and 0 in one built by this one, and all six controls fire.
+#
+# Review A8 asked for both full runs again, with the store in every worker. At 902ac9290,
+# `run_negative_controls -j 2` (the host was busy) fired all 174 controls in 629.1 s. In
+# the 50-command `--baseline`, 49 commands match main's apart from wall times. The 50th,
+# `check_gate_budgets`, still exits 0 but now confirms its four advisory beads live
+# where it printed them unchecked. `check_documentation` prints what it printed at
+# 227c345eb. Under `CI=1`, `check_gate_budgets` and `check_session_gate` exit 0 in a
+# worker, the latter byte for byte as on main's selection.
 SNAPSHOT_MAX_BYTES = 216 * 1024 * 1024
 DEFAULT_CONTROL_TIMEOUT_SECONDS = 120.0
 TERMINATION_GRACE_SECONDS = 1.0
@@ -2172,9 +2180,12 @@ def _carry_bead_store(root: Path, environment: dict[str, str]) -> None:
     none: `check_gate_budgets` exited 1 unmutated in every hosted worker, and its six
     controls were scored over a checker already red (review A2 of #611; think-nns5's
     class). The worker borrows the source's objects through `objects/info/alternates`,
-    added after its own index is written, and gets the source's sync-branch refs. Nothing
-    is fetched, so the worker is not made shallow and holds no history, as before. A
-    source without the refs gives the worker none.
+    added after its own index is written, so every source object, any commit among them,
+    becomes resolvable by SHA. The only refs added are the store's (`BEAD_STORE_REFS`):
+    `HEAD` stays unborn and no branch names a source commit, so a checker that walks
+    history from a ref still finds none here, as before (`check_session_gate` reports
+    each session's ancestry uncheckable, unavailable history). Nothing is fetched, so
+    the worker is not shallow. A source without the refs gives the worker none.
     """
     refs = source_bead_store_refs(environment)
     if not refs:
