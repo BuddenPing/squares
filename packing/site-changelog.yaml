@@ -928,13 +928,16 @@ entries:
     result_ids: [T-128, T-129, T-130, T-131, T-132, T-133, T-134, T-135, T-136, T-137, T-138, T-139, T-140, T-141, T-142, T-143, T-144, T-145, T-146]
     topics: [lower-bound, upper-bound, verification]
     summary: |
-      The result register adds twelve upper-bound entries and Guzhou0806’s two
-      40-square lower bounds at V3/C3, with exact certificates and reviewed sources.
+      Twelve upper-bound entries now have complete verification and independent
+      review at V3/C3, alongside Guzhou0806’s two 40-square lower bounds.
       The continuous-pose result becomes the standing 40-square lower bound.
       The new upper bounds are adopted in a later release.
     details: |
-      - The twelve upper-bound entries include Evan Daniel’s fifteen regularized
-        certificates, checked for finite feasibility and reviewed before adoption.
+      - Francisco Couzo, Evan Daniel, Kevin Fang, Nate Chaoweeraprasit, Eric Deleeuw
+        and Mykhailo Polkovskyi contributed the upper-bound work. It includes
+        Daniel’s fifteen regularized certificates, checked for finite feasibility
+        and reviewed before adoption. Three entries were registered in earlier PRs;
+        their completed reviews are part of this intake.
       - Guzhou0806’s clipped-corner and continuous-pose certificates reach V3/C3;
         both 40-square lower-bound records adopt the continuous-pose bound.
       - wand125’s $n = 28$, $29$, $30$ and $122\ldots126$ lower-bound reports remain

@@ -510,13 +510,16 @@ PRs and supporting records: [\#508](https://github.com/jlevy/squares/pull/508).
 
 Significance S3: This grouped intake announcement inherits the highest S3 significance among its newly replayed and admitted results.
 
-The result register adds twelve upper-bound entries and Guzhou0806’s two
-40-square lower bounds at V3/C3, with exact certificates and reviewed sources.
+Twelve upper-bound entries now have complete verification and independent
+review at V3/C3, alongside Guzhou0806’s two 40-square lower bounds.
 The continuous-pose result becomes the standing 40-square lower bound.
 The new upper bounds are adopted in a later release.
 
-- The twelve upper-bound entries include Evan Daniel’s fifteen regularized
-  certificates, checked for finite feasibility and reviewed before adoption.
+- Francisco Couzo, Evan Daniel, Kevin Fang, Nate Chaoweeraprasit, Eric Deleeuw
+  and Mykhailo Polkovskyi contributed the upper-bound work. It includes
+  Daniel’s fifteen regularized certificates, checked for finite feasibility
+  and reviewed before adoption. Three entries were registered in earlier PRs;
+  their completed reviews are part of this intake.
 - Guzhou0806’s clipped-corner and continuous-pose certificates reach V3/C3;
   both 40-square lower-bound records adopt the continuous-pose bound.
 - wand125’s $n = 28$, $29$, $30$ and $122\ldots126$ lower-bound reports remain
