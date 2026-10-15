@@ -1250,6 +1250,10 @@ def test_the_slow_marker_is_declared_only_by_measured_nodes() -> None:
             "test_the_552_import_agrees_with_its_plan_frozen_claim_and_print",
             "test_the_regularized_drawing_of_552_passes_the_third_route_at_the_same_clearances",
             "test_daniels_154_is_another_arrangement_than_squishs_and_nearer_couzos_155",
+            # The 14 October reviews' measurements, 11.47s and 19.95s of call time on
+            # 2026-10-15 on a shared four-core host.
+            "test_the_pingyou_refinements_are_their_named_packings_moved_so_little",
+            "test_593_restates_earlier_certificates_pose_for_pose_and_moves_couzos_237",
         },
         # 24s of call time across 1.
         "test_contact_assembly_labels.py": {
