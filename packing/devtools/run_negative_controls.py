@@ -56,6 +56,15 @@ Usage:
     uv run --frozen python -m devtools.run_negative_controls --audit-snapshot
     uv run --frozen python -m devtools.run_negative_controls --audit-snapshot \
         --prune-candidate packing/campaign/agent-sessions/old-output.log
+    uv run --frozen python -m devtools.run_negative_controls --baseline before.json
+    uv run --frozen python -m devtools.run_negative_controls --baseline after.json \
+        --baseline-command "python3 -m devtools.check_documentation"
+
+`--baseline` is how a change to what a worker holds is shown to leave its checkers alone:
+it builds one private worker and runs each command unmutated there, in the environment a
+control gets, and records what each printed. Two records taken either side of the change
+are compared with `diff`; the worker's own path is written as `<worker>`, so only what the
+commands said differs.
 """
 
 from __future__ import annotations
@@ -1043,6 +1052,25 @@ LINK_BACK = (
 # `sqpack.campaign.ledger check`, which 35 controls drive, failed on agenda 015's
 # closeout naming `.github/PULL_REQUEST_TEMPLATE.md`, which only a link could bring
 # into a worker. Both checkers were red before any mutation was applied.
+#
+# The wall workflows joined on 2026-10-15 (think-b6ir); see `wall_workflows`.
+GATE_BUDGETS = ROOT / "devtools/gate-budgets.yaml"
+
+
+def wall_workflows(register: Path = GATE_BUDGETS) -> tuple[Path, ...]:
+    """The workflows `check_gate_budgets` opens: the `file` of every pull-request wall.
+
+    Six controls drive that checker, and it reads each wall's workflow to find the
+    aggregator that judges it (traced: it opens `packing-validation.yml` and `pages.yml`
+    and no other workflow). Until 2026-10-15 both reached a worker only because a
+    `docs/` review and `defects.md` link them, which is a side effect of prose rather
+    than a declared input; the copy-back no longer follows those documents' links, so
+    the register names them here, and a wall added to it reaches every worker unedited.
+    """
+    walls = safe_load(register.read_text(encoding="utf-8"))["pull_request_walls"]["workflows"]
+    return tuple(dict.fromkeys(REPO / wall["file"] for wall in walls))
+
+
 COPY_SEPARATELY = (
     *couzo.private_input_paths(),
     # The retained n13 family is an exact worker consumer asserted by the n32
@@ -1072,6 +1100,28 @@ COPY_SEPARATELY = (
     ROOT / "resources/README.md",
     ROOT / "resources/bibliography.yaml",
     ROOT / "resources/bibliography.schema.yaml",
+    # Four files think-b6ir's unmutated baselines found missing when the copy-back stopped
+    # following review links on 2026-10-15; each had reached workers only through a
+    # `docs/` review's link. The kingbird-29 cases seed from the provenance drawing, and 12
+    # controls run `test_promote_refine`, `_contacts`, `_relax` and `test_witness_interval`,
+    # which read it (`cases/kingbird29/layout.py` `DEFAULT_SOURCE`). `validate_schemas`
+    # stats every path the verifier registry names; these three are the ones a review
+    # linked, so with them it prints what it printed before. The registry's other paths
+    # under the archive were already missing in workers, and carrying all of them would
+    # cost 4.6 MB (a 2.5 MB release zip among them); that red baseline is think-nns5's.
+    ROOT / "resources/papers/kingbird-square-29-provenance.svg",
+    ROOT / "resources/web/n11-optimality-2026-09-29/source/VERIFY.py",
+    ROOT
+    / "resources/web/queuingtheorydotcom-n11-lean-2026-10-06/receipts/lean"
+    / "AuditN11Statement.lean",
+    ROOT / "resources/web/wand125-closed-form-2026-10-14/review/README.md",
+    # `squish_upper_bound_packets check` compares the receipt against both normalized
+    # claim records, and `tests/test_fn1_input_bindings.py` runs it in a real worker;
+    # they too reached workers only through a review's link until 2026-10-15.
+    *(
+        ROOT / f"resources/web/squish-401-2026-10-07/acquisition/{label}-normalized-claims.json"
+        for label in ("release", "supplement")
+    ),
     # The reported-only n68 packet is complete factual metadata, not author code.
     ROOT / "resources/web/rehwaldt-n68-exact-root-2026-10-08/README.md",
     ROOT / "resources/web/rehwaldt-n68-exact-root-2026-10-08/reported-catalogue.json",
@@ -1141,6 +1191,7 @@ COPY_SEPARATELY = (
     REPO / ".flowmarkignore",
     REPO / ".gitignore",
     REPO / ".github/PULL_REQUEST_TEMPLATE.md",
+    *wall_workflows(),
 )
 # The reader-facing documents live at the repository root now, and the controls reach
 # them: three mutate README.md and ten mutate SYNOPSIS.md, while the schema and
@@ -1422,6 +1473,42 @@ def root_files() -> tuple[Path, ...]:
 # notes naming its receipt. With this comment counted the snapshot measures 226,274,880
 # bytes, 217,536 under the cap; the next intake needs the owner's decision on the cap
 # or think-b6ir's narrower copy-back.
+#
+# 2026-10-15, think-b6ir with think-wzmf: that narrower copy-back, under the unchanged
+# cap. Links are now followed only out of the documents a registered control link-checks
+# in a worker -- the campaign record (`ledger check`), `README.md` and `SYNOPSIS.md`
+# (`check_links`) -- and declared paths come back as before, with each defect's
+# `recorded_in` beside the results register's evidence. The reviews, research, specs
+# and guides still reach every worker; what they link no longer comes with them. On main
+# 6964362b5 that was 235 files of 14,415,037 bytes, 9.1 MB of them web packets and
+# 2.8 MB papers from the archive.
+#
+# Six readers had reached workers only through those links, and each is a declared input
+# now. The bead named two: `check_gate_budgets` opens the two workflows its wall register
+# names (`wall_workflows`, 221,785 bytes), and `ledger check` stats the original n11
+# review, which X-017 links only with fragments that `INLINE_LINK` now matches
+# (think-wzmf). A search of code and registries for the dropped paths found a third:
+# `validate_schemas` stats each defect's `recorded_in`, two of them papers only
+# `defects.md` linked (`defect_pruned_targets`, 81,669 bytes). The unmutated baselines
+# below found two that search had listed without telling them apart from prose: the
+# kingbird-29 cases behind 12 controls read their provenance drawing, and
+# `validate_schemas` stats three verifier-registry paths a review linked (26,343 bytes
+# for the four). The worker tests found the sixth: `squish_upper_bound_packets check`,
+# which `test_fn1_input_bindings` runs in a worker, reads two normalized claim records
+# (3,028 bytes). The last six files are `COPY_SEPARATELY` entries, so the selection
+# saves 14,082,212 of the 14,415,037.
+#
+# `--audit-snapshot` read 226,344,073 bytes on main 6964362b5, 148,343 under the cap, and
+# reads 212,287,522 on this branch, 14,204,894 under it, with 25,661 of the branch's own
+# code, tests and comments counted. All 174 controls fire at `-j 3`.
+# `run_negative_controls --baseline` ran each of the 50 distinct registered commands
+# unmutated in a worker before and after, and each printed the same apart from wall
+# times, the four already red included (the full suite, `validate_schemas`, the
+# operating-rules append script and `test_change_scoped_selection`). `check_documentation`,
+# which no control runs, was red in a worker before (270 distinct lines) and loses none
+# after; it adds 380, the dead links to all 225 dropped files the documents link and 18
+# links to pruned directories a review names, which were recreated empty before. That
+# is the change itself: those links are now checked where `check_documentation` runs.
 SNAPSHOT_MAX_BYTES = 216 * 1024 * 1024
 DEFAULT_CONTROL_TIMEOUT_SECONDS = 120.0
 TERMINATION_GRACE_SECONDS = 1.0
@@ -1546,7 +1633,13 @@ def _clone_into(src: Path, dst: Path) -> None:
         subprocess.run(["cp", "-R", *bulk, str(dst)], capture_output=True, check=True)
 
 
-INLINE_LINK = re.compile(r"\]\(([^)#\s]+)\)")
+# An inline link's target, without its `#fragment`. The checkers in a worker resolve the
+# path before the `#` and then read the heading, so `[proof](review.md#section)` needs
+# `review.md` exactly as `[proof](review.md)` does. The pattern once stopped at a `#` and
+# matched neither, and `ledger check`'s 35 controls kept the original n11 review only
+# because a `docs/` review happened to link it bare (think-wzmf). A bare `(#section)`
+# names this document and matches nothing.
+INLINE_LINK = re.compile(r"\]\(([^)#\s]+)(?:#[^)\s]*)?\)")
 # Omitted sources a checked document may legitimately link into. `.venv` and the five
 # cargo `target` directories are symlinked back whole, and `.gate-running` is a
 # marker, so the linked-file copy covers only the content prunes and referenced
@@ -1578,36 +1671,29 @@ def in_pruned_roots(path: Path, roots: frozenset[Path]) -> bool:
     return path in roots or any(parent in roots for parent in path.parents)
 
 
+#: The documents outside the campaign record whose links a registered control resolves in
+#: a worker, relative to `REPO`: `check_readme` and `check_synopsis` run
+#: `check_synopsis.check_links` over these two, and `ledger check`'s `dead_links` covers
+#: `campaign/`. Nothing a control runs follows a link out of any other document, so no
+#: other document's links are rescued.
+LINK_CHECKED_DOCUMENTS = (Path("README.md"), Path("SYNOPSIS.md"))
+
+
 def _linked_documents() -> list[Path]:
-    """The Markdown the link checker reads inside a worker: the record and root documents."""
-    documents = list((ROOT / "campaign").rglob("*.md"))
-    for document in ROOT_DOCUMENTS:
-        if document.is_dir():
-            documents.extend(
-                path
-                for path in document.rglob("*.md")
-                if not _inside_build_cache(path, below=document)
-            )
-        elif document.is_file() and document.suffix == ".md":
-            documents.append(document)
-    return documents
+    """The Markdown a registered control link-checks inside a worker.
 
-
-def _link_needs_private_target(document: Path, target: Path) -> bool:
-    """Rescue historical browser outputs only for a link a worker actually checks.
-
-    The math-startup run root is already pruned: its reporter and Pages jobs read
-    these observations, but no registered mutation command does. A root review's
-    links copied its two PDFs and frozen HTML back into every worker anyway. The
-    registered link checks read README/SYNOPSIS and campaign Markdown; a link to a
-    review checks its existence or heading, without following that review's links.
-    Keep other rescue surfaces, explicit custody and result registration unchanged.
+    Until 2026-10-15 this was every Markdown file a worker carries: the campaign record,
+    the root documents, `docs/`, `packages/` and `.agents`. A link to a review is checked
+    for its target and heading only, never followed into the review's own links, so the
+    reviews' and research reports' citations of the archive were copied into every worker
+    for no reader; 14.4 MB of them, 12 MB from `resources/` (think-b6ir). The checkers'
+    reach is the rule now, and `tests/test_snapshot_link_consumers.py` holds it.
     """
-    return (
-        not target.is_relative_to(ROOT / "benchmarks/math-startup/runs")
-        or document in {REPO / "README.md", REPO / "SYNOPSIS.md"}
-        or document.is_relative_to(ROOT / "campaign")
+    documents = sorted((ROOT / "campaign").rglob("*.md"))
+    documents.extend(
+        REPO / document for document in LINK_CHECKED_DOCUMENTS if (REPO / document).is_file()
     )
+    return documents
 
 
 def linked_pruned_directories() -> list[Path]:
@@ -1625,11 +1711,7 @@ def linked_pruned_directories() -> list[Path]:
     for document in _linked_documents():
         for raw in INLINE_LINK.findall(document.read_text(errors="ignore")):
             resolved = (document.parent / raw).resolve()
-            if (
-                resolved.is_dir()
-                and in_pruned_roots(resolved, roots)
-                and _link_needs_private_target(document, resolved)
-            ):
+            if resolved.is_dir() and in_pruned_roots(resolved, roots):
                 directories.add(resolved)
     return sorted(directories)
 
@@ -1639,8 +1721,8 @@ def linked_pruned_targets(*, roots: Sequence[Path] | None = None) -> list[Path]:
 
     The archive and the generator-owned renderings are pruned from every worker
     (45 MiB against the cap), but the link checker runs inside the worker and
-    follows inline links from the campaign record and the root documents into
-    them. A target that exists in the real tree must exist in the snapshot, or
+    follows inline links from the campaign record, `README.md` and `SYNOPSIS.md`
+    into them. A target that exists in the real tree must exist in the snapshot, or
     every control that reaches the link scan fails on the dead link instead of
     its registered refusal -- main went red exactly that way on 2026-08-31,
     three merges in a row, on `resources/` and `.agents` links added that same
@@ -1655,33 +1737,64 @@ def linked_pruned_targets(*, roots: Sequence[Path] | None = None) -> list[Path]:
     for document in _linked_documents():
         for raw in INLINE_LINK.findall(document.read_text(errors="ignore")):
             resolved = (document.parent / raw).resolve()
-            if (
-                resolved.is_file()
-                and in_pruned_roots(resolved, selected_roots)
-                and _link_needs_private_target(document, resolved)
-            ):
+            if resolved.is_file() and in_pruned_roots(resolved, selected_roots):
                 targets.add(resolved)
+    return sorted(targets)
+
+
+def _result_paths(register: object) -> list[str]:
+    """The paths the results register names structurally, as written."""
+    raw_paths: list[str] = []
+    for record in cast(dict, register)["results"]:
+        raw_paths.extend([*(record.get("artifacts") or []), *(record.get("controls") or [])])
+        raw_paths.extend(review["path"] for review in record.get("reviews") or [])
+    return raw_paths
+
+
+def _defect_paths(log: object) -> list[str]:
+    """Every defect's `recorded_in`, which `validate_schemas` requires to exist."""
+    return [defect["recorded_in"] for defect in cast(dict, log)["defects"]]
+
+
+def _declared_pruned_targets(
+    raw_paths: Sequence[str], roots: Sequence[Path] | None
+) -> list[Path]:
+    selected_roots = frozenset(LINKED_PRUNE_ROOTS if roots is None else roots)
+    targets: set[Path] = set()
+    for raw in raw_paths:
+        resolved = (REPO / raw).resolve()
+        if resolved.is_file() and in_pruned_roots(resolved, selected_roots):
+            targets.add(resolved)
     return sorted(targets)
 
 
 def result_pruned_targets(*, roots: Sequence[Path] | None = None) -> list[Path]:
     """Pruned files named structurally by the results register."""
     register = safe_load((ROOT / "frontier/results.yaml").read_text(encoding="utf-8"))
-    targets: set[Path] = set()
-    selected_roots = frozenset(LINKED_PRUNE_ROOTS if roots is None else roots)
-    for record in register["results"]:
-        raw_paths = [*(record.get("artifacts") or []), *(record.get("controls") or [])]
-        raw_paths.extend(review["path"] for review in record.get("reviews") or [])
-        for raw in raw_paths:
-            resolved = (REPO / raw).resolve()
-            if resolved.is_file() and in_pruned_roots(resolved, selected_roots):
-                targets.add(resolved)
-    return sorted(targets)
+    return _declared_pruned_targets(_result_paths(register), roots)
+
+
+def defect_pruned_targets(*, roots: Sequence[Path] | None = None) -> list[Path]:
+    """Pruned files a defect is `recorded_in`.
+
+    `validate_schemas`, which ten controls drive, refuses a defect whose `recorded_in` does
+    not exist. Two of those files, papers under `resources/`, reached a worker only
+    through `defects.md`'s links until the copy-back stopped following that document's
+    links on 2026-10-15 (think-b6ir), so the log is read here as the register is. A
+    checkout without a log declares nothing; `validate_schemas` is what refuses that.
+    """
+    path = ROOT / "defects.yaml"
+    if not path.is_file():
+        return []
+    log = safe_load(path.read_text(encoding="utf-8"))
+    return _declared_pruned_targets(_defect_paths(log), roots)
 
 
 def snapshot_pruned_targets() -> list[Path]:
     """All pruned source files needed by checks that run inside a worker."""
-    return sorted({*linked_pruned_targets(), *result_pruned_targets()})
+    return sorted(
+        {*linked_pruned_targets(), *result_pruned_targets(), *defect_pruned_targets()}
+    )
 
 
 def snapshot_copy_targets() -> tuple[Path, ...]:
@@ -1783,7 +1896,7 @@ def snapshot_audit(
     sizes = {path: path.stat().st_size for path in paths}
     roots = (*LINKED_PRUNE_ROOTS, *proposed)
     linked = set(linked_pruned_targets(roots=roots))
-    registered = set(result_pruned_targets(roots=roots))
+    registered = {*result_pruned_targets(roots=roots), *defect_pruned_targets(roots=roots)}
     records = safe_load(spec_path.read_text(encoding="utf-8"))["controls"]
 
     def rows(selected: Sequence[Path] | set[Path]) -> list[dict[str, object]]:
@@ -1875,14 +1988,14 @@ def snapshot_git_source_inventory(revision: str = "HEAD") -> dict[Path, int]:
         if path.suffix == ".md"
         and (
             path.is_relative_to(ROOT / "campaign")
-            or any(
-                path == document or path.is_relative_to(document) for document in ROOT_DOCUMENTS
-            )
+            or path.relative_to(REPO) in LINK_CHECKED_DOCUMENTS
         )
         and BUILD_CACHES.isdisjoint(path.relative_to(REPO).parts)
     ]
     register = ROOT / "frontier/results.yaml"
-    readers = [*documents, register]
+    defect_log = ROOT / "defects.yaml"
+    logs = [defect_log] if defect_log in inventory else []
+    readers = [*documents, register, *logs]
     queries = "".join(inventory[path][0] + "\n" for path in readers)
     contents = subprocess.run(
         ["git", "cat-file", "--batch"],
@@ -1907,20 +2020,15 @@ def snapshot_git_source_inventory(revision: str = "HEAD") -> dict[Path, int]:
     for document in documents:
         for raw in INLINE_LINK.findall(texts[document]):
             path = (document.parent / raw).resolve()
-            if (
-                path in inventory
-                and in_pruned_roots(path, roots)
-                and _link_needs_private_target(document, path)
-            ):
-                rescued.add(path)
-    register_value = safe_load(texts[register])
-    for record in register_value["results"]:
-        paths = [*(record.get("artifacts") or []), *(record.get("controls") or [])]
-        paths.extend(review["path"] for review in record.get("reviews") or [])
-        for raw in paths:
-            path = (REPO / raw).resolve()
             if path in inventory and in_pruned_roots(path, roots):
                 rescued.add(path)
+    declared = _result_paths(safe_load(texts[register]))
+    for log in logs:
+        declared.extend(_defect_paths(safe_load(texts[log])))
+    for raw in declared:
+        path = (REPO / raw).resolve()
+        if path in inventory and in_pruned_roots(path, roots):
+            rescued.add(path)
     named = {*COPY_SEPARATELY, *ROOT_DOCUMENTS}
     separate = [
         *COPY_SEPARATELY,
@@ -2161,6 +2269,97 @@ def run_one(c: dict, tree: Path) -> tuple[bool, str]:
         target.write_bytes(original)
 
 
+def baseline_commands(
+    selected: Sequence[dict], explicit: Sequence[str]
+) -> list[tuple[str, float]]:
+    """The distinct commands a baseline runs, each with the longest timeout it is given.
+
+    Explicit commands replace the registry's, for a checker no control runs; they get the
+    default timeout.
+    """
+    if explicit:
+        return [
+            (command, DEFAULT_CONTROL_TIMEOUT_SECONDS) for command in dict.fromkeys(explicit)
+        ]
+    timeouts: dict[str, float] = {}
+    for c in selected:
+        seconds = float(c.get("timeout_seconds", DEFAULT_CONTROL_TIMEOUT_SECONDS))
+        timeouts[c["run"]] = max(timeouts.get(c["run"], 0.0), seconds)
+    return list(timeouts.items())
+
+
+def baseline_outcomes(commands: Sequence[tuple[str, float]]) -> list[dict[str, object]]:
+    """Run each command unmutated in one fresh private worker, as a control's command runs.
+
+    This is the half of a control that the registry does not score: what the checker
+    prints before anything is corrupted. Workers are shared across controls, so one tree
+    serves every command here too. The worker's path is written as `<worker>` and each
+    command's bytecode cache has a fixed name, so two records taken on either side of a
+    change to the worker's contents differ only where a command's output does.
+    """
+    rows: list[dict[str, object]] = []
+    with tempfile.TemporaryDirectory(prefix="negctl-baseline-") as tmp:
+        tree = Path(tmp) / "w0"
+        clone_tree(tree)
+        spellings = (str(tree.resolve()), str(tree))
+        for index, (command, timeout_seconds) in enumerate(commands):
+            pycache = tree / f"negctl-pycache-{index}"
+            pycache.mkdir()
+            started = time.perf_counter()
+            try:
+                outcome = run_control_command(
+                    command,
+                    cwd=tree / HERE,
+                    environment=control_environment(tree, pycache),
+                    timeout_seconds=timeout_seconds,
+                )
+            finally:
+                shutil.rmtree(pycache, ignore_errors=True)
+            stdout, stderr = outcome.stdout, outcome.stderr
+            for spelling in spellings:
+                stdout = stdout.replace(spelling, "<worker>")
+                stderr = stderr.replace(spelling, "<worker>")
+            rows.append(
+                {
+                    "command": command,
+                    "returncode": outcome.returncode,
+                    "timed_out": outcome.timed_out,
+                    "output_sha256": hashlib.sha256(f"{stdout}\0{stderr}".encode()).hexdigest(),
+                    "wall_seconds": round(time.perf_counter() - started, 3),
+                    "stdout": stdout,
+                    "stderr": stderr,
+                }
+            )
+    return rows
+
+
+def write_baseline(path: Path, commands: Sequence[tuple[str, float]]) -> int:
+    """Create `path` before cloning, so a refusal to overwrite evidence costs nothing."""
+    if not commands:
+        print("  no commands selected for the baseline", file=sys.stderr)
+        return 1
+    try:
+        handle = path.open("x", encoding="utf-8")
+    except FileExistsError:
+        print(
+            f"baseline already exists (--baseline refuses to overwrite): {path}",
+            file=sys.stderr,
+        )
+        return 1
+    with handle:
+        source_bytes = snapshot_source_bytes()
+        rows = baseline_outcomes(commands)
+        handle.write(json.dumps({"source_bytes": source_bytes, "commands": rows}, indent=2))
+        handle.write("\n")
+    for row in rows:
+        print(
+            f"  {row['returncode']:>4}  {str(row['output_sha256'])[:12]}  "
+            f"{row['wall_seconds']:8.2f}s  {row['command']}"
+        )
+    print(f"  baseline of {len(rows)} commands, {source_bytes} source bytes: {path}")
+    return 0
+
+
 PROFILE_TIMEOUT_SECONDS = 60.0
 
 
@@ -2331,6 +2530,20 @@ def _parser() -> argparse.ArgumentParser:
         help="audit a proposed repository-relative prune, retaining inline/result dependencies",
     )
     parser.add_argument(
+        "--baseline",
+        type=Path,
+        help=(
+            "run the selected controls' distinct commands unmutated in one private worker "
+            "and create a JSON record of what each printed; refuses to overwrite"
+        ),
+    )
+    parser.add_argument(
+        "--baseline-command",
+        action="append",
+        default=[],
+        help="with --baseline, run this command instead of the registered ones (repeatable)",
+    )
+    parser.add_argument(
         "--profile-native-script",
         type=Path,
         help="profile this native child script in an existing private diagnostic tree",
@@ -2423,7 +2636,26 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
         except (OSError, ValueError) as error:
             parser.error(str(error))
+    if options.baseline is not None:
+        if options.source_bytes or options.audit_snapshot or options.prune_candidate:
+            parser.error("--baseline does not combine with the snapshot reports")
+        return _run_baseline(options)
+    if options.baseline_command:
+        parser.error("--baseline-command requires --baseline")
     return _run_selected_controls(options, argv)
+
+
+def _run_baseline(options: argparse.Namespace) -> int:
+    """Record the selected controls' commands, or the named ones, run unmutated."""
+    selected: list[dict] = []
+    if not options.baseline_command:
+        spec_path = options.spec if options.spec.is_absolute() else ROOT / options.spec
+        spec = safe_load(spec_path.read_text(encoding="utf-8"))
+        only = options.match
+        selected = [c for c in spec["controls"] if not only or only in c["name"]]
+    return write_baseline(
+        options.baseline, baseline_commands(selected, options.baseline_command)
+    )
 
 
 def _run_selected_controls(options: argparse.Namespace, argv: Sequence[str] | None) -> int:
