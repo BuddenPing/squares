@@ -2745,7 +2745,7 @@
         "n": 105,
         "optimality": {"provenance":"frontier","status":"open"},
         "rigidity": {
-          "assessed_geometry": {"reported_side":"10.7893037837481589","source_url":"https://github.com/BuddenPing/square-packing-certificates/blob/260aaf50230483654802790589c2dfce73237604/n105.cert.json","witness_id":"W-known-best-n105","witness_path":"packing/witnesses/known-best/n-105.yaml"},
+          "assessed_geometry": {"reported_side":"10.78930378374815884","source_url":"https://github.com/BuddenPing/square-packing-certificates/blob/260aaf50230483654802790589c2dfce73237604/n105.cert.json","witness_id":"W-known-best-n105","witness_path":"packing/witnesses/known-best/n-105.yaml"},
           "assessments": [
             {
               "assurance": "numerically-checked",
@@ -2762,7 +2762,7 @@
           "provenance": "absent",
           "state": "not-established"
         },
-        "side": {"display":"s(105) ≤ 10.789304","provenance":"frontier","relation":"upper-bound","value":"10.7893037837481589"}
+        "side": {"display":"s(105) ≤ 10.789304","provenance":"frontier","relation":"upper-bound","value":"10.78930378374815884"}
       },
       {
         "badges": [{"glyph":"≈","meaning":"only known numerically","style":"muted"}],
