@@ -796,6 +796,51 @@ class ReleaseNoPublicChange(NamedTuple):
 
 RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
     ReleaseNoPublicChange(
+        components=("paper:n11-lower-bounds-explainer", "site"),
+        paths=("packing/src/sqpack/campaign/ledger.py",),
+        outputs=(
+            "index.html",
+            "papers/n11-lower-bounds-explainer.html",
+            "papers/n11-lower-bounds-explainer.md",
+        ),
+        reason=(
+            "The ledger's `dead_links` pattern moves, character for character, into the "
+            "module constant `LINK_TARGET`, so a negative-control test can import it "
+            "rather than copy it. What `dead_links` reports is unchanged, and no builder "
+            "calls it. No render was taken, and both components keep their versions."
+        ),
+    ),
+    ReleaseNoPublicChange(
+        components=(
+            "paper:n11-lower-bounds-explainer",
+            "paper:n11-optimality-review",
+            "paper:n11-threshold-bound-review",
+            "paper:square-packing-methods-survey",
+            "site",
+        ),
+        paths=("packing/devtools/run_negative_controls.py",),
+        outputs=(
+            "development.html",
+            "index.html",
+            "papers/n11-lower-bounds-explainer.html",
+            "papers/n11-lower-bounds-explainer.md",
+            "papers/n11-optimality-review.html",
+            "papers/n11-optimality-review.md",
+            "papers/n11-threshold-bound-review.html",
+            "papers/n11-threshold-bound-review.md",
+            "papers/square-packing-methods-survey.html",
+            "papers/square-packing-methods-survey.md",
+        ),
+        reason=(
+            "The negative-control runner is in every builder's import closure through one "
+            "path: `upper_bound_houses.custody` imports it inside the function, and only "
+            "that module's `custody` subcommand calls it. No builder calls it or reads "
+            "what this change edits: the files a mutation worker copies, the link rescue, "
+            "the snapshot log and a `--baseline` mode. No render was taken; the finding "
+            "rests on that import path, and every component keeps its version."
+        ),
+    ),
+    ReleaseNoPublicChange(
         components=("paper:n11-lower-bounds-explainer",),
         paths=(
             "packing/atlas/known-best/bound-citations.json",
