@@ -1252,6 +1252,7 @@ and the cases at 304 and 305 hold them as the house since 12 October 2026. The n
 sides beyond the case corpus are verified beyond-horizon rows that supersede the rows
 tracked at 338, 339, 344, 375, 376, 378 and 379. Of the four certificates the issue does
 not name, 175 has a key of its own, below; 308, 340 and 343 are registered nowhere.
+Claude assistance disclosed.
 
 **[Couzo n175 2026-10-11]**: Francisco Couzo’s exact rational certificate for n = 175 in
 the same release, which #506 does not name;
