@@ -1379,7 +1379,7 @@ def algebraic_against(
         return "equal", exact_span(side), Fraction(0), Fraction(0)
     field = value.field
     places, most = ALGEBRAIC_PLACES
-    while places <= most:
+    while True:
         field.refine_to(places)
         low, high = field.enclose(value)
         apart_low, apart_high = low - side, high - side
@@ -1390,7 +1390,10 @@ def algebraic_against(
         ):
             span = Span(low, high, open_low=False, open_high=False)
             return ("below" if sign > 0 else "above"), span, apart_low, apart_high
-        places *= 2
+        if places >= most:
+            break
+        # Doubling, but the last refinement is to `most` itself, not short of it.
+        places = min(2 * places, most)
     raise ReportError(f"the algebraic side does not separate from {side} at {most} places")
 
 

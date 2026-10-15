@@ -14,6 +14,7 @@ them. Every test reads retained packets only; none needs the network.
 from __future__ import annotations
 
 import json
+import math
 from decimal import Decimal
 from fractions import Fraction
 from pathlib import Path
@@ -179,6 +180,26 @@ def test_an_algebraic_side_is_decided_by_one_exact_sign() -> None:
     assert verdict == "above"
     assert low <= high < 0
     assert reports.algebraic_against(Fraction(3, 2), Fraction(3, 2))[0] == "equal"
+
+
+def test_an_algebraic_comparison_refines_to_its_ceiling_and_refuses_past_it(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Review A10 of #612: the last refinement is to the stated ceiling itself, and a side
+    that does not separate there is refused rather than guessed."""
+    root2 = NumberField([1, 0, -2], (Fraction(1), Fraction(2))).alpha
+    # sqrt(2) rounded down at 80 places: about 1e-80 below it, so the enclosure needs about
+    # 87 places to exclude it to one part in a million.
+    side = Fraction(math.isqrt(2 * 10**160), 10**80)
+    # Doubling from 60 would stop at 60, short of 90; the loop refines to 90 itself.
+    monkeypatch.setattr(reports, "ALGEBRAIC_PLACES", (60, 90))
+    verdict, _span, low, high = reports.algebraic_against(root2, side)
+    assert verdict == "below"
+    assert 0 < low <= high < Fraction(1, 10**79)
+    root2 = NumberField([1, 0, -2], (Fraction(1), Fraction(2))).alpha
+    monkeypatch.setattr(reports, "ALGEBRAIC_PLACES", (60, 60))
+    with pytest.raises(reports.ReportError, match=r"does not separate .* at 60 places"):
+        reports.algebraic_against(root2, side)
 
 
 @pytest.mark.parametrize(
