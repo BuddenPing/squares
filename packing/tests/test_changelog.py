@@ -696,3 +696,52 @@ def test_imported_result_citations_do_not_assign_importance() -> None:
     row["significance"] = {"score": 2, "rationale": "A routine policy clarification."}
     candidate = import_changelog.draft([row], document())
     assert candidate["entries"][-1]["significance"] == row["significance"]
+
+
+def test_news_exclusion_keeps_history_and_fills_the_preview_from_eligible_entries() -> None:
+    data = document()
+    previous = copy.deepcopy(data)
+    excluded = data["entries"][-1]
+    excluded["news_exclusion"] = "Routine typography maintenance."
+    excluded["categories"] = ["documentation"]
+    render_changelog.validate(data)
+    render_changelog.validate_frozen(data, previous)
+    assert data["coverage"] == previous["coverage"]
+    assert data["deliveries"] == previous["deliveries"]
+    github = render_changelog.render_markdown(data)
+    anchor = render_changelog.entry_anchor(excluded["id"])
+    assert f'id="{anchor}"' in github
+    assert f"{data['repository']}/pull/549" in github
+    news = render_changelog.render_news(data)
+    assert 'data-news-entry="later-delivery"' not in news
+    assert 'data-news-entry="foundations"' in news
+    assert 'data-news-entry="admission"' in news
+    archive = f"{data['repository']}/blob/main/CHANGELOG.md#{anchor}"
+    assert f'id="{anchor}" href="{archive}" data-news-target' in news
+    day = "changelog-date-2026-10-14"
+    assert f'id="{day}" href="{data["repository"]}/blob/main/CHANGELOG.md#{day}"' in news
+    assert ">Full changelog</a>" in news
+    about = render_changelog.legacy_news_anchors(data)
+    assert f'id="{anchor}" href="{archive}" data-news-target' in about
+    preview = render_changelog.render_news(data, limit=1)
+    assert re.findall(r'data-news-entry="([^"]+)"', preview) == ["foundations"]
+    assert anchor not in preview
+
+
+@pytest.mark.parametrize("reason", ["", " \t\n", False, {"reason": "maintenance"}])
+def test_news_exclusion_requires_a_nonblank_reason(reason: object) -> None:
+    data = document()
+    data["entries"][0]["news_exclusion"] = reason
+    with pytest.raises(ValueError, match="news_exclusion"):
+        render_changelog.validate(data)
+
+
+def test_documentation_is_bookkeeping_but_not_a_public_news_topic() -> None:
+    data = document()
+    data["entries"][0]["categories"] = ["documentation"]
+    data["entries"][0]["topics"] = ["upper-bound", "verification"]
+    render_changelog.validate(data)
+    assert 'data-news-entry="admission"' in render_changelog.render_news(data)
+    data["entries"][0]["topics"] = ["documentation"]
+    with pytest.raises(ValueError, match="topics"):
+        render_changelog.validate(data)

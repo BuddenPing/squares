@@ -85,6 +85,16 @@ class PublicationHistoryEntry(NamedTuple):
 #: for each deployment's commit, what the page it built stated.
 PUBLICATION_HISTORY = (
     PublicationHistoryEntry(
+        version="v0.7.5",
+        first_published="October 15, 2026",
+        result_scope=(
+            "Unify News and Explanations headings with original publication dates, refine "
+            "significance meters and filters, keep document maintenance out of News, "
+            "announce the newly adopted packings, and use bundled fonts for literal "
+            "mathematical code symbols."
+        ),
+    ),
+    PublicationHistoryEntry(
         version="v0.7.4",
         first_published="October 15, 2026",
         result_scope=(
@@ -698,6 +708,18 @@ class ReleaseImpactDecision(NamedTuple):
 RELEASE_IMPACTS: tuple[ReleaseImpactDecision, ...] = (
     ReleaseImpactDecision(
         component="site",
+        previous_version="v0.7.4",
+        version="v0.7.5",
+        impact="patch",
+        reason=(
+            "Unify News and Explanations headings with original publication dates, refine "
+            "significance meters and filters, keep document maintenance out of News, "
+            "announce the newly adopted packings, and use bundled fonts for literal "
+            "mathematical code symbols."
+        ),
+    ),
+    ReleaseImpactDecision(
+        component="site",
         previous_version="v0.7.3",
         version="v0.7.4",
         impact="patch",
@@ -835,6 +857,55 @@ class ReleaseNoPublicChange(NamedTuple):
 
 
 RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
+    ReleaseNoPublicChange(
+        components=(
+            "paper:n11-lower-bounds-explainer",
+            "paper:n11-optimality-review",
+            "paper:n11-threshold-bound-review",
+            "paper:square-packing-methods-survey",
+        ),
+        paths=(
+            "packing/cases/n11_fractional_certificate/t-018-proof-card.md",
+            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-19-5.md",
+            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-381-100.md",
+            "packing/cases/n11_threshold_certificate/t-025-verifiable-claim-191-50.md",
+            "packing/cases/n11_threshold_certificate/t-026-verifiable-claim-dilation-limit.md",
+            "packing/devtools/overview_sections.py",
+            "packing/devtools/probes/preview_site/header.js",
+            "packing/devtools/render_changelog.py",
+            "packing/devtools/render_n11_lower_bounds_explainer.py",
+            "packing/devtools/render_overview.py",
+            "packing/devtools/site_topics.py",
+        ),
+        outputs=(
+            "papers/n11-lower-bounds-explainer.html",
+            "papers/n11-lower-bounds-explainer.md",
+            "papers/n11-lower-bounds-explainer.pdf",
+            "papers/n11-optimality-review.html",
+            "papers/n11-optimality-review.md",
+            "papers/n11-optimality-review.pdf",
+            "papers/n11-threshold-bound-review.html",
+            "papers/n11-threshold-bound-review.md",
+            "papers/n11-threshold-bound-review.pdf",
+            "papers/square-packing-methods-survey.html",
+            "papers/square-packing-methods-survey.md",
+            "papers/square-packing-methods-survey.pdf",
+        ),
+        reason=(
+            "The shared-import changes affect site reading cards, News filtering and "
+            "article metadata. Standalone paper renderers do not call the new card "
+            "heading/date helpers or the changed News functions. Existing result topic "
+            "keys and labels are unchanged; the removed Documentation topic described "
+            "News. Regenerated claim documents only update the revision their links "
+            "pin. Manuscripts, figures, scientific records and paper font styles are "
+            "unchanged. The new code-symbol fonts are opt-in site assets; standalone "
+            "paper font declarations retain their defaults. The preview probe only "
+            "distinguishes header tabs from inline controls and changes no paper output. "
+            "Each paper keeps its own edition. "
+            "No release PDF was redrawn or "
+            "compared for byte identity in this slice."
+        ),
+    ),
     ReleaseNoPublicChange(
         components=("paper:n11-lower-bounds-explainer",),
         paths=(
@@ -1641,7 +1712,7 @@ def validate_release_impacts(
 #: fresh render, so a link naming the build commit would fail their drift check forever. It is
 #: in no version string. It moves when the claim documents are regenerated for an edition. It
 #: must be a commit on `main`; the site's own links name `main` itself (`devtools.repo_links`).
-PUBLICATION_REVISION = "2472e483"
+PUBLICATION_REVISION = "312dab52"
 
 
 def data_pathspec() -> tuple[str, ...]:

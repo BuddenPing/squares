@@ -2582,6 +2582,7 @@ def test_unmutated_results_checker_is_green_inside_a_worker(
     completed = subprocess.run(
         [sys.executable, "-m", "devtools.check_results"],
         cwd=tree / "packing",
+        env=controls.control_environment(tree, tree / "results-checker-pycache"),
         capture_output=True,
         text=True,
         check=False,
