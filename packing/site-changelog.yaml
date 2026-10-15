@@ -535,10 +535,11 @@ entries:
       that mathematical lineage from the new formalization and its reported build.
     topics: [optimality, verification]
     summary: |
-      Oscar Fitzharding’s reported Lean proof of the 17-square optimum is available
-      with its source packet, announcements and an adversarial comparison with
-      existing work. T-154 is reported at V0/C1; the full Lean build has not been
-      replayed here.
+      Oscar Fitzharding reports a Lean 4 proof that John Bidwell’s 1998 packing of
+      17 unit squares is optimal: $s(17) = 4.67553009360455\ldots$.
+      It is the first proof-assistant proof of this value in our records and uses
+      a different argument from Marc Leonard Overbeck’s candidate proof.
+      T-154 is reported at V0/C1; the full Lean build has not been replayed here.
     artifacts:
       - kind: result
         label: Current 17-square Lean proof report
@@ -808,7 +809,7 @@ entries:
         target: docs/project/reviews/review-2026-10-11-top-level-prose.md
   - id: evan-daniel-attribution-corrections
     date: '2026-10-11'
-    title: "Fuller Credit for Evan Daniel’s Results"
+    title: "Fuller Credit for Daniel’s Results"
     significance:
       score: 3
       rationale: "Substantive public credit corrections concern existing results rather than announce their original mathematical contributions."

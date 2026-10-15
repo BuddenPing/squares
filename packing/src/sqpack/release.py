@@ -85,6 +85,14 @@ class PublicationHistoryEntry(NamedTuple):
 #: for each deployment's commit, what the page it built stated.
 PUBLICATION_HISTORY = (
     PublicationHistoryEntry(
+        version="v0.7.8",
+        first_published="October 15, 2026",
+        result_scope=(
+            "Credit and explain Fitzharding's reported seventeen-square Lean proof "
+            "directly, show only S3 to S5 News, and space significance labels from their bars."
+        ),
+    ),
+    PublicationHistoryEntry(
         version="v0.7.7",
         first_published="October 15, 2026",
         result_scope=(
@@ -741,6 +749,17 @@ class ReleaseImpactDecision(NamedTuple):
 RELEASE_IMPACTS: tuple[ReleaseImpactDecision, ...] = (
     ReleaseImpactDecision(
         component="site",
+        previous_version="v0.7.7",
+        version="v0.7.8",
+        impact="patch",
+        reason=(
+            "Clarify the author, theorem and novelty of the reported seventeen-square "
+            "Lean proof, restrict News to S3 to S5, and adjust shared "
+            "significance-label spacing."
+        ),
+    ),
+    ReleaseImpactDecision(
+        component="site",
         previous_version="v0.7.6",
         version="v0.7.7",
         impact="patch",
@@ -931,6 +950,40 @@ class ReleaseNoPublicChange(NamedTuple):
 
 
 RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
+    ReleaseNoPublicChange(
+        components=(
+            "paper:n11-lower-bounds-explainer",
+            "paper:n11-optimality-review",
+            "paper:n11-threshold-bound-review",
+            "paper:square-packing-methods-survey",
+        ),
+        paths=("packing/frontier/results.yaml",),
+        outputs=(
+            "papers/n11-lower-bounds-explainer.html",
+            "papers/n11-lower-bounds-explainer.md",
+            "papers/n11-lower-bounds-explainer.pdf",
+            "papers/n11-optimality-review.html",
+            "papers/n11-optimality-review.md",
+            "papers/n11-optimality-review.pdf",
+            "papers/n11-threshold-bound-review.html",
+            "papers/n11-threshold-bound-review.md",
+            "papers/n11-threshold-bound-review.pdf",
+            "papers/square-packing-methods-survey.html",
+            "papers/square-packing-methods-survey.md",
+            "papers/square-packing-methods-survey.pdf",
+        ),
+        reason=(
+            "Result headlines use surnames, and T-153/T-154 descriptive prose is clearer. "
+            "The lower-bounds explainer "
+            "reads result and novelty counts, which are unchanged, and its n17 paragraph "
+            "is fixed manuscript text. The optimality and threshold papers' ladder "
+            "figures select none of the changed results. The methods survey substitutes "
+            "no result "
+            "record text. No paper manuscript, selected ladder value, figure input "
+            "or result count changes. This reviewed source-consumer finding does not "
+            "claim byte identity for unrebuilt PDFs."
+        ),
+    ),
     ReleaseNoPublicChange(
         components=(
             "paper:n11-optimality-review",

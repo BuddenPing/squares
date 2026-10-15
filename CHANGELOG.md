@@ -307,10 +307,11 @@ PRs and supporting records: [\#581](https://github.com/jlevy/squares/pull/581) �
 
 Significance S5: This announces the S5 formalization report T-154; significance does not imply independent verification of the complete claim.
 
-Oscar Fitzharding’s reported Lean proof of the 17-square optimum is available
-with its source packet, announcements and an adversarial comparison with
-existing work. T-154 is reported at V0/C1; the full Lean build has not been
-replayed here.
+Oscar Fitzharding reports a Lean 4 proof that John Bidwell’s 1998 packing of
+17 unit squares is optimal: $s(17) = 4.67553009360455\ldots$.
+It is the first proof-assistant proof of this value in our records and uses
+a different argument from Marc Leonard Overbeck’s candidate proof.
+T-154 is reported at V0/C1; the full Lean build has not been replayed here.
 
 The source comparison traces 32 of the 35 patterns to the project’s certified
 sub-pattern ledger, including eleven from wand125. The retained review distinguishes
@@ -483,7 +484,7 @@ PRs and supporting records: [\#496](https://github.com/jlevy/squares/pull/496) �
 
 <a id="changelog-entry-evan-daniel-attribution-corrections"></a>
 
-#### Fuller Credit for Evan Daniel’s Results
+#### Fuller Credit for Daniel’s Results
 
 Significance S3: Substantive public credit corrections concern existing results rather than announce their original mathematical contributions.
 
