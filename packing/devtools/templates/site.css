@@ -1366,7 +1366,7 @@ body {
   font-variant-numeric: tabular-nums;
   font-weight: var(--site-font-weight-sans-medium);
   gap: 0.08em;
-  inline-size: 5em;
+  inline-size: 5.5em;
   justify-content: center;
   padding-inline: 0.28em;
   vertical-align: baseline;
