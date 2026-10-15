@@ -745,9 +745,12 @@ def packings_from_witness(
     representation = witness["representation"]
     unit = witness["coordinates"]["angle_unit"]
     exact_geometry = None
+    exact_rational: Fraction | None = None
     if witness.get("scalar", {}).get("kind") in {"rational", "algebraic-number-field"}:
         exact_geometry, exact_side = materialize_exact_witness(witness)
         side = float(exact_side)
+        if type(exact_side) is Fraction:
+            exact_rational = exact_side
     else:
         side = _number(witness["side"])
     exact: list[Square] = []
@@ -785,11 +788,8 @@ def packings_from_witness(
         rounded = round(frame_angle, 4)
         degrees.append(rounded)
         framed.append(make_square(ident, round(x, 6), round(y, 6), rounded * math.pi / 180))
-    exact_side_value = (
-        exact_side if exact_geometry is not None and type(exact_side) is Fraction else None
-    )
     return (
-        Packing(side, tuple(exact), exact_side_value),
+        Packing(side, tuple(exact), exact_rational),
         Packing(round(side, 9), tuple(framed)),
         tuple(degrees),
     )

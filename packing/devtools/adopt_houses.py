@@ -1872,7 +1872,7 @@ def held_note(n: int, text: str) -> str:
         if mine and " ".join(parts[mine[0]].split()) == written:
             written = parts[mine[0]]
         else:
-            written = closed_form._formatted(written)  # noqa: SLF001
+            written = closed_form.formatted(written)
         place = 0
         while place < len(kept) and kept[place].startswith(
             (*closed_form.LEADS, *closed_form.OPENINGS)

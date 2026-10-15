@@ -428,7 +428,7 @@ def select(
     cases: Mapping[int, Case] | None = None,
     unread: list[str] | None = None,
     algebraic: list[tuple[str, int]] | None = None,
-    held: Mapping[str, str] | None = None,
+    held: Mapping[str, Hold] | None = None,
 ) -> dict[int, Selection]:
     """The house at every count a candidate reaches, against the case records as they are.
 
@@ -440,7 +440,7 @@ def select(
     """
     results = load_results() if results is None else results
     evidence = load_evidence() if evidence is None else evidence
-    held = HELD if held is None else held
+    holds: Mapping[str, Hold] = HELD if held is None else held
     left_out: list[tuple[str, int]] = [] if algebraic is None else algebraic
     selections: dict[int, Selection] = {}
     found_at = candidates(results, evidence, since=since, unread=unread, algebraic=left_out)
@@ -451,7 +451,7 @@ def select(
     for n, found in sorted(found_at.items()):
         case = cases[n] if cases is not None else load_case(n)
         ranked = tuple(sorted(found, key=precedence))
-        free = [candidate for candidate in ranked if candidate.result not in held]
+        free = [candidate for candidate in ranked if candidate.result not in holds]
         best = free[0] if free else None
         below = best is not None and best.side < case.verified
         house = best if below and case.exact else None
@@ -462,7 +462,7 @@ def select(
             house=house,
             candidates=ranked,
             undecided=below and not case.exact,
-            held=tuple(c for c in ranked if c.result in held and c.side < bar),
+            held=tuple(c for c in ranked if c.result in holds and c.side < bar),
             algebraic=tuple(stated.get(n, ())),
         )
     return selections
