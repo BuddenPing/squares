@@ -6428,8 +6428,8 @@ issues:
       a packing the record holds or has pending, and found no blocking defect. Registered as
       T-158 at V3/C3 and adopted as the house at all three counts on 12 October 2026. Each side
       is below its case's earlier ceiling and every other report at its count:
-      by 2.95e-03 at 175 (T-140, and Francisco Couzo's unregistered 337078c certificate,
-      think-9fjl, by 2.94e-03), 3.25e-03 at 232 (T-136) and 3.44e-03 at 264 (the catalogue's
+      by 2.95e-03 at 175 (T-140, and Francisco Couzo's 337078c certificate, which the record
+      registers as T-185, by 2.94e-03), 3.25e-03 at 232 (T-136) and 3.44e-03 at 264 (the catalogue's
       Goebel pattern, T-101). The issue also restates issue 501's sides at the same commit, which
       are the c3d17ab certificates T-149 already carries, and states AI assistance: AI agents
       wrote and ran the search, composition and verification code in a research loop the author
@@ -7055,6 +7055,10 @@ issues:
     replies: []
     close_when: The fixture waits on the menu's own state and the module passes repeatedly under
       load, as the issue's done-when says.
+    notes: >-
+      The project opened this issue; it reports no result, and no acknowledgement is owed on
+      it. `check_requests` still lists an acknowledgement as due, because the record has no
+      state for an issue its owner opened (think-abcm).
   - number: 554
     title: 'Workbench colourer: one colour per angle class across the atlas, not fixed five-degree bands'
     author: jlevy
@@ -7082,6 +7086,10 @@ issues:
     replies: []
     close_when: The colourer derives slots from shared centres and the animate-view contract's core
       check holds exact slots again, as the issue's done-when says.
+    notes: >-
+      The project opened this issue; it reports no result, and no acknowledgement is owed on
+      it. `check_requests` still lists an acknowledgement as due, because the record has no
+      state for an issue its owner opened (think-abcm).
   - number: 552
     title: 'New packing: s(154) ≤ 12.92256640193406: registration request'
     author: evand

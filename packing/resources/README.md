@@ -1251,8 +1251,13 @@ V3/C3 on the
 and the cases at 304 and 305 hold them as the house since 12 October 2026. The nine
 sides beyond the case corpus are verified beyond-horizon rows that supersede the rows
 tracked at 338, 339, 344, 375, 376, 378 and 379. Of the four certificates the issue does
-not name, 175 is T-185 at V0/C0, recorded on 15 October 2026 at the author’s request and
-superseded by T-158; 308, 340 and 343 are registered nowhere.
+not name, 175 has a key of its own, below; 308, 340 and 343 are registered nowhere.
+
+**[Couzo n175 2026-10-11]**: Francisco Couzo’s exact rational certificate for n = 175 in
+the same release, which #506 does not name;
+[packet](web/couzo-certificates-2026-10-11/README.md).
+T-185 records it at V0/C0, at the author’s request of 14 October 2026, superseded by
+T-158; the source’s standing table says it was seeded from Ryan Xu.
 Claude assistance disclosed.
 
 ## Evan Daniel’s regularizer, vendored 11 October 2026

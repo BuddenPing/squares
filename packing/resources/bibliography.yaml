@@ -2081,6 +2081,24 @@ sources:
       source checks with Squares Project (Levy) verification code; this project lineage is
       not independent. The certificates are retained as factual data; the unlicensed prose
       is hash-pinned. Claude assistance disclosed. No optimizer, local or global claim.
+  - key: '[Couzo n175 2026-10-11]'
+    authors: [Couzo]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-11'
+    lineage: builds-on-project
+    credit: Couzo after Xu, Daniel, Ellsworth, Levy
+    short_credit: Couzo after Xu et al.
+    note: >-
+      The release's certificate at 175 at 337078ca3e05153aceb099237b175cf64af5748a, first
+      committed on 11 October 2026, which issue 506 does not name and its author asked on 14
+      October to import: an exact optimum from Daniel's exact contact solver that the
+      source's standing table says was seeded from Xu, and that refines the author's own
+      issue-488 certificate (T-140), itself refined from Xu's packing with Daniel's fq and
+      Ellsworth's refine_packing. The source checks with Squares Project (Levy) verification
+      code; this project lineage is not independent. Retained in the
+      couzo-certificates-2026-10-11 packet as factual data. Claude assistance disclosed. No
+      optimizer, local or global claim.
   - key: '[Daniel regularizer 2026-10-11]'
     authors: [Daniel]
     year: 2026
@@ -2605,7 +2623,7 @@ sources:
     short_credit: Polkovskyi after Ostashev et al.
     note: >-
       Twenty-four exact certificates at 70a033f0ecfa9e643cd5fb5dbac190cb7f4ffb94, each
-      tightening the standing certificate at its count to a KKT endpoint; twelve are below
+      re-solving a certificate reported at its count to a KKT endpoint; twelve are below
       every earlier report, at 129, 154, 156, 175, 176, 204, 232, 264, 271, 302, 303 and
       304. No licence: derived exact facts only, no upstream byte retained. census.json
       credits ten re-cut counts to 'Antigravity'; issue 593 discloses Gemini assistance. No

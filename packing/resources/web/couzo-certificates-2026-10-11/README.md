@@ -175,8 +175,8 @@ than the ones above. No packet retains the `f311f08` versions, and think-a4wq ho
 `02f9690` update of the tracked rows.
 
 The four certificates the issue does not name are each an import of their own
-(`result-import.md`, stage 1). This import compares them here and registers none of
-them:
+(`result-import.md`, stage 1). This import compares them here, and the 12 October import
+registered none of them:
 
 - **175.** Below the case ceiling, 13.7688992766137689 (Ryan Xu, T-125), by
   $1.78 \times 10^{-3}$, and below T-140 (#488) by $1.70 \times 10^{-6}$, T-130 (#460)
