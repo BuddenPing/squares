@@ -1058,13 +1058,30 @@ def test_news_cards_expand_only_on_press_and_legacy_bookmarks_forward(
             link.click()
             sync_api.expect(page).to_have_url(target)
         anchor = render_changelog.entry_anchor(entries[0]["id"])
+        scores = {4, 5, entries[0]["significance"]["score"]}
         page.goto(f"{ORIGIN}about.html#{anchor}", wait_until="load")
-        page.wait_for_url(f"{ORIGIN}news.html#{anchor}")
+        page.wait_for_url(
+            lambda address: (
+                urlsplit(address)._replace(query="").geturl() == f"{ORIGIN}news.html#{anchor}"
+            )
+        )
+        query = urlsplit(page.url).query
+        if scores == {4, 5}:
+            assert query == ""
+        else:
+            assert parse_qs(query, keep_blank_values=True) == {
+                "news-s": [",".join(str(score) for score in sorted(scores))]
+            }
         sync_api.expect(page.locator(f"#{anchor}")).to_be_visible()
         owner = page.locator(f"[data-news-day]#{anchor}")
         sync_api.expect(owner.locator(".site-news-expand")).to_have_attribute(
             "aria-expanded", "true"
         )
+        forwarded = page.evaluate(NEWS_FILTERS)
+        assert {int(score) for score in forwarded["scores"]} == scores
+        target_card = next(card for card in forwarded["cards"] if card["id"] == anchor)
+        assert target_card["visible"]
+        assert target_card["full"]
     finally:
         page.close()
     if width == 390:
