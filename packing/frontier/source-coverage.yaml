@@ -4002,10 +4002,16 @@ sources:
   - resources/web/couzo-certificates-2026-10-12/acquisition/claims.json
   evidence:
   - E-couzo-561-certificate-report
-  notes: All 9 complete certificates are retained as the source wrote them, each admitted only where its
-    exact side equals, or rounds up to, the side its source prints. T-NNN records the in-horizon report.
-    All 27 native jobs have full outcomes. No selected override or superseded claim is created at this
-    source-only stage; current cases and earlier source ownership remain unchanged.
+  - E-couzo-561-exact-feasibility
+  notes: >-
+    All 9 complete certificates are retained as the source wrote them, each admitted only
+    where its exact side equals, or rounds up to, the side its source prints. T-161 records
+    the in-horizon report, at V3/C3 since the 14 October review
+    (docs/project/reviews/review-2026-10-14-upper-bound-imports-561-593.md) reproduced the
+    replay and decided the cited certificates again by the third route. All 27 native jobs
+    have full outcomes. No selected override is created: at 237 issue 593 (T-183) is smaller
+    and holds the case, and at 156, 176 and 271 PR 574 (T-174) is smaller, whose houses are
+    held for the owner.
   claims_record: resources/web/couzo-certificates-2026-10-12/acquisition/beyond-horizon-claims.json
 - id: dostashev-compositions-2026-10-12
   title: Daniil Ostashev's cut-out and composition packings at fe43a64, issue562
@@ -4027,10 +4033,15 @@ sources:
   - resources/web/dostashev-compositions-2026-10-12/acquisition/claims.json
   evidence:
   - E-ostashev-562-certificate-report
-  notes: All 3 complete certificates are retained as the source wrote them, each admitted only where its
-    exact side equals, or rounds up to, the side its source prints. T-NNN records the in-horizon report.
-    All 9 native jobs have full outcomes. No selected override or superseded claim is created at this
-    source-only stage; current cases and earlier source ownership remain unchanged.
+  - E-ostashev-562-exact-feasibility
+  notes: >-
+    All 3 complete certificates are retained as the source wrote them, each admitted only
+    where its exact side equals, or rounds up to, the side its source prints. T-162 records
+    the in-horizon report, at V3/C3 since the 14 October review
+    (docs/project/reviews/review-2026-10-14-upper-bound-imports-561-593.md) reproduced the
+    replay and decided the cited certificates again by the third route. All 9 native jobs
+    have full outcomes. No selected override is created: at 129, 204 and 303 PR 574 (T-174)
+    is smaller, whose houses are held for the owner.
 - id: pingyou-n302-certificate-2026-10-12
   title: PingYou Ltd's n302 certificate at 5a86ac3, issue564
   role: source-repository
@@ -4049,12 +4060,17 @@ sources:
   - resources/web/pingyou-n302-certificate-2026-10-12/acquisition/claims.json
   evidence:
   - E-pingyou-564-certificate-report
-  notes: The 1 complete certificate is kept as derived exact facts, no upstream byte retained, admitted
-    only where its exact side equals, or rounds up to, the side its source prints. T-NNN records the in-horizon
-    report. All 3 native jobs have full outcomes. No selected override or superseded claim is created
-    at this source-only stage; current cases and earlier source ownership remain unchanged.
-- id: couzo-certificates-2026-10-13
-  title: Francisco Couzo's exact rational certificates at b85dee2, issues 583 and 586
+  - E-pingyou-564-exact-feasibility
+  notes: >-
+    The 1 complete certificate is kept as derived exact facts, no upstream byte retained,
+    admitted only where its exact side equals, or rounds up to, the side its source prints.
+    T-164 records the in-horizon report, at V3/C3 since the 14 October review
+    (docs/project/reviews/review-2026-10-14-upper-bound-imports-561-593.md) reproduced the
+    replay and decided the cited certificates again by the third route. All 3 native jobs
+    have full outcomes. No selected override is created: at 302 issue 583's certificate, as
+    issue 586's packet retains it (T-181), is smaller and holds the case.
+- id: couzo-certificates-2026-10-13-in-corpus
+  title: Francisco Couzo's exact rational certificates at b85dee2, issues 583 and 586, n154, n176, n211, n241 and n302
   role: source-repository
   url: https://github.com/franciscouzo/square-packing/tree/b85dee2b964e7f7fb9f765227e60c44cdcd3aa4d
   local: resources/web/couzo-certificates-2026-10-13/
@@ -4066,6 +4082,35 @@ sources:
     - 211
     - 241
     - 302
+  reviewed: '2026-10-14'
+  source_date: '2026-10-13'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/results.yaml
+  - resources/web/couzo-certificates-2026-10-13/acquisition/claims.json
+  evidence:
+  - E-couzo-583-586-certificate-report
+  - E-couzo-586-exact-feasibility
+  notes: >-
+    The five in-corpus certificates of the release, at 154, 176, 211, 241 and 302, retained
+    as the source wrote them; T-182 records 154, 211 and 241, T-181 the 302, which issue
+    583's revision also pins, and T-165 the 176, at V3/C3 since the 14 October review
+    (docs/project/reviews/review-2026-10-14-upper-bound-imports-561-593.md) reproduced the
+    replay and decided them again by the third route. They are a source entry of their own
+    because the release's claims record, which the beyond-horizon rows of
+    couzo-certificates-2026-10-13 are read against, holds the claims beyond the corpus only.
+    On 15 October 2026 the cases at 154, 211, 241 and 302 adopted these certificates, the
+    selected overrides below; at 176 PR 574 (T-174) is smaller, whose houses are held for
+    the owner.
+- id: couzo-certificates-2026-10-13
+  title: Francisco Couzo's exact rational certificates at b85dee2, issues 583 and 586
+  role: source-repository
+  url: https://github.com/franciscouzo/square-packing/tree/b85dee2b964e7f7fb9f765227e60c44cdcd3aa4d
+  local: resources/web/couzo-certificates-2026-10-13/
+  source_key: '[Couzo certificates 2026-10-13]'
+  scope:
+    n_values:
     - 339
     - 344
     - 375
@@ -4084,10 +4129,15 @@ sources:
   - resources/web/couzo-certificates-2026-10-13/acquisition/claims.json
   evidence:
   - E-couzo-583-586-certificate-report
-  notes: All 14 complete certificates are retained as the source wrote them, each admitted only where
-    its exact side equals, or rounds up to, the side its source prints. T-NNN records the in-horizon report.
-    All 42 native jobs have full outcomes. No selected override or superseded claim is created at this
-    source-only stage; current cases and earlier source ownership remain unchanged.
+  notes: >-
+    All 14 complete certificates are retained as the source wrote them, each admitted only
+    where its exact side equals, or rounds up to, the side its source prints, and all 42
+    native jobs have full outcomes, which the 14 October review
+    (docs/project/reviews/review-2026-10-14-upper-bound-imports-561-593.md) reproduced. The
+    beyond-horizon rows at 339, 344, 375, 376, 378, 379, 380, 381 and 382 are read against
+    the release's claims record; the in-corpus certificates at 154, 176, 211, 241 and 302
+    are an entry of their own (couzo-certificates-2026-10-13-in-corpus), since that record
+    holds the claims beyond the corpus only.
   claims_record: resources/web/couzo-certificates-2026-10-13/acquisition/beyond-horizon-claims.json
 - id: pingyou-n153-refinement-2026-10-12
   title: PingYou Ltd's refined n153 certificate at 431186b, issue504
@@ -4107,10 +4157,15 @@ sources:
   - resources/web/pingyou-n153-refinement-2026-10-12/acquisition/claims.json
   evidence:
   - E-pingyou-504-refinement-report
-  notes: The 1 complete certificate is kept as derived exact facts, no upstream byte retained, admitted
-    only where its exact side equals, or rounds up to, the side its source prints. T-NNN records the in-horizon
-    report. All 3 native jobs have full outcomes. No selected override or superseded claim is created
-    at this source-only stage; current cases and earlier source ownership remain unchanged.
+  - E-pingyou-504-refinement-exact-feasibility
+  notes: >-
+    The 1 complete certificate is kept as derived exact facts, no upstream byte retained,
+    admitted only where its exact side equals, or rounds up to, the side its source prints.
+    T-166 records the in-horizon report, at V3/C3 since the 14 October review
+    (docs/project/reviews/review-2026-10-14-upper-bound-imports-561-593.md) reproduced the
+    replay and decided the cited certificates again by the third route. All 3 native jobs
+    have full outcomes. No selected override is created: at 153 issue 573 (T-173) is smaller
+    and holds the case.
 - id: pingyou-n207-refinement-2026-10-12
   title: PingYou Ltd's refined n207 certificate at 1041863, issue503
   role: source-repository
@@ -4129,10 +4184,15 @@ sources:
   - resources/web/pingyou-n207-refinement-2026-10-12/acquisition/claims.json
   evidence:
   - E-pingyou-503-refinement-report
-  notes: The 1 complete certificate is kept as derived exact facts, no upstream byte retained, admitted
-    only where its exact side equals, or rounds up to, the side its source prints. T-NNN records the in-horizon
-    report. All 3 native jobs have full outcomes. No selected override or superseded claim is created
-    at this source-only stage; current cases and earlier source ownership remain unchanged.
+  - E-pingyou-503-refinement-exact-feasibility
+  notes: >-
+    The 1 complete certificate is kept as derived exact facts, no upstream byte retained,
+    admitted only where its exact side equals, or rounds up to, the side its source prints.
+    T-167 records the in-horizon report, at V3/C3 since the 14 October review
+    (docs/project/reviews/review-2026-10-14-upper-bound-imports-561-593.md) reproduced the
+    replay and decided the cited certificates again by the third route. All 3 native jobs
+    have full outcomes. No selected override is created: at 207 issue 573 (T-173) is smaller
+    and holds the case.
 - id: pingyou-n146-refinement-2026-10-12
   title: PingYou Ltd's n146 refinement at 820b9ff, issue566
   role: source-repository
@@ -4151,10 +4211,15 @@ sources:
   - resources/web/pingyou-n146-refinement-2026-10-12/acquisition/claims.json
   evidence:
   - E-pingyou-566-certificate-report
-  notes: The 1 complete certificate is kept as derived exact facts, no upstream byte retained, admitted
-    only where its exact side equals, or rounds up to, the side its source prints. T-NNN records the in-horizon
-    report. All 3 native jobs have full outcomes. No selected override or superseded claim is created
-    at this source-only stage; current cases and earlier source ownership remain unchanged.
+  - E-pingyou-566-exact-feasibility
+  notes: >-
+    The 1 complete certificate is kept as derived exact facts, no upstream byte retained,
+    admitted only where its exact side equals, or rounds up to, the side its source prints.
+    T-168 records the in-horizon report, at V3/C3 since the 14 October review
+    (docs/project/reviews/review-2026-10-14-upper-bound-imports-561-593.md) reproduced the
+    replay and decided the cited certificates again by the third route. All 3 native jobs
+    have full outcomes. No selected override is created: at 146 PR 574 (T-174) is smaller,
+    whose houses are held for the owner.
 - id: pingyou-n261-refinement-2026-10-12
   title: PingYou Ltd's n261 refinement at e70342d, issue567
   role: source-repository
@@ -4173,10 +4238,15 @@ sources:
   - resources/web/pingyou-n261-refinement-2026-10-12/acquisition/claims.json
   evidence:
   - E-pingyou-567-certificate-report
-  notes: The 1 complete certificate is kept as derived exact facts, no upstream byte retained, admitted
-    only where its exact side equals, or rounds up to, the side its source prints. T-NNN records the in-horizon
-    report. All 3 native jobs have full outcomes. No selected override or superseded claim is created
-    at this source-only stage; current cases and earlier source ownership remain unchanged.
+  - E-pingyou-567-exact-feasibility
+  notes: >-
+    The 1 complete certificate is kept as derived exact facts, no upstream byte retained,
+    admitted only where its exact side equals, or rounds up to, the side its source prints.
+    T-169 records the in-horizon report, at V3/C3 since the 14 October review
+    (docs/project/reviews/review-2026-10-14-upper-bound-imports-561-593.md) reproduced the
+    replay and decided the cited certificates again by the third route. All 3 native jobs
+    have full outcomes. No selected override is created: at 261 PR 574 (T-174) is smaller,
+    whose houses are held for the owner.
 - id: pingyou-n105-refinement-2026-10-12
   title: PingYou Ltd's n105 contact refinement at 260aaf5, issue568
   role: source-repository
@@ -4195,10 +4265,15 @@ sources:
   - resources/web/pingyou-n105-refinement-2026-10-12/acquisition/claims.json
   evidence:
   - E-pingyou-568-certificate-report
-  notes: The 1 complete certificate is kept as derived exact facts, no upstream byte retained, admitted
-    only where its exact side equals, or rounds up to, the side its source prints. T-NNN records the in-horizon
-    report. All 3 native jobs have full outcomes. No selected override or superseded claim is created
-    at this source-only stage; current cases and earlier source ownership remain unchanged.
+  - E-pingyou-568-exact-feasibility
+  notes: >-
+    The 1 complete certificate is kept as derived exact facts, no upstream byte retained,
+    admitted only where its exact side equals, or rounds up to, the side its source prints.
+    T-170 records the in-horizon report, at V3/C3 since the 14 October review
+    (docs/project/reviews/review-2026-10-14-upper-bound-imports-561-593.md) reproduced the
+    replay and decided the cited certificates again by the third route. All 3 native jobs
+    have full outcomes. No selected override is created: at 105 PR 574 (T-174) is smaller,
+    whose houses are held for the owner.
 - id: pingyou-n272-refinement-2026-10-12
   title: PingYou Ltd's n272 contact refinement at 260aaf5, issue569
   role: source-repository
@@ -4217,10 +4292,15 @@ sources:
   - resources/web/pingyou-n272-refinement-2026-10-12/acquisition/claims.json
   evidence:
   - E-pingyou-569-certificate-report
-  notes: The 1 complete certificate is kept as derived exact facts, no upstream byte retained, admitted
-    only where its exact side equals, or rounds up to, the side its source prints. T-NNN records the in-horizon
-    report. All 3 native jobs have full outcomes. No selected override or superseded claim is created
-    at this source-only stage; current cases and earlier source ownership remain unchanged.
+  - E-pingyou-569-exact-feasibility
+  notes: >-
+    The 1 complete certificate is kept as derived exact facts, no upstream byte retained,
+    admitted only where its exact side equals, or rounds up to, the side its source prints.
+    T-171 records the in-horizon report, at V3/C3 since the 14 October review
+    (docs/project/reviews/review-2026-10-14-upper-bound-imports-561-593.md) reproduced the
+    replay and decided the cited certificates again by the third route. All 3 native jobs
+    have full outcomes. No selected override is created: at 272 PR 574 (T-174) is smaller,
+    whose houses are held for the owner.
 - id: couzo-issue583-2026-10-13
   title: Francisco Couzo's exact rational certificates at 4596670, issues 570 and 583
   role: source-repository
@@ -4245,10 +4325,15 @@ sources:
   - resources/web/couzo-issue583-2026-10-13/acquisition/claims.json
   evidence:
   - E-couzo-583-certificate-report
-  notes: All 7 complete certificates are retained as the source wrote them, each admitted only where its
-    exact side equals, or rounds up to, the side its source prints. T-NNN records the in-horizon report.
-    All 21 native jobs have full outcomes. No selected override or superseded claim is created at this
-    source-only stage; current cases and earlier source ownership remain unchanged.
+  - E-couzo-583-exact-feasibility
+  notes: >-
+    All 7 complete certificates are retained as the source wrote them, each admitted only
+    where its exact side equals, or rounds up to, the side its source prints. T-172 and
+    T-181 record the in-horizon report, at V3/C3 since the 14 October review
+    (docs/project/reviews/review-2026-10-14-upper-bound-imports-561-593.md) reproduced the
+    replay and decided the cited certificates again by the third route. All 21 native jobs
+    have full outcomes. No selected override is created: at 154, 211 and 241 issue 586's
+    certificates (T-182) are smaller and hold the cases.
   claims_record: resources/web/couzo-issue583-2026-10-13/acquisition/beyond-horizon-claims.json
 - id: mishapolk-exact-certificates-2026-10-12
   title: Mishapolk's exact certificates at 336bdf5, issue573
@@ -4273,10 +4358,17 @@ sources:
   - resources/web/mishapolk-exact-certificates-2026-10-12/acquisition/claims.json
   evidence:
   - E-mishapolk-573-certificate-report
-  notes: All 6 complete certificates are kept as derived exact facts, no upstream byte retained, each
-    admitted only where its exact side equals, or rounds up to, the side its source prints. T-NNN records
-    the in-horizon report. All 12 native jobs have full outcomes. No selected override or superseded claim
-    is created at this source-only stage; current cases and earlier source ownership remain unchanged.
+  - E-mishapolk-573-exact-feasibility
+  notes: >-
+    All 6 complete certificates are kept as derived exact facts, no upstream byte retained,
+    each admitted only where its exact side equals, or rounds up to, the side its source
+    prints. T-173 records the in-horizon report, at V3/C3 since the 14 October review
+    (docs/project/reviews/review-2026-10-14-upper-bound-imports-561-593.md) reproduced the
+    replay and decided the cited certificates again by the third route. All 12 native jobs
+    have full outcomes. On 15 October 2026 the cases at 153 and 207 adopted these
+    certificates, the selected overrides below; PR 574's algebraic certificates there
+    (T-174) are smaller and rest on one route, and whether to adopt them is the owner's
+    decision (RP-3).
 - id: pingyou-pr574-certificates-2026-10-13
   title: PingYou Ltd's PR 574 certificate refinements at 4c319c2
   role: source-repository
@@ -4379,10 +4471,17 @@ sources:
   - resources/web/pingyou-pr574-certificates-2026-10-13/acquisition/claims.json
   evidence:
   - E-pingyou-574-certificate-report
-  notes: All 85 complete certificates are kept as derived exact facts, no upstream byte retained, each
-    admitted only where its exact side equals, or rounds up to, the side its source prints. T-NNN records
-    the in-horizon report. All 117 native jobs have full outcomes. No selected override or superseded
-    claim is created at this source-only stage; current cases and earlier source ownership remain unchanged.
+  - E-pingyou-574-exact-feasibility
+  - E-pingyou-574-algebraic-feasibility
+  notes: >-
+    All 85 complete certificates are kept as derived exact facts, no upstream byte retained,
+    each admitted only where its exact side equals, or rounds up to, the side its source
+    prints. T-174 records the in-horizon report, at V3/C3 since the 14 October review
+    (docs/project/reviews/review-2026-10-14-upper-bound-imports-574.md) reproduced the
+    replay and decided the cited certificates again by the third route. All 117 native jobs
+    have full outcomes. No selected override is created: the houses at the 60 rational
+    counts where T-174 is smallest are held for the owner (devtools.select_houses.HELD), and
+    its algebraic certificates at 70, 153 and 207 wait on the owner's decision RP-3.
 - id: dostashev-merged-bands-2026-10-13
   title: Daniil Ostashev's merged-band and relaxed-composition packings at b909e1b, issue575
   role: source-repository
@@ -4404,10 +4503,15 @@ sources:
   - resources/web/dostashev-merged-bands-2026-10-13/acquisition/claims.json
   evidence:
   - E-ostashev-575-certificate-report
-  notes: All 4 complete certificates are retained as the source wrote them, each admitted only where its
-    exact side equals, or rounds up to, the side its source prints. T-NNN records the in-horizon report.
-    All 12 native jobs have full outcomes. No selected override or superseded claim is created at this
-    source-only stage; current cases and earlier source ownership remain unchanged.
+  - E-ostashev-575-exact-feasibility
+  notes: >-
+    All 4 complete certificates are retained as the source wrote them, each admitted only
+    where its exact side equals, or rounds up to, the side its source prints. T-175 records
+    the in-horizon report, at V3/C3 since the 14 October review
+    (docs/project/reviews/review-2026-10-14-upper-bound-imports-561-593.md) reproduced the
+    replay and decided the cited certificates again by the third route. All 12 native jobs
+    have full outcomes. On 15 October 2026 the case at 304 adopted its certificate, the
+    selected override below; at 211 and 241 issue 586's certificates (T-182) are smaller.
 - id: wand125-fine-net-n39-66625-2026-10-13
   title: Wand125 reported n39 fine-net lower bound, no issue
   role: source-repository
@@ -4902,10 +5006,15 @@ sources:
   - resources/web/mishapolk-records-2026-10-14/acquisition/claims.json
   evidence:
   - E-mishapolk-593-certificate-report
-  notes: All 72 complete certificates are kept as derived exact facts, no upstream byte retained, each
-    admitted only where its exact side equals, or rounds up to, the side its source prints. T-NNN records
-    the in-horizon report. All 9 native jobs have full outcomes. No selected override or superseded claim
-    is created at this source-only stage; current cases and earlier source ownership remain unchanged.
+  - E-mishapolk-593-exact-feasibility
+  notes: >-
+    All 72 complete certificates are kept as derived exact facts, no upstream byte retained,
+    each admitted only where its exact side equals, or rounds up to, the side its source
+    prints. T-183 records the in-horizon report, at V3/C3 since the 14 October review
+    (docs/project/reviews/review-2026-10-14-upper-bound-imports-561-593.md) reproduced the
+    replay and decided the cited certificates again by the third route. All 9 native jobs
+    have full outcomes. On 15 October 2026 the case at 237 adopted its certificate, the
+    selected override below.
 - id: bengreff-s76-certificate-2026-10-14
   title: Benjamin Greff's mixed cover for s(76) = 9, issue594
   role: source-repository
