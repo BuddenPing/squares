@@ -543,11 +543,10 @@ def test_the_writer_rebuilds_every_adopted_record_from_its_prior_state(
     for move in replayed:
         assert move.house.result == houses.ADOPTED[move.n]
         committed = select.case_path(move.n).read_text(encoding="utf-8")
-        written = adopt.rewrite(move)
-        # A pass that read a record the closed form had already raised (15 October) is
-        # replayed as it ran, after it; an earlier pass is replayed before it.
-        if not closed_form.carried(move.text):
-            written = closed_form.replay(move.n, written)
+        # The closed form's paragraph stays directly under the title, ahead of any later
+        # pass's (`apply_closed_form --check` holds that), so its replay follows every
+        # pass, the 15 October one too, which read records it had already raised.
+        written = closed_form.replay(move.n, adopt.rewrite(move))
         held, wrote = _front(committed), _front(written)
         for key in OWNED:
             assert held.get(key) == wrote.get(key), f"n={move.n}: packing.{key}"
