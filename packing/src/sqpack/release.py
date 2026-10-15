@@ -85,6 +85,14 @@ class PublicationHistoryEntry(NamedTuple):
 #: for each deployment's commit, what the page it built stated.
 PUBLICATION_HISTORY = (
     PublicationHistoryEntry(
+        version="v0.7.6",
+        first_published="October 15, 2026",
+        result_scope=(
+            "Keep routine push and component release validation focused on quick checks "
+            "while preserving explicit deep checkpoints."
+        ),
+    ),
+    PublicationHistoryEntry(
         version="v0.7.5",
         first_published="October 15, 2026",
         result_scope=(
@@ -708,6 +716,16 @@ class ReleaseImpactDecision(NamedTuple):
 RELEASE_IMPACTS: tuple[ReleaseImpactDecision, ...] = (
     ReleaseImpactDecision(
         component="site",
+        previous_version="v0.7.5",
+        version="v0.7.6",
+        impact="patch",
+        reason=(
+            "Keep routine push and component release validation focused on quick checks "
+            "while preserving explicit deep checkpoints."
+        ),
+    ),
+    ReleaseImpactDecision(
+        component="site",
         previous_version="v0.7.4",
         version="v0.7.5",
         impact="patch",
@@ -857,6 +875,31 @@ class ReleaseNoPublicChange(NamedTuple):
 
 
 RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
+    ReleaseNoPublicChange(
+        components=("paper:n11-lower-bounds-explainer",),
+        paths=(
+            "packing/cases/n11_fractional_certificate/t-018-proof-card.md",
+            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-19-5.md",
+            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-381-100.md",
+            "packing/cases/n11_threshold_certificate/t-025-verifiable-claim-191-50.md",
+            "packing/cases/n11_threshold_certificate/t-026-verifiable-claim-dilation-limit.md",
+            "packing/src/sqpack/cli/validate.py",
+        ),
+        outputs=(
+            "papers/n11-lower-bounds-explainer.html",
+            "papers/n11-lower-bounds-explainer.md",
+            "papers/n11-lower-bounds-explainer.pdf",
+        ),
+        reason=(
+            "The validation CLI changes ordinary push selection and its explicit slow "
+            "option; standalone paper rendering invokes neither. The five regenerated "
+            "claim documents differ from main only in repository link revision, from "
+            "312dab52 to 6f3d6cc2, as checked directly. Their embedded certificates and "
+            "verifiers are unchanged. No paper manuscript, figure, mathematical check "
+            "or font declaration changes. The paper keeps v0.4.6. No release PDF was "
+            "redrawn or compared for byte identity in this slice."
+        ),
+    ),
     ReleaseNoPublicChange(
         components=(
             "paper:n11-lower-bounds-explainer",
@@ -1712,7 +1755,7 @@ def validate_release_impacts(
 #: fresh render, so a link naming the build commit would fail their drift check forever. It is
 #: in no version string. It moves when the claim documents are regenerated for an edition. It
 #: must be a commit on `main`; the site's own links name `main` itself (`devtools.repo_links`).
-PUBLICATION_REVISION = "312dab52"
+PUBLICATION_REVISION = "6f3d6cc2"
 
 
 def data_pathspec() -> tuple[str, ...]:
