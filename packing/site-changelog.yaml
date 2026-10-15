@@ -6,6 +6,59 @@ softschema:
   status: enforced
 repository: https://github.com/jlevy/squares
 entries:
+  - id: october-fourteen-reviewed-packing-adoptions
+    date: '2026-10-15'
+    title: "Smaller Verified Packings for 18 Square Counts"
+    significance:
+      score: 3
+      rationale: "This adoption announcement inherits the highest S3 significance of its reviewed packing results."
+    topics: [upper-bound, verification]
+    pull_requests:
+      - 614
+    categories:
+      - records
+    result_ids:
+      - T-161
+      - T-162
+      - T-164
+      - T-165
+      - T-166
+      - T-167
+      - T-168
+      - T-169
+      - T-170
+      - T-171
+      - T-172
+      - T-173
+      - T-174
+      - T-175
+      - T-181
+      - T-182
+      - T-183
+    summary: |
+      Eighteen case records now use smaller, exactly verified packings from the
+      14 October intake. Francisco Couzo, Daniil Ostashev, PingYou Ltd and Mykhailo
+      Polkovskyi supplied the adopted certificates; each case retains credit for
+      earlier designs and refinements.
+    details: |
+      - The adopted packings cover 105, 129, 146, 153, 154, 156, 176, 204, 207, 211,
+        237, 241, 261, 271, 272, 302, 303 and 304 squares. The case records give their
+        exact sides and certificate links.
+      - Independent checks and review raised 17 reported results to V3/C3. These
+        establish that the packings fit; they do not prove optimality.
+      - Smaller certificates from PingYou Ltd’s T-174 remain unadopted while the
+        project owner decides their storage cost. Ten of these cases use the next
+        eligible reviewed certificate; its algebraic certificates at 70, 153 and 207
+        await a separate owner decision.
+    references:
+      - label: Case records
+        target: packing/frontier/README.md
+      - label: Reviewed result register
+        target: packing/frontier/RESULTS.md
+      - label: Review of the 14 October upper-bound reports
+        target: docs/project/reviews/review-2026-10-14-upper-bound-imports-561-593.md
+      - label: Review of PingYou Ltd’s PR 574 certificates
+        target: docs/project/reviews/review-2026-10-14-upper-bound-imports-574.md
   - id: october-fourteen-intake-records
     date: '2026-10-14'
     title: "Two Bound Families and 22 More Results From the 14 October Intake"
@@ -79,11 +132,11 @@ entries:
         target: packing/campaign/issue-intake/upper-bounds-20261014/README.md
   - id: reusable-intake-process-and-decided-comparisons
     date: '2026-10-14'
-    title: "A Reusable Intake Process and 17 Decided Comparisons"
+    title: "Seventeen Packing Comparisons Decided Exactly"
     significance:
       score: 2
       rationale: "Process, policy and verification work on reports already recorded; it registers no new result."
-    topics: [engineering, verification, documentation]
+    topics: [upper-bound, verification, engineering]
     pull_requests:
       - 605
     categories:
@@ -91,11 +144,10 @@ entries:
       - documentation
       - records
     summary: |
-      The result-intake process is now a reusable runbook: the report-order ledger, the
-      owner’s standing decisions, a compute cap with a tracked validation backlog, and
-      verdict comments drafted from the ledger. Seventeen comparisons the printed
-      precision left undecided for PR #574 are now decided exactly, and none is below
-      the side already recorded.
+      Seventeen comparisons that printed precision left undecided for PR #574 are
+      now decided exactly. None is below the side already recorded. The intake runbook
+      records the report-order ledger, the owner’s standing decisions, a compute cap
+      with a tracked validation backlog, and verdict comments drafted from the ledger.
     details: |
       - Pull requests merge with a merge commit by default, issues and pull requests
         share one label set, and credits name people by name, keeping a handle only as
@@ -226,7 +278,7 @@ entries:
     categories:
       - site
       - documentation
-    topics: [documentation, engineering]
+    topics: [engineering]
     summary: |
       The public changelog links project releases to their papers, posters and
       result pages. Each paper, the site and the shared pair of posters has its own
@@ -283,7 +335,7 @@ entries:
       - T-053
       - T-063
       - T-065
-    topics: [verification, documentation]
+    topics: [correction, audit]
     summary: |
       The significance scores for three results have been corrected. Their
       verification and confirmation ratings and numerical bounds are unchanged.
@@ -569,7 +621,7 @@ entries:
     pull_requests: [558]
     categories: [records]
     result_ids: [T-147, T-148]
-    topics: [upper-bound, documentation]
+    topics: [upper-bound]
     summary: |
       PingYou Ltd identifies its unreleased AI agent, PY, as assisting with both
       its 153- and 207-square solutions. The result records, case pages and source
@@ -695,7 +747,7 @@ entries:
       rationale: "A focused public reading and layout improvement makes existing explanations easier to use."
     pull_requests: [513]
     categories: [site, documentation]
-    topics: [documentation, engineering]
+    topics: [engineering]
     summary: |
       A narrower prose column and responsive text-only navigation make the project’s
       reader pages easier to follow across screen sizes. Editorial corrections clarify
@@ -724,7 +776,7 @@ entries:
     pull_requests: [508]
     categories: [records, documentation]
     result_ids: [T-062, T-064, T-081]
-    topics: [optimality, documentation]
+    topics: [optimality, correction]
     summary: |
       The 46-square citation and the README and About accounts of $s(60) = 8$
       explicitly credit Evan Daniel. The attribution audit covers the result register,
@@ -743,7 +795,7 @@ entries:
       rationale: "A public reporting route and clearer site introduction improve participation without a new mathematical result."
     pull_requests: [502]
     categories: [site, documentation]
-    topics: [documentation]
+    topics: [engineering]
     summary: |
       The homepage and About invite result reports through a shared form that asks
       contributors for the name they want credited. README opens with the website
@@ -827,7 +879,7 @@ entries:
       rationale: "A coherent public navigation structure improves discovery of existing atlas, results and explanation pages."
     pull_requests: [462]
     categories: [site]
-    topics: [engineering, documentation]
+    topics: [engineering]
     summary: |
       Shared navigation connects the homepage’s packing previews with the atlas,
       result records, papers and exports. The pages use readable formulas and
@@ -859,7 +911,9 @@ entries:
       rationale: "Reader-facing typography and mathematical title corrections improve the published papers without changing their claims."
     pull_requests: [492]
     categories: [documentation, pipeline]
-    topics: [documentation]
+    news_exclusion: >-
+      Routine title-case, punctuation and print-spacing maintenance; no new result,
+      explanation or reader capability.
     summary: |
       Paper fronts, references and version histories use consistent title case and
       typographic punctuation. Part I’s print spacing keeps its colophon with the final
@@ -904,7 +958,7 @@ entries:
       rationale: "A substantial new illustrated explanation connects search, refinement and certification for readers across the full pipeline."
     pull_requests: [477]
     categories: [documentation]
-    topics: [upper-bound, documentation]
+    topics: [upper-bound, verification]
     summary: |
       The methods tutorial explains search and certification through 32 selected
       upper-bound improvements and five attributed packing illustrations. Daniel’s
@@ -930,7 +984,7 @@ entries:
       rationale: "A coordinated public atlas and print-export launch materially improves how readers inspect and share packings."
     pull_requests: [474]
     categories: [site]
-    topics: [engineering, documentation]
+    topics: [engineering]
     summary: |
       The web atlas and redesigned 100- and 324-packing posters have shared legends
       and complete named credits for comparing packings on screen and in print.
@@ -994,7 +1048,7 @@ entries:
       rationale: "New external packing reports and their source history are notable focused news without an optimality or complete verification claim."
     pull_requests: [479]
     categories: [records, pipeline]
-    topics: [upper-bound, documentation]
+    topics: [upper-bound]
     summary: |
       Francisco Couzo reports smaller sides at $n = 375$ and $378$, with the earlier
       source facts preserved as dated history. The comparisons concern printed
@@ -1004,6 +1058,12 @@ entries:
       - label: Beyond-horizon source coverage
         target: packing/frontier/source-coverage.yaml
 deliveries:
+- number: 614
+  title: 'research: adopt the 14 October reviews, seventeen entries at V3/C3 and eighteen houses,
+    PR #574''s held for the owner'
+  merged_at: '2026-10-15T09:58:13Z'
+  base_ref: main
+  merge_commit: d33de8b105f5b7a43646ad5fc2aa890894dbb50c
 - number: 598
   title: 'research: intake layer 6, the 12 October results (T-157 to T-160) and their
     houses'
@@ -1353,6 +1413,7 @@ stacks:
   evidence: https://github.com/jlevy/squares/pull/518
 coverage:
   pull_requests:
+  - 614
   - 598
   - 592
   - 595
@@ -1544,3 +1605,27 @@ frozen_entries:
   - 585
   - 587
   - 591
+- id: october-fourteen-intake-records
+  date: '2026-10-14'
+  pull_requests:
+  - 602
+- id: reusable-intake-process-and-decided-comparisons
+  date: '2026-10-14'
+  pull_requests:
+  - 605
+- id: october-fourteen-intake-ledger
+  date: '2026-10-14'
+  pull_requests:
+  - 601
+- id: october-twelve-intake-and-house-admissions
+  date: '2026-10-14'
+  pull_requests:
+  - 598
+- id: project-changelog-and-independent-editions
+  date: '2026-10-14'
+  pull_requests:
+  - 590
+- id: verification-significance-and-announcement-audit
+  date: '2026-10-14'
+  pull_requests:
+  - 563
