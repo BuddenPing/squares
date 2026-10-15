@@ -85,6 +85,14 @@ class PublicationHistoryEntry(NamedTuple):
 #: for each deployment's commit, what the page it built stated.
 PUBLICATION_HISTORY = (
     PublicationHistoryEntry(
+        version="v0.7.3",
+        first_published="October 15, 2026",
+        result_scope=(
+            "Raise the 14 October upper-bound entries to V3/C3 on their stage 4 reviews "
+            "and adopt eight houses at 153, 154, 207, 211, 237, 241, 302 and 304."
+        ),
+    ),
+    PublicationHistoryEntry(
         version="v0.7.2",
         first_published="October 14, 2026",
         result_scope=(
@@ -680,6 +688,16 @@ class ReleaseImpactDecision(NamedTuple):
 RELEASE_IMPACTS: tuple[ReleaseImpactDecision, ...] = (
     ReleaseImpactDecision(
         component="site",
+        previous_version="v0.7.2",
+        version="v0.7.3",
+        impact="patch",
+        reason=(
+            "Raise the 14 October upper-bound entries to V3/C3 on their stage 4 reviews "
+            "and adopt eight houses at 153, 154, 207, 211, 237, 241, 302 and 304."
+        ),
+    ),
+    ReleaseImpactDecision(
+        component="site",
         previous_version="v0.7.1",
         version="v0.7.2",
         impact="patch",
@@ -795,6 +813,116 @@ class ReleaseNoPublicChange(NamedTuple):
 
 
 RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
+    ReleaseNoPublicChange(
+        components=("paper:n11-lower-bounds-explainer",),
+        paths=(
+            "packing/atlas/known-best/bound-citations.json",
+            "packing/atlas/known-best/composite-figure.json",
+            "packing/cases/n11_fractional_certificate/t-018-proof-card.md",
+            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-19-5.md",
+            "packing/cases/n11_fractional_certificate/t-018-verifiable-claim-381-100.md",
+            "packing/cases/n11_threshold_certificate/t-025-verifiable-claim-191-50.md",
+            "packing/cases/n11_threshold_certificate/t-026-verifiable-claim-dilation-limit.md",
+            "packing/devtools/adopt_houses.py",
+            "packing/devtools/check_half_angle_area.py",
+            "packing/devtools/regularize_axis_components.py",
+            "packing/devtools/select_houses.py",
+            "packing/devtools/upper_bound_houses.py",
+            "packing/devtools/upper_bound_reports.py",
+            "packing/frontier/results.yaml",
+            "packing/src/sqpack/cli/validate.py",
+        ),
+        outputs=(
+            "papers/n11-lower-bounds-explainer.html",
+            "papers/n11-lower-bounds-explainer.md",
+        ),
+        reason=(
+            "Rendered from main at 6964362b and from this branch with the browser's math "
+            "pass, every file the explainer writes is byte-identical but its HTML, which "
+            "differs only in where an empty style attribute falls within one formula's span, "
+            "as it does between any two renders. The 14 October records and the house "
+            "adoption of 15 October 2026, with the site's v0.7.3 cut, do not reach the "
+            "explainer, which keeps v0.4.6."
+        ),
+    ),
+    ReleaseNoPublicChange(
+        components=(
+            "paper:n11-optimality-review",
+            "paper:n11-threshold-bound-review",
+        ),
+        paths=(
+            "packing/devtools/adopt_houses.py",
+            "packing/devtools/check_half_angle_area.py",
+            "packing/devtools/regularize_axis_components.py",
+            "packing/devtools/select_houses.py",
+            "packing/devtools/upper_bound_houses.py",
+            "packing/devtools/upper_bound_reports.py",
+            "packing/frontier/results.yaml",
+        ),
+        outputs=(
+            "papers/n11-optimality-review.html",
+            "papers/n11-optimality-review.md",
+            "papers/n11-optimality-review.pdf",
+            "papers/n11-threshold-bound-review.html",
+            "papers/n11-threshold-bound-review.md",
+            "papers/n11-threshold-bound-review.pdf",
+        ),
+        reason=(
+            "Rendered from main at 6964362b and from this branch at one link revision, both "
+            "papers' HTML, Markdown and PDF are byte-identical. The register's rungs and the "
+            "house adoption of 15 October 2026 change the record and its writers; neither "
+            "review cites them."
+        ),
+    ),
+    ReleaseNoPublicChange(
+        components=("paper:square-packing-methods-survey",),
+        paths=(
+            "packing/devtools/adopt_houses.py",
+            "packing/devtools/check_half_angle_area.py",
+            "packing/devtools/regularize_axis_components.py",
+            "packing/devtools/select_houses.py",
+            "packing/devtools/upper_bound_houses.py",
+            "packing/devtools/upper_bound_reports.py",
+            "packing/frontier/n-084.md",
+            "packing/frontier/n-086.md",
+            "packing/frontier/n-102.md",
+            "packing/frontier/n-103.md",
+            "packing/frontier/n-105.md",
+            "packing/frontier/n-108.md",
+            "packing/frontier/n-123.md",
+            "packing/frontier/n-126.md",
+            "packing/frontier/n-127.md",
+            "packing/frontier/n-129.md",
+            "packing/frontier/n-131.md",
+            "packing/frontier/n-146.md",
+            "packing/frontier/n-153.md",
+            "packing/frontier/n-154.md",
+            "packing/frontier/n-175.md",
+            "packing/frontier/n-180.md",
+            "packing/frontier/n-207.md",
+            "packing/frontier/n-209.md",
+            "packing/frontier/n-236.md",
+            "packing/frontier/n-237.md",
+            "packing/frontier/n-238.md",
+            "packing/frontier/n-239.md",
+            "packing/frontier/n-261.md",
+            "packing/frontier/n-267.md",
+            "packing/frontier/n-295.md",
+            "packing/frontier/results.yaml",
+            "packing/frontier/source-coverage.yaml",
+        ),
+        outputs=(
+            "papers/square-packing-methods-survey.html",
+            "papers/square-packing-methods-survey.md",
+            "papers/square-packing-methods-survey.pdf",
+        ),
+        reason=(
+            "Rendered from main at 6964362b and from this branch at one link revision, the "
+            "survey's HTML, Markdown and PDF are byte-identical. Its account of the adopted "
+            "houses is dated 11 and 12 October; the case records the house adoption of 15 "
+            "October 2026 moves and the register's rungs reach none of its text."
+        ),
+    ),
     ReleaseNoPublicChange(
         components=("paper:n11-lower-bounds-explainer",),
         paths=(
@@ -1303,7 +1431,7 @@ def validate_release_impacts(
 #: fresh render, so a link naming the build commit would fail their drift check forever. It is
 #: in no version string. It moves when the claim documents are regenerated for an edition. It
 #: must be a commit on `main`; the site's own links name `main` itself (`devtools.repo_links`).
-PUBLICATION_REVISION = "ba21cfa0"
+PUBLICATION_REVISION = "9e58bdb2"
 
 
 def data_pathspec() -> tuple[str, ...]:
