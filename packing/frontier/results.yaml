@@ -23730,7 +23730,6 @@ results:
     artifacts:
       - packing/resources/web/couzo-certificates-2026-10-11/README.md
       - packing/resources/web/couzo-certificates-2026-10-11/acquisition/claims.json
-      - packing/resources/web/couzo-certificates-2026-10-11/source/certificates/n175.cert
       - packing/devtools/upper_bound_reports.py
     controls: [packing/tests/test_upper_bound_reports.py]
     notes: >-
@@ -23742,6 +23741,9 @@ results:
       RY-10) decided it again on the third route in scratch, with six controls, and that
       decision is not retained. The receipt is receipts/exact-certification.json.xz in
       couzo-certificates-2026-10-11, shared with T-152.
+
+      The certificate is source/certificates/n175.cert in couzo-certificates-2026-10-11; it
+      stays out of this entry's artifacts so that the workers' snapshot stays under its cap.
 
       At n = 175 the certificate is above the case's ceiling (Daniil Ostashev, T-158) by
       2.94e-03, as dostashev-records-2026-10-12's claim record measures exactly; it is below
@@ -23858,7 +23860,6 @@ results:
     evidence: [E-mishapolk-70a033f-certificate-report]
     artifacts:
       - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/README.md
-      - packing/resources/web/mishapolk-kkt-refinements-2026-10-14/acquisition/claims.json
       - packing/devtools/upper_bound_reports.py
     controls: [packing/tests/test_upper_bound_reports.py]
     notes: >-
@@ -23871,9 +23872,10 @@ results:
       and every pair by at least 9.99e-101.
 
       The replay's receipts are receipts/exact-certification-nNNN.json.xz in
-      mishapolk-kkt-refinements-2026-10-14, one for each of the 24 counts, and the derived
-      certificates are facts/n-NNN.yaml.gz there; both stay out of this entry's artifacts so
-      that the workers' snapshot stays under its cap.
+      mishapolk-kkt-refinements-2026-10-14, one for each of the 24 counts, the derived
+      certificates are facts/n-NNN.yaml.gz there, and the claim record that compares each
+      with its case is acquisition/claims.json; all three stay out of this entry's artifacts
+      so that the workers' snapshot stays under its cap.
 
       At n = 129 the certificate is below the case's ceiling (Ryan Xu, improved by Evan
       Daniel, T-146) by 2.02e-03; below #593 (Mykhailo Polkovskyi (Mishapolk)) by 1.19e-19;
@@ -24183,7 +24185,6 @@ results:
     artifacts:
       - packing/resources/web/evand-n146-2026-10-14/README.md
       - packing/resources/web/evand-n146-2026-10-14/acquisition/claims.json
-      - packing/resources/web/evand-n146-2026-10-14/source/search/packer/candidates/tt2_n146.cert
       - packing/devtools/upper_bound_reports.py
     controls: [packing/tests/test_upper_bound_reports.py]
     notes: >-
@@ -24193,9 +24194,9 @@ results:
       CPU seconds and 21.33 job wall seconds, the longest job 7.24 seconds. Every positive
       clears every wall by at least 5.00e-21 and every pair by at least 9.99e-21.
 
-      The replay's receipt is receipts/exact-certification.json.xz in evand-n146-2026-10-14;
-      it stays out of this entry's artifacts so that the workers' snapshot stays under its
-      cap.
+      The replay's receipt is receipts/exact-certification.json.xz in evand-n146-2026-10-14,
+      and the certificate is source/search/packer/candidates/tt2_n146.cert there; both stay
+      out of this entry's artifacts so that the workers' snapshot stays under its cap.
 
       At n = 146 the certificate is below the case's ceiling (Ryan Xu, improved by Robert
       Barnett, T-150) by 1.38e-08; below T-101 (#375) (the Kingbird catalogue, verified by
