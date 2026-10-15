@@ -637,7 +637,7 @@ def test_a_refinement_credits_the_person_its_headline_names_singular_or_plural(
     lines, _ = run(
         capsys, ["--ids", "T-150", "--date", "2026-10-12", "--all", "--min-significance", "1"]
     )
-    assert ": Robert Barnett, refining Ryan Xu's packing " in lines[1]
+    assert ": Robert Barnett, refining Ryan Xu's packings " in lines[1]
     both = [ra.Count(n, UPPER, exact("13")) for n in (146, 261)]
     assert ra.worked_on(records.results["T-150"], both, records, ra.Names()) == (
         "refining Ryan Xu's packings"

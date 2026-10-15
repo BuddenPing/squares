@@ -830,7 +830,8 @@ def printed_at(value: object, side: Fraction) -> bool:
 
 
 def _above(move: Move) -> object:
-    return move.packing["reported_upper_bound"].get("value")
+    """The reported value of the house the move replaces, where the record states one."""
+    return (move.packing.get("reported_upper_bound") or {}).get("value")
 
 
 def _value(candidate: select_houses.Candidate, above: object = None) -> str:
