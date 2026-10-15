@@ -20,10 +20,6 @@ from sqpack.campaign import ledger
 from sqpack.yamlio import safe_load
 from tests.test_negative_controls import index_fixture_source
 
-#: How `sqpack.campaign.ledger.dead_links` reads a campaign link: everything up to the
-#: closing parenthesis, resolved by its path before any `#`.
-LEDGER_LINK = re.compile(r"\]\(([^)#][^)]*)\)")
-
 
 def test_fragment_links_rescue_their_target(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
@@ -72,28 +68,53 @@ def test_fragment_links_rescue_their_target(
     assert (tree / bundle.relative_to(repo)).is_dir()
 
 
-def test_every_pruned_target_the_ledger_resolves_reaches_a_worker() -> None:
-    """The copier reads campaign links the way `ledger check` does (think-wzmf).
+@pytest.mark.parametrize(
+    ("checked", "pattern"),
+    [
+        ("campaign", ledger.LINK_TARGET),
+        ("README.md", check_synopsis.LINK_TARGET),
+        ("SYNOPSIS.md", check_synopsis.LINK_TARGET),
+    ],
+)
+def test_every_pruned_target_a_link_checker_resolves_reaches_a_worker(
+    checked: str, pattern: re.Pattern[str]
+) -> None:
+    """The copier reads each checked document's links the way its checker does.
 
-    The ledger stats every relative link's path before its `#`. A target under a pruned
-    root that the copier misses is a dead link in every worker, and the 35 controls that
-    drive `ledger check` would report it in place of the refusal each one rehearses. The
-    original n11 review was that case, linked from campaign Markdown only with fragments.
+    `ledger check` resolves campaign links and `check_links` resolves README's and
+    SYNOPSIS's, each by the path before any `#`, and each with its own pattern, imported
+    here rather than copied. A target under a pruned root that the copier misses is a
+    dead link in every worker, and the controls that drive the checker (35 for the
+    ledger, 12 for `check_synopsis`, 4 for `check_readme`) would report it in place of
+    the refusal each rehearses. The original n11 review was that case, linked from
+    campaign Markdown only with fragments (think-wzmf).
     """
+    documents = (
+        sorted((controls.ROOT / "campaign").rglob("*.md"))
+        if checked == "campaign"
+        else [controls.REPO / checked]
+    )
     roots = frozenset(controls.LINKED_PRUNE_ROOTS)
     files = set(controls.snapshot_pruned_targets())
     directories = set(controls.linked_pruned_directories())
     missing = []
-    for document in sorted((controls.ROOT / "campaign").rglob("*.md")):
-        for target in LEDGER_LINK.findall(document.read_text(encoding="utf-8")):
-            if target.startswith(("http://", "https://", "mailto:")):
+    reached = 0
+    for document in documents:
+        for target in pattern.findall(document.read_text(encoding="utf-8")):
+            path = target.partition("#")[0]
+            if not path or target.startswith(("http://", "https://", "mailto:")):
                 continue
-            resolved = (document.parent / target.split("#")[0]).resolve()
+            resolved = (document.parent / path).resolve()
             if not resolved.exists() or not controls.in_pruned_roots(resolved, roots):
                 continue
+            reached += 1
             if resolved not in (files if resolved.is_file() else directories):
                 missing.append(f"{document.relative_to(controls.REPO)} -> {target}")
     assert not missing
+    if checked != "README.md":
+        # The campaign and SYNOPSIS reach into pruned roots hundreds of times; a parse
+        # that found none would make this test vacuous.
+        assert reached
 
 
 def test_the_link_checked_documents_are_the_ones_registered_controls_check() -> None:

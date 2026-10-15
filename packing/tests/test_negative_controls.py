@@ -1779,6 +1779,16 @@ def test_baseline_runs_each_command_unmutated_once_in_one_private_worker(
     with pytest.raises(SystemExit, match="2"):
         controls.main([str(spec), "--baseline-command", "true"])
 
+    # A run that fails leaves nothing that would refuse the next one (review A6 of #611).
+    def broken(_tree: Path) -> None:
+        raise OSError("clone failed")
+
+    monkeypatch.setattr(controls, "clone_tree", broken)
+    failed = tmp_path / "failed.json"
+    with pytest.raises(OSError, match="clone failed"):
+        controls.main([str(spec), "--baseline", str(failed)])
+    assert not failed.exists()
+
 
 def test_tiny_snapshot_prune_rescues_linked_and_registered_files_as_private_copies(
     snapshot_audit_fixture: tuple[Path, Path],
@@ -2499,28 +2509,42 @@ def test_a_control_command_is_green_unmutated_in_a_worker(
 def test_gate_budgets_reads_its_wall_workflows_in_a_worker(
     control_snapshot: tuple[Path, set[Path]],
 ) -> None:
-    """The six `check_gate_budgets` controls reach the workflows their register names.
+    """The six `check_gate_budgets` controls run over a green checker, even under `CI`.
 
-    Not a green baseline: where no bead store is reachable, as on a hosted runner, the
-    checker refuses to confirm an advisory bead and exits 1 before any mutation. What the
-    worker owes it is the two workflows, declared since 2026-10-15 (think-b6ir) rather
-    than brought by a review's link, so a missing one is what this refuses.
+    The worker owes the checker two things. Its wall workflows have been declared inputs
+    since 2026-10-15 (think-b6ir), not targets of a review's link. And it needs the bead
+    store: under `CI` the checker refuses an advisory bead it cannot confirm, so in a
+    hosted worker it exited 1 before any mutation and its six controls were scored over
+    a red checker (review A2 of #611). The worker borrows the source's store, so
+    wherever the source holds one the checker is green here under `CI`. A source with
+    no store gives no store to borrow, and only the workflows are held.
     """
     tree, _copied = control_snapshot
     for workflow in controls.wall_workflows():
         relative = workflow.relative_to(controls.REPO)
         assert (tree / relative).read_bytes() == workflow.read_bytes(), relative
+    shallow = subprocess.run(
+        ["git", "-C", str(tree), "rev-parse", "--is-shallow-repository"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert shallow.stdout.strip() == "false"
     with tempfile.TemporaryDirectory(prefix="negctl-pycache-", dir=tree) as pycache:
+        environment = controls.control_environment(tree, Path(pycache))
+        environment["CI"] = "true"
         outcome = run_control_command(
             "python3 -m devtools.check_gate_budgets",
             cwd=tree / HERE,
-            environment=controls.control_environment(tree, Path(pycache)),
+            environment=environment,
             timeout_seconds=controls.DEFAULT_CONTROL_TIMEOUT_SECONDS,
         )
     output = outcome.stdout + outcome.stderr
     assert not outcome.timed_out
     assert "Traceback" not in output, output
     assert "has no readable jobs" not in output, output
+    if controls.source_bead_store_refs():
+        assert outcome.returncode == 0, output
 
 
 def test_the_root_files_reach_every_worker(control_snapshot: tuple[Path, set[Path]]) -> None:
