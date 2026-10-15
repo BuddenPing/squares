@@ -3762,14 +3762,14 @@ sources:
     Chaoweeraprasit with the pieces it was composed from; at 304 and 305 issue 506's refinements
     of them hold the cases.
 - id: couzo-certificates-2026-10-11-in-corpus
-  title: Francisco Couzo's exact rational certificates at 337078c, issue506, n304 and n305
+  title: Francisco Couzo's exact rational certificates at 337078c, issue506, n175, n304 and n305
   role: source-repository
   url: https://github.com/franciscouzo/square-packing/tree/337078ca3e05153aceb099237b175cf64af5748a
   local: resources/web/couzo-certificates-2026-10-11/
   source_key: '[Couzo certificates 2026-10-11]'
   scope:
-    n_values: [304, 305]
-  reviewed: '2026-10-12'
+    n_values: [175, 304, 305]
+  reviewed: '2026-10-15'
   source_date: '2026-10-11'
   disposition: current-report
   replay_disposition: case-specific
@@ -3779,6 +3779,7 @@ sources:
   evidence:
   - E-couzo-506-certificate-report
   - E-couzo-506-exact-feasibility
+  - E-couzo-506-n175-report
   notes: >-
     The two in-corpus certificates of the release, at 304 and 305, retained as the source wrote
     them, as factual data, each admitted where its exact side rounds up to the issue's 12-place
@@ -3788,7 +3789,10 @@ sources:
     couzo-certificates-2026-10-11 are read against, holds the requested claims beyond the corpus
     only. On 12 October 2026 the cases at 304 and 305 adopted these certificates, the selected
     overrides below, each packing credited to Francisco Couzo's refinement of Nate
-    Chaoweeraprasit's issue 500 packing.
+    Chaoweeraprasit's issue 500 packing. The release's certificate at 175, which the issue does
+    not name, joined on 15 October 2026, when the author had asked on issue 506 for it to be
+    imported: T-185 records it at V0/C0 (E-couzo-506-n175-report), superseded by issue 528's
+    composition (T-158), which holds the case 2.94e-03 below it.
 - id: couzo-certificates-2026-10-11
   title: Francisco Couzo's exact rational certificates at 337078c, issue506
   role: source-repository
@@ -3820,9 +3824,10 @@ sources:
     print, the exact side rounded up; they supersede the rows tracked at 338, 339, 344, 375, 376,
     378 and 379, Evan Daniel's verified Hunt 3 row at 344 among them. T-152 records the in-corpus
     sides at 304 and 305 (couzo-certificates-2026-10-11-in-corpus). The four certificates the issue
-    does not name, at 175, 308, 340 and 343, are compared in the claim record and registered by no
-    entry. 175 was the smallest side known at its count until issue 528 (T-158), 2.94e-03 below
-    it, and stays in the packet unless its author asks for it to be registered (think-9fjl).
+    does not name, at 175, 308, 340 and 343, are compared in the claim record. 175 was the smallest
+    side known at its count until issue 528 (T-158), 2.94e-03 below it; the author asked on issue
+    506 on 14 October for it to be imported, and T-185 records it, superseded by T-158, in
+    couzo-certificates-2026-10-11-in-corpus. 308, 340 and 343 are registered by no entry.
   claims_record: resources/web/couzo-certificates-2026-10-11/acquisition/beyond-horizon-claims.json
 - id: overbeck-n17-candidate-2026
   title: Seventeen unit squares, verification edition of a candidate proof that s(17) = L
@@ -5307,6 +5312,54 @@ sources:
     code with replay4d, accepted every leaf of intervals 1 and 34 by the source's receipts (3,138,681
     leaves); here its premise checks passed in full on both intervals and a sample of 2,909 leaves was
     accepted, with three re-sealed mutants refused.
+- id: mishapolk-kkt-refinements-2026-10-14
+  title: Mykhailo Polkovskyi's KKT refinements at 70a033f, no issue
+  role: source-repository
+  url: https://github.com/Mishapolk/square-packing-records/tree/70a033f0ecfa9e643cd5fb5dbac190cb7f4ffb94
+  local: resources/web/mishapolk-kkt-refinements-2026-10-14/
+  source_key: '[Mishapolk KKT refinements 2026-10-14]'
+  scope:
+    n_values: [129, 154, 156, 175, 176, 204, 232, 264, 271, 302, 303, 304]
+  reviewed: '2026-10-15'
+  source_date: '2026-10-14'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/results.yaml
+  - resources/web/mishapolk-kkt-refinements-2026-10-14/acquisition/claims.json
+  evidence:
+  - E-mishapolk-70a033f-certificate-report
+  notes: >-
+    All 12 complete certificates are kept as derived exact facts, no upstream byte retained,
+    each admitted only where its exact side equals, or rounds up to, the side its source
+    prints. T-186 records the in-horizon report. All 72 native jobs have full outcomes. No
+    selected override or superseded claim is created at this source-only stage; current
+    cases and earlier source ownership remain unchanged. The other 12 certificates of the
+    commit, at 153, 155, 181, 207, 209, 267, 270, 272 and 305 to 308, are compared in the
+    claim record and recorded by no entry: T-174 is smaller at each.
+- id: evand-n146-2026-10-14
+  title: Evan Daniel's n146 certificate at e006ce6, issue606
+  role: source-repository
+  url: https://github.com/evand/square-packing/tree/e006ce6230f2240457b083199755a3a5d287692c
+  local: resources/web/evand-n146-2026-10-14/
+  source_key: '[Daniel n146 2026-10-14]'
+  scope:
+    n_values: [146]
+  reviewed: '2026-10-15'
+  source_date: '2026-10-14'
+  disposition: current-report
+  replay_disposition: case-specific
+  represented_by:
+  - frontier/results.yaml
+  - resources/web/evand-n146-2026-10-14/acquisition/claims.json
+  evidence:
+  - E-evand-606-n146-report
+  notes: >-
+    The 1 complete certificate is retained as the source wrote them, admitted only where its
+    exact side equals, or rounds up to, the side its source prints. T-187 records the
+    in-horizon report. All 3 native jobs have full outcomes. No selected override or
+    superseded claim is created at this source-only stage; current cases and earlier source
+    ownership remain unchanged.
 selected_overrides:
 - n: 51
   source_id: ry-xu-undilated-n51-2026

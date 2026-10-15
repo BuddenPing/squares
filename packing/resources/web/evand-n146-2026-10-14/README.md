@@ -174,6 +174,8 @@ directory, and `register-plan` prints the record entries the import needs.
 at `main` `9b32da04d`, for the records pull request that registers the result: one
 register entry over n = 146, with no `regularizations`, since by the source’s word and
 the measurement above this is a new packing and not a refinement.
+The records pull request of 15 October registers it as `T-187`, at V0/C0, pending an
+independent review of the replay and adoption at 146.
 
 <!-- This document follows common-doc-guidelines.md.
 See github.com/jlevy/practical-prose and review guidelines before editing.

@@ -242,6 +242,10 @@ pull request. It writes no `regularizations`, which the records pull request add
 count, naming the entry whose certificate each tightens (the table above), and its
 sentence on “further certificates the issue does not name” stands for the twelve the rule
 does not record: no issue reports this commit.
+The records pull request of 15 October registers the twelve as `T-186`, at V0/C0, with
+those twelve `regularizations` on the measured basis of
+[review/compare_lineage-output.txt](review/compare_lineage-output.txt), says plainly that
+the other twelve are not recorded, and credits Mykhailo Polkovskyi alone.
 
 ## Compressed Files
 

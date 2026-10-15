@@ -2595,6 +2595,37 @@ sources:
       was written with AI assistance (OpenAI Codex) and reviewed by the author, the commit names Claude
       as co-author, and issue #600 names Claude and Codex for the search, the certificates and
       both checkers. MIT. Dated by the pin.
+  - key: '[Mishapolk KKT refinements 2026-10-14]'
+    authors: [Polkovskyi]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-14'
+    lineage: builds-on-project
+    credit: Polkovskyi after Ostashev, Couzo, PingYou Ltd
+    short_credit: Polkovskyi after Ostashev et al.
+    note: >-
+      Twenty-four exact certificates at 70a033f0ecfa9e643cd5fb5dbac190cb7f4ffb94, each
+      tightening the standing certificate at its count to a KKT endpoint; twelve are below
+      every earlier report, at 129, 154, 156, 175, 176, 204, 232, 264, 271, 302, 303 and
+      304. No licence: derived exact facts only, no upstream byte retained. census.json
+      credits ten re-cut counts to 'Antigravity'; issue 593 discloses Gemini assistance. No
+      local or global optimality claim.
+  - key: '[Daniel n146 2026-10-14]'
+    authors: [Daniel]
+    year: 2026
+    venue: GitHub
+    dated: '2026-10-14'
+    lineage: builds-on-project
+    credit: Daniel after Xu
+    note: >-
+      One complete exact certificate at e006ce6230f2240457b083199755a3a5d287692c, s(146) <=
+      12583782190151860342292508597077/10^30, from a time-travel test of the author's chain
+      search started from the public packings of 10 October; the author credits the start to
+      Ryan Xu's #432 packing and names Barnett's #505 refinement as the record it improves.
+      A regularized drawing of the same packing at the same side, and the source's
+      comparison with #505's packing, are retained beside it. MIT-licensed certificates and
+      solver reports retained; Claude assistance disclosed. KKT and jamming statements are
+      the author's numerical evidence; no local or global optimality claim.
 credited_names:
   Benjamin Greff: Greff
   Hiroaki Hosono: Hosono

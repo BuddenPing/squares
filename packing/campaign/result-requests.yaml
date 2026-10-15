@@ -21,7 +21,7 @@ softschema:
   status: enforced
 repository: jlevy/squares
 owner: jlevy
-last_reviewed: '2026-10-14'
+last_reviewed: '2026-10-15'
 issues:
   - number: 420
     title: 'Lean proofs that 178 best-known packings are local minima (n ≤ 324): registration request'
@@ -5780,8 +5780,9 @@ issues:
       blocking defect. 304 and 305 are registered as T-152 at V3/C3; the nine beyond the corpus
       are verified beyond-horizon rows that supersede the rows tracked at 338, 339, 344, 375,
       376, 378 and 379. Author checkers and KKT statements were not run here; no optimality is
-      claimed. Claude assistance disclosed.
-    read_through: '2026-10-14T12:03:16Z'
+      claimed. Claude assistance disclosed. The release's unnamed 175, imported at the author's
+      request of 14 October, is registered as T-185 at V0/C0, superseded by T-158.
+    read_through: '2026-10-14T16:38:36Z'
     results:
     - key: n304-n305-exact-optima
       claim: s(304) <= 17.929565946849 and s(305) <= 17.950466482138, each the exact rational side of
@@ -5813,15 +5814,23 @@ issues:
         13.767119024199, s(308) <= 17.998459831024, s(340) <= 18.939649632892 and s(343) <=
         18.993870589750, as certificates/README.md prints them.
       source: source
-      not_registered: Not requested. Compared in the packet's claim record; 175 was the smallest
-        side known at its count until issue 528 (T-158), 2.94e-03 below it, and stays in the
-        packet unless the author asks for it to be registered (think-9fjl), 340 is below its tracked row
-        beyond the corpus and its row is the owner's decision, and 308 and 343 are above T-141's
-        308 and Hunt 3's 343, marked superseded by the source.
+      not_registered: Not requested in the issue. Compared in the packet's claim record; 175, which
+        the author asked on 14 October to have imported, is the result n175 below (T-185), 340 is
+        below its tracked row beyond the corpus and its row is the owner's decision, and 308 and
+        343 are above T-141's 308 and Hunt 3's 343, marked superseded by the source.
       queued: false
+    - key: n175
+      claim: s(175) <= 13.767119024199, certificates/n175.cert at 337078c, which the issue does not
+        name; the author asks for it to be imported.
+      source: https://github.com/jlevy/squares/issues/506#issuecomment-6173333473
+      register:
+      - T-185
+      evidence:
+      - E-couzo-506-n175-report
     beads:
     - think-om5l
     - think-720n
+    - think-9fjl
     answer_bead: think-om5l
     replies:
     - url: https://github.com/jlevy/squares/issues/506#issuecomment-6130063939
@@ -5889,6 +5898,12 @@ issues:
       Layer 6 marks that statement `outdated` on the final reply: the certificate stays in the
       packet, unregistered unless the author asks, and T-158 is the house at 175, 2.94e-03 below
       it, so the follow-up is due once layer 6 is on main.
+
+      The correction of 14 October asked, and the author answered at 16:38Z the same day, "sure,
+      import it". Under the per-count rule the certificate, first committed at
+      2026-10-11T03:39:54Z, was decidably below every earlier report at 175, so the records pull
+      request of 15 October registers it as T-185 (think-9fjl), superseded from registration by
+      T-158. The issue stays closed; a reply naming T-185 follows the merge.
   - number: 557
     title: Intake on optimality proof of n=18
     author: jlevy
@@ -8299,3 +8314,40 @@ issues:
     close_when: The import and its disposition are on main, the owner has posted the resulting state with
       the entry's id, and the review and replay that would raise its rungs are owned by its bead; optimality
       is outside this request.
+  - number: 606
+    title: 's(146) ≤ 12.583782190152: registration request'
+    author: evand
+    opened: '2026-10-14'
+    state: open
+    kind: result-report
+    triage: done
+    summary: Evan Daniel reports s(146) <= 12.583782190152, the exact rational side
+      12583782190151860342292508597077/10^30 of tt2_n146.cert at evand/square-packing e006ce6, found by
+      his chain search started from Ryan Xu's issue 432 packing and 1.38e-8 below Robert Barnett's issue
+      505 refinement, the case's ceiling. Imported on 14 October 2026 in the evand-n146-2026-10-14 packet
+      and replayed on both maintained exact routes with both controls refused; a new packing, not a
+      refinement of issue 505's, by the source's word and a measurement here. Registered as T-187 at
+      V0/C0. Claude assistance disclosed.
+    read_through: '2026-10-14T21:51:24Z'
+    results:
+    - key: n146
+      claim: s(146) <= 12.583782190152, the exact rational side of tt2_n146.cert rounded up at 12 places.
+      source: body
+      register:
+      - T-187
+      evidence:
+      - E-evand-606-n146-report
+    - key: distinct-local-minimum
+      claim: A different local minimum from issue 505's, KKT and strict modulo 59 exact flat motions, with
+        no corner-corner MILP descent, by numerical evidence at 80 digits.
+      source: body
+      not_registered: Numerical evidence of local optimality and of distinctness, not a bound on s(n);
+        recorded as reported in T-187's claim and not checked here.
+      queued: false
+    beads:
+    - think-rvv7
+    answer_bead: think-rvv7
+    replies: []
+    close_when: The import and its disposition are on main, the owner has posted the resulting state with
+      the entry's id, and the review and replay that would confirm the V0 entry are owned by its bead;
+      optimality is outside this request.
