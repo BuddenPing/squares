@@ -85,6 +85,14 @@ class PublicationHistoryEntry(NamedTuple):
 #: for each deployment's commit, what the page it built stated.
 PUBLICATION_HISTORY = (
     PublicationHistoryEntry(
+        version="v0.7.8",
+        first_published="October 15, 2026",
+        result_scope=(
+            "Backfill a week of News, connect PR significance labels to intake, and "
+            "clarify proof credit, surname headlines and shared significance meters."
+        ),
+    ),
+    PublicationHistoryEntry(
         version="v0.7.7",
         first_published="October 15, 2026",
         result_scope=(
@@ -318,7 +326,7 @@ COMPOSITES_MAY_TRAIL = True
 #: The last data commit, pinned in full: what `data_revision` returned when it was last
 #: re-pinned. Full rather than six characters so the drift check compares a commit, not
 #: a prefix.
-DATA_REVISION = "6133c4877b45ef2c24615a60579e17f4fdf73774"
+DATA_REVISION = "4942d1e89ce49c3c7a97d6b2a1684613944712bd"
 
 #: The version, written the one way it is ever written: `v0.4.1-f5e113`. Semver core,
 #: then the data revision, in the shape a build identifier takes everywhere else.
@@ -741,6 +749,16 @@ class ReleaseImpactDecision(NamedTuple):
 RELEASE_IMPACTS: tuple[ReleaseImpactDecision, ...] = (
     ReleaseImpactDecision(
         component="site",
+        previous_version="v0.7.7",
+        version="v0.7.8",
+        impact="patch",
+        reason=(
+            "Backfill notable News from the past week, show S3 to S5 only, add the "
+            "Project topic and labeled-PR intake, and clarify proof copy and meters."
+        ),
+    ),
+    ReleaseImpactDecision(
+        component="site",
         previous_version="v0.7.6",
         version="v0.7.7",
         impact="patch",
@@ -931,6 +949,49 @@ class ReleaseNoPublicChange(NamedTuple):
 
 
 RELEASE_NO_PUBLIC_CHANGES: tuple[ReleaseNoPublicChange, ...] = (
+    ReleaseNoPublicChange(
+        components=(
+            "paper:n11-lower-bounds-explainer",
+            "paper:n11-optimality-review",
+            "paper:n11-threshold-bound-review",
+            "paper:square-packing-methods-survey",
+        ),
+        paths=(
+            "packing/devtools/render_changelog.py",
+            "packing/devtools/site_topics.py",
+            "packing/frontier/results.yaml",
+        ),
+        outputs=(
+            "papers/n11-lower-bounds-explainer.html",
+            "papers/n11-lower-bounds-explainer.md",
+            "papers/n11-lower-bounds-explainer.pdf",
+            "papers/n11-optimality-review.html",
+            "papers/n11-optimality-review.md",
+            "papers/n11-optimality-review.pdf",
+            "papers/n11-threshold-bound-review.html",
+            "papers/n11-threshold-bound-review.md",
+            "papers/n11-threshold-bound-review.pdf",
+            "papers/square-packing-methods-survey.html",
+            "papers/square-packing-methods-survey.md",
+            "papers/square-packing-methods-survey.pdf",
+        ),
+        reason=(
+            "Result headlines use surnames, and T-153/T-154 descriptive prose is clearer. "
+            "The lower-bounds explainer "
+            "reads result and novelty counts, which are unchanged, and its n17 paragraph "
+            "is fixed manuscript text. The optimality and threshold papers' ladder "
+            "figures select none of the changed results. The methods survey substitutes "
+            "no result "
+            "record text. No paper manuscript, selected ladder value, figure input "
+            "or result count changes. The changed news_entries, archived_news_targets "
+            "and news_filters functions govern News eligibility, bookmark forwarding "
+            "and topic controls; standalone paper renderers call none of them. The "
+            "shared topic vocabulary adds only Project; existing result-kind labels "
+            "and chip markup are unchanged. Papers retain their own styles and do not "
+            "render project-topic chips. This reviewed source-consumer finding does not "
+            "claim byte identity for unrebuilt PDFs."
+        ),
+    ),
     ReleaseNoPublicChange(
         components=(
             "paper:n11-optimality-review",
