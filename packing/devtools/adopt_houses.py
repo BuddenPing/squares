@@ -71,6 +71,7 @@ find each count as it stood before its first (`read_history`).
 from __future__ import annotations
 
 import argparse
+import dataclasses
 import re
 import sys
 from collections.abc import Mapping, Sequence
@@ -282,6 +283,54 @@ RESULTS: dict[str, Prose] = {
             "round-by-round trace is not published."
         ),
     ),
+    "T-173": Prose(
+        author="Mykhailo Polkovskyi",
+        reported="on [jlevy/squares#573](https://github.com/jlevy/squares/issues/573)",
+        producer_route=True,
+        ai=(
+            "The issue says Gemini was used for the search implementation, the verification "
+            "orchestration and the issue’s preparation, directed by the author."
+        ),
+    ),
+    "T-175": Prose(
+        author="Daniil Ostashev",
+        reported="on [jlevy/squares#575](https://github.com/jlevy/squares/issues/575)",
+        producer_route=False,
+        ai=(
+            "The issue says the author drives an AI-assisted research loop with his own "
+            "ideas, merging the tilted bands being his, and that AI agents wrote and ran the "
+            "search and verification code."
+        ),
+    ),
+    "T-181": Prose(
+        author="Francisco Couzo",
+        reported="on [jlevy/squares#583](https://github.com/jlevy/squares/issues/583)",
+        producer_route=True,
+        ai=(
+            "The author says OpenAI Codex assisted the search implementation, the "
+            "verification orchestration and the requests, that earlier search work used "
+            "Claude Code, and that he directed the work."
+        ),
+    ),
+    "T-182": Prose(
+        author="Francisco Couzo",
+        reported="on [jlevy/squares#586](https://github.com/jlevy/squares/issues/586)",
+        producer_route=True,
+        ai=(
+            "The author says OpenAI Codex assisted the search implementation, the "
+            "verification orchestration and the requests, that earlier search work used "
+            "Claude Code, and that he directed the work."
+        ),
+    ),
+    "T-183": Prose(
+        author="Mykhailo Polkovskyi",
+        reported="on [jlevy/squares#593](https://github.com/jlevy/squares/issues/593)",
+        producer_route=True,
+        ai=(
+            "The source discloses Gemini assistance with solver scripting, precision checks "
+            "and formatting."
+        ),
+    ),
 }
 
 XU = "Ryan Xu"
@@ -353,18 +402,20 @@ CREDITS: dict[int, Credit] = {
     131: Credit((SQUISH,), (), "Nate Chaoweeraprasit’s SQUISH packing"),
     132: Credit((DANIEL,), (), "Evan Daniel’s record-hunt packing"),
     146: Credit((XU,), (BARNETT,), "Robert Barnett’s refinement of Ryan Xu’s packing"),
+    # PingYou Ltd's design rearranged by Mykhailo Polkovskyi, as the 14 October review
+    # measured it (RQ-5); whether it is a new arrangement is the owner's decision 1 on
+    # pull request 602 (T-173).
     153: Credit(
         (PINGYOU,),
-        (),
-        "PingYou Ltd’s construction, after Ryan Xu’s n = 70 packing and Evan Daniel’s exact "
-        "certificate of it",
+        ("Mishapolk",),
+        "Mykhailo Polkovskyi’s arrangement of PingYou Ltd’s n = 153 design",
     ),
-    # Evan Daniel's packing; the start he names, Couzo's 155 less one square, is his
-    # statement, consistent with the measurements and not established by them (T-160).
+    # Francisco Couzo's issue-586 packing, from Evan Daniel's arrangement through his own
+    # issue-583 refinement of it, moved well beyond a refinement (T-182).
     154: Credit(
         (DANIEL,),
-        (),
-        "Evan Daniel’s packing from his size-chaining explorer",
+        (COUZO,),
+        "Francisco Couzo’s further arrangement of Evan Daniel’s n = 154 packing",
     ),
     155: Credit((OSTASHEV,), (), "Daniil Ostashev’s packing"),
     156: Credit((OSTASHEV,), (), "Daniil Ostashev’s packing"),
@@ -382,23 +433,40 @@ CREDITS: dict[int, Credit] = {
         "as Siddharth Gupta refined it",
     ),
     181: _mondrian("two of SQUISH’s own n = 154 packings"),
+    # By pose an exact re-solve of PingYou Ltd's packing (RQ-5 of the 14 October review).
     207: Credit(
         (PINGYOU,),
-        (),
-        "PingYou Ltd’s assembly of two placed patches of Ryan Xu’s n = 70 packing, from "
-        "Evan Daniel’s exact certificate of it",
+        ("Mishapolk",),
+        "Mykhailo Polkovskyi’s exact re-solve of PingYou Ltd’s n = 207 assembly",
     ),
     209: _couzo("SQUISH"),
-    211: Credit((OSTASHEV,), (), "Daniil Ostashev’s packing"),
+    # Issue 583's continuation of Daniil Ostashev's issue-575 packings, tightened by issue
+    # 586 (T-182's regularizations of T-181); issue 593's joint request is the owner's.
+    211: Credit(
+        (OSTASHEV,),
+        (COUZO,),
+        "Francisco Couzo’s continuation of Daniil Ostashev’s n = 211 packing",
+    ),
     228: Credit((COUZO,), (), "Francisco Couzo’s refinement of his own packing"),
     232: _composed(
         "his 38-square rectangle with a 76-square piece of Erich Friedman’s n = 85 packing"
     ),
     236: _regularized(SQUISH, "Nate Chaoweeraprasit’s SQUISH"),
-    237: _couzo("SQUISH"),
+    # Francisco Couzo's issue-561 design, after SQUISH's packing, rearranged (T-183).
+    237: Credit(
+        (SQUISH,),
+        (COUZO, "Mishapolk"),
+        "Mykhailo Polkovskyi’s arrangement of Francisco Couzo’s design, after Nate "
+        "Chaoweeraprasit’s SQUISH packing",
+    ),
     238: _mondrian("SQUISH’s own n = 305 and n = 154 packings"),
     239: _mondrian(
         "SQUISH’s n = 209 packing as Siddharth Gupta refined it and its own n = 240 packing"
+    ),
+    241: Credit(
+        (OSTASHEV,),
+        (COUZO,),
+        "Francisco Couzo’s continuation of Daniil Ostashev’s n = 241 packing",
     ),
     258: _regularized(SQUISH, "Nate Chaoweeraprasit’s SQUISH", via="Mishapolk"),
     259: Credit((SQUISH,), (), "Nate Chaoweeraprasit’s SQUISH packing"),
@@ -420,13 +488,14 @@ CREDITS: dict[int, Credit] = {
     ),
     292: _regularized(SQUISH, "Nate Chaoweeraprasit’s SQUISH"),
     295: _regularized(XU, "Ryan Xu’s"),
-    302: _regularized(SQUISH, "Nate Chaoweeraprasit’s SQUISH"),
-    303: _regularized(SQUISH, "Nate Chaoweeraprasit’s SQUISH"),
-    304: Credit(
-        (SQUISH,),
+    # Issue 583's continuation of PingYou Ltd's n302 arrangement (T-181, T-164).
+    302: Credit(
+        (PINGYOU,),
         (COUZO,),
-        "Francisco Couzo’s refinement of Nate Chaoweeraprasit’s SQUISH Mondrian packing",
+        "Francisco Couzo’s continuation of PingYou Ltd’s n = 302 arrangement",
     ),
+    303: _regularized(SQUISH, "Nate Chaoweeraprasit’s SQUISH"),
+    304: Credit((OSTASHEV,), (), "Daniil Ostashev’s packing"),
     305: Credit(
         (SQUISH,),
         (COUZO,),
@@ -694,6 +763,23 @@ def _holder(packing: Mapping[str, Any]) -> str:
     return text
 
 
+def kept(selection: select_houses.Selection) -> select_houses.Selection:
+    """A held count's selection as the pass that last moved it made it.
+
+    Where a result the owner holds (`select_houses.HELD`) is the best candidate, the case
+    keeps the house its last pass adopted; a replay of that pass plans that house again,
+    and the held candidate and every other confirmed one are listed beside it as verified
+    and not selected. Any other selection is returned as it is.
+    """
+    if not selection.held or selection.n not in houses.ADOPTED:
+        return selection
+    result = houses.ADOPTED[selection.n]
+    house = next((c for c in selection.candidates if c.result == result), None)
+    if house is None:
+        raise AdoptionError(f"n={selection.n}: {result} is no candidate at its own count")
+    return dataclasses.replace(selection, house=house, held=False)
+
+
 def plan(
     selections: Mapping[int, select_houses.Selection] | None = None,
     texts: Mapping[int, str] | None = None,
@@ -959,7 +1045,9 @@ def section(move: Move) -> str:
             "optimality, rigidity or a local minimum."
         ),
     ]
-    if house.regularizes:
+    if house.regularizes and house.result != "T-146":
+        paragraphs.append(_regularization(move, prose.author))
+    elif house.regularizes:
         paragraphs.append(
             "The certificate regularizes for display the packing "
             f"{house.regularizes} records, at the side the source reports as that packing’s "
@@ -989,6 +1077,28 @@ def section(move: Move) -> str:
         )
     paragraphs.append(history)
     return "\n\n".join(paragraphs) + "\n"
+
+
+def _regularization(move: Move, author: str) -> str:
+    """What a house that tightens a registered packing says of it, by its identity's basis.
+
+    T-146's regularizations, for display at the source's exact optimum, keep their own
+    sentence; any other is a certificate of the packing its entry names (`of`).
+    """
+    house = move.house
+    entry = next(e for e in _register() if e["id"] == house.result)
+    item = next(i for i in entry["regularizations"] if i["n"] == move.n)
+    basis = str((item.get("identity") or {}).get("basis") or "source-claim")
+    how = (
+        "measured here pose by pose as that packing"
+        if basis == "measured"
+        else "that packing by the source’s statement, not decided here"
+    )
+    return (
+        f"The certificate is {author}’s tightening of the packing {house.regularizes} "
+        f"records, {how} ({house.result}’s regularizations), so the packing keeps its "
+        f"finder’s credit and {author} is credited with the certificate."
+    )
 
 
 #: The heading `apply_exact_ceilings` gives the section on a ceiling that trails the print.

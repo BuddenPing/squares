@@ -420,14 +420,18 @@ def _sources() -> dict[str, Source]:
         packet_source("T-140", "couzo-certificates-2026-10-10"),
         packet_source("T-141", "evand-record-hunt3-2026-10-10"),
         packet_source("T-146", "evand-regularized-2026-10-10"),
-        packet_source("T-147", "pingyou-n207-certificate-2026-10-11"),
-        packet_source("T-148", "pingyou-n153-certificate-2026-10-11"),
         packet_source("T-149", "dostashev-records-2026-10-11"),
         packet_source("T-150", "barnett-refinements-2026-10-11"),
         packet_source("T-151", "squish-500-fourth-request-2026-10-11"),
         packet_source("T-152", "couzo-certificates-2026-10-11"),
         packet_source("T-158", "dostashev-records-2026-10-12"),
-        packet_source("T-160", "evand-n154-2026-10-12"),
+        packet_source("T-173", "mishapolk-exact-certificates-2026-10-12"),
+        packet_source("T-175", "dostashev-merged-bands-2026-10-13"),
+        # T-181's 302 is issue 583's certificate as issue 586's packet retains it, byte
+        # for byte; its 211 and 241, in the issue-583 packet, house no count.
+        packet_source("T-181", "couzo-certificates-2026-10-13"),
+        packet_source("T-182", "couzo-certificates-2026-10-13"),
+        packet_source("T-183", "mishapolk-records-2026-10-14"),
     ]
     found = {source.result: source for source in sources}
     # Two results may read one packet (T-181 and T-182 both read issue 586's), so the
@@ -441,7 +445,10 @@ def _sources() -> dict[str, Source]:
 #: holds every case record named here to it, so an adoption that moves a count again
 #: changes or removes its row in the same change, as the second pass of that day did at
 #: 146, 153, 155 and 207, the third, for issues 500 and 506, at 270 and 305, the
-#: fourth, for issue 528, at 175 and 232, and the fifth, for issue 552, at 154.
+#: fourth, for issue 528, at 175 and 232, the fifth, for issue 552, at 154, and the
+#: pass of 15 October 2026, for issues 573, 575, 583, 586 and 593, at 153, 154, 207,
+#: 211, 237, 241, 302 and 304. PR 574's houses (T-174) are held for the owner
+#: (`select_houses.HELD`), and none of its counts is here.
 ADOPTED: dict[int, str] = {
     70: "T-146",
     84: "T-130",
@@ -457,23 +464,24 @@ ADOPTED: dict[int, str] = {
     131: "T-136",
     132: "T-141",
     146: "T-150",
-    153: "T-148",
-    154: "T-160",
+    153: "T-173",
+    154: "T-182",
     155: "T-149",
     156: "T-149",
     175: "T-158",
     176: "T-151",
     180: "T-128",
     181: "T-151",
-    207: "T-147",
+    207: "T-173",
     209: "T-140",
-    211: "T-149",
+    211: "T-182",
     228: "T-128",
     232: "T-158",
     236: "T-146",
-    237: "T-140",
+    237: "T-183",
     238: "T-151",
     239: "T-151",
+    241: "T-182",
     258: "T-146",
     259: "T-136",
     261: "T-150",
@@ -486,9 +494,9 @@ ADOPTED: dict[int, str] = {
     272: "T-151",
     292: "T-146",
     295: "T-146",
-    302: "T-146",
+    302: "T-181",
     303: "T-146",
-    304: "T-152",
+    304: "T-175",
     305: "T-152",
     306: "T-128",
     307: "T-136",
@@ -500,16 +508,23 @@ NUMBERS = tuple(sorted(ADOPTED))
 #: (T-151, T-152), the second of them reviewed that day, moving 270 and 305 from T-140,
 #: issue 528 (T-158), reviewed that day, moving 175 from T-140 and 232 from T-136, and
 #: issue 552 (T-160), reviewed that day, moving 154 from T-136, which the first pass of
-#: 11 October had adopted there.
+#: 11 October had adopted there. The pass of 15 October 2026 adopted the 14 October
+#: reviews of issues 573, 575, 583, 586 and 593: issue 573 (T-173) at 153 and 207 from
+#: PingYou Ltd's T-148 and T-147, issue 586 (T-182) at 154 from T-160, at 211 from T-149
+#: and at 241, first adopted here, from Evan Daniel's exact optimum (T-098), issue 593
+#: (T-183) at 237 from T-140, issue 583's 302 (T-181) from T-146, and issue 575 (T-175)
+#: at 304 from T-152. A count a pass names keeps its place in the earlier passes' sets,
+#: which their archives hold; it was adopted on the latest day that names it.
 LATER_PASSES: dict[str, frozenset[int]] = {
     "2026-10-12": frozenset({154, 175, 176, 181, 232, 238, 239, 264, 270, 271, 272, 304, 305}),
+    "2026-10-15": frozenset({153, 154, 207, 211, 237, 241, 302, 304}),
 }
 
 
 def adopted_on(n: int) -> str:
     """The day the count's house was adopted, as an ISO date."""
     _require(type(n) is int and n in ADOPTED, f"n={n}: not a count this adoption houses")
-    return next((day for day, counts in LATER_PASSES.items() if n in counts), ADOPTED_ON)
+    return max((day for day, counts in LATER_PASSES.items() if n in counts), default=ADOPTED_ON)
 
 
 @cache
@@ -659,8 +674,8 @@ def linked_house_problem(path: str, *, repository: Path) -> str | None:
 #: Where the custody run's receipt is kept: one record for every adopted packet.
 CUSTODY_RECEIPT = ROOT / "devtools/house-custody-2026-10-11.json"
 CUSTODY_FORMAT = "AdoptedHouseCustody/v1"
-#: The worker's deadline: it admits all 50 houses and refuses 32 mutations, two for each
-#: of the sixteen packets.
+#: The worker's deadline: it admits all 51 houses and refuses 36 mutations, two for each
+#: of the eighteen results (21.23 s in the worker on 15 October 2026).
 CUSTODY_TIMEOUT = 120
 
 

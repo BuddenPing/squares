@@ -243,15 +243,21 @@ def confirming(
 
 
 def reporting(
-    entry: Mapping[str, Any], evidence: Mapping[str, Mapping[str, Any]], key: str
+    entry: Mapping[str, Any],
+    evidence: Mapping[str, Mapping[str, Any]],
+    key: str,
+    n: int | None = None,
 ) -> tuple[str, ...]:
-    """The entry's own reported evidence: the source's report, under the entry's key."""
+    """The entry's own reported evidence: the source's report, under the entry's key, and,
+    given a count, whose scope reaches it (PR 574 reports its rational and its algebraic
+    certificates in two atoms)."""
     return tuple(
         str(identifier)
         for identifier in entry.get("evidence") or ()
         if (item := evidence.get(str(identifier)))
         and item.get("assurance") == "reported"
         and item.get("source_key") == key
+        and (n is None or "scope" not in item or n in scope_values(dict(item["scope"])))
     )
 
 
@@ -367,7 +373,7 @@ def candidates(
                     side=_side(key, n),
                     source_key=key,
                     published=str(entry["attribution"].get("published") or ""),
-                    report_evidence=reporting(entry, evidence, key),
+                    report_evidence=reporting(entry, evidence, key, n),
                     confirming_evidence=proof,
                     regularizes=regularized(entry, n),
                 )

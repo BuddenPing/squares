@@ -44,36 +44,73 @@ def latest() -> dict[int, str]:
 def replayed(
     selections: dict[int, select.Selection], latest: dict[int, str]
 ) -> list[adopt.Move]:
-    """Each count's last pass planned again from the record as that pass read it."""
+    """Each count's last pass planned again from the record as that pass read it; a count
+    held for the owner is planned at the house its last pass adopted (`adopt.kept`)."""
     cases = {
         n: select.parse_case(n, latest[n]) if n in latest else selection.case
         for n, selection in selections.items()
     }
-    return adopt.plan(select.select(cases=cases), texts=latest)
+    planned = select.select(cases=cases)
+    return adopt.plan({n: adopt.kept(s) for n, s in planned.items()}, texts=latest)
 
 
 def test_no_confirmed_reviewed_side_is_left_below_its_case(
     selections: dict[int, select.Selection],
 ) -> None:
-    """After the adoption the derivation moves nothing: every case is at its house."""
+    """After the adoption the derivation moves nothing: every case is at its house, or
+    held at it for the owner."""
     assert [n for n, selection in selections.items() if selection.moves] == []
+    assert all(
+        selection.candidates[0].result in select.HELD
+        for selection in selections.values()
+        if selection.held
+    )
 
 
 def test_every_adopted_case_holds_the_derived_smallest_side(
     selections: dict[int, select.Selection],
 ) -> None:
+    """Every adopted count holds its derived house; where the derived house is a result
+    the owner holds, the count keeps the house its last pass adopted."""
     for n, result in houses.ADOPTED.items():
-        best = selections[n].candidates[0]
+        selection = selections[n]
+        if selection.held:
+            assert selection.candidates[0].result in select.HELD
+            assert result in {candidate.result for candidate in selection.candidates}
+            assert selection.case.verified == houses.side(n)
+            continue
+        best = selection.candidates[0]
         assert best.result == result
-        assert selections[n].case.verified == best.side == houses.side(n)
+        assert selection.case.verified == best.side == houses.side(n)
+
+
+def test_a_held_count_replays_at_the_house_its_last_pass_adopted(
+    selections: dict[int, select.Selection],
+) -> None:
+    held = [n for n in houses.ADOPTED if selections[n].held]
+    assert held, "no adopted count is held"
+    for n in held:
+        kept = adopt.kept(selections[n])
+        assert kept.house is not None
+        assert kept.house.result == houses.ADOPTED[n]
+        assert not kept.held
+    free = next(n for n in houses.ADOPTED if not selections[n].held)
+    assert adopt.kept(selections[free]) is selections[free]
 
 
 def test_regularizations_leave_the_packing_with_its_finder(
     selections: dict[int, select.Selection],
 ) -> None:
-    assert selections[236].candidates[0].regularizes == "T-136"
-    assert selections[103].candidates[0].regularizes == "T-138"
-    assert selections[70].candidates[0].regularizes == "T-125"
+    houses_at = {
+        n: next(c for c in selections[n].candidates if c.result == houses.ADOPTED[n])
+        for n in (70, 103, 211, 236)
+    }
+    assert {n: house.regularizes for n, house in houses_at.items()} == {
+        70: "T-125",
+        103: "T-138",
+        211: "T-181",
+        236: "T-136",
+    }
     assert adopt.CREDITS[236].found_by == (adopt.SQUISH,)
     assert adopt.CREDITS[70].found_by == (adopt.XU,)
     assert adopt.CREDITS[103].improved_by == ("Mishapolk", adopt.DANIEL)
@@ -311,7 +348,10 @@ def test_no_unread_eligible_entry_is_pending_adoption() -> None:
 def test_check_lists_the_unread_and_fails_on_one_pending_adoption(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    def selecting(*, since: str | None, unread: list[str]) -> dict[int, select.Selection]:
+    def selecting(
+        *, since: str | None, unread: list[str], algebraic: list[tuple[str, int]]
+    ) -> dict[int, select.Selection]:
+        assert algebraic == []
         assert since is None
         unread.append("T-901")
         return {}
@@ -436,9 +476,11 @@ def test_each_pass_keeps_the_records_it_moved_as_that_pass_read_them(
                 assert prior[n] == archives[day][n]
                 continue
             again.add(n)
-            # As the earlier pass left it: at that pass's house, dated that day.
+            # As the earlier pass left it: at that pass's house, dated that day, or later
+            # where a writer that ran between the passes moved the date on, as
+            # `apply_closed_form` did on 14 October 2026.
             packing = _front(archives[day][n])
-            assert packing["source_reviewed"] == earlier[-1]
+            assert packing["source_reviewed"] >= earlier[-1]
             assert f"**House adoption, {adopt.words(earlier[-1])}.**" in archives[day][n]
             assert prior[n] == archives[earlier[0]][n] != archives[day][n]
     assert again, "no count has been adopted twice"
@@ -501,7 +543,11 @@ def test_the_writer_rebuilds_every_adopted_record_from_its_prior_state(
     for move in replayed:
         assert move.house.result == houses.ADOPTED[move.n]
         committed = select.case_path(move.n).read_text(encoding="utf-8")
-        written = closed_form.replay(move.n, adopt.rewrite(move))
+        written = adopt.rewrite(move)
+        # A pass that read a record the closed form had already raised (15 October) is
+        # replayed as it ran, after it; an earlier pass is replayed before it.
+        if not closed_form.carried(move.text):
+            written = closed_form.replay(move.n, written)
         held, wrote = _front(committed), _front(written)
         for key in OWNED:
             assert held.get(key) == wrote.get(key), f"n={move.n}: packing.{key}"
@@ -651,7 +697,8 @@ def test_a_conjecture_the_house_does_not_beat_stops_the_adoption(
     first = adopt.read_pass(houses.ADOPTED_ON)[232]
     cases = {n: selection.case for n, selection in selections.items()}
     cases[232] = select.parse_case(232, first)
-    planned = adopt.plan(select.select(cases=cases), texts={232: first})
+    selected = select.select(cases=cases)
+    planned = adopt.plan({n: adopt.kept(s) for n, s in selected.items()}, texts={232: first})
     move = next(move for move in planned if move.n == 232)
     conjecture = adopt.conjectured(move.packing)
     assert conjecture == Fraction(Decimal("15.77817459305202")) > move.house.side
@@ -823,8 +870,12 @@ def test_an_interrupted_write_is_finished_by_running_it_again(
     selections: dict[int, select.Selection],
     prior: dict[int, str],
 ) -> None:
-    """A write stopped before its last record leaves what a rerun finishes, to the byte."""
-    moved = {84, 86}
+    """A write stopped before its last record leaves what a rerun finishes, to the byte.
+
+    The two counts are ones no held result holds: 70, adopted on 11 October 2026, and
+    241, first adopted on 15 October.
+    """
+    moved = {70, 241}
     frontier = tmp_path / "frontier"
     frontier.mkdir()
     staged = {
@@ -864,7 +915,7 @@ def test_an_interrupted_write_is_finished_by_running_it_again(
 
     def interrupted(path: Path, text: str) -> bool:
         calls.append(path)
-        if len(calls) == 4:  # the coverage register, the deferrals, n = 84, then n = 86
+        if len(calls) == 4:  # the coverage register, the deferrals, n = 70, then n = 241
             raise OSError("interrupted")
         return real(path, text)
 
@@ -873,8 +924,8 @@ def test_an_interrupted_write_is_finished_by_running_it_again(
         adopt.write(moves)
     monkeypatch.setattr(adopt, "_write", real)
     rest = adopt.plan()
-    assert [move.n for move in rest] == [86]
-    assert adopt.write(rest) == [86]
+    assert [move.n for move in rest] == [241]
+    assert adopt.write(rest) == [241]
     assert written() == whole
 
 

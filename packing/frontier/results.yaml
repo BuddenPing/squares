@@ -21922,9 +21922,18 @@ results:
       (Mishapolk), and it says that padding reduction does not transfer authorship of an
       existing packing.
 
-      The pull request names at each count but 176 the registered packing whose certificate it tightens; at 176 it states Daniil Ostashev's packing of issue 575, which the record registers at no count there, every square within 9.6e-13 of his and the side 1.4e-19 below his certificate. Measured pose by pose by the 14 October review, the certificate is the named packing with no square moved beyond 1e-03 at 27 of those counts, pairs with it one to one with squares moved beyond 1e-03 at 33, and at 199, 292 and 303 pairs with it, or with any registered packing there, nowhere one to one; each count's regularizations item records which. At 199 the poses are those issue 593 states later. The source makes no statement about AI assistance in this
-      pull request; for its #503 and #504 certificates the author said on 12 October 2026
-      that they were AI assisted by 'PY', an unreleased agentic AI offering by PingYou Ltd.
+      The pull request names at each count but 176 the registered packing whose certificate
+      it tightens; at 176 it states Daniil Ostashev's packing of issue 575, which the record
+      registers at no count there, every square within 9.6e-13 of his and the side 1.4e-19
+      below his certificate. Measured pose by pose by the 14 October review, the certificate
+      is the named packing with no square moved beyond 1e-03 at 27 of those counts, pairs
+      with it one to one with squares moved beyond 1e-03 at 33, and at 199, 292 and 303
+      pairs with it, or with any registered packing there, nowhere one to one; each count's
+      regularizations item records which. At 199 the poses are those issue 593 states later.
+
+      The source makes no statement about AI assistance in this pull request; for its #503
+      and #504 certificates the author said on 12 October 2026 that they were AI assisted by
+      'PY', an unreleased agentic AI offering by PingYou Ltd.
 
       The per-count ledger of 14 October (jlevy/squares#601) records it at these 68 counts,
       each below every earlier report there, and at no other: at 59 counts it ties or trails
@@ -24343,7 +24352,7 @@ results:
       - E-couzo-583-certificate-report
       - E-couzo-583-586-certificate-report
       - E-couzo-583-exact-feasibility
-      - E-couzo-586-exact-feasibility
+      - E-couzo-586-n302-exact-feasibility
     artifacts:
       - packing/resources/web/couzo-issue583-2026-10-13/README.md
       - packing/resources/web/couzo-issue583-2026-10-13/acquisition/claims.json
@@ -24424,7 +24433,7 @@ results:
 
       V3 and C3 rest on the 14 October review
       (docs/project/reviews/review-2026-10-14-upper-bound-imports-561-593.md) and the replay
-      it reproduced (E-couzo-583-exact-feasibility and E-couzo-586-exact-feasibility). The
+      it reproduced (E-couzo-583-exact-feasibility and E-couzo-586-n302-exact-feasibility). The
       third route's receipt is receipts/third-route-2026-10-14.json.xz in
       couzo-issue583-2026-10-13 and couzo-certificates-2026-10-13; it stays out of this
       entry's artifacts so that the workers' snapshot stays under its cap. The review's
@@ -24516,9 +24525,10 @@ results:
       154 (T-160), Daniil Ostashev's at 211 (T-149) and Evan Daniel's exact optimum of
       Francisco Couzo's packing at 241 (T-098), with T-172, T-175 and T-181 verified and not
       selected; private-worker custody was closed in the same change
-      (packing/devtools/house-custody-2026-10-11.json). Mykhailo Polkovskyi's issue 593
-      states the same poses at 211 and 241 and asks to be recorded jointly; the owner
-      decides that credit (RQ-1).
+      (packing/devtools/house-custody-2026-10-11.json).
+
+      Mykhailo Polkovskyi's issue 593 states the same poses at 211 and 241 and asks to be
+      recorded jointly; the owner decides that credit (RQ-1).
     scope: {n_values: [154, 211, 241]}
     verification: V3
     confirmation: C3
@@ -24713,8 +24723,17 @@ results:
       the case's exact side, and at 129, 176, 204, 303 and 304 the side is within 1e-30 of
       Daniil Ostashev's earlier issues 562 and 575, at 211 and 241 it equals Couzo's
       issue-586 certificates exactly, and at 156 and 271 it equals Couzo's issue 561
-      exactly. The same review compared the poses: at 211 and 241, where the issue asks to be recorded jointly with issue 586, its certificates are issue 586's pose for pose, at 241 all but one square, which lies 1.9e-04 from issue 586's, and both are exact re-solves of Couzo's issue-583 arrangement, first committed at 13:53:57Z on 13 October, two hours before the issue's first commit of its 211 and 241 at 15:51:54Z; issue 586's commit followed at 17:30:53Z. Identity of poses is what was measured: two exact solves of one contact graph from one start give the same poses, so it establishes no copying, and the owner decides the joint credit. The source discloses Gemini assistance with solver
-      scripting, precision checks and formatting.
+      exactly.
+
+      The same review compared the poses: at 211 and 241, where the issue asks to be
+      recorded jointly with issue 586, its certificates are issue 586's pose for pose, at
+      241 all but one square, which lies 1.9e-04 from issue 586's, and both are exact
+      re-solves of Couzo's issue-583 arrangement, first committed at 13:53:57Z on 13
+      October, two hours before the issue's first commit of its 211 and 241 at 15:51:54Z;
+      issue 586's commit followed at 17:30:53Z. Identity of poses is what was measured: two
+      exact solves of one contact graph from one start give the same poses, so it
+      establishes no copying, and the owner decides the joint credit. The source discloses
+      Gemini assistance with solver scripting, precision checks and formatting.
 
       On 15 October 2026 the case record at 237 adopted this entry as its house, its
       reported and verified upper bounds moving together and Francisco Couzo's certificate
@@ -24904,6 +24923,7 @@ results:
       the entry is pending adoption at n = 76 while wand125's 1793/200 holds the lower
       lanes. The source's full zm_mixed.py pass over all 129,600 D4 roots is not at the
       pinned revision.
+
 # Generated by python -m devtools.regularized_drawings from the regularized layer's
 # index (packing/atlas/known-best/regularized/index.json); do not edit by hand.
 regularized_drawings:
@@ -24917,6 +24937,10 @@ regularized_drawings:
       reason: "no registered result attributes the witness's source Kingbird derived numerical facts"
     - n: 85
       reason: "no registered result attributes the witness's source Kingbird derived numerical facts"
+    - n: 211
+      reason: "several results attribute the witness's source: ['T-181', 'T-182']"
+    - n: 241
+      reason: "several results attribute the witness's source: ['T-181', 'T-182']"
   items:
     - n: 29
       of: T-155
@@ -25335,21 +25359,7 @@ regularized_drawings:
         max_turn_deg: 10.8334
       view: packing/atlas/known-best/regularized/n-152-regularized.yaml.gz
     - n: 153
-      of: T-148
-      by: project
-      method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
-      modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
-      side: same
-      identity:
-        basis: measured
-        measured_in: packing/atlas/known-best/regularized/index.json
-        one_to_one: true
-        moved: 15
-        max_move: 0.1801566
-        max_turn_deg: 0.0
-      view: packing/atlas/known-best/regularized/n-153-regularized.yaml.gz
-    - n: 154
-      of: T-160
+      of: T-173
       by: project
       method: regularize_axis_components/2
       side: same
@@ -25357,9 +25367,22 @@ regularized_drawings:
         basis: measured
         measured_in: packing/atlas/known-best/regularized/index.json
         one_to_one: true
-        moved: 15
-        max_move: 0.1350142
-        max_turn_deg: 0.00238252
+        moved: 45
+        max_move: 0.02225561
+        max_turn_deg: 0.00558817
+      view: packing/atlas/known-best/regularized/n-153-regularized.yaml.gz
+    - n: 154
+      of: T-182
+      by: project
+      method: regularize_axis_components/2
+      side: same
+      identity:
+        basis: measured
+        measured_in: packing/atlas/known-best/regularized/index.json
+        one_to_one: true
+        moved: 10
+        max_move: 0.02519881
+        max_turn_deg: 0.000347026
       view: packing/atlas/known-best/regularized/n-154-regularized.yaml.gz
     - n: 155
       of: T-149
@@ -25574,7 +25597,7 @@ regularized_drawings:
         max_turn_deg: 1.94952
       view: packing/atlas/known-best/regularized/n-206-regularized.yaml.gz
     - n: 207
-      of: T-147
+      of: T-173
       by: project
       method: regularize_axis_components/2
       side: same
@@ -25583,7 +25606,7 @@ regularized_drawings:
         measured_in: packing/atlas/known-best/regularized/index.json
         one_to_one: true
         moved: 0
-        max_move: 1.251e-09
+        max_move: 0.000100005
         max_turn_deg: 0.0
       view: packing/atlas/known-best/regularized/n-207-regularized.yaml.gz
     - n: 208
@@ -25631,20 +25654,6 @@ regularized_drawings:
         max_move: 0.3430005
         max_turn_deg: 0.499815
       view: packing/atlas/known-best/regularized/n-210-regularized.yaml.gz
-    - n: 211
-      of: T-149
-      by: project
-      method: "regularize_grid_slack/1: Evan Daniel's coincidence placement (evand/square-packing search/regularize reg.coincidences and reg.place, MIT), ported to start from the witness's exact frame and to keep its contacts, then the same-side exact re-solve, through devtools.regularize_grid_slack"
-      modifications: ["port of his coincidence placement (regularize_grid_slack/1) rather than his code", "same-side exact re-solve (devtools.regularize_same_side)"]
-      side: same
-      identity:
-        basis: measured
-        measured_in: packing/atlas/known-best/regularized/index.json
-        one_to_one: true
-        moved: 14
-        max_move: 0.02387516
-        max_turn_deg: 0.0
-      view: packing/atlas/known-best/regularized/n-211-regularized.yaml.gz
     - n: 227
       of: T-155
       by: project
@@ -25729,19 +25738,17 @@ regularized_drawings:
         max_turn_deg: 0.0
       view: packing/atlas/known-best/regularized/n-236-regularized.yaml.gz
     - n: 237
-      of: T-140
+      of: T-183
       by: project
-      method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
-      modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+      method: regularize_axis_components/2
       side: same
-      changes: {straightened: 9, re_angled: 5}
       identity:
         basis: measured
         measured_in: packing/atlas/known-best/regularized/index.json
         one_to_one: true
-        moved: 82
-        max_move: 0.09239296
-        max_turn_deg: 0.660323
+        moved: 1
+        max_move: 0.0735411
+        max_turn_deg: 0.00545279
       view: packing/atlas/known-best/regularized/n-237-regularized.yaml.gz
     - n: 238
       of: T-151
@@ -25786,20 +25793,6 @@ regularized_drawings:
         max_move: 0.3846198
         max_turn_deg: 0.461031
       view: packing/atlas/known-best/regularized/n-240-regularized.yaml.gz
-    - n: 241
-      of: T-056
-      by: project
-      method: "regularize_grid_slack/0: Evan Daniel's coincidence placement (evand/square-packing search/regularize reg.coincidences and reg.place, MIT), ported to start from the witness's exact frame and to keep its contacts, then the same-side exact re-solve, through devtools.regularize_grid_slack"
-      modifications: ["port of his coincidence placement (regularize_grid_slack/0) rather than his code", "same-side exact re-solve (devtools.regularize_same_side)"]
-      side: same
-      identity:
-        basis: measured
-        measured_in: packing/atlas/known-best/regularized/index.json
-        one_to_one: true
-        moved: 38
-        max_move: 0.3106441
-        max_turn_deg: 0.0673815
-      view: packing/atlas/known-best/regularized/n-241-regularized.yaml.gz
     - n: 258
       of: T-146
       by: project
@@ -26051,18 +26044,17 @@ regularized_drawings:
         max_turn_deg: 1.34112
       view: packing/atlas/known-best/regularized/n-301-regularized.yaml.gz
     - n: 302
-      of: T-146
+      of: T-181
       by: project
-      method: "Evan Daniel's search/regularize (MIT), evand/square-packing@675a5ea, conservative, coincide, through devtools.regularize_evand"
-      modifications: ["same-side exact re-solve (devtools.regularize_same_side)"]
+      method: regularize_axis_components/2
       side: same
       identity:
         basis: measured
         measured_in: packing/atlas/known-best/regularized/index.json
         one_to_one: true
-        moved: 18
-        max_move: 0.04981787
-        max_turn_deg: 0.170795
+        moved: 115
+        max_move: 0.009575985
+        max_turn_deg: 0.00564274
       view: packing/atlas/known-best/regularized/n-302-regularized.yaml.gz
     - n: 303
       of: T-146
@@ -26078,7 +26070,7 @@ regularized_drawings:
         max_turn_deg: 0.0
       view: packing/atlas/known-best/regularized/n-303-regularized.yaml.gz
     - n: 304
-      of: T-152
+      of: T-175
       by: project
       method: regularize_axis_components/2
       side: same
@@ -26086,9 +26078,9 @@ regularized_drawings:
         basis: measured
         measured_in: packing/atlas/known-best/regularized/index.json
         one_to_one: true
-        moved: 6
-        max_move: 0.007611834
-        max_turn_deg: 0.00384108
+        moved: 32
+        max_move: 0.05031548
+        max_turn_deg: 7.40531e-25
       view: packing/atlas/known-best/regularized/n-304-regularized.yaml.gz
     - n: 305
       of: T-152
